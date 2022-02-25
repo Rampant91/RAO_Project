@@ -75,6 +75,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("NumberInOrder_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("OrganisationReciever_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -138,8 +141,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("ValidThru_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<string>("Year_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<int?>("Year_DB")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -441,8 +444,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("SignedServicePeriod_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<float?>("SignedServicePeriod_DB")
+                        .HasColumnType("FLOAT");
 
                     b.Property<string>("TransporterOKPO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1459,9 +1462,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<bool>("StatusRAOout_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
-                    b.Property<bool>("SumGroup_DB")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<bool>("Sum_DB")
                         .HasColumnType("BOOLEAN");
 
@@ -2167,8 +2167,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("GraphNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<long>("Order")
-                        .HasColumnType("BIGINT");
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");

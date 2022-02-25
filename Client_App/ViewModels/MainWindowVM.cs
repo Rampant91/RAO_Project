@@ -240,11 +240,20 @@ namespace Client_App.ViewModels
             await ProcessSpravochniks();
 
             OnStartProgressBar = 15;
-            await ProcessDataBaseCreate(raoDirectory);
+            try
+            {
+                await ProcessDataBaseCreate(raoDirectory);            }
+            catch (Exception ex) { }
+
 
             OnStartProgressBar = 25;
             var dbm = StaticConfiguration.DBModel;
-            await dbm.LoadTablesAsync();
+            try
+            {
+                await dbm.LoadTablesAsync();
+            }
+            catch (Exception ex) { }
+
             OnStartProgressBar = 55;
             await ProcessDataBaseFillEmpty(dbm);
 

@@ -155,11 +155,7 @@ namespace Models.DBRealization
             await form_210.LoadAsync();
             await form_211.LoadAsync();
             await form_212.LoadAsync();
-            try
-            {
-                await ReportCollectionDbSet.LoadAsync();
-            }
-            catch (Exception ex) { }
+            await ReportCollectionDbSet.LoadAsync();
             await ReportsCollectionDbSet.LoadAsync();
             await DBObservableDbSet.LoadAsync();
         }
