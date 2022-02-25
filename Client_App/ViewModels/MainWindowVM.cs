@@ -124,6 +124,10 @@ namespace Client_App.ViewModels
                     StaticConfiguration.DBPath = file;
                     StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                     dbm = StaticConfiguration.DBModel;
+
+                    var tmp1 = dbm.Database.GetAppliedMigrations();
+                    var tmp2 = dbm.Database.GetPendingMigrations();
+
                     await dbm.Database.MigrateAsync();
                     flag = true;
                     break;
@@ -147,6 +151,7 @@ namespace Client_App.ViewModels
             {
                 foreach (Reports it in item.Reports_Collection)
                 {
+
                     if (it.Master_DB.FormNum_DB != "")
                     {
                         if (it.Master_DB.Rows10.Count == 0)
@@ -240,7 +245,6 @@ namespace Client_App.ViewModels
             OnStartProgressBar = 25;
             var dbm = StaticConfiguration.DBModel;
             await dbm.LoadTablesAsync();
-
             OnStartProgressBar = 55;
             await ProcessDataBaseFillEmpty(dbm);
 

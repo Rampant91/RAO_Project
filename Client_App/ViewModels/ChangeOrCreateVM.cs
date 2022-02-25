@@ -554,7 +554,7 @@ namespace Client_App.ViewModels
                         if (ty != null)
                         {
                             int ty_int = Convert.ToInt32(ty) + 1;
-                            Storage.Year.Value = Convert.ToString(ty_int);
+                            Storage.Year.Value = ty_int;
                         }
                     }
                     catch

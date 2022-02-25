@@ -68,7 +68,7 @@ namespace Client_App.Long_Visual
                     [!MaskedTextBox.DataContextProperty] = b,
                     [!MaskedTextBox.TextProperty] = new Binding("Value"),
                 };
-                ((MaskedTextBox)textCell.Control).Mask = "0000";
+                //((MaskedTextBox)textCell.Control).Mask = "0000";
             }
             return textCell;
         }

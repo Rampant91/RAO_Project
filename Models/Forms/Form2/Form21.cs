@@ -8,12 +8,13 @@ using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
+using Models.Interfaces;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
-    public class Form21 : Abstracts.Form2
+    public class Form21 : Abstracts.Form2, ISumGroup
     {
         public Form21() : base()
         {
@@ -100,6 +101,40 @@ namespace Models
         }
 
         private bool Sum_Validation(RamAccess<bool> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
+        #region  SumGroup
+        public bool SumGroup_DB { get; set; } = false;
+
+        [NotMapped]
+        public RamAccess<bool> SumGroup
+        {
+            get
+            {
+                var tmp = new RamAccess<bool>(SumGroup_Validation, SumGroup_DB);
+                tmp.PropertyChanged += SumGroupValueChanged;
+                return tmp;
+            }
+            set
+            {
+                SumGroup_DB = value.Value;
+                OnPropertyChanged(nameof(SumGroup));
+            }
+        }
+
+        private void SumGroupValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                SumGroup_DB = ((RamAccess<bool>)Value).Value;
+            }
+        }
+
+        private bool SumGroup_Validation(RamAccess<bool> value)
         {
             value.ClearErrors();
             return true;
