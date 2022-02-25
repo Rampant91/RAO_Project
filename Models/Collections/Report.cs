@@ -2359,24 +2359,24 @@ namespace Models.Collections
         #endregion
 
         #region Year
-        public string Year_DB { get; set; } = null;
+        public int? Year_DB { get; set; } = null;
         [NotMapped]
         [Form_Property(true,"Отчетный год")]
-        public RamAccess<string> Year
+        public RamAccess<int?> Year
         {
             get
             {
                 if (Dictionary.ContainsKey(nameof(Year)))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(Year)]).Value = Year_DB;
-                    return (RamAccess<string>)Dictionary[nameof(Year)];
+                    ((RamAccess<int?>)Dictionary[nameof(Year)]).Value = Year_DB;
+                    return (RamAccess<int?>)Dictionary[nameof(Year)];
                 }
                 else
                 {
-                    var rm = new RamAccess<string>(Year_Validation, Year_DB);
+                    var rm = new RamAccess<int?>(Year_Validation, Year_DB);
                     rm.PropertyChanged += YearValueChanged;
                     Dictionary.Add(nameof(Year), rm);
-                    return (RamAccess<string>)Dictionary[nameof(Year)];
+                    return (RamAccess<int?>)Dictionary[nameof(Year)];
                 }
             }
             set
@@ -2389,11 +2389,11 @@ namespace Models.Collections
         {
             if (args.PropertyName == "Value")
             {
-                var k = ((RamAccess<string>)Value).Value;
+                var k = ((RamAccess<int?>)Value).Value;
                 Year_DB = k;
             }
         }
-        private bool Year_Validation(RamAccess<string> value)
+        private bool Year_Validation(RamAccess<int?> value)
         {
             value.ClearErrors();
             if (value.Value == null)

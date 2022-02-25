@@ -53,16 +53,16 @@ namespace Client_App.Short_Visual
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 Search = true
             };
-            grd.PageSize = 6;
+            grd.PageSize = 5;
             grd.IsReadable = true;
-            if (grd.Search == true)
-            {
-                (((((grd.Content as Panel).Children[0] as StackPanel).Children[2] as Border).Child as ScrollViewer).Content as Panel).Height = 200;
-            }
-            else 
-            {
-                (((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).Content as Panel).Height = 200;
-            }
+            //if (grd.Search == true)
+            //{
+            //    (((((grd.Content as Panel).Children[0] as StackPanel).Children[2] as Border).Child as ScrollViewer).Content as Panel).Height = 200;
+            //}
+            //else 
+            //{
+            //    (((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).Content as Panel).Height = 200;
+            //}
             grd.Name = "Form10AllDataGrid_";
 
             Binding b = new Binding
@@ -84,7 +84,7 @@ namespace Client_App.Short_Visual
             {
                 Name = "Form1AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -92,7 +92,7 @@ namespace Client_App.Short_Visual
             };
             grd.PageSize = 10;
             grd.IsReadable = true;
-            ((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).MaxHeight = 261;
+            //((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).MaxHeight = 261;
             Binding b = new Binding
             {
                 Path = "SelectedItems",

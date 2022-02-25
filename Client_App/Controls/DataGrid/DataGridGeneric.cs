@@ -272,13 +272,13 @@ namespace Client_App.Controls.DataGrid
                                         try
                                         {
                                             _s += Convert.ToDouble(_value);
-                                            var stackPanel = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                                            var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
                                             stackPanel.Children[0].IsVisible = true;
                                             stackPanel.Children[1].IsVisible = true;
                                         }
                                         catch 
                                         {
-                                            var stackPanel = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                                            var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
                                             stackPanel.Children[0].IsVisible = false;
                                             stackPanel.Children[1].IsVisible = false;
                                             return null;
@@ -296,7 +296,7 @@ namespace Client_App.Controls.DataGrid
             }
             else
             {
-                var stackPanel = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
                 stackPanel.Children[0].IsVisible = false;
                 stackPanel.Children[1].IsVisible = false;
                 return null;
@@ -1150,7 +1150,7 @@ namespace Client_App.Controls.DataGrid
                 if (Search)
                 {
                     IKeyCollection tmp2_coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                    var searchText = ((TextBox)((StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[0]).Child).Children[0]).Children[0]).Text;
+                    var searchText = ((TextBox)((StackPanel)((StackPanel)((Border)((Grid)((Panel)this.Content).Children[0]).Children[0]).Child).Children[0]).Children[0]).Text;
                     if (searchText != null)
                     {
                         searchText = searchText.ToLower();
@@ -1588,23 +1588,26 @@ namespace Client_App.Controls.DataGrid
             #region Main_<MainStackPanel>
             Panel MainPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
             };
 
-            StackPanel MainStackPanel = new StackPanel();
-            MainStackPanel.Orientation = Orientation.Vertical;
+            Grid MainStackPanel = new Grid() {};
+            MainStackPanel.VerticalAlignment = VerticalAlignment.Stretch;
             MainPanel.Children.Add(MainStackPanel);
             #endregion
 
             #region Search
             if(Search)
             {
+                MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height=GridLength.Parse("35") });
                 Border HeaderSearchBorder = new()
                 {
                     Margin = Thickness.Parse("0,0,0,5"),
                     BorderThickness = Thickness.Parse("1"),
                     BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                    CornerRadius = CornerRadius.Parse("2,2,2,2")
+                    CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                    [Grid.RowProperty] = 0
                 };
                 MainStackPanel.Children.Add(HeaderSearchBorder);
 
@@ -1628,12 +1631,13 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Header
-
+            MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             Border HeaderBorder = new()
             {
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                CornerRadius = CornerRadius.Parse("2,2,2,2")
+                CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                [Grid.RowProperty] = 1 - (Search ? 0 : 1)
             };
             MainStackPanel.Children.Add(HeaderBorder);
 
@@ -1668,19 +1672,23 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Center
-
+            MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height=GridLength.Parse("*") });
             Border CenterBorder = new()
             {
                 Margin = Thickness.Parse("0,5,0,0"),
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                CornerRadius = CornerRadius.Parse("2,2,2,2")
+                CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                VerticalAlignment = VerticalAlignment.Stretch,
+                [Grid.RowProperty] = 2 - (Search ? 0 : 1)
             };
             MainStackPanel.Children.Add(CenterBorder);
 
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                //Background=new SolidColorBrush(Color.Parse("Red")),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
             if (!Sum)
@@ -1688,16 +1696,16 @@ namespace Client_App.Controls.DataGrid
                 ScrollViewer CenterScrollViewer = new ScrollViewer();
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CenterScrollViewer.Content = CenterPanel;
-                CenterScrollViewer.MaxHeight = 286;
+                CenterScrollViewer.VerticalAlignment = VerticalAlignment.Stretch;
 
                 CenterBorder.Child = CenterScrollViewer;
             }
             else
             {
                 Panel pnl = new Panel();
-                int h = 325;
-                pnl.Height = h;
-                Canvas CenterCanvas = new Canvas();
+                int h = 500;
+                Canvas CenterCanvas = new Canvas() { Height=h};
+                //CenterPanel.Height = h;
 
                 ScrollBar bar = new ScrollBar() {ZIndex=999,Height=h,HorizontalAlignment=HorizontalAlignment.Right};
                 bar[!ScrollBar.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
@@ -1709,10 +1717,11 @@ namespace Client_App.Controls.DataGrid
                     Mode = BindingMode.TwoWay
                 };
 
-                ScrollViewer CenterScrollViewer = new ScrollViewer();
-                CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                ScrollViewer CenterScrollViewer = new ScrollViewer() { Height=h};
+                CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+
                 CenterScrollViewer.Content = CenterPanel;
-                CenterScrollViewer.Height = h;
+
                 bar[!ScrollBar.MaximumProperty] = CenterScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
 
                 CenterScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
@@ -1745,12 +1754,14 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region MiddleFooter
+            MainStackPanel.RowDefinitions.Add(new RowDefinition() {Height= GridLength.Auto });
             Border MiddleFooterBorder = new()
             {
                 Margin = Thickness.Parse("0,5,0,0"),
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                CornerRadius = CornerRadius.Parse("2,2,2,2")
+                CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                [Grid.RowProperty] = 3 - (Search ? 0 : 1)
             };
             MainStackPanel.Children.Add(MiddleFooterBorder);
 
@@ -1785,12 +1796,14 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Footer
+            MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Parse("45") });
             Border FooterBorder = new()
             {
                 Margin = Thickness.Parse("0,5,0,0"),
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                CornerRadius = CornerRadius.Parse("2,2,2,2")
+                CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                [Grid.RowProperty] = 4 - (Search ? 0 : 1)
             };
             MainStackPanel.Children.Add(FooterBorder);
 

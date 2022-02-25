@@ -48,16 +48,16 @@
     <Panel Margin="5,5,5,5" x:Name="MainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
       <TabControl SelectedIndex="{Binding FormModel_Local.ChooseTab}">
         <TabItem x:Name="Forms1" Header="Формы 1">
-          <Panel x:Name="Forms_p1">
+          <Panel x:Name="Forms_p1" VerticalAlignment="Stretch" >
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" MinHeight="200"></RowDefinition>
-                <RowDefinition ></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition MaxWidth="452"></ColumnDefinition>
-                  <ColumnDefinition></ColumnDefinition>
+                  <ColumnDefinition ></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
                   <Panel x:Name="Forms_p1_0" Grid.Column="0">
@@ -65,17 +65,17 @@
                 </ScrollViewer>
                 <Panel x:Name="Forms_p1_B" Grid.Column="1"/>
               </Grid>
-              <Panel Margin="0,5,0,0" x:Name="Forms_p1_X" Grid.Row="1">
+              <Panel Margin="0,5,0,0" x:Name="Forms_p1_X" VerticalAlignment="Stretch" Grid.Row="1">
 	          </Panel>  
             </Grid>
           </Panel>
         </TabItem>
         <TabItem x:Name="Forms2" Header="Формы 2">
-          <Panel x:Name="Forms_p2">
+          <Panel x:Name="Forms_p2" VerticalAlignment="Stretch">
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" MinHeight="220"></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -87,7 +87,7 @@
                 </ScrollViewer>
                 <Panel x:Name="Forms_p2_B" Grid.Column="1"/>
               </Grid>
-              <Panel Margin="0,5,0,0" x:Name="Forms_p2_X" Grid.Row="1"/>
+              <Panel Margin="0,5,0,0" x:Name="Forms_p2_X" VerticalAlignment="Stretch" Grid.Row="1"/>
             </Grid>
           </Panel>
         </TabItem>
