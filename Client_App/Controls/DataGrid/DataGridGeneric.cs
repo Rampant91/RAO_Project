@@ -1146,44 +1146,43 @@ namespace Client_App.Controls.DataGrid
 
             if (Items != null)
             {
-                if (Items.Count != 0)
+                IKeyCollection tmp_coll = new ObservableCollectionWithItemPropertyChanged<IKey>(Items.GetEnumerable());
+                if (Search)
+                {
+                    IKeyCollection tmp2_coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                    var searchText = ((TextBox)((StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[0]).Child).Children[0]).Children[0]).Text;
+                    if (searchText != null)
+                    {
+                        searchText = searchText.ToLower();
+                        searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
+                        if (searchText != "")
+                        {
+                            foreach (var it in tmp_coll)
+                            {
+                                var rowsText = ((Reports)it).Master_DB.OkpoRep.Value +
+                                            ((Reports)it).Master_DB.ShortJurLicoRep.Value +
+                                            ((Reports)it).Master_DB.RegNoRep.Value;
+                                rowsText = rowsText.ToLower();
+                                rowsText = Regex.Replace(rowsText, "[-.?!)(,: ]", "");
+                                if (rowsText.Contains(searchText))
+                                {
+                                    tmp2_coll.Add(it);
+                                }
+                            }
+                            tmp_coll = tmp2_coll;
+                        }
+                    }
+                }
+                if (tmp_coll.Count != 0)
                 {
                     for (int i = offset; i < offsetMax; i++)
                     {
-                        if (count < PageSize&&i<Items.Count)
+                        if (count < PageSize && i < tmp_coll.Count)
                         {
-                            Rows[count].DataContext = Items.Get<T>(i);
-                            if (Search==true)
-                            {
-                                var rowsText = ((Reports)Rows[count].DataContext).Master_DB.OkpoRep.Value + 
-                                    ((Reports)Rows[count].DataContext).Master_DB.ShortJurLicoRep.Value + 
-                                    ((Reports)Rows[count].DataContext).Master_DB.RegNoRep.Value;
-                                rowsText = rowsText.ToLower();
-                                rowsText = Regex.Replace(rowsText, "[-.?!)(,: ]", "");
-                                var searchText = ((TextBox)((StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[0]).Child).Children[0]).Children[0]).Text;
-                                if (searchText != null)
-                                {
-                                    searchText = searchText.ToLower();
-                                    searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
-                                    if (rowsText.Contains(searchText))
-                                    {
-                                        Rows[count].IsVisible = true;
-                                    }
-                                    else
-                                    {
-                                        Rows[count].IsVisible = false;
-                                    }
-                                }
-                                else
-                                {
-                                    Rows[count].IsVisible = true;
-                                }
+                            Rows[count].DataContext = tmp_coll.Get<T>(i);
 
-                            }
-                            else
-                            {
-                                Rows[count].IsVisible = true;
-                            }
+                            Rows[count].IsVisible = true;
+
                             count++;
                         }
                         else
@@ -1193,9 +1192,9 @@ namespace Client_App.Controls.DataGrid
                     }
                 }
 
-                if (Items.Count < offsetMax)
+                if (tmp_coll.Count < offsetMax)
                 {
-                    for (int i = Items.Count; i < offsetMax; i++)
+                    for (int i = tmp_coll.Count; i < offsetMax; i++)
                     {
                         try
                         {

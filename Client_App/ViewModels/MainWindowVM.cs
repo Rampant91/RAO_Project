@@ -953,7 +953,6 @@ namespace Client_App.ViewModels
                         var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
                         ChangeOrCreateVM frm = new(rep.FormNum.Value, rep, tre);
                         await ShowDialog.Handle(frm);
-
                         t.SelectedReports = tmp;
                     }
                 }
@@ -976,6 +975,9 @@ namespace Client_App.ViewModels
                         var rep = (Reports)obj;
                         ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master, rep);
                         await ShowDialog.Handle(frm);
+
+                        Local_Reports.Reports_Collection.Sorted = false;
+                        await Local_Reports.Reports_Collection.QuickSortAsync();
                         t.SelectedReports = tmp;
                     }
                 }

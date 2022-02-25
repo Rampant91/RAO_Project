@@ -207,7 +207,7 @@ namespace Models.Collections
             foreach (T item in Items)
                 item.PropertyChanged += ChildPropertyChanged;
 
-            QuickSort();
+           // QuickSort();
 
         }
 

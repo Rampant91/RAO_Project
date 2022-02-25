@@ -22,7 +22,15 @@ namespace Models.Collections
             {
                 try
                 {
-                    var num_str = Master_DB.RegNoRep.Value[..5];
+                    var num_str = "0";
+                    if (Master_DB.RegNoRep.Value.Length >= 5)
+                    {
+                        num_str = Master_DB.RegNoRep.Value[..5];
+                    }
+                    else 
+                    {
+                        num_str = Master_DB.RegNoRep.Value;
+                    }
                     var num_int = Convert.ToInt64(num_str);
                     return num_int;
                 }
