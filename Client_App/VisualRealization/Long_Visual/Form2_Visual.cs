@@ -11,11 +11,19 @@ using Models.Attributes;
 using Models;
 using Client_App.Converters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 
 namespace Client_App.Long_Visual
 {
     public class Form2_Visual
     {
+        public void TextBoxKeyPress(object sender, KeyEventArgs args)
+        {
+
+            if (Char.IsDigit(Convert.ToChar(args.Key))) return;
+            else
+                args.Handled = true;
+        }
         public static Button CreateButton(string content, string thickness, int height, string commProp)
         {
             return new Button()
@@ -63,12 +71,18 @@ namespace Client_App.Long_Visual
             }
             if (_flag == "year")
             {
-                textCell.Control = new MaskedTextBox()
+                textCell.Control = new TextBox()
                 {
-                    [!MaskedTextBox.DataContextProperty] = b,
-                    [!MaskedTextBox.TextProperty] = new Binding("Value"),
+                    [!TextBox.DataContextProperty] = b,
+                    [!TextBox.TextProperty] = new Binding("Value"),
                 };
-                ((MaskedTextBox)textCell.Control).Mask = "0000";
+                ((TextBox)textCell.Control).KeyDown += TextBoxKeyPress;
+                //textCell.Control = new MaskedTextBox()
+                //{
+                //    [!MaskedTextBox.DataContextProperty] = b,
+                //    [!MaskedTextBox.TextProperty] = new Binding("Value"),
+                //};
+                //((MaskedTextBox)textCell.Control).Mask = "0000";
             }
             return textCell;
         }

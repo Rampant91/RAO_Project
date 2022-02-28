@@ -271,6 +271,7 @@ namespace Client_App.Controls.DataGrid
                                     {
                                         try
                                         {
+                                            _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
                                             _s += Convert.ToDouble(_value);
                                             var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
                                             stackPanel.Children[0].IsVisible = true;
