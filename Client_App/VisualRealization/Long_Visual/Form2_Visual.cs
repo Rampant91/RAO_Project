@@ -17,13 +17,6 @@ namespace Client_App.Long_Visual
 {
     public class Form2_Visual
     {
-        public void TextBoxKeyPress(object sender, KeyEventArgs args)
-        {
-
-            if (Char.IsDigit(Convert.ToChar(args.Key))) return;
-            else
-                args.Handled = true;
-        }
         public static Button CreateButton(string content, string thickness, int height, string commProp)
         {
             return new Button()
@@ -76,7 +69,6 @@ namespace Client_App.Long_Visual
                     [!TextBox.DataContextProperty] = b,
                     [!TextBox.TextProperty] = new Binding("Value"),
                 };
-                ((TextBox)textCell.Control).KeyDown += TextBoxKeyPress;
                 //textCell.Control = new MaskedTextBox()
                 //{
                 //    [!MaskedTextBox.DataContextProperty] = b,
