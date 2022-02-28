@@ -8,12 +8,13 @@ using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
+using Models.Interfaces;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
-    public class Form21 : Abstracts.Form2
+    public class Form21 : Abstracts.Form2, IBaseColor
     {
         public Form21() : base()
         {
@@ -71,6 +72,24 @@ namespace Models
             CodeRAOout.HasErrors ||
             StatusRAOout.HasErrors);
         }
+
+        #region BaseColor
+        [NotMapped]
+        public ColorType _BaseColor { get; set; } = ColorType.None;
+        [NotMapped]
+        public ColorType BaseColor {
+
+            get => _BaseColor;
+            set
+            {
+                if (_BaseColor != value)
+                {
+                    _BaseColor = value;
+                    OnPropertyChanged(nameof(BaseColor));
+                }
+            }
+        }
+        #endregion
 
         #region  Sum
         public bool Sum_DB { get; set; } = false;
@@ -138,7 +157,7 @@ namespace Models
         {
             get
             {
-                if (!RefineMachineName_Hidden|| RefineMachineName_Hidden2)
+                if (!RefineMachineName_Hidden || RefineMachineName_Hidden2)
                 {
                     if(RefineMachineName_Hidden2)
                     {
@@ -173,7 +192,8 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                RefineMachineName_DB = ((RamAccess<string>)Value).Value;            }
+                RefineMachineName_DB = ((RamAccess<string>)Value).Value;            
+            }
         }
 
         private bool RefineMachineName_Validation(RamAccess<string> value)

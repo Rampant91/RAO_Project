@@ -34,6 +34,7 @@ using Client_App.Converters;
 using Client_App.ViewModels;
 using Models.Attributes;
 using System.Text.RegularExpressions;
+using Models.Interfaces;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -1205,6 +1206,35 @@ namespace Client_App.Controls.DataGrid
                             }
                         }
                         catch { }
+                    }
+                }
+                var t = typeof(T).FindInterfaces(new System.Reflection.TypeFilter((x,y)=> 
+                {
+                    if (x.ToString() == y.ToString())
+                        return true;
+                    else
+                        return false;
+                }), typeof(IBaseColor).FullName);
+                if (t.Count()!=0)
+                {
+                    for (int i = 0; i < PageSize; i++)
+                    {
+                        if (Rows[i].DataContext is IBaseColor)
+                        {
+                            var _t = (IBaseColor)Rows[i].DataContext;
+                            if (_t != null)
+                            {
+
+                                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == i);
+                                int index = (int)_t.BaseColor;
+                                var color = IBaseColor.ColorTypeList[index];
+
+                                foreach (Cell item in tmp2)
+                                {
+                                    item.Background = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+                                }
+                            }
+                        }
                     }
                 }
             }

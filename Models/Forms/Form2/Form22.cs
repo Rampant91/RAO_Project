@@ -10,12 +10,13 @@ using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
+using Models.Interfaces;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения")]
-    public class Form22 : Abstracts.Form2
+    public class Form22 : Abstracts.Form2, IBaseColor
     {
         public Form22() : base()
         {
@@ -69,6 +70,25 @@ namespace Models
                      FcpNumber.HasErrors ||
                      PackQuantity.HasErrors);
         }
+
+        #region BaseColor
+        [NotMapped]
+        public ColorType _BaseColor { get; set; } = ColorType.None;
+        [NotMapped]
+        public ColorType BaseColor
+        {
+
+            get => _BaseColor;
+            set
+            {
+                if (_BaseColor != value)
+                {
+                    _BaseColor = value;
+                    OnPropertyChanged(nameof(BaseColor));
+                }
+            }
+        }
+        #endregion
 
         #region Sum
 

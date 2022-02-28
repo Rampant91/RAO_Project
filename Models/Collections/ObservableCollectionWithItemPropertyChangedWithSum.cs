@@ -92,14 +92,17 @@ namespace Models.Collections
                             sumRow.MachineCode_DB = first.MachineCode_DB;
                             sumRow.MachinePower_DB = first.MachinePower_DB;
                             sumRow.NumberOfHoursPerYear_DB = first.NumberOfHoursPerYear_DB;
+
                             sumRow.RefineMachineName_Hidden = true;
                             sumRow.MachineCode_Hidden = true;
                             sumRow.MachinePower_Hidden = true;
                             sumRow.NumberOfHoursPerYear_Hidden = true;
+
                             sumRow.RefineMachineName_Hidden2 = true;
                             sumRow.MachineCode_Hidden2 = true;
                             sumRow.MachinePower_Hidden2 = true;
                             sumRow.NumberOfHoursPerYear_Hidden2 = true;
+
                             sumRow.CodeRAOIn.Value = "";
                             sumRow.CodeRAOIn_Hidden = true;
                             sumRow.StatusRAOIn.Value = "";
@@ -110,6 +113,8 @@ namespace Models.Collections
                             sumRow.StatusRAOout_Hidden = true;
 
                             sumRow.Sum_DB = true;
+                            sumRow.BaseColor = Interfaces.ColorType.Green;
+
                         }
 
                         sumRow.NumberInOrder_DB = 0;
@@ -130,6 +135,9 @@ namespace Models.Collections
                         double tritOutSum = 0;
                         double transOutSum = 0;
 
+                        string refinemachinename = "";
+                        byte? machinecode = 0;
+
                         List<T> lst = new List<T>();
                         var u = ty.OrderBy(x => (x as Form21).NumberInOrder_DB);
                         foreach (var itemThread in u)
@@ -142,6 +150,10 @@ namespace Models.Collections
                                 form.MachineCode_Hidden = true;
                                 form.MachinePower_Hidden = true;
                                 form.NumberOfHoursPerYear_Hidden = true;
+                                form.BaseColor = Interfaces.ColorType.Yellow;
+
+                                refinemachinename = form.RefineMachineName_DB;
+                                machinecode = form.MachineCode_DB;
 
                                 volumeInSum += StringToNumber(form.VolumeIn_DB);
                                 massInSum += StringToNumber(form.MassIn_DB);
