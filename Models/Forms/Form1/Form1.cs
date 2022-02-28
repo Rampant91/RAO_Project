@@ -429,7 +429,7 @@ namespace Models.Abstracts
         {
           
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
-                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
+                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[2];
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationCode))
                 .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
             worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationDate))
