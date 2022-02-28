@@ -1197,10 +1197,14 @@ namespace Client_App.ViewModels
                                             }
                                             Note.ExcelHeader(worksheetPrim, 1, masterheaderlength + 1);
                                             var lst = new List<Report>();
-                                            foreach (Report item in forms)
-                                            {
-                                                lst.Add(item);
-                                            }
+
+                                            var form = forms.FirstOrDefault() as Report;
+                                            lst.Add(form);
+
+                                            //foreach (Report item in forms)
+                                            //{
+                                            //    lst.Add(item);
+                                            //}
                                             _Excel_Export_Rows(param, 2, masterheaderlength, worksheet, lst);
                                             _Excel_Export_Notes(param, 2, masterheaderlength, worksheetPrim, lst);
 
