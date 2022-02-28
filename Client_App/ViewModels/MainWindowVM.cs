@@ -1553,6 +1553,7 @@ namespace Client_App.ViewModels
                     if (lst.Count > 0)
                     {
                         var count = StartRow;
+                        StartRow--;
                         foreach (var it in lst)
                         {
                             if (it != null)
@@ -1667,7 +1668,7 @@ namespace Client_App.ViewModels
                                     }
                                 }
 
-                                item.ExcelRow(worksheet, count, yu);
+                                item.ExcelRow(worksheet, count, yu+1);
                                 count++;
                             }
                         }
