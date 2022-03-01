@@ -3,15 +3,17 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [Migration("20220301111600_DataModel_23")]
+    partial class DataModel_23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1392,6 +1394,12 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<short?>("MachineCode_DB")
                         .HasColumnType("SMALLINT");
 
+                    b.Property<bool>("MachineCode_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("MachineCode_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("MachinePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1410,6 +1418,13 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("NumberOfHoursPerYear_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN")
+                        .HasColumnName("NumberOfHoursPerYear_Hidden_P~1");
+
                     b.Property<string>("QuantityIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1418,6 +1433,12 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("RefineMachineName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("RefineMachineName_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("RefineMachineName_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
@@ -1455,28 +1476,10 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("VolumeOut_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<bool>("_MachineCode_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_MachineCode_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<bool>("_MachinePower_Hidden_Get")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("_MachinePower_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_NumberOfHoursPerYear_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_NumberOfHoursPerYear_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_RefineMachineName_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_RefineMachineName_Hidden_Set")
                         .HasColumnType("BOOLEAN");
 
                     b.HasKey("Id");

@@ -9,6 +9,7 @@ using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
 using Models.Interfaces;
+using Models.DataAccess;
 
 namespace Models
 {
@@ -128,26 +129,62 @@ namespace Models
         //RefineMachineName property
         #region  RefineMachineName
         public string RefineMachineName_DB { get; set; } = "";
-        public bool RefineMachineName_Hidden_Priv { get; set; } = false;
+        public bool _RefineMachineName_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool RefineMachineName_Hidden
+        public RefBool RefineMachineName_Hidden_Get
         {
-            get => RefineMachineName_Hidden_Priv;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(RefineMachineName_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(RefineMachineName_Hidden_Get)]).Set(_RefineMachineName_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(RefineMachineName_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_RefineMachineName_Hidden_Get);
+                    Dictionary.Add(nameof(RefineMachineName_Hidden_Get), rm);
+                    return rm;
+                }
+            }
             set
             {
-                RefineMachineName_Hidden_Priv = value;
-                OnPropertyChanged(nameof(RefineMachineName));
+                if (_RefineMachineName_Hidden_Get != value.Get())
+                {
+                    _RefineMachineName_Hidden_Get = value.Get();
+                    var tmp = RefineMachineName;
+                    OnPropertyChanged(nameof(RefineMachineName_Hidden_Get));
+                }
             }
         }
-        public bool RefineMachineName_Hidden_Priv2 { get; set; } = false;
+        public bool _RefineMachineName_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool RefineMachineName_Hidden2
+        public RefBool RefineMachineName_Hidden_Set
         {
-            get => RefineMachineName_Hidden_Priv2;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(RefineMachineName_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(RefineMachineName_Hidden_Set)]).Set(_RefineMachineName_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(RefineMachineName_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_RefineMachineName_Hidden_Set);
+                    Dictionary.Add(nameof(RefineMachineName_Hidden_Set), rm);
+                    return rm;
+                }
+            }
             set
             {
-                RefineMachineName_Hidden_Priv2 = value;
-                OnPropertyChanged(nameof(RefineMachineName));
+                if (_RefineMachineName_Hidden_Set != value.Get())
+                {
+                    _RefineMachineName_Hidden_Set = value.Get();
+                    var tmp = RefineMachineName;
+                    OnPropertyChanged(nameof(RefineMachineName_Hidden_Set));
+                }
             }
         }
 
@@ -157,35 +194,28 @@ namespace Models
         {
             get
             {
-                if (!RefineMachineName_Hidden || RefineMachineName_Hidden2)
+                if (Dictionary.ContainsKey(nameof(RefineMachineName)))
                 {
-                    if(RefineMachineName_Hidden2)
-                    {
-                        var tmp = new RamAccess<string>(null, RefineMachineName_DB);
-                        tmp.PropertyChanged += RefineMachineNameValueChanged;
-                        return tmp;
-                    }
-                    else
-                    {
-                        var tmp = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB);
-                        tmp.PropertyChanged += RefineMachineNameValueChanged;
-                        return tmp;
-                    }
+                    ((RamAccess<string>)Dictionary[nameof(RefineMachineName)]).Value = RefineMachineName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(RefineMachineName)];
                 }
                 else
                 {
-                    var tmp = new RamAccess<string>(null, null);
-                    return tmp;
+                    var rm = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB, RefineMachineName_Hidden_Get, RefineMachineName_Hidden_Set);
+                    rm.PropertyChanged += RefineMachineNameValueChanged;
+                    Dictionary.Add(nameof(RefineMachineName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(RefineMachineName)];
                 }
             }
             set
             {
-                if (!RefineMachineName_Hidden)
+                if (RefineMachineName.Value != value.Value)
                 {
                     RefineMachineName_DB = value.Value;
                     OnPropertyChanged(nameof(RefineMachineName));
                 }
             }
+
         }
 
         private void RefineMachineNameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -208,26 +238,62 @@ namespace Models
         //MachineCode property
         #region MachineCode 
         public byte? MachineCode_DB { get; set; } = null;
-        public bool MachineCode_Hidden_Priv { get; set; } = false;
+        public bool _MachineCode_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool MachineCode_Hidden
+        public RefBool MachineCode_Hidden_Get
         {
-            get => MachineCode_Hidden_Priv;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(MachineCode_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(MachineCode_Hidden_Get)]).Set(_MachineCode_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(MachineCode_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_MachineCode_Hidden_Get);
+                    Dictionary.Add(nameof(MachineCode_Hidden_Get), rm);
+                    return rm;
+                }
+            }
             set
             {
-                MachineCode_Hidden_Priv = value;
-                OnPropertyChanged(nameof(MachineCode));
+                if (_MachineCode_Hidden_Get != value.Get())
+                {
+                    _MachineCode_Hidden_Get = value.Get();
+                    var tmp = MachineCode;
+                    OnPropertyChanged(nameof(MachineCode_Hidden_Get));
+                }
             }
         }
-        public bool MachineCode_Hidden_Priv2 { get; set; } = false;
+        public bool _MachineCode_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool MachineCode_Hidden2
+        public RefBool MachineCode_Hidden_Set
         {
-            get => MachineCode_Hidden_Priv2;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(MachineCode_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(MachineCode_Hidden_Set)]).Set(_MachineCode_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(MachineCode_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_MachineCode_Hidden_Set);
+                    Dictionary.Add(nameof(MachineCode_Hidden_Set), rm);
+                    return rm;
+                }
+            }
             set
             {
-                MachineCode_Hidden_Priv2 = value;
-                OnPropertyChanged(nameof(MachineCode));
+                if (_MachineCode_Hidden_Set != value.Get())
+                {
+                    _MachineCode_Hidden_Set = value.Get();
+                    var tmp = MachineCode;
+                    OnPropertyChanged(nameof(MachineCode_Hidden_Set));
+                }
             }
         }
 
@@ -237,39 +303,22 @@ namespace Models
         {
             get
             {
-                if (!MachineCode_Hidden|| MachineCode_Hidden2)
+                if (Dictionary.ContainsKey(nameof(MachineCode)))
                 {
-                    if (MachineCode_Hidden2)
-                    {
-                        if (Dictionary.ContainsKey(nameof(MachineCode)))
-                        {
-                            ((RamAccess<byte?>)Dictionary[nameof(MachineCode)]).Value = MachineCode_DB;
-                            return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
-                        }
-                        else
-                        {
-                            var rm = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB);
-                            rm.PropertyChanged += MachineCodeValueChanged;
-                            Dictionary.Add(nameof(MachineCode), rm);
-                            return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
-                        }
-                    }
-                    else
-                    {
-                        var tmp = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB);
-                        tmp.PropertyChanged += MachineCodeValueChanged;
-                        return tmp;
-                    }
+                    ((RamAccess<byte?>)Dictionary[nameof(MachineCode)]).Value = MachineCode_DB;
+                    return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
                 }
                 else
                 {
-                    var tmp = new RamAccess<byte?>(null, null);
-                    return tmp;
+                    var rm = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB, MachineCode_Hidden_Get, MachineCode_Hidden_Set);
+                    rm.PropertyChanged += MachineCodeValueChanged;
+                    Dictionary.Add(nameof(MachineCode), rm);
+                    return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
                 }
             }
             set
             {
-                if (!MachineCode_Hidden)
+                if (MachineCode.Value != value.Value)
                 {
                     MachineCode_DB = value.Value;
                     OnPropertyChanged(nameof(MachineCode));
@@ -317,81 +366,89 @@ namespace Models
 
         //MachinePower property
         #region  MachinePower
-        public string MachinePower_DB { get; set; } = "";
-        public bool MachinePower_Hidden_Priv { get; set; } = false;
+        public bool _MachinePower_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool MachinePower_Hidden
+        public RefBool MachinePower_Hidden_Get
         {
-            get => MachinePower_Hidden_Priv;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(MachinePower_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(MachinePower_Hidden_Get)]).Set(_MachinePower_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(MachinePower_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_MachinePower_Hidden_Get);
+                    Dictionary.Add(nameof(MachinePower_Hidden_Get), rm);
+                    return rm;
+                }
+            }
             set
             {
-                MachinePower_Hidden_Priv = value;
-                OnPropertyChanged(nameof(MachinePower));
+                if (_MachinePower_Hidden_Get != value.Get())
+                {
+                    _MachinePower_Hidden_Get = value.Get();
+                    var tmp = MachinePower;
+                    OnPropertyChanged(nameof(MachinePower_Hidden_Get));
+                }
             }
         }
-        public bool MachinePower_Hidden_Priv2 { get; set; } = false;
+        public bool _MachinePower_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool MachinePower_Hidden2
+        public RefBool MachinePower_Hidden_Set
         {
-            get => MachinePower_Hidden_Priv2;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(MachinePower_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(MachinePower_Hidden_Set)]).Set(_MachinePower_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(MachinePower_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_MachinePower_Hidden_Set);
+                    Dictionary.Add(nameof(MachinePower_Hidden_Set), rm);
+                    return rm;
+                }
+            }
             set
             {
-                MachinePower_Hidden_Priv2 = value;
-                OnPropertyChanged(nameof(MachinePower));
+                if (_MachinePower_Hidden_Set != value.Get())
+                {
+                    _MachinePower_Hidden_Set = value.Get();
+                    var tmp = MachinePower;
+                    OnPropertyChanged(nameof(MachinePower_Hidden_Set));
+                }
             }
         }
 
+        public string MachinePower_DB { get; set; } = "";
         [NotMapped]
         [Attributes.Form_Property(true, "Установки переработки", "мощность, куб. м/год","4")]
         public RamAccess<string> MachinePower
         {
             get
             {
-                if (!MachinePower_Hidden|| MachinePower_Hidden2)
+                if (Dictionary.ContainsKey(nameof(MachinePower)))
                 {
-                    if (MachinePower_Hidden2)
-                    {
-                        if (Dictionary.ContainsKey(nameof(MachinePower)))
-                        {
-                            ((RamAccess<string>)Dictionary[nameof(MachinePower)]).Value = MachinePower_DB;
-                            ((RamAccess<string>)Dictionary[nameof(MachinePower)]).PropertyChanged -= MachinePowerValueChanged;
-                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
-                        }
-                        else
-                        {
-                            var rm = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
-                            Dictionary.Add(nameof(MachinePower), rm);
-                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
-                        }
-                        //var tmp = new RamAccess<string>(null, MachinePower_DB);
-                        //tmp.PropertyChanged += MachinePowerValueChanged;
-                        //return tmp;
-                    }
-                    else
-                    {
-                        if (Dictionary.ContainsKey(nameof(MachinePower)))
-                        {
-                            ((RamAccess<string>)Dictionary[nameof(MachinePower)]).Value = MachinePower_DB;
-                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
-                        }
-                        else
-                        {
-                            var rm = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
-                            rm.PropertyChanged += MachinePowerValueChanged;
-                            Dictionary.Add(nameof(MachinePower), rm);
-                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
-                        }
-                    }
+                    ((RamAccess<string>)Dictionary[nameof(MachinePower)]).Value = MachinePower_DB;
+                    return ((RamAccess<string>)Dictionary[nameof(MachinePower)]);
+
                 }
                 else
                 {
-                    var tmp = new RamAccess<string>(null, null);
-                    return tmp;
+                    var rm=new RamAccess<string>(MachinePower_Validation, MachinePower_DB,MachinePower_Hidden_Get,MachinePower_Hidden_Set);
+                    rm.PropertyChanged += MachinePowerValueChanged;
+                    Dictionary.Add(nameof(MachinePower), rm);
+                    return rm;
                 }
             }
             set
             {
-                if (!MachinePower_Hidden)
+                if (MachinePower.Value != value.Value)
                 {
                     MachinePower_DB = value.Value;
                     OnPropertyChanged(nameof(MachinePower));
@@ -470,27 +527,62 @@ namespace Models
         //NumberOfHoursPerYear property
         #region  NumberOfHoursPerYear
         public string NumberOfHoursPerYear_DB { get; set; } = "";
-        public bool NumberOfHoursPerYear_Hidden_Priv { get; set; } = false;
+        public bool _NumberOfHoursPerYear_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool NumberOfHoursPerYear_Hidden
+        public RefBool NumberOfHoursPerYear_Hidden_Get
         {
-            get => NumberOfHoursPerYear_Hidden_Priv;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(NumberOfHoursPerYear_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(NumberOfHoursPerYear_Hidden_Get)]).Set(_NumberOfHoursPerYear_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(NumberOfHoursPerYear_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_NumberOfHoursPerYear_Hidden_Get);
+                    Dictionary.Add(nameof(NumberOfHoursPerYear_Hidden_Get), rm);
+                    return rm;
+                }
+            }
             set
             {
-                NumberOfHoursPerYear_Hidden_Priv = value;
-                OnPropertyChanged(nameof(NumberOfHoursPerYear));
+                if (_NumberOfHoursPerYear_Hidden_Get != value.Get())
+                {
+                    _NumberOfHoursPerYear_Hidden_Get = value.Get();
+                    var tmp = NumberOfHoursPerYear;
+                    OnPropertyChanged(nameof(NumberOfHoursPerYear_Hidden_Get));
+                }
             }
         }
-
-        public bool NumberOfHoursPerYear_Hidden_Priv2 { get; set; } = false;
+        public bool _NumberOfHoursPerYear_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool NumberOfHoursPerYear_Hidden2
+        public RefBool NumberOfHoursPerYear_Hidden_Set
         {
-            get => NumberOfHoursPerYear_Hidden_Priv2;
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(NumberOfHoursPerYear_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(NumberOfHoursPerYear_Hidden_Set)]).Set(_NumberOfHoursPerYear_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(NumberOfHoursPerYear_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_NumberOfHoursPerYear_Hidden_Set);
+                    Dictionary.Add(nameof(NumberOfHoursPerYear_Hidden_Set), rm);
+                    return rm;
+                }
+            }
             set
             {
-                NumberOfHoursPerYear_Hidden_Priv2 = value;
-                OnPropertyChanged(nameof(NumberOfHoursPerYear));
+                if (_NumberOfHoursPerYear_Hidden_Set != value.Get())
+                {
+                    _NumberOfHoursPerYear_Hidden_Set = value.Get();
+                    var tmp = NumberOfHoursPerYear;
+                    OnPropertyChanged(nameof(NumberOfHoursPerYear_Hidden_Set));
+                }
             }
         }
 
@@ -500,51 +592,22 @@ namespace Models
         {
             get
             {
-                if (!NumberOfHoursPerYear_Hidden|| NumberOfHoursPerYear_Hidden2)
+                if (Dictionary.ContainsKey(nameof(NumberOfHoursPerYear)))
                 {
-                    if (NumberOfHoursPerYear_Hidden2)
-                    {
-                        if (Dictionary.ContainsKey(nameof(NumberOfHoursPerYear)))
-                        {
-                            ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).Value = NumberOfHoursPerYear_DB;
-                            ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).PropertyChanged -= NumberOfHoursPerYearValueChanged;
-                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
-                        }
-                        else
-                        {
-                            var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
-                            Dictionary.Add(nameof(NumberOfHoursPerYear), rm);
-                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
-                        }
-                        //var tmp = new RamAccess<string>(null, NumberOfHoursPerYear_DB);
-                        //tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
-                        //return tmp;
-                    }
-                    else
-                    {
-                        if (Dictionary.ContainsKey(nameof(NumberOfHoursPerYear)))
-                        {
-                            ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).Value = NumberOfHoursPerYear_DB;
-                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
-                        }
-                        else
-                        {
-                            var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
-                            rm.PropertyChanged += NumberOfHoursPerYearValueChanged;
-                            Dictionary.Add(nameof(NumberOfHoursPerYear), rm);
-                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
-                        }
-                    }
+                    ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).Value = NumberOfHoursPerYear_DB;
+                    return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
                 }
                 else
                 {
-                    var tmp = new RamAccess<string>(null, null);
-                    return tmp;
+                    var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB, NumberOfHoursPerYear_Hidden_Get, NumberOfHoursPerYear_Hidden_Set);
+                    rm.PropertyChanged += NumberOfHoursPerYearValueChanged;
+                    Dictionary.Add(nameof(NumberOfHoursPerYear), rm);
+                    return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
                 }
             }
             set
             {
-                if (!NumberOfHoursPerYear_Hidden)
+                if (NumberOfHoursPerYear.Value != value.Value)
                 {
                     NumberOfHoursPerYear_DB = value.Value;
                     OnPropertyChanged(nameof(NumberOfHoursPerYear));

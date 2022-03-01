@@ -112,8 +112,11 @@ namespace Client_App.Controls.DataGrid
             {
                 if (value != null)
                 {
-                    SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
-                    if (Sum) SumColumn = "0";
+                    if (value.Count != 0)
+                    {
+                        SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+                        if (Sum) SumColumn = "0";
+                    }
                 }
             }
         }
@@ -750,6 +753,7 @@ namespace Client_App.Controls.DataGrid
                     SelectedCells.Add(item);
                     tmpSelectedItems.Add((T)item.DataContext);
                 }
+                //tmpSelectedItems.Add((T)((Cell)tmp2.FirstOrDefault()).DataContext);
                 SelectedItems = tmpSelectedItems;
             }
             else
