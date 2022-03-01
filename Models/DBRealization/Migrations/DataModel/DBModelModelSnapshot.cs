@@ -75,9 +75,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("NumberInOrder_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("OrganisationReciever_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -141,8 +138,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("ValidThru_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("Year_DB")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Year_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
 
@@ -444,8 +441,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<float?>("SignedServicePeriod_DB")
-                        .HasColumnType("FLOAT");
+                    b.Property<string>("SignedServicePeriod_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("TransporterOKPO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2167,8 +2164,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("GraphNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("INTEGER");
+                    b.Property<long>("Order")
+                        .HasColumnType("BIGINT");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
