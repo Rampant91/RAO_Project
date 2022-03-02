@@ -30,6 +30,20 @@ namespace Client_App.Long_Visual
             };
         }
 
+        public static Button CreateToggleSwitch(string content, string thickness, int height, string commProp)
+        {
+            var a = new ToggleSwitch()
+            {
+                Height = height,
+                Margin = Thickness.Parse(thickness),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+            };
+            a.Checked += tmp._SumRow;
+            //a.Unchecked = ;
+            return a;
+        }
+
         public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
         {
             Cell textCell = new Cell()
