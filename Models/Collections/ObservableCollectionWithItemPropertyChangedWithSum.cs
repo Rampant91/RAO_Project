@@ -149,9 +149,6 @@ namespace Models.Collections
                             form.NumberOfHoursPerYear_Hidden_Get.Set(false);
                             form.BaseColor = Interfaces.ColorType.Yellow;
 
-                            refinemachinename = form.RefineMachineName_DB;
-                            machinecode = form.MachineCode_DB;
-
                             volumeInSum += StringToNumber(form.VolumeIn_DB);
                             massInSum += StringToNumber(form.MassIn_DB);
                             quantityInSum += StringToNumber(form.QuantityIn_DB);
