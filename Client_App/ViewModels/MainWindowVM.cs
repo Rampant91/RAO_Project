@@ -26,6 +26,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 using System.Collections;
 using FirebirdSql.Data.FirebirdClient;
+using Client_App.Long_Visual;
 
 
 namespace Client_App.ViewModels
@@ -319,6 +320,14 @@ namespace Client_App.ViewModels
                             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
                             ChangeOrCreateVM frm = new(param, y);
+                            if ((string)param == "2.1")
+                            {
+                                Form2_Visual.tmpVM = frm;
+                            }
+                            if ((string)param == "2.2")
+                            {
+                                Form2_Visual.tmpVM = frm;
+                            }
                             await ShowDialog.Handle(frm);
 
                             t.SelectedReports = tmp;
@@ -951,7 +960,16 @@ namespace Client_App.ViewModels
                         var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
                         var rep = (Report)obj;
                         var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
-                        ChangeOrCreateVM frm = new(rep.FormNum.Value, rep, tre);
+                        string numForm = rep.FormNum.Value;
+                        ChangeOrCreateVM frm = new(numForm, rep, tre);
+                        if (numForm == "2.1")
+                        {
+                            Form2_Visual.tmpVM = frm;
+                        }
+                        if (numForm == "2.2")
+                        {
+                            Form2_Visual.tmpVM = frm;
+                        }
                         await ShowDialog.Handle(frm);
                         t.SelectedReports = tmp;
                     }

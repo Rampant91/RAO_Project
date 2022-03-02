@@ -174,11 +174,17 @@ namespace Client_App.ViewModels
         #endregion
 
         #region SumRow
-        public ReactiveCommand<Unit, Unit> SumRow { get; protected set; }
-        private void _SumRow()
+        public void _SumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
         {
             Storage.Rows21.Sum();
             Storage.Rows22.Sum();
+        }
+        #endregion
+
+        #region CancelSumRow
+        public void _CancelSumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
+        {
+
         }
         #endregion
 
@@ -642,7 +648,6 @@ namespace Client_App.ViewModels
             DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
             ChangeReportOrder = ReactiveCommand.CreateFromTask(_ChangeReportOrder);
             CheckReport = ReactiveCommand.Create(_CheckReport);
-            SumRow = ReactiveCommand.Create(_SumRow);
             PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
             DuplicateRowsx1 = ReactiveCommand.CreateFromTask<object>(_DuplicateRowsx1);
             CopyRows = ReactiveCommand.CreateFromTask<object>(_CopyRows);

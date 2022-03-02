@@ -12,11 +12,13 @@ using Models;
 using Client_App.Converters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Client_App.ViewModels;
 
 namespace Client_App.Long_Visual
 {
     public class Form2_Visual
     {
+        public static ChangeOrCreateVM tmpVM { get; set; }
         public static Button CreateButton(string content, string thickness, int height, string commProp)
         {
             return new Button()
@@ -28,6 +30,20 @@ namespace Client_App.Long_Visual
                 Content = content,
                 [!Button.CommandProperty] = new Binding(commProp)
             };
+        }
+
+        public static Button CreateToggleSwitch(string content, string thickness, int height, string commProp)
+        {
+            var a = new ToggleSwitch()
+            {
+                Height = height,
+                Margin = Thickness.Parse(thickness),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+            };
+            a.Checked += tmpVM._SumRow;
+            a.Unchecked += tmpVM._CancelSumRow;
+            return a;
         }
 
         public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
@@ -360,7 +376,8 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Суммировать", "65,0,0,15", 30, "SumRow"));
+            content.Children.Add(CreateTextBlock("65,0,0,15", 30, "Суммация:"));
+            content.Children.Add(CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow"));
             content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
 
@@ -568,7 +585,8 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Суммировать", "65,0,0,15", 30, "SumRow"));
+            content.Children.Add(CreateTextBlock("65,0,0,15", 30, "Суммация:"));
+            content.Children.Add(CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow"));
             content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
 
