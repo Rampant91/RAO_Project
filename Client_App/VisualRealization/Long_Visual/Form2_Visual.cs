@@ -17,6 +17,7 @@ namespace Client_App.Long_Visual
 {
     public class Form2_Visual
     {
+        public static ChangeOrCreateVM tmp { get; set; }
         public static Button CreateButton(string content, string thickness, int height, string commProp)
         {
             return new Button()
