@@ -18,7 +18,7 @@ namespace Client_App.Long_Visual
 {
     public class Form2_Visual
     {
-        public static ChangeOrCreateVM tmp { get; set; }
+        public static ChangeOrCreateVM tmpVM { get; set; }
         public static Button CreateButton(string content, string thickness, int height, string commProp)
         {
             return new Button()
@@ -41,8 +41,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
             };
-            a.Checked += tmp._SumRow;
-            //a.Unchecked = ;
+            a.Checked += tmpVM._SumRow;
+            a.Unchecked += tmpVM._CancelSumRow;
             return a;
         }
 
@@ -584,7 +584,7 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Суммировать", "65,0,0,15", 30, "SumRow"));
+            content.Children.Add(CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow"));
             content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
 
