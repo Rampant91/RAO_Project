@@ -174,11 +174,17 @@ namespace Client_App.ViewModels
         #endregion
 
         #region SumRow
-        public ReactiveCommand<Unit, Unit> SumRow { get; protected set; }
-        private void _SumRow()
+        public void _SumRow()
         {
             Storage.Rows21.Sum();
             Storage.Rows22.Sum();
+        }
+        #endregion
+
+        #region CancelSumRow
+        public void _CancelSumRow()
+        {
+
         }
         #endregion
 
