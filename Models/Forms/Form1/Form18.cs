@@ -1696,7 +1696,7 @@ namespace Models
                     return false;
                 }
             }
-            else
+            else if(string.IsNullOrEmpty(OperationCode.Value))
             {
                 value.AddError("Не указан код операции");
                 return false;
@@ -1892,8 +1892,8 @@ namespace Models
             {
                 if (!tmp.Equals(OperationDate))
                 {
-                    value.AddError("Заполните примечание");//to do note handling
-                    return false;
+                    //value.AddError("Заполните примечание");//to do note handling
+                    return true;
                 }
             }
             return true;
