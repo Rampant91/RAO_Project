@@ -126,6 +126,41 @@ namespace Models
         }
         #endregion
 
+        #region  SumGroup
+        [NotMapped]
+        public bool SumGroup_DB { get; set; } = false;
+
+        [NotMapped]
+        public RamAccess<bool> SumGroup
+        {
+            get
+            {
+                var tmp = new RamAccess<bool>(SumGroup_Validation, SumGroup_DB);
+                tmp.PropertyChanged += SumGroupValueChanged;
+                return tmp;
+            }
+            set
+            {
+                SumGroup_DB = value.Value;
+                OnPropertyChanged(nameof(SumGroup));
+            }
+        }
+
+        private void SumGroupValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                SumGroup_DB = ((RamAccess<bool>)Value).Value;
+            }
+        }
+
+        private bool SumGroup_Validation(RamAccess<bool> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
         //RefineMachineName property
         #region  RefineMachineName
         public string RefineMachineName_DB { get; set; } = "";

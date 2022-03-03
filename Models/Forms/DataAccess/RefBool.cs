@@ -21,11 +21,10 @@ namespace Models.DataAccess
         }
         public void Set(bool value)
         {
-            if (_value != value)
-            {
-                _value = value;
-                OnPropertyChanged();
-            }
+
+            _value = value;
+            OnPropertyChanged();
+
         }
         public bool Equals(RefBool obj)
         {

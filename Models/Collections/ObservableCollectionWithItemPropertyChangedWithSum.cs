@@ -217,10 +217,10 @@ namespace Models.Collections
                 //lsth.Add(tr);
             }
 
-            foreach (var item in lsth)
-            {
-                item.Join();
-            }
+            //foreach (var item in lsth)
+            //{
+            //    item.Join();
+            //}
 
             this.ClearItems();
             var yu = ito.OrderBy(x => x.Key);

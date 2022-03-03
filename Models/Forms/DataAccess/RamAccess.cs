@@ -64,8 +64,11 @@ namespace Models.DataAccess
             get => _value;
             set
             {
-                _value = value;
-                OnPropertyChanged(nameof(Value));
+                if (value != null)
+                {
+                    _value = value;
+                    OnPropertyChanged(nameof(Value));
+                }
             }
         }
         public T ValueWithOutHandlerAndPropChanged
