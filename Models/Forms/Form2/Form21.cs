@@ -75,7 +75,6 @@ namespace Models
         }
 
         #region BaseColor
-        [NotMapped]
         public ColorType _BaseColor { get; set; } = ColorType.None;
         [NotMapped]
         public ColorType BaseColor {
@@ -127,7 +126,6 @@ namespace Models
         #endregion
 
         #region  SumGroup
-        [NotMapped]
         public bool SumGroup_DB { get; set; } = false;
 
         [NotMapped]

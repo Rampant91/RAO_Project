@@ -965,10 +965,18 @@ namespace Client_App.ViewModels
                         if (numForm == "2.1")
                         {
                             Form2_Visual.tmpVM = frm;
+                            if (!frm.isSum)
+                            {
+                                await frm.Sum21();
+                            }
+                            //await frm.UnSum21();
+                            //await frm.Sum21();
                         }
                         if (numForm == "2.2")
                         {
                             Form2_Visual.tmpVM = frm;
+                            //await frm.UnSum22();
+                            //await frm.Sum22();
                         }
                         await ShowDialog.Handle(frm);
                         t.SelectedReports = tmp;

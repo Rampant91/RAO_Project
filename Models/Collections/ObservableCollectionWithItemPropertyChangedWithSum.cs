@@ -143,10 +143,17 @@ namespace Models.Collections
                         var form = item as Form21;
                         if (form.Sum_DB != true)
                         {
+                            form.SumGroup_DB = true;
+                            form.RefineMachineName_Hidden_Set.Set(false);
+                            form.MachineCode_Hidden_Set.Set(false);
+                            form.MachinePower_Hidden_Set.Set(false);
+                            form.NumberOfHoursPerYear_Hidden_Set.Set(false);
+
                             form.RefineMachineName_Hidden_Get.Set(false);
                             form.MachineCode_Hidden_Get.Set(false);
                             form.MachinePower_Hidden_Get.Set(false);
                             form.NumberOfHoursPerYear_Hidden_Get.Set(false);
+
                             form.BaseColor = Interfaces.ColorType.Yellow;
 
                             volumeInSum += StringToNumber(form.VolumeIn_DB);
@@ -207,6 +214,11 @@ namespace Models.Collections
                                 form.MachineCode_Hidden_Get.Set(true);
                                 form.MachinePower_Hidden_Get.Set(true);
                                 form.NumberOfHoursPerYear_Hidden_Get.Set(true);
+
+                                form.RefineMachineName_Hidden_Set.Set(true);
+                                form.MachineCode_Hidden_Set.Set(true);
+                                form.MachinePower_Hidden_Set.Set(true);
+                                form.NumberOfHoursPerYear_Hidden_Set.Set(true);
                                 ito[itemT.Key].Add(t);
                             }
                         }

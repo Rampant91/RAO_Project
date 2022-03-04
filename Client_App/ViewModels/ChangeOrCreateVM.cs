@@ -197,10 +197,12 @@ namespace Client_App.ViewModels
             if (Storage.FormNum_DB == "2.1")
             {
                 await Sum21();
+                isSum = true;
             }
             if (Storage.FormNum_DB == "2.2")
             {
                 await Sum22();
+                isSum = true;
             }
         }
 
@@ -513,6 +515,11 @@ namespace Client_App.ViewModels
                             form.StoragePlaceCode_Hidden_Get.Set(true);
                             form.PackName_Hidden_Get.Set(true);
                             form.PackType_Hidden_Get.Set(true);
+
+                            form.StoragePlaceName_Hidden_Set.Set(true);
+                            form.StoragePlaceCode_Hidden_Set.Set(true);
+                            form.PackName_Hidden_Set.Set(true);
+                            form.PackType_Hidden_Set.Set(true);
                             ito[itemT.Key].Add(t);
                         }
                     }
@@ -605,6 +612,7 @@ namespace Client_App.ViewModels
                 row.MachinePower_Hidden_Set.Set(true);
                 row.NumberOfHoursPerYear_Hidden_Set.Set(true);
 
+                row.SumGroup_DB = false;
                 row.BaseColor = Models.Interfaces.ColorType.None;
             }
         }
@@ -628,6 +636,7 @@ namespace Client_App.ViewModels
                 row.PackName_Hidden_Set.Set(true);
                 row.PackType_Hidden_Set.Set(true);
 
+                row.SumGroup_DB = false;
                 row.BaseColor = Models.Interfaces.ColorType.None;
             }
         }
@@ -971,6 +980,10 @@ namespace Client_App.ViewModels
             if (sumR > 0)
             {
                 isSum = true;
+            }
+            else
+            {
+                isSum = false;
             }
             Init();
         }
