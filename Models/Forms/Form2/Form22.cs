@@ -135,24 +135,101 @@ namespace Models
 
         #endregion
 
+        #region  SumGroup
+        [NotMapped]
+        public bool SumGroup_DB { get; set; } = false;
+
+        [NotMapped]
+        public RamAccess<bool> SumGroup
+        {
+            get
+            {
+                var tmp = new RamAccess<bool>(SumGroup_Validation, SumGroup_DB);
+                tmp.PropertyChanged += SumGroupValueChanged;
+                return tmp;
+            }
+            set
+            {
+                SumGroup_DB = value.Value;
+                OnPropertyChanged(nameof(SumGroup));
+            }
+        }
+
+        private void SumGroupValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                SumGroup_DB = ((RamAccess<bool>)Value).Value;
+            }
+        }
+
+        private bool SumGroup_Validation(RamAccess<bool> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
         #region StoragePlaceName
 
         public string StoragePlaceName_DB { get; set; } = "";
-        public bool StoragePlaceName_Hidden_Priv { get; set; } = false;
-
+        public bool _StoragePlaceName_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool StoragePlaceName_Hidden
+        public RefBool StoragePlaceName_Hidden_Get
         {
-            get => StoragePlaceName_Hidden_Priv;
-            set { StoragePlaceName_Hidden_Priv = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(StoragePlaceName_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Get)]).Set(_StoragePlaceName_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_StoragePlaceName_Hidden_Get);
+                    Dictionary.Add(nameof(StoragePlaceName_Hidden_Get), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_StoragePlaceName_Hidden_Get != value.Get())
+                {
+                    _StoragePlaceName_Hidden_Get = value.Get();
+                    var tmp = StoragePlaceName;
+                    OnPropertyChanged(nameof(StoragePlaceName_Hidden_Get));
+                }
+            }
         }
-        public bool StoragePlaceName_Hidden_Priv2 { get; set; } = false;
-
+        public bool _StoragePlaceName_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool StoragePlaceName_Hidden2
+        public RefBool StoragePlaceName_Hidden_Set
         {
-            get => StoragePlaceName_Hidden_Priv2;
-            set { StoragePlaceName_Hidden_Priv2 = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(StoragePlaceName_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Set)]).Set(_StoragePlaceName_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_StoragePlaceName_Hidden_Set);
+                    Dictionary.Add(nameof(StoragePlaceName_Hidden_Set), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_StoragePlaceName_Hidden_Set != value.Get())
+                {
+                    _StoragePlaceName_Hidden_Set = value.Get();
+                    var tmp = StoragePlaceName;
+                    OnPropertyChanged(nameof(StoragePlaceName_Hidden_Set));
+                }
+            }
         }
 
         [NotMapped]
@@ -161,40 +238,23 @@ namespace Models
         {
             get
             {
-                if (!StoragePlaceName_Hidden || StoragePlaceName_Hidden2)
+
+                if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
                 {
-                    if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
-                    {
-                        ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
-                        rm.PropertyChanged += StoragePlaceNameValueChanged;
-                        Dictionary.Add(nameof(StoragePlaceName), rm);
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
-                    }
+                    ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
                 }
                 else
                 {
-                    if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary[nameof(StoragePlaceName)] = rm;
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary.Add(nameof(StoragePlaceName), rm);
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
-                    }
+                    var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB, StoragePlaceName_Hidden_Get, StoragePlaceName_Hidden_Set);
+                    rm.PropertyChanged += StoragePlaceNameValueChanged;
+                    Dictionary.Add(nameof(StoragePlaceName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
                 }
             }
             set
             {
-                if (!StoragePlaceName_Hidden)
+                if (StoragePlaceName.Value != value.Value)
                 {
                     StoragePlaceName_DB = value.Value;
                     OnPropertyChanged(nameof(StoragePlaceName));
@@ -236,21 +296,63 @@ namespace Models
         #region StoragePlaceCode
 
         public string StoragePlaceCode_DB { get; set; } = "";
-        public bool StoragePlaceCode_Hidden_Priv { get; set; } = false;
-
+        public bool _StoragePlaceCode_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool StoragePlaceCode_Hidden
+        public RefBool StoragePlaceCode_Hidden_Get
         {
-            get => StoragePlaceCode_Hidden_Priv;
-            set { StoragePlaceCode_Hidden_Priv = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(StoragePlaceCode_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Get)]).Set(_StoragePlaceCode_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_StoragePlaceCode_Hidden_Get);
+                    Dictionary.Add(nameof(StoragePlaceCode_Hidden_Get), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_StoragePlaceCode_Hidden_Get != value.Get())
+                {
+                    _StoragePlaceCode_Hidden_Get = value.Get();
+                    var tmp = StoragePlaceCode;
+                    OnPropertyChanged(nameof(StoragePlaceCode_Hidden_Get));
+                }
+            }
         }
-        public bool StoragePlaceCode_Hidden_Priv2 { get; set; } = false;
-
+        public bool _StoragePlaceCode_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool StoragePlaceCode_Hidden2
+        public RefBool StoragePlaceCode_Hidden_Set
         {
-            get => StoragePlaceCode_Hidden_Priv2;
-            set { StoragePlaceCode_Hidden_Priv2 = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(StoragePlaceCode_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Set)]).Set(_StoragePlaceCode_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_StoragePlaceCode_Hidden_Set);
+                    Dictionary.Add(nameof(StoragePlaceCode_Hidden_Set), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_StoragePlaceCode_Hidden_Set != value.Get())
+                {
+                    _StoragePlaceCode_Hidden_Set = value.Get();
+                    var tmp = StoragePlaceCode;
+                    OnPropertyChanged(nameof(StoragePlaceCode_Hidden_Set));
+                }
+            }
         }
 
         [NotMapped]
@@ -259,40 +361,24 @@ namespace Models
         {
             get
             {
-                if (!StoragePlaceCode_Hidden || StoragePlaceName_Hidden2)
+
+                if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
                 {
-                    if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
-                    {
-                        ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
-                        rm.PropertyChanged += StoragePlaceCodeValueChanged;
-                        Dictionary.Add(nameof(StoragePlaceCode), rm);
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
-                    }
+                    ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
                 }
                 else
                 {
-                    if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary[nameof(StoragePlaceCode)] = rm;
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary.Add(nameof(StoragePlaceCode), rm);
-                        return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
-                    }
+                    var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB, StoragePlaceCode_Hidden_Get, StoragePlaceCode_Hidden_Set);
+                    rm.PropertyChanged += StoragePlaceCodeValueChanged;
+                    Dictionary.Add(nameof(StoragePlaceCode), rm);
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
                 }
+
             }
             set
             {
-                if (!StoragePlaceCode_Hidden)
+                if (StoragePlaceCode.Value != value.Value)
                 {
                     StoragePlaceCode_DB = value.Value;
                     OnPropertyChanged(nameof(StoragePlaceCode));
@@ -343,21 +429,63 @@ namespace Models
         #region PackName
 
         public string PackName_DB { get; set; } = "";
-        public bool PackName_Hidden_Priv { get; set; } = false;
-
+        public bool _PackName_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool PackName_Hidden
+        public RefBool PackName_Hidden_Get
         {
-            get => PackName_Hidden_Priv;
-            set { PackName_Hidden_Priv = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(PackName_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(PackName_Hidden_Get)]).Set(_PackName_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(PackName_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_PackName_Hidden_Get);
+                    Dictionary.Add(nameof(PackName_Hidden_Get), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_PackName_Hidden_Get != value.Get())
+                {
+                    _PackName_Hidden_Get = value.Get();
+                    var tmp = PackName;
+                    OnPropertyChanged(nameof(PackName_Hidden_Get));
+                }
+            }
         }
-        public bool PackName_Hidden_Priv2 { get; set; } = false;
-
+        public bool _PackName_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool PackName_Hidden2
+        public RefBool PackName_Hidden_Set
         {
-            get => PackName_Hidden_Priv2;
-            set { PackName_Hidden_Priv2 = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(PackName_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(PackName_Hidden_Set)]).Set(_PackName_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(PackName_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_PackName_Hidden_Set);
+                    Dictionary.Add(nameof(PackName_Hidden_Set), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_PackName_Hidden_Set != value.Get())
+                {
+                    _PackName_Hidden_Set = value.Get();
+                    var tmp = PackName;
+                    OnPropertyChanged(nameof(PackName_Hidden_Set));
+                }
+            }
         }
 
         [NotMapped]
@@ -366,40 +494,23 @@ namespace Models
         {
             get
             {
-                if (!PackName_Hidden || PackName_Hidden2)
+
+                if (Dictionary.ContainsKey(nameof(PackName)))
                 {
-                    if (Dictionary.ContainsKey(nameof(PackName)))
-                    {
-                        ((RamAccess<string>)Dictionary[nameof(PackName)]).Value = PackName_DB;
-                        return (RamAccess<string>)Dictionary[nameof(PackName)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
-                        rm.PropertyChanged += PackNameValueChanged;
-                        Dictionary.Add(nameof(PackName), rm);
-                        return (RamAccess<string>)Dictionary[nameof(PackName)];
-                    }
+                    ((RamAccess<string>)Dictionary[nameof(PackName)]).Value = PackName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PackName)];
                 }
                 else
                 {
-                    if (Dictionary.ContainsKey(nameof(PackName)))
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary[nameof(PackName)] = rm;
-                        return (RamAccess<string>)Dictionary[nameof(PackName)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary.Add(nameof(PackName), rm);
-                        return (RamAccess<string>)Dictionary[nameof(PackName)];
-                    }
+                    var rm = new RamAccess<string>(PackName_Validation, PackName_DB, PackName_Hidden_Get, PackName_Hidden_Set);
+                    rm.PropertyChanged += PackNameValueChanged;
+                    Dictionary.Add(nameof(PackName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PackName)];
                 }
             }
             set
             {
-                if (!PackName_Hidden)
+                if (PackName.Value == value.Value)
                 {
                     PackName_DB = value.Value;
                     OnPropertyChanged(nameof(PackName));
@@ -446,21 +557,63 @@ namespace Models
         #region PackType
 
         public string PackType_DB { get; set; } = "";
-        public bool PackType_Hidden_Priv { get; set; } = false;
-
+        public bool _PackType_Hidden_Get { get; set; } = true;
         [NotMapped]
-        public bool PackType_Hidden
+        public RefBool PackType_Hidden_Get
         {
-            get => PackType_Hidden_Priv;
-            set { PackType_Hidden_Priv = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(PackType_Hidden_Get)))
+                {
+                    ((RefBool)Dictionary[nameof(PackType_Hidden_Get)]).Set(_PackType_Hidden_Get);
+                    return (RefBool)Dictionary[nameof(PackType_Hidden_Get)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_PackType_Hidden_Get);
+                    Dictionary.Add(nameof(PackType_Hidden_Get), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_PackType_Hidden_Get != value.Get())
+                {
+                    _PackType_Hidden_Get = value.Get();
+                    var tmp = PackType;
+                    OnPropertyChanged(nameof(PackType_Hidden_Get));
+                }
+            }
         }
-        public bool PackType_Hidden_Priv2 { get; set; } = false;
-
+        public bool _PackType_Hidden_Set { get; set; } = true;
         [NotMapped]
-        public bool PackType_Hidden2
+        public RefBool PackType_Hidden_Set
         {
-            get => PackType_Hidden_Priv2;
-            set { PackType_Hidden_Priv2 = value; }
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(PackType_Hidden_Set)))
+                {
+                    ((RefBool)Dictionary[nameof(PackType_Hidden_Set)]).Set(_PackType_Hidden_Set);
+                    return (RefBool)Dictionary[nameof(PackType_Hidden_Set)];
+
+                }
+                else
+                {
+                    var rm = new RefBool(_PackType_Hidden_Set);
+                    Dictionary.Add(nameof(PackType_Hidden_Set), rm);
+                    return rm;
+                }
+            }
+            set
+            {
+                if (_PackType_Hidden_Set != value.Get())
+                {
+                    _PackType_Hidden_Set = value.Get();
+                    var tmp = PackName;
+                    OnPropertyChanged(nameof(PackType_Hidden_Set));
+                }
+            }
         }
 
         [NotMapped]
@@ -469,41 +622,26 @@ namespace Models
         {
             get
             {
-                if (!PackType_Hidden || PackType_Hidden2)
+                if (Dictionary.ContainsKey(nameof(PackType)))
                 {
-                    if (Dictionary.ContainsKey(nameof(PackType)))
-                    {
-                        ((RamAccess<string>)Dictionary[nameof(PackType)]).Value = PackType_DB;
-                        return (RamAccess<string>)Dictionary[nameof(PackType)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
-                        rm.PropertyChanged += PackTypeValueChanged;
-                        Dictionary.Add(nameof(PackType), rm);
-                        return (RamAccess<string>)Dictionary[nameof(PackType)];
-                    }
+                    ((RamAccess<string>)Dictionary[nameof(PackType)]).Value = PackType_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PackType)];
                 }
                 else
                 {
-                    if (Dictionary.ContainsKey(nameof(PackType)))
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary[nameof(PackType)] = rm;
-                        return (RamAccess<string>)Dictionary[nameof(PackType)];
-                    }
-                    else
-                    {
-                        var rm = new RamAccess<string>(null, null);
-                        Dictionary.Add(nameof(PackType), rm);
-                        return (RamAccess<string>)Dictionary[nameof(PackType)];
-                    }
+                    var rm = new RamAccess<string>(PackType_Validation, PackType_DB, PackType_Hidden_Get, PackType_Hidden_Set);
+                    rm.PropertyChanged += PackTypeValueChanged;
+                    Dictionary.Add(nameof(PackType), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PackType)];
                 }
             }
             set
             {
-                PackType_DB = value.Value;
-                OnPropertyChanged(nameof(PackType));
+                if (PackType.Value != value.Value)
+                {
+                    PackType_DB = value.Value;
+                    OnPropertyChanged(nameof(PackType));
+                }
             }
         }
         //If change this change validation
@@ -1962,6 +2100,7 @@ namespace Models
             return 19;
         }
         #endregion
+
         #region IDataGridColumn
         private static DataGridColumns _DataGridColumns { get; set; } = null;
         public override DataGridColumns GetColumnStructure(string param = "")

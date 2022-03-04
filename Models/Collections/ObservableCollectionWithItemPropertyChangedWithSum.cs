@@ -317,20 +317,15 @@ namespace Models.Collections
                             var first = ty.FirstOrDefault() as Form22;
                             sumRow = (Form22) FormCreator.Create("2.2");
 
+                            sumRow.StoragePlaceName_Hidden_Set = new Models.DataAccess.RefBool(false);
+                            sumRow.StoragePlaceCode_Hidden_Set = new Models.DataAccess.RefBool(false);
+                            sumRow.PackName_Hidden_Set = new Models.DataAccess.RefBool(false);
+                            sumRow.PackType_Hidden_Set = new Models.DataAccess.RefBool(false);
+
                             sumRow.StoragePlaceName_DB = first.StoragePlaceName_DB;
                             sumRow.StoragePlaceCode_DB = first.StoragePlaceCode_DB;
-                            sumRow.PackName_DB = first.PackName_DB;
+                            sumRow.PackName_DB = first.StoragePlaceName_DB;
                             sumRow.PackType_DB = first.PackType_DB;
-
-                            sumRow.StoragePlaceName_Hidden = true;
-                            sumRow.StoragePlaceCode_Hidden = true;
-                            sumRow.PackName_Hidden = true;
-                            sumRow.PackType_Hidden = true;
-
-                            sumRow.StoragePlaceName_Hidden2 = true;
-                            sumRow.StoragePlaceCode_Hidden2 = true;
-                            sumRow.PackName_Hidden2 = true;
-                            sumRow.PackType_Hidden2 = true;
 
                             sumRow.CodeRAO_Hidden = true;
                             sumRow.StatusRAO_Hidden = true;
@@ -358,10 +353,17 @@ namespace Models.Collections
                             var form = item as Form22;
                             if (form.Sum_DB != true)
                             {
-                                form.StoragePlaceName_Hidden = true;
-                                form.StoragePlaceCode_Hidden = true;
-                                form.PackName_Hidden = true;
-                                form.PackType_Hidden = true;
+                                form.SumGroup_DB = true;
+                                form.StoragePlaceName_Hidden_Set.Set(false);
+                                form.StoragePlaceCode_Hidden_Set.Set(false);
+                                form.PackName_Hidden_Set.Set(false);
+                                form.PackType_Hidden_Set.Set(false);
+
+                                form.StoragePlaceName_Hidden_Get.Set(false);
+                                form.StoragePlaceCode_Hidden_Get.Set(false);
+                                form.PackName_Hidden_Get.Set(false);
+                                form.PackType_Hidden_Get.Set(false);
+                                form.BaseColor = Models.Interfaces.ColorType.Yellow;
 
                                 form.VolumeInPack_Hidden = true;
                                 form.MassInPack_Hidden = true;
@@ -404,10 +406,10 @@ namespace Models.Collections
                                 if ((t as Form22).Sum_DB != true)
                                 {
                                     var form = (t as Form22);
-                                    form.StoragePlaceName_Hidden = false;
-                                    form.StoragePlaceCode_Hidden = false;
-                                    form.PackName_Hidden = false;
-                                    form.PackType_Hidden = false;
+                                    form.StoragePlaceName_Hidden_Get.Set(true);
+                                    form.StoragePlaceCode_Hidden_Get.Set(true);
+                                    form.PackName_Hidden_Get.Set(true);
+                                    form.PackType_Hidden_Get.Set(true);
                                     ito[itemT.Key].Add(t);
                                 }
                             }
