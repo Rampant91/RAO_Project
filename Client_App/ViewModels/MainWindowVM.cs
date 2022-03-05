@@ -965,10 +965,6 @@ namespace Client_App.ViewModels
                         if (numForm == "2.1")
                         {
                             Form2_Visual.tmpVM = frm;
-                            if (!frm.isSum)
-                            {
-                                await frm.Sum21();
-                            }
                             //await frm.UnSum21();
                             //await frm.Sum21();
                         }
