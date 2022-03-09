@@ -324,12 +324,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
-
             StackPanel leftStPT = new StackPanel()
             {
                 Orientation = Orientation.Vertical,
@@ -348,22 +342,25 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -374,7 +371,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -538,11 +535,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -562,22 +554,25 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,0,0,0", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -588,7 +583,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -752,11 +747,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -776,22 +766,27 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
+            leftStPT.Children.Add(leftStPT);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -802,7 +797,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -966,11 +961,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -990,22 +980,27 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
+            leftStPT.Children.Add(leftStPT);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1016,7 +1011,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1180,11 +1175,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1204,22 +1194,26 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1230,7 +1224,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1394,11 +1388,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1418,22 +1407,26 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1444,7 +1437,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1609,11 +1602,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1633,22 +1621,26 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1659,7 +1651,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1823,11 +1815,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1847,22 +1834,26 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1873,7 +1864,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -2038,11 +2029,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -2062,22 +2048,26 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:   "));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -2088,7 +2078,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
