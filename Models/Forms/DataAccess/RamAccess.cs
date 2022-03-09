@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Models.Abstracts;
 using OfficeOpenXml;
+using Models.DataAccess;
 
 namespace Models.DataAccess
 {
@@ -18,18 +19,42 @@ namespace Models.DataAccess
         public Func<RamAccess<T>, bool> Handler { get; set; }
         public int Id { get; set; }
 
+        public RefBool IsGet { get; set; }
+        private void  IsGetChanged(object sender, PropertyChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Value));
+        }
+        public RefBool IsSet { get; set; }
+        private void IsSetChanged(object sender, PropertyChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Value));
+        }
+
         public int? ValueId { get; set; }
         private T _value;
         public T Value
         {
-            get => _value;
+            get
+            {
+                if (IsGet==null?true:IsGet.Get())
+                {
+                    return _value;
+                }
+                else
+                {
+                    return default(T);
+                }
+            }
             set
             {
-                _value = value;
-                OnPropertyChanged(nameof(Value));
-                if (Handler != null)
+                if (IsSet == null ? true : IsSet.Get())
                 {
-                    Handler(this);
+                    _value = value;
+                    OnPropertyChanged(nameof(Value));
+                    if (Handler != null)
+                    {
+                        Handler(this);
+                    }
                 }
             }
         }
@@ -38,8 +63,11 @@ namespace Models.DataAccess
             get => _value;
             set
             {
-                _value = value;
-                OnPropertyChanged(nameof(Value));
+                if (value != null)
+                {
+                    _value = value;
+                    OnPropertyChanged(nameof(Value));
+                }
             }
         }
         public T ValueWithOutHandlerAndPropChanged
@@ -71,6 +99,19 @@ namespace Models.DataAccess
             {
                 Handler(this);
             }
+        }
+        public RamAccess(Func<RamAccess<T>, bool> Handler, T Value,RefBool IsGet,RefBool IsSet)
+        {
+            this.Handler = Handler;
+            this._value = Value;
+            if (Handler != null)
+            {
+                Handler(this);
+            }
+            this.IsGet = IsGet;
+            this.IsGet.PropertyChanged += IsGetChanged;
+            this.IsSet = IsSet;
+            this.IsSet.PropertyChanged += IsSetChanged;
         }
 
         public RamAccess()

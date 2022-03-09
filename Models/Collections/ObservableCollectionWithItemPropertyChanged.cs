@@ -215,11 +215,10 @@ namespace Models.Collections
         {
             foreach (var item in items)
             {
-                item.PropertyChanged += ChildPropertyChanged;
                 Items.Add(item);
             }
             Sorted = false;
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,items.ToList()));
         }
         public void AddRangeNoChange(IEnumerable<T> items)
         {

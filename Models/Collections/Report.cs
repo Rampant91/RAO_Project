@@ -75,6 +75,7 @@ namespace Models.Collections
                 try
                 {
                     var frm = FormNum_DB.Replace(".", "");
+                    var cor = Convert.ToInt32(CorrectionNumber_DB);
                     if (FormNum_DB.Split('.')[0] == "1")
                     {
                         try
@@ -85,6 +86,7 @@ namespace Models.Collections
                             num += dt.Day < 10 ? "0" + dt.Day.ToString() : dt.Day.ToString();
                             num = num.Insert(0, "1");
                             frm += (int)(1.0 / Convert.ToInt32(num) * 100000000000000000.0);
+                            frm += cor;
                         }
                         catch
                         {
@@ -98,6 +100,7 @@ namespace Models.Collections
                         if (Year_DB != null && year != 0)
                         {
                             frm += (int)(1.0 / year * 10000000);
+                            frm += cor;
                         }
                         return Convert.ToInt32(frm);
                     }

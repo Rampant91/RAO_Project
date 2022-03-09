@@ -331,7 +331,6 @@ namespace Client_App.ViewModels
                             await ShowDialog.Handle(frm);
 
                             t.SelectedReports = tmp;
-
                             await y.Report_Collection.QuickSortAsync();
                         }
                     }
@@ -854,6 +853,9 @@ namespace Client_App.ViewModels
                             var findReports = from Reports t in Local_Reports.Reports_Collection
                                               where t.Report_Collection.Contains(rep)
                                               select t;
+
+                            await StaticConfiguration.DBModel.SaveChangesAsync();
+
                             var rt = findReports.FirstOrDefault();
                             if (rt != null)
                             {
@@ -869,7 +871,7 @@ namespace Client_App.ViewModels
                                         rp.Report_Collection.Add(rep);
                                         db.Database.MigrateAsync();
                                         db.ReportsCollectionDbSet.Add(rp);
-                                        db.SaveChangesAsync();
+                                        db.SaveChangesAsync(); 
 
                                         string filename2 = "";
                                         if (rp.Master_DB.FormNum_DB == "1.0")
@@ -965,10 +967,17 @@ namespace Client_App.ViewModels
                         if (numForm == "2.1")
                         {
                             Form2_Visual.tmpVM = frm;
+                            if (frm.isSum)
+                            {
+                                await frm.UnSum21();
+                                await frm.Sum21();
+                            }
                         }
                         if (numForm == "2.2")
                         {
                             Form2_Visual.tmpVM = frm;
+                            //await frm.UnSum22();
+                            //await frm.Sum22();
                         }
                         await ShowDialog.Handle(frm);
                         t.SelectedReports = tmp;

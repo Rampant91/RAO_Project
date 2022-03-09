@@ -3,15 +3,17 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [Migration("20220301111600_DataModel_23")]
+    partial class DataModel_23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1392,6 +1394,12 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<short?>("MachineCode_DB")
                         .HasColumnType("SMALLINT");
 
+                    b.Property<bool>("MachineCode_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("MachineCode_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("MachinePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1410,6 +1418,13 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("NumberOfHoursPerYear_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN")
+                        .HasColumnName("NumberOfHoursPerYear_Hidden_P~1");
+
                     b.Property<string>("QuantityIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1418,6 +1433,12 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("RefineMachineName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("RefineMachineName_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("RefineMachineName_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
@@ -1432,9 +1453,6 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("StatusRAOout_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("SumGroup_DB")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("Sum_DB")
@@ -1458,31 +1476,10 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("VolumeOut_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int>("_BaseColor")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("_MachineCode_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_MachineCode_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<bool>("_MachinePower_Hidden_Get")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("_MachinePower_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_NumberOfHoursPerYear_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_NumberOfHoursPerYear_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_RefineMachineName_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_RefineMachineName_Hidden_Set")
                         .HasColumnType("BOOLEAN");
 
                     b.HasKey("Id");
@@ -1702,11 +1699,23 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("PackName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("PackName_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("PackName_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("PackQuantity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("PackType_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("PackType_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("PackType_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("QuantityOZIII_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1723,16 +1732,25 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("StoragePlaceCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("StoragePlaceCode_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("StoragePlaceCode_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("StoragePlaceName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("StoragePlaceName_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("StoragePlaceName_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("Subsidy_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("Subsidy_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("SumGroup_DB")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("Sum_DB")
@@ -1755,33 +1773,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("VolumeOutOfPack_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<int>("_BaseColor")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("_PackName_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_PackName_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_PackType_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_PackType_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_StoragePlaceCode_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_StoragePlaceCode_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_StoragePlaceName_Hidden_Get")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("_StoragePlaceName_Hidden_Set")
-                        .HasColumnType("BOOLEAN");
 
                     b.HasKey("Id");
 

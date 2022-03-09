@@ -31,6 +31,8 @@ using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using System.Reactive.Linq;
 using Avalonia.Media;
+using Models.DataAccess;
+using System.Globalization;
 
 namespace Client_App.ViewModels
 {
@@ -54,6 +56,22 @@ namespace Client_App.ViewModels
                 {
                     _FormType = value;
                     NotifyPropertyChanged("FormType");
+                }
+            }
+        }
+        #endregion
+
+        #region isSum
+        private bool _isSum = false;
+        public bool isSum
+        {
+            get => _isSum;
+            set
+            {
+                if (_isSum != value)
+                {
+                    _isSum = value;
+                    NotifyPropertyChanged("isSum");
                 }
             }
         }
@@ -179,17 +197,455 @@ namespace Client_App.ViewModels
         #endregion
 
         #region SumRow
-        public void _SumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
+        public async void _SumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
         {
-            Storage.Rows21.Sum();
-            Storage.Rows22.Sum();
+            if (Storage.FormNum_DB == "2.1")
+            {
+                await Sum21();
+                isSum = true;
+            }
+            if (Storage.FormNum_DB == "2.2")
+            {
+                await Sum22();
+                isSum = true;
+            }
+        }
+
+        public async Task Sum21()
+        {
+            var tItems = Storage.Rows21.GroupBy(x => (x as Form21).RefineMachineName_DB +
+                              (x as Form21).MachineCode_DB +
+                              (x as Form21).MachinePower_DB +
+                              (x as Form21).NumberOfHoursPerYear_DB).ToList();
+            var y = tItems.ToList();
+
+            var ito = new Dictionary<string, List<Form21>>();
+
+            foreach (var item in y)
+            {
+                ito.Add(item.Key, new List<Form21>());
+            }
+
+            foreach (var item in y)
+            {
+                if (item.Key == "")
+                {
+                    foreach (var t in item)
+                    {
+                        ito[item.Key].Add(t);
+                    }
+                    tItems.Remove(item);
+                }
+            }
+
+            foreach (var itemT in tItems)
+            {
+                var sums = itemT.Where(x => (x as Form21).Sum_DB == true).FirstOrDefault();
+
+                Form21 sumRow = sums as Form21;
+                if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
+                {
+                    if (sumRow == null)
+                    {
+                        var first = itemT.FirstOrDefault() as Form21;
+                        sumRow = (Form21)FormCreator.Create("2.1");
+
+                        sumRow.RefineMachineName_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        sumRow.MachineCode_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        sumRow.MachinePower_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        sumRow.NumberOfHoursPerYear_Hidden_Set = new Models.DataAccess.RefBool(false);
+
+                        sumRow.RefineMachineName_DB = first.RefineMachineName_DB;
+                        sumRow.MachineCode_DB = first.MachineCode_DB;
+                        sumRow.MachinePower_DB = first.MachinePower_DB;
+                        sumRow.NumberOfHoursPerYear_DB = first.NumberOfHoursPerYear_DB;
+
+                        sumRow.CodeRAOIn.Value = "";
+                        sumRow.CodeRAOIn_Hidden = true;
+                        sumRow.StatusRAOIn.Value = "";
+                        sumRow.StatusRAOIn_Hidden = true;
+                        sumRow.CodeRAOout.Value = "";
+                        sumRow.CodeRAOout_Hidden = true;
+                        sumRow.StatusRAOout.Value = "";
+                        sumRow.StatusRAOout_Hidden = true;
+
+                        sumRow.Sum_DB = true;
+                        sumRow.BaseColor = Models.Interfaces.ColorType.Green;
+
+                    }
+
+                    sumRow.NumberInOrder_DB = 0;
+
+                    double volumeInSum = 0;
+                    double massInSum = 0;
+                    double quantityInSum = 0;
+                    double alphaInSum = 0;
+                    double betaInSum = 0;
+                    double tritInSum = 0;
+                    double transInSum = 0;
+
+                    double volumeOutSum = 0;
+                    double massOutSum = 0;
+                    double quantityOutSum = 0;
+                    double alphaOutSum = 0;
+                    double betaOutSum = 0;
+                    double tritOutSum = 0;
+                    double transOutSum = 0;
+
+                    string refinemachinename = "";
+                    byte? machinecode = 0;
+
+                    List<Form21> lst = new List<Form21>();
+                    var u = itemT.OrderBy(x => (x as Form21).NumberInOrder_DB);
+                    foreach (var itemThread in u)
+                    {
+                        var form = itemThread;
+                        form.SumGroup_DB = true;
+
+                        form.RefineMachineName_Hidden_Set=new Models.DataAccess.RefBool(false);
+                        form.MachineCode_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        form.MachinePower_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        form.NumberOfHoursPerYear_Hidden_Set = new Models.DataAccess.RefBool(false);
+
+                        form.RefineMachineName_Hidden_Get.Set(false);
+                        form.MachineCode_Hidden_Get.Set(false);
+                        form.MachinePower_Hidden_Get.Set(false);
+                        form.NumberOfHoursPerYear_Hidden_Get.Set(false);
+
+                        form.BaseColor = Models.Interfaces.ColorType.Yellow;
+
+                        volumeInSum += StringToNumber(form.VolumeIn_DB);
+                        massInSum += StringToNumber(form.MassIn_DB);
+                        quantityInSum += StringToNumber(form.QuantityIn_DB);
+                        alphaInSum += StringToNumber(form.AlphaActivityIn_DB);
+                        betaInSum += StringToNumber(form.BetaGammaActivityIn_DB);
+                        tritInSum += StringToNumber(form.TritiumActivityIn_DB);
+                        transInSum += StringToNumber(form.TransuraniumActivityIn_DB);
+
+                        volumeOutSum += StringToNumber(form.VolumeOut_DB);
+                        massOutSum += StringToNumber(form.MassOut_DB);
+                        quantityOutSum += StringToNumber(form.QuantityOZIIIout_DB);
+                        alphaOutSum += StringToNumber(form.AlphaActivityOut_DB);
+                        betaOutSum += StringToNumber(form.BetaGammaActivityOut_DB);
+                        tritOutSum += StringToNumber(form.TritiumActivityOut_DB);
+                        transOutSum += StringToNumber(form.TransuraniumActivityOut_DB);
+
+                        lst.Add(form as Form21);
+
+                    }
+
+                    sumRow.VolumeIn_DB = volumeInSum >= double.Epsilon ? volumeInSum.ToString("E2") : "-";
+                    sumRow.MassIn_DB = massInSum >= double.Epsilon ? sumRow.MassIn_DB = massInSum.ToString("E2") : "-";
+                    sumRow.QuantityIn_DB = quantityInSum >= double.Epsilon ? sumRow.QuantityIn_DB = quantityInSum.ToString("F0") : "-";
+                    sumRow.AlphaActivityIn_DB = alphaInSum >= double.Epsilon ? sumRow.AlphaActivityIn_DB = alphaInSum.ToString("E2") : "-";
+                    sumRow.BetaGammaActivityIn_DB = betaInSum >= double.Epsilon ? sumRow.BetaGammaActivityIn_DB = betaInSum.ToString("E2") : "-";
+                    sumRow.TritiumActivityIn_DB = tritInSum >= double.Epsilon ? sumRow.TritiumActivityIn_DB = tritInSum.ToString("E2") : "-";
+                    sumRow.TransuraniumActivityIn_DB = transInSum >= double.Epsilon ? sumRow.TransuraniumActivityIn_DB = transInSum.ToString("E2") : "-";
+
+                    sumRow.VolumeOut_DB = volumeOutSum >= double.Epsilon ? sumRow.VolumeOut_DB = volumeOutSum.ToString("E2") : "-";
+                    sumRow.MassOut_DB = massOutSum >= double.Epsilon ? sumRow.MassOut_DB = massOutSum.ToString("E2") : "-";
+                    sumRow.QuantityOZIIIout_DB = quantityOutSum >= double.Epsilon ? sumRow.QuantityOZIIIout_DB = quantityOutSum.ToString("F0") : "-";
+                    sumRow.AlphaActivityOut_DB = alphaOutSum >= double.Epsilon ? sumRow.AlphaActivityOut_DB = alphaOutSum.ToString("E2") : "-";
+                    sumRow.BetaGammaActivityOut_DB = betaOutSum >= double.Epsilon ? sumRow.BetaGammaActivityOut_DB = betaOutSum.ToString("E2") : "-";
+                    sumRow.TritiumActivityOut_DB = tritOutSum >= double.Epsilon ? sumRow.TritiumActivityOut_DB = tritOutSum.ToString("E2") : "-";
+                    sumRow.TransuraniumActivityOut_DB = transOutSum >= double.Epsilon ? sumRow.TransuraniumActivityOut_DB = transOutSum.ToString("E2") : "-";
+
+
+                    ito[itemT.Key].Add(sumRow as Form21);
+                    foreach (var r in lst)
+                    {
+                        ito[itemT.Key].Add(r);
+                    }
+                }
+                else
+                {
+
+                    foreach (var t in itemT)
+                    {
+                        if ((t as Form21).Sum_DB != true)
+                        {
+                            var form = (t as Form21);
+                            form.RefineMachineName_Hidden_Get.Set(true);
+                            form.MachineCode_Hidden_Get.Set(true);
+                            form.MachinePower_Hidden_Get.Set(true);
+                            form.NumberOfHoursPerYear_Hidden_Get.Set(true);
+                            ito[itemT.Key].Add(t);
+                        }
+                    }
+
+                }
+            }
+
+            Storage.Rows21.Clear();
+            var yu = ito.OrderBy(x => x.Key);
+            var count = 1;
+
+            foreach (var item in yu)
+            {
+                if (item.Value.Count != 0)
+                {
+                    var o = ((List<Form21>)item.Value).FirstOrDefault().NumberInOrder.Value = count;
+                    Storage.Rows21.AddRange(item.Value);
+                    count++;
+                }
+            }
+        }
+
+        public async Task Sum22()
+        {
+            var tItems = Storage.Rows22.GroupBy(x => (x as Form22).StoragePlaceName_DB +
+                              (x as Form22).StoragePlaceCode_DB +
+                              (x as Form22).PackName_DB +
+                              (x as Form22).PackType_DB).ToList();
+            var y = tItems.ToList();
+
+            var ito = new Dictionary<string, List<Form22>>();
+
+            foreach (var item in y)
+            {
+                ito.Add(item.Key, new List<Form22>());
+            }
+
+            foreach (var item in y)
+            {
+                if (item.Key == "")
+                {
+                    foreach (var t in item)
+                    {
+                        ito[item.Key].Add(t);
+                    }
+                    tItems.Remove(item);
+                }
+            }
+
+            foreach (var itemT in tItems)
+            {
+                var sums = itemT.Where(x => (x as Form22).Sum_DB == true).FirstOrDefault();
+
+                Form22 sumRow = sums as Form22;
+                if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
+                {
+                    if (sumRow == null)
+                    {
+                        var first = itemT.FirstOrDefault() as Form22;
+                        sumRow = (Form22)FormCreator.Create("2.2");
+
+                        sumRow.StoragePlaceName_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        sumRow.StoragePlaceCode_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        sumRow.PackName_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        sumRow.PackType_Hidden_Set = new Models.DataAccess.RefBool(false);
+
+                        sumRow.StoragePlaceName_DB = first.StoragePlaceName_DB;
+                        sumRow.StoragePlaceCode_DB = first.StoragePlaceCode_DB;
+                        sumRow.PackName_DB = first.StoragePlaceName_DB;
+                        sumRow.PackType_DB = first.PackType_DB;
+
+
+                        sumRow.CodeRAO_Hidden = true;
+                        sumRow.StatusRAO_Hidden = true;
+                        sumRow.MainRadionuclids_Hidden = true;
+                        sumRow.Subsidy_Hidden = true;
+                        sumRow.FcpNumber_Hidden = true;
+
+                        sumRow.Sum_DB = true;
+                        sumRow.BaseColor = Models.Interfaces.ColorType.Green;
+
+                    }
+
+                    sumRow.NumberInOrder_DB = 0;
+
+                    double volumeSum = 0;
+                    double massSum = 0;
+                    double quantitySum = 0;
+
+                    double alphaSum = 0;
+                    double betaSum = 0;
+                    double tritSum = 0;
+                    double transSum = 0;
+
+                    List<Form22> lst = new List<Form22>();
+                    var u = itemT.OrderBy(x => (x as Form22).NumberInOrder_DB);
+                    foreach (var itemThread in u)
+                    {
+                        var form = itemThread;
+
+                        form.VolumeInPack_Hidden = true;
+                        form.MassInPack_Hidden = true;
+
+                        form.SumGroup_DB = true;
+                        form.StoragePlaceName_Hidden_Set.Set(false);
+                        form.StoragePlaceCode_Hidden_Set.Set(false);
+                        form.PackName_Hidden_Set.Set(false);
+                        form.PackType_Hidden_Set.Set(false);
+
+                        form.StoragePlaceName_Hidden_Get.Set(false);
+                        form.StoragePlaceCode_Hidden_Get.Set(false);
+                        form.PackName_Hidden_Get.Set(false);
+                        form.PackType_Hidden_Get.Set(false);
+                        form.BaseColor = Models.Interfaces.ColorType.Yellow;
+
+                        volumeSum += StringToNumber(form.VolumeOutOfPack_DB);
+                        massSum += StringToNumber(form.MassOutOfPack_DB);
+                        quantitySum += StringToNumber(form.QuantityOZIII_DB);
+                        alphaSum += StringToNumber(form.AlphaActivity_DB);
+                        betaSum += StringToNumber(form.BetaGammaActivity_DB);
+                        tritSum += StringToNumber(form.TritiumActivity_DB);
+                        transSum += StringToNumber(form.TransuraniumActivity_DB);
+
+                        lst.Add(form as Form22);
+
+                    }
+
+                    sumRow.VolumeOutOfPack_DB = volumeSum >= double.Epsilon ? volumeSum.ToString("E2") : "-";
+                    sumRow.MassOutOfPack_DB = massSum >= double.Epsilon ? massSum.ToString("E2") : "-";
+                    sumRow.QuantityOZIII_DB = quantitySum >= double.Epsilon ? quantitySum.ToString("E2") : "-";
+                    sumRow.AlphaActivity_DB = alphaSum >= double.Epsilon ? alphaSum.ToString("E2") : "-";
+                    sumRow.BetaGammaActivity_DB = betaSum >= double.Epsilon ? betaSum.ToString("E2") : "-";
+                    sumRow.TritiumActivity_DB = tritSum >= double.Epsilon ? tritSum.ToString("E2") : "-";
+                    sumRow.TransuraniumActivity_DB = transSum >= double.Epsilon ? transSum.ToString("E2") : "-";
+
+                    ito[itemT.Key].Add(sumRow as Form22);
+                    foreach (var r in lst)
+                    {
+                        ito[itemT.Key].Add(r);
+                    }
+                }
+                else
+                {
+
+                    foreach (var t in itemT)
+                    {
+                        if ((t as Form22).Sum_DB != true)
+                        {
+                            var form = (t as Form22);
+                            form.StoragePlaceName_Hidden_Get.Set(true);
+                            form.StoragePlaceCode_Hidden_Get.Set(true);
+                            form.PackName_Hidden_Get.Set(true);
+                            form.PackType_Hidden_Get.Set(true);
+
+                            form.StoragePlaceName_Hidden_Set.Set(true);
+                            form.StoragePlaceCode_Hidden_Set.Set(true);
+                            form.PackName_Hidden_Set.Set(true);
+                            form.PackType_Hidden_Set.Set(true);
+                            ito[itemT.Key].Add(t);
+                        }
+                    }
+
+                }
+            }
+
+            Storage.Rows22.Clear();
+            var yu = ito.OrderBy(x => x.Key);
+            var count = 1;
+
+            foreach (var item in yu)
+            {
+                if (item.Value.Count != 0)
+                {
+                    var o = ((List<Form22>)item.Value).FirstOrDefault().NumberInOrder.Value = count;
+                    Storage.Rows22.AddRange(item.Value);
+                    count++;
+                }
+            }
+        }
+
+        double StringToNumber(string Num)
+        {
+            if (Num != null)
+            {
+                string tmp = Num;
+                tmp.Replace(" ", "");
+                int len = tmp.Length;
+                if (len >= 1)
+                {
+                    if (len > 2)
+                    {
+                        if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+                        {
+                            tmp = tmp.Remove(len - 1, 1);
+                            tmp = tmp.Remove(0, 1);
+                        }
+                    }
+                    if (len == 1)
+                    {
+                        tmp = tmp.Replace("-", "0");
+                    }
+
+                    tmp = tmp.Replace(",", ".");
+                    NumberStyles styles = NumberStyles.Any;
+                    try
+                    {
+                        return double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"));
+                    }
+                    catch
+                    {
+                        return 0;
+                    }
+                }
+            }
+            return 0;
         }
         #endregion
 
         #region CancelSumRow
-        public void _CancelSumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
+        public async void _CancelSumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
         {
+            if (Storage.FormNum_DB == "2.1")
+            {
+                await UnSum21();
+            }
+            if (Storage.FormNum_DB == "2.2")
+            {
+                await UnSum22();
+            }
+        }
 
+        public async Task UnSum21()
+        {
+            var sum_rows = Storage.Rows21.Where(x => x.Sum_DB == true);
+
+            Storage.Rows21.RemoveMany(sum_rows);
+
+            var sum_rows_group = Storage.Rows21.Where(x => x.SumGroup_DB == true);
+            foreach (var row in sum_rows_group)
+            {
+                row.RefineMachineName_Hidden_Set.Set(true);
+                row.MachineCode_Hidden_Set.Set(true);
+                row.MachinePower_Hidden_Set.Set(true);
+                row.NumberOfHoursPerYear_Hidden_Set.Set(true);
+
+                row.RefineMachineName_Hidden_Get.Set(true);
+                row.MachineCode_Hidden_Get.Set(true);
+                row.MachinePower_Hidden_Get.Set(true);
+                row.NumberOfHoursPerYear_Hidden_Get.Set(true);
+
+                row.SumGroup_DB = false;
+                row.BaseColor = Models.Interfaces.ColorType.None;
+            }
+        }
+
+        public async Task UnSum22()
+        {
+            var sum_rows = Storage.Rows22.Where(x => x.Sum_DB == true);
+
+            Storage.Rows22.RemoveMany(sum_rows);
+
+            var sum_rows_group = Storage.Rows22.Where(x => x.SumGroup_DB == true);
+            foreach (var row in sum_rows_group)
+            {
+                row.StoragePlaceName_Hidden_Get.Set(true);
+                row.StoragePlaceCode_Hidden_Get.Set(true);
+                row.PackName_Hidden_Get.Set(true);
+                row.PackType_Hidden_Get.Set(true);
+
+                row.StoragePlaceName_Hidden_Set.Set(true);
+                row.StoragePlaceCode_Hidden_Set.Set(true);
+                row.PackName_Hidden_Set.Set(true);
+                row.PackType_Hidden_Set.Set(true);
+
+                row.SumGroup_DB = false;
+                row.BaseColor = Models.Interfaces.ColorType.None;
+            }
         }
         #endregion
 
@@ -353,9 +809,6 @@ namespace Client_App.ViewModels
             {
                 if (minColumn == 1) minColumn++;
             }
-            if (param[0] is Note)
-            { }
-
             string txt = "";
 
             Dictionary<long, Dictionary<int, string>> dic = new Dictionary<long, Dictionary<int, string>>();
@@ -363,32 +816,50 @@ namespace Client_App.ViewModels
             foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
             {
                 dic.Add(item.Order, new Dictionary<int, string>());
+
+                var dStructure = (IDataGridColumn)item;
+                var findStructure = dStructure.GetColumnStructure();
+                var Level = findStructure.Level;
+                var tre = findStructure.GetLevel(Level - 1);
                 var props = item.GetType().GetProperties();
                 foreach (var prop in props)
                 {
                     var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
                     if (attr != null)
                     {
-                        try
+                        var newNum = 0;
+                        if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
                         {
-                            var columnNum = Convert.ToInt32(attr.Number);
-                            if (columnNum >= minColumn && columnNum <= maxColumn)
+                            newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                        }
+                        else           
+                        {
+                            newNum = Convert.ToInt32(attr.Number);
+                        }
+                        //var numAttr = Convert.ToInt32(attr.Number);
+                        if (newNum != 1)
+                        {
+                            try
                             {
-                                var midvalue = prop.GetMethod.Invoke(item, null);
-                                var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
-                                if (value != null)
+                                var columnNum = newNum;
+                                if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {
-                                    dic[item.Order].Add(columnNum, value.ToString());
-                                }
-                                else
-                                {
-                                    dic[item.Order].Add(columnNum, "");
+                                    var midvalue = prop.GetMethod.Invoke(item, null);
+                                    var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
+                                    if (value != null)
+                                    {
+                                        dic[item.Order].Add(columnNum, value.ToString());
+                                    }
+                                    else
+                                    {
+                                        dic[item.Order].Add(columnNum, "");
+                                    }
                                 }
                             }
-                        }
-                        catch
-                        {
+                            catch
+                            {
 
+                            }
                         }
                     }
                 }
@@ -428,24 +899,29 @@ namespace Client_App.ViewModels
             IKeyCollection collection = param[0] as IKeyCollection;
             int minColumn = Convert.ToInt32(param[1]) + 1;
             int maxColumn = Convert.ToInt32(param[2]) + 1;
-            if ((param[0] is Form1) || (param[0] is Form2))
+            var collectionEn = collection.GetEnumerable();
+            if ((collectionEn.FirstOrDefault() is Form1) || (collectionEn.FirstOrDefault() is Form2))
             {
                 if (minColumn == 1) minColumn++;
             }
-            if (param[0] is Note)
-            { }
 
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 string? text = await clip.GetTextAsync();
                 var rowsText = ParseInnerTextRows(text);
 
-                foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
+                foreach (IKey item in collectionEn.OrderBy(x => x.Order))
                 {
                     var props = item.GetType().GetProperties();
 
-                    var rowText = rowsText[item.Order - collection.GetEnumerable().Min(x => x.Order)];
+                    var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
                     var columnsText = ParseInnerTextColumn(rowText);
+
+                    var dStructure = (IDataGridColumn)item;
+                    var findStructure = dStructure.GetColumnStructure();
+                    var Level = findStructure.Level;
+                    var tre = findStructure.GetLevel(Level - 1);
+
                     foreach (var prop in props)
                     {
                         var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
@@ -453,7 +929,16 @@ namespace Client_App.ViewModels
                         {
                             try
                             {
-                                var columnNum = Convert.ToInt32(attr.Number);
+                                var columnNum = 0;
+                                if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                                {
+                                    columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                                }
+                                else
+                                {
+                                    columnNum = Convert.ToInt32(attr.Number);
+                                }
+                                //var columnNum = Convert.ToInt32(attr.Number);
                                 if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {
                                     var midvalue = prop.GetMethod.Invoke(item, null);
@@ -527,6 +1012,15 @@ namespace Client_App.ViewModels
             Storage = rep;
             Storages = reps;
             FormType = param;
+            var sumR = rep.Rows21.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
+            if (sumR > 0)
+            {
+                isSum = true;
+            }
+            else
+            {
+                isSum = false;
+            }
             Init();
         }
         public ChangeOrCreateVM(string param, in Reports reps)
@@ -663,7 +1157,10 @@ namespace Client_App.ViewModels
             ShowDialog = new Interaction<object,int>();
             ShowDialogIn = new Interaction<int, int>();
             ShowMessageT = new Interaction<List<string>, string>();
-            Storage.Sort();
+            if (!isSum)
+            {
+                Storage.Sort();
+            }
         }
 
         #region IsCanSaveReportEnabled
@@ -748,6 +1245,10 @@ namespace Client_App.ViewModels
                     Storages.Report_Collection.QuickSort();
                 }
 
+
+                    Storages.Report_Collection.Sorted = false;
+                    Storages.Report_Collection.QuickSort();
+                }
 
                 var dbm = StaticConfiguration.DBModel;
                 dbm.SaveChanges();

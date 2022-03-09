@@ -32,15 +32,16 @@ namespace Client_App.Long_Visual
             };
         }
 
-        public static Button CreateToggleSwitch(string content, string thickness, int height, string commProp)
+        public static ToggleSwitch CreateToggleSwitch(string content, string thickness, int height, string commProp)
         {
             var a = new ToggleSwitch()
             {
                 Height = height,
                 Margin = Thickness.Parse(thickness),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,  
             };
+            a.IsChecked = tmpVM.isSum;
             a.Checked += tmpVM._SumRow;
             a.Unchecked += tmpVM._CancelSumRow;
             return a;
@@ -386,6 +387,10 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+            var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
+            content.Children.Add(testS);
+            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
 
             leftStPT.Children.Add(content);
 
@@ -469,7 +474,8 @@ namespace Client_App.Long_Visual
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
                 Margin = Thickness.Parse("5,0,0,0"),
-                [!DataGridForm21.FixedContentProperty] = ind
+                [!DataGridForm21.FixedContentProperty] = ind,
+                [!DataGridForm21.IsReadableSumProperty] = testS[!ToggleSwitch.IsCheckedProperty]
             };
             grd.SetValue(Grid.RowProperty, 2);
 

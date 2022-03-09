@@ -34,6 +34,7 @@ using Client_App.Converters;
 using Client_App.ViewModels;
 using Models.Attributes;
 using System.Text.RegularExpressions;
+using Models.Interfaces;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -111,8 +112,11 @@ namespace Client_App.Controls.DataGrid
             {
                 if (value != null)
                 {
-                    SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
-                    if (Sum) SumColumn = "0";
+                    if (value.Count != 0)
+                    {
+                        SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+                        if (Sum) SumColumn = "0";
+                    }
                 }
             }
         }
@@ -370,6 +374,26 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 SetAndRaise(IsReadableProperty, ref _IsReadable, value);
+
+                Init();
+            }
+        }
+        #endregion
+
+        #region IsReadableSum
+        public static readonly DirectProperty<DataGrid<T>, bool> IsReadableSumProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(IsReadableSum),
+                o => o.IsReadableSum,
+                (o, v) => o.IsReadableSum = v);
+
+        private bool _IsReadableSum = false;
+        public bool IsReadableSum
+        {
+            get => _IsReadableSum;
+            set
+            {
+                SetAndRaise(IsReadableSumProperty, ref _IsReadableSum, value);
 
                 Init();
             }
@@ -749,6 +773,7 @@ namespace Client_App.Controls.DataGrid
                     SelectedCells.Add(item);
                     tmpSelectedItems.Add((T)item.DataContext);
                 }
+                //tmpSelectedItems.Add((T)((Cell)tmp2.FirstOrDefault()).DataContext);
                 SelectedItems = tmpSelectedItems;
             }
             else
@@ -1049,15 +1074,21 @@ namespace Client_App.Controls.DataGrid
                     }
                     if (FirstPressedItem[0] != -1)
                     {
-                        this.ContextMenu.Close();
-                        var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1])).FirstOrDefault();
-                        this.ContextMenu.PlacementTarget = tmp1;
-                        this.ContextMenu.Open();
+                        if (!IsReadableSum)
+                        {
+                            this.ContextMenu.Close();
+                            var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1])).FirstOrDefault();
+                            this.ContextMenu.PlacementTarget = tmp1;
+                            this.ContextMenu.Open();
+                        }
                     }
                 }
                 else
                 {
-                    this.ContextMenu.Close();
+                    if (!IsReadableSum)
+                    {
+                        this.ContextMenu.Close();
+                    }
                     doSetItemFlag = SetFirstPressed(paramRowColumn);
                     if (doSetItemFlag)
                     {
@@ -1207,6 +1238,35 @@ namespace Client_App.Controls.DataGrid
                         catch { }
                     }
                 }
+                var t = typeof(T).FindInterfaces(new System.Reflection.TypeFilter((x,y)=> 
+                {
+                    if (x.ToString() == y.ToString())
+                        return true;
+                    else
+                        return false;
+                }), typeof(IBaseColor).FullName);
+                if (t.Count()!=0)
+                {
+                    for (int i = 0; i < PageSize; i++)
+                    {
+                        if (Rows[i].DataContext is IBaseColor)
+                        {
+                            var _t = (IBaseColor)Rows[i].DataContext;
+                            if (_t != null)
+                            {
+
+                                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == i);
+                                int index = (int)_t.BaseColor;
+                                var color = IBaseColor.ColorTypeList[index];
+
+                                foreach (Cell item in tmp2)
+                                {
+                                    item.Background = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             PageCount = "0";
@@ -1324,9 +1384,12 @@ namespace Client_App.Controls.DataGrid
 
             var rt = CommandsList.Where(item=>item.Key==args.Key&&item.KeyModifiers==args.KeyModifiers);
 
-            foreach (var item in rt)
+            if (!IsReadableSum)
             {
-                item.DoCommand(GetParamByParamName(item));
+                foreach (var item in rt)
+                {
+                    item.DoCommand(GetParamByParamName(item));
+                }
             }
         }
         #endregion
@@ -1352,32 +1415,39 @@ namespace Client_App.Controls.DataGrid
 
         private void MakeContextMenu()
         {
-            var lst = CommandsList.Where(item=>item.IsContextMenuCommand).GroupBy(item=>item.ContextMenuText[0]);
 
-            ContextMenu menu = new ContextMenu();
-            List<MenuItem> lr = new List<MenuItem>();
-            foreach (var item in lst)
+            if (!IsReadableSum)
             {
-                if (item.Count() == 1)
+                var lst = CommandsList.Where(item => item.IsContextMenuCommand).GroupBy(item => item.ContextMenuText[0]);
+                ContextMenu menu = new ContextMenu();
+                List<MenuItem> lr = new List<MenuItem>();
+                foreach (var item in lst)
                 {
-                    var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
-                    tmp.Tapped += ComandTapped;
-                    lr.Add(tmp) ;
-                }
-                if (item.Count() == 2)
-                {
-                    List<MenuItem> inlr = new List<MenuItem>();
-                    foreach (var it in item)
+                    if (item.Count() == 1)
                     {
-                        var tmp = new MenuItem { Header = it.ContextMenuText[1] };
+                        var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
                         tmp.Tapped += ComandTapped;
-                        inlr.Add(tmp);
+                        lr.Add(tmp);
                     }
-                    lr.Add(new MenuItem { Header = item.Key,Items=inlr});
+                    if (item.Count() == 2)
+                    {
+                        List<MenuItem> inlr = new List<MenuItem>();
+                        foreach (var it in item)
+                        {
+                            var tmp = new MenuItem { Header = it.ContextMenuText[1] };
+                            tmp.Tapped += ComandTapped;
+                            inlr.Add(tmp);
+                        }
+                        lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                    }
                 }
+                menu.Items = lr;
+                this.ContextMenu = menu;
             }
-            menu.Items = lr;
-            this.ContextMenu = menu;
+            else
+            {
+                this.ContextMenu = null;
+            }
         }
 
         List<ColumnDefinition> HeadersColumns = new List<ColumnDefinition>();
@@ -1511,8 +1581,7 @@ namespace Client_App.Controls.DataGrid
                         {
                             cell.Tapped += ChooseAllRow;
                         }
-
-                        if (IsReadable || item.Blocked)
+                        if (IsReadable || item.Blocked || IsReadableSum)
                         {
                             textBox = new TextBlock()
                             {
