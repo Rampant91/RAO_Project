@@ -331,7 +331,6 @@ namespace Client_App.ViewModels
                             await ShowDialog.Handle(frm);
 
                             t.SelectedReports = tmp;
-
                             await y.Report_Collection.QuickSortAsync();
                         }
                     }
@@ -968,8 +967,11 @@ namespace Client_App.ViewModels
                         if (numForm == "2.1")
                         {
                             Form2_Visual.tmpVM = frm;
-                            //await frm.UnSum21();
-                            //await frm.Sum21();
+                            if (frm.isSum)
+                            {
+                                await frm.UnSum21();
+                                await frm.Sum21();
+                            }
                         }
                         if (numForm == "2.2")
                         {

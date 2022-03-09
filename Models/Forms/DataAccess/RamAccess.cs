@@ -56,7 +56,6 @@ namespace Models.DataAccess
                         Handler(this);
                     }
                 }
-
             }
         }
         public T ValueWithOutHandler

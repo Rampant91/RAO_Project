@@ -296,15 +296,17 @@ namespace Client_App.ViewModels
                     {
                         var form = itemThread;
                         form.SumGroup_DB = true;
-                        form.RefineMachineName_Hidden_Set.Set(false);
-                        form.MachineCode_Hidden_Set.Set(false);
-                        form.MachinePower_Hidden_Set.Set(false);
-                        form.NumberOfHoursPerYear_Hidden_Set.Set(false);
+
+                        form.RefineMachineName_Hidden_Set=new Models.DataAccess.RefBool(false);
+                        form.MachineCode_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        form.MachinePower_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        form.NumberOfHoursPerYear_Hidden_Set = new Models.DataAccess.RefBool(false);
 
                         form.RefineMachineName_Hidden_Get.Set(false);
                         form.MachineCode_Hidden_Get.Set(false);
                         form.MachinePower_Hidden_Get.Set(false);
                         form.NumberOfHoursPerYear_Hidden_Get.Set(false);
+
                         form.BaseColor = Models.Interfaces.ColorType.Yellow;
 
                         volumeInSum += StringToNumber(form.VolumeIn_DB);
@@ -602,15 +604,15 @@ namespace Client_App.ViewModels
             var sum_rows_group = Storage.Rows21.Where(x => x.SumGroup_DB == true);
             foreach (var row in sum_rows_group)
             {
-                row.RefineMachineName_Hidden_Get.Set(true);
-                row.MachineCode_Hidden_Get.Set(true);
-                row.MachinePower_Hidden_Get.Set(true);
-                row.NumberOfHoursPerYear_Hidden_Get.Set(true);
-
                 row.RefineMachineName_Hidden_Set.Set(true);
                 row.MachineCode_Hidden_Set.Set(true);
                 row.MachinePower_Hidden_Set.Set(true);
                 row.NumberOfHoursPerYear_Hidden_Set.Set(true);
+
+                row.RefineMachineName_Hidden_Get.Set(true);
+                row.MachineCode_Hidden_Get.Set(true);
+                row.MachinePower_Hidden_Get.Set(true);
+                row.NumberOfHoursPerYear_Hidden_Get.Set(true);
 
                 row.SumGroup_DB = false;
                 row.BaseColor = Models.Interfaces.ColorType.None;
@@ -1228,8 +1230,7 @@ namespace Client_App.ViewModels
                     Storages.Report_Collection.Sorted = false;
                     Storages.Report_Collection.QuickSort();
                 }
-                
-  
+
                 var dbm = StaticConfiguration.DBModel;
                 dbm.SaveChanges();
                 IsCanSaveReportEnabled = false;

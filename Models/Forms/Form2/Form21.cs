@@ -255,7 +255,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                RefineMachineName_DB = ((RamAccess<string>)Value).Value;            
+                if (_RefineMachineName_Hidden_Set)
+                {
+                    RefineMachineName_DB = ((RamAccess<string>)Value).Value;
+                }
             }
         }
 
@@ -363,7 +366,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                MachineCode_DB = ((RamAccess<byte?>)Value).Value;
+                if (_MachineCode_Hidden_Set)
+                {
+                    MachineCode_DB = ((RamAccess<byte?>)Value).Value;
+                }
             }
         }
 
@@ -493,21 +499,24 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                if (value1 != null)
+                if (_MachinePower_Hidden_Set)
                 {
-                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                    if (value1.Equals("-"))
+                    var value1 = ((RamAccess<string>)Value).Value;
+                    if (value1 != null)
                     {
-                        MachinePower_DB = value1;
-                        return;
+                        value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                        if (value1.Equals("-"))
+                        {
+                            MachinePower_DB = value1;
+                            return;
+                        }
+                        if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                        {
+                            value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                        }
                     }
-                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                    {
-                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                    }
+                    MachinePower_DB = value1;
                 }
-                MachinePower_DB = value1;
             }
         }
 
@@ -652,21 +661,24 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                if (value1 != null)
+                if (_NumberOfHoursPerYear_Hidden_Set)
                 {
-                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                    if (value1.Equals("-"))
+                    var value1 = ((RamAccess<string>)Value).Value;
+                    if (value1 != null)
                     {
-                        NumberOfHoursPerYear_DB = value1;
-                        return;
+                        value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                        if (value1.Equals("-"))
+                        {
+                            NumberOfHoursPerYear_DB = value1;
+                            return;
+                        }
+                        if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                        {
+                            value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                        }
                     }
-                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                    {
-                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                    }
+                    NumberOfHoursPerYear_DB = value1;
                 }
-                NumberOfHoursPerYear_DB = value1;
             }
         }
 
@@ -2523,7 +2535,7 @@ namespace Models
                 DataGridColumns TransuraniumActivityOutR = ((Attributes.Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(Form21.TransuraniumActivityOut)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 TransuraniumActivityOutR.SetSizeColToAllLevels(163);
                 TransuraniumActivityOutR.Binding = nameof(Form21.TransuraniumActivityOut);
-                NumberInOrderR += TransuraniumActivityR;
+                NumberInOrderR += TransuraniumActivityOutR;
                 #endregion
 
                 _DataGridColumns = NumberInOrderR;
