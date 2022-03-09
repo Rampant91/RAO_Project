@@ -2057,7 +2057,9 @@ namespace Models
             bool a9 = value.Value == "99";
             bool a10 = (int.Parse(value.Value) >= 21) && (int.Parse(value.Value) <= 29);
             bool a11 = (int.Parse(value.Value) >= 31) && (int.Parse(value.Value) <= 39);
-            if (!(a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11))
+            bool a12 = value.Value == "51";
+            bool a13 = value.Value == "52";
+            if (!(a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13))
             {
                 value.AddError("Код операции не может быть использован в форме 1.7");
                 return false;
