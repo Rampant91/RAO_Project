@@ -387,6 +387,7 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+            content.Children.Add(CreateTextBlock("65,0,0,15", 30, "Суммация:"));
             var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
             content.Children.Add(testS);
             content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
