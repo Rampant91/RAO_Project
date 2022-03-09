@@ -1256,6 +1256,7 @@ namespace Models
             DataGridColumns DocumentVidR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.DocumentVid)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentVidR.SetSizeColToAllLevels(100);
             DocumentVidR.Binding = nameof(Form1.DocumentVid);
+            NumberInOrderR += DocumentVidR;
             #endregion
 
             #region DocumentNumber (15)

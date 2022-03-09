@@ -809,18 +809,32 @@ namespace Client_App.ViewModels
             foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
             {
                 dic.Add(item.Order, new Dictionary<int, string>());
+
+                var dStructure = (IDataGridColumn)item;
+                var findStructure = dStructure.GetColumnStructure();
+                var Level = findStructure.Level;
+                var tre = findStructure.GetLevel(Level - 1);
                 var props = item.GetType().GetProperties();
                 foreach (var prop in props)
                 {
                     var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
                     if (attr != null)
                     {
-                        var numAttr = Convert.ToInt32(attr.Number);
-                        if (numAttr != 1)
+                        var newNum = 0;
+                        if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                        {
+                            newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                        }
+                        else           
+                        {
+                            newNum = Convert.ToInt32(attr.Number);
+                        }
+                        //var numAttr = Convert.ToInt32(attr.Number);
+                        if (newNum != 1)
                         {
                             try
                             {
-                                var columnNum = numAttr;
+                                var columnNum = newNum;
                                 if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {
                                     var midvalue = prop.GetMethod.Invoke(item, null);
@@ -895,6 +909,12 @@ namespace Client_App.ViewModels
 
                     var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
                     var columnsText = ParseInnerTextColumn(rowText);
+
+                    var dStructure = (IDataGridColumn)item;
+                    var findStructure = dStructure.GetColumnStructure();
+                    var Level = findStructure.Level;
+                    var tre = findStructure.GetLevel(Level - 1);
+
                     foreach (var prop in props)
                     {
                         var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
@@ -902,7 +922,16 @@ namespace Client_App.ViewModels
                         {
                             try
                             {
-                                var columnNum = Convert.ToInt32(attr.Number);
+                                var columnNum = 0;
+                                if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                                {
+                                    columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                                }
+                                else
+                                {
+                                    columnNum = Convert.ToInt32(attr.Number);
+                                }
+                                //var columnNum = Convert.ToInt32(attr.Number);
                                 if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {
                                     var midvalue = prop.GetMethod.Invoke(item, null);
