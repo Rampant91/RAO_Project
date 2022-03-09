@@ -1225,6 +1225,7 @@ namespace Client_App.ViewModels
                 }
                 if (Storages != null)
                 {
+                    Storages.Report_Collection.Sorted = false;
                     Storages.Report_Collection.QuickSort();
                 }
                 
