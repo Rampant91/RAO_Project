@@ -378,20 +378,15 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммация:"));
-            content.Children.Add(CreateToggleSwitch("Суммировать", "5,0,0,0", 30, "SumRow"));
+            var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
+            content.Children.Add(testS);
             leftStPT.Children.Add(content);
-
             content = new StackPanel()
             {
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
-            content.Children.Add(CreateTextBlock("65,0,0,15", 30, "Суммация:"));
-            var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
-            content.Children.Add(testS);
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
 
             leftStPT.Children.Add(content);
 
@@ -598,7 +593,8 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммация:"));
-            content.Children.Add(CreateToggleSwitch("Суммировать", "5,0,0,5", 30, "SumRow"));
+            var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
+            content.Children.Add(testS);
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -690,7 +686,8 @@ namespace Client_App.Long_Visual
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
                 Margin = Thickness.Parse("5,0,0,0"),
-                [!DataGridForm22.FixedContentProperty] = ind
+                [!DataGridForm22.FixedContentProperty] = ind,
+                [!DataGridForm22.IsReadableSumProperty] = testS[!ToggleSwitch.IsCheckedProperty]
             };
             grd.SetValue(Grid.RowProperty, 2);
 

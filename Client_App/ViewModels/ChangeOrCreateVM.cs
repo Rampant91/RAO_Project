@@ -473,10 +473,10 @@ namespace Client_App.ViewModels
                         form.MassInPack_Hidden = true;
 
                         form.SumGroup_DB = true;
-                        form.StoragePlaceName_Hidden_Set.Set(false);
-                        form.StoragePlaceCode_Hidden_Set.Set(false);
-                        form.PackName_Hidden_Set.Set(false);
-                        form.PackType_Hidden_Set.Set(false);
+                        form.StoragePlaceName_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        form.StoragePlaceCode_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        form.PackName_Hidden_Set = new Models.DataAccess.RefBool(false);
+                        form.PackType_Hidden_Set = new Models.DataAccess.RefBool(false);
 
                         form.StoragePlaceName_Hidden_Get.Set(false);
                         form.StoragePlaceCode_Hidden_Get.Set(false);
@@ -633,15 +633,15 @@ namespace Client_App.ViewModels
             var sum_rows_group = Storage.Rows22.Where(x => x.SumGroup_DB == true);
             foreach (var row in sum_rows_group)
             {
-                row.StoragePlaceName_Hidden_Get.Set(true);
-                row.StoragePlaceCode_Hidden_Get.Set(true);
-                row.PackName_Hidden_Get.Set(true);
-                row.PackType_Hidden_Get.Set(true);
-
                 row.StoragePlaceName_Hidden_Set.Set(true);
                 row.StoragePlaceCode_Hidden_Set.Set(true);
                 row.PackName_Hidden_Set.Set(true);
                 row.PackType_Hidden_Set.Set(true);
+
+                row.StoragePlaceName_Hidden_Get.Set(true);
+                row.StoragePlaceCode_Hidden_Get.Set(true);
+                row.PackName_Hidden_Get.Set(true);
+                row.PackType_Hidden_Get.Set(true);
 
                 row.SumGroup_DB = false;
                 row.BaseColor = Models.Interfaces.ColorType.None;
@@ -1245,7 +1245,6 @@ namespace Client_App.ViewModels
                     Storages.Report_Collection.QuickSort();
                 }
 
-
                     Storages.Report_Collection.Sorted = false;
                     Storages.Report_Collection.QuickSort();
                 }
@@ -1254,7 +1253,6 @@ namespace Client_App.ViewModels
                 dbm.SaveChanges();
                 IsCanSaveReportEnabled = false;
             }
-        }
 
         //public void _AddRow10()
         //{

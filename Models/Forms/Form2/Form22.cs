@@ -265,7 +265,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
+                if (_StoragePlaceName_Hidden_Set)
+                {
+                    StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
+                }
             }
         }
 
@@ -389,7 +392,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
+                if (_StoragePlaceCode_Hidden_Set)
+                {
+                    StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
+                }
             }
         }
 
@@ -521,7 +527,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                PackName_DB = ((RamAccess<string>)Value).Value;
+                if (_PackName_Hidden_Set)
+                {
+                    PackName_DB = ((RamAccess<string>)Value).Value;
+                }
             }
         }
 
@@ -648,7 +657,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                PackType_DB = ((RamAccess<string>)Value).Value;
+                if (_PackType_Hidden_Set)
+                {
+                    PackType_DB = ((RamAccess<string>)Value).Value;
+                }
             }
         }
 
