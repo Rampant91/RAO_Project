@@ -362,7 +362,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -376,10 +377,24 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateTextBlock("65,0,0,15", 30, "Суммация:"));
-            content.Children.Add(CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow"));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммация:"));
+            content.Children.Add(CreateToggleSwitch("Суммировать", "5,0,0,0", 30, "SumRow"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
@@ -571,7 +586,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -585,10 +601,24 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateTextBlock("65,0,0,15", 30, "Суммация:"));
-            content.Children.Add(CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow"));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммация:"));
+            content.Children.Add(CreateToggleSwitch("Суммировать", "5,0,0,5", 30, "SumRow"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
@@ -987,7 +1017,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -1001,8 +1032,15 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
@@ -1194,7 +1232,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -1208,8 +1247,15 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
@@ -1401,7 +1447,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -1415,8 +1462,6 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1424,7 +1469,16 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal,
                 VerticalAlignment = VerticalAlignment.Bottom
             };
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Количество наблюдательных скважин, принадлежащих организации:"));
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Количество наблюдательных скважин, принадлежащих организации:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.SourcesQuantity26", 100, scp));
 
             leftStP.Children.Add(leftStPT);
@@ -1616,7 +1670,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -1630,31 +1685,39 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Разрешение на допустимые выбросы радионуклидов в атмосферу №"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Разрешение на допустимые выбросы радионуклидов в атмосферу №"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionNumber27", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "от"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "от"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionIssueDate27", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, ". Срок действия с"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, ". Срок действия с"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidBegin27", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "по"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "по"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidThru27", 100, scp));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
-
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Наименование разрешительного документа на допустимые выбросы радионуклидов в атмосферу:"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Наименование разрешительного документа на допустимые выбросы радионуклидов в атмосферу:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionDocumentName27", 600, scp));
             leftStPT.Children.Add(content);
             leftStP.Children.Add(leftStPT);
@@ -1845,7 +1908,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -1859,61 +1923,86 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Разрешение на сброс радионуклидов в водные объекты №", 350));
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Разрешение на сброс радионуклидов в водные объекты №", 350));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionNumber_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "от"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "от"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionIssueDate_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, ". Срок действия с"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, ". Срок действия с"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidBegin_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "по"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "по"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidThru_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, ". Наименование разрешительного документа на сброс:"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Наименование разрешительного документа на сброс:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionDocumentName_28", 600, scp));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Разрешение на сброс радионуклидов на рельеф местности №", 350));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Разрешение на сброс радионуклидов на рельеф местности №", 350));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionNumber1_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "от"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "от"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionIssueDate1_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, ". Срок действия с"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, ". Срок действия с"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidBegin1_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "по"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "по"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidThru1_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, ". Наименование разрешительного документа на сброс:"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Наименование разрешительного документа на сброс:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionDocumentName1_28", 600, scp));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Договор на передачу сточных вод в сети канализации №", 350));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Договор на передачу сточных вод в сети канализации №", 350));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ContractNumber_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "от"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "от"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ContractIssueDate2_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, ". Срок действия с"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, ". Срок действия с"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidBegin2_28", 100, scp));
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "по"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "по"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ValidThru2_28", 100, scp));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
-            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Организация, осуществляющая прием сточных вод:"));
+            content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Организация, осуществляющая прием сточных вод:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.OrganisationReciever_28", 100, scp));
             leftStPT.Children.Add(content);
 
@@ -2107,7 +2196,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -2121,8 +2211,15 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
@@ -2314,7 +2411,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -2328,8 +2426,15 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
@@ -2521,7 +2626,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -2535,8 +2641,15 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
@@ -2728,7 +2841,8 @@ namespace Client_App.Long_Visual
             };
             StackPanel? content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
             };
 
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:"));
@@ -2742,8 +2856,15 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
-            content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);
