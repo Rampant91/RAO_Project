@@ -159,17 +159,22 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> ChangeReportOrder { get; protected set; }
         private async Task _ChangeReportOrder()
         {
-            Storage.Rows10.Sorted = false;
-            Storage.Rows20.Sorted = false;
-            var tmp = Storage.Rows10[0].Order;
-            Storage.Rows10[0].SetOrder(Storage.Rows10[1].Order);
-            Storage.Rows10[1].SetOrder(tmp);
-            await Storage.Rows10.QuickSortAsync();
-
-            tmp = Storage.Rows20[0].Order;
-            Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
-            Storage.Rows20[1].SetOrder(tmp);
-            await Storage.Rows20.QuickSortAsync();
+            if (Storage.FormNum.Value == "1.0")
+            {
+                Storage.Rows10.Sorted = false;
+                var tmp = Storage.Rows10[0].Order;
+                Storage.Rows10[0].SetOrder(Storage.Rows10[1].Order);
+                Storage.Rows10[1].SetOrder(tmp);
+                await Storage.Rows10.QuickSortAsync();
+            }
+            if (Storage.FormNum.Value == "2.0")
+            {
+                Storage.Rows20.Sorted = false;
+                var tmp = Storage.Rows20[0].Order;
+                Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
+                Storage.Rows20[1].SetOrder(tmp);
+                await Storage.Rows20.QuickSortAsync();
+            }
         }
         #endregion
 
@@ -709,7 +714,6 @@ namespace Client_App.ViewModels
 
                     DBO.Reports_Collection.Add(tmp);
                     DBO = null;
-                    Storages = null;
                 }
                 else
                 {
@@ -730,10 +734,21 @@ namespace Client_App.ViewModels
                 }
                 if (Storages != null)
                 {
+                    if (Storages.Master.Rows10.Count != 0)
+                    {
+                        Storages.Master.Rows10[1].OrganUprav.Value = Storages.Master.Rows10[0].OrganUprav.Value;
+                        Storages.Master.Rows10[1].RegNo.Value = Storages.Master.Rows10[0].RegNo.Value;
+                    }
+                    if (Storages.Master.Rows20.Count != 0)
+                    {
+                        Storages.Master.Rows20[1].OrganUprav.Value = Storages.Master.Rows20[0].OrganUprav.Value;
+                        Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
+                    }
+
                     Storages.Report_Collection.QuickSort();
                 }
-                
-  
+
+
                 var dbm = StaticConfiguration.DBModel;
                 dbm.SaveChanges();
                 IsCanSaveReportEnabled = false;
