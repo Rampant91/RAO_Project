@@ -324,12 +324,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
-
             StackPanel leftStPT = new StackPanel()
             {
                 Orientation = Orientation.Vertical,
@@ -354,22 +348,19 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -380,7 +371,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -544,11 +535,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -574,22 +560,19 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,0", 30, "SaveReport"));
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -600,7 +583,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -764,11 +747,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -794,23 +772,21 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(leftStPT);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -821,7 +797,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -985,11 +961,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1015,23 +986,21 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(leftStPT);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1042,7 +1011,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1206,11 +1175,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1236,23 +1200,20 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1263,7 +1224,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1427,11 +1388,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1457,8 +1413,7 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
@@ -1466,14 +1421,12 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1484,7 +1437,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1649,11 +1602,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1679,8 +1627,7 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
@@ -1688,14 +1635,12 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1706,7 +1651,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -1870,11 +1815,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -1900,8 +1840,7 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
@@ -1909,14 +1848,12 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -1927,7 +1864,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
@@ -2092,11 +2029,6 @@ namespace Client_App.Long_Visual
 
 
             #region Left
-            StackPanel leftStP = new StackPanel()
-            {
-                Orientation = Orientation.Vertical,
-                Spacing = 45
-            };
 
             StackPanel leftStPT = new StackPanel()
             {
@@ -2122,8 +2054,7 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
@@ -2131,14 +2062,12 @@ namespace Client_App.Long_Visual
 
             content = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
-            leftStP.Children.Add(leftStPT);
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             Border brdC = new Border()
             {
@@ -2149,7 +2078,7 @@ namespace Client_App.Long_Visual
                 [Grid.RowProperty] = 1,
                 Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = leftStP;
+            brdC.Child = leftStPT;
             #endregion
 
             #region Right
