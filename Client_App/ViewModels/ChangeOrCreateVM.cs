@@ -377,16 +377,20 @@ namespace Client_App.ViewModels
             }
 
             Storage.Rows21.Clear();
-            var yu = ito.OrderBy(x => x.Key);
+            var yu = ito.OrderBy(x => x.Value.Count);
             var count = 1;
 
             foreach (var item in yu)
             {
-                if (item.Value.Count != 0)
+                if (item.Value.Count != 0 && item.Value.Count != 1)
                 {
                     var o = ((List<Form21>)item.Value).FirstOrDefault().NumberInOrder.Value = count;
                     Storage.Rows21.AddRange(item.Value);
                     count++;
+                }
+                else
+                {
+                    Storage.Rows21.AddRange(item.Value);
                 }
             }
         }
@@ -535,16 +539,20 @@ namespace Client_App.ViewModels
             }
 
             Storage.Rows22.Clear();
-            var yu = ito.OrderBy(x => x.Key);
+            var yu = ito.OrderBy(x => x.Value.Count);
             var count = 1;
 
             foreach (var item in yu)
             {
-                if (item.Value.Count != 0)
+                if (item.Value.Count != 0 && item.Value.Count != 1)
                 {
                     var o = ((List<Form22>)item.Value).FirstOrDefault().NumberInOrder.Value = count;
                     Storage.Rows22.AddRange(item.Value);
                     count++;
+                }
+                else
+                {
+                    Storage.Rows22.AddRange(item.Value);
                 }
             }
         }
@@ -593,10 +601,14 @@ namespace Client_App.ViewModels
             if (Storage.FormNum_DB == "2.1")
             {
                 await UnSum21();
+                Storage.Rows21.Sorted = false;
+                await Storage.Rows21.QuickSortAsync();
             }
             if (Storage.FormNum_DB == "2.2")
             {
                 await UnSum22();
+                Storage.Rows21.Sorted = false;
+                await Storage.Rows22.QuickSortAsync();
             }
         }
 
@@ -1243,12 +1255,12 @@ namespace Client_App.ViewModels
                         Storages.Master.Rows20[1].OrganUprav.Value = Storages.Master.Rows20[0].OrganUprav.Value;
                         Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
                     }
-
+                    Storages.Report_Collection.Sorted = false;
                     Storages.Report_Collection.QuickSort();
                 }
 
-                    Storages.Report_Collection.Sorted = false;
-                    Storages.Report_Collection.QuickSort();
+                    //Storages.Report_Collection.Sorted = false;
+                    //Storages.Report_Collection.QuickSort();
                 }
 
                 var dbm = StaticConfiguration.DBModel;
