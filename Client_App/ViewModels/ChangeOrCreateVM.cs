@@ -1012,8 +1012,9 @@ namespace Client_App.ViewModels
             Storage = rep;
             Storages = reps;
             FormType = param;
-            var sumR = rep.Rows21.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
-            if (sumR > 0)
+            var sumR21 = rep.Rows21.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
+            var sumR22 = rep.Rows22.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
+            if (sumR21 > 0 || sumR22 > 0)
             {
                 isSum = true;
             }
