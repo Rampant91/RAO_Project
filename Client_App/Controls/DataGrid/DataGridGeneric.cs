@@ -1155,6 +1155,7 @@ namespace Client_App.Controls.DataGrid
                     if (searchText != null)
                     {
                         searchText = searchText.ToLower();
+                        NowPage = "1";
                         searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
                         if (searchText != "")
                         {
