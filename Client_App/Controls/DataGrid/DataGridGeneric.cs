@@ -1074,21 +1074,19 @@ namespace Client_App.Controls.DataGrid
                     }
                     if (FirstPressedItem[0] != -1)
                     {
-                        if (!IsReadableSum)
-                        {
-                            this.ContextMenu.Close();
-                            var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1])).FirstOrDefault();
-                            this.ContextMenu.PlacementTarget = tmp1;
-                            this.ContextMenu.Open();
-                        }
+
+                        this.ContextMenu.Close();
+                        var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1])).FirstOrDefault();
+                        this.ContextMenu.PlacementTarget = tmp1;
+                        this.ContextMenu.Open();
+
                     }
                 }
                 else
                 {
-                    if (!IsReadableSum)
-                    {
-                        this.ContextMenu.Close();
-                    }
+
+                    this.ContextMenu.Close();
+
                     doSetItemFlag = SetFirstPressed(paramRowColumn);
                     if (doSetItemFlag)
                     {
@@ -1275,12 +1273,12 @@ namespace Client_App.Controls.DataGrid
         #endregion
 
         #region KeyDown
-        private void OnDataGridKeyDown(object sender,KeyEventArgs args)
+        private void OnDataGridKeyDown(object sender, KeyEventArgs args)
         {
-            if(args.Key==Key.Left)
+            if (args.Key == Key.Left)
             {
-                LastPressedItem[1] = LastPressedItem[1]==1? LastPressedItem[1]: LastPressedItem[1]-1;
-                if(args.KeyModifiers!=KeyModifiers.Shift)
+                LastPressedItem[1] = LastPressedItem[1] == 1 ? LastPressedItem[1] : LastPressedItem[1] - 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
                     FirstPressedItem[1] = LastPressedItem[1];
@@ -1305,7 +1303,7 @@ namespace Client_App.Controls.DataGrid
             }
             if (args.Key == Key.Right)
             {
-                LastPressedItem[1] = LastPressedItem[1] == Rows[0].Children.Count-1 ? LastPressedItem[1] : LastPressedItem[1] + 1;
+                LastPressedItem[1] = LastPressedItem[1] == Rows[0].Children.Count - 1 ? LastPressedItem[1] : LastPressedItem[1] + 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
@@ -1331,7 +1329,7 @@ namespace Client_App.Controls.DataGrid
             }
             if (args.Key == Key.Down)
             {
-                LastPressedItem[0] = LastPressedItem[0] == Rows.Count-1||LastPressedItem[0] == Items.Count-1 ? LastPressedItem[0] : LastPressedItem[0] + 1;
+                LastPressedItem[0] = LastPressedItem[0] == Rows.Count - 1 || LastPressedItem[0] == Items.Count - 1 ? LastPressedItem[0] : LastPressedItem[0] + 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
@@ -1347,7 +1345,7 @@ namespace Client_App.Controls.DataGrid
                         ctrl.Focus();
                         ctrl.SelectAll();
                         var num = 0;
-                        if(ctrl.Text!=null)
+                        if (ctrl.Text != null)
                         {
                             num = ctrl.Text.Length;
                         }
@@ -1382,15 +1380,14 @@ namespace Client_App.Controls.DataGrid
                 }
             }
 
-            var rt = CommandsList.Where(item=>item.Key==args.Key&&item.KeyModifiers==args.KeyModifiers);
+            var rt = CommandsList.Where(item => item.Key == args.Key && item.KeyModifiers == args.KeyModifiers);
 
-            if (!IsReadableSum)
+
+            foreach (var item in rt)
             {
-                foreach (var item in rt)
-                {
-                    item.DoCommand(GetParamByParamName(item));
-                }
+                item.DoCommand(GetParamByParamName(item));
             }
+
         }
         #endregion
 
@@ -1415,39 +1412,42 @@ namespace Client_App.Controls.DataGrid
 
         private void MakeContextMenu()
         {
+            IEnumerable<IGrouping<string, KeyComand>>? lst = null;
 
             if (!IsReadableSum)
             {
-                var lst = CommandsList.Where(item => item.IsContextMenuCommand).GroupBy(item => item.ContextMenuText[0]);
-                ContextMenu menu = new ContextMenu();
-                List<MenuItem> lr = new List<MenuItem>();
-                foreach (var item in lst)
-                {
-                    if (item.Count() == 1)
-                    {
-                        var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
-                        tmp.Tapped += ComandTapped;
-                        lr.Add(tmp);
-                    }
-                    if (item.Count() == 2)
-                    {
-                        List<MenuItem> inlr = new List<MenuItem>();
-                        foreach (var it in item)
-                        {
-                            var tmp = new MenuItem { Header = it.ContextMenuText[1] };
-                            tmp.Tapped += ComandTapped;
-                            inlr.Add(tmp);
-                        }
-                        lr.Add(new MenuItem { Header = item.Key, Items = inlr });
-                    }
-                }
-                menu.Items = lr;
-                this.ContextMenu = menu;
+                lst = CommandsList.Where(item => item.IsContextMenuCommand).GroupBy(item => item.ContextMenuText[0]);
             }
             else
             {
-                this.ContextMenu = null;
+                lst = CommandsList.Where(item => item.IsContextMenuCommand).GroupBy(item => item.ContextMenuText[0]);
+                lst = lst.Where(item => item.First().Key == Key.A || item.First().Key == Key.C);
             }
+
+            ContextMenu menu = new ContextMenu();
+            List<MenuItem> lr = new List<MenuItem>();
+            foreach (var item in lst)
+            {
+                if (item.Count() == 1)
+                {
+                    var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
+                    tmp.Tapped += ComandTapped;
+                    lr.Add(tmp);
+                }
+                if (item.Count() == 2)
+                {
+                    List<MenuItem> inlr = new List<MenuItem>();
+                    foreach (var it in item)
+                    {
+                        var tmp = new MenuItem { Header = it.ContextMenuText[1] };
+                        tmp.Tapped += ComandTapped;
+                        inlr.Add(tmp);
+                    }
+                    lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                }
+            }
+            menu.Items = lr;
+            this.ContextMenu = menu;
         }
 
         List<ColumnDefinition> HeadersColumns = new List<ColumnDefinition>();
