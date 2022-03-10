@@ -832,36 +832,34 @@ namespace Client_App.ViewModels
                         {
                             newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                         }
-                        else           
+                        else
                         {
                             newNum = Convert.ToInt32(attr.Number);
                         }
                         //var numAttr = Convert.ToInt32(attr.Number);
-                        if (newNum != 1)
+
+                        try
                         {
-                            try
+                            var columnNum = newNum;
+                            if (columnNum >= minColumn && columnNum <= maxColumn)
                             {
-                                var columnNum = newNum;
-                                if (columnNum >= minColumn && columnNum <= maxColumn)
+                                var midvalue = prop.GetMethod.Invoke(item, null);
+                                var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
+                                if (value != null)
                                 {
-                                    var midvalue = prop.GetMethod.Invoke(item, null);
-                                    var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
-                                    if (value != null)
-                                    {
-                                        dic[item.Order].Add(columnNum, value.ToString());
-                                    }
-                                    else
-                                    {
-                                        dic[item.Order].Add(columnNum, "");
-                                    }
+                                    dic[item.Order].Add(columnNum, value.ToString());
+                                }
+                                else
+                                {
+                                    dic[item.Order].Add(columnNum, "");
                                 }
                             }
-                            catch
-                            {
-
-                            }
                         }
-                    }
+                        catch
+                        {
+
+                        }
+                    }                                   
                 }
             }
 
@@ -915,8 +913,11 @@ namespace Client_App.ViewModels
                     var props = item.GetType().GetProperties();
 
                     var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
+                    if (rowText.Length > 23 && Convert.ToInt32(param[1]) == 0)
+                    {
+                        rowText = rowText.Remove(0, 2);
+                    }
                     var columnsText = ParseInnerTextColumn(rowText);
-
                     var dStructure = (IDataGridColumn)item;
                     var findStructure = dStructure.GetColumnStructure();
                     var Level = findStructure.Level;
@@ -1012,8 +1013,9 @@ namespace Client_App.ViewModels
             Storage = rep;
             Storages = reps;
             FormType = param;
-            var sumR = rep.Rows21.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
-            if (sumR > 0)
+            var sumR21 = rep.Rows21.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
+            var sumR22 = rep.Rows22.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
+            if (sumR21 > 0 || sumR22 > 0)
             {
                 isSum = true;
             }
@@ -1319,7 +1321,7 @@ namespace Client_App.ViewModels
             {
                 lst.Add(txt);
             }
-
+            lst.Add("");
             return lst.ToArray();
         }
         private string[] ParseInnerTextColumn(string Text)
@@ -1359,7 +1361,7 @@ namespace Client_App.ViewModels
             {
                 lst.Add(txt);
             }
-
+            
             return lst.ToArray();
         }
         #endregion
