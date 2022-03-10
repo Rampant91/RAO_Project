@@ -1381,7 +1381,10 @@ namespace Client_App.Controls.DataGrid
             }
 
             var rt = CommandsList.Where(item => item.Key == args.Key && item.KeyModifiers == args.KeyModifiers);
-
+            if (IsReadableSum)
+            {
+                rt = rt.Where(item => item.Key == args.Key && (item.Key == Key.A || item.Key == Key.C) && item.KeyModifiers == args.KeyModifiers);  
+            }
 
             foreach (var item in rt)
             {
