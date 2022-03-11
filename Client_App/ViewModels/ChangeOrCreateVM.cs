@@ -364,10 +364,10 @@ namespace Client_App.ViewModels
                         if ((t as Form21).Sum_DB != true)
                         {
                             var form = (t as Form21);
-                            form.RefineMachineName_Hidden_Get.Set(true);
-                            form.MachineCode_Hidden_Get.Set(true);
-                            form.MachinePower_Hidden_Get.Set(true);
-                            form.NumberOfHoursPerYear_Hidden_Get.Set(true);
+                            //form.RefineMachineName_Hidden_Get.Set(true);
+                            //form.MachineCode_Hidden_Get.Set(true);
+                            //form.MachinePower_Hidden_Get.Set(true);
+                            //form.NumberOfHoursPerYear_Hidden_Get.Set(true);
                             ito[itemT.Key].Add(t);
                         }
                     }
@@ -520,15 +520,15 @@ namespace Client_App.ViewModels
                         if ((t as Form22).Sum_DB != true)
                         {
                             var form = (t as Form22);
-                            form.StoragePlaceName_Hidden_Get.Set(true);
-                            form.StoragePlaceCode_Hidden_Get.Set(true);
-                            form.PackName_Hidden_Get.Set(true);
-                            form.PackType_Hidden_Get.Set(true);
+                            //form.StoragePlaceName_Hidden_Get.Set(true);
+                            //form.StoragePlaceCode_Hidden_Get.Set(true);
+                            //form.PackName_Hidden_Get.Set(true);
+                            //form.PackType_Hidden_Get.Set(true);
 
-                            form.StoragePlaceName_Hidden_Set.Set(true);
-                            form.StoragePlaceCode_Hidden_Set.Set(true);
-                            form.PackName_Hidden_Set.Set(true);
-                            form.PackType_Hidden_Set.Set(true);
+                            //form.StoragePlaceName_Hidden_Set.Set(true);
+                            //form.StoragePlaceCode_Hidden_Set.Set(true);
+                            //form.PackName_Hidden_Set.Set(true);
+                            //form.PackType_Hidden_Set.Set(true);
                             ito[itemT.Key].Add(t);
                         }
                     }
