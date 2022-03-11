@@ -359,7 +359,6 @@ namespace Client_App.ViewModels
                 }
                 else
                 {
-
                     foreach (var t in itemT)
                     {
                         if ((t as Form21).Sum_DB != true)
@@ -372,7 +371,6 @@ namespace Client_App.ViewModels
                             ito[itemT.Key].Add(t);
                         }
                     }
-
                 }
             }
 

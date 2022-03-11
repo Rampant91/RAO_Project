@@ -1578,8 +1578,8 @@ namespace Client_App.ViewModels
                 var reps = findReports.FirstOrDefault();
                 if (reps != null)
                 {
-                    List<IKey> lst = item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
-
+                    var t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB == true || ((Form21)x).SumGroup_DB == true);
+                    List<IKey> lst = t.Count() > 0 ? item[param].ToList<IKey>().ToList() : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                     if (lst.Count > 0)
                     {
                         var count = StartRow;
