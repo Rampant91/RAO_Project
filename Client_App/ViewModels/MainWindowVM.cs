@@ -1231,10 +1231,6 @@ namespace Client_App.ViewModels
                                             var form = forms.FirstOrDefault() as Report;
                                             lst.Add(form);
 
-                                            //foreach (Report item in forms)
-                                            //{
-                                            //    lst.Add(item);
-                                            //}
                                             _Excel_Export_Rows(param, 2, masterheaderlength, worksheet, lst);
                                             _Excel_Export_Notes(param, 2, masterheaderlength, worksheetPrim, lst);
 
@@ -1581,8 +1577,17 @@ namespace Client_App.ViewModels
                 var reps = findReports.FirstOrDefault();
                 if (reps != null)
                 {
-                    List<IKey> lst = item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
-
+                    IEnumerable<IKey> t = null;
+                    if (param == "2.1")
+                    {
+                        t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB == true || ((Form21)x).SumGroup_DB == true);
+                    }
+                    if (param == "2.2")
+                    {
+                        t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB == true || ((Form22)x).SumGroup_DB == true);
+                    }
+                    //var t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB == true || ((Form21)x).SumGroup_DB == true);
+                    List<IKey> lst = t.Count() > 0 ? item[param].ToList<IKey>().ToList() : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                     if (lst.Count > 0)
                     {
                         var count = StartRow;
@@ -1705,6 +1710,13 @@ namespace Client_App.ViewModels
                                 count++;
                             }
                         }
+                        var new_number = 2;
+                        while (worksheet.Cells[new_number, 6].Value != null)
+                        {
+                            worksheet.Cells[new_number, 6].Value = new_number - 1;
+                            new_number++;
+                        }
+
                         StartRow = count;
                     }
                 }
@@ -2048,6 +2060,14 @@ namespace Client_App.ViewModels
                     ((Form212)(it)).ExcelRow(worksheet, Count, 1);
                 }
                 Count++;
+            }
+            var new_number = 1;
+            var row = 10;
+            while (worksheet.Cells[row, 1].Value != null)
+            {
+                worksheet.Cells[row, 1].Value = new_number;
+                new_number++;
+                row++;
             }
         }
         #endregion
