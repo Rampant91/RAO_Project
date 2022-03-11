@@ -439,7 +439,7 @@ namespace Client_App.ViewModels
 
                         sumRow.StoragePlaceName_DB = first.StoragePlaceName_DB;
                         sumRow.StoragePlaceCode_DB = first.StoragePlaceCode_DB;
-                        sumRow.PackName_DB = first.StoragePlaceName_DB;
+                        sumRow.PackName_DB = first.PackName_DB;
                         sumRow.PackType_DB = first.PackType_DB;
 
 
