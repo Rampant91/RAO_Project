@@ -1311,6 +1311,9 @@ namespace Client_App.ViewModels
                                             excelPackage.Workbook.Worksheets[param.Split('.')[0] + ".0"];
                                         ExcelWorksheet worksheetMain =
                                             excelPackage.Workbook.Worksheets[param];
+                                        worksheetTitul.Cells.Style.ShrinkToFit = true;
+                                        worksheetMain.Cells.Style.ShrinkToFit = true;
+                                        
                                         _Excel_Print_Titul_Export(param, worksheetTitul, form);
                                         _Excel_Print_SubMain_Export(param, worksheetMain, form);
                                         _Excel_Print_Notes_Export(param, worksheetMain, form);
