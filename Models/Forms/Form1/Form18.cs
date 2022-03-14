@@ -321,6 +321,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 Volume6_DB = value1;
             }
@@ -422,6 +429,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 Mass7_DB = value1;
             }
@@ -523,6 +537,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 SaltConcentration_DB = value1;
             }
@@ -666,6 +687,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 SpecificActivity_DB = value1;
             }
@@ -1218,6 +1246,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 Volume20_DB = value1;
             }
@@ -1293,6 +1328,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 Mass21_DB = value1;
             }
@@ -1369,6 +1411,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 TritiumActivity_DB = value1;
             }
@@ -1448,6 +1497,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 BetaGammaActivity_DB = value1;
             }
@@ -1527,6 +1583,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 AlphaActivity_DB = value1;
             }
@@ -1606,6 +1669,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 TransuraniumActivity_DB = value1;
             }
@@ -1830,9 +1900,10 @@ namespace Models
             bool a9 = value.Value == "99";
             bool a12 = value.Value == "51";
             bool a13 = value.Value == "52";
+            bool a14 = value.Value == "10";
             bool a10 = (int.Parse(value.Value) >= 21) && (int.Parse(value.Value) <= 29);
             bool a11 = (int.Parse(value.Value) >= 31) && (int.Parse(value.Value) <= 39);
-            if (!(a0 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13))
+            if (!(a0 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14))
             {
                 value.AddError("Код операции не может быть использован в форме 1.7");
                 return false;

@@ -307,6 +307,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 InfectedArea_DB = value1;
             }
@@ -386,6 +393,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 AvgGammaRaysDosePower_DB = value1;
             }
@@ -468,6 +482,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 MaxGammaRaysDosePower_DB = value1;
             }
@@ -550,6 +571,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 WasteDensityAlpha_DB = value1;
             }
@@ -631,6 +659,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 WasteDensityBeta_DB = value1;
             }

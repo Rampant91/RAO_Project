@@ -514,6 +514,13 @@ namespace Models
                         {
                             value1 = value1.Replace("+", "e+").Replace("-", "e-");
                         }
+                        try
+                        {
+                            var value2 = Convert.ToDouble(value1);
+                            value1 = String.Format("{0:0.######################################################e+00}", value2);
+                        }
+                        catch (Exception ex)
+                        { }
                     }
                     MachinePower_DB = value1;
                 }
@@ -676,6 +683,13 @@ namespace Models
                         {
                             value1 = value1.Replace("+", "e+").Replace("-", "e-");
                         }
+                        try
+                        {
+                            var value2 = Convert.ToDouble(value1);
+                            value1 = String.Format("{0:0.######################################################e+00}", value2);
+                        }
+                        catch (Exception ex)
+                        { }
                     }
                     NumberOfHoursPerYear_DB = value1;
                 }
@@ -954,6 +968,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 VolumeIn_DB = value1;
             }
@@ -1050,6 +1071,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 MassIn_DB = value1;
             }
@@ -1208,6 +1236,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 TritiumActivityIn_DB = value1;
             }
@@ -1295,6 +1330,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 BetaGammaActivityIn_DB = value1;
             }
@@ -1382,6 +1424,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 AlphaActivityIn_DB = value1;
             }
@@ -1469,6 +1518,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 TransuraniumActivityIn_DB = value1;
             }
@@ -1734,6 +1790,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 VolumeOut_DB = value1;
             }
@@ -1823,6 +1886,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 MassOut_DB = value1;
             }
@@ -1989,6 +2059,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 TritiumActivityOut_DB = value1;
             }
@@ -2076,6 +2153,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 BetaGammaActivityOut_DB = value1;
             }
@@ -2164,6 +2248,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 AlphaActivityOut_DB = value1;
             }
@@ -2256,6 +2347,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 TransuraniumActivityOut_DB = value1;
             }

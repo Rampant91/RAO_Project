@@ -266,6 +266,13 @@ namespace Models
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
+                    try
+                    {
+                        var value2 = Convert.ToDouble(value1);
+                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
                 Activity_DB = value1;
             }
