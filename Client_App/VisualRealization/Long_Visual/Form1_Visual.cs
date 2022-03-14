@@ -660,6 +660,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows12",
@@ -872,6 +874,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm13.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -1086,6 +1090,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows14",
@@ -1299,6 +1305,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows15",
@@ -1511,6 +1519,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm16.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -1726,6 +1736,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows17",
@@ -1938,6 +1950,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm18.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -2152,6 +2166,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm19.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {

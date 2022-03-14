@@ -475,6 +475,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows21",
@@ -691,6 +693,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows22",
@@ -896,6 +900,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm23.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -1103,6 +1109,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows24",
@@ -1308,6 +1316,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm25.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -1522,6 +1532,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm26.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -1749,6 +1761,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm27.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -2021,6 +2035,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows28",
@@ -2226,6 +2242,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm29.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
@@ -2433,6 +2451,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows210",
@@ -2639,6 +2659,8 @@ namespace Client_App.Long_Visual
             };
             grd.SetValue(Grid.RowProperty, 2);
 
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows211",
@@ -2844,6 +2866,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm212.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {
