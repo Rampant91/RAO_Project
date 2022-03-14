@@ -1155,10 +1155,10 @@ namespace Client_App.Controls.DataGrid
                     if (searchText != null)
                     {
                         searchText = searchText.ToLower();
-                        NowPage = "1";
                         searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
                         if (searchText != "")
                         {
+                            //NowPage = "1";
                             foreach (var it in tmp_coll)
                             {
                                 var rowsText = ((Reports)it).Master_DB.OkpoRep.Value +
