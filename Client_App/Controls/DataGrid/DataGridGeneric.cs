@@ -1181,8 +1181,14 @@ namespace Client_App.Controls.DataGrid
                 {
                     IKeyCollection tmp2_coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
                     var searchText = ((TextBox)((StackPanel)((StackPanel)((Border)((Grid)((Panel)this.Content).Children[0]).Children[0]).Child).Children[0]).Children[0]).Text;
-                    if (searchText != null)
+                    if (searchText != null && searchText != "")
                     {
+                        NowPage = "1";
+                        num = Convert.ToInt32(_nowPage);
+                        offset = (num - 1) * (PageSize);
+                        offsetMax = num * (PageSize);
+
+
                         searchText = searchText.ToLower();
                         searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
                         if (searchText != "")
