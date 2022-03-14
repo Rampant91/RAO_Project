@@ -303,7 +303,7 @@ namespace Client_App.Long_Visual
         public static Control Form11_Visual(INameScope scp)
         {
             ScrollViewer vw = new ScrollViewer();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;    
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
             Binding ind = new Binding()
@@ -445,6 +445,8 @@ namespace Client_App.Long_Visual
                 [!DataGridForm11.FixedContentProperty] = ind
             };
             grd.SetValue(Grid.RowProperty, 2);
+
+            vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
             Binding b = new Binding
             {

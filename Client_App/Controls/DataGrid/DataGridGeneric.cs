@@ -457,6 +457,24 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region ScrollLeftRight
+        public static readonly DirectProperty<DataGrid<T>, int> ScrollLeftRightProperty =
+             AvaloniaProperty.RegisterDirect<DataGrid<T>, int>(
+                nameof(ScrollLeftRight),
+                o => o.ScrollLeftRight,
+                (o, v) => o.ScrollLeftRight = v);
+
+        private int _ScrollLeftRight = 0;
+        public int ScrollLeftRight
+        {
+            get => _ScrollLeftRight;
+            set
+            {
+                SetAndRaise(ScrollLeftRightProperty, ref _ScrollLeftRight, value);
+            }
+        }
+        #endregion
+
         #region PageCount
         public static readonly DirectProperty<DataGrid<T>, string> PageCountProperty =
             AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
@@ -1144,6 +1162,7 @@ namespace Client_App.Controls.DataGrid
                 if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
                 {
                     LastPressedItem = paramRowColumn;
+                    ScrollLeftRight = 0;
                     SetSelectedControls();
                 }
             }
@@ -1158,9 +1177,30 @@ namespace Client_App.Controls.DataGrid
                 var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
                 if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
                 {
+                    var pr = ((Panel)this.Content).Bounds.Width;
+                    if (LastPressedItem[1] < paramRowColumn[1] && paramPos.X > pr / 4)
+                    {
+                        ScrollLeftRight += 100;
+                    }
+                    if (LastPressedItem[1] > paramRowColumn[1] && (paramPos.X < pr - 700  || paramPos.X < pr / 4))
+                    {
+                        ScrollLeftRight -= 100;
+                    }
                     LastPressedItem = paramRowColumn;
                     SetSelectedControls();
                 }
+            }
+            else
+            {
+                //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+                //if (paramPos.X > 100)
+                //{
+                //    FixedContentN += 20;
+                //}
+                //if (paramPos.X < 0)
+                //{
+                //    FixedContentN -= 20;
+                //}
             }
         }
         #endregion
