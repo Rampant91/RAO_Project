@@ -10,7 +10,6 @@ using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
-
 namespace Client_App.Views
 {
     public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
