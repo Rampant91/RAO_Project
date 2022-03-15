@@ -933,6 +933,11 @@ namespace Client_App.ViewModels
                     var Level = findStructure.Level;
                     var tre = findStructure.GetLevel(Level - 1);
 
+                    if (maxColumn-1 == columnsText.Length) 
+                    {
+                        columnsText = columnsText[1..columnsText.Length];
+                    }
+
                     foreach (var prop in props)
                     {
                         var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
@@ -945,10 +950,10 @@ namespace Client_App.ViewModels
                                 {
                                     columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                                 }
-                                else
-                                {
-                                    columnNum = Convert.ToInt32(attr.Number);
-                                }
+                                //else
+                                //{
+                                //    columnNum = Convert.ToInt32(attr.Number);
+                                //}
                                 //var columnNum = Convert.ToInt32(attr.Number);
                                 if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {

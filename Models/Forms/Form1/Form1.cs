@@ -91,6 +91,7 @@ namespace Models.Abstracts
         }
         protected virtual bool OperationCode_Validation(RamAccess<string> value)//Ready
         {
+
             value.ClearErrors();
             return true;
         }
