@@ -173,7 +173,7 @@ namespace Models
                 value.AddError("Недопустимое значение"); return false;
             }
             var tmp = value.Value;
-            if (tmp.Length == 11)
+            if (tmp.Length == 8)
             {
                 Regex a0 = new Regex("^[1-9]");
                 if (!a0.IsMatch(tmp.Substring(0, 1)))
