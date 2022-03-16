@@ -148,12 +148,12 @@ namespace Models.Collections
             regNoR.Binding = nameof(Reports.Master)+"."+nameof(Report.RegNoRep);
 
             DataGridColumns ShortJurLicoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            ShortJurLicoR.SizeCol = 305;
+            ShortJurLicoR.SizeCol = 918;
             ShortJurLicoR.Binding = nameof(Reports.Master) + "." + nameof(Report.ShortJurLicoRep);
             regNoR += ShortJurLicoR;
 
             DataGridColumns okpoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            okpoR.SizeCol = 62;
+            okpoR.SizeCol = 124;
             okpoR.Binding = nameof(Reports.Master) + "." + nameof(Report.OkpoRep);
             regNoR += okpoR;
 

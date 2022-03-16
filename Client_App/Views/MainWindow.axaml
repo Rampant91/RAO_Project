@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
-        MinHeight="200" MinWidth="200"
+        MinHeight="200" MinWidth="200" MaxWidth="1743"
         x:Class="Client_App.Views.MainWindow"
         xmlns:Converters="using:Client_App.Converters"
         Icon="/Assets/logo.png"
@@ -45,7 +45,7 @@
         </MenuItem>
       </MenuItem>
     </Menu>
-    <Panel Margin="5,5,5,5" x:Name="MainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Panel Margin="5,5,5,5" x:Name="MainPanel" HorizontalAlignment="Left" VerticalAlignment="Stretch">
       <TabControl SelectedIndex="{Binding FormModel_Local.ChooseTab}">
         <TabItem x:Name="Forms1" Header="Формы 1">
           <Panel x:Name="Forms_p1" VerticalAlignment="Stretch" >
@@ -56,16 +56,15 @@
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition MaxWidth="452"></ColumnDefinition>
-                  <ColumnDefinition ></ColumnDefinition>
+                  <ColumnDefinition Width="1122"></ColumnDefinition>
+                  <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
-                  <Panel x:Name="Forms_p1_0" Grid.Column="0">
-				  </Panel>
+                  <Panel x:Name="Forms_p1_0" Grid.Column="0"/>
                 </ScrollViewer>
                 <Panel x:Name="Forms_p1_B" Grid.Column="1"/>
               </Grid>
-              <Panel Margin="0,5,0,0" x:Name="Forms_p1_X" VerticalAlignment="Stretch" Grid.Row="1">
+              <Panel Margin="0,5,0,0" x:Name="Forms_p1_X" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Row="1">
 	          </Panel>  
             </Grid>
           </Panel>
@@ -79,15 +78,15 @@
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition MaxWidth="452"></ColumnDefinition>
-                  <ColumnDefinition></ColumnDefinition>
+					<ColumnDefinition Width="1122"></ColumnDefinition>
+					<ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
                   <Panel x:Name="Forms_p2_0" Grid.Column="0"/>
                 </ScrollViewer>
                 <Panel x:Name="Forms_p2_B" Grid.Column="1"/>
               </Grid>
-              <Panel Margin="0,5,0,0" x:Name="Forms_p2_X" VerticalAlignment="Stretch" Grid.Row="1"/>
+              <Panel Margin="0,5,0,0" x:Name="Forms_p2_X" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Row="1"/>
             </Grid>
           </Panel>
         </TabItem>

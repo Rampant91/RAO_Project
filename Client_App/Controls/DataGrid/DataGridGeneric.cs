@@ -1095,8 +1095,11 @@ namespace Client_App.Controls.DataGrid
 
                         this.ContextMenu.Close();
                         var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1])).FirstOrDefault();
-                        this.ContextMenu.PlacementTarget = tmp1;
-                        this.ContextMenu.Open();
+                        if (tmp1.IsVisible)
+                        {
+                            this.ContextMenu.PlacementTarget = tmp1;
+                            this.ContextMenu.Open();
+                        }
 
                     }
                 }
