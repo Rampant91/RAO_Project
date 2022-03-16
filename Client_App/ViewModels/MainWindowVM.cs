@@ -1586,7 +1586,11 @@ namespace Client_App.ViewModels
                     {
                         t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB == true || ((Form22)x).SumGroup_DB == true);
                     }
-                    //var t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB == true || ((Form21)x).SumGroup_DB == true);
+                    if (param != "2.1" && param != "2.2") 
+                    {
+                        t = item[param].ToList<IKey>();
+                    }
+                    
                     List<IKey> lst = t.Count() > 0 ? item[param].ToList<IKey>().ToList() : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                     if (lst.Count > 0)
                     {
@@ -1706,7 +1710,7 @@ namespace Client_App.ViewModels
                                     }
                                 }
 
-                                item.ExcelRow(worksheet, count, yu+1);
+                                item.ExcelRow(worksheet, count, yu);
                                 count++;
                             }
                         }
