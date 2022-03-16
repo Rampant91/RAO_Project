@@ -1633,22 +1633,68 @@ namespace Client_App.Controls.DataGrid
                         }
                         if (IsReadable || item.Blocked || IsReadableSum)
                         {
-                            textBox = new TextBlock()
+                            if (this.Sum)
                             {
-                                [!TextBlock.DataContextProperty] = new Binding(item.Binding),
-                                [!TextBlock.TextProperty] = new Binding("Value"),
-                                [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty]
-                            };
-                            if (item.Blocked)
-                            {
-                                textBox[!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty];
+                                var f22 = item.Binding == "PackQuantity" || item.Binding == "VolumeInPack" || item.Binding == "MassInPack";
+                                if (f22)
+                                {
+                                    textBox = new TextBox()
+                                    {
+                                        [!TextBox.DataContextProperty] = new Binding(item.Binding),
+                                        [!TextBox.TextProperty] = new Binding("Value"),
+                                        [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                                    };
+                                    ((TextBox)textBox).TextAlignment = TextAlignment.Left;
+                                    textBox.VerticalAlignment = VerticalAlignment.Stretch;
+                                    textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+                                    textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                                    if (item.IsTextWrapping)
+                                    {
+                                        ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
+                                        ((TextBox)textBox).AcceptsReturn = true;
+                                    }
+                                }
+                                else
+                                {
+                                    textBox = new TextBlock()
+                                    {
+                                        [!TextBlock.DataContextProperty] = new Binding(item.Binding),
+                                        [!TextBlock.TextProperty] = new Binding("Value"),
+                                        [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty]
+                                    };
+
+                                    if (item.Blocked)
+                                    {
+                                        textBox[!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty];
+                                    }
+                                    ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
+                                    textBox.VerticalAlignment = VerticalAlignment.Center;
+                                    textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+                                    ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
+                                    textBox.Height = 30;
+                                    textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                                }
                             }
-                            ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
-                            textBox.VerticalAlignment = VerticalAlignment.Center;
-                            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                            ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
-                            textBox.Height = 30;
-                            textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                            else
+                            {
+                                textBox = new TextBlock()
+                                {
+                                    [!TextBlock.DataContextProperty] = new Binding(item.Binding),
+                                    [!TextBlock.TextProperty] = new Binding("Value"),
+                                    [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty]
+                                };
+
+                                if (item.Blocked)
+                                {
+                                    textBox[!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty];
+                                }
+                                ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
+                                textBox.VerticalAlignment = VerticalAlignment.Center;
+                                textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+                                ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
+                                textBox.Height = 30;
+                                textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                            }
                         }
                         else
                         {
