@@ -1591,10 +1591,21 @@ namespace Client_App.ViewModels
                     if (param == "2.1")
                     {
                         t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB == true || ((Form21)x).SumGroup_DB == true);
+                        {
+                            t = item[param].ToList<IKey>();
+                            if (item[param].ToList<IKey>().Count() > 0 && t.Count() == 0)
+                            {
+                                t = item[param].ToList<IKey>();
+                            }
+                        }
                     }
                     if (param == "2.2")
                     {
                         t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB == true || ((Form22)x).SumGroup_DB == true);
+                        if (item[param].ToList<IKey>().Count() > 0 && t.Count() == 0) 
+                        {
+                            t = item[param].ToList<IKey>();
+                        }
                     }
                     if (param != "2.1" && param != "2.2") 
                     {
