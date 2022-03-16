@@ -840,7 +840,11 @@ namespace Client_App.ViewModels
                         foreach (var item in param)
                         {
                             var a = DateTime.Now.Date;
-                            ((Report)item).ExportDate.Value = a.Day + "." + a.Month + "." + a.Year;
+                            var aDay = a.Day.ToString();
+                            var aMonth = a.Month.ToString();
+                            if (aDay.Length < 2) aDay = "0" + aDay;
+                            if (aMonth.Length < 2) aMonth = "0" + aMonth;
+                            ((Report)item).ExportDate.Value = aDay + "." + aMonth + "." + a.Year;
                         }
                         if (res != "")
                         {
@@ -849,7 +853,13 @@ namespace Client_App.ViewModels
                                            dt.Year + "_" + dt.Month + "_" + dt.Day + "_" + dt.Hour + "_" + dt.Minute +
                                            "_" + dt.Second;
                             var rep = (Report)obj;
-                            rep.ExportDate.Value = dt.Day + "." + dt.Month + "." + dt.Year;
+
+                            var dtDay = dt.Day.ToString();
+                            var dtMonth = dt.Month.ToString();
+                            if (dtDay.Length < 2) dtDay = "0" + dtDay;
+                            if (dtMonth.Length < 2) dtMonth = "0" + dtMonth;
+
+                            rep.ExportDate.Value = dtDay + "." + dtMonth + "." + dt.Year;
                             var findReports = from Reports t in Local_Reports.Reports_Collection
                                               where t.Report_Collection.Contains(rep)
                                               select t;
