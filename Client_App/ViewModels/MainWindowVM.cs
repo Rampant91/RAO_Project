@@ -413,14 +413,14 @@ namespace Client_App.ViewModels
             try
             {
                 var tb11 = from Reports t in Local_Reports.Reports_Collection10
-                           where (item.Master.Rows10[0].Okpo_DB != "") &&
-                           (t.Master.Rows10[0].Okpo_DB != "") &&
-                           (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
-                           (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB) &&
-                           (item.Master.Rows10[0].RegNo_DB != "") &&
-                           (t.Master.Rows10[0].RegNo_DB != "") &&
-                           (t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
-                           (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB)
+                           where ((item.Master.Rows10[0].Okpo_DB != "") &&
+                           (t.Master.Rows10[0].Okpo_DB != "")) ||
+                           ((t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
+                           (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)) &&
+                           ((item.Master.Rows10[0].RegNo_DB != "") &&
+                           (t.Master.Rows10[0].RegNo_DB != "")) ||
+                           ((t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
+                           (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB))
                            select t;
                 return tb11.FirstOrDefault();
             }
@@ -433,18 +433,23 @@ namespace Client_App.ViewModels
         {
             try
             {
-                var tb21 = from Reports t in Local_Reports.Reports_Collection20
-                           where (item.Master.Rows20[0].Okpo_DB != "") &&
-                           (t.Master.Rows20[0].Okpo_DB != "") &&
-                           (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
-                           (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB) &&
-                           (item.Master.Rows20[0].RegNo_DB != "") &&
-                           (t.Master.Rows20[0].RegNo_DB != "") &&
-                           (t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
-                           (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB)
+                var tb2 = item.Report_Collection.Where(x => x.FormNum_DB[0].ToString().Equals("2"));
+                if (tb2.Count() != 0)
+                {
+                    var tb21 = from Reports t in Local_Reports.Reports_Collection20
+                               where ((item.Master.Rows20[0].Okpo_DB != "") &&
+                               (t.Master.Rows20[0].Okpo_DB != "")) ||
+                               ((t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
+                               (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB)) &&
+                               ((item.Master.Rows20[0].RegNo_DB != "") &&
+                               (t.Master.Rows20[0].RegNo_DB != "")) ||
+                               ((t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
+                               (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB))
 
-                           select t;
-                return tb21.FirstOrDefault();
+                               select t;
+                    return tb21.FirstOrDefault();
+                }
+                return null;
             }
             catch
             {
@@ -566,8 +571,8 @@ namespace Client_App.ViewModels
                         DateTimeOffset en_elem = DateTimeOffset.Now;
                         try
                         {
-                            st_elem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.StartPeriod_DB) : DateTime.Parse(elem.EndPeriod_DB);
-                            en_elem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.StartPeriod_DB) : DateTime.Parse(elem.EndPeriod_DB);
+                            st_elem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.EndPeriod_DB) : DateTime.Parse(elem.StartPeriod_DB);
+                            en_elem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.EndPeriod_DB) : DateTime.Parse(elem.StartPeriod_DB);
                         }
                         catch (Exception ex)
                         { }
@@ -576,8 +581,8 @@ namespace Client_App.ViewModels
                         DateTimeOffset en_it = DateTimeOffset.Now;
                         try
                         {
-                            st_it = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.StartPeriod_DB) : DateTime.Parse(it.EndPeriod_DB);
-                            en_it = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.StartPeriod_DB) : DateTime.Parse(it.EndPeriod_DB);
+                            st_it = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.EndPeriod_DB) : DateTime.Parse(it.StartPeriod_DB);
+                            en_it = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.EndPeriod_DB) : DateTime.Parse(it.StartPeriod_DB);
                         }
                         catch (Exception ex)
                         {
@@ -637,7 +642,7 @@ namespace Client_App.ViewModels
                                 await ChechAanswer(an, first11, elem, it);
                             }
                         }
-                        if ((st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem) && it.FormNum.Value == elem.FormNum.Value)
+                        if ((st_elem > st_it && st_elem < en_it || en_elem > st_it && en_elem < en_it) && it.FormNum.Value == elem.FormNum.Value)
                         {
                             not_in = true;
                             var str = "Пересечение даты в " + elem.FormNum_DB + " " +
@@ -979,8 +984,10 @@ namespace Client_App.ViewModels
                             Form2_Visual.tmpVM = frm;
                             if (frm.isSum)
                             {
+                                //var sumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
                                 await frm.UnSum21();
                                 await frm.Sum21();
+                                //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
                             }
                         }
                         if (numForm == "2.2")
@@ -988,8 +995,28 @@ namespace Client_App.ViewModels
                             Form2_Visual.tmpVM = frm;
                             if (frm.isSum)
                             {
+                                var sumRow = frm.Storage.Rows22.Where(x => x.Sum_DB == true).ToList();
+                                Dictionary<long, List<string>> dic = new Dictionary<long, List<string>> ();
+                                foreach (var oldR in sumRow)
+                                {
+                                    dic[oldR.NumberInOrder_DB] = new List<String>() { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
+                                }
+
                                 await frm.UnSum22();
                                 await frm.Sum22();
+                                var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB == true);
+                                foreach (var newR in newSumRow)
+                                {
+                                    foreach (var oldR in dic)
+                                    {
+                                        if (newR.NumberInOrder_DB == oldR.Key)
+                                        {
+                                            newR.PackQuantity_DB = oldR.Value[0];
+                                            newR.VolumeInPack_DB = oldR.Value[1];
+                                            newR.MassInPack_DB = oldR.Value[2];
+                                        }
+                                    }
+                                }
                             }
                         }
                         await ShowDialog.Handle(frm);
