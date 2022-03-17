@@ -413,14 +413,18 @@ namespace Client_App.ViewModels
             try
             {
                 var tb11 = from Reports t in Local_Reports.Reports_Collection10
-                           where ((item.Master.Rows10[0].Okpo_DB != "") &&
-                           (t.Master.Rows10[0].Okpo_DB != "")) ||
+                           where (((item.Master.Rows10[0].Okpo_DB == "") &&
+                           (t.Master.Rows10[0].Okpo_DB == "")) ||
                            ((t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
-                           (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)) &&
-                           ((item.Master.Rows10[0].RegNo_DB != "") &&
-                           (t.Master.Rows10[0].RegNo_DB != "")) ||
+                           (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB))) &&
+                           (((item.Master.Rows10[0].RegNo_DB == "") &&
+                           (t.Master.Rows10[0].RegNo_DB == "")) ||
                            ((t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
-                           (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB))
+                           (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB))) &&
+                           (((item.Master.Rows10[0].ShortJurLico_DB == "") &&
+                           (t.Master.Rows10[0].ShortJurLico_DB == "")) ||
+                           ((t.Master.Rows10[0].ShortJurLico_DB == item.Master.Rows10[0].ShortJurLico_DB) &&
+                           (t.Master.Rows10[1].ShortJurLico_DB == item.Master.Rows10[1].ShortJurLico_DB)))
                            select t;
                 return tb11.FirstOrDefault();
             }
@@ -437,15 +441,18 @@ namespace Client_App.ViewModels
                 if (tb2.Count() != 0)
                 {
                     var tb21 = from Reports t in Local_Reports.Reports_Collection20
-                               where ((item.Master.Rows20[0].Okpo_DB != "") &&
-                               (t.Master.Rows20[0].Okpo_DB != "")) ||
+                               where (((item.Master.Rows10[0].Okpo_DB == "") &&
+                               (t.Master.Rows20[0].Okpo_DB == "")) ||
                                ((t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
-                               (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB)) &&
-                               ((item.Master.Rows20[0].RegNo_DB != "") &&
-                               (t.Master.Rows20[0].RegNo_DB != "")) ||
+                               (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB))) &&
+                               (((item.Master.Rows20[0].RegNo_DB == "") &&
+                               (t.Master.Rows20[0].RegNo_DB == "")) ||
                                ((t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
-                               (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB))
-
+                               (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB))) &&
+                               (((item.Master.Rows20[0].ShortJurLico_DB == "") &&
+                               (t.Master.Rows20[0].ShortJurLico_DB == "")) ||
+                               ((t.Master.Rows20[0].ShortJurLico_DB == item.Master.Rows20[0].ShortJurLico_DB) &&
+                               (t.Master.Rows20[1].ShortJurLico_DB == item.Master.Rows20[1].ShortJurLico_DB)))
                                select t;
                     return tb21.FirstOrDefault();
                 }
@@ -819,7 +826,15 @@ namespace Client_App.ViewModels
                             }
                             if (first21 == null && first11 == null)
                             {
+                                var rep = item.Report_Collection.FirstOrDefault();
+                                var str = "Был добавлен отчет по форме " + rep.FormNum_DB + " за период " + rep.StartPeriod_DB + "-" + rep.EndPeriod_DB + "\n" +
+                                    "Организации:" + "\n" +
+                                    "1.Регистрационный номер : " + item.Master.RegNoRep.Value + "\n" +
+                                    "2.Сокращенное наименование : " + item.Master.ShortJurLicoRep.Value + "\n" +
+                                    "3.ОКПО : " + item.Master.OkpoRep.Value + "\n"; ;     
+                                var an = await ShowMessage.Handle(new List<string>(){str,"Ок"});
                                 Local_Reports.Reports_Collection.Add(item);
+                                await Local_Reports.Reports_Collection.QuickSortAsync();
                             }
                         }
                     }
