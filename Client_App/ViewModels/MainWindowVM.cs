@@ -827,13 +827,16 @@ namespace Client_App.ViewModels
                             if (first21 == null && first11 == null)
                             {
                                 var rep = item.Report_Collection.FirstOrDefault();
-                                var str = "Был добавлен отчет по форме " + rep.FormNum_DB + " за период " + rep.StartPeriod_DB + "-" + rep.EndPeriod_DB + ",\n" +
-                                    "номер корректировки " + rep.CorrectionNumber_DB + ", количество строк " + rep.Rows.Count + ".\n" +
-                                    "Организации:" + "\n" +
-                                    "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
-                                    "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
-                                    "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;     
-                                var an = await ShowMessage.Handle(new List<string>(){str,"Ок"});
+                                if (rep != null)
+                                {
+                                    var str = "Был добавлен отчет по форме " + rep.FormNum_DB + " за период " + rep.StartPeriod_DB + "-" + rep.EndPeriod_DB + ",\n" +
+                                        "номер корректировки " + rep.CorrectionNumber_DB + ", количество строк " + rep.Rows.Count + ".\n" +
+                                        "Организации:" + "\n" +
+                                        "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
+                                        "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
+                                        "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;
+                                    var an = await ShowMessage.Handle(new List<string>() { str, "Ок" });
+                                }
                                 Local_Reports.Reports_Collection.Add(item);
                                 await Local_Reports.Reports_Collection.QuickSortAsync();
                             }
