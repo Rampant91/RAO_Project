@@ -910,10 +910,10 @@ namespace Client_App.ViewModels
                                             filename2 += rp.Master.RegNoRep.Value;
                                             filename2 += "_" + rp.Master.OkpoRep.Value;
 
-                                            filename2 += "_" + rep.CorrectionNumber_DB;
                                             filename2 += "_" + rep.FormNum_DB;
                                             filename2 += "_" + rep.StartPeriod_DB;
                                             filename2 += "_" + rep.EndPeriod_DB;
+                                            filename2 += "_" + rep.CorrectionNumber_DB;
                                         }
                                         else
                                         {
@@ -922,9 +922,9 @@ namespace Client_App.ViewModels
                                                 filename2 += rp.Master.RegNoRep.Value;
                                                 filename2 += rp.Master.OkpoRep.Value;
 
-                                                filename2 += "_" + rep.CorrectionNumber_DB;
                                                 filename2 += "_" + rep.FormNum_DB;
                                                 filename2 += "_" + rep.Year_DB;
+                                                filename2 += "_" + rep.CorrectionNumber_DB;
                                             }
                                         }
 
