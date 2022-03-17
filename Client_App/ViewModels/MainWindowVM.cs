@@ -2083,14 +2083,14 @@ namespace Client_App.ViewModels
                 }
                 Count++;
             }
-            var new_number = 1;
-            var row = 10;
-            while (worksheet.Cells[row, 1].Value != null)
-            {
-                worksheet.Cells[row, 1].Value = new_number;
-                new_number++;
-                row++;
-            }
+            //var new_number = 1;
+            //var row = 10;
+            //while (worksheet.Cells[row, 1].Value != null)
+            //{
+            //    worksheet.Cells[row, 1].Value = new_number;
+            //    new_number++;
+            //    row++;
+            //}
         }
         #endregion
 
