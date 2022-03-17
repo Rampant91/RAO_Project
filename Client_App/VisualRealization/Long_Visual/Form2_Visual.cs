@@ -377,7 +377,7 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммация:"));
+            content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммирование:"));
             var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
             content.Children.Add(testS);
             leftStPT.Children.Add(content);
@@ -594,7 +594,7 @@ namespace Client_App.Long_Visual
             {
                 Orientation = Orientation.Horizontal
             };
-            content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммация:"));
+            content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммирование:"));
             var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
             content.Children.Add(testS);
             leftStPT.Children.Add(content);
