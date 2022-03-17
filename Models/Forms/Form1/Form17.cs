@@ -250,7 +250,8 @@ namespace Models
         }
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
         #endregion
 
@@ -312,7 +313,8 @@ namespace Models
         }
         private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
         #endregion
 
@@ -373,7 +375,8 @@ namespace Models
         }
         private bool PackFactoryNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
         #endregion
 
@@ -730,7 +733,8 @@ namespace Models
         }
         private bool PassportNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
         #endregion
 
@@ -772,12 +776,7 @@ namespace Models
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (value.Value.Equals("="))
+            if (string.IsNullOrEmpty(value.Value)|| value.Value.Equals("-"))
             {
                 return true;
             }
@@ -860,14 +859,10 @@ namespace Models
         private bool SpecificActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 value.AddError("Поле не заполнено");
                 return false;
-            }
-            if (value.Value.Equals("="))
-            {
-                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -1153,8 +1148,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                return true;
             }
             //List<string> spr = new List<string>();
             //if (!spr.Contains(value.Value))
@@ -1231,7 +1225,10 @@ namespace Models
             //    value.AddError("Недопустимое значение"); return false;
             //}
             //return true;
-            if (value.Value == "-") return true;
+            if (String.IsNullOrEmpty(value.Value)|| (value.Value == "-"))
+            {
+                return true;
+            }
             Regex a = new Regex("^[0-9]{8}$");
             if (!a.IsMatch(value.Value))
             {
@@ -1321,11 +1318,7 @@ namespace Models
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
-            {
-                return true;
-            }
-            if (value.Value.Equals("-"))
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
@@ -1428,8 +1421,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var tmp = value.Value.ToLower();
             tmp = tmp.Replace("х", "x");
@@ -1482,8 +1474,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value.Length == 1)
             {
@@ -1575,8 +1566,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -1657,8 +1647,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -1720,8 +1709,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value.Equals("-"))
             {
@@ -1804,8 +1792,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -1890,8 +1877,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -1976,8 +1962,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -2062,8 +2047,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -2128,7 +2112,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                return false;
+                return true;
             }
             if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
             {
@@ -2144,8 +2128,7 @@ namespace Models
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (!Spravochniks.SprOpCodes.Contains(value.Value))
             {

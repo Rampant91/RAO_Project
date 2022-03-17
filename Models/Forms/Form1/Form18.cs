@@ -237,8 +237,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -337,8 +336,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -445,8 +443,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -553,8 +550,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -792,8 +788,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (OKSM.Contains(value.Value.ToUpper()))
             {
@@ -899,8 +894,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value.Equals("-")||value.Value.Equals("Минобороны"))
             {
@@ -1158,8 +1152,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var tmp = value.Value.ToLower();
             tmp = tmp.Replace("х", "x");
@@ -1212,8 +1205,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value.Length == 1)
             {
@@ -1305,8 +1297,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -1387,8 +1378,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -1470,8 +1460,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -1556,8 +1545,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -1642,8 +1630,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -1728,8 +1715,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "-")
             {
@@ -1794,8 +1780,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if(value.Value == "-")
             {
@@ -1956,7 +1941,8 @@ namespace Models
 
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
 
         protected override bool DocumentVid_Validation(RamAccess<byte?> value)
@@ -1978,8 +1964,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value == "прим.")
             {
