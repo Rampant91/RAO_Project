@@ -333,7 +333,7 @@ namespace Models
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = WasteSourceName_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = RadionuclidName_DB;
             worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = AllowedActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = FactedActivity_DB.Replace(" ", "") == "-" || FactedActivity_DB.Replace(" ", "") == "" || FactedActivity_DB.ToLower().Equals("без упаковки") || FactedActivity_DB.ToLower().Equals("прим.") ? FactedActivity_DB : Convert.ToDouble(FactedActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","));
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = FactedActivity_DB.Replace(" ", "") == "-" || FactedActivity_DB.Replace(" ", "") == "" || FactedActivity_DB.Equals("без упаковки") || FactedActivity_DB.Equals("прим.") ? FactedActivity_DB : Convert.ToDouble(FactedActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","));
 
             return 4;
         }

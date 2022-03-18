@@ -6,19 +6,6 @@ namespace Test
 {
     class Program
     {
-        class B
-        {
-        }
-
-        class D : B
-        {
-
-        }
-
-        class G<T>
-        {
-            public static UInt64 Id;
-        }
 
 
         static void Main(string[] args)
@@ -35,18 +22,8 @@ namespace Test
             //Form11 test11 = new();
             //var t = test11.GetColumnStructure();
 
-
-            G<D>.Id = 1;
-            G<B>.Id = 2;
-            Console.WriteLine("{0}{1}{2}", G<ulong>.Id, G<D>.Id, G<B>.Id);
-
-
-
-
-
-
-
-
+            var test = "прим.";
+            Console.WriteLine(test.Equals("прим."));
             Console.ReadKey();
 
         }
