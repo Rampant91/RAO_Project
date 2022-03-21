@@ -441,6 +441,7 @@ namespace Models
             {
                 #region NumberInOrder (1)
                 DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                NumberInOrderR.SetSizeColToAllLevels(88);
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
                 NumberInOrderR.Blocked = true;
                 NumberInOrderR.ChooseLine = true;
