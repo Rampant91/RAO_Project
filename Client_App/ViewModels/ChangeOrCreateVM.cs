@@ -960,7 +960,7 @@ namespace Client_App.ViewModels
                     var props = item.GetType().GetProperties();
 
                     var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
-                    if (rowText.Length > 23 && Convert.ToInt32(param[1]) == 0)
+                    if (Convert.ToInt32(param[1]) == 0)
                     {
                         rowText = rowText.Remove(0, 2);
                     }
@@ -970,10 +970,10 @@ namespace Client_App.ViewModels
                     var Level = findStructure.Level;
                     var tre = findStructure.GetLevel(Level - 1);
 
-                    if (maxColumn-1 == columnsText.Length) 
-                    {
-                        columnsText = columnsText[1..columnsText.Length];
-                    }
+                    //if (maxColumn-1 != columnsText.Length) 
+                    //{
+                    //    columnsText = columnsText[1..columnsText.Length];
+                    //}
 
                     foreach (var prop in props)
                     {
