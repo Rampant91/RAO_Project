@@ -436,7 +436,7 @@ namespace Models
             worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = RecieverTypeCode_DB;
             worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = PoolDistrictName_DB;
             worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = AllowedWasteRemovalVolume_DB;
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = double.TryParse(RemovedWasteVolume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? Convert.ToDouble(RemovedWasteVolume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ",")) : RemovedWasteVolume_DB;
+            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value =  RemovedWasteVolume_DB == null ? "" : double.TryParse(RemovedWasteVolume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : RemovedWasteVolume_DB;
             return 6;
         }
 
