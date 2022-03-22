@@ -1755,22 +1755,22 @@ namespace Client_App.ViewModels
                                 {
                                     if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                                     {
-                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1);
+                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1)+1;
                                     }
                                     else
                                     {
-                                        yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1);
+                                        yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1)+1;
                                     }
                                 }
                                 else
                                 {
                                     if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
                                     {
-                                        yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1);
+                                        yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1)+1;
                                     }
                                     else
                                     {
-                                        yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1);
+                                        yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1)+1;
                                     }
                                 }
 
@@ -1778,13 +1778,15 @@ namespace Client_App.ViewModels
                                 count++;
                             }
                         }
-                        var new_number = 2;
-                        while (worksheet.Cells[new_number, 6].Value != null)
+                        if (param.Split('.')[0] == "2")
                         {
-                            worksheet.Cells[new_number, 6].Value = new_number - 1;
-                            new_number++;
+                            var new_number = 2;
+                            while (worksheet.Cells[new_number, 6].Value != null)
+                            {
+                                worksheet.Cells[new_number, 6].Value = new_number - 1;
+                                new_number++;
+                            }
                         }
-
                         StartRow = count;
                     }
                 }
