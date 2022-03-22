@@ -781,6 +781,7 @@ namespace Client_App.ViewModels
                 {
                     var lst = new List<IKey>(Storage.Rows.GetEnumerable());
                     var countParam = param;
+                    var minItem = param.Min(x=>x.Order);
                     var maxItem = param.Max(x=>x.Order);
                     foreach (Form item in param) 
                     {
@@ -789,12 +790,14 @@ namespace Client_App.ViewModels
                             Storage.Rows.Remove(item);
                         }
                     }
-                    var itemQ = lst.Where(x=>x.Order>=maxItem);
+                    var itemQ = lst.Where(x=>x.Order>maxItem);
                     foreach(var item in itemQ)
                     {
-                        item.SetOrder(item.Order-1);
+                        item.SetOrder(minItem);
+                        minItem++;
                     }
                 }
+                await Storage.SortAsync();
             }
         }
         #endregion
