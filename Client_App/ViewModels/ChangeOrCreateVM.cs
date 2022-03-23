@@ -963,7 +963,7 @@ namespace Client_App.ViewModels
                     var props = item.GetType().GetProperties();
 
                     var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
-                    if (Convert.ToInt32(param[1]) == 0)
+                    if (Convert.ToInt32(param[1]) == 0 && !(collectionEn.FirstOrDefault() is Note))
                     {
                         rowText = rowText.Remove(0, 2);
                     }
@@ -990,10 +990,10 @@ namespace Client_App.ViewModels
                                 {
                                     columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                                 }
-                                //else
-                                //{
-                                //    columnNum = Convert.ToInt32(attr.Number);
-                                //}
+                                else
+                                {
+                                    columnNum = Convert.ToInt32(attr.Number);
+                                }
                                 //var columnNum = Convert.ToInt32(attr.Number);
                                 if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {
