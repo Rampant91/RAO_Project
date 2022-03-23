@@ -144,16 +144,16 @@ namespace Models.Collections
         public DataGridColumns GetColumnStructure(string param = "")
         {
             DataGridColumns regNoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.RegNo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            regNoR.SizeCol = 80;
+            regNoR.SizeCol = 50;
             regNoR.Binding = nameof(Reports.Master)+"."+nameof(Report.RegNoRep);
 
             DataGridColumns ShortJurLicoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            ShortJurLicoR.SizeCol = 305;
+            ShortJurLicoR.SizeCol = 733;
             ShortJurLicoR.Binding = nameof(Reports.Master) + "." + nameof(Report.ShortJurLicoRep);
             regNoR += ShortJurLicoR;
 
             DataGridColumns okpoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            okpoR.SizeCol = 62;
+            okpoR.SizeCol = 102;
             okpoR.Binding = nameof(Reports.Master) + "." + nameof(Report.OkpoRep);
             regNoR += okpoR;
 

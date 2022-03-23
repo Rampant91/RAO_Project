@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
-        MinHeight="200" MinWidth="200"
+        MinHeight="200" MinWidth="200" MaxWidth="1520"
         x:Class="Client_App.Views.MainWindow"
         xmlns:Converters="using:Client_App.Converters"
         Icon="/Assets/logo.png"
@@ -56,7 +56,7 @@
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition MaxWidth="452"></ColumnDefinition>
+                  <ColumnDefinition Width="890"></ColumnDefinition>
                   <ColumnDefinition ></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
@@ -79,7 +79,7 @@
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition MaxWidth="452"></ColumnDefinition>
+                  <ColumnDefinition Width="890"></ColumnDefinition>
                   <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
