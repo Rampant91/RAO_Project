@@ -33,6 +33,7 @@ using System.Reactive.Linq;
 using Avalonia.Media;
 using Models.DataAccess;
 using System.Globalization;
+using Models.Classes;
 
 namespace Client_App.ViewModels
 {
@@ -376,13 +377,13 @@ namespace Client_App.ViewModels
 
             Storage.Rows21.Clear();
             var yu = ito.OrderBy(x => x.Value.Count);
-            var count = 1;
+            var count = new LetterAlgebra("A");
 
             foreach (var item in yu)
             {
                 if (item.Value.Count != 0 && item.Value.Count != 1)
                 {
-                    var o = ((List<Form21>)item.Value).FirstOrDefault().NumberInOrder.Value = count;
+                    ((List<Form21>)item.Value).FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
                     Storage.Rows21.AddRange(item.Value);
                     count++;
                 }
@@ -480,10 +481,10 @@ namespace Client_App.ViewModels
                         form.PackName_Hidden_Set = new Models.DataAccess.RefBool(false);
                         form.PackType_Hidden_Set = new Models.DataAccess.RefBool(false);
 
-                        form.StoragePlaceName_Hidden_Get.Set(false);
-                        form.StoragePlaceCode_Hidden_Get.Set(false);
-                        form.PackName_Hidden_Get.Set(false);
-                        form.PackType_Hidden_Get.Set(false);
+                        //form.StoragePlaceName_Hidden_Get.Set(false);
+                        //form.StoragePlaceCode_Hidden_Get.Set(false);
+                        //form.PackName_Hidden_Get.Set(false);
+                        //form.PackType_Hidden_Get.Set(false);
                         form.BaseColor = Models.Interfaces.ColorType.Yellow;
 
                         volumeSum += StringToNumber(form.VolumeOutOfPack_DB);
@@ -538,13 +539,13 @@ namespace Client_App.ViewModels
 
             Storage.Rows22.Clear();
             var yu = ito.OrderBy(x => x.Value.Count);
-            var count = 1;
+            var count = new LetterAlgebra("A");
 
             foreach (var item in yu)
             {
                 if (item.Value.Count != 0 && item.Value.Count != 1)
                 {
-                    var o = ((List<Form22>)item.Value).FirstOrDefault().NumberInOrder.Value = count;
+                    var o = ((List<Form22>)item.Value).FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
                     Storage.Rows22.AddRange(item.Value);
                     count++;
                 }
