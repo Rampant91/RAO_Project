@@ -1944,6 +1944,17 @@ namespace Client_App.Controls.DataGrid
 
                 pnl.Children.Add(CenterCanvas);
                 CenterBorder.Child = pnl;
+                if (!IsAutoSizable)
+                {
+                    double w = 0;
+                    int i = 0;
+                    var RDef = ((DataGridRow)CenterStackPanel.Children.FirstOrDefault()).ColumnDefinitions;
+                    foreach (var r in RDef)
+                    {
+                        w += r.Width.Value - 1;
+                    }
+                    CenterPanel.Width = w;
+                }
             }
 
             CenterStackPanel = new();
@@ -1957,6 +1968,7 @@ namespace Client_App.Controls.DataGrid
                 CenterStackPanel.Margin = Thickness.Parse("20,2,20,2");
             }
             CenterPanel.Children.Add(CenterStackPanel);
+
             #endregion
 
             #region MiddleFooter

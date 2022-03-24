@@ -1778,15 +1778,15 @@ namespace Client_App.ViewModels
                                 count++;
                             }
                         }
-                        if (param.Split('.')[0] == "2")
-                        {
-                            var new_number = 2;
-                            while (worksheet.Cells[new_number, 6].Value != null)
-                            {
-                                worksheet.Cells[new_number, 6].Value = new_number - 1;
-                                new_number++;
-                            }
-                        }
+                        //if (param.Split('.')[0] == "2")
+                        //{
+                        //    var new_number = 2;
+                        //    while (worksheet.Cells[new_number, 6].Value != null)
+                        //    {
+                        //        worksheet.Cells[new_number, 6].Value = new_number - 1;
+                        //        new_number++;
+                        //    }
+                        //}
                         StartRow = count;
                     }
                 }
