@@ -168,6 +168,63 @@ namespace Models
         }
         #endregion
 
+        #region NumberInOrder
+        public string NumberInOrderSum_DB { get; set; } = "";
+
+        [NotMapped]
+        [Attributes.Form_Property(true, "null-1-1", "null-1", "№ п/п", "1")]
+        public RamAccess<string> NumberInOrderSum
+        {
+            get
+            {
+                if (Dictionary.ContainsKey(nameof(NumberInOrderSum)))
+                {
+                    if (NumberInOrderSum_DB != "" && NumberInOrderSum_DB != null)
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(NumberInOrderSum)]).Value = NumberInOrderSum_DB;
+                    }
+                    else 
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(NumberInOrderSum)]).Value = NumberInOrder_DB.ToString();
+                    }
+                    return (RamAccess<string>)Dictionary[nameof(NumberInOrderSum)];
+                }
+                else
+                {
+                    RamAccess<string> rm = null;
+                    if (NumberInOrderSum_DB != "" && NumberInOrderSum_DB != null)
+                    {
+                        rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrderSum_DB);
+                    }
+                    else
+                    {
+                        rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
+                    }
+                    rm.PropertyChanged += NumberInOrderSumValueChanged;
+                    Dictionary.Add(nameof(NumberInOrderSum), rm);
+                    return (RamAccess<string>)Dictionary[nameof(NumberInOrderSum)];
+                }
+            }
+            set
+            {
+                NumberInOrderSum_DB = value.Value;
+                OnPropertyChanged(nameof(NumberInOrderSum));
+            }
+        }
+        private void NumberInOrderSumValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                NumberInOrderSum_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool NumberInOrderSum_Validation(RamAccess<string> value)//Ready
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
         #region StoragePlaceName
 
         public string StoragePlaceName_DB { get; set; } = "";
@@ -2259,9 +2316,9 @@ namespace Models
             if (_DataGridColumns == null)
             {
                 #region NumberInOrder (1)
-                DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form22).GetProperty(nameof(Form22.NumberInOrderSum)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
                 NumberInOrderR.SetSizeColToAllLevels(88);
-                NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+                NumberInOrderR.Binding = nameof(Form22.NumberInOrderSum);
                 NumberInOrderR.Blocked = true;
                 NumberInOrderR.ChooseLine = true;
                 #endregion

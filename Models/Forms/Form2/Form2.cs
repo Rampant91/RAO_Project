@@ -71,7 +71,14 @@ namespace Models.Abstracts
         #region IExcel
         public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            worksheet.Cells[Row, Column].Value = NumberInOrder_DB;
+            if (NumberInOrder_DB == 0)
+            {
+                worksheet.Cells[Row, Column].Value = "";
+            }
+            else
+            {
+                worksheet.Cells[Row, Column].Value = NumberInOrder_DB;
+            }
 
             return 1;
         }
