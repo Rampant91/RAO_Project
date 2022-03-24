@@ -148,7 +148,7 @@ namespace Models.Collections
             regNoR.Binding = nameof(Reports.Master)+"."+nameof(Report.RegNoRep);
 
             DataGridColumns ShortJurLicoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            ShortJurLicoR.SizeCol = 733;
+            ShortJurLicoR.SizeCol = 603;
             ShortJurLicoR.Binding = nameof(Reports.Master) + "." + nameof(Report.ShortJurLicoRep);
             regNoR += ShortJurLicoR;
 

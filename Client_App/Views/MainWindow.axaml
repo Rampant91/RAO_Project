@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
-        MinHeight="200" MinWidth="200" MaxWidth="1520"
+        MinHeight="200" MinWidth="200" MaxWidth="1500"
         x:Class="Client_App.Views.MainWindow"
         xmlns:Converters="using:Client_App.Converters"
         Icon="/Assets/logo.png"
@@ -51,13 +51,13 @@
           <Panel x:Name="Forms_p1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid>
               <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="200"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto" MinHeight="200"/>
+                <RowDefinition Height="*"/>
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="3*"></ColumnDefinition>
-                  <ColumnDefinition Width="1.5*" ></ColumnDefinition>
+                  <ColumnDefinition Width="3*"/>
+                  <ColumnDefinition Width="1.5*" MaxWidth="460"/>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
                   <Panel x:Name="Forms_p1_0" HorizontalAlignment="Stretch" Grid.Column="0">
@@ -74,13 +74,13 @@
           <Panel x:Name="Forms_p2" VerticalAlignment="Stretch" >
             <Grid>
               <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="220"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto" MinHeight="220"/>
+                <RowDefinition Height="*"/>
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="890"></ColumnDefinition>
-                  <ColumnDefinition></ColumnDefinition>
+                  <ColumnDefinition Width="3*"/>
+                  <ColumnDefinition Width="2.2*" MaxWidth="625"/>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
                   <Panel x:Name="Forms_p2_0" Grid.Column="0"/>
