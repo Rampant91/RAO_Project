@@ -151,9 +151,6 @@ namespace Models
             }
         }
 
-        [NotMapped]
-        private Random gen = new Random(5);
-
         protected bool Type_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
@@ -165,10 +162,10 @@ namespace Models
             var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
             if (string.IsNullOrEmpty(Radionuclids.Value))
             {
-                if (a.Count() != 0)
+                if (a.Count() == 1)
                 {
                     _autoRN = true;
-                    Radionuclids.Value = a.ElementAt(gen.Next(0, a.Count()-1));
+                    Radionuclids.Value = a.First();
                 }
             }
             return true;
