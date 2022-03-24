@@ -324,7 +324,7 @@ namespace Models.Collections
         }
 
         #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Tanspon=true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Tanspon=true, string SumNumber = "")
         {
             throw new System.NotImplementedException();
         }

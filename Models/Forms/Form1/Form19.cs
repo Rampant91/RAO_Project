@@ -328,7 +328,7 @@ namespace Models
             return true;
         }
         #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
             Column = Column + (Transpon == true ? cnt : 0);

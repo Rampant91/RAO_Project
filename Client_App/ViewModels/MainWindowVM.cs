@@ -1703,11 +1703,11 @@ namespace Client_App.ViewModels
 
                                 if (it is Form21)
                                 {
-                                    ((Form21)(it)).ExcelRow(worksheet, count, StartColumn + 1);
+                                    ((Form21)(it)).ExcelRow(worksheet, count, StartColumn + 1, SumNumber: ((Form21)it).NumberInOrderSum_DB);
                                 }
                                 if (it is Form22)
                                 {
-                                    ((Form22)(it)).ExcelRow(worksheet, count, StartColumn + 1);
+                                    ((Form22)(it)).ExcelRow(worksheet, count, StartColumn + 1, SumNumber: ((Form22)it).NumberInOrderSum_DB);
                                 }
                                 if (it is Form23)
                                 {

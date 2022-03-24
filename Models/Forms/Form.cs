@@ -9,7 +9,7 @@ using System;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : INotifyPropertyChanged,IKey, INumberInOrder,IDataGridColumn
+    public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IDataGridColumn
     {
         public int Id { get; set; }
         [NotMapped]
@@ -172,7 +172,7 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public abstract int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true);
+        public abstract int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true, string SumNumber = "");
 
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {

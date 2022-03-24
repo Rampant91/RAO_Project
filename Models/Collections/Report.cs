@@ -2926,7 +2926,7 @@ namespace Models.Collections
 
         #region IExcel
 
-        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             if (FormNum_DB.Split('.')[0] == "1")
             {
