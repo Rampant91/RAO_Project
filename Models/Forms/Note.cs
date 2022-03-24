@@ -185,7 +185,7 @@ namespace Models
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed
         #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = RowNumber_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = GraphNumber_DB;

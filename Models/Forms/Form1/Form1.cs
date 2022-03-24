@@ -417,7 +417,7 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = NumberInOrder_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = OperationCode_DB;

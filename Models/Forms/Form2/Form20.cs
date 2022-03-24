@@ -1081,7 +1081,7 @@ namespace Models
 
         #region IExcel
 
-        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             Column = Column;
             Row = Row;

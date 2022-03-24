@@ -69,9 +69,16 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
-            worksheet.Cells[Row, Column].Value = NumberInOrder_DB;
+            if (NumberInOrder_DB == 0)
+            {
+                worksheet.Cells[Row, Column].Value = SumNumber;
+            }
+            else
+            {
+                worksheet.Cells[Row, Column].Value = NumberInOrder_DB;
+            }
 
             return 1;
         }
