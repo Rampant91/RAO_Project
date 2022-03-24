@@ -380,6 +380,26 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region IsAutoSizable
+        public static readonly DirectProperty<DataGrid<T>, bool> IsAutoSizableProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(IsAutoSizable),
+                o => o.IsAutoSizable,
+                (o, v) => o.IsAutoSizable = v);
+
+        private bool _IsAutoSizable = false;
+        public bool IsAutoSizable
+        {
+            get => _IsAutoSizable;
+            set
+            {
+                SetAndRaise(IsAutoSizableProperty, ref _IsAutoSizable, value);
+
+                Init();
+            }
+        }
+        #endregion
+
         #region IsReadableSum
         public static readonly DirectProperty<DataGrid<T>, bool> IsReadableSumProperty =
             AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
@@ -1220,7 +1240,17 @@ namespace Client_App.Controls.DataGrid
                 if (Search)
                 {
                     IKeyCollection tmp2_coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                    var searchText = ((TextBox)((StackPanel)((StackPanel)((Border)((Grid)((Panel)this.Content).Children[0]).Children[0]).Child).Children[0]).Children[0]).Text;
+                    var searchText = ((TextBox)
+                        (
+                        ((Panel)
+                        ((Border)
+                        ((Grid)
+                        ((Panel)
+                        this.Content).
+                        Children[0]).
+                        Children[0]).
+                        Child).
+                        Children[0])).Text;
                     if (searchText != null && searchText != "")
                     {
                         NowPage = "1";
@@ -1513,7 +1543,14 @@ namespace Client_App.Controls.DataGrid
             {
                 int Level = ls.Level;
 
-                this.Width = ls.SizeCol;
+                if (!IsAutoSizable)
+                {
+                    this.Width = ls.SizeCol;
+                }
+                else
+                {
+                    this.Width = double.NaN;
+                }
                 HeadersColumns.Clear();
                 var tre = ls.GetLevel(Level-1);
                 for (int i = Level-1; i >= 1; i--)
@@ -1753,13 +1790,14 @@ namespace Client_App.Controls.DataGrid
         {
             #region Main_<MainStackPanel>
             Panel MainPanel = new()
-            {
+            { 
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
             };
 
             Grid MainStackPanel = new Grid() {};
             MainStackPanel.VerticalAlignment = VerticalAlignment.Stretch;
+            MainStackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             MainPanel.Children.Add(MainStackPanel);
             #endregion
 
@@ -1773,25 +1811,29 @@ namespace Client_App.Controls.DataGrid
                     BorderThickness = Thickness.Parse("1"),
                     BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                     CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
                     [Grid.RowProperty] = 0
                 };
                 MainStackPanel.Children.Add(HeaderSearchBorder);
 
-                StackPanel HeaderSearchStackPanel = new();
+                Panel HeaderSearchStackPanel = new() {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch
+
+                };
                 HeaderSearchStackPanel.Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255));
-                HeaderSearchStackPanel.Orientation = Orientation.Vertical;
+                //HeaderSearchStackPanel.Orientation = Orientation.Vertical;
                 HeaderSearchBorder.Child = HeaderSearchStackPanel;
 
-                StackPanel HeaderSearchSP = new();
-                TextBox SearchTextBox = new TextBox() 
+                TextBox SearchTextBox = new TextBox()
                 {
                     Name = "SearchText",
                     Watermark = "Поиск...",
-                    Margin = Thickness.Parse("1,1,1,1")
+                    Margin = Thickness.Parse("1,1,1,1"),
                 };
                 SearchTextBox[!TextBox.TextProperty] = this[!DataGrid<T>.SearchTextProperty];
-                HeaderSearchSP.Children.Add(SearchTextBox);
-                HeaderSearchStackPanel.Children.Add(HeaderSearchSP);
+                HeaderSearchStackPanel.Children.Add(SearchTextBox);
 
             }
             #endregion
@@ -1803,11 +1845,16 @@ namespace Client_App.Controls.DataGrid
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                 CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 [Grid.RowProperty] = 1 - (Search ? 0 : 1)
             };
             MainStackPanel.Children.Add(HeaderBorder);
 
-            Panel HeaderPanel = new();
+            Panel HeaderPanel = new() {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
             HeaderPanel.Background = new SolidColorBrush(Color.FromArgb(150,180, 154, 255));
             HeaderBorder.Child = HeaderPanel;
 
@@ -1846,13 +1893,14 @@ namespace Client_App.Controls.DataGrid
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                 CornerRadius = CornerRadius.Parse("2,2,2,2"),
                 VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment=HorizontalAlignment.Stretch,
                 [Grid.RowProperty] = 2 - (Search ? 0 : 1)
             };
             MainStackPanel.Children.Add(CenterBorder);
 
             Panel CenterPanel = new()
             {
-                //Background=new SolidColorBrush(Color.Parse("Red")),
+                //Background=new SolidColorBrush(Color.Parse("Black")),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
             };
@@ -1863,6 +1911,7 @@ namespace Client_App.Controls.DataGrid
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CenterScrollViewer.Content = CenterPanel;
                 CenterScrollViewer.VerticalAlignment = VerticalAlignment.Stretch;
+                CenterScrollViewer.HorizontalAlignment = HorizontalAlignment.Stretch;
 
                 CenterBorder.Child = CenterScrollViewer;
             }
@@ -1895,15 +1944,6 @@ namespace Client_App.Controls.DataGrid
 
                 pnl.Children.Add(CenterCanvas);
                 CenterBorder.Child = pnl;
-
-                double w = 0;
-                int i = 0;
-                var RDef = ((DataGridRow)CenterStackPanel.Children.FirstOrDefault()).ColumnDefinitions;
-                foreach (var r in RDef)
-                {
-                    w += r.Width.Value-1;
-                }
-                CenterPanel.Width = w;
             }
 
             CenterStackPanel = new();
@@ -1927,11 +1967,16 @@ namespace Client_App.Controls.DataGrid
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                 CornerRadius = CornerRadius.Parse("2,2,2,2"),
-                [Grid.RowProperty] = 3 - (Search ? 0 : 1)
+                [Grid.RowProperty] = 3 - (Search ? 0 : 1),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
             };
             MainStackPanel.Children.Add(MiddleFooterBorder);
 
-            StackPanel MiddleFooterStackPanel = new();
+            StackPanel MiddleFooterStackPanel = new() {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
             MiddleFooterStackPanel.Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255));
             MiddleFooterStackPanel.Orientation = Orientation.Vertical;
             MiddleFooterBorder.Child = MiddleFooterStackPanel;
@@ -1969,11 +2014,16 @@ namespace Client_App.Controls.DataGrid
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                 CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 [Grid.RowProperty] = 4 - (Search ? 0 : 1)
             };
             MainStackPanel.Children.Add(FooterBorder);
 
-            Panel FooterPanel = new();
+            Panel FooterPanel = new() {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
             FooterPanel.Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255));
             FooterPanel.Height = 40;
             FooterBorder.Child=FooterPanel;
@@ -1982,6 +2032,8 @@ namespace Client_App.Controls.DataGrid
             {
                 Margin = Thickness.Parse("5,0,0,0"),
                 Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 Spacing = 5
             };
             FooterPanel.Children.Add(FooterStackPanel);
