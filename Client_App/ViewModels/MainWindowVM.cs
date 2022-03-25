@@ -1500,17 +1500,18 @@ namespace Client_App.ViewModels
                                             var masterheaderlength = 0;
                                             if (param.Split('.')[0] == "1")
                                             {
-                                                masterheaderlength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID");
-                                                masterheaderlength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID");
+                                                masterheaderlength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
+                                                masterheaderlength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
                                             }
                                             else
                                             {
-                                                masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID");
-                                                masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID");
+                                                masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
+                                                masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
                                             }
                                             var t = Report.ExcelHeader(worksheet, param, 1, masterheaderlength);
                                             Report.ExcelHeader(worksheetPrim, param, 1, masterheaderlength);
                                             masterheaderlength += t;
+                                            masterheaderlength--;
                                             if (param == "1.1")
                                             {
                                                 Form11.ExcelHeader(worksheet, 1, masterheaderlength + 1);
