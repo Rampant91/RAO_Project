@@ -1500,13 +1500,13 @@ namespace Client_App.ViewModels
                                             var masterheaderlength = 0;
                                             if (param.Split('.')[0] == "1")
                                             {
-                                                masterheaderlength = Form10.ExcelHeader(worksheet, 1, 1);
-                                                masterheaderlength = Form10.ExcelHeader(worksheetPrim, 1, 1);
+                                                masterheaderlength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID");
+                                                masterheaderlength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID");
                                             }
                                             else
                                             {
-                                                masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1);
-                                                masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1);
+                                                masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID");
+                                                masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID");
                                             }
                                             var t = Report.ExcelHeader(worksheet, param, 1, masterheaderlength);
                                             Report.ExcelHeader(worksheetPrim, param, 1, masterheaderlength);
@@ -1605,7 +1605,7 @@ namespace Client_App.ViewModels
                                                 lst.AddRange(item.Report_Collection);
                                             }
 
-                                            _Excel_Export_Rows(param, tyu, masterheaderlength, worksheet, lst);
+                                            _Excel_Export_Rows(param, tyu, masterheaderlength, worksheet, lst, true);
                                             _Excel_Export_Notes(param, tyu, masterheaderlength, worksheetPrim, lst);
 
                                             excelPackage.Save();
@@ -1672,7 +1672,7 @@ namespace Client_App.ViewModels
             }
             return StartRow;
         }
-        private int _Excel_Export_Rows(string param, int StartRow, int StartColumn, ExcelWorksheet worksheet, List<Report> forms)
+        private int _Excel_Export_Rows(string param, int StartRow, int StartColumn, ExcelWorksheet worksheet, List<Report> forms, bool ID = false)
         {
             foreach (Report item in forms)
             {
@@ -1801,26 +1801,54 @@ namespace Client_App.ViewModels
                                 }
                                 var mstrep = reps.Master_DB;
                                 var yu = 0;
-                                if (param.Split('.')[0] == "1")
+                                if (ID)
                                 {
-                                    if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                                    if (param.Split('.')[0] == "1")
                                     {
-                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1)+1;
+                                        if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                                        {
+                                            yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1;
+                                        }
+                                        else
+                                        {
+                                            yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1;
+                                        }
                                     }
                                     else
                                     {
-                                        yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1)+1;
+                                        if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                                        {
+                                            yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
+                                        }
+                                        else
+                                        {
+                                            yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1;
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                                    if (param.Split('.')[0] == "1")
                                     {
-                                        yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1)+1;
+                                        if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                                        {
+                                            yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1;
+                                        }
+                                        else
+                                        {
+                                            yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1;
+                                        }
                                     }
                                     else
                                     {
-                                        yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1)+1;
+                                        if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                                        {
+                                            yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1;
+                                        }
+                                        else
+                                        {
+                                            yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
+                                        }
                                     }
                                 }
 

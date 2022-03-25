@@ -54,7 +54,7 @@ namespace Models
         public string RegNo_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Рег. №")]
+        [Attributes.Form_Property(true, "Рег. №")]
         public RamAccess<string> RegNo
         {
             get
@@ -83,7 +83,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                RegNo_DB = ((RamAccess<string>) Value).Value;
+                RegNo_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -122,7 +122,7 @@ namespace Models
         public string OrganUprav_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Орган управления использованием атомной энергии")]
+        [Attributes.Form_Property(true, "Орган управления использованием атомной энергии")]
         public RamAccess<string> OrganUprav
         {
             get
@@ -151,7 +151,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                OrganUprav_DB = ((RamAccess<string>) Value).Value;
+                OrganUprav_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -168,7 +168,7 @@ namespace Models
         public string SubjectRF_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Субъект Российской Федерации","Субъект Российской Федерации")]
+        [Attributes.Form_Property(true, "Субъект Российской Федерации", "Субъект Российской Федерации")]
         public RamAccess<string> SubjectRF
         {
             get
@@ -197,7 +197,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                SubjectRF_DB = ((RamAccess<string>) Value).Value;
+                SubjectRF_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -214,7 +214,7 @@ namespace Models
         public string JurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Наименование юридического лица", "Наименование обособленного подразделения")]
+        [Attributes.Form_Property(true, "Наименование юридического лица", "Наименование обособленного подразделения")]
         public RamAccess<string> JurLico
         {
             get
@@ -243,7 +243,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                JurLico_DB = ((RamAccess<string>) Value).Value;
+                JurLico_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -260,7 +260,7 @@ namespace Models
         public string ShortJurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Сокращенное наименование", "Сокращенное наименование")]
+        [Attributes.Form_Property(true, "Сокращенное наименование", "Сокращенное наименование")]
         public RamAccess<string> ShortJurLico
         {
             get
@@ -289,7 +289,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                ShortJurLico_DB = ((RamAccess<string>) Value).Value;
+                ShortJurLico_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -306,7 +306,7 @@ namespace Models
         public string JurLicoAddress_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Адрес места нахождения юридического лица","Адрес места нахождения обособленного подразделения")]
+        [Attributes.Form_Property(true, "Адрес места нахождения юридического лица", "Адрес места нахождения обособленного подразделения")]
         public RamAccess<string> JurLicoAddress
         {
             get
@@ -335,7 +335,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                JurLicoAddress_DB = ((RamAccess<string>) Value).Value;
+                JurLicoAddress_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -352,7 +352,7 @@ namespace Models
         public string JurLicoFactAddress_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Фактический адрес юр. лица","Фактический адрес обособленного подразделения")]
+        [Attributes.Form_Property(true, "Фактический адрес юр. лица", "Фактический адрес обособленного подразделения")]
         public RamAccess<string> JurLicoFactAddress
         {
             get
@@ -381,7 +381,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                JurLicoFactAddress_DB = ((RamAccess<string>) Value).Value;
+                JurLicoFactAddress_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -398,7 +398,7 @@ namespace Models
         public string GradeFIO_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ФИО, должность руководителя", "ФИО, должность руководителя")]
+        [Attributes.Form_Property(true, "ФИО, должность руководителя", "ФИО, должность руководителя")]
         public RamAccess<string> GradeFIO
         {
             get
@@ -427,7 +427,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                GradeFIO_DB = ((RamAccess<string>) Value).Value;
+                GradeFIO_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -444,7 +444,7 @@ namespace Models
         public string Telephone_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Телефон организации", "Телефон организации")]
+        [Attributes.Form_Property(true, "Телефон организации", "Телефон организации")]
         public RamAccess<string> Telephone
         {
             get
@@ -473,7 +473,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Telephone_DB = ((RamAccess<string>) Value).Value;
+                Telephone_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -490,7 +490,7 @@ namespace Models
         public string Fax_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Факс организации","Факс организации")]
+        [Attributes.Form_Property(true, "Факс организации", "Факс организации")]
         public RamAccess<string> Fax
         {
             get
@@ -519,7 +519,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Fax_DB = ((RamAccess<string>) Value).Value;
+                Fax_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -536,7 +536,7 @@ namespace Models
         public string Email_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Эл. почта организации", "Эл. почта организации")]
+        [Attributes.Form_Property(true, "Эл. почта организации", "Эл. почта организации")]
         public RamAccess<string> Email
         {
             get
@@ -565,7 +565,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Email_DB = ((RamAccess<string>) Value).Value;
+                Email_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -582,7 +582,7 @@ namespace Models
         public string Okpo_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКПО", "ОКПО")]
+        [Attributes.Form_Property(true, "ОКПО", "ОКПО")]
         public RamAccess<string> Okpo
         {
             get
@@ -611,7 +611,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Okpo_DB = ((RamAccess<string>) Value).Value;
+                Okpo_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -647,7 +647,7 @@ namespace Models
         public string Okved_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКВЭД", "ОКВЭД")]
+        [Attributes.Form_Property(true, "ОКВЭД", "ОКВЭД")]
         public RamAccess<string> Okved
         {
             get
@@ -676,7 +676,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Okved_DB = ((RamAccess<string>) Value).Value;
+                Okved_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -704,7 +704,7 @@ namespace Models
         public string Okogu_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКОГУ", "ОКОГУ")]
+        [Attributes.Form_Property(true, "ОКОГУ", "ОКОГУ")]
         public RamAccess<string> Okogu
         {
             get
@@ -733,7 +733,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Okogu_DB = ((RamAccess<string>) Value).Value;
+                Okogu_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -763,7 +763,7 @@ namespace Models
         public string Oktmo_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКТМО", "ОКТМО")]
+        [Attributes.Form_Property(true, "ОКТМО", "ОКТМО")]
         public RamAccess<string> Oktmo
         {
             get
@@ -792,7 +792,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Oktmo_DB = ((RamAccess<string>) Value).Value;
+                Oktmo_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -822,7 +822,7 @@ namespace Models
         public string Inn_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ИНН", "ИНН")]
+        [Attributes.Form_Property(true, "ИНН", "ИНН")]
         public RamAccess<string> Inn
         {
             get
@@ -851,7 +851,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Inn_DB = ((RamAccess<string>) Value).Value;
+                Inn_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -881,7 +881,7 @@ namespace Models
         public string Kpp_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"КПП", "КПП")]
+        [Attributes.Form_Property(true, "КПП", "КПП")]
         public RamAccess<string> Kpp
         {
             get
@@ -910,7 +910,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Kpp_DB = ((RamAccess<string>) Value).Value;
+                Kpp_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -940,7 +940,7 @@ namespace Models
         public string Okopf_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКОПФ", "ОКОПФ")]
+        [Attributes.Form_Property(true, "ОКОПФ", "ОКОПФ")]
         public RamAccess<string> Okopf
         {
             get
@@ -969,7 +969,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Okopf_DB = ((RamAccess<string>) Value).Value;
+                Okopf_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -999,7 +999,7 @@ namespace Models
         public string Okfs_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКФС", "ОКФС")]
+        [Attributes.Form_Property(true, "ОКФС", "ОКФС")]
         public RamAccess<string> Okfs
         {
             get
@@ -1028,7 +1028,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Okfs_DB = ((RamAccess<string>) Value).Value;
+                Okfs_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -1065,20 +1065,35 @@ namespace Models
             return 3;
         }
 
-        public static int ExcelHeader(ExcelWorksheet worksheet,int Row, int Column, bool Transpon = true)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string ID = "")
         {
             var cnt = Form.ExcelHeader(worksheet,Row,Column,Transpon);
             Column = Column + (Transpon == true ? cnt : 0);
             Row = Row+(Transpon == false ? cnt : 0);
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(RegNo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+            if (ID.Equals(""))
+            {
+                worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(RegNo))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
 
-            return 3;
+                return 3;
+            }
+            else
+            {
+                worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ID;
+                worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(RegNo))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+
+                return 4;
+            }
         }
 
         #endregion
