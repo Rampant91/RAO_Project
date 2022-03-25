@@ -685,7 +685,7 @@ namespace Client_App.ViewModels
                     }
                     if (!not_in)
                     {
-                        var an = "";
+                        var an = "Да";
                         if (!_skipNew)
                         {
                             var str = "Загрузить новую форму?\n" +
