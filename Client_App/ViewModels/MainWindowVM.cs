@@ -412,7 +412,10 @@ namespace Client_App.ViewModels
         {
             try
             {
-                var tb11 = from Reports t in Local_Reports.Reports_Collection10
+                var tb1 = item.Report_Collection.Where(x => x.FormNum_DB[0].ToString().Equals("1"));
+                if (tb1.Count() != 0)
+                {
+                    var tb11 = from Reports t in Local_Reports.Reports_Collection10
                            where (((item.Master.Rows10[0].Okpo_DB == "") &&
                            (t.Master.Rows10[0].Okpo_DB == "")) ||
                            ((t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
@@ -426,7 +429,9 @@ namespace Client_App.ViewModels
                            ((t.Master.Rows10[0].ShortJurLico_DB == item.Master.Rows10[0].ShortJurLico_DB) &&
                            (t.Master.Rows10[1].ShortJurLico_DB == item.Master.Rows10[1].ShortJurLico_DB)))
                            select t;
-                return tb11.FirstOrDefault();
+                    return tb11.FirstOrDefault();
+                }
+                return null;
             }
             catch
             {
@@ -866,11 +871,11 @@ namespace Client_App.ViewModels
                             {
                                 await ProcessIfHasReports11(first11, item);
                             }
-                            if (first21 != null)
+                            else if (first21 != null)
                             {
                                 await ProcessIfHasReports21(first21, item);
                             }
-                            if (first21 == null && first11 == null)
+                            else if (first21 == null && first11 == null)
                             {
                                 var rep = item.Report_Collection.FirstOrDefault();
                                 if (rep != null)
