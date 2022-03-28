@@ -1231,23 +1231,25 @@ namespace Models
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
             Column = Column + (Transpon == true ? cnt : 0);
             Row = Row + (Transpon == false ? cnt : 0);
+            int valInt;
+            double val;
 
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = CodeOYAT_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = FcpNumber_DB;
             worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = MassCreated_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = QuantityCreated_DB;
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = QuantityCreated_DB == null ? "" : int.TryParse(QuantityCreated_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityCreated_DB;
             worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = MassFromAnothers_DB;
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = QuantityFromAnothers_DB;
+            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = QuantityFromAnothers_DB == null ? "" : int.TryParse(QuantityFromAnothers_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityFromAnothers_DB;
             worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = MassFromAnothersImported_DB;
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = QuantityFromAnothersImported_DB;
+            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = QuantityFromAnothersImported_DB == null ? "" : int.TryParse(QuantityFromAnothersImported_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityFromAnothersImported_DB;
             worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = MassAnotherReasons_DB;
-            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = QuantityAnotherReasons_DB;
-            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = MassTransferredToAnother_DB.Replace(" ", "") == "-" || MassTransferredToAnother_DB.Replace(" ", "") == "" || MassTransferredToAnother_DB.Equals("бeз упаковки")|| MassTransferredToAnother_DB.Equals("прим.") ? MassTransferredToAnother_DB : Convert.ToDouble(MassTransferredToAnother_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","));
-            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = QuantityTransferredToAnother_DB;
-            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = MassRefined_DB.Replace(" ", "") == "-" || MassRefined_DB.Replace(" ", "") == "" || MassRefined_DB.Equals("бeз упаковки")|| MassRefined_DB.Equals("прим.") ? MassRefined_DB : Convert.ToDouble(MassRefined_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","));
-            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = QuantityRefined_DB;
-            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = MassRemovedFromAccount_DB.Replace(" ", "") == "-" || MassRemovedFromAccount_DB.Replace(" ", "") == "" || MassRemovedFromAccount_DB.Equals("бeз упаковки")|| MassRemovedFromAccount_DB.Equals("прим.") ? MassRemovedFromAccount_DB : Convert.ToDouble(MassRemovedFromAccount_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","));
-            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = QuantityRemovedFromAccount_DB;
+            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = QuantityAnotherReasons_DB == null ? "" : int.TryParse(QuantityAnotherReasons_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityAnotherReasons_DB;
+            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = MassTransferredToAnother_DB == null ? "" : double.TryParse(MassTransferredToAnother_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassTransferredToAnother_DB;
+            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = QuantityTransferredToAnother_DB == null ? "" : int.TryParse(QuantityTransferredToAnother_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityTransferredToAnother_DB;
+            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = MassRefined_DB == null ? "" : double.TryParse(MassRefined_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassRefined_DB;
+            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = QuantityRefined_DB == null ? "" : int.TryParse(QuantityRefined_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityRefined_DB;
+            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = MassRemovedFromAccount_DB == null ? "" : double.TryParse(MassRemovedFromAccount_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassRemovedFromAccount_DB;
+            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = QuantityRemovedFromAccount_DB == null ? "" : int.TryParse(QuantityRemovedFromAccount_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityRemovedFromAccount_DB;
             return 16;
         }
 
