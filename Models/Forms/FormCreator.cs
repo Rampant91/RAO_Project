@@ -4,7 +4,7 @@ namespace Models
 {
     public class FormCreator
     {
-        public static Abstracts.Form Create(string Param)
+        public static Form Create(string Param)
         {
             Form tmp = null;
             switch (Param)

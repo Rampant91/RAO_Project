@@ -730,10 +730,10 @@ namespace Client_App.ViewModels
             var param = (IEnumerable)_param;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
+                List<Form> lst = new List<Form>();
                 foreach (object? item1 in param)
                 {
-                    lst.Add((Models.Abstracts.Form)item1);
+                    lst.Add((Form)item1);
                 }
 
                 var item = lst.FirstOrDefault();
@@ -780,7 +780,7 @@ namespace Client_App.ViewModels
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
                 if (answ == "Да")
                 {
-                    var lst = new List<IKey>(Storage.Rows.GetEnumerable());
+                    //var lst = new List<IKey>(Storage.Rows.GetEnumerable());
                     var countParam = param;
                     var minItem = param.Min(x=>x.Order);
                     var maxItem = param.Max(x=>x.Order);
@@ -791,7 +791,7 @@ namespace Client_App.ViewModels
                             Storage.Rows.Remove(item);
                         }
                     }
-                    var itemQ = lst.Where(x=>x.Order>maxItem);
+                    var itemQ = Storage.Rows.GetEnumerable().Where(x=>x.Order>maxItem);
                     foreach(var item in itemQ)
                     {
                         item.SetOrder(minItem);
