@@ -1606,10 +1606,16 @@ namespace Client_App.ViewModels
 
                                             var tyu = 2;
                                             var lst = new List<Report>();
-                                            foreach (Reports item in Local_Reports.Reports_Collection)
+                                            foreach (Reports item in Local_Reports.Reports_Collection) 
                                             {
-                                                lst.AddRange(item.Report_Collection);
+                                                var newItem = item.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
+                                                lst.AddRange(newItem);
                                             }
+
+                                            //foreach (Reports item in Local_Reports.Reports_Collection)
+                                            //{
+                                            //    lst.AddRange(item.Report_Collection);
+                                            //}
 
                                             _Excel_Export_Rows(param, tyu, masterheaderlength, worksheet, lst, true);
                                             _Excel_Export_Notes(param, tyu, masterheaderlength, worksheetPrim, lst);
@@ -1651,22 +1657,22 @@ namespace Client_App.ViewModels
                         {
                             if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                             {
-                                yu = reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1);
+                                yu = reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString())+1;
                             }
                             else
                             {
-                                yu = reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, cnty, 1);
+                                yu = reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString())+1;
                             }
                         }
                         else
                         {
                             if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
                             {
-                                yu = reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, cnty, 1);
+                                yu = reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString())+1;
                             }
                             else
                             {
-                                yu = reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, cnty, 1);
+                                yu = reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString())+1;
                             }
                         }
 
