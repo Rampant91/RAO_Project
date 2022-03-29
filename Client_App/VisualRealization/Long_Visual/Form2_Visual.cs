@@ -440,7 +440,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -658,7 +658,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -867,7 +867,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1075,7 +1075,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1283,7 +1283,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1499,7 +1499,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1728,7 +1728,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -2001,7 +2001,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -2209,7 +2209,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -2417,7 +2417,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -2625,7 +2625,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -2833,7 +2833,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()

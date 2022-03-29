@@ -2003,14 +2003,14 @@ namespace Models
             worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = StoragePlaceCode_DB;
             worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = CodeRAO_DB;
             worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = StatusRAO_DB;
-            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = Volume20_DB;
-            worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = Mass21_DB;
-            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = TritiumActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 19 : 0), Column + (Transpon == true ? 19 : 0)].Value = BetaGammaActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20: 0)].Value = AlphaActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 21 : 0), Column + (Transpon == true ? 21 : 0)].Value = TransuraniumActivity_DB;
+            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = Volume20_DB == null ? "" : double.TryParse(Volume20_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume20_DB;
+            worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = Mass21_DB == null ? "" : double.TryParse(Mass21_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass21_DB;
+            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = TritiumActivity_DB == null ? "" : double.TryParse(TritiumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivity_DB;
+            worksheet.Cells[Row + (Transpon == false ? 19 : 0), Column + (Transpon == true ? 19 : 0)].Value = BetaGammaActivity_DB == null ? "" : double.TryParse(BetaGammaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivity_DB;
+            worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20: 0)].Value = AlphaActivity_DB == null ? "" : double.TryParse(AlphaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivity_DB;
+            worksheet.Cells[Row + (Transpon == false ? 21 : 0), Column + (Transpon == true ? 21 : 0)].Value = TransuraniumActivity_DB == null ? "" : double.TryParse(TransuraniumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivity_DB;
             worksheet.Cells[Row + (Transpon == false ? 22 : 0), Column + (Transpon == true ? 22 : 0)].Value = RefineOrSortRAOCode_DB;
-            worksheet.Cells[Row + (Transpon == false ? 23 : 0), Column + (Transpon == true ? 23 : 0)].Value = Subsidy_DB;
+            worksheet.Cells[Row + (Transpon == false ? 23 : 0), Column + (Transpon == true ? 23 : 0)].Value = Subsidy_DB == null ? "" : int.TryParse(Subsidy_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : Subsidy_DB;
             worksheet.Cells[Row + (Transpon == false ? 24 : 0), Column + (Transpon == true ? 24 : 0)].Value = FcpNumber_DB;
 
             return 25;
