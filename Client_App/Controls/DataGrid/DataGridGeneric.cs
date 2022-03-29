@@ -1598,8 +1598,15 @@ namespace Client_App.Controls.DataGrid
                                     [Grid.ColumnProperty] = count + 1,
                                     ResizeDirection = GridResizeDirection.Columns,
                                     Background = new SolidColorBrush(Color.Parse("Gray")),
-                                    ResizeBehavior = GridResizeBehavior.BasedOnAlignment
+                                    ResizeBehavior = GridResizeBehavior.PreviousAndNext
                                 });
+                                //HeaderRow.Children.Add(new GridSplitter()
+                                //{
+                                //    [Grid.ColumnProperty] = count + 2,
+                                //    ResizeDirection = GridResizeDirection.Columns,
+                                //    Background = new SolidColorBrush(Color.Parse("Gray")),
+                                //    ResizeBehavior = GridResizeBehavior.PreviousAndCurrent
+                                //});
                             }
                             count += 2;
                         }
