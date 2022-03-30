@@ -67,9 +67,12 @@ namespace Models.Abstracts
 
         public void SetOrder(long index) 
         {
-            NumberInOrder_DB = (int)index;
-            OnPropertyChanged(nameof(NumberInOrder));
-            OnPropertyChanged(nameof(Order));
+            if (NumberInOrder_DB != (int)index)
+            {
+                NumberInOrder_DB = (int)index;
+                OnPropertyChanged(nameof(NumberInOrder));
+                OnPropertyChanged(nameof(Order));
+            }
         }
 
         #region NumberInOrder

@@ -238,8 +238,9 @@ namespace Client_App.ViewModels
                     tItems.Remove(item);
                 }
             }
+            List<Task> rtl = new List<Task>();
 
-            foreach (var itemT in tItems)
+            Parallel.ForEach(tItems, itemT =>
             {
                 var sums = itemT.Where(x => (x as Form21).Sum_DB == true).FirstOrDefault();
 
@@ -303,7 +304,7 @@ namespace Client_App.ViewModels
                         var form = itemThread;
                         form.SumGroup_DB = true;
 
-                        form.RefineMachineName_Hidden_Set=new Models.DataAccess.RefBool(false);
+                        form.RefineMachineName_Hidden_Set = new Models.DataAccess.RefBool(false);
                         form.MachineCode_Hidden_Set = new Models.DataAccess.RefBool(false);
                         form.MachinePower_Hidden_Set = new Models.DataAccess.RefBool(false);
                         form.NumberOfHoursPerYear_Hidden_Set = new Models.DataAccess.RefBool(false);
@@ -373,7 +374,10 @@ namespace Client_App.ViewModels
                         }
                     }
                 }
-            }
+
+            });
+
+
 
             Storage.Rows21.Clear();
             var yu = ito.OrderBy(x => x.Value.Count);
@@ -670,6 +674,14 @@ namespace Client_App.ViewModels
                 row.SumGroup_DB = false;
                 row.BaseColor = Models.Interfaces.ColorType.None;
             }
+            var rows = Storage.Rows21.GetEnumerable();
+            var count = 1;
+            foreach (Form21 row in rows)
+            {
+                row.SetOrder(count);
+                count++;
+                row.NumberInOrderSum = new RamAccess<string>(null, "");
+            }
         }
 
         public async Task UnSum22()
@@ -693,6 +705,13 @@ namespace Client_App.ViewModels
 
                 row.SumGroup_DB = false;
                 row.BaseColor = Models.Interfaces.ColorType.None;
+            }
+            var rows = Storage.Rows22.GetEnumerable();
+            var count = 1;
+            foreach (var row in rows) 
+            {
+                row.SetOrder(count);
+                count++;
             }
         }
         #endregion
@@ -791,11 +810,41 @@ namespace Client_App.ViewModels
                             Storage.Rows.Remove(item);
                         }
                     }
-                    var itemQ = Storage.Rows.GetEnumerable().Where(x=>x.Order>maxItem);
-                    foreach(var item in itemQ)
+                    //var itemQ = Storage.Rows.GetEnumerable().Where(x=>x.Order>maxItem);
+                    //foreach(var item in itemQ)
+                    //{
+                    //    item.SetOrder(minItem);
+                    //    minItem++;
+                    //}
+                    var rows = Storage.Rows.GetEnumerable();
+                    if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.1"))
                     {
-                        item.SetOrder(minItem);
-                        minItem++;
+                        var count = 1;
+                        foreach (Form21 row in rows)
+                        {
+                            row.SetOrder(count);
+                            count++;
+                            row.NumberInOrderSum = new RamAccess<string>(null, "");
+                        }
+                    }
+                    else if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.2"))
+                    {
+                        var count = 1;
+                        foreach (Form22 row in rows)
+                        {
+                            row.SetOrder(count);
+                            count++;
+                            row.NumberInOrderSum = new RamAccess<string>(null, "");
+                        }
+                    }
+                    else
+                    {
+                        var count = 1;
+                        foreach (var row in rows)
+                        {
+                            row.SetOrder(count);
+                            count++;
+                        }
                     }
                 }
                 await Storage.SortAsync();
