@@ -217,6 +217,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -351,6 +361,16 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
                 });
                 #endregion
 
@@ -487,6 +507,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -621,6 +651,16 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
                 });
                 #endregion
 
@@ -757,6 +797,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -891,6 +941,16 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
                 });
                 #endregion
 
@@ -1027,6 +1087,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1162,6 +1232,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1296,6 +1376,16 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
                 });
                 #endregion
 
@@ -1440,6 +1530,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1498,6 +1598,7 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.2")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form22_Visual(this.FindNameScope());
@@ -1574,6 +1675,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1632,6 +1743,7 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.3")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form23_Visual(this.FindNameScope());
@@ -1708,6 +1820,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1766,6 +1888,7 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.4")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form24_Visual(this.FindNameScope());
@@ -1842,6 +1965,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1900,6 +2033,7 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.5")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form25_Visual(this.FindNameScope());
@@ -1976,6 +2110,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2034,12 +2178,13 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.6")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form26_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm26)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2110,6 +2255,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2168,12 +2323,13 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.7")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form27_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm27)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2244,6 +2400,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2302,12 +2468,13 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.8")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form28_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm28)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2378,6 +2545,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2436,12 +2613,13 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.9")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form29_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm29)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2512,6 +2690,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2570,12 +2758,13 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.10")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form210_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm210)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2646,6 +2835,16 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2704,12 +2903,13 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.11")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form211_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm211)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2779,6 +2979,16 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
                 });
                 #endregion
 
@@ -2838,12 +3048,13 @@ namespace Client_App.Views
 
                 panel.Children.Add(grd);
             }
+
             if (_param == "2.12")
             {
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form212_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm212)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2913,6 +3124,16 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.O,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    Command = dataContext.SetNumberOrder
                 });
                 #endregion
 

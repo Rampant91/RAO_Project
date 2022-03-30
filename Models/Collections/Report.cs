@@ -435,8 +435,8 @@ namespace Models.Collections
         #endregion
 
         #region Forms17
-        ObservableCollectionWithItemPropertyChangedWithSum<Form17> Rows17_DB;
-        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form17> Rows17
+        ObservableCollectionWithItemPropertyChanged<Form17> Rows17_DB;
+        public virtual ObservableCollectionWithItemPropertyChanged<Form17> Rows17
         {
             get
             {
@@ -455,8 +455,8 @@ namespace Models.Collections
         #endregion
 
         #region Forms18
-        ObservableCollectionWithItemPropertyChangedWithSum<Form18> Rows18_DB;
-        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form18> Rows18
+        ObservableCollectionWithItemPropertyChanged<Form18> Rows18_DB;
+        public virtual ObservableCollectionWithItemPropertyChanged<Form18> Rows18
         {
             get
             {
@@ -518,8 +518,8 @@ namespace Models.Collections
         #endregion
 
         #region Forms21
-        ObservableCollectionWithItemPropertyChangedWithSum<Form21> Rows21_DB;
-        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form21> Rows21
+        ObservableCollectionWithItemPropertyChanged<Form21> Rows21_DB;
+        public virtual ObservableCollectionWithItemPropertyChanged<Form21> Rows21
         {
             get
             {
@@ -538,8 +538,8 @@ namespace Models.Collections
         #endregion
 
         #region Forms22
-        ObservableCollectionWithItemPropertyChangedWithSum<Form22> Rows22_DB;
-        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form22> Rows22
+        ObservableCollectionWithItemPropertyChanged<Form22> Rows22_DB;
+        public virtual ObservableCollectionWithItemPropertyChanged<Form22> Rows22
         {
             get
             {
@@ -2779,10 +2779,10 @@ namespace Models.Collections
             Rows16 = new ObservableCollectionWithItemPropertyChanged<Form16>();
             Rows16.CollectionChanged += CollectionChanged16;
 
-            Rows17 = new ObservableCollectionWithItemPropertyChangedWithSum<Form17>();
+            Rows17 = new ObservableCollectionWithItemPropertyChanged<Form17>();
             Rows17.CollectionChanged += CollectionChanged17;
 
-            Rows18 = new ObservableCollectionWithItemPropertyChangedWithSum<Form18>();
+            Rows18 = new ObservableCollectionWithItemPropertyChanged<Form18>();
             Rows18.CollectionChanged += CollectionChanged18;
 
             Rows19 = new ObservableCollectionWithItemPropertyChanged<Form19>();
@@ -2791,10 +2791,10 @@ namespace Models.Collections
             Rows20 = new ObservableCollectionWithItemPropertyChanged<Form20>();
             Rows20.CollectionChanged += CollectionChanged20;
 
-            Rows21 = new ObservableCollectionWithItemPropertyChangedWithSum<Form21>();
+            Rows21 = new ObservableCollectionWithItemPropertyChanged<Form21>();
             Rows21.CollectionChanged += CollectionChanged21;
 
-            Rows22 = new ObservableCollectionWithItemPropertyChangedWithSum<Form22>();
+            Rows22 = new ObservableCollectionWithItemPropertyChanged<Form22>();
             Rows22.CollectionChanged += CollectionChanged22;
 
             Rows23 = new ObservableCollectionWithItemPropertyChanged<Form23>();

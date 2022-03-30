@@ -708,10 +708,11 @@ namespace Client_App.ViewModels
             }
             var rows = Storage.Rows22.GetEnumerable();
             var count = 1;
-            foreach (var row in rows) 
+            foreach (Form22 row in rows) 
             {
                 row.SetOrder(count);
                 count++;
+                row.NumberInOrderSum = new RamAccess<string>(null, "");
             }
         }
         #endregion
@@ -728,6 +729,20 @@ namespace Client_App.ViewModels
             nt.Order = GetNumberInOrder(Storage.Notes);
             Storage.Notes.Add(nt);
             await Storage.SortAsync();
+        }
+        #endregion
+
+        #region SetNumberOrder
+        public ReactiveCommand<object, Unit> SetNumberOrder { get; protected set; }
+        private async Task _SetNumberOrder(object Param)
+        {
+            var count = 1;
+            var rows = Storage.Rows.GetEnumerable();
+            foreach (var row in rows)
+            {
+                row.SetOrder(count);
+                count++;
+            }
         }
         #endregion
 
@@ -1260,6 +1275,7 @@ namespace Client_App.ViewModels
             AddNote = ReactiveCommand.CreateFromTask<object>(_AddNote);
             DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
             DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
+            SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
 
             ShowDialog = new Interaction<object,int>();
             ShowDialogIn = new Interaction<int, int>();
@@ -1267,6 +1283,13 @@ namespace Client_App.ViewModels
             if (!isSum)
             {
                 Storage.Sort();
+                //var count = 1;
+                //var rows = Storage.Rows.GetEnumerable();
+                //foreach (var row in rows)
+                //{
+                //    row.SetOrder(count);
+                //    count++;
+                //}
             }
         }
 
