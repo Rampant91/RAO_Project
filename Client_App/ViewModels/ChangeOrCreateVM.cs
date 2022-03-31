@@ -424,8 +424,9 @@ namespace Client_App.ViewModels
                     tItems.Remove(item);
                 }
             }
+            List<Task> rtl = new List<Task>();
 
-            foreach (var itemT in tItems)
+            Parallel.ForEach(tItems, itemT =>
             {
                 var sums = itemT.Where(x => (x as Form22).Sum_DB == true).FirstOrDefault();
 
@@ -539,7 +540,8 @@ namespace Client_App.ViewModels
                     }
 
                 }
-            }
+            });
+            
 
             Storage.Rows22.Clear();
             var yu = ito.OrderBy(x => x.Value.Count);
