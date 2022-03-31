@@ -1204,7 +1204,7 @@ namespace Client_App.Controls.DataGrid
                     }
                     if (LastPressedItem[1] > paramRowColumn[1] && (paramPos.X < pr - 700  || paramPos.X < pr / 4))
                     {
-                        ScrollLeftRight -= 100;
+                        ScrollLeftRight -= 50;
                     }
                     LastPressedItem = paramRowColumn;
                     SetSelectedControls();
