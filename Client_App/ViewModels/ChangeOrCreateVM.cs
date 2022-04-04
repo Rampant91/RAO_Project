@@ -1032,7 +1032,17 @@ namespace Client_App.ViewModels
                     var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
                     if (Convert.ToInt32(param[1]) == 0 && !(collectionEn.FirstOrDefault() is Note))
                     {
-                        rowText = rowText.Remove(0, 2);
+                        var newText = rowsText[0].ToArray();
+                        var count = 0;
+                        foreach(char t in newText)
+                        {
+                            count++;
+                            if (t.Equals('\t')) 
+                            {
+                                break;
+                            }
+                        }
+                        rowText = rowText.Remove(0, count);
                     }
                     var columnsText = ParseInnerTextColumn(rowText);
                     var dStructure = (IDataGridColumn)item;
