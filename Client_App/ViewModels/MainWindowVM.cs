@@ -49,6 +49,22 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region Current_Db
+        private string _current_Db = "";
+        public string Current_Db
+        {
+            get => _current_Db;
+            set
+            {
+                if (_current_Db != value)
+                {
+                    _current_Db = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
         public MainWindowVM() { }
 
         #region Init
@@ -122,6 +138,8 @@ namespace Client_App.ViewModels
             {
                 try
                 {
+                    string[] names = file.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                    Current_Db = "Интерактивное пособие по вводу данных ver.1.2.0 Текущая база данных - " + names[names.Length - 1];
                     StaticConfiguration.DBPath = file;
                     StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                     dbm = StaticConfiguration.DBModel;
@@ -135,6 +153,7 @@ namespace Client_App.ViewModels
             }
             if (!flag)
             {
+                Current_Db = "Интерактивное пособие по вводу данных ver.1.2.0 Текущая база данных - " + "Local" + "_" + i + ".raodb";
                 StaticConfiguration.DBPath = Path.Combine(tempDirectory, "Local" + "_" + i + ".raodb");
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
