@@ -667,7 +667,7 @@ namespace Client_App.ViewModels
                             }
                             else
                             {
-                                var an = "";
+                                var an = "Загрузить новую";
                                 if (!skipNew)
                                 {
                                     var str = "Загрузить новую форму? \n" +
@@ -687,6 +687,7 @@ namespace Client_App.ViewModels
                                         "Загрузить для все"
                                         });
                                     if (an == "Загрузить для всех") skipNew = true;
+                                    an = "Загрузить новую";
                                 }
                                 await ChechAanswer(an, first11, elem, it);
                             }
@@ -726,6 +727,7 @@ namespace Client_App.ViewModels
                                 "Загрузить для всех"
                             });
                             if (an == "Загрузить для всех") _skipNew = true;
+                            an = "Да";
                         }
                         await ChechAanswer(an, first11, null, it);
                     }
@@ -808,6 +810,7 @@ namespace Client_App.ViewModels
                                                                         "Загрузить для всех"
                                                                         });
                                     if (an == "Загрузить для всех") skipNew = true;
+                                    an = "Загрузить новую";
                                 }
                                 await ChechAanswer(an, first21, elem, it);
                             }
@@ -831,6 +834,7 @@ namespace Client_App.ViewModels
                                 "Загрузить для всех"
                             });
                             if (an == "Загрузить для всех") _skipNew = true;
+                            an = "Да";
                         }
                         await ChechAanswer(an, first21, null, it);
                         not_in = false;
