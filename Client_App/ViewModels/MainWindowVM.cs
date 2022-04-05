@@ -435,19 +435,12 @@ namespace Client_App.ViewModels
                 if (tb1.Count() != 0)
                 {
                     var tb11 = from Reports t in Local_Reports.Reports_Collection10
-                           where (((item.Master.Rows10[0].Okpo_DB == "") &&
-                           (t.Master.Rows10[0].Okpo_DB == "")) ||
-                           ((t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
-                           (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB))) &&
-                           (((item.Master.Rows10[0].RegNo_DB == "") &&
-                           (t.Master.Rows10[0].RegNo_DB == "")) ||
-                           ((t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
-                           (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB))) &&
-                           (((item.Master.Rows10[0].ShortJurLico_DB == "") &&
-                           (t.Master.Rows10[0].ShortJurLico_DB == "")) ||
-                           ((t.Master.Rows10[0].ShortJurLico_DB == item.Master.Rows10[0].ShortJurLico_DB) &&
-                           (t.Master.Rows10[1].ShortJurLico_DB == item.Master.Rows10[1].ShortJurLico_DB)))
-                           select t;
+                           where ((item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB &&
+                           item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB &&
+                           item.Master.Rows10[0].ShortJurLico_DB == t.Master.Rows10[0].ShortJurLico_DB) ||
+                           (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB &&
+                           item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB &&
+                           item.Master.Rows10[1].ShortJurLico_DB == t.Master.Rows10[1].ShortJurLico_DB)) select t;
                     return tb11.FirstOrDefault();
                 }
                 return null;
@@ -465,19 +458,27 @@ namespace Client_App.ViewModels
                 if (tb2.Count() != 0)
                 {
                     var tb21 = from Reports t in Local_Reports.Reports_Collection20
-                               where (((item.Master.Rows10[0].Okpo_DB == "") &&
-                               (t.Master.Rows20[0].Okpo_DB == "")) ||
-                               ((t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
-                               (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB))) &&
-                               (((item.Master.Rows20[0].RegNo_DB == "") &&
-                               (t.Master.Rows20[0].RegNo_DB == "")) ||
-                               ((t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
-                               (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB))) &&
-                               (((item.Master.Rows20[0].ShortJurLico_DB == "") &&
-                               (t.Master.Rows20[0].ShortJurLico_DB == "")) ||
-                               ((t.Master.Rows20[0].ShortJurLico_DB == item.Master.Rows20[0].ShortJurLico_DB) &&
-                               (t.Master.Rows20[1].ShortJurLico_DB == item.Master.Rows20[1].ShortJurLico_DB)))
+                               where ((item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB &&
+                               item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB &&
+                               item.Master.Rows20[0].ShortJurLico_DB == t.Master.Rows20[0].ShortJurLico_DB) ||
+                               (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB &&
+                               item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB &&
+                               item.Master.Rows20[1].ShortJurLico_DB == t.Master.Rows20[1].ShortJurLico_DB))
                                select t;
+                    //var tb21 = from Reports t in Local_Reports.Reports_Collection20
+                    //           where (((item.Master.Rows10[0].Okpo_DB == "") &&
+                    //           (t.Master.Rows20[0].Okpo_DB == "")) ||
+                    //           ((t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
+                    //           (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB))) &&
+                    //           (((item.Master.Rows20[0].RegNo_DB == "") &&
+                    //           (t.Master.Rows20[0].RegNo_DB == "")) ||
+                    //           ((t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
+                    //           (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB))) &&
+                    //           (((item.Master.Rows20[0].ShortJurLico_DB == "") &&
+                    //           (t.Master.Rows20[0].ShortJurLico_DB == "")) ||
+                    //           ((t.Master.Rows20[0].ShortJurLico_DB == item.Master.Rows20[0].ShortJurLico_DB) &&
+                    //           (t.Master.Rows20[1].ShortJurLico_DB == item.Master.Rows20[1].ShortJurLico_DB)))
+                    //           select t;
                     return tb21.FirstOrDefault();
                 }
                 return null;
