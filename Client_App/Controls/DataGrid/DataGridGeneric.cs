@@ -636,6 +636,14 @@ namespace Client_App.Controls.DataGrid
                 answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
                 return answ;
             }
+            if (param.ParamName == "Del")
+            {
+                object[] answ = new object[3];
+                answ[0] = SelectedItems;
+                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                return answ;
+            }
             if (param.ParamName == "SelectAll")
             {
                 int maxRow = PageSize;

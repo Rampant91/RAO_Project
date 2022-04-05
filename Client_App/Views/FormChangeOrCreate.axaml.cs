@@ -227,6 +227,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -280,6 +289,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -372,6 +390,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -425,6 +452,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -517,6 +553,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -570,6 +615,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -662,6 +716,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -715,6 +778,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -807,6 +879,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -860,6 +941,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -952,6 +1042,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1005,6 +1104,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -1097,6 +1205,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1150,6 +1267,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -1242,6 +1368,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1295,6 +1430,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -1387,6 +1531,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1440,6 +1593,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -1540,6 +1702,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1593,6 +1764,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -1685,6 +1865,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1738,6 +1927,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -1830,6 +2028,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -1883,6 +2090,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -1975,6 +2191,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2028,6 +2253,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -2120,6 +2354,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2173,6 +2416,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -2184,7 +2436,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form26_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm26)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2265,6 +2517,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2318,6 +2579,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -2329,7 +2599,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form27_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm27)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2410,6 +2680,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2463,6 +2742,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -2474,7 +2762,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form28_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm28)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2555,6 +2843,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2608,6 +2905,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -2619,7 +2925,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form29_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm29)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2700,6 +3006,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2753,6 +3068,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -2764,7 +3088,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form210_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm210)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2845,6 +3169,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -2898,6 +3231,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -2909,7 +3251,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form211_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm211)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2990,6 +3332,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -3043,6 +3394,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 
@@ -3054,7 +3414,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form212_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (Controls.DataGrid.DataGridForm212)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
                     Key = Avalonia.Input.Key.A,
@@ -3135,6 +3495,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "¬ыставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
+                });
                 #endregion
 
                 #region Notes Context Menu
@@ -3188,6 +3557,15 @@ namespace Client_App.Views
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "”далить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.Delete,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Del",
+                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    Command = dataContext.DeleteDataInRows
                 });
                 #endregion
 

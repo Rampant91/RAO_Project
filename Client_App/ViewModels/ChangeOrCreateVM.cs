@@ -914,6 +914,81 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region DeleteDataInRows
+        public ReactiveCommand<object, Unit> DeleteDataInRows { get; protected set; }
+        private async Task _DeleteDataInRows(object _param)
+        {
+            object[] param = _param as object[];
+            IKeyCollection collection = param[0] as IKeyCollection;
+            int minColumn = Convert.ToInt32(param[1]) + 1;
+            int maxColumn = Convert.ToInt32(param[2]) + 1;
+            var collectionEn = collection.GetEnumerable();
+            if ((collectionEn.FirstOrDefault() is Form1) || (collectionEn.FirstOrDefault() is Form2))
+            {
+                if (minColumn == 1) minColumn++;
+            }
+
+            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+            {
+                foreach (IKey item in collectionEn.OrderBy(x => x.Order))
+                {
+                    var props = item.GetType().GetProperties();
+                    var dStructure = (IDataGridColumn)item;
+                    var findStructure = dStructure.GetColumnStructure();
+                    var Level = findStructure.Level;
+                    var tre = findStructure.GetLevel(Level - 1);
+
+
+                    foreach (var prop in props)
+                    {
+                        var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
+                        if (attr != null)
+                        {
+                            try
+                            {
+                                var columnNum = 0;
+                                if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                                {
+                                    columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                                }
+                                else
+                                {
+                                    columnNum = Convert.ToInt32(attr.Number);
+                                }
+                                if (columnNum >= minColumn && columnNum <= maxColumn)
+                                {
+                                    var midvalue = prop.GetMethod.Invoke(item, null);
+                                    if (midvalue is RamAccess<int?>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
+                                    else if (midvalue is RamAccess<float?>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { float.Parse("") });
+                                    else if (midvalue is RamAccess<short>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
+                                    else if (midvalue is RamAccess<short?>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
+                                    else if (midvalue is RamAccess<int>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
+                                    else if (midvalue is RamAccess<string>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
+                                    else if (midvalue is RamAccess<byte?>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
+                                    else if (midvalue is RamAccess<bool>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
+                                    else
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                int k = 8;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region CopyRows
         public ReactiveCommand<object, Unit> CopyRows { get; protected set; }
         private async Task _CopyRows(object _param)
@@ -1288,6 +1363,7 @@ namespace Client_App.ViewModels
             DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
             DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
             SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
+            DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
 
             ShowDialog = new Interaction<object,int>();
             ShowDialogIn = new Interaction<int, int>();
@@ -1295,13 +1371,6 @@ namespace Client_App.ViewModels
             if (!isSum)
             {
                 Storage.Sort();
-                //var count = 1;
-                //var rows = Storage.Rows.GetEnumerable();
-                //foreach (var row in rows)
-                //{
-                //    row.SetOrder(count);
-                //    count++;
-                //}
             }
         }
 
