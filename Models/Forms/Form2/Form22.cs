@@ -798,7 +798,7 @@ namespace Models
         public string PackQuantity_DB { get; set; } = null;
 
         [NotMapped]
-        [Attributes.Form_Property(true,"УКТ, упаковка ли иная учетная единица","количество, шт.","6")]
+        [Attributes.Form_Property(true,"УКТ, упаковка ли иная учетная единица","количество, шт","6")]
         public RamAccess<string> PackQuantity
         {
             get
@@ -1556,7 +1556,7 @@ namespace Models
 
         #region QuantityOZIII_DB
         public string QuantityOZIII_DB { get; set; } = null;[NotMapped]
-        [Attributes.Form_Property(true,"null-13","Количество ОЗИИИ, шт.","13")]
+        [Attributes.Form_Property(true,"null-13","Количество ОЗИИИ, шт","13")]
         public RamAccess<string> QuantityOZIII//SUMMARIZABLE
         {
             get

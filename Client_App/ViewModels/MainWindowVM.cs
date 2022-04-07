@@ -165,7 +165,7 @@ namespace Client_App.ViewModels
             if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
             foreach (var item in dbm.DBObservableDbSet)
             {
-                foreach (Reports it in item.Reports_Collection)
+                 foreach (Reports it in item.Reports_Collection)
                 {
                     if (it.Master_DB.FormNum_DB != "")
                     {

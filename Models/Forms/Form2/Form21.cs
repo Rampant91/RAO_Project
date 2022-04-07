@@ -1237,7 +1237,7 @@ namespace Models
         //QuantityIn property
         #region  QuantityIn
         public string QuantityIn_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт.","10")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт","10")]
         public RamAccess<string> QuantityIn//SUMMARIZABLE
         {
             get
@@ -2112,7 +2112,7 @@ namespace Models
         #region  QuantityOZIIIout
         public string QuantityOZIIIout_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт.","19")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт","19")]
         public RamAccess<string> QuantityOZIIIout//SUMMARIZABLE
         {
             get

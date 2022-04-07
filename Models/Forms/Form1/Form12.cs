@@ -452,7 +452,7 @@ namespace Models
         #region SignedServicePeriod
         public string SignedServicePeriod_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "НСС, мес.", "10")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "НСС, мес", "10")]
         public RamAccess<string> SignedServicePeriod
         {
             get

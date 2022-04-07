@@ -436,7 +436,7 @@ namespace Models
         //Quantity property
         #region  Quantity
         public int? Quantity_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "количество, шт.","8")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "количество, шт","8")]
         public RamAccess<int?> Quantity
         {
             get

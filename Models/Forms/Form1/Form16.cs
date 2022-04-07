@@ -966,7 +966,7 @@ namespace Models
         #region QuantityOZIII
         public string QuantityOZIII_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property(true, "null-8","Количество ОЗИИИ, шт.","8")]
+        [Attributes.Form_Property(true, "null-8","Количество ОЗИИИ, шт","8")]
         public RamAccess<string> QuantityOZIII
         {
             get

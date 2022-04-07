@@ -294,7 +294,7 @@ namespace Models
         #region Quantity
         public int? Quantity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "количество, шт.", "8")]
+        [Attributes.Form_Property(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "количество, шт", "8")]
         public RamAccess<int?> Quantity
         {
             get
@@ -638,7 +638,7 @@ namespace Models
         #region SignedServicePeriod
         public float? SignedServicePeriod_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "НСС, мес.", "13")]
+        [Attributes.Form_Property(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "НСС, мес", "13")]
         public RamAccess<float?> SignedServicePeriod
         {
             get

@@ -293,7 +293,7 @@ namespace Models
         #region Quantity
         public int? Quantity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "количество, шт.","8")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "количество, шт","8")]
         public RamAccess<int?> Quantity
         {
             get

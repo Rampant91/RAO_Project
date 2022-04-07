@@ -1649,7 +1649,7 @@ namespace Models
         #region Quantity
         public string Quantity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property(true,"Сведения о РАО", "null-25", "количество ОЗИИИ, шт.","25")]
+        [Attributes.Form_Property(true,"Сведения о РАО", "null-25", "количество ОЗИИИ, шт","25")]
         public RamAccess<string> Quantity
         {
             get

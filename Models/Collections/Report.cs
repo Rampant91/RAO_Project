@@ -2313,7 +2313,7 @@ namespace Models.Collections
         #region SourcesQuantity26
         public int? SourcesQuantity26_DB { get; set; } = null;
         [NotMapped]
-        [Form_Property(true,"Количество источников, шт.")]
+        [Form_Property(true,"Количество источников, шт")]
         public RamAccess<int?> SourcesQuantity26
         {
             get

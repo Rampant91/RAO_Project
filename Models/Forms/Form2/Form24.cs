@@ -252,7 +252,7 @@ namespace Models
         #region  QuantityCreated
         public string QuantityCreated_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true, "Поставлено на учет в организации", "количество образованного, шт.","5")]
+        [Attributes.Form_Property(true, "Поставлено на учет в организации", "количество образованного, шт","5")]
         public RamAccess<string> QuantityCreated
         {
             get
@@ -405,7 +405,7 @@ namespace Models
         //QuantityFromAnothers property
         #region  QuantityFromAnothers
         public string QuantityFromAnothers_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации", "количество поступиших от сторонних, шт.","7")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации", "количество поступиших от сторонних, шт","7")]
         public RamAccess<string> QuantityFromAnothers
         {
             get
@@ -557,7 +557,7 @@ namespace Models
         //QuantityFromAnothersImported property
         #region  QuantityFromAnothersImported
         public string QuantityFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество импортированных от сторонних, шт.","9")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество импортированных от сторонних, шт","9")]
         public RamAccess<string> QuantityFromAnothersImported
         {
             get
@@ -710,7 +710,7 @@ namespace Models
         #region  QuantityAnotherReasons
         public string QuantityAnotherReasons_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество учтенных по другим причинам, шт.","11")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество учтенных по другим причинам, шт","11")]
         public RamAccess<string> QuantityAnotherReasons
         {
             get
@@ -863,7 +863,7 @@ namespace Models
         //QuantityTransferredToAnother property
         #region  QuantityTransferredToAnother
         public string QuantityTransferredToAnother_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","количество переданных сторонним, шт.","13")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество переданных сторонним, шт","13")]
         public RamAccess<string> QuantityTransferredToAnother
         {
             get
@@ -1015,7 +1015,7 @@ namespace Models
         //QuantityRefined property
         #region  QuantityRefined
         public string QuantityRefined_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","количество переработанных, шт.","15")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество переработанных, шт","15")]
         public RamAccess<string> QuantityRefined
         {
             get
@@ -1167,7 +1167,7 @@ namespace Models
         //QuantityRemovedFromAccount property
         #region  QuantityRemovedFromAccount
         public string QuantityRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","количество снятых с учета, шт.","17")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество снятых с учета, шт","17")]
         public RamAccess<string> QuantityRemovedFromAccount
         {
             get
