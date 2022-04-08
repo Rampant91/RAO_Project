@@ -435,7 +435,7 @@ namespace Models
         #endregion
 
         #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
             Column = Column + (Transpon == true ? cnt : 0);
@@ -444,9 +444,9 @@ namespace Models
 
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ObservedSourceNumber_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = RadionuclidName_DB;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = AllowedWasteValue_DB== "" ? 0  : double.TryParse(AllowedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AllowedWasteValue_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = FactedWasteValue_DB == null ? "" :  double.TryParse(FactedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : FactedWasteValue_DB;
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = WasteOutbreakPreviousYear_DB== "" ? 0  : double.TryParse(WasteOutbreakPreviousYear_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : WasteOutbreakPreviousYear_DB;
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = AllowedWasteValue_DB == "" || AllowedWasteValue_DB == "-" || AllowedWasteValue_DB == null ? 0 : double.TryParse(AllowedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AllowedWasteValue_DB;
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = FactedWasteValue_DB == "" || FactedWasteValue_DB == "-" || FactedWasteValue_DB == null ? 0 :  double.TryParse(FactedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : FactedWasteValue_DB;
+            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = WasteOutbreakPreviousYear_DB== "" || WasteOutbreakPreviousYear_DB == "-" || WasteOutbreakPreviousYear_DB == null ? 0  : double.TryParse(WasteOutbreakPreviousYear_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : WasteOutbreakPreviousYear_DB;
             return 5;
         }
 

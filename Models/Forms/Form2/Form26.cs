@@ -541,10 +541,10 @@ namespace Models
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ObservedSourceNumber_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ControlledAreaName_DB;
             worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = SupposedWasteSource_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = DistanceToWasteSource_DB== "" ? 0  : double.TryParse(DistanceToWasteSource_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : DistanceToWasteSource_DB;
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = TestDepth_DB== "" ? 0  : double.TryParse(TestDepth_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TestDepth_DB;
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = DistanceToWasteSource_DB== "" || DistanceToWasteSource_DB == "-" || DistanceToWasteSource_DB == null ? 0  : double.TryParse(DistanceToWasteSource_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : DistanceToWasteSource_DB;
+            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = TestDepth_DB== "" || TestDepth_DB == "-" || TestDepth_DB == null ? 0  : double.TryParse(TestDepth_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TestDepth_DB;
             worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = RadionuclidName_DB;
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = AverageYearConcentration_DB== "" ? 0  : double.TryParse(AverageYearConcentration_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AverageYearConcentration_DB;
+            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = AverageYearConcentration_DB== "" || AverageYearConcentration_DB == "-" || AverageYearConcentration_DB == null ? 0  : double.TryParse(AverageYearConcentration_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AverageYearConcentration_DB;
             return 7;
         }
 
