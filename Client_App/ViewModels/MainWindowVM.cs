@@ -597,6 +597,7 @@ namespace Client_App.ViewModels
             var skipLess = false;
             var skipNew = false;
             var _skipNew = false;
+            var skipInter = false;
 
             foreach (Report it in item.Report_Collection)
             {
@@ -696,16 +697,21 @@ namespace Client_App.ViewModels
                         if ((st_elem > st_it && st_elem < en_it || en_elem > st_it && en_elem < en_it) && it.FormNum.Value == elem.FormNum.Value)
                         {
                             not_in = true;
-                            var str = "Пересечение даты в " + elem.FormNum_DB + " " +
-                                elem.StartPeriod_DB + "-" +
-                                elem.EndPeriod_DB + " \n" +
-                                first11.Master.RegNoRep.Value + " " +
-                                first11.Master.ShortJurLicoRep.Value + " " +
-                                first11.Master.OkpoRep.Value;
-                            var an = await ShowMessage.Handle(new List<string>(){str,
+                            var an = "Отменить";
+                            if (!skipInter)
+                            {
+                                var str = "Пересечение даты в " + elem.FormNum_DB + " " +
+                                    elem.StartPeriod_DB + "-" +
+                                    elem.EndPeriod_DB + " \n" +
+                                    first11.Master.RegNoRep.Value + " " +
+                                    first11.Master.ShortJurLicoRep.Value + " " +
+                                    first11.Master.OkpoRep.Value;
+                                an = await ShowMessage.Handle(new List<string>(){str,
                                 "Сохранить оба",
-                                "Отменить" 
-                            });
+                                "Отменить"
+                                });
+                                skipInter = true;
+                            }
                             await ChechAanswer(an, first11, null, it);
                         }
                     }
