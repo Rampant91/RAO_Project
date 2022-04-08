@@ -279,7 +279,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true, "Установки переработки","наименование","2")]
+        [Attributes.Form_Property(true, "Установки переработки", "наименование", "2")]
         public RamAccess<string> RefineMachineName
         {
             get
@@ -391,7 +391,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true, "Установки переработки", "код","3")]
+        [Attributes.Form_Property(true, "Установки переработки", "код", "3")]
         public RamAccess<byte?> MachineCode
         {
             get
@@ -523,7 +523,7 @@ namespace Models
 
         public string MachinePower_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true, "Установки переработки", "мощность, куб. м/год","4")]
+        [Attributes.Form_Property(true, "Установки переработки", "мощность, куб. м/год", "4")]
         public RamAccess<string> MachinePower
         {
             get
@@ -536,7 +536,7 @@ namespace Models
                 }
                 else
                 {
-                    var rm=new RamAccess<string>(MachinePower_Validation, MachinePower_DB,MachinePower_Hidden_Get,MachinePower_Hidden_Set);
+                    var rm = new RamAccess<string>(MachinePower_Validation, MachinePower_DB, MachinePower_Hidden_Get, MachinePower_Hidden_Set);
                     rm.PropertyChanged += MachinePowerValueChanged;
                     Dictionary.Add(nameof(MachinePower), rm);
                     return rm;
@@ -693,7 +693,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true, "Установки переработки", "количество часов работы за год","5")]
+        [Attributes.Form_Property(true, "Установки переработки", "количество часов работы за год", "5")]
         public RamAccess<string> NumberOfHoursPerYear
         {
             get
@@ -800,7 +800,7 @@ namespace Models
 
         //CodeRAOIn property
         #region  CodeRAOIn
-        public string CodeRAOIn_DB { get; set; } = ""; 
+        public string CodeRAOIn_DB { get; set; } = "";
         public bool CodeRAOIn_Hidden_Priv { get; set; } = false;
         [NotMapped]
         public bool CodeRAOIn_Hidden
@@ -813,7 +813,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "код РАО","6")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "код РАО", "6")]
         public RamAccess<string> CodeRAOIn
         {
             get
@@ -949,7 +949,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "статус РАО","7")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "статус РАО", "7")]
         public RamAccess<string> StatusRAOIn  //1 cyfer or OKPO.
         {
             get
@@ -1040,7 +1040,7 @@ namespace Models
         //VolumeIn property
         #region  VolumeIn
         public string VolumeIn_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "куб. м","8")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "куб. м", "8")]
         public RamAccess<string> VolumeIn//SUMMARIZABLE
         {
             get
@@ -1143,7 +1143,7 @@ namespace Models
         //MassIn Property
         #region  MassIn
         public string MassIn_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "т","9")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "т", "9")]
         public RamAccess<string> MassIn//SUMMARIZABLE
         {
             get
@@ -1237,7 +1237,7 @@ namespace Models
         //QuantityIn property
         #region  QuantityIn
         public string QuantityIn_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт","10")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт", "10")]
         public RamAccess<string> QuantityIn//SUMMARIZABLE
         {
             get
@@ -1276,7 +1276,7 @@ namespace Models
             {
                 return true;
             }
-            if (value1.Value.Equals("прим.")||value1.Value.Equals("-"))
+            if (value1.Value.Equals("прим.") || value1.Value.Equals("-"))
             {
                 return true;
             }
@@ -1307,8 +1307,8 @@ namespace Models
 
         //TritiumActivityIn property
         #region  TritiumActivityIn
-        public string TritiumActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "тритий","11")]
+        public string TritiumActivityIn_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "тритий", "11")]
         public RamAccess<string> TritiumActivityIn//SUMMARIZABLE
         {
             get
@@ -1328,7 +1328,7 @@ namespace Models
             }
             set
             {
-                    TritiumActivityIn_DB = value.Value;
+                TritiumActivityIn_DB = value.Value;
                 OnPropertyChanged(nameof(TritiumActivityIn));
             }
         }
@@ -1401,8 +1401,8 @@ namespace Models
 
         //BetaGammaActivityIn property
         #region  BetaGammaActivityIn
-        public string BetaGammaActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)","12")]
+        public string BetaGammaActivityIn_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "12")]
         public RamAccess<string> BetaGammaActivityIn//SUMMARIZABLE
         {
             get
@@ -1495,8 +1495,8 @@ namespace Models
 
         //AlphaActivityIn property
         #region  AlphaActivityIn
-        public string AlphaActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)","13")]
+        public string AlphaActivityIn_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)", "13")]
         public RamAccess<string> AlphaActivityIn//SUMMARIZABLE
         {
             get
@@ -1589,8 +1589,8 @@ namespace Models
 
         //TransuraniumActivityIn property
         #region  TransuraniumActivityIn
-        public string TransuraniumActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды","14")]
+        public string TransuraniumActivityIn_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды", "14")]
         public RamAccess<string> TransuraniumActivityIn//SUMMARIZABLE
         {
             get
@@ -1687,7 +1687,7 @@ namespace Models
         public bool CodeRAOout_Hidden_Priv { get; set; } = false;
         [NotMapped]
         public bool CodeRAOout_Hidden
-    {
+        {
             get => CodeRAOout_Hidden_Priv;
             set
             {
@@ -1696,7 +1696,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "код РАО","15")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "код РАО", "15")]
         public RamAccess<string> CodeRAOout
         {
             get
@@ -1833,7 +1833,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "статус РАО","16")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "статус РАО", "16")]
         public RamAccess<string> StatusRAOout  //1 cyfer or OKPO.
         {
             get
@@ -1918,8 +1918,8 @@ namespace Models
 
         //VolumeOut property
         #region  VolumeOut
-        public string VolumeOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "куб. м","17")]
+        public string VolumeOut_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "куб. м", "17")]
         public RamAccess<string> VolumeOut//SUMMARIZABLE
         {
             get
@@ -2015,7 +2015,7 @@ namespace Models
         #region  MassOut
         public string MassOut_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "т","18")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "т", "18")]
         public RamAccess<string> MassOut//SUMMARIZABLE
         {
             get
@@ -2112,7 +2112,7 @@ namespace Models
         #region  QuantityOZIIIout
         public string QuantityOZIIIout_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт","19")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт", "19")]
         public RamAccess<string> QuantityOZIIIout//SUMMARIZABLE
         {
             get
@@ -2187,8 +2187,8 @@ namespace Models
 
         //TritiumActivityOut property
         #region  TritiumActivityOut
-        public string TritiumActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "тритий","20")]
+        public string TritiumActivityOut_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "тритий", "20")]
         public RamAccess<string> TritiumActivityOut//SUMMARIZABLE
         {
             get
@@ -2282,8 +2282,8 @@ namespace Models
 
         //BetaGammaActivityOut property
         #region  BetaGammaActivityOut
-        public string BetaGammaActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)","21")]
+        public string BetaGammaActivityOut_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "21")]
         public RamAccess<string> BetaGammaActivityOut//SUMMARIZABLE
         {
             get
@@ -2376,8 +2376,8 @@ namespace Models
 
         //AlphaActivityOut property
         #region  AlphaActivityOut
-        public string AlphaActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "альфа-излучающие радионуклиды (исключая трансурановые)","22")]
+        public string AlphaActivityOut_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "альфа-излучающие радионуклиды (исключая трансурановые)", "22")]
         public RamAccess<string> AlphaActivityOut//SUMMARIZABLE
         {
             get
@@ -2471,8 +2471,8 @@ namespace Models
 
         //TransuraniumActivityOut property
         #region  TransuraniumActivityOut
-        public string TransuraniumActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "трансурановые радионуклиды","23")]
+        public string TransuraniumActivityOut_DB { get; set; } = "";[NotMapped]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "трансурановые радионуклиды", "23")]
         public RamAccess<string> TransuraniumActivityOut//SUMMARIZABLE
         {
             get
@@ -2574,7 +2574,7 @@ namespace Models
         #endregion
 
         #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true, string SumNumber = "")
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon, SumNumber);
             Column = Column + (Transpon == true ? cnt : 0);
@@ -2582,26 +2582,26 @@ namespace Models
             double val = 0;
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = RefineMachineName.Value == null ? "" : RefineMachineName.Value;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = MachineCode.Value == null ? "" : MachineCode.Value;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = MachinePower.Value == null ? "" : double.TryParse(MachinePower.Value.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MachinePower.Value;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = NumberOfHoursPerYear.Value == null ? "" : int.TryParse(NumberOfHoursPerYear.Value.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : NumberOfHoursPerYear.Value;
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = MachinePower.Value == null || MachinePower.Value == "" ? 0 : double.TryParse(MachinePower.Value.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MachinePower.Value;
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = NumberOfHoursPerYear.Value == null || NumberOfHoursPerYear.Value == "" ? 0 : int.TryParse(NumberOfHoursPerYear.Value.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : NumberOfHoursPerYear.Value;
             worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = CodeRAOIn_DB;
             worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = StatusRAOIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = VolumeIn_DB == null ? "" : double.TryParse(VolumeIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = MassIn_DB == null ? "" : double.TryParse(MassIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassIn_DB;
+            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = VolumeIn_DB == null || VolumeIn_DB == "" ? 0 : double.TryParse(VolumeIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeIn_DB;
+            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = MassIn_DB == null || MassIn_DB == "" ? 0 : double.TryParse(MassIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassIn_DB;
             worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = QuantityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = TritiumActivityIn_DB == null ? "" : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = BetaGammaActivityIn_DB == null ? "" : double.TryParse(BetaGammaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val)  ?  val : BetaGammaActivityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = AlphaActivityIn_DB == null ? "" : double.TryParse(AlphaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ?  val : AlphaActivityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = TritiumActivityIn_DB == null ? "" : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
+            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = TritiumActivityIn_DB == null || TritiumActivityIn_DB == "" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
+            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = BetaGammaActivityIn_DB == null || BetaGammaActivityIn_DB == "" ? 0 : double.TryParse(BetaGammaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val)  ?  val : BetaGammaActivityIn_DB;
+            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = AlphaActivityIn_DB == null || AlphaActivityIn_DB ==  "" ? 0 : double.TryParse(AlphaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ?  val : AlphaActivityIn_DB;
+            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = TritiumActivityIn_DB == null || TritiumActivityIn_DB == "" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
             worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = CodeRAOout_DB;
             worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = StatusRAOout_DB;
-            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = VolumeOut_DB == null ? "" : double.TryParse(VolumeOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = MassOut_DB == null ? "" : double.TryParse(MassOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOut_DB;
+            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = VolumeOut_DB == null || VolumeOut_DB == "" ? 0 : double.TryParse(VolumeOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOut_DB;
+            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = MassOut_DB == null || MassOut_DB == "" ? 0 : double.TryParse(MassOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOut_DB;
             worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = QuantityOZIIIout_DB;
-            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = TritiumActivityOut_DB == null ? "" : double.TryParse(TritiumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 19 : 0), Column + (Transpon == true ? 19 : 0)].Value = BetaGammaActivityOut_DB == null ? "" : double.TryParse(BetaGammaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivityOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20 : 0)].Value = AlphaActivityOut_DB == null ? "" : double.TryParse(AlphaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivityOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 21 : 0), Column + (Transpon == true ? 21 : 0)].Value = TransuraniumActivityOut_DB == null ? "" : double.TryParse(TransuraniumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivityOut_DB;
+            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = TritiumActivityOut_DB == null || TritiumActivityOut_DB == "" ? 0 : double.TryParse(TritiumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityOut_DB;
+            worksheet.Cells[Row + (Transpon == false ? 19 : 0), Column + (Transpon == true ? 19 : 0)].Value = BetaGammaActivityOut_DB == null || BetaGammaActivityOut_DB == "" ? 0 : double.TryParse(BetaGammaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivityOut_DB;
+            worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20 : 0)].Value = AlphaActivityOut_DB == null || AlphaActivityOut_DB == "" ? 0 : double.TryParse(AlphaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivityOut_DB;
+            worksheet.Cells[Row + (Transpon == false ? 21 : 0), Column + (Transpon == true ? 21 : 0)].Value = TransuraniumActivityOut_DB == null || TransuraniumActivityOut_DB == "" ? 0 : double.TryParse(TransuraniumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivityOut_DB;
 
             return 22;
         }
