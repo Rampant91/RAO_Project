@@ -630,11 +630,11 @@ namespace Models
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = PlotName_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = PlotKadastrNumber_DB;
             worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = PlotCode_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = InfectedArea_DB == null ? "" : double.TryParse(InfectedArea_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : InfectedArea_DB;
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = InfectedArea_DB == null ? 0 : double.TryParse(InfectedArea_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : InfectedArea_DB;
             worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = Radionuclids_DB;
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = SpecificActivityOfPlot_DB == null ? "" : double.TryParse(SpecificActivityOfPlot_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfPlot_DB;
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = SpecificActivityOfLiquidPart_DB == null ? "" : double.TryParse(SpecificActivityOfLiquidPart_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfLiquidPart_DB;
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = SpecificActivityOfDensePart_DB == null ? "" : double.TryParse(SpecificActivityOfDensePart_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfDensePart_DB;
+            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = SpecificActivityOfPlot_DB == null ? 0 : double.TryParse(SpecificActivityOfPlot_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfPlot_DB;
+            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = SpecificActivityOfLiquidPart_DB == null ? 0 : double.TryParse(SpecificActivityOfLiquidPart_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfLiquidPart_DB;
+            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = SpecificActivityOfDensePart_DB == null ? 0 : double.TryParse(SpecificActivityOfDensePart_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfDensePart_DB;
             return 8;
         }
 
