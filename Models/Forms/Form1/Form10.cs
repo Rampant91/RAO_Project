@@ -188,7 +188,7 @@ namespace Models
             }
             set
             {
-                SubjectRF_DB = value.Value;
+                SubjectRF_DB = ParseInnerText(value.Value);
                 OnPropertyChanged(nameof(SubjectRF));
             }
         }
@@ -197,7 +197,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                SubjectRF_DB = ((RamAccess<string>)Value).Value;
+                SubjectRF_DB = ParseInnerText(((RamAccess<string>)Value).Value);
             }
         }
 
@@ -234,7 +234,7 @@ namespace Models
             }
             set
             {
-                JurLico_DB = value.Value;
+                JurLico_DB = ParseInnerText(value.Value);
                 OnPropertyChanged(nameof(JurLico));
             }
         }
@@ -243,7 +243,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                JurLico_DB = ((RamAccess<string>)Value).Value;
+                JurLico_DB = ParseInnerText(((RamAccess<string>)Value).Value);
             }
         }
 
@@ -280,7 +280,7 @@ namespace Models
             }
             set
             {
-                ShortJurLico_DB = value.Value;
+                ShortJurLico_DB = ParseInnerText(value.Value);
                 OnPropertyChanged(nameof(ShortJurLico));
             }
         }
@@ -289,7 +289,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                ShortJurLico_DB = ((RamAccess<string>)Value).Value;
+                ShortJurLico_DB = ParseInnerText(((RamAccess<string>)Value).Value);
             }
         }
 
@@ -326,7 +326,8 @@ namespace Models
             }
             set
             {
-                JurLicoAddress_DB = value.Value;
+
+                JurLicoAddress_DB = ParseInnerText(value.Value);
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
@@ -335,7 +336,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                JurLicoAddress_DB = ((RamAccess<string>)Value).Value;
+                JurLicoAddress_DB = ParseInnerText(((RamAccess<string>)Value).Value);
             }
         }
 
@@ -372,7 +373,7 @@ namespace Models
             }
             set
             {
-                JurLicoFactAddress_DB = value.Value;
+                JurLicoFactAddress_DB = ParseInnerText(value.Value);
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
@@ -381,7 +382,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                JurLicoFactAddress_DB = ((RamAccess<string>)Value).Value;
+                JurLicoFactAddress_DB = ParseInnerText(((RamAccess<string>)Value).Value);
             }
         }
 
@@ -418,7 +419,7 @@ namespace Models
             }
             set
             {
-                GradeFIO_DB = value.Value;
+                GradeFIO_DB = ParseInnerText(value.Value);
                 OnPropertyChanged(nameof(GradeFIO));
             }
         }
@@ -427,7 +428,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                GradeFIO_DB = ((RamAccess<string>)Value).Value;
+                GradeFIO_DB = ParseInnerText(((RamAccess<string>)Value).Value);
             }
         }
 
@@ -1051,6 +1052,14 @@ namespace Models
             return true;
         }
 
+        #endregion
+
+        #region ParseInnerText
+        private string ParseInnerText(string Text)
+        {
+            Text = Text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
+            return Text;
+        }
         #endregion
 
         #region IExcel
