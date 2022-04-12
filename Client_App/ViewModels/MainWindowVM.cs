@@ -436,11 +436,9 @@ namespace Client_App.ViewModels
                 {
                     var tb11 = from Reports t in Local_Reports.Reports_Collection10
                            where ((item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB &&
-                           item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB &&
-                           item.Master.Rows10[0].ShortJurLico_DB == t.Master.Rows10[0].ShortJurLico_DB) &&
+                           item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB) &&
                            (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB &&
-                           item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB &&
-                           item.Master.Rows10[1].ShortJurLico_DB == t.Master.Rows10[1].ShortJurLico_DB)) select t;
+                           item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB)) select t;
                     return tb11.FirstOrDefault();
                 }
                 return null;
@@ -459,11 +457,9 @@ namespace Client_App.ViewModels
                 {
                     var tb21 = from Reports t in Local_Reports.Reports_Collection20
                                where ((item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB &&
-                               item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB &&
-                               item.Master.Rows20[0].ShortJurLico_DB == t.Master.Rows20[0].ShortJurLico_DB) &&
+                               item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB) &&
                                (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB &&
-                               item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB &&
-                               item.Master.Rows20[1].ShortJurLico_DB == t.Master.Rows20[1].ShortJurLico_DB))
+                               item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB))
                                select t;
                     //var tb21 = from Reports t in Local_Reports.Reports_Collection20
                     //           where (((item.Master.Rows10[0].Okpo_DB == "") &&
@@ -908,6 +904,7 @@ namespace Client_App.ViewModels
                             else if (first21 == null && first11 == null)
                             {
                                 var rep = item.Report_Collection.FirstOrDefault();
+                                string? an = null;
                                 if (rep != null)
                                 {
                                     if (!skipAll)
@@ -918,11 +915,14 @@ namespace Client_App.ViewModels
                                             "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
                                             "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
                                             "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;
-                                        var an = await ShowMessage.Handle(new List<string>() { str, "Ок", "Пропустить для всех" });
+                                        an = await ShowMessage.Handle(new List<string>() { str, "Ок", "Пропустить для всех" });
                                         if (an == "Пропустить для всех") skipAll = true;
                                     }
                                 }
-                                Local_Reports.Reports_Collection.Add(item);
+                                if (an != null)
+                                {
+                                    Local_Reports.Reports_Collection.Add(item);
+                                }
                             }
                         }
                         await Local_Reports.Reports_Collection.QuickSortAsync();
