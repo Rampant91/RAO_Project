@@ -32,7 +32,7 @@ namespace Models.Collections
                         num_str = Master_DB.RegNoRep.Value;
                     }
                     var num_int = Convert.ToInt64(num_str);
-                    return num_int + Master_DB.Id;
+                    return num_int;
                 }
                 catch 
                 {
