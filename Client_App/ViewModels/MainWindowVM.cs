@@ -668,24 +668,45 @@ namespace Client_App.ViewModels
                                 var an = "Загрузить новую";
                                 if (!skipNew)
                                 {
-                                    var str = "Загрузить новую форму? \n" +
-                                        "Номер формы - " + it.FormNum_DB + "\n" +
-                                        "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
-                                        "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
-                                        "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                        "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
-                                        "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                        "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
-                                        "Форма с предыдущим номером корректировки №" +
-                                        elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                        "Сделайте резервную копию.";
-                                    an = await ShowMessage.Handle(new List<string>() {str,
-                                        "Загрузить новую",
-                                        "Отмена",
-                                        "Загрузить для все"
-                                        });
-                                    if (an == "Загрузить для всех") skipNew = true;
-                                    an = "Загрузить новую";
+                                    if (item.Report_Collection.Count() > 1)
+                                    {
+                                        var str = "Загрузить новую форму? \n" +
+                                            "Номер формы - " + it.FormNum_DB + "\n" +
+                                            "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
+                                            "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
+                                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                            "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
+                                            "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
+                                            "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
+                                            "Форма с предыдущим номером корректировки №" +
+                                            elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
+                                            "Сделайте резервную копию.";
+                                        an = await ShowMessage.Handle(new List<string>() {str,
+                                            "Загрузить новую",
+                                            "Отмена",
+                                            "Загрузить для все"
+                                            });
+                                        if (an == "Загрузить для всех") skipNew = true;
+                                        an = "Загрузить новую";
+                                    }
+                                    else
+                                    {
+                                        var str = "Загрузить новую форму? \n" +
+                                            "Номер формы - " + it.FormNum_DB + "\n" +
+                                            "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
+                                            "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
+                                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                            "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
+                                            "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
+                                            "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
+                                            "Форма с предыдущим номером корректировки №" +
+                                            elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
+                                            "Сделайте резервную копию.";
+                                        an = await ShowMessage.Handle(new List<string>() {str,
+                                            "Загрузить новую",
+                                            "Отмена"
+                                            });
+                                    }
                                 }
                                 await ChechAanswer(an, first11, elem, it);
                             }
@@ -716,21 +737,38 @@ namespace Client_App.ViewModels
                         var an = "Да";
                         if (!_skipNew)
                         {
-                            var str = "Загрузить новую форму?\n" +
-                                "Номер формы - " + it.FormNum_DB + "\n" +
-                                "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
-                                "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
-                                "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
-                                "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
-                            an = await ShowMessage.Handle(new List<string>(){str,
+                            if (item.Report_Collection.Count() > 1)
+                            {
+                                var str = "Загрузить новую форму?\n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                    "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
+                                    "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
+                                    "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
+                                an = await ShowMessage.Handle(new List<string>(){str,
+                                    "Да",
+                                    "Нет",
+                                    "Загрузить для всех"
+                                    });
+                                an = "Да";
+                            }
+                            else
+                            {
+                                var str = "Загрузить новую форму?\n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                    "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
+                                    "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
+                                    "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
+                                an = await ShowMessage.Handle(new List<string>(){str,
                                 "Да",
-                                "Нет",
-                                "Загрузить для всех"
-                            });
-                            if (an == "Загрузить для всех") _skipNew = true;
-                            an = "Да";
+                                "Нет"
+                                });
+                            }
                         }
                         await ChechAanswer(an, first11, null, it);
                     }
@@ -796,24 +834,45 @@ namespace Client_App.ViewModels
                                 var an = "Загрузить новую";
                                 if (!skipNew)
                                 {
-                                    var str = "Загрузить новую форму? \n" +
-                                    "Номер формы - " + it.FormNum_DB + "\n" +
-                                    "Отчетный год - " + it.Year_DB + "\n" +
-                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                    "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
-                                    "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
-                                    "Форма с предыдущим номером корректировки №" +
-                                    elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                    "Сделайте резервную копию.";
-                                    an = await ShowMessage.Handle(new List<string>() {
+                                    if (item.Report_Collection.Count() > 1)
+                                    {
+                                        var str = "Загрузить новую форму? \n" +
+                                        "Номер формы - " + it.FormNum_DB + "\n" +
+                                        "Отчетный год - " + it.Year_DB + "\n" +
+                                        "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                        "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
+                                        "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
+                                        "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
+                                        "Форма с предыдущим номером корректировки №" +
+                                        elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
+                                        "Сделайте резервную копию.";
+                                        an = await ShowMessage.Handle(new List<string>() {
                                                                         str,
                                                                         "Загрузить новую",
                                                                         "Отмена",
                                                                         "Загрузить для всех"
                                                                         });
-                                    if (an == "Загрузить для всех") skipNew = true;
-                                    an = "Загрузить новую";
+                                        if (an == "Загрузить для всех") skipNew = true;
+                                        an = "Загрузить новую";
+                                    }
+                                    else
+                                    {
+                                        var str = "Загрузить новую форму? \n" +
+                                            "Номер формы - " + it.FormNum_DB + "\n" +
+                                            "Отчетный год - " + it.Year_DB + "\n" +
+                                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                            "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
+                                            "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
+                                            "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
+                                            "Форма с предыдущим номером корректировки №" +
+                                            elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
+                                            "Сделайте резервную копию.";
+                                        an = await ShowMessage.Handle(new List<string>() {
+                                                                        str,
+                                                                        "Загрузить новую",
+                                                                        "Отмена"
+                                                                        });
+                                    }
                                 }
                                 await ChechAanswer(an, first21, elem, it);
                             }
@@ -824,20 +883,37 @@ namespace Client_App.ViewModels
                         var an = "Да";
                         if (!_skipNew)
                         {
-                            var str = "Загрузить новую форму? \n" +
-                            "Номер формы - " + it.FormNum_DB + "\n" +
-                            "Отчетный год - " + it.Year_DB + "\n" +
-                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                            "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
-                            "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                            "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
-                            an = await ShowMessage.Handle(new List<string>(){str,
-                                "Да",
-                                "Нет",
-                                "Загрузить для всех"
-                            });
-                            if (an == "Загрузить для всех") _skipNew = true;
-                            an = "Да";
+                            if (item.Report_Collection.Count() > 1)
+                            {
+                                var str = "Загрузить новую форму? \n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Отчетный год - " + it.Year_DB + "\n" +
+                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                    "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
+                                an = await ShowMessage.Handle(new List<string>(){str,
+                                    "Да",
+                                    "Нет",
+                                    "Загрузить для всех"
+                                });
+                                if (an == "Загрузить для всех") _skipNew = true;
+                                an = "Да";
+                            }
+                            else
+                            {
+                                var str = "Загрузить новую форму? \n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Отчетный год - " + it.Year_DB + "\n" +
+                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                    "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
+                                an = await ShowMessage.Handle(new List<string>(){str,
+                                    "Да",
+                                    "Нет"
+                                });
+                            }
                         }
                         await ChechAanswer(an, first21, null, it);
                         not_in = false;
