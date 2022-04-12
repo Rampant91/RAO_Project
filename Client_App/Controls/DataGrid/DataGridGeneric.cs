@@ -71,6 +71,10 @@ namespace Client_App.Controls.DataGrid
             {
                 if (value != null)
                 {
+                    if (_items != value) 
+                    {
+                        NowPage = "1";
+                    }
                     SetAndRaise(ItemsProperty, ref _items, value);
                     UpdateCells();
                     SetSelectedControls();
