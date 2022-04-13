@@ -96,7 +96,10 @@ namespace Client_App.Controls.DataGrid
             get => Items!=null?Items.Count.ToString():"0";
             set
             {
-                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items != null ? Items.Count.ToString() : "0");
+                if (Items != null)
+                {
+                    SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items != null ? Items.Count.ToString() : "0");
+                }
             }
         }
         #endregion
@@ -792,8 +795,9 @@ namespace Client_App.Controls.DataGrid
                     {
                         countR += reps.Report_Collection.Count;
                     }
+                    SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
                 }
-                SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
+                
             }
         }
         #endregion
@@ -1401,7 +1405,10 @@ namespace Client_App.Controls.DataGrid
                 }
             }
 
-            ReportCount = "0";
+            if (ShowAllReport)
+            {
+                ReportCount = "0";
+            }
             PageCount = "0";
             ItemsCount = "0";
         }
