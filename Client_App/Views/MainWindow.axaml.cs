@@ -75,6 +75,8 @@ namespace Client_App.Views
             List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
             par.ContentMessage = interaction.Input[0];
             interaction.Input.RemoveAt(0);
+            par.ContentHeader = interaction.Input[0];
+            interaction.Input.RemoveAt(0);
             foreach (var elem in interaction.Input)
             {
                 lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
@@ -86,7 +88,7 @@ namespace Client_App.Views
             }
             par.ButtonDefinitions = lt;
             par.ContentTitle = "Уведомление";
-            par.ContentHeader = "Уведомление";
+            
             var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
             var answ = await mssg.ShowDialog(this);
             

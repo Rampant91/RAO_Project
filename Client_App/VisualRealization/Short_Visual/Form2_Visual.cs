@@ -43,6 +43,7 @@ namespace Client_App.Short_Visual
             Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports
             {
                 Name = "Form20AllDataGrid_",
+                ShowAllReport = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,

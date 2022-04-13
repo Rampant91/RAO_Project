@@ -230,6 +230,25 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region ShowAllReport
+        public static readonly DirectProperty<DataGrid<T>, bool> ShowAllReportProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(ShowAllReport),
+                o => o.ShowAllReport,
+                (o, v) => o.ShowAllReport = v);
+
+        private bool _ShowAllReport = false;
+        public bool ShowAllReport
+        {
+            get => _ShowAllReport;
+            set
+            {
+                SetAndRaise(ShowAllReportProperty, ref _ShowAllReport, value);
+                //Init();
+            }
+        }
+        #endregion
+
         #region SumColumn
         public static readonly DirectProperty<DataGrid<T>, string> SumColumnProperty =
             AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
@@ -749,6 +768,32 @@ namespace Client_App.Controls.DataGrid
                     SetAndRaise(SearchTextProperty, ref _SearchText, value);
                     UpdateCells();
                 }
+            }
+        }
+        #endregion
+
+        #region ReportCount
+        public static readonly DirectProperty<DataGrid<T>, string> ReportCountProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+                nameof(ReportCount),
+                o => o.ReportCount,
+                (o, v) => o.ReportCount = v);
+
+        private string _ReportCount = "0";
+        public string ReportCount
+        {
+            get => _ReportCount;
+            set
+            {
+                var countR = 0;
+                if (Items != null)
+                {
+                    foreach (Reports reps in Items)
+                    {
+                        countR += reps.Report_Collection.Count;
+                    }
+                }
+                SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
             }
         }
         #endregion
@@ -1356,6 +1401,7 @@ namespace Client_App.Controls.DataGrid
                 }
             }
 
+            ReportCount = "0";
             PageCount = "0";
             ItemsCount = "0";
         }
@@ -2035,6 +2081,17 @@ namespace Client_App.Controls.DataGrid
             MiddleFooterStackPanel2.Children.Add(new TextBlock() { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0") });
             MiddleFooterStackPanel2.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0") });
             MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanel2);
+
+            if (ShowAllReport) 
+            {
+                StackPanel MiddleFooterStackPanelR = new();
+                MiddleFooterStackPanelR[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
+                MiddleFooterStackPanelR.Orientation = Orientation.Horizontal;
+                MiddleFooterStackPanelR.Children.Add(new TextBlock() { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0")});
+                MiddleFooterStackPanelR.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ReportCountProperty], Margin = Thickness.Parse("5,0,0,0")});
+                MiddleFooterStackPanel2.Children.Add(MiddleFooterStackPanelR);
+            }
+            
             #endregion
 
             #region Footer

@@ -639,7 +639,7 @@ namespace Client_App.ViewModels
                                         "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
                                         "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
                                         "ОКПО - " + first11.Master.OkpoRep.Value;
-                                    var an = await ShowMessage.Handle(new List<string>() { str, "OK" , "Пропустить для всех"});
+                                    var an = await ShowMessage.Handle(new List<string>() { str, "Отчет", "OK" , "Пропустить для всех"});
                                     if (an == "Пропустить для всех")
                                     {
                                         skipLess = true;
@@ -655,7 +655,7 @@ namespace Client_App.ViewModels
                                     first11.Master.RegNoRep.Value + " " +
                                     first11.Master.ShortJurLicoRep.Value + " " +
                                     first11.Master.OkpoRep.Value;
-                                var an = await ShowMessage.Handle(new List<string>(){str,
+                                var an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Заменить",
                                     "Дополнить",
                                     "Сохранить оба",
@@ -681,7 +681,7 @@ namespace Client_App.ViewModels
                                             "Форма с предыдущим номером корректировки №" +
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                             "Сделайте резервную копию.";
-                                        an = await ShowMessage.Handle(new List<string>() {str,
+                                        an = await ShowMessage.Handle(new List<string>() {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена",
                                             "Загрузить для все"
@@ -702,7 +702,7 @@ namespace Client_App.ViewModels
                                             "Форма с предыдущим номером корректировки №" +
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                             "Сделайте резервную копию.";
-                                        an = await ShowMessage.Handle(new List<string>() {str,
+                                        an = await ShowMessage.Handle(new List<string>() {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена"
                                             });
@@ -723,7 +723,7 @@ namespace Client_App.ViewModels
                                     first11.Master.RegNoRep.Value + " " +
                                     first11.Master.ShortJurLicoRep.Value + " " +
                                     first11.Master.OkpoRep.Value;
-                                an = await ShowMessage.Handle(new List<string>(){str,
+                                an = await ShowMessage.Handle(new List<string>(){str,"Отчет",
                                 "Сохранить оба",
                                 "Отменить"
                                 });
@@ -747,7 +747,7 @@ namespace Client_App.ViewModels
                                     "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
-                                an = await ShowMessage.Handle(new List<string>(){str,
+                                an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Да",
                                     "Нет",
                                     "Загрузить для всех"
@@ -764,7 +764,7 @@ namespace Client_App.ViewModels
                                     "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
-                                an = await ShowMessage.Handle(new List<string>(){str,
+                                an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                 "Да",
                                 "Нет"
                                 });
@@ -810,7 +810,7 @@ namespace Client_App.ViewModels
                                         "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
                                         "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
                                         "ОКПО - " + first21.Master.OkpoRep.Value;
-                                    var an = await ShowMessage.Handle(new List<string>() { str, "OK" , "Пропустить для всех"});
+                                    var an = await ShowMessage.Handle(new List<string>() {str, "Отчет", "OK" , "Пропустить для всех"});
                                     if (an == "Пропустить для всех") skipLess = true;
                                 }
                             }
@@ -822,7 +822,7 @@ namespace Client_App.ViewModels
                                 first21.Master.RegNoRep.Value + " \n" +
                                 first21.Master.ShortJurLicoRep.Value + " " +
                                 first21.Master.OkpoRep.Value;
-                                var an = await ShowMessage.Handle(new List<string>(){str,
+                                var an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Заменить",
                                     "Сохранить оба",
                                     "Отменить" 
@@ -848,6 +848,7 @@ namespace Client_App.ViewModels
                                         "Сделайте резервную копию.";
                                         an = await ShowMessage.Handle(new List<string>() {
                                                                         str,
+                                                                        "Отчет",
                                                                         "Загрузить новую",
                                                                         "Отмена",
                                                                         "Загрузить для всех"
@@ -869,6 +870,7 @@ namespace Client_App.ViewModels
                                             "Сделайте резервную копию.";
                                         an = await ShowMessage.Handle(new List<string>() {
                                                                         str,
+                                                                        "Отчет",
                                                                         "Загрузить новую",
                                                                         "Отмена"
                                                                         });
@@ -892,7 +894,7 @@ namespace Client_App.ViewModels
                                     "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
-                                an = await ShowMessage.Handle(new List<string>(){str,
+                                an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Да",
                                     "Нет",
                                     "Загрузить для всех"
@@ -909,7 +911,7 @@ namespace Client_App.ViewModels
                                     "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
-                                an = await ShowMessage.Handle(new List<string>(){str,
+                                an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Да",
                                     "Нет"
                                 });
@@ -991,7 +993,7 @@ namespace Client_App.ViewModels
                                             "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
                                             "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
                                             "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;
-                                        an = await ShowMessage.Handle(new List<string>() { str, "Ок", "Пропустить для всех" });
+                                        an = await ShowMessage.Handle(new List<string>() { str, "Новая организация", "Ок", "Пропустить для всех" });
                                         if (an == "Пропустить для всех") skipAll = true;
                                     }
                                 }
@@ -1238,7 +1240,7 @@ namespace Client_App.ViewModels
             var param = par as IEnumerable;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var answ = (string)await ShowMessage.Handle(new List<string>() { "Вы действительно хотите удалить отчет?", "Да", "Нет" });
+                var answ = (string)await ShowMessage.Handle(new List<string>() { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     var t = desktop.MainWindow as MainWindow;
@@ -1268,7 +1270,7 @@ namespace Client_App.ViewModels
             var param = par as IEnumerable;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var answ = (string)await ShowMessage.Handle(new List<string>() { "Вы действительно хотите удалить организацию?", "Да", "Нет" });
+                var answ = (string)await ShowMessage.Handle(new List<string>() { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     if (param != null)
