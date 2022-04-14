@@ -168,6 +168,25 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region CommentСhangeable
+        public static readonly DirectProperty<DataGrid<T>, bool> CommentСhangeableProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(CommentСhangeable),
+                o => o.CommentСhangeable,
+                (o, v) => o.CommentСhangeable = v);
+
+        private bool _CommentСhangeable = false;
+        public bool CommentСhangeable
+        {
+            get => _CommentСhangeable;
+            set
+            {
+                SetAndRaise(CommentСhangeableProperty, ref _CommentСhangeable, value);
+                Init();
+            }
+        }
+        #endregion
+
         #region Comment
         public static readonly DirectProperty<DataGrid<T>, string> CommentProperty =
             AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
@@ -1742,9 +1761,9 @@ namespace Client_App.Controls.DataGrid
                         }
                         if (IsReadable || item.Blocked || IsReadableSum)
                         {
-                            if (this.Sum)
+                            if (this.Sum || this.CommentСhangeable)
                             {
-                                var f22 = item.Binding == "PackQuantity" || item.Binding == "VolumeInPack" || item.Binding == "MassInPack";
+                                var f22 = item.Binding == "PackQuantity" || item.Binding == "VolumeInPack" || item.Binding == "MassInPack" || item.Binding == "Comments";
                                 if (f22)
                                 {
                                     textBox = new TextBox()

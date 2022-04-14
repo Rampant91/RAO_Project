@@ -223,6 +223,7 @@ namespace Client_App.ViewModels
             ChangeReport = ReactiveCommand.CreateFromTask<object>(_ChangeReport);
             DeleteForm = ReactiveCommand.CreateFromTask<object>(_DeleteForm);
             DeleteReport = ReactiveCommand.CreateFromTask<object>(_DeleteReport);
+            SaveReport = ReactiveCommand.CreateFromTask<object>(_SaveReport);
             Print_Excel_Export = ReactiveCommand.CreateFromTask<object>(_Print_Excel_Export);
             Excel_Export = ReactiveCommand.CreateFromTask<object>(_Excel_Export);
             All_Excel_Export = ReactiveCommand.CreateFromTask<object>(_All_Excel_Export);
@@ -1279,6 +1280,19 @@ namespace Client_App.ViewModels
 
                     await StaticConfiguration.DBModel.SaveChangesAsync();
                 }
+                await Local_Reports.Reports_Collection.QuickSortAsync();
+            }
+        }
+        #endregion
+
+        #region SaveReport
+        public ReactiveCommand<object, Unit> SaveReport { get; private set; }
+        private async Task _SaveReport(object par)
+        {
+            var param = par as IEnumerable;
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await StaticConfiguration.DBModel.SaveChangesAsync();
                 await Local_Reports.Reports_Collection.QuickSortAsync();
             }
         }

@@ -187,6 +187,17 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Удалить форму           Ctrl+D" },
                 Command = dataContext.DeleteForm
             });
+            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                Key = Avalonia.Input.Key.J,
+                KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                IsUpdateCells = true,
+                ContextMenuText = new string[] { "Сохранить комментарий           Ctrl+J" },
+                Command = dataContext.SaveReport
+            });
             #endregion
         }
         private void ShowInit()
