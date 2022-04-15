@@ -246,7 +246,7 @@ namespace Client_App.ViewModels
         }
         public async Task Init()
         {
-            OnStartProgressBar = 0;
+            OnStartProgressBar = 1;
             var systemDirectory = await GetSystemDirectory();
 
             OnStartProgressBar = 5;
@@ -962,6 +962,7 @@ namespace Client_App.ViewModels
                         sourceFile.CopyTo(file, true);
 
                         var reportsCollection = await GetReportsFromDataBase(file);
+                        var groupe = reportsCollection.GroupBy(x => x.Order);
                         var skipAll = false;
                         foreach (var item in reportsCollection)
                         {
@@ -998,7 +999,11 @@ namespace Client_App.ViewModels
                                         if (an == "Пропустить для всех") skipAll = true;
                                     }
                                 }
-                                if (an != null)
+                                else
+                                {
+                                    Local_Reports.Reports_Collection.Add(item);
+                                }
+                                if (an == "Пропустить для всех" || an == "Ок" || skipAll)
                                 {
                                     Local_Reports.Reports_Collection.Add(item);
                                 }

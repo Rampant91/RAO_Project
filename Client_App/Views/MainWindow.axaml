@@ -14,10 +14,10 @@
         Background="#ffffff">
 	<DockPanel>
 		<Menu Height="20" DockPanel.Dock="Top">
-            <MenuItem Header="_Импорт">
+            <MenuItem Header="_Импорт" FontSize="14">
         <MenuItem Header="Из RAODB" Command="{Binding ImportForm}"/>
       </MenuItem>
-      <MenuItem Header="_Excel">
+      <MenuItem Header="_Excel" FontSize="14">
         <MenuItem Header="Формы 1">
           <MenuItem Header="Форма 1.1" Command="{Binding All_Excel_Export}" CommandParameter="1.1"></MenuItem>
           <MenuItem Header="Форма 1.2" Command="{Binding All_Excel_Export}" CommandParameter="1.2"></MenuItem>
@@ -57,7 +57,7 @@
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="3*"/>
-                  <ColumnDefinition Width="1.5*" MaxWidth="460"/>
+                  <ColumnDefinition Width="2.7*" MaxWidth="460"/>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
                   <Panel x:Name="Forms_p1_0" HorizontalAlignment="Stretch" Grid.Column="0">

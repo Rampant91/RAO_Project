@@ -126,6 +126,7 @@ namespace Client_App.Short_Visual
             btn1.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn1.CommandParameter = "1.1";
             btn1.Height = h;
+            btn1.FontSize = 13;
             btn1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn1.Margin = Thickness.Parse("5,0,0,0");
             panel.Children.Add(btn1);
@@ -135,6 +136,7 @@ namespace Client_App.Short_Visual
             btn2.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn2.CommandParameter = "1.2";
             btn2.Height = h;
+            btn2.FontSize = 13;
             btn2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn2.Margin = Thickness.Parse("5,37,0,0");
             panel.Children.Add(btn2);
@@ -144,6 +146,7 @@ namespace Client_App.Short_Visual
             btn3.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn3.CommandParameter = "1.3";
             btn3.Height = h;
+            btn3.FontSize = 13;
             btn3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn3.Margin = Thickness.Parse("5,74,0,0");
             panel.Children.Add(btn3);
@@ -153,6 +156,7 @@ namespace Client_App.Short_Visual
             btn4.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn4.CommandParameter = "1.4";
             btn4.Height = h;
+            btn4.FontSize = 13;
             btn4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn4.Margin = Thickness.Parse("5,111,0,0");
             panel.Children.Add(btn4);
@@ -162,6 +166,7 @@ namespace Client_App.Short_Visual
             btn5.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn5.CommandParameter = "1.5";
             btn5.Height = h;
+            btn5.FontSize = 12;
             btn5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn5.Margin = Thickness.Parse("5,148,0,0");
             panel.Children.Add(btn5);
@@ -171,6 +176,7 @@ namespace Client_App.Short_Visual
             btn6.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn6.CommandParameter = "1.6";
             btn6.Height = h;
+            btn6.FontSize = 13;
             btn6.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn6.Margin = Thickness.Parse("5,185,0,0");
             panel.Children.Add(btn6);
@@ -180,6 +186,7 @@ namespace Client_App.Short_Visual
             btn7.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn7.CommandParameter = "1.7";
             btn7.Height = h;
+            btn7.FontSize = 13;
             btn7.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn7.Margin = Thickness.Parse("5,222,0,0");
             panel.Children.Add(btn7);
@@ -189,6 +196,7 @@ namespace Client_App.Short_Visual
             btn8.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn8.CommandParameter = "1.8";
             btn8.Height = h;
+            btn8.FontSize = 13;
             btn8.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn8.Margin = Thickness.Parse("5,259,0,0");
             panel.Children.Add(btn8);
@@ -198,6 +206,7 @@ namespace Client_App.Short_Visual
             btn9.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn9.CommandParameter = "1.9";
             btn9.Height = h;
+            btn9.FontSize = 13;
             btn9.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn9.Margin = Thickness.Parse("5,296,0,0");
             panel.Children.Add(btn9);

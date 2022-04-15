@@ -1666,6 +1666,7 @@ namespace Client_App.Controls.DataGrid
                         TextBlock textBlock = new TextBlock();
                         textBlock.Text = item.name.Contains("null") ?"": item.name;
                         textBlock.TextAlignment = TextAlignment.Center;
+                        textBlock.FontSize = 12;
                         textBlock.VerticalAlignment = VerticalAlignment.Center;
                         textBlock.HorizontalAlignment = HorizontalAlignment.Stretch;
 
@@ -2090,22 +2091,22 @@ namespace Client_App.Controls.DataGrid
                 MiddleFooterStackPanelS.Name = "SumColumn";
                 MiddleFooterStackPanelS[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 MiddleFooterStackPanelS.Orientation = Orientation.Horizontal;
-                MiddleFooterStackPanelS.Children.Add(new TextBlock() { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0"), IsVisible = false });
-                MiddleFooterStackPanelS.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.SumColumnProperty], Margin = Thickness.Parse("5,0,0,0"), IsVisible = false});
+                MiddleFooterStackPanelS.Children.Add(new TextBlock() { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0"), IsVisible = false, FontSize = 13 });
+                MiddleFooterStackPanelS.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.SumColumnProperty], Margin = Thickness.Parse("5,0,0,0"), IsVisible = false, FontSize = 13 });
                 MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanelS);
             }
             StackPanel MiddleFooterStackPanel1 = new();
             MiddleFooterStackPanel1[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
             MiddleFooterStackPanel1.Orientation = Orientation.Horizontal;
-            MiddleFooterStackPanel1.Children.Add(new TextBlock() { Text = "Кол-во страниц:",Margin=Thickness.Parse("5,0,0,0") });
-            MiddleFooterStackPanel1.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.PageCountProperty], Margin = Thickness.Parse("5,0,0,0") });
+            MiddleFooterStackPanel1.Children.Add(new TextBlock() { Text = "Кол-во страниц:",Margin=Thickness.Parse("5,0,0,0"), FontSize = 13 });
+            MiddleFooterStackPanel1.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.PageCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
             MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanel1);
 
             StackPanel MiddleFooterStackPanel2 = new();
             MiddleFooterStackPanel2[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
             MiddleFooterStackPanel2.Orientation = Orientation.Horizontal;
-            MiddleFooterStackPanel2.Children.Add(new TextBlock() { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0") });
-            MiddleFooterStackPanel2.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0") });
+            MiddleFooterStackPanel2.Children.Add(new TextBlock() { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+            MiddleFooterStackPanel2.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
             MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanel2);
 
             if (ShowAllReport) 
@@ -2113,8 +2114,8 @@ namespace Client_App.Controls.DataGrid
                 StackPanel MiddleFooterStackPanelR = new();
                 MiddleFooterStackPanelR[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 MiddleFooterStackPanelR.Orientation = Orientation.Horizontal;
-                MiddleFooterStackPanelR.Children.Add(new TextBlock() { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0")});
-                MiddleFooterStackPanelR.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ReportCountProperty], Margin = Thickness.Parse("5,0,0,0")});
+                MiddleFooterStackPanelR.Children.Add(new TextBlock() { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+                MiddleFooterStackPanelR.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ReportCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
                 MiddleFooterStackPanel2.Children.Add(MiddleFooterStackPanelR);
             }
             
