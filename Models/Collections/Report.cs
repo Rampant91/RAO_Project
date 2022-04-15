@@ -192,7 +192,14 @@ namespace Models.Collections
                 if (FormNum_DB == "1.0")
                 {
                     RamAccess<string> tmp = null;
-                    tmp = Rows10[0].RegNo;
+                    if (Rows10[1].RegNo.Value != "" && Rows10[1].Okpo.Value != "")
+                    {
+                        tmp = Rows10[1].RegNo;
+                    }
+                    else
+                    {
+                        tmp = Rows10[0].RegNo;
+                    }
                     tmp.PropertyChanged -= RegNoRepValueChanged;
                     tmp.PropertyChanged += RegNoRepValueChanged;
                     return tmp;
@@ -200,7 +207,14 @@ namespace Models.Collections
                 if (FormNum_DB == "2.0")
                 {
                     RamAccess<string> tmp = null;
-                    tmp = Rows20[0].RegNo;
+                    if (Rows20[1].RegNo.Value != "" && Rows20[1].Okpo.Value != "")
+                    {
+                        tmp = Rows20[1].RegNo;
+                    }
+                    else
+                    {
+                        tmp = Rows20[0].RegNo;
+                    }
                     tmp.PropertyChanged -= RegNoRepValueChanged;
                     tmp.PropertyChanged += RegNoRepValueChanged;
                     return tmp;
