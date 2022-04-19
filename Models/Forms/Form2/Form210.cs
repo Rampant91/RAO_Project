@@ -825,7 +825,7 @@ namespace Models
                 #endregion
                 #region InfectedArea (6)
                 DataGridColumns InfectedAreaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.InfectedArea)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                InfectedAreaR.SetSizeColToAllLevels(248);
+                InfectedAreaR.SetSizeColToAllLevels(188);
                 InfectedAreaR.Binding = nameof(Form210.InfectedArea);
                 NumberInOrderR += InfectedAreaR;
                 #endregion
@@ -843,13 +843,13 @@ namespace Models
                 #endregion
                 #region WasteDensityAlpha (9)
                 DataGridColumns WasteDensityAlphaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.WasteDensityAlpha)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                WasteDensityAlphaR.SetSizeColToAllLevels(212);
+                WasteDensityAlphaR.SetSizeColToAllLevels(162);
                 WasteDensityAlphaR.Binding = nameof(Form210.WasteDensityAlpha);
                 NumberInOrderR += WasteDensityAlphaR;
                 #endregion
                 #region WasteDensityBeta (10)
                 DataGridColumns WasteDensityBetaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.WasteDensityBeta)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                WasteDensityBetaR.SetSizeColToAllLevels(204);
+                WasteDensityBetaR.SetSizeColToAllLevels(154);
                 WasteDensityBetaR.Binding = nameof(Form210.WasteDensityBeta);
                 NumberInOrderR += WasteDensityBetaR;
                 #endregion

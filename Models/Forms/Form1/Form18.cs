@@ -1720,7 +1720,7 @@ namespace Models
         #region RefineOrSortRAOCode
         public string RefineOrSortRAOCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true,"Характеристика ЖРО", "Код переработки/сортировки РАО","26")]
+        [Attributes.Form_Property(true,"Характеристика ЖРО", "Код переработки / сортировки РАО","26")]
         public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get
@@ -2078,7 +2078,7 @@ namespace Models
                 #endregion
                 #region IndividualNumberZHRO (4)
                 DataGridColumns IndividualNumberZHROR = ((Attributes.Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Form18.IndividualNumberZHRO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                IndividualNumberZHROR.SetSizeColToAllLevels(380);
+                IndividualNumberZHROR.SetSizeColToAllLevels(320);
                 IndividualNumberZHROR.Binding = nameof(Form18.IndividualNumberZHRO);
                 NumberInOrderR += IndividualNumberZHROR;
                 #endregion
@@ -2138,7 +2138,7 @@ namespace Models
                 #endregion
                 #region ProviderOrRecieverOKPO (14)
                 DataGridColumns ProviderOrRecieverOKPOR = ((Attributes.Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Form18.ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                ProviderOrRecieverOKPOR.SetSizeColToAllLevels(163);
+                ProviderOrRecieverOKPOR.SetSizeColToAllLevels(100);
                 ProviderOrRecieverOKPOR.Binding = nameof(Form18.ProviderOrRecieverOKPO);
                 NumberInOrderR += ProviderOrRecieverOKPOR;
                 #endregion
@@ -2192,13 +2192,13 @@ namespace Models
                 #endregion
                 #region BetaGammaActivity (23)
                 DataGridColumns BetaGammaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Form18.BetaGammaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                BetaGammaActivityR.SetSizeColToAllLevels(350);
+                BetaGammaActivityR.SetSizeColToAllLevels(160);
                 BetaGammaActivityR.Binding = nameof(Form18.BetaGammaActivity);
                 NumberInOrderR += BetaGammaActivityR;
                 #endregion
                 #region AlphaActivity (24)
                 DataGridColumns AlphaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Form18.AlphaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                AlphaActivityR.SetSizeColToAllLevels(365);
+                AlphaActivityR.SetSizeColToAllLevels(163);
                 AlphaActivityR.Binding = nameof(Form18.AlphaActivity);
                 NumberInOrderR += AlphaActivityR;
                 #endregion
@@ -2210,7 +2210,7 @@ namespace Models
                 #endregion
                 #region RefineOrSortRAOCode (26)
                 DataGridColumns RefineOrSortRAOCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Form18.RefineOrSortRAOCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                RefineOrSortRAOCodeR.SetSizeColToAllLevels(200);
+                RefineOrSortRAOCodeR.SetSizeColToAllLevels(120);
                 RefineOrSortRAOCodeR.Binding = nameof(Form18.RefineOrSortRAOCode);
                 NumberInOrderR += RefineOrSortRAOCodeR;
                 #endregion

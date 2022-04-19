@@ -579,25 +579,25 @@ namespace Models
                 #endregion
                 #region ObservedSourceNumber (2)
                 DataGridColumns ObservedSourceNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.ObservedSourceNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                ObservedSourceNumberR.SetSizeColToAllLevels(204);
+                ObservedSourceNumberR.SetSizeColToAllLevels(164);
                 ObservedSourceNumberR.Binding = nameof(Form26.ObservedSourceNumber);
                 NumberInOrderR += ObservedSourceNumberR;
                 #endregion
                 #region ControlledAreaName (3)
                 DataGridColumns ControlledAreaNameR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.ControlledAreaName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                ControlledAreaNameR.SetSizeColToAllLevels(196);
+                ControlledAreaNameR.SetSizeColToAllLevels(166);
                 ControlledAreaNameR.Binding = nameof(Form26.ControlledAreaName);
                 NumberInOrderR += ControlledAreaNameR;
                 #endregion
                 #region SupposedWasteSource (4)
                 DataGridColumns SupposedWasteSourceR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.SupposedWasteSource)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                SupposedWasteSourceR.SetSizeColToAllLevels(438);
+                SupposedWasteSourceR.SetSizeColToAllLevels(238);
                 SupposedWasteSourceR.Binding = nameof(Form26.SupposedWasteSource);
                 NumberInOrderR += SupposedWasteSourceR;
                 #endregion
                 #region DistanceToWasteSource (5)
                 DataGridColumns DistanceToWasteSourceR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.DistanceToWasteSource)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                DistanceToWasteSourceR.SetSizeColToAllLevels(637);
+                DistanceToWasteSourceR.SetSizeColToAllLevels(337);
                 DistanceToWasteSourceR.Binding = nameof(Form26.DistanceToWasteSource);
                 NumberInOrderR += DistanceToWasteSourceR;
                 #endregion
@@ -615,7 +615,7 @@ namespace Models
                 #endregion
                 #region AverageYearConcentration (8)
                 DataGridColumns AverageYearConcentrationR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.AverageYearConcentration)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                AverageYearConcentrationR.SetSizeColToAllLevels(333);
+                AverageYearConcentrationR.SetSizeColToAllLevels(200);
                 AverageYearConcentrationR.Binding = nameof(Form26.AverageYearConcentration);
                 NumberInOrderR += AverageYearConcentrationR;
                 #endregion

@@ -776,13 +776,13 @@ namespace Models
                 #endregion
                 #region AlphaActivity (9)
                 DataGridColumns AlphaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form25).GetProperty(nameof(Form25.AlphaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                AlphaActivityR.SetSizeColToAllLevels(275);
+                AlphaActivityR.SetSizeColToAllLevels(185);
                 AlphaActivityR.Binding = nameof(Form25.AlphaActivity);
                 NumberInOrderR += AlphaActivityR;
                 #endregion
                 #region BetaGammaActivity (10)
                 DataGridColumns BetaGammaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form25).GetProperty(nameof(Form25.BetaGammaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                BetaGammaActivityR.SetSizeColToAllLevels(275);
+                BetaGammaActivityR.SetSizeColToAllLevels(185);
                 BetaGammaActivityR.Binding = nameof(Form25.BetaGammaActivity);
                 NumberInOrderR += BetaGammaActivityR;
                 #endregion

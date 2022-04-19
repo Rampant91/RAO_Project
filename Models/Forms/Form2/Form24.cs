@@ -1325,7 +1325,7 @@ namespace Models
                 //child[0].parent = insert.innertCol[0];
                 //insert.innertCol[0].innertCol = child;
                 //FcpNumberR.innertCol = new List<DataGridColumns> { insert };
-                FcpNumberR.SetSizeColToAllLevels(163);
+                FcpNumberR.SetSizeColToAllLevels(140);
                 FcpNumberR.Binding = nameof(Form24.FcpNumber);
                 NumberInOrderR += FcpNumberR;
                 #endregion
@@ -1337,7 +1337,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //MassCreatedR.innertCol = new List<DataGridColumns> { insert };
-                MassCreatedR.SetSizeColToAllLevels(250);
+                MassCreatedR.SetSizeColToAllLevels(160);
                 MassCreatedR.Binding = nameof(Form24.MassCreated);
                 NumberInOrderR += MassCreatedR;
                 #endregion
@@ -1349,7 +1349,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //QuantityCreatedR.innertCol = new List<DataGridColumns> { insert };
-                QuantityCreatedR.SetSizeColToAllLevels(250);
+                QuantityCreatedR.SetSizeColToAllLevels(160);
                 QuantityCreatedR.Binding = nameof(Form24.QuantityCreated);
                 NumberInOrderR += QuantityCreatedR;
                 #endregion
@@ -1361,7 +1361,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //MassFromAnothersR.innertCol = new List<DataGridColumns> { insert };
-                MassFromAnothersR.SetSizeColToAllLevels(250);
+                MassFromAnothersR.SetSizeColToAllLevels(160);
                 MassFromAnothersR.Binding = nameof(Form24.MassFromAnothers);
                 NumberInOrderR += MassFromAnothersR;
                 #endregion
@@ -1373,7 +1373,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //QuantityFromAnothersR.innertCol = new List<DataGridColumns> { insert };
-                QuantityFromAnothersR.SetSizeColToAllLevels(250);
+                QuantityFromAnothersR.SetSizeColToAllLevels(160);
                 QuantityFromAnothersR.Binding = nameof(Form24.QuantityFromAnothers);
                 NumberInOrderR += QuantityFromAnothersR;
                 #endregion
@@ -1385,7 +1385,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //MassFromAnothersImportedR.innertCol = new List<DataGridColumns> { insert };
-                MassFromAnothersImportedR.SetSizeColToAllLevels(250);
+                MassFromAnothersImportedR.SetSizeColToAllLevels(160);
                 MassFromAnothersImportedR.Binding = nameof(Form24.MassFromAnothersImported);
                 NumberInOrderR += MassFromAnothersImportedR;
                 #endregion
@@ -1397,7 +1397,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //QuantityFromAnothersImportedR.innertCol = new List<DataGridColumns> { insert };
-                QuantityFromAnothersImportedR.SetSizeColToAllLevels(300);
+                QuantityFromAnothersImportedR.SetSizeColToAllLevels(190);
                 QuantityFromAnothersImportedR.Binding = nameof(Form24.QuantityFromAnothersImported);
                 NumberInOrderR += QuantityFromAnothersImportedR;
                 #endregion
@@ -1409,7 +1409,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //MassAnotherReasonsR.innertCol = new List<DataGridColumns> { insert };
-                MassAnotherReasonsR.SetSizeColToAllLevels(250);
+                MassAnotherReasonsR.SetSizeColToAllLevels(160);
                 MassAnotherReasonsR.Binding = nameof(Form24.MassAnotherReasons);
                 NumberInOrderR += MassAnotherReasonsR;
                 #endregion
@@ -1421,7 +1421,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //QuantityAnotherReasonsR.innertCol = new List<DataGridColumns> { insert };
-                QuantityAnotherReasonsR.SetSizeColToAllLevels(300);
+                QuantityAnotherReasonsR.SetSizeColToAllLevels(160);
                 QuantityAnotherReasonsR.Binding = nameof(Form24.QuantityAnotherReasons);
                 NumberInOrderR += QuantityAnotherReasonsR;
                 #endregion
@@ -1433,7 +1433,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //MassTransferredToAnotherR.innertCol = new List<DataGridColumns> { insert };
-                MassTransferredToAnotherR.SetSizeColToAllLevels(250);
+                MassTransferredToAnotherR.SetSizeColToAllLevels(160);
                 MassTransferredToAnotherR.Binding = nameof(Form24.MassTransferredToAnother);
                 NumberInOrderR += MassTransferredToAnotherR;
                 #endregion
@@ -1445,7 +1445,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //QuantityTransferredToAnotherR.innertCol = new List<DataGridColumns> { insert };
-                QuantityTransferredToAnotherR.SetSizeColToAllLevels(250);
+                QuantityTransferredToAnotherR.SetSizeColToAllLevels(160);
                 QuantityTransferredToAnotherR.Binding = nameof(Form24.QuantityTransferredToAnother);
                 NumberInOrderR += QuantityTransferredToAnotherR;
                 #endregion
@@ -1457,7 +1457,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //MassRefinedR.innertCol = new List<DataGridColumns> { insert };
-                MassRefinedR.SetSizeColToAllLevels(250);
+                MassRefinedR.SetSizeColToAllLevels(160);
                 MassRefinedR.Binding = nameof(Form24.MassRefined);
                 NumberInOrderR += MassRefinedR;
                 #endregion
@@ -1469,7 +1469,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //QuantityRefinedR.innertCol = new List<DataGridColumns> { insert };
-                QuantityRefinedR.SetSizeColToAllLevels(250);
+                QuantityRefinedR.SetSizeColToAllLevels(160);
                 QuantityRefinedR.Binding = nameof(Form24.QuantityRefined);
                 NumberInOrderR += QuantityRefinedR;
                 #endregion
@@ -1481,7 +1481,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //MassRemovedFromAccountR.innertCol = new List<DataGridColumns> { insert };
-                MassRemovedFromAccountR.SetSizeColToAllLevels(250);
+                MassRemovedFromAccountR.SetSizeColToAllLevels(160);
                 MassRemovedFromAccountR.Binding = nameof(Form24.MassRemovedFromAccount);
                 NumberInOrderR += MassRemovedFromAccountR;
                 #endregion
@@ -1493,7 +1493,7 @@ namespace Models
                 //child[0].parent = insert;
                 //insert.innertCol = child;
                 //QuantityRemovedFromAccountR.innertCol = new List<DataGridColumns> { insert };
-                QuantityRemovedFromAccountR.SetSizeColToAllLevels(250);
+                QuantityRemovedFromAccountR.SetSizeColToAllLevels(160);
                 QuantityRemovedFromAccountR.Binding = nameof(Form24.QuantityRemovedFromAccount);
                 NumberInOrderR += QuantityRemovedFromAccountR;
                 #endregion

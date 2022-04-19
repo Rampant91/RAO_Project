@@ -1080,7 +1080,7 @@ namespace Models
                 #endregion
                 #region ProjectVolume (4)
                 DataGridColumns ProjectVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form23).GetProperty(nameof(Form23.ProjectVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                ProjectVolumeR.SetSizeColToAllLevels(163);
+                ProjectVolumeR.SetSizeColToAllLevels(133);
                 ProjectVolumeR.Binding = nameof(Form23.ProjectVolume);
                 NumberInOrderR += ProjectVolumeR;
                 #endregion
@@ -1098,13 +1098,13 @@ namespace Models
                 #endregion
                 #region Mass (7)
                 DataGridColumns MassR = ((Attributes.Form_PropertyAttribute)typeof(Form23).GetProperty(nameof(Form23.Mass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                MassR.SetSizeColToAllLevels(163);
+                MassR.SetSizeColToAllLevels(123);
                 MassR.Binding = nameof(Form23.Mass);
                 NumberInOrderR += MassR;
                 #endregion
                 #region QuantityOZIII (8)
                 DataGridColumns QuantityOZIIIR = ((Attributes.Form_PropertyAttribute)typeof(Form23).GetProperty(nameof(Form23.QuantityOZIII)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                QuantityOZIIIR.SetSizeColToAllLevels(163);
+                QuantityOZIIIR.SetSizeColToAllLevels(123);
                 QuantityOZIIIR.Binding = nameof(Form23.QuantityOZIII);
                 NumberInOrderR += QuantityOZIIIR;
                 #endregion

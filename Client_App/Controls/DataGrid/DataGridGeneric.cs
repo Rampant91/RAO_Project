@@ -1663,11 +1663,11 @@ namespace Client_App.Controls.DataGrid
                         cell.HorizontalAlignment = HorizontalAlignment.Stretch;
                         if (i == 2)
                         {
-                            cell.Height = 45;
+                            cell.Height = 40;
                         }
                         else
                         {
-                            cell.Height = 30;
+                            cell.Height = 25;
                         }
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));

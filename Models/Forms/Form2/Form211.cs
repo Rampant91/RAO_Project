@@ -707,13 +707,13 @@ namespace Models
                 #endregion
                 #region SpecificActivityOfLiquidPart (8)
                 DataGridColumns SpecificActivityOfLiquidPartR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfLiquidPart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                SpecificActivityOfLiquidPartR.SetSizeColToAllLevels(236);
+                SpecificActivityOfLiquidPartR.SetSizeColToAllLevels(176);
                 SpecificActivityOfLiquidPartR.Binding = nameof(Form211.SpecificActivityOfLiquidPart);
                 NumberInOrderR += SpecificActivityOfLiquidPartR;
                 #endregion
                 #region SpecificActivityOfDensePart (9)
                 DataGridColumns SpecificActivityOfDensePartR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfDensePart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                SpecificActivityOfDensePartR.SetSizeColToAllLevels(246);
+                SpecificActivityOfDensePartR.SetSizeColToAllLevels(176);
                 SpecificActivityOfDensePartR.Binding = nameof(Form211.SpecificActivityOfDensePart);
                 NumberInOrderR += SpecificActivityOfDensePartR;
                 #endregion

@@ -1027,7 +1027,7 @@ namespace Client_App.ViewModels
                     if (attr != null)
                     {
                         var newNum = 0;
-                        if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                        if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1" && (param[0] is Form17))
                         {
                             newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                         }
@@ -1145,7 +1145,7 @@ namespace Client_App.ViewModels
                             try
                             {
                                 var columnNum = 0;
-                                if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                                if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1" && (param[0] is Form17))
                                 {
                                     columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                                 }

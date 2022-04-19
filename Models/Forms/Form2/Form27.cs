@@ -479,7 +479,7 @@ namespace Models
                 #endregion
                 #region ObservedSourceNumber (2)
                 DataGridColumns ObservedSourceNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(Form27.ObservedSourceNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                ObservedSourceNumberR.SetSizeColToAllLevels(258);
+                ObservedSourceNumberR.SetSizeColToAllLevels(228);
                 ObservedSourceNumberR.Binding = nameof(Form27.ObservedSourceNumber);
                 NumberInOrderR += ObservedSourceNumberR;
                 #endregion

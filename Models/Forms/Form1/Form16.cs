@@ -1603,7 +1603,7 @@ namespace Models
         #region RefineOrSortRAOCode
         public string RefineOrSortRAOCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true, "null-22","Код переработки/сортировки РАО","22")]
+        [Attributes.Form_Property(true, "null-22","Код переработки / сортировки РАО","22")]
         public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get
@@ -1811,19 +1811,19 @@ namespace Models
                 #endregion
                 #region Volume (6)
                 DataGridColumns VolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.Volume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                VolumeR.SetSizeColToAllLevels(160);
+                VolumeR.SetSizeColToAllLevels(90);
                 VolumeR.Binding = nameof(Form16.Volume);
                 NumberInOrderR += VolumeR;
                 #endregion
                 #region Mass (7)
                 DataGridColumns MassR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.Mass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                MassR.SetSizeColToAllLevels(170);
+                MassR.SetSizeColToAllLevels(90);
                 MassR.Binding = nameof(Form16.Mass);
                 NumberInOrderR += MassR;
                 #endregion
                 #region QuantityOZIII (8)
                 DataGridColumns QuantityOZIIIR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.QuantityOZIII)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                QuantityOZIIIR.SetSizeColToAllLevels(140);
+                QuantityOZIIIR.SetSizeColToAllLevels(70);
                 QuantityOZIIIR.Binding = nameof(Form16.QuantityOZIII);
                 NumberInOrderR += QuantityOZIIIR;
                 #endregion
@@ -1841,13 +1841,13 @@ namespace Models
                 #endregion
                 #region BetaGammaActivity (11)
                 DataGridColumns BetaGammaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.BetaGammaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                BetaGammaActivityR.SetSizeColToAllLevels(350);
+                BetaGammaActivityR.SetSizeColToAllLevels(175);
                 BetaGammaActivityR.Binding = nameof(Form16.BetaGammaActivity);
                 NumberInOrderR += BetaGammaActivityR;
                 #endregion
                 #region AlphaActivity (12)
                 DataGridColumns AlphaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.AlphaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                AlphaActivityR.SetSizeColToAllLevels(365);
+                AlphaActivityR.SetSizeColToAllLevels(185);
                 AlphaActivityR.Binding = nameof(Form16.AlphaActivity);
                 NumberInOrderR += AlphaActivityR;
                 #endregion
@@ -1859,7 +1859,7 @@ namespace Models
                 #endregion
                 #region ActivityMeasurementDate (14)
                 DataGridColumns ActivityMeasurementDateR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.ActivityMeasurementDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                ActivityMeasurementDateR.SetSizeColToAllLevels(163);
+                ActivityMeasurementDateR.SetSizeColToAllLevels(100);
                 ActivityMeasurementDateR.Binding = nameof(Form16.ActivityMeasurementDate);
                 NumberInOrderR += ActivityMeasurementDateR;
                 #endregion
@@ -1883,7 +1883,7 @@ namespace Models
                 #endregion
                 #region ProviderOrRecieverOKPO (18)
                 DataGridColumns ProviderOrRecieverOKPOR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                ProviderOrRecieverOKPOR.SetSizeColToAllLevels(163);
+                ProviderOrRecieverOKPOR.SetSizeColToAllLevels(100);
                 ProviderOrRecieverOKPOR.Binding = nameof(Form16.ProviderOrRecieverOKPO);
                 NumberInOrderR += ProviderOrRecieverOKPOR;
                 #endregion
@@ -1907,7 +1907,7 @@ namespace Models
                 #endregion
                 #region RefineOrSortRAOCode (22)
                 DataGridColumns RefineOrSortRAOCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form16).GetProperty(nameof(Form16.RefineOrSortRAOCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-                RefineOrSortRAOCodeR.SetSizeColToAllLevels(210);
+                RefineOrSortRAOCodeR.SetSizeColToAllLevels(110);
                 RefineOrSortRAOCodeR.Binding = nameof(Form16.RefineOrSortRAOCode);
                 NumberInOrderR += RefineOrSortRAOCodeR;
                 #endregion
