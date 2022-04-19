@@ -1295,7 +1295,7 @@ namespace Models
                 //child[0].parent = insert.innertCol[0];
                 //insert.innertCol[0].innertCol = child;
                 //NumberInOrderR.innertCol = new List<DataGridColumns> { insert };
-                NumberInOrderR.SetSizeColToAllLevels(88);
+                NumberInOrderR.SetSizeColToAllLevels(50);
                 
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
                 NumberInOrderR.Blocked = true;

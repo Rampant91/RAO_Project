@@ -99,6 +99,7 @@ namespace Client_App.Controls.DataGrid
                 if (Items != null)
                 {
                     SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items != null ? Items.Count.ToString() : "0");
+                    
                 }
             }
         }
@@ -144,6 +145,7 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 if (value != null) SetAndRaise(SelectedCellsProperty, ref _selectedCells, value);
+                UpdateCells();
             }
         }
         #endregion
@@ -1659,11 +1661,19 @@ namespace Client_App.Controls.DataGrid
                             [Grid.ColumnProperty]=count
                         };
                         cell.HorizontalAlignment = HorizontalAlignment.Stretch;
-                        cell.Height = 30;
+                        if (i == 2)
+                        {
+                            cell.Height = 45;
+                        }
+                        else
+                        {
+                            cell.Height = 30;
+                        }
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
 
                         TextBlock textBlock = new TextBlock();
+                        textBlock.TextWrapping = TextWrapping.Wrap;
                         textBlock.Text = item.name.Contains("null") ?"": item.name;
                         textBlock.TextAlignment = TextAlignment.Center;
                         textBlock.FontSize = 12;

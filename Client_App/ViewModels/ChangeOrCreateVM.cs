@@ -820,7 +820,7 @@ namespace Client_App.ViewModels
                     var countParam = param;
                     var minItem = param.Min(x=>x.Order);
                     var maxItem = param.Max(x=>x.Order);
-                    foreach (Form item in param) 
+                    foreach (var item in param) 
                     {
                         if (item != null)
                         {
@@ -833,7 +833,7 @@ namespace Client_App.ViewModels
                     //    item.SetOrder(minItem);
                     //    minItem++;
                     //}
-                    var rows = Storage.Rows.GetEnumerable();
+                    var rows = Storage[Storage.FormNum_DB].GetEnumerable();
                     if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.1"))
                     {
                         var count = 1;
@@ -856,15 +856,22 @@ namespace Client_App.ViewModels
                     }
                     else
                     {
-                        var count = 1;
-                        foreach (var row in rows)
+                        //var count = 1;
+                        //foreach (var row in Storage[Storage.FormNum_DB])
+                        //{
+                        //    row.SetOrder(count);
+                        //    count++;
+                        //}
+                        await Storage.SortAsync();
+                        var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem);
+                        foreach (var item in itemQ)
                         {
-                            row.SetOrder(count);
-                            count++;
+                            item.SetOrder(minItem);
+                            minItem++;
                         }
                     }
+                    //await Storage.SortAsync();
                 }
-                await Storage.SortAsync();
             }
         }
         #endregion
