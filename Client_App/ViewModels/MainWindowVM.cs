@@ -227,6 +227,7 @@ namespace Client_App.ViewModels
             Print_Excel_Export = ReactiveCommand.CreateFromTask<object>(_Print_Excel_Export);
             Excel_Export = ReactiveCommand.CreateFromTask<object>(_Excel_Export);
             All_Excel_Export = ReactiveCommand.CreateFromTask<object>(_All_Excel_Export);
+            AllForms1_Excel_Export = ReactiveCommand.CreateFromTask(_AllForms1_Excel_Export);
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<List<string>, string>();
         }
@@ -639,7 +640,8 @@ namespace Client_App.ViewModels
                                         "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
                                         "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
                                         "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                        "ОКПО - " + first11.Master.OkpoRep.Value;
+                                        "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
+                                        "Количество строк - " + it.Rows.Count;
                                     var an = await ShowMessage.Handle(new List<string>() { str, "Отчет", "OK" , "Пропустить для всех"});
                                     if (an == "Пропустить для всех")
                                     {
@@ -655,7 +657,8 @@ namespace Client_App.ViewModels
                                     "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
                                     first11.Master.RegNoRep.Value + " " +
                                     first11.Master.ShortJurLicoRep.Value + " " +
-                                    first11.Master.OkpoRep.Value;
+                                    first11.Master.OkpoRep.Value + "\n" +
+                                    "Количество строк - " + it.Rows.Count;
                                 var an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Заменить",
                                     "Дополнить",
@@ -681,7 +684,8 @@ namespace Client_App.ViewModels
                                             "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
                                             "Форма с предыдущим номером корректировки №" +
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                            "Сделайте резервную копию.";
+                                            "Сделайте резервную копию." + "\n" +
+                                            "Количество строк - " + it.Rows.Count;
                                         an = await ShowMessage.Handle(new List<string>() {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена",
@@ -702,7 +706,8 @@ namespace Client_App.ViewModels
                                             "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
                                             "Форма с предыдущим номером корректировки №" +
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                            "Сделайте резервную копию.";
+                                            "Сделайте резервную копию." + "\n" +
+                                            "Количество строк - " + it.Rows.Count;
                                         an = await ShowMessage.Handle(new List<string>() {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена"
@@ -723,7 +728,8 @@ namespace Client_App.ViewModels
                                     elem.EndPeriod_DB + " \n" +
                                     first11.Master.RegNoRep.Value + " " +
                                     first11.Master.ShortJurLicoRep.Value + " " +
-                                    first11.Master.OkpoRep.Value;
+                                    first11.Master.OkpoRep.Value + "\n" +
+                                    "Количество строк - " + it.Rows.Count;
                                 an = await ShowMessage.Handle(new List<string>(){str,"Отчет",
                                 "Сохранить оба",
                                 "Отменить"
@@ -747,7 +753,8 @@ namespace Client_App.ViewModels
                                     "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
                                     "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
+                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
+                                    "Количество строк - " + it.Rows.Count;
                                 an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Да",
                                     "Нет",
@@ -764,7 +771,8 @@ namespace Client_App.ViewModels
                                     "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
                                     "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
+                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
+                                    "Количество строк - " + it.Rows.Count;
                                 an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                 "Да",
                                 "Нет"
@@ -810,7 +818,8 @@ namespace Client_App.ViewModels
                                         "Отчетный год - " + it.Year_DB + "\n" +
                                         "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
                                         "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                        "ОКПО - " + first21.Master.OkpoRep.Value;
+                                        "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
+                                        "Количество строк - " + it.Rows.Count;
                                     var an = await ShowMessage.Handle(new List<string>() {str, "Отчет", "OK" , "Пропустить для всех"});
                                     if (an == "Пропустить для всех") skipLess = true;
                                 }
@@ -822,7 +831,8 @@ namespace Client_App.ViewModels
                                 "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
                                 first21.Master.RegNoRep.Value + " \n" +
                                 first21.Master.ShortJurLicoRep.Value + " " +
-                                first21.Master.OkpoRep.Value;
+                                first21.Master.OkpoRep.Value + "\n" +
+                                "Количество строк - " + it.Rows.Count;
                                 var an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Заменить",
                                     "Сохранить оба",
@@ -846,7 +856,8 @@ namespace Client_App.ViewModels
                                         "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
                                         "Форма с предыдущим номером корректировки №" +
                                         elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                        "Сделайте резервную копию.";
+                                        "Сделайте резервную копию." + "\n" +
+                                        "Количество строк - " + it.Rows.Count;
                                         an = await ShowMessage.Handle(new List<string>() {
                                                                         str,
                                                                         "Отчет",
@@ -868,7 +879,8 @@ namespace Client_App.ViewModels
                                             "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
                                             "Форма с предыдущим номером корректировки №" +
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                            "Сделайте резервную копию.";
+                                            "Сделайте резервную копию." + "\n" +
+                                            "Количество строк - " + it.Rows.Count;
                                         an = await ShowMessage.Handle(new List<string>() {
                                                                         str,
                                                                         "Отчет",
@@ -894,7 +906,8 @@ namespace Client_App.ViewModels
                                     "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
                                     "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
+                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
+                                    "Количество строк - " + it.Rows.Count;
                                 an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Да",
                                     "Нет",
@@ -911,7 +924,8 @@ namespace Client_App.ViewModels
                                     "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
                                     "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
                                     "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
+                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
+                                    "Количество строк - " + it.Rows.Count;
                                 an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Да",
                                     "Нет"
@@ -1749,6 +1763,110 @@ namespace Client_App.ViewModels
 
                                             excelPackage.Save();
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                int l = 10;
+            }
+        }
+        #endregion
+
+        #region AllForms1_Excel_Export
+        public ReactiveCommand<Unit, Unit> AllForms1_Excel_Export { get; private set; }
+        private async Task _AllForms1_Excel_Export()
+        {
+            var find_rep = 0;
+            foreach (Reports reps in Local_Reports.Reports_Collection)
+            {
+                foreach (Report rep in reps.Report_Collection)
+                {
+                    if (rep.FormNum_DB.Split('.')[0] == "1")
+                    {
+                        find_rep += 1;
+                    }
+                }
+            }
+            if (find_rep == 0) return;
+            try
+            {
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    SaveFileDialog dial = new();
+                    var filter = new FileDialogFilter
+                    {
+                        Name = "Excel",
+                        Extensions = {
+                        "xlsx"
+                        }
+                    };
+                    dial.Filters.Add(filter);
+                    var res = await dial.ShowAsync(desktop.MainWindow);
+                    if (res != null)
+                    {
+                        if (res.Count() != 0)
+                        {
+                            var path = res;
+                            if (!path.Contains(".xlsx"))
+                            {
+                                path += ".xlsx";
+                            }
+                            if (File.Exists(path))
+                            {
+                                File.Delete(path);
+                            }
+                            if (path != null)
+                            {
+                                using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
+                                {
+
+                                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                    excelPackage.Workbook.Properties.Title = "Report";
+                                    excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+                                    if (Local_Reports.Reports_Collection.Count > 0)
+                                    {
+                                        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм");
+                                        worksheet.Cells[1, 1].Value = "Рег.№";
+                                        worksheet.Cells[1, 2].Value = "ОКПО";
+                                        worksheet.Cells[1, 3].Value = "Форма";
+                                        worksheet.Cells[1, 4].Value = "Дата начала";
+                                        worksheet.Cells[1, 5].Value = "Дата конца";
+                                        worksheet.Cells[1, 6].Value = "Номер кор.";
+                                        worksheet.Cells[1, 7].Value = "Количество строк";
+
+                                        var lst = new List<Reports>();
+
+                                        foreach (Reports item in Local_Reports.Reports_Collection)
+                                        {
+                                            if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")
+                                            {
+                                                lst.Add(item);
+                                            }
+                                        }
+
+                                        var row = 2;
+                                        foreach (Reports reps in lst) 
+                                        {
+                                            foreach (Report rep in reps.Report_Collection) 
+                                            {
+                                                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                                                worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
+                                                worksheet.Cells[row, 3].Value = rep.FormNum_DB;
+                                                worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
+                                                worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
+                                                worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
+                                                worksheet.Cells[row, 7].Value = rep.Rows.Count;
+                                                row++;
+                                            }
+                                        }
+
+                                        excelPackage.Save();
                                     }
                                 }
                             }
