@@ -46,6 +46,18 @@ namespace Client_App.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        #region CalcRAO
+        public ReactiveCommand<Unit, Unit> CalcRAO { get; private set; }
+        private async Task _CalcRAO()
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                CalcVM frm = new();
+                await ShowDialogCalc.Handle(frm);
+            }
+        }
+        #endregion
+
         #region FormType
         private string _FormType;
         public string FormType
@@ -1343,6 +1355,7 @@ namespace Client_App.ViewModels
         #region Interaction
         public Interaction<int, int> ShowDialogIn { get; protected set; }
         public Interaction<object, int> ShowDialog { get; protected set; }
+        public Interaction<CalcVM, object> ShowDialogCalc { get; private set; }
         public Interaction<List<string>, string> ShowMessageT { get; protected set; }
         #endregion
 
@@ -1371,8 +1384,10 @@ namespace Client_App.ViewModels
             DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
             SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
             DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
+            CalcRAO = ReactiveCommand.CreateFromTask(_CalcRAO);
 
             ShowDialog = new Interaction<object,int>();
+            ShowDialogCalc = new Interaction<CalcVM, object>();
             ShowDialogIn = new Interaction<int, int>();
             ShowMessageT = new Interaction<List<string>, string>();
             if (!isSum)

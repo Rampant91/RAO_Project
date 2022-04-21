@@ -1,0 +1,16 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Client_App.ViewModels"
+        xmlns:Controls="using:Client_App.Controls.DataGrid"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+        MinHeight="200" MinWidth="200"
+        x:Class="Client_App.Views.Calc"
+        xmlns:Converters="using:Client_App.Converters"
+        Icon="/Assets/logo.png"
+        Title="{Binding Current_Db}"
+        x:Name="Calc"
+        Background="#ffffff">
+    <StackPanel></StackPanel>
+</Window>

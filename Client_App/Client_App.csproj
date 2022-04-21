@@ -109,6 +109,9 @@
     <Compile Update="Controls\DataGrid\DataGrids\DataGridReports.axaml.cs">
       <DependentUpon>DataGridReports.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Calc.axaml.cs">
+      <DependentUpon>Calc.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\RowNumberIn.axaml.cs">
       <DependentUpon>RowNumberIn.axaml</DependentUpon>
     </Compile>

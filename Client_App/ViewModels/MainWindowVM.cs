@@ -1234,6 +1234,7 @@ namespace Client_App.ViewModels
         {
             var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
                 if (param != null)
                 {
                     var obj = param.First();
@@ -1250,6 +1251,7 @@ namespace Client_App.ViewModels
                         t.SelectedReports = tmp;
                     }
                 }
+            }
         }
         #endregion
 
