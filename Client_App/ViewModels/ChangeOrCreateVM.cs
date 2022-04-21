@@ -1343,6 +1343,7 @@ namespace Client_App.ViewModels
         #region Interaction
         public Interaction<int, int> ShowDialogIn { get; protected set; }
         public Interaction<object, int> ShowDialog { get; protected set; }
+        public Interaction<RAOCodeCalcWindowVM, string> ShowDialogC { get; protected set; }
         public Interaction<List<string>, string> ShowMessageT { get; protected set; }
         #endregion
 

@@ -605,6 +605,7 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+            content.Children.Add(CreateButton("Калькулятор кода РАО", "5,5,0,5", 30, "RAOCalc"));
 
             leftStPT.Children.Add(content);
 

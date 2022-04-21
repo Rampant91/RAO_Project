@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Client_App.Views.RAOCodeCalcWindow"
+		xmlns:vm="clr-namespace:Client_App.ViewModels"
+		xmlns:Converters="clr-namespace:RAO_Calculator.Converters" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="800"
+        Width="950"
+        MinHeight="200" MinWidth="200"
+		Title="Калькулятор кода РАО"
+		Icon="/Assets/logo.png"
+		WindowStartupLocation="CenterScreen">
+	<Window.Resources>
+		<Converters:FromStringToDouble x:Key="FromStringToDouble"/>
+		<Converters:FromStringToBool x:Key="FromStringToBool"/>
+		<Converters:FromStringToDate x:Key="FromStringToDate"/>
+	</Window.Resources>
+	<StackPanel>
+	</StackPanel>
+</Window>

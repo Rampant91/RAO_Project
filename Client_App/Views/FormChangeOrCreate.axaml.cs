@@ -31,6 +31,7 @@ namespace Client_App.Views
 #endif
             this.WhenActivated(d => d(ViewModel!.ShowDialogIn.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+            this.WhenActivated(d => d(ViewModel!.ShowDialogC.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
 
             this.Closing += OnStandartClosing;
@@ -3582,6 +3583,14 @@ namespace Client_App.Views
         #endregion
 
         #region DoShowDialog
+        private async Task DoShowDialogAsync(InteractionContext<ViewModels.RAOCodeCalcWindowVM, string> interaction)
+        {
+
+            RAOCodeCalcWindow frm = new RAOCodeCalcWindow();
+
+            await frm.ShowDialog(this);
+            interaction.SetOutput(null);
+        }
         private async Task DoShowDialogAsync(InteractionContext<int, int> interaction)
         {
             RowNumberIn frm = new RowNumberIn(interaction.Input);
