@@ -45,7 +45,7 @@
 			</StackPanel>
 		</Border>
 		<StackPanel Orientation="Horizontal">
-			<ListBox x:Name="Radionuclide_List" Items="{Binding ListRad}"  Height="230"  Width="200" BorderBrush="Gray" Margin = "5 5 5 5">
+			<ListBox x:Name="Radionuclide_List" Items="{Binding ListRad}" SelectedItems="{Binding Source=SelectedItem}" Height="230"  Width="200" BorderBrush="Gray" Margin = "5 5 5 5">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Grid>
@@ -55,22 +55,7 @@
 				</ListBox.ItemTemplate>
 			</ListBox>
 			<StackPanel Orientation="Vertical">
-				<Button HorizontalAlignment="Left" Margin="271,288,0,0" VerticalAlignment="Top" Width="50" Height="50" BorderBrush="Black"  CommandParameter="{Binding ElementName=Radionuclide_List_My, Path=SelectedItem}" Command="Delete">
-					<Button.Background>
-						<ImageBrush ImageSource="Data/arrowI.png"/>
-					</Button.Background>
-					<Button.CommandBindings>
-						<CommandBinding Command="Delete" Executed="CommandBinding_Delete"/>
-					</Button.CommandBindings>
-				</Button>
-				<Button HorizontalAlignment="Left" Margin="271,233,0,0" VerticalAlignment="Top" Width="50" Height="50" BorderBrush="Black" CommandParameter="{Binding ElementName=Radionuclide_List, Path=SelectedItem}" Command="New">
-					<Button.Background>
-						<ImageBrush ImageSource="Data/arrow.png"/>
-					</Button.Background>
-					<Button.CommandBindings>
-						<CommandBinding Command="New" Executed="CommandBinding_Add"/>
-					</Button.CommandBindings>
-				</Button>
+				
 			</StackPanel>
 			<ListBox x:Name="Radionuclide_List_My" Height="230"  Width="200" BorderBrush="Gray">
 				<ListBox.ItemTemplate>

@@ -52,6 +52,19 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region SelectedItems
+        private Radionuclide _SelectedItem;
+        public Radionuclide SelectedItem
+        {
+            get =>_SelectedItem; 
+            set 
+            { 
+                _SelectedItem = value; 
+                OnPropertyChanged("SelectedItem"); 
+            }
+        }
+        #endregion
+
         private void CommandBinding_Add(object sender, RoutedEventArgs e)
         {
             calc.Calc_List.Add((Radionuclide)e.Source);
@@ -59,16 +72,16 @@ namespace Client_App.ViewModels
 
         private void CommandBinding_Delete(object sender, RoutedEventArgs e)
         {
-            var tmp = Radionuclide_List_My.SelectedIndex;
-            calc.Calc_List.Remove((Radionuclide)e.Source);
-            if (tmp < calc.Calc_List.Count)
-            {
-                Radionuclide_List_My.SelectedIndex = tmp;
-            }
-            else
-            {
-                Radionuclide_List_My.SelectedIndex = calc.Calc_List.Count - 1;
-            }
+            //var tmp = Radionuclide_List_My.SelectedIndex;
+            //calc.Calc_List.Remove((Radionuclide)e.Source);
+            //if (tmp < calc.Calc_List.Count)
+            //{
+            //    Radionuclide_List_My.SelectedIndex = tmp;
+            //}
+            //else
+            //{
+            //    Radionuclide_List_My.SelectedIndex = calc.Calc_List.Count - 1;
+            //}
         }
 
         public void Radio_Checked(object sender, RoutedEventArgs e)
