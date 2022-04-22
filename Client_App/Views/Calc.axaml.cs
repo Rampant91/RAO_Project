@@ -10,6 +10,8 @@ using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
+using Client_App.ViewModels;
+
 namespace Client_App.Views
 {
     public class Calc : ReactiveWindow<ViewModels.CalcVM>
@@ -32,7 +34,12 @@ namespace Client_App.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
-            //this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+            var TRAO = this.FindControl<RadioButton>("TRAO");
+            TRAO.Checked += ((CalcVM)DataContext).Radio_Checked;
+            var WRAO = this.FindControl<RadioButton>("WRAO");
+            WRAO.Checked += ((CalcVM)DataContext).Radio_Checked;
+            var GRAO = this.FindControl<RadioButton>("GRAO");
+            GRAO.Checked += ((CalcVM)DataContext).Radio_Checked;
         }
         private void InitializeComponent()
         {
@@ -40,16 +47,6 @@ namespace Client_App.Views
         }
         #endregion
 
-        #region ShowDialog
-        private async Task DoShowDialogAsync(InteractionContext<ViewModels.CalcVM, object> interaction)
-        {
-
-            Calc frm = new Calc(interaction.Input);
-
-            await frm.ShowDialog(this);
-            interaction.SetOutput(null);
-        }
-        #endregion
 
         #region Events
         protected override void OnOpened(EventArgs e)

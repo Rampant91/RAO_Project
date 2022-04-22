@@ -7,10 +7,82 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         MinHeight="200" MinWidth="200"
         x:Class="Client_App.Views.Calc"
-        xmlns:Converters="using:Client_App.Converters"
+        xmlns:Converters="using:RAO_Calculator.Converters"
         Icon="/Assets/logo.png"
         Title="{Binding Current_Db}"
         x:Name="Calc"
         Background="#ffffff">
-    <StackPanel></StackPanel>
+	<Window.Resources>
+		<Converters:FromStringToDouble x:Key="FromStringToDouble"/>
+		<Converters:FromStringToBool x:Key="FromStringToBool"/>
+		<Converters:FromStringToDate x:Key="FromStringToDate"/>
+	</Window.Resources>
+    <StackPanel Orientation="Vertical">
+		<Border BorderBrush = "Gray" BorderThickness = "1" Width="400" CornerRadius = "3" Padding = "4" Margin = "5 5 5 5">
+			<StackPanel Orientation="Vertical">
+				<StackPanel Orientation="Vertical">
+					<RadioButton x:Name="TRAO" Content="Твердые РАО" IsChecked="True"/>
+					<RadioButton x:Name="WRAO" Content="Жидкие РАО"/>
+					<RadioButton x:Name="GRAO" Content="Газообразные РАО" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Label Content="Период полураспада:"/>
+					<Label x:Name="Half_Life" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.HalfLifePeriod,Converter={StaticResource FromStringToDate}}"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Label Content="Вид излучения:"/>
+					<Label x:Name="Radiation_type" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.RadiationType}" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Label Content="Трансурановые (Да/Нет):" />
+					<Label x:Name="AfterUran" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.AfterUran, Converter={StaticResource FromStringToBool}}" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Label Content="ПЗУА, Бк/г:"/>
+					<Label x:Name="PZUA">
+					</Label>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+		<StackPanel Orientation="Horizontal">
+			<ListBox x:Name="Radionuclide_List" Items="{Binding ListRad}"  Height="230"  Width="200" BorderBrush="Gray" Margin = "5 5 5 5">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid>
+							<Label Content="{Binding Path=Name}"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+			<StackPanel Orientation="Vertical">
+				<Button HorizontalAlignment="Left" Margin="271,288,0,0" VerticalAlignment="Top" Width="50" Height="50" BorderBrush="Black"  CommandParameter="{Binding ElementName=Radionuclide_List_My, Path=SelectedItem}" Command="Delete">
+					<Button.Background>
+						<ImageBrush ImageSource="Data/arrowI.png"/>
+					</Button.Background>
+					<Button.CommandBindings>
+						<CommandBinding Command="Delete" Executed="CommandBinding_Delete"/>
+					</Button.CommandBindings>
+				</Button>
+				<Button HorizontalAlignment="Left" Margin="271,233,0,0" VerticalAlignment="Top" Width="50" Height="50" BorderBrush="Black" CommandParameter="{Binding ElementName=Radionuclide_List, Path=SelectedItem}" Command="New">
+					<Button.Background>
+						<ImageBrush ImageSource="Data/arrow.png"/>
+					</Button.Background>
+					<Button.CommandBindings>
+						<CommandBinding Command="New" Executed="CommandBinding_Add"/>
+					</Button.CommandBindings>
+				</Button>
+			</StackPanel>
+			<ListBox x:Name="Radionuclide_List_My" Height="230"  Width="200" BorderBrush="Gray">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel>
+							<Label Content="{Binding Name}" Margin="0,-5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+							<Label Content="УДА:" Margin="0,-5,0,-4" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+							<TextBox Text="{Binding UDA, Mode=TwoWay,Converter={StaticResource FromStringToDouble}}" Margin="34,-50,0,0" MinWidth="200" MaxHeight="22" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+	</StackPanel>
 </Window>

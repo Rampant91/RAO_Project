@@ -3590,6 +3590,15 @@ namespace Client_App.Views
             interaction.SetOutput(Convert.ToInt32(frm.Number2));
         }
 
+        private async Task DoShowDialogAsync(InteractionContext<ViewModels.CalcVM, object> interaction)
+        {
+
+            Calc frm = new Calc();
+
+            await frm.ShowDialog(this);
+            interaction.SetOutput(null);
+        }
+
         private async Task DoShowDialogAsync(InteractionContext<object, int> interaction)
         {
             RowNumber frm = new RowNumber();
