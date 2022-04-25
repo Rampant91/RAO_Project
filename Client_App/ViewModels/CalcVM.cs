@@ -36,6 +36,99 @@ namespace Client_App.ViewModels
     {
         Calculator calc = new Calculator();
 
+        #region is_Ckecked
+        private bool _is_Ckecked1 = true;
+        public bool is_Ckecked1
+        {
+            get => _is_Ckecked1;
+            set
+            {
+                if (_is_Ckecked1 != value)
+                {
+                    _is_Ckecked1 = value;
+                    OnPropertyChanged("is_Ckecked1");
+                }
+            }
+        }
+        private bool _is_Ckecked2 = true;
+        public bool is_Ckecked2
+        {
+            get => _is_Ckecked2;
+            set
+            {
+                if (_is_Ckecked2 != value)
+                {
+                    _is_Ckecked2 = value;
+                    OnPropertyChanged("is_Ckecked2");
+                }
+            }
+        }
+        #endregion
+
+        #region ozri_V
+        private bool _ozri_V = true;
+        public bool ozri_V
+        {
+            get => _ozri_V;
+            set
+            {
+                if (_ozri_V != value)
+                {
+                    _ozri_V = value;
+                    OnPropertyChanged("ozri_V");
+                }
+            }
+        }
+        #endregion
+
+        #region sec_R
+        private bool _sec_R = true;
+        public bool sec_R
+        {
+            get => _sec_R;
+            set
+            {
+                if (_sec_R != value)
+                {
+                    _sec_R = value;
+                    OnPropertyChanged("sec_R");
+                }
+            }
+        }
+        #endregion
+
+        #region thr_R1
+        private bool _thr_R1 = false;
+        public bool thr_R1
+        {
+            get => _thr_R1;
+            set
+            {
+                if (_thr_R1 != value)
+                {
+                    _thr_R1 = value;
+                    OnPropertyChanged("thr_R1");
+                }
+            }
+        }
+        #endregion
+
+        #region thr_R2
+        private bool _thr_R2 = true;
+        public bool thr_R2
+        {
+            get => _thr_R2;
+            set
+            {
+                if (_thr_R2 != value)
+                {
+                    _thr_R2 = value;
+                    OnPropertyChanged("thr_R2");
+                }
+            }
+        }
+        #endregion
+
         #region cod_RAO
         private string _cod_RAO = "***********";
         public string cod_RAO
@@ -208,6 +301,7 @@ namespace Client_App.ViewModels
                 calc.Calc_List.Add(SelectedItem);
                 MyListRad = calc.Calc_List;
                 newListRad = MyListRad;
+                cod_RAO = calc.Code;
             }
         }
         #endregion
@@ -220,6 +314,7 @@ namespace Client_App.ViewModels
                 calc.Calc_List.Remove(SelectedItemM);
                 MyListRad = calc.Calc_List;
             }
+            cod_RAO = calc.Code;
         }
 
         #endregion
@@ -230,6 +325,14 @@ namespace Client_App.ViewModels
             if (((RadioButton)sender).Content == "Жидкие РАО" && (bool)((RadioButton)sender).IsChecked) 
             {
                 WRAO = true;
+
+                ozri_V = false;
+                sec_R = false;
+                thr_R1 = true;
+                thr_R2 = true;
+                is_Ckecked1 = true;
+                is_Ckecked2 = true;
+
                 TRAO = false;
                 GRAO = false;
                 calc.Calc_List.TWG = "w";
@@ -238,6 +341,14 @@ namespace Client_App.ViewModels
             if (((RadioButton)sender).Content == "Твердые РАО" && (bool)((RadioButton)sender).IsChecked)
             {
                 TRAO = true;
+
+                ozri_V = true;
+                sec_R = true;
+                thr_R1 = false;
+                thr_R2 = true;
+                is_Ckecked1 = true;
+                is_Ckecked2 = true;
+
                 WRAO = false;
                 GRAO = false;
                 calc.Calc_List.TWG = "t";
@@ -246,21 +357,138 @@ namespace Client_App.ViewModels
             if (((RadioButton)sender).Content == "Газообразные РАО" && (bool)((RadioButton)sender).IsChecked)
             {
                 GRAO = true;
+
+                ozri_V = false;
+                sec_R = false;
+                thr_R1 = false;
+                thr_R2 = false;
+                is_Ckecked1 = true;
+                is_Ckecked2 = true;
+
                 TRAO = false;
                 WRAO = false;
                 calc.Calc_List.TWG = "g";
                 calc.Lib_List.TWG = "g";
             }
+            calc.num7 = 0;
+            calc.num8 = 0;
             cod_RAO = calc.Code;
             ListRad = calc.Lib_List.Filter();
             calc.Calc_List.Clear();
         }
-        #endregion
 
-        #region Culc
-        public void CommandBinding_Culculate()
+        public void Radio_Checked2(object sender, RoutedEventArgs e)
         {
-            newListRad = MyListRad;
+            if (((RadioButton)sender).Content == "1 - не содержащие ядерные материалы" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num4 = 1;
+            }
+            if (((RadioButton)sender).Content == "2 - содержащие ядерные материалы" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num4 = 2;
+            }
+            
+            cod_RAO = calc.Code;
+        }
+
+        public void Radio_Checked3(object sender, RoutedEventArgs e)
+        {
+            if (((RadioButton)sender).Content == "0 - удаляемые, класс которых не установлен" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 0;
+            }
+            if (((RadioButton)sender).Content == "1 - удаляемые 1 - го класса" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 1;
+            }
+            if (((RadioButton)sender).Content == "2 - удаляемые 2 - го класcа" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 2;
+            }
+            if (((RadioButton)sender).Content == "3 - удаляемые 3 - го класса" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 3;
+            }
+            if (((RadioButton)sender).Content == "4 - удаляемые 4 - го класса" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 4;
+            }
+            if (((RadioButton)sender).Content == "5 - удаляемые 5 - го класса" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 5;
+            }
+            if (((RadioButton)sender).Content == "6 - удаляемые 6 - го класса" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 6;
+            }
+            if (((RadioButton)sender).Content == "7 - особые РАО" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 7;
+            }
+            if (((RadioButton)sender).Content == "9 - прочие РАО" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num8 = 9;
+            }
+            
+            cod_RAO = calc.Code;
+        }
+
+        public void Radio_Checked4(object sender, RoutedEventArgs e)
+        {
+            if (((RadioButton)sender).Content == "0 - не подтвергавшиеся переработке способами, перечисленными ниже" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num7 = 0;
+            }
+            if (((RadioButton)sender).Content == "1 - спрессованные (компактированные)" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num7 = 1;
+            }
+            if (((RadioButton)sender).Content == "2 - битумированные" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num7 = 2;
+            }
+            if (((RadioButton)sender).Content == "3 - цементированные" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num7 = 3;
+            }
+            if (((RadioButton)sender).Content == "4 - остеклованные" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num7 = 4;
+            }
+            if (((RadioButton)sender).Content == "99 - омоноличенные (отвержденные) другим способом" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num7 = 9;
+            }
+
+            cod_RAO = calc.Code;
+        }
+
+        public void Radio_Checked5(object sender, RoutedEventArgs e)
+        {
+            if (((RadioButton)sender).Content == "1 - горючие" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num10 = 1;
+            }
+            if (((RadioButton)sender).Content == "2 - негорючие" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num10 = 2;
+            }
+
+            cod_RAO = calc.Code;
+        }
+
+        public void Radio_Checked6(object sender, RoutedEventArgs e)
+        {
+            if (((RadioButton)sender).Content == "1 - Да" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num2 = 4;
+            }
+            if (((RadioButton)sender).Content == "2 - Нет" && (bool)((RadioButton)sender).IsChecked)
+            {
+                calc.num2 = -1;
+            }
+
+            cod_RAO = calc.Code;
         }
         #endregion
 
@@ -284,7 +512,11 @@ namespace Client_App.ViewModels
             calc.Lib_List.AddFromDB(@"Provider = Microsoft.ACE.OLEDB.12.0; Data Source = data\newDB.mdb");
             ListRad = calc.Lib_List.Filter();
             calc.Calc_List.TWG = "t";
-            cod_RAO=calc.Code;
+            calc.num10 = 1;
+            calc.num4 = 1;
+            calc.num7 = 0;
+            calc.num8 = 0;
+            cod_RAO =calc.Code;
         }
         #endregion
 

@@ -17,304 +17,315 @@
 		<Converters:FromStringToBool x:Key="FromStringToBool"/>
 		<Converters:FromStringToDate x:Key="FromStringToDate"/>
 	</Window.Resources>
-	<ScrollViewer VerticalScrollBarVisibility="Visible">
-		<StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-			<StackPanel Orientation="Vertical">
-				<Border BorderBrush = "Gray" BorderThickness = "1" Width="430" CornerRadius = "3" Padding = "4" Margin = "5 5 5 5" HorizontalAlignment="Left">
-					<StackPanel Orientation="Horizontal">
-						<StackPanel Orientation="Vertical"  Margin="0 17 0 0">
-							<RadioButton x:Name="TRAO" Content="Твердые РАО" IsChecked="True"/>
-							<RadioButton x:Name="WRAO" Content="Жидкие РАО"/>
-							<RadioButton x:Name="GRAO" Content="Газообразные РАО" />
-						</StackPanel>
-						<StackPanel Orientation="Vertical" Margin="60 0 0 0">
+	<ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+		<Panel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Grid Grid.Row="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1.5*"/>
+						<ColumnDefinition Width="2.2*"/>
+					</Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+						<Border BorderBrush = "Gray" BorderThickness = "1" Width="430" CornerRadius = "3" Padding = "4" Margin = "5 5 5 5" HorizontalAlignment="Left">
 							<StackPanel Orientation="Horizontal">
-								<Label Content="Период полураспада:"/>
-								<Label x:Name="Half_Life" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.HalfLifePeriod,Converter={StaticResource FromStringToDate}}"/>
-							</StackPanel>
-							<StackPanel Orientation="Horizontal">
-								<Label Content="Вид излучения:"/>
-								<Label x:Name="Radiation_type" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.RadiationType}" />
-							</StackPanel>
-							<StackPanel Orientation="Horizontal">
-								<Label Content="Трансурановые (Да/Нет):" />
-								<Label x:Name="AfterUran" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.AfterUran, Converter={StaticResource FromStringToBool}}" />
-							</StackPanel>
-							<StackPanel Orientation="Horizontal">
-								<Label Content="ПЗУА, Бк/г:"/>
-								<Label x:Name="PZUA">
-								</Label>
-							</StackPanel>
-						</StackPanel>
-					</StackPanel>
-				</Border>
-				<StackPanel Orientation="Horizontal">
-					<ListBox x:Name="Radionuclide_List" Items="{Binding ListRad}" SelectedItem="{Binding SelectedItem}" Height="230"  Width="185" BorderBrush="Gray" Margin = "5 5 5 5">
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<Grid>
-									<Label Content="{Binding Path=Name}"/>
-								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-					<StackPanel Orientation="Vertical">
-						<Button x:Name="AddBTN" Width="50" Height="50" Margin="0 70 5 5" Command="{Binding CommandBinding_Add}">
-							<Image Source="/Assets/arrow.png"/>
-						</Button>
-						<Button x:Name="DeleteBTN" Width="50" Height="50" Margin="0 0 5 5" Command="{Binding CommandBinding_Delete}">
-							<Image Source="/Assets/arrowI.png"/>
-						</Button>
-					</StackPanel>
-					<ListBox x:Name="Radionuclide_List_My" Items="{Binding MyListRad}" SelectedItem="{Binding SelectedItemM}" Height="230"  Width="185" BorderBrush="Gray">
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<StackPanel Orientation="Vertical">
-									<Label Content="{Binding Name}"/>
+								<StackPanel Orientation="Vertical"  Margin="0 17 0 0">
+									<RadioButton x:Name="TRAO" Content="Твердые РАО" IsChecked="True"/>
+									<RadioButton x:Name="WRAO" Content="Жидкие РАО"/>
+									<RadioButton x:Name="GRAO" Content="Газообразные РАО" />
+								</StackPanel>
+								<StackPanel Orientation="Vertical" Margin="60 0 0 0">
 									<StackPanel Orientation="Horizontal">
-										<Label Content="УДА:"/>
-										<TextBox Text="{Binding UDA, Mode=TwoWay,Converter={StaticResource FromStringToDouble}}" Width="140"/>
+										<Label Content="Период полураспада:"/>
+										<Label x:Name="Half_Life" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.HalfLifePeriod,Converter={StaticResource FromStringToDate}}"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Вид излучения:"/>
+										<Label x:Name="Radiation_type" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.RadiationType}" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Трансурановые (Да/Нет):" />
+										<Label x:Name="AfterUran" Content="{Binding ElementName=Radionuclide_List,Path=SelectedItem.AfterUran, Converter={StaticResource FromStringToBool}}" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="ПЗУА, Бк/г:"/>
+										<Label x:Name="PZUA">
+										</Label>
 									</StackPanel>
 								</StackPanel>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-				</StackPanel>
-				<Button Content="Расчитать" Width="256" Height="37" Background="White" Margin="0 50 0 0" BorderBrush="Gray" Command="{Binding CommandBinding_Culculate}"/>
-				<Border BorderBrush = "Gray" BorderThickness = "1" Width="256" Height="74" Padding = "4" Margin="0 10 0 0">
-					<StackPanel Orientation="Vertical">
-						<Label Content="Код РАО" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-						<TextBox x:Name="cod_RAO" Width="246" Text="{Binding cod_RAO}"/>
-					</StackPanel>
-				</Border>
-			</StackPanel>
-			<StackPanel Orientation="Vertical">
-				<StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="45" Height="48" Padding = "4">
-						<Label Content="№" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="90" Height="48" Padding = "4">
-						<Label Content="Радионуклид" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
-						<Label Content="    Период &#xD;&#xA;полураспада"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
-						<Label Content=" Удельная &#xA;активность"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="40" Height="48" Padding = "4">
-						<Label Content="Вид"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
-						<Label Content="Трансурановый"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
-						<Label Content="ПЗУА"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-					<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
-						<Label Content="УдА/ПЗУА"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-					</Border>
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<ListBox x:Name="main_List" Items="{Binding newListRad}" Width="660" Height="207" Margin="0 0 0 0" BorderBrush="Gray">
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="41"/>
-									<ColumnDefinition Width="86"/>
-									<ColumnDefinition Width="93"/>
-									<ColumnDefinition Width="93"/>
-									<ColumnDefinition Width="36"/>
-									<ColumnDefinition Width="90"/>
-									<ColumnDefinition Width="90"/>
-									<ColumnDefinition Width="90"/>
-								</Grid.ColumnDefinitions>
-								<Label Grid.Column="1" Content="{Binding Path=Name}"/>
-								<Label Grid.Column="2" Content="{Binding Path=HalfLifePeriod,Converter={StaticResource FromStringToDate}}"/>
-								<Label Grid.Column="3" Content="{Binding Path=UDA}"/>
-								<Label Grid.Column="4" Content="{Binding Path=RadiationType}"/>
-								<Label Grid.Column="5" Content="{Binding Path=AfterUran,Converter={StaticResource FromStringToBool}}"/>
-								<Label Grid.Column="6" Content="{Binding Path=PZUA}"/>
-								<Label Grid.Column="7" Content="{Binding Path=UDA_PZUA}"/>
-							</Grid>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<StackPanel Orientation="Vertical">
-						<Border BorderBrush = "Gray" Width="280" Height="100" VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="0 10 0 0">
-							<StackPanel Orientation="Vertical">
-								<Label Content="Содержание ядерных материалов"/>
-								<RadioButton x:Name="first_rad_1" Margin="0 10 0 0" Content="1 - не содержащие ядерные материалы" IsChecked="true"/>
-								<RadioButton x:Name="first_rad_2" Margin="0 10 0 0" Content="2 - содержащие ядерные материалы" />
-							</StackPanel>
-						</Border>
-						<Border BorderBrush = "Gray" Width="280" Height="260" VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="0 10 0 0">
-							<StackPanel Orientation="Vertical">
-								<Label Content="Класс РАО"/>
-								<RadioButton x:Name="thr_rad_1" Margin="0 7 0 0" Content="0 - удаляемые, класс которых не установлен" IsChecked="True"/>
-								<RadioButton x:Name="thr_rad_2" Margin="0 7 0 0" Content="1 - удаляемые 1 - го класса"/>
-								<RadioButton x:Name="thr_rad_3" Margin="0 7 0 0" Content="2 - удаляемые 2 - го класаа"/>
-								<RadioButton x:Name="thr_rad_4" Margin="0 7 0 0" Content="3 - удаляемые 3 - го класса"/>
-								<RadioButton x:Name="thr_rad_5" Margin="0 7 0 0" Content="4 - удаляемые 4 - го класса"/>
-								<RadioButton x:Name="thr_rad_6" Margin="0 7 0 0" Content="5 - удаляемые 5 - го класса"/>
-								<RadioButton x:Name="thr_rad_7" Margin="0 7 0 0" Content="6 - удаляемые 6 - го класса"/>
-								<RadioButton x:Name="thr_rad_8" Margin="0 7 0 0" Content="7 - особые РАО"/>
-								<RadioButton x:Name="thr_rad_9" Margin="0 7 0 0" Content="9 - прочие РАО"/>
-							</StackPanel>
-						</Border>
-					</StackPanel>
-					<StackPanel Orientation="Vertical">
-						<Border BorderBrush = "Gray" BorderThickness = "1" Padding = "4" Margin="5 10 0 0" Width ="375">
-							<StackPanel Orientation="Vertical">
-								<Label Content="Способ переработки"/>
-								<RadioButton x:Name="sec_rad_1" Margin="0 10 0 0" Content="0 - не подтвергавшиеся переработке способами,&#xD;&#xA; перечисленными ниже" IsChecked="true"/>
-								<RadioButton x:Name="sec_rad_2" Margin="0 10 0 0" Content="1 - спрессованные (компактированные)" />
-								<RadioButton x:Name="sec_rad_3" Margin="0 10 0 0" Content="2 - битумированные" />
-								<RadioButton x:Name="sec_rad_4" Margin="0 10 0 0" Content="3 - цементированные" />
-								<RadioButton x:Name="sec_rad_5" Margin="0 10 0 0" Content="4 - остеклованные" />
-								<RadioButton x:Name="sec_rad_6" Margin="0 10 0 0" Content="9 - омоноличенные (отвержденные) другим способом"/>
 							</StackPanel>
 						</Border>
 						<StackPanel Orientation="Horizontal">
-							<Border BorderBrush = "Gray" BorderThickness = "1" Padding = "4" Margin="5 10 0 0" Width="200">
-								<StackPanel Orientation="Vertical">
-									<Label Content="Тип РАО"/>
-									<Menu RenderTransformOrigin="0.5,0.5" Width="125">
-										<Menu.RenderTransform>
-											<TransformGroup>
-												<ScaleTransform/>
-												<SkewTransform/>
-												<RotateTransform Angle="-0.044"/>
-												<TranslateTransform/>
-											</TransformGroup>
-										</Menu.RenderTransform>
-										<MenuItem x:Name="TypeEnter">
-											<MenuItem.Header>
-												<StackPanel Orientation="Horizontal">
-													<Label Padding="0" Margin="0 0 0 1" Content="{Binding type_RAO}"/>
-												</StackPanel>
-											</MenuItem.Header>
-											<MenuItem/>
-											<MenuItem Header="_Газообразные">
-												<MenuItem Header="_01 - газы, аэрозоли" Command="{Binding MenuItem_Click}" CommandParameter="01"/>
-											</MenuItem>
-											<MenuItem Header="_Жидкости неорганические">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="11" Header="_11 - воды загрязненные подземные, в том числе грунтовые и дренажных систем" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="12" Header="_12 - воды охлаждения реакторного производства, кнтурные воды, воды цистерн биологической защиты"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="13" Header="_13 - растворы хвостовые"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="14" Header="_14 - конденсаты после упаривания, газоотчистки, конденсаты технологические прочие"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="15" Header="_15 - растворы регенерационные (сливы), растворы промывки экстрагентов, сорбентов"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="16" Header="_16 - воды лабораторий, трапные, обмывочные воды, растворы после дезактивации, включая воды санпропускников и спецпрачечных, сточные воды прочие"/>
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="17" Header="_17 - воды бассейнов - хранилищ"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="18" Header="_18 - воды промысловые"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="19" Header="_19 - жидкости неорганические прочие"  />
-											</MenuItem>
-											<MenuItem Header="_Жидкости органические">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="21" Header="_21 - экстрагенты"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="22" Header="_22 - масла"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="23" Header="_23 - эмульсии смазочно - охлаждающих жидкостей (СОЖ)"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="24" Header="_24 - моющие средства (детергенты) за исключением спиртов"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="25" Header="_25 - спирты"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="26" Header="_26 - сцинцилляторы органические жидкостные"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="29" Header="_29 - жидкости органические прочие" />
-											</MenuItem>
-											<MenuItem Header="_Пульпы, шламы">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="31" Header="_31 - хвосты гидрометаллургического, химико - металлургического, разделительного и сублиматного производств, пульпы,образующиеся после нейтрализации" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="32" Header="_32 - пульпы отработавших ионнообменных смол и прочих сорбентов органических"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="33" Header="_33 - шламы и пульпы отработавших сорбентов неорганических, фильтрующих материалов" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="34" Header="_34 - солевой остаток с солесодержанием до 250 г/л, кубовый остаток"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="35" Header="_35 - кубовый остаток после упаривания с солесодержанием более 250 г/л, концетрат солевой"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="36" Header="_36 - взвеси, содержащие продукты коррозии" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="37" Header="_37 - илы, иловые осадки водоемов - накопителей, осадки, кеки"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="38" Header="_38 - шламы после очистки трапных вод"/>
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="39" Header="_39 - прочие пульпы, шламы технологические" />
-											</MenuItem>
-											<MenuItem Header="_Отходы металлические">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="41" Header="_41 - сталь нержавеющая: крупногабаритные изделия и оборудование" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="42" Header="_42 - сталь нержавеющая, кроме крупногабаритных изделий"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="43" Header="_43 - металлы черные, кроме нержавеющей стали: крупногабаритные изделия и оборудование"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="44" Header="_44 - металлы черные, кроме нержавеющей стали и крупногабаритных изделий"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="45" Header="_45 - лом черных металлов"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="46" Header="_46 - металлы щелочные, в том числе отработавший теплоноситель"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="51" Header="_51 - алюминий и его сплавы, изделия и оборудование из алюминия и его сплавов" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="52" Header="_52 - уран металлический обедненный и изделия из него"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="53" Header="_53 - медь и сплавы меди"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="54" Header="_54 - никель и его сплавы, кроме медно - никелевых сплавов, отнесенных к коду 53"/>
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="55" Header="_55 - свинец и его сплавы"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="56" Header="_56 - цирконий и его сплавы"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="57" Header="_57 - лом цветных металлов прочих, не перечисленных в пунктах 51-56"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="58" Header="_58 - лом цветных металлов несортированный"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="59" Header="_59 - металлический лом прочий"  />
-											</MenuItem>
-											<MenuItem Header="_Неорганические ТРО кроме отходов металлических">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="61" Header="_61 - сорбенты и фильтроматериалы неорганические"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="62" Header="_62 - песок"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="63" Header="_63 - теплоизоляционные материалы неорганические"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="64" Header="_64 - изделия из стекла и керамики, лабораторная посуда" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="65" Header="_65 - отходы плавильного производства (включая шлаки, футеровку)" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="66" Header="_66 - зола" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="67" Header="_67 - плав солевой"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="68" Header="_68 - рудные материалы"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="69" Header="_69 - ТРО неорганические прочие"  />
-											</MenuItem>
-											<MenuItem Header="_Органические и биологические ТРО">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="71" Header="_71 - смолы отработанные ионообменные" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="72" Header="_72 - уголь активированный, сульфоугль"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="73" Header="_73 - полимеры"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="74" Header="_74 - сажа" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="75" Header="_75 - спецодежда и другие средства индивидуальной защиты, обувь, обтирочные материалы, ветошь, вата, фильтроэлементы (фильтровальная ткань) фильтров вентиляции"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="76" Header="_76 - графит" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="77" Header="_77 - древесина, бумага, картон" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="78" Header="_78 - ТРО биологические"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="79" Header="_79 - ТРО органические прочие" />
-											</MenuItem>
-											<MenuItem Header="_Отработавшие источники и приборы, устройства, содержащие отработавшие источники">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="81" Header="_81 - оработавшие ЗРИ без защитного контейнера"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="82" Header="_82 - отработавшие ЗРИ в защитном контейнере" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="84" Header="_84 - открытые радионуклидные источники в виде отдельных изделий"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="85" Header="_85 - радиоизотопные термоэлектрические генераторы (РИТЭГ)"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="86" Header="_86 - дымо- ,пожароизвещатели" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="87" Header="_87 - приборы и установки с массой менее 30кг, содержащие отработавшие ЗРИ"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="88" Header="_88 - приборы и установки с массой 30кг и более, содержащие отработавшие ЗРИ"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="89" Header="_89 - прочие объекты учета, соержащие отработавшие ЗРИ" />
-											</MenuItem>
-											<MenuItem Header="_Прочие типы отходов">
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="91" Header="_91 - фильтры вентиляционные в сборе"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="92" Header="_92 - электрокабели"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="93" Header="_93 - стройматериалы, строительный и прочий мусор"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="95" Header="_95 - ИК (ионизационные камеры),не содержащие отработавшие ЗРИ"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="96" Header="_96 - загрязненный грунт, включая керны"  />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="97" Header="_97 - поглощающие элементы (стержни - поглотители)" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="98" Header="_98 - канал измерения нейтронного потока и температуры" />
-												<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="99" Header="_99 - прочие типы РАО"/>
-											</MenuItem>
-										</MenuItem>
-									</Menu>
-								</StackPanel>
-							</Border>
-							<Border BorderBrush = "Gray" Width="165" VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="10 10 0 0">
-								<StackPanel Orientation="Vertical">
-									<Label Content="Пожароопасность"/>
-									<RadioButton x:Name="f_rad_1" Margin="0 5 0 0" Content="1 - горючий" IsChecked="true"/>
-									<RadioButton x:Name="f_rad_2" Margin="0 5 0 0" Content="2 - негорючий" />
-								</StackPanel>
-							</Border>
-						</StackPanel>
-						<Border BorderBrush = "Gray" Width="200"  VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="5 10 0 0">
+							<ListBox x:Name="Radionuclide_List" Items="{Binding ListRad}" SelectedItem="{Binding SelectedItem}" Height="230"  Width="185" BorderBrush="Gray" Margin = "5 5 5 5">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Grid>
+											<Label Content="{Binding Path=Name}"/>
+										</Grid>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
 							<StackPanel Orientation="Vertical">
-								<Label Content="ОЗРИ?"/>
-								<StackPanel Orientation="Horizontal">
-									<RadioButton x:Name="p_rad_1" Margin="10 10 0 0" Content="1 - Да" IsChecked="true"/>
-									<RadioButton x:Name="p_rad_2" Margin="10 10 0 0" Content="2 - Нет" />
-								</StackPanel>
+								<Button x:Name="AddBTN" Width="50" Height="50" Margin="0 70 5 5" Command="{Binding CommandBinding_Add}">
+									<Image Source="/Assets/arrow.png"/>
+								</Button>
+								<Button x:Name="DeleteBTN" Width="50" Height="50" Margin="0 0 5 5" Command="{Binding CommandBinding_Delete}">
+									<Image Source="/Assets/arrowI.png"/>
+								</Button>
+							</StackPanel>
+							<ListBox x:Name="Radionuclide_List_My" Items="{Binding MyListRad}" SelectedItem="{Binding SelectedItemM}" Height="230"  Width="185" BorderBrush="Gray">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<StackPanel Orientation="Vertical">
+											<Label Content="{Binding Name}"/>
+											<StackPanel Orientation="Horizontal">
+												<Label Content="УДА:"/>
+												<TextBox Text="{Binding UDA, Mode=TwoWay,Converter={StaticResource FromStringToDouble}}" Width="140"/>
+											</StackPanel>
+										</StackPanel>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</StackPanel>
+						<Border BorderBrush = "Gray" BorderThickness = "1" Width="256" Height="74" Padding = "4" Margin="0 10 0 0">
+							<StackPanel Orientation="Vertical">
+								<Label Content="Код РАО" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+								<TextBox x:Name="cod_RAO" Width="246" Text="{Binding cod_RAO}"/>
 							</StackPanel>
 						</Border>
 					</StackPanel>
-				</StackPanel>
-			</StackPanel>
-		</StackPanel>
+					<StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+						<StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="45" Height="48" Padding = "4">
+								<Label Content="№" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="90" Height="48" Padding = "4">
+								<Label Content="Радионуклид" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
+								<Label Content="    Период &#xD;&#xA;полураспада"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
+								<Label Content=" Удельная &#xA;активность"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="40" Height="48" Padding = "4">
+								<Label Content="Вид"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
+								<Label Content="Трансурановый"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
+								<Label Content="ПЗУА"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+							<Border BorderBrush = "Gray" BorderThickness = "1" Width="97" Height="48" Padding = "4">
+								<Label Content="УдА/ПЗУА"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</Border>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<ListBox x:Name="main_List" Items="{Binding newListRad}" Width="660" Height="207" Margin="0 0 0 0" BorderBrush="Gray">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="43"/>
+												<ColumnDefinition Width="88"/>
+												<ColumnDefinition Width="95"/>
+												<ColumnDefinition Width="95"/>
+												<ColumnDefinition Width="38"/>
+												<ColumnDefinition Width="93"/>
+												<ColumnDefinition Width="93"/>
+												<ColumnDefinition Width="93"/>
+											</Grid.ColumnDefinitions>
+											<Label Grid.Column="1" Content="{Binding Path=Name}"/>
+											<Label Grid.Column="2" Content="{Binding Path=HalfLifePeriod,Converter={StaticResource FromStringToDate}}"/>
+											<Label Grid.Column="3" Content="{Binding Path=UDA}"/>
+											<Label Grid.Column="4" Content="{Binding Path=RadiationType}"/>
+											<Label Grid.Column="5" Content="{Binding Path=AfterUran,Converter={StaticResource FromStringToBool}}"/>
+											<Label Grid.Column="6" Content="{Binding Path=PZUA}"/>
+											<Label Grid.Column="7" Content="{Binding Path=UDA_PZUA}"/>
+										</Grid>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<StackPanel Orientation="Vertical">
+								<Border BorderBrush = "Gray" Width="280" Height="100" VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="0 10 0 0">
+									<StackPanel Orientation="Vertical">
+										<Label Content="Содержание ядерных материалов"/>
+										<RadioButton x:Name="first_rad_1" Margin="0 10 0 0" Content="1 - не содержащие ядерные материалы" IsChecked="true"/>
+										<RadioButton x:Name="first_rad_2" Margin="0 10 0 0" Content="2 - содержащие ядерные материалы" />
+									</StackPanel>
+								</Border>
+								<Border BorderBrush = "Gray" Width="280" Height="260" VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="0 10 0 0">
+									<StackPanel Orientation="Vertical">
+										<Label Content="Класс РАО"/>
+										<RadioButton x:Name="thr_rad_1" Margin="0 7 0 0" Content="0 - удаляемые, класс которых не установлен" IsChecked="{Binding is_Ckecked1}"/>
+										<RadioButton x:Name="thr_rad_2" IsEnabled="{Binding ozri_V}" Margin="0 7 0 0" Content="1 - удаляемые 1 - го класса"/>
+										<RadioButton x:Name="thr_rad_3" IsEnabled="{Binding ozri_V}" Margin="0 7 0 0" Content="2 - удаляемые 2 - го класcа"/>
+										<RadioButton x:Name="thr_rad_4" IsEnabled="{Binding ozri_V}" Margin="0 7 0 0" Content="3 - удаляемые 3 - го класса"/>
+										<RadioButton x:Name="thr_rad_5" IsEnabled="{Binding ozri_V}" Margin="0 7 0 0" Content="4 - удаляемые 4 - го класса"/>
+										<RadioButton x:Name="thr_rad_6" IsEnabled="{Binding thr_R1}" Margin="0 7 0 0" Content="5 - удаляемые 5 - го класса"/>
+										<RadioButton x:Name="thr_rad_7" IsEnabled="{Binding thr_R2}" Margin="0 7 0 0" Content="6 - удаляемые 6 - го класса"/>
+										<RadioButton x:Name="thr_rad_8" IsEnabled="{Binding ozri_V}" Margin="0 7 0 0" Content="7 - особые РАО"/>
+										<RadioButton x:Name="thr_rad_9" Margin="0 7 0 0" Content="9 - прочие РАО"/>
+									</StackPanel>
+								</Border>
+							</StackPanel>
+							<StackPanel Orientation="Vertical">
+								<Border BorderBrush = "Gray" BorderThickness = "1" Padding = "4" Margin="5 10 0 0" Width ="375">
+									<StackPanel Orientation="Vertical">
+										<Label Content="Способ переработки"/>
+										<RadioButton x:Name="sec_rad_1" Margin="0 10 0 0" Content="0 - не подтвергавшиеся переработке способами,&#xD;&#xA; перечисленными ниже" IsChecked="{Binding is_Ckecked2}"/>
+										<RadioButton x:Name="sec_rad_2" IsEnabled="{Binding sec_R}" Margin="0 10 0 0" Content="1 - спрессованные (компактированные)" />
+										<RadioButton x:Name="sec_rad_3" IsEnabled="{Binding sec_R}" Margin="0 10 0 0" Content="2 - битумированные" />
+										<RadioButton x:Name="sec_rad_4" IsEnabled="{Binding sec_R}" Margin="0 10 0 0" Content="3 - цементированные" />
+										<RadioButton x:Name="sec_rad_5" IsEnabled="{Binding sec_R}" Margin="0 10 0 0" Content="4 - остеклованные" />
+										<RadioButton x:Name="sec_rad_6" IsEnabled="{Binding sec_R}" Margin="0 10 0 0" Content="9 - омоноличенные (отвержденные) другим способом"/>
+									</StackPanel>
+								</Border>
+								<StackPanel Orientation="Horizontal">
+									<Border BorderBrush = "Gray" BorderThickness = "1" Padding = "4" Margin="5 10 0 0" Width="200">
+										<StackPanel Orientation="Vertical">
+											<Label Content="Тип РАО"/>
+											<Menu RenderTransformOrigin="0.5,0.5" Width="125">
+												<Menu.RenderTransform>
+													<TransformGroup>
+														<ScaleTransform/>
+														<SkewTransform/>
+														<RotateTransform Angle="-0.044"/>
+														<TranslateTransform/>
+													</TransformGroup>
+												</Menu.RenderTransform>
+												<MenuItem x:Name="TypeEnter">
+													<MenuItem.Header>
+														<StackPanel Orientation="Horizontal">
+															<Label Padding="0" Margin="0 0 0 1" Content="{Binding type_RAO}"/>
+														</StackPanel>
+													</MenuItem.Header>
+													<MenuItem/>
+													<MenuItem Header="_Газообразные">
+														<MenuItem Header="_01 - газы, аэрозоли" Command="{Binding MenuItem_Click}" CommandParameter="01"/>
+													</MenuItem>
+													<MenuItem Header="_Жидкости неорганические">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="11" Header="_11 - воды загрязненные подземные, в том числе грунтовые и дренажных систем" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="12" Header="_12 - воды охлаждения реакторного производства, кнтурные воды, воды цистерн биологической защиты"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="13" Header="_13 - растворы хвостовые"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="14" Header="_14 - конденсаты после упаривания, газоотчистки, конденсаты технологические прочие"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="15" Header="_15 - растворы регенерационные (сливы), растворы промывки экстрагентов, сорбентов"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="16" Header="_16 - воды лабораторий, трапные, обмывочные воды, растворы после дезактивации, включая воды санпропускников и спецпрачечных, сточные воды прочие"/>
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="17" Header="_17 - воды бассейнов - хранилищ"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="18" Header="_18 - воды промысловые"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="19" Header="_19 - жидкости неорганические прочие"  />
+													</MenuItem>
+													<MenuItem Header="_Жидкости органические">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="21" Header="_21 - экстрагенты"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="22" Header="_22 - масла"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="23" Header="_23 - эмульсии смазочно - охлаждающих жидкостей (СОЖ)"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="24" Header="_24 - моющие средства (детергенты) за исключением спиртов"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="25" Header="_25 - спирты"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="26" Header="_26 - сцинцилляторы органические жидкостные"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="29" Header="_29 - жидкости органические прочие" />
+													</MenuItem>
+													<MenuItem Header="_Пульпы, шламы">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="31" Header="_31 - хвосты гидрометаллургического, химико - металлургического, разделительного и сублиматного производств, пульпы,образующиеся после нейтрализации" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="32" Header="_32 - пульпы отработавших ионнообменных смол и прочих сорбентов органических"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="33" Header="_33 - шламы и пульпы отработавших сорбентов неорганических, фильтрующих материалов" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="34" Header="_34 - солевой остаток с солесодержанием до 250 г/л, кубовый остаток"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="35" Header="_35 - кубовый остаток после упаривания с солесодержанием более 250 г/л, концетрат солевой"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="36" Header="_36 - взвеси, содержащие продукты коррозии" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="37" Header="_37 - илы, иловые осадки водоемов - накопителей, осадки, кеки"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="38" Header="_38 - шламы после очистки трапных вод"/>
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="39" Header="_39 - прочие пульпы, шламы технологические" />
+													</MenuItem>
+													<MenuItem Header="_Отходы металлические">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="41" Header="_41 - сталь нержавеющая: крупногабаритные изделия и оборудование" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="42" Header="_42 - сталь нержавеющая, кроме крупногабаритных изделий"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="43" Header="_43 - металлы черные, кроме нержавеющей стали: крупногабаритные изделия и оборудование"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="44" Header="_44 - металлы черные, кроме нержавеющей стали и крупногабаритных изделий"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="45" Header="_45 - лом черных металлов"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="46" Header="_46 - металлы щелочные, в том числе отработавший теплоноситель"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="51" Header="_51 - алюминий и его сплавы, изделия и оборудование из алюминия и его сплавов" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="52" Header="_52 - уран металлический обедненный и изделия из него"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="53" Header="_53 - медь и сплавы меди"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="54" Header="_54 - никель и его сплавы, кроме медно - никелевых сплавов, отнесенных к коду 53"/>
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="55" Header="_55 - свинец и его сплавы"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="56" Header="_56 - цирконий и его сплавы"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="57" Header="_57 - лом цветных металлов прочих, не перечисленных в пунктах 51-56"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="58" Header="_58 - лом цветных металлов несортированный"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="59" Header="_59 - металлический лом прочий"  />
+													</MenuItem>
+													<MenuItem Header="_Неорганические ТРО кроме отходов металлических">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="61" Header="_61 - сорбенты и фильтроматериалы неорганические"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="62" Header="_62 - песок"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="63" Header="_63 - теплоизоляционные материалы неорганические"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="64" Header="_64 - изделия из стекла и керамики, лабораторная посуда" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="65" Header="_65 - отходы плавильного производства (включая шлаки, футеровку)" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="66" Header="_66 - зола" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="67" Header="_67 - плав солевой"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="68" Header="_68 - рудные материалы"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="69" Header="_69 - ТРО неорганические прочие"  />
+													</MenuItem>
+													<MenuItem Header="_Органические и биологические ТРО">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="71" Header="_71 - смолы отработанные ионообменные" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="72" Header="_72 - уголь активированный, сульфоугль"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="73" Header="_73 - полимеры"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="74" Header="_74 - сажа" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="75" Header="_75 - спецодежда и другие средства индивидуальной защиты, обувь, обтирочные материалы, ветошь, вата, фильтроэлементы (фильтровальная ткань) фильтров вентиляции"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="76" Header="_76 - графит" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="77" Header="_77 - древесина, бумага, картон" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="78" Header="_78 - ТРО биологические"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="79" Header="_79 - ТРО органические прочие" />
+													</MenuItem>
+													<MenuItem Header="_Отработавшие источники и приборы, устройства, содержащие отработавшие источники">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="81" Header="_81 - оработавшие ЗРИ без защитного контейнера"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="82" Header="_82 - отработавшие ЗРИ в защитном контейнере" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="84" Header="_84 - открытые радионуклидные источники в виде отдельных изделий"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="85" Header="_85 - радиоизотопные термоэлектрические генераторы (РИТЭГ)"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="86" Header="_86 - дымо- ,пожароизвещатели" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="87" Header="_87 - приборы и установки с массой менее 30кг, содержащие отработавшие ЗРИ"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="88" Header="_88 - приборы и установки с массой 30кг и более, содержащие отработавшие ЗРИ"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="89" Header="_89 - прочие объекты учета, соержащие отработавшие ЗРИ" />
+													</MenuItem>
+													<MenuItem Header="_Прочие типы отходов">
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="91" Header="_91 - фильтры вентиляционные в сборе"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="92" Header="_92 - электрокабели"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="93" Header="_93 - стройматериалы, строительный и прочий мусор"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="95" Header="_95 - ИК (ионизационные камеры),не содержащие отработавшие ЗРИ"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="96" Header="_96 - загрязненный грунт, включая керны"  />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="97" Header="_97 - поглощающие элементы (стержни - поглотители)" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="98" Header="_98 - канал измерения нейтронного потока и температуры" />
+														<MenuItem Command="{Binding MenuItem_Click}" CommandParameter="99" Header="_99 - прочие типы РАО"/>
+													</MenuItem>
+												</MenuItem>
+											</Menu>
+										</StackPanel>
+									</Border>
+									<Border BorderBrush = "Gray" Width="165" VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="10 10 0 0">
+										<StackPanel Orientation="Vertical">
+											<Label Content="Пожароопасность"/>
+											<RadioButton x:Name="f_rad_1" Margin="0 5 0 0" Content="1 - горючие" IsChecked="true"/>
+											<RadioButton x:Name="f_rad_2" Margin="0 5 0 0" Content="2 - негорючие" />
+										</StackPanel>
+									</Border>
+								</StackPanel>
+								<Border BorderBrush = "Gray" Width="200"  VerticalAlignment="Top" BorderThickness = "1" Padding = "4" Margin="5 10 0 0">
+									<StackPanel Orientation="Vertical">
+										<Label Content="ОЗРИ?"/>
+										<StackPanel Orientation="Horizontal" IsVisible="{Binding ozri_V}">
+											<RadioButton x:Name="p_rad_1" Margin="10 10 0 0" Content="1 - Да" />
+											<RadioButton x:Name="p_rad_2" Margin="10 10 0 0" Content="2 - Нет" />
+										</StackPanel>
+									</StackPanel>
+								</Border>
+							</StackPanel>
+						</StackPanel>
+					</StackPanel>
+				</Grid>
+			</Grid>		
+		</Panel>
 	</ScrollViewer>
 </Window>

@@ -566,14 +566,14 @@ namespace RAO_Calculator_Library
                                 num6 = 3;
                             }
                         }
-                        if (tmp.HalfLifePeriod > 31 * 365 * 24 * 60 * 60)
-                        {
-                            num5 = 1;
-                        }
-                        else
-                        {
-                            num5 = 2;
-                        }
+                    }
+                    if (tmp.HalfLifePeriod > 31 * 365 * 24 * 60 * 60)
+                    {
+                        num5 = 1;
+                    }
+                    else
+                    {
+                        num5 = 2;
                     }
                 }
             }
@@ -595,7 +595,7 @@ namespace RAO_Calculator_Library
             {
                 return num6.ToString();
             }
-            return "*";
+            return "0";
         }
 
         public int num7 = -1;
