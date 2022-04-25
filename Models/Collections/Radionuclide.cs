@@ -170,6 +170,7 @@ namespace RAO_Calculator_Library
                 {
                     uda = value;
                     NotifyPropertyChanged();
+                    NotifyPropertyChanged("UDA_PZUA");
                 }
             }
         }

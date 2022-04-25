@@ -534,43 +534,46 @@ namespace RAO_Calculator_Library
             }
             else
             {
-                var tmp = Calc_List[0];
-                double answ = -1;
-                if (tmp.TWG == "t")
+                if (Calc_List.Count != 0)
                 {
-                    answ = 1.44 * tmp.HalfLifePeriod * Math.Log(tmp.UDA / tmp.MOI);
-                }
-                else
-                {
-                    if (tmp.TWG == "w")
+                    var tmp = Calc_List[0];
+                    double answ = -1;
+                    if (tmp.TWG == "t")
                     {
-                        answ = 1.44 * tmp.HalfLifePeriod * Math.Log((tmp.UDA * 0.1) / tmp.PZUA_W);
-                    }
-                }
-                if (answ > 0)
-                {
-                    if(answ< 100f * 365 * 24 * 60 * 60)
-                    {
-                        num6 = 1;
+                        answ = 1.44 * tmp.HalfLifePeriod * Math.Log(tmp.UDA / tmp.MOI);
                     }
                     else
                     {
-                        if(answ<500f * 365 * 24 * 60 * 60)
+                        if (tmp.TWG == "w")
                         {
-                            num6 = 2;
+                            answ = 1.44 * tmp.HalfLifePeriod * Math.Log((tmp.UDA * 0.1) / tmp.PZUA_W);
+                        }
+                    }
+                    if (answ > 0)
+                    {
+                        if (answ < 100f * 365 * 24 * 60 * 60)
+                        {
+                            num6 = 1;
                         }
                         else
                         {
-                            num6 = 3;
+                            if (answ < 500f * 365 * 24 * 60 * 60)
+                            {
+                                num6 = 2;
+                            }
+                            else
+                            {
+                                num6 = 3;
+                            }
                         }
-                    }
-                    if (tmp.HalfLifePeriod > 31 * 365 * 24 * 60 * 60)
-                    {
-                        num5 = 1;
-                    }
-                    else
-                    {
-                        num5 = 2;
+                        if (tmp.HalfLifePeriod > 31 * 365 * 24 * 60 * 60)
+                        {
+                            num5 = 1;
+                        }
+                        else
+                        {
+                            num5 = 2;
+                        }
                     }
                 }
             }

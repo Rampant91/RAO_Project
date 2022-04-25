@@ -40,6 +40,8 @@ namespace Client_App.Views
             WRAO.Checked += ((CalcVM)DataContext).Radio_Checked;
             var GRAO = this.FindControl<RadioButton>("GRAO");
             GRAO.Checked += ((CalcVM)DataContext).Radio_Checked;
+
+            
         }
         private void InitializeComponent()
         {
