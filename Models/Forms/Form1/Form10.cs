@@ -924,7 +924,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{9}$");
+            Regex ex = new Regex("^[0-9]{9}$|-");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
