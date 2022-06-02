@@ -747,9 +747,19 @@ namespace Models
         #endregion
 
         #region IExcel
-        public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
-            throw new NotImplementedException();
+            base.ExcelGetRow(worksheet, Row);
+            IndicatorName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            PlotName_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            PlotKadastrNumber_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            PlotCode_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            InfectedArea_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            AvgGammaRaysDosePower_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            MaxGammaRaysDosePower_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            WasteDensityAlpha_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            WasteDensityBeta_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
         }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {

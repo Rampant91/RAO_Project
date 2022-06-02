@@ -380,9 +380,15 @@ namespace Models
         #endregion
 
         #region IExcel
-        public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
-            throw new NotImplementedException();
+            base.ExcelGetRow(worksheet, Row);
+            OperationCode_DB = Convert.ToInt16(worksheet.Cells[Row, 2].Value);
+            ObjectTypeCode_DB = Convert.ToInt16(worksheet.Cells[Row, 3].Value);
+            Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            Activity_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+
         }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {

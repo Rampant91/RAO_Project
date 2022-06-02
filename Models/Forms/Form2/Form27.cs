@@ -436,9 +436,15 @@ namespace Models
 
 
         #region IExcel
-        public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
-            throw new NotImplementedException();
+            base.ExcelGetRow(worksheet, Row);
+            ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
+            RadionuclidName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            AllowedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            FactedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            WasteOutbreakPreviousYear_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+
         }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
