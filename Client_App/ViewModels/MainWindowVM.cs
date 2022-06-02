@@ -748,13 +748,15 @@ namespace Client_App.ViewModels
                                 {
                                     if (worksheet0.Name == "1.0")
                                     {
+                                        var not_in = false;
+                                        var skipLess = false;
+                                        var skipNew = false;
+                                        var _skipNew = false;
+                                        var skipInter = false;
+
                                         foreach (Report rep in newRepsFromExcel.Report_Collection)
                                         {
-                                            var not_in = false;
-                                            var skipLess = false;
-                                            var skipNew = false;
-                                            var _skipNew = false;
-                                            var skipInter = false;
+                                            
                                             DateTimeOffset st_elem = DateTimeOffset.Now;
                                             DateTimeOffset en_elem = DateTimeOffset.Now;
                                             try
@@ -861,9 +863,9 @@ namespace Client_App.ViewModels
                                                                 "Сделайте резервную копию." + "\n" +
                                                                 "Количество строк - " + repFromEx.Rows.Count;
                                                             an = await ShowMessage.Handle(new List<string>() {str, "Отчет",
-                                            "Загрузить новую",
-                                            "Отмена"
-                                            });
+                                                                "Загрузить новую",
+                                                                "Отмена"
+                                                                });
                                                         }
                                                     }
                                                     await ChechAanswer(an, newRepsFromExcel, rep, repFromEx);
@@ -883,24 +885,67 @@ namespace Client_App.ViewModels
                                                         newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                         "Количество строк - " + repFromEx.Rows.Count;
                                                     an = await ShowMessage.Handle(new List<string>(){str,"Отчет",
-                                            "Сохранить оба",
-                                            "Отменить"
-                                            });
+                                                        "Сохранить оба",
+                                                        "Отменить"
+                                                        });
                                                     skipInter = true;
                                                 }
                                                 await ChechAanswer(an, newRepsFromExcel, null, repFromEx);
                                             }
                                         }
+                                        if (!not_in)
+                                        {
+                                            var an = "Да";
+                                            if (!_skipNew)
+                                            {
+                                                if (newRepsFromExcel.Report_Collection.Count() > 1)
+                                                {
+                                                    var str = "Загрузить новую форму?\n" +
+                                                        "Номер формы - " + repFromEx.FormNum_DB + "\n" +
+                                                        "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
+                                                        "Начало отчетного периода - " + repFromEx.StartPeriod_DB + "\n" +
+                                                        "Конец отчетного периода - " + repFromEx.EndPeriod_DB + "\n" +
+                                                        "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
+                                                        "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
+                                                        "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
+                                                        "Количество строк - " + repFromEx.Rows.Count;
+                                                    an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
+                                                        "Да",
+                                                        "Нет",
+                                                        "Загрузить для всех"
+                                                        });
+                                                    an = "Да";
+                                                }
+                                                else
+                                                {
+                                                    var str = "Загрузить новую форму?\n" +
+                                                        "Номер формы - " + repFromEx.FormNum_DB + "\n" +
+                                                        "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
+                                                        "Начало отчетного периода - " + repFromEx.StartPeriod_DB + "\n" +
+                                                        "Конец отчетного периода - " + repFromEx.EndPeriod_DB + "\n" +
+                                                        "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
+                                                        "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
+                                                        "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
+                                                        "Количество строк - " + repFromEx.Rows.Count;
+                                                    an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
+                                                        "Да",
+                                                        "Нет"
+                                                        });
+                                                }
+                                            }
+                                            await ChechAanswer(an, newRepsFromExcel, null, repFromEx);
+                                        }
                                     }
                                     if (worksheet0.Name == "2.0")
                                     {
+                                        var not_in = false;
+                                        var skipLess = false;
+                                        var skipNew = false;
+                                        var _skipNew = false;
+                                        var skipInter = false;
                                         foreach (Report rep in newRepsFromExcel.Report_Collection)
                                         {
-                                            var not_in = false;
-                                            var skipLess = false;
-                                            var skipNew = false;
-                                            var _skipNew = false;
-                                            var skipInter = false;
+                                            
                                             if (rep.Year_DB == repFromEx.Year_DB && repFromEx.FormNum_DB == rep.FormNum_DB)
                                             {
                                                 not_in = true;
@@ -990,6 +1035,48 @@ namespace Client_App.ViewModels
                                                     await ChechAanswer(an, newRepsFromExcel, rep, repFromEx);
                                                 }
                                             }
+                                        }
+                                        if (!not_in)
+                                        {
+                                            var an = "Да";
+                                            if (!_skipNew)
+                                            {
+                                                if (newRepsFromExcel.Report_Collection.Count() > 1)
+                                                {
+                                                    var str = "Загрузить новую форму? \n" +
+                                                        "Номер формы - " + repFromEx.FormNum_DB + "\n" +
+                                                        "Отчетный год - " + repFromEx.Year_DB + "\n" +
+                                                        "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
+                                                        "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
+                                                        "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
+                                                        "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
+                                                        "Количество строк - " + repFromEx.Rows.Count;
+                                                    an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
+                                                            "Да",
+                                                            "Нет",
+                                                            "Загрузить для всех"
+                                                        });
+                                                    if (an == "Загрузить для всех") _skipNew = true;
+                                                    an = "Да";
+                                                }
+                                                else
+                                                {
+                                                    var str = "Загрузить новую форму? \n" +
+                                                        "Номер формы - " + repFromEx.FormNum_DB + "\n" +
+                                                        "Отчетный год - " + repFromEx.Year_DB + "\n" +
+                                                        "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
+                                                        "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
+                                                        "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
+                                                        "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
+                                                        "Количество строк - " + repFromEx.Rows.Count;
+                                                    an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
+                                                            "Да",
+                                                            "Нет"
+                                                        });
+                                                }
+                                            }
+                                            await ChechAanswer(an, newRepsFromExcel, null, repFromEx);
+                                            not_in = false;
                                         }
                                     }
                                 }
