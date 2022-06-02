@@ -1088,7 +1088,10 @@ namespace Models
         #endregion
 
         #region IExcel
-
+        public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new NotImplementedException();
+        }
         public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             Column = Column;

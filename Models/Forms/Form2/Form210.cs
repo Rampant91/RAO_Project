@@ -747,6 +747,10 @@ namespace Models
         #endregion
 
         #region IExcel
+        public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new NotImplementedException();
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

@@ -159,6 +159,11 @@ namespace Models.Collections
 
             return regNoR;
         }
+
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

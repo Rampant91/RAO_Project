@@ -2939,7 +2939,10 @@ namespace Models.Collections
         }
 
         #region IExcel
-
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new System.NotImplementedException();
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             if (FormNum_DB.Split('.')[0] == "1")

@@ -328,6 +328,16 @@ namespace Models
             return true;
         }
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 4].Value);
+            DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            CodeTypeAccObject_DB = Convert.ToInt16(worksheet.Cells[Row, 7].Value);
+            Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            Activity_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

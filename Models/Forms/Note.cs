@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using Models.Collections;
 using Models.Attributes;
 using OfficeOpenXml;
+using System;
 
 namespace Models
 {
@@ -185,6 +186,12 @@ namespace Models
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            RowNumber_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
+            GraphNumber_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            Comment_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = RowNumber_DB;
