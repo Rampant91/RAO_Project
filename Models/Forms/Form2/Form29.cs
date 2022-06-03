@@ -324,6 +324,15 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            WasteSourceName_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
+            RadionuclidName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            AllowedActivity_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            FactedActivity_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column,bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

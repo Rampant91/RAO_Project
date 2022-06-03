@@ -682,6 +682,19 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
+            StoragePlaceName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            CodeOYAT_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            FuelMass_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            CellMass_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            Quantity_DB = Convert.ToInt32(worksheet.Cells[Row, 7].Value);
+            AlphaActivity_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

@@ -1197,6 +1197,29 @@ namespace Models
         }
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            PassportNumber_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            Name_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            Sort_DB = Convert.ToByte(worksheet.Cells[Row, 6].Value);
+            Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            Activity_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            ActivityMeasurementDate_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            Volume_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            Mass_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
+            AggregateState_DB = Convert.ToByte(worksheet.Cells[Row, 12].Value);
+            PropertyCode_DB = Convert.ToByte(worksheet.Cells[Row, 13].Value);
+            Owner_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 15].Value);
+            DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
+            DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
+            TransporterOKPO_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
+            PackName_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
+            PackType_DB = Convert.ToString(worksheet.Cells[Row, 21].Value);
+            PackNumber_DB = Convert.ToString(worksheet.Cells[Row, 22].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon=true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

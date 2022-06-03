@@ -1226,6 +1226,27 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            CodeOYAT_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            MassCreated_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            QuantityCreated_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            MassFromAnothers_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            QuantityFromAnothers_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            MassFromAnothersImported_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            QuantityFromAnothersImported_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            MassAnotherReasons_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            QuantityAnotherReasons_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
+            MassTransferredToAnother_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
+            QuantityTransferredToAnother_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
+            MassRefined_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            QuantityRefined_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
+            MassRemovedFromAccount_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
+            QuantityRemovedFromAccount_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

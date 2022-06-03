@@ -943,7 +943,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{9}$");
+            Regex ex = new Regex("^[0-9]{9}$|-");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -1088,7 +1088,10 @@ namespace Models
         #endregion
 
         #region IExcel
-
+        public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new NotImplementedException();
+        }
         public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             Column = Column;

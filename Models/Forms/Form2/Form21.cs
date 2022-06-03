@@ -2574,6 +2574,32 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            RefineMachineName.Value = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            MachineCode.Value = Convert.ToByte(worksheet.Cells[Row, 3].Value);
+            MachinePower.Value = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            CodeRAOIn_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            StatusRAOIn_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            VolumeIn_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            MassIn_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            QuantityIn_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
+            BetaGammaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
+            AlphaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
+            TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            CodeRAOout_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
+            StatusRAOout_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
+            VolumeOut_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            MassOut_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
+            QuantityOZIIIout_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
+            TritiumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
+            BetaGammaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 21].Value);
+            AlphaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 22].Value);
+            TransuraniumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 23].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon, SumNumber);

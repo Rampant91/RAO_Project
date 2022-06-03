@@ -2252,6 +2252,30 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            StoragePlaceName.Value = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            StoragePlaceCode.Value = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            PackName.Value = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            PackType.Value = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            PackQuantity_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            CodeRAO_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            StatusRAO_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            VolumeInPack_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            MassOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
+            MassInPack_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
+            QuantityOZIII_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
+            TritiumActivity_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
+            AlphaActivity_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
+            TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            MainRadionuclids_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
+            Subsidy_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
+            FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
+
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon, SumNumber);

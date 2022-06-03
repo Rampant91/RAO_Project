@@ -69,6 +69,10 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
+        public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[Row, 1].Value);
+        }
         public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             if (NumberInOrder_DB == 0)

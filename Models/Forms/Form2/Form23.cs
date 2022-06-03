@@ -1009,6 +1009,23 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            StoragePlaceName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            ProjectVolume_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            CodeRAO_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            Volume_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            Mass_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            QuantityOZIII_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            SummaryActivity_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
+            ExpirationDate_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
+            DocumentName_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
+
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

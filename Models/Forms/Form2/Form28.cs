@@ -425,6 +425,16 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            WasteSourceName_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
+            WasteRecieverName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            RecieverTypeCode_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            PoolDistrictName_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            AllowedWasteRemovalVolume_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            RemovedWasteVolume_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

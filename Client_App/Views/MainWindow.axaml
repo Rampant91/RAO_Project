@@ -16,6 +16,7 @@
 		<Menu Height="20" DockPanel.Dock="Top">
             <MenuItem Header="_Импорт" FontSize="14">
         <MenuItem Header="Из RAODB" Command="{Binding ImportForm}"/>
+        <MenuItem Header="Из Excel" Command="{Binding ImportFrom}"/>
       </MenuItem>
       <MenuItem Header="_Excel" FontSize="14">
 		<MenuItem Header="Список форм 1" Command="{Binding AllForms1_Excel_Export}"></MenuItem>

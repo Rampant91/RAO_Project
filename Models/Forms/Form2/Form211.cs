@@ -620,6 +620,19 @@ namespace Models
         #endregion
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            PlotName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            PlotKadastrNumber_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            PlotCode_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            InfectedArea_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            SpecificActivityOfPlot_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            SpecificActivityOfLiquidPart_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            SpecificActivityOfDensePart_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

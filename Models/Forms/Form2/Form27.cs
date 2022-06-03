@@ -434,7 +434,18 @@ namespace Models
         //WasteOutbreakPreviousYear property
         #endregion
 
+
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
+            RadionuclidName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
+            AllowedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            FactedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            WasteOutbreakPreviousYear_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);

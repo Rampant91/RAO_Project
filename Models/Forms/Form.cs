@@ -175,8 +175,8 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
+        public abstract void ExcelGetRow(ExcelWorksheet worksheet, int Row);
         public abstract int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true, string SumNumber = "");
-
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             return 0;

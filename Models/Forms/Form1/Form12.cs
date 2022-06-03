@@ -994,6 +994,27 @@ namespace Models
         }
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row) 
+        {
+            base.ExcelGetRow(worksheet, Row);
+            PassportNumber_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            NameIOU_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            FactoryNumber_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            Mass_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            CreatorOKPO_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            CreationDate_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            SignedServicePeriod_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            PropertyCode_DB = Convert.ToByte(worksheet.Cells[Row, 11].Value);
+            Owner_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
+            DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 13].Value);
+            DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
+            ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
+            TransporterOKPO_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            PackName_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
+            PackType_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
+            PackNumber_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
@@ -1020,7 +1041,6 @@ namespace Models
 
             return 17;
         }
-
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = Form1.ExcelHeader(worksheet, Row, Column, Transpon);

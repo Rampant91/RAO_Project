@@ -234,7 +234,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -297,7 +297,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -397,7 +397,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -460,7 +460,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -560,7 +560,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -623,7 +623,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -723,7 +723,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -786,7 +786,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -886,7 +886,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -949,7 +949,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1049,7 +1049,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1112,7 +1112,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1212,7 +1212,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1275,7 +1275,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1375,7 +1375,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1438,7 +1438,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1538,7 +1538,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1601,7 +1601,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1709,7 +1709,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1772,7 +1772,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1872,7 +1872,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -1935,7 +1935,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2035,7 +2035,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2098,7 +2098,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2198,7 +2198,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2261,7 +2261,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2361,7 +2361,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2424,7 +2424,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2524,7 +2524,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2587,7 +2587,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2687,7 +2687,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2750,7 +2750,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2850,7 +2850,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -2913,7 +2913,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3013,7 +3013,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3076,7 +3076,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3176,7 +3176,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3239,7 +3239,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3339,7 +3339,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3402,7 +3402,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3502,7 +3502,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion
@@ -3565,7 +3565,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "ќтчистить €чейки              Delete" },
+                    ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 #endregion

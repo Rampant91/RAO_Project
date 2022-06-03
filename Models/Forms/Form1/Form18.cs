@@ -1980,6 +1980,35 @@ namespace Models
         }
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            IndividualNumberZHRO_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            PassportNumber_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            Volume6_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            Mass7_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            SaltConcentration_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
+            Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            SpecificActivity_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 11].Value);
+            DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
+            DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
+            ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            TransporterOKPO_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
+            StoragePlaceName_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
+            StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            CodeRAO_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
+            StatusRAO_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
+            Volume20_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
+            Mass21_DB = Convert.ToString(worksheet.Cells[Row, 21].Value);
+            TritiumActivity_DB = Convert.ToString(worksheet.Cells[Row, 22].Value);
+            BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[Row, 23].Value);
+            AlphaActivity_DB = Convert.ToString(worksheet.Cells[Row, 24].Value);
+            TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[Row, 25].Value);
+            RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[Row, 26].Value);
+            Subsidy_DB = Convert.ToString(worksheet.Cells[Row, 27].Value);
+            FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 28].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
@@ -2051,6 +2080,7 @@ namespace Models
             return 25;
         }
         #endregion
+
         #region IDataGridColumn
         private static DataGridColumns _DataGridColumns { get; set; } = null;
         public override DataGridColumns GetColumnStructure(string param = "")

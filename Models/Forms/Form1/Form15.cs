@@ -1242,6 +1242,31 @@ namespace Models
         }
 
         #region IExcel
+        public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelGetRow(worksheet, Row);
+            PassportNumber_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
+            Type_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            FactoryNumber_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            Quantity_DB = Convert.ToInt32(worksheet.Cells[Row, 8].Value);
+            Activity_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            CreationDate_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+            StatusRAO_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
+            DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 12].Value);
+            DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
+            DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
+            TransporterOKPO_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
+            PackName_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            PackType_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
+            PackNumber_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
+            StoragePlaceName_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
+            StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[Row, 21].Value);
+            RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[Row, 22].Value);
+            Subsidy_DB = Convert.ToString(worksheet.Cells[Row, 23].Value);
+            FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 24].Value);
+        }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
