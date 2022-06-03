@@ -95,6 +95,7 @@ namespace RAO_Calculator_Library
                             Add(rd);
                         }
                     }
+                    connection.Close();
                 }
                 return 0;
             }
