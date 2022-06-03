@@ -651,6 +651,7 @@ namespace Client_App.ViewModels
                                 ExcelWorksheet worksheet0 = excelPackage.Workbook.Worksheets[0];
 
                                 
+
                                 bool val = false;
                                 if (worksheet0.Name == "1.0" && Convert.ToString(worksheet0.Cells["A3"].Value) == "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ")
                                 {
@@ -663,6 +664,15 @@ namespace Client_App.ViewModels
 
                                 if (val)
                                 {
+                                    var timeCreate = new List<string>() { excelPackage.File.CreationTime.Day.ToString(), excelPackage.File.CreationTime.Month.ToString(), excelPackage.File.CreationTime.Year.ToString() };
+                                    if (timeCreate[0].Length == 1)
+                                    {
+                                        timeCreate[0] = "0" + timeCreate[0];
+                                    }
+                                    if (timeCreate[1].Length == 1)
+                                    {
+                                        timeCreate[1] = "0" + timeCreate[1];
+                                    }
 
                                     Reports newRepsFromExcel = await CheckReps(worksheet0);
 
@@ -672,7 +682,7 @@ namespace Client_App.ViewModels
                                     {
                                         FormNum_DB = param1
                                     };
-
+                                    repFromEx.ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}";
                                     if (param1.Split('.')[0] == "1")
                                     {
                                         repFromEx.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Value);
@@ -1098,6 +1108,13 @@ namespace Client_App.ViewModels
                                     }
                                     var dbm = StaticConfiguration.DBModel;
                                     dbm.SaveChanges();
+                                }
+                                else
+                                {
+                                    var str = "Не соответствует формат данных!";
+                                    var an = await ShowMessage.Handle(new List<string>(){str, "Формат данных",
+                                                    "Ок"
+                                                });
                                 }
 
                             }

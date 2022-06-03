@@ -149,7 +149,7 @@ namespace Client_App.Views
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Экспорт Excel", "Для печати" },
+                ContextMenuText = new string[] { "Выгрузка Excel", "Для печати" },
                 Command = dataContext.Print_Excel_Export
             });
             grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -157,7 +157,7 @@ namespace Client_App.Views
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Экспорт Excel", "Для выгрузки" },
+                ContextMenuText = new string[] { "Выгрузка Excel", "Для анализа" },
                 Command = dataContext.Excel_Export
             });
             grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
