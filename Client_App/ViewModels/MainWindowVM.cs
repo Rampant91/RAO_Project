@@ -657,7 +657,7 @@ namespace Client_App.ViewModels
                                 {
                                     val = true;
                                 }
-                                if (worksheet0.Name == "2.0" && Convert.ToString(worksheet0.Cells["A4"].Value) == "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ")
+                                if (worksheet0.Name == "2.0" && Convert.ToString(worksheet0.Cells["A4"].Value) == "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ")
                                 {
                                     val = true;
                                 }

@@ -165,7 +165,7 @@ namespace Client_App.Views
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Экспорт" },
+                ContextMenuText = new string[] { "Выгрузка" },
                 Command = dataContext.ExportForm
             });
             grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
