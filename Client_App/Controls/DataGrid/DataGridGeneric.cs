@@ -1335,7 +1335,7 @@ namespace Client_App.Controls.DataGrid
                         Children[0])).Text;
                     if (searchText != null && searchText != "")
                     {
-                        NowPage = "1";
+                        //NowPage = "1";
                         num = Convert.ToInt32(_nowPage);
                         offset = (num - 1) * (PageSize);
                         offsetMax = num * (PageSize);
@@ -1430,6 +1430,7 @@ namespace Client_App.Controls.DataGrid
             {
                 ReportCount = "0";
             }
+            NowPage = "0";
             PageCount = "0";
             ItemsCount = "0";
         }
