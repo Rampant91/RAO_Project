@@ -1043,6 +1043,10 @@ namespace Client_App.ViewModels
                         {
                             newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                         }
+                        else if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                        {
+                            newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                        }
                         else
                         {
                             newNum = Convert.ToInt32(attr.Number);
@@ -1058,7 +1062,17 @@ namespace Client_App.ViewModels
                                 var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
                                 if (value != null)
                                 {
-                                    dic[item.Order].Add(columnNum, value.ToString());
+                                    try
+                                    {
+                                        if (dic[item.Order][columnNum] == "")
+                                        {
+                                            dic[item.Order][columnNum] = value.ToString();
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        dic[item.Order].Add(columnNum, value.ToString());
+                                    }
                                 }
                                 else
                                 {
@@ -1068,7 +1082,7 @@ namespace Client_App.ViewModels
                         }
                         catch
                         {
-
+               
                         }
                     }                                   
                 }
@@ -1158,6 +1172,10 @@ namespace Client_App.ViewModels
                             {
                                 var columnNum = 0;
                                 if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1" && attr.Names[0] == "Документ")
+                                {
+                                    columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                                }
+                                else if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
                                 {
                                     columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                                 }
