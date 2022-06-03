@@ -440,7 +440,8 @@ namespace Client_App.ViewModels
                            where ((item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB &&
                            item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB) ||
                            (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB &&
-                           item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB)) select t;
+                           item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB && 
+                           item.Master.Rows10[1].Okpo_DB != "" && item.Master.Rows10[1].RegNo_DB != "")) select t;
                     return tb11.FirstOrDefault();
                 }
                 return null;
@@ -461,7 +462,8 @@ namespace Client_App.ViewModels
                                where ((item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB &&
                                item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB) ||
                                (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB &&
-                               item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB))
+                               item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB &&
+                               item.Master.Rows20[1].Okpo_DB != "" && item.Master.Rows20[1].RegNo_DB != ""))
                                select t;
                     //var tb21 = from Reports t in Local_Reports.Reports_Collection20
                     //           where (((item.Master.Rows10[0].Okpo_DB == "") &&
