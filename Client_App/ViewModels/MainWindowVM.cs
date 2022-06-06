@@ -685,8 +685,8 @@ namespace Client_App.ViewModels
                                     repFromEx.ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}";
                                     if (param1.Split('.')[0] == "1")
                                     {
-                                        repFromEx.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Value);
-                                        repFromEx.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                                        repFromEx.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Value).Replace("/", ".");
+                                        repFromEx.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Value).Replace("/", ".");
                                         repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G5"].Value);
                                     }
                                     else
