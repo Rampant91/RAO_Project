@@ -21,7 +21,7 @@ namespace RAO_Calculator_Library
         {
             try
             {
-                string sql = "SELECT Name_RN_Lat,UdA_TRO,UdA_GRO,Kod_gruppy,Period_p_r,Edinica_izmer_p_r,Num_TM,ObA_GaRO,MOI,D_val FROM RN "
+                string sql = "SELECT Name_RN,UdA_TRO,UdA_GRO,Kod_gruppy,Period_p_r,Edinica_izmer_p_r,Num_TM,ObA_GaRO,MOI,D_val FROM RN "
                 + "WHERE Kod_gruppy<>NULL AND Period_p_r<>NULL AND Edinica_izmer_p_r<>NULL AND Num_TM<>NULL AND D_val<>NULL "
                 + "AND (ObA_GaRO<>0 OR UdA_GRO<>0 OR UdA_TRO<>0) AND Period_p_r<>0 AND Num_TM<>0 AND D_val<>0";
                 using (OleDbConnection connection = new OleDbConnection(connectionString))
