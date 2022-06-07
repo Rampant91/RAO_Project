@@ -1430,7 +1430,7 @@ namespace Client_App.Controls.DataGrid
             {
                 ReportCount = "0";
             }
-            NowPage = "0";
+            //NowPage = "0";
             PageCount = "0";
             ItemsCount = "0";
         }
