@@ -758,13 +758,17 @@ namespace Client_App.ViewModels
                                     }
                                     start += 3;
                                     end = $"A{start}";
-                                    while (worksheet1.Cells[end].Value != null)
+                                    var bEnd = $"B{start}";
+                                    var cEnd = $"C{start}";
+                                    while (worksheet1.Cells[end].Value != null || worksheet1.Cells[bEnd].Value != null || worksheet1.Cells[cEnd].Value != null)
                                     {
                                         Note newNote = new Note();
                                         newNote.ExcelGetRow(worksheet1, start);
                                         repFromEx.Notes.Add(newNote);
                                         start++;
                                         end = $"A{start}";
+                                        bEnd = $"B{start}";
+                                        cEnd = $"C{start}";
                                     }
 
                                     if (newRepsFromExcel.Report_Collection.Count != 0)
