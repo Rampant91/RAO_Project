@@ -1159,13 +1159,19 @@ namespace Client_App.ViewModels
                             try
                             {
                                 var columnNum = 0;
-                                if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1" && attr.Names[0] == "Документ")
+                                if (attr.Names.Count() > 1 && attr.Names.Count() != 4 && attr.Names[0] != "null-1-1" && attr.Names[0] != "Документ" && attr.Names[0] != "Сведения об операции")
                                 {
                                     columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                                 }
-                                else if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                                else if (attr.Names[0] == "Документ")
                                 {
-                                    columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                                    var findDock = tre.Where(x => x.name == "null-n");
+                                    if (findDock.Count() >= 1)
+                                    {
+                                        columnNum = Convert.ToInt32(findDock.FirstOrDefault().innertCol.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                                    }
+                                    else
+                                        columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                                 }
                                 else
                                 {
