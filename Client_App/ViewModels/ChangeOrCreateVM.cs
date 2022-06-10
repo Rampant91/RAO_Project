@@ -1128,7 +1128,7 @@ namespace Client_App.ViewModels
                     var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
                     if (Convert.ToInt32(param[1]) == 0 && !(collectionEn.FirstOrDefault() is Note))
                     {
-                        var newText = rowsText[0].ToArray();
+                        var newText = rowText.ToArray();
                         var count = 0;
                         foreach(char t in newText)
                         {

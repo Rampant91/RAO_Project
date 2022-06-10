@@ -2009,8 +2009,8 @@ namespace Client_App.ViewModels
                         ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master, rep);
                         await ShowDialog.Handle(frm);
 
-                        Local_Reports.Reports_Collection.Sorted = false;
-                        await Local_Reports.Reports_Collection.QuickSortAsync();
+                        //Local_Reports.Reports_Collection.Sorted = false;
+                        //await Local_Reports.Reports_Collection.QuickSortAsync();
                         t.SelectedReports = tmp;
                     }
                 }
