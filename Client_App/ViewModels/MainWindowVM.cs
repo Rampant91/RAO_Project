@@ -504,7 +504,7 @@ namespace Client_App.ViewModels
                 newRepsFromExcel.Master_DB.Rows10[0].OrganUprav_DB = (string)worksheet0.Cells["F15"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].SubjectRF_DB = (string)worksheet0.Cells["F16"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].JurLico_DB = (string)worksheet0.Cells["F17"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null ? "" :  (string)worksheet0.Cells["F18"].Value;
+                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = (string)worksheet0.Cells["F18"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = (string)worksheet0.Cells["F19"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = (string)worksheet0.Cells["F20"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = (string)worksheet0.Cells["F21"].Value;
@@ -514,14 +514,14 @@ namespace Client_App.ViewModels
 
                 newRepsFromExcel.Master_DB.Rows10[1].SubjectRF_DB = (string)worksheet0.Cells["F25"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].JurLico_DB = (string)worksheet0.Cells["F26"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null ? "" : (string)worksheet0.Cells["F27"].Value;
+                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = (string)worksheet0.Cells["F27"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = (string)worksheet0.Cells["F28"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = (string)worksheet0.Cells["F29"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = (string)worksheet0.Cells["F30"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = (string)worksheet0.Cells["F31"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].Email_DB = (string)worksheet0.Cells["F32"].Value;
 
-                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = worksheet0.Cells["B36"].Value == null ? "" : (string)worksheet0.Cells["B36"].Value;
+                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = (string)worksheet0.Cells["B36"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].Okved_DB = (string)worksheet0.Cells["C36"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].Okogu_DB = (string)worksheet0.Cells["D36"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].Oktmo_DB = (string)worksheet0.Cells["E36"].Value;
@@ -530,7 +530,7 @@ namespace Client_App.ViewModels
                 newRepsFromExcel.Master_DB.Rows10[0].Okopf_DB = (string)worksheet0.Cells["H36"].Value;
                 newRepsFromExcel.Master_DB.Rows10[0].Okfs_DB = (string)worksheet0.Cells["I36"].Value;
 
-                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = worksheet0.Cells["B37"].Value == null ? "" : (string)worksheet0.Cells["B37"].Value;
+                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = (string)worksheet0.Cells["B37"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].Okved_DB = (string)worksheet0.Cells["C37"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].Okogu_DB = (string)worksheet0.Cells["D37"].Value;
                 newRepsFromExcel.Master_DB.Rows10[1].Oktmo_DB = (string)worksheet0.Cells["E37"].Value;
@@ -2063,7 +2063,7 @@ namespace Client_App.ViewModels
 
                     await StaticConfiguration.DBModel.SaveChangesAsync();
                 }
-                await Local_Reports.Reports_Collection.QuickSortAsync();
+                //await Local_Reports.Reports_Collection.QuickSortAsync();
             }
         }
         #endregion
