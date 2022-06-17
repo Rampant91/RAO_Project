@@ -1185,7 +1185,16 @@ namespace Client_App.ViewModels
             var lst = new List<Reports>();
             using (DBModel db = new DBModel(file))
             {
+                //var t = db.Database.GetPendingMigrations();
+                //var a = db.Database.GetMigrations();
+                //var b = db.Database.GetAppliedMigrations();
+
                 await db.Database.MigrateAsync();
+
+                //var t1 = db.Database.GetPendingMigrations();
+                //var a1 = db.Database.GetMigrations();
+                //var b1 = db.Database.GetAppliedMigrations();
+
                 await db.LoadTablesAsync();
                 lst = await db.ReportsCollectionDbSet.ToListAsync();
             }
@@ -1850,6 +1859,7 @@ namespace Client_App.ViewModels
                                         Reports rp = new Reports();
                                         rp.Master = rt.Master;
                                         rp.Report_Collection.Add(rep);
+
                                         db.Database.MigrateAsync();
                                         db.ReportsCollectionDbSet.Add(rp);
                                         db.SaveChangesAsync(); 
