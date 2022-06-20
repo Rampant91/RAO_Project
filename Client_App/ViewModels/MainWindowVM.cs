@@ -1196,7 +1196,8 @@ namespace Client_App.ViewModels
                 //var b1 = db.Database.GetAppliedMigrations();
 
                 await db.LoadTablesAsync();
-                lst = await db.ReportsCollectionDbSet.ToListAsync();
+                await ProcessDataBaseFillEmpty(db);
+                lst = db.DBObservableDbSet.Local.First().Reports_Collection.ToList();
             }
             return lst;
         }
@@ -1209,7 +1210,8 @@ namespace Client_App.ViewModels
                 {
                     var tb11 = from Reports t in Local_Reports.Reports_Collection10
                            where ((item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB &&
-                           item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB) ||
+                           item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB &&
+                           item.Master.Rows10[1].Okpo_DB == "" && item.Master.Rows10[1].RegNo_DB == "") ||
                            (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB &&
                            item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB && 
                            item.Master.Rows10[1].Okpo_DB != "" && item.Master.Rows10[1].RegNo_DB != "")) select t;
@@ -1231,7 +1233,8 @@ namespace Client_App.ViewModels
                 {
                     var tb21 = from Reports t in Local_Reports.Reports_Collection20
                                where ((item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB &&
-                               item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB) ||
+                               item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB && 
+                               item.Master.Rows20[1].Okpo_DB == "" && item.Master.Rows20[1].RegNo_DB == "") ||
                                (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB &&
                                item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB &&
                                item.Master.Rows20[1].Okpo_DB != "" && item.Master.Rows20[1].RegNo_DB != ""))
@@ -1422,7 +1425,7 @@ namespace Client_App.ViewModels
                                     }
                                 }
                             }
-                            else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB)
+                            else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB && it.ExportDate_DB == elem.ExportDate_DB)
                             {
                                 var str = "Совпадение даты в " + elem.FormNum_DB + " " +
                                     elem.StartPeriod_DB + "-" +
@@ -1597,7 +1600,7 @@ namespace Client_App.ViewModels
                                     if (an == "Пропустить для всех") skipLess = true;
                                 }
                             }
-                            else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB)
+                            else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB && it.ExportDate_DB == elem.ExportDate_DB)
                             {
                                 var str = "Совпадение даты в " + elem.FormNum_DB + " " +
                                 elem.Year_DB + " .\n" +
@@ -1749,7 +1752,6 @@ namespace Client_App.ViewModels
                         sourceFile.CopyTo(file, true);
 
                         var reportsCollection = await GetReportsFromDataBase(file);
-                        var groupe = reportsCollection.GroupBy(x => x.Order);
                         var skipAll = false;
                         foreach (var item in reportsCollection)
                         {
