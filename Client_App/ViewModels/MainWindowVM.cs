@@ -229,6 +229,7 @@ namespace Client_App.ViewModels
             Excel_Export = ReactiveCommand.CreateFromTask<object>(_Excel_Export);
             All_Excel_Export = ReactiveCommand.CreateFromTask<object>(_All_Excel_Export);
             AllForms1_Excel_Export = ReactiveCommand.CreateFromTask(_AllForms1_Excel_Export);
+            AllForms2_Excel_Export = ReactiveCommand.CreateFromTask(_AllForms2_Excel_Export);
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<List<string>, string>();
         }
@@ -2646,6 +2647,108 @@ namespace Client_App.ViewModels
                                                 worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
                                                 worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
                                                 worksheet.Cells[row, 7].Value = rep.Rows.Count;
+                                                row++;
+                                            }
+                                        }
+
+                                        excelPackage.Save();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                int l = 10;
+            }
+        }
+        #endregion
+
+        #region AllForms2_Excel_Export
+        public ReactiveCommand<Unit, Unit> AllForms2_Excel_Export { get; private set; }
+        private async Task _AllForms2_Excel_Export()
+        {
+            var find_rep = 0;
+            foreach (Reports reps in Local_Reports.Reports_Collection)
+            {
+                foreach (Report rep in reps.Report_Collection)
+                {
+                    if (rep.FormNum_DB.Split('.')[0] == "2")
+                    {
+                        find_rep += 1;
+                    }
+                }
+            }
+            if (find_rep == 0) return;
+            try
+            {
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    SaveFileDialog dial = new();
+                    var filter = new FileDialogFilter
+                    {
+                        Name = "Excel",
+                        Extensions = {
+                        "xlsx"
+                        }
+                    };
+                    dial.Filters.Add(filter);
+                    var res = await dial.ShowAsync(desktop.MainWindow);
+                    if (res != null)
+                    {
+                        if (res.Count() != 0)
+                        {
+                            var path = res;
+                            if (!path.Contains(".xlsx"))
+                            {
+                                path += ".xlsx";
+                            }
+                            if (File.Exists(path))
+                            {
+                                File.Delete(path);
+                            }
+                            if (path != null)
+                            {
+                                using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
+                                {
+
+                                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                    excelPackage.Workbook.Properties.Title = "Report";
+                                    excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+                                    if (Local_Reports.Reports_Collection.Count > 0)
+                                    {
+                                        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм");
+                                        worksheet.Cells[1, 1].Value = "Рег.№";
+                                        worksheet.Cells[1, 2].Value = "ОКПО";
+                                        worksheet.Cells[1, 3].Value = "Форма";
+                                        worksheet.Cells[1, 4].Value = "Отчетный год";
+                                        worksheet.Cells[1, 5].Value = "Номер кор.";
+                                        worksheet.Cells[1, 6].Value = "Количество строк";
+
+                                        var lst = new List<Reports>();
+
+                                        foreach (Reports item in Local_Reports.Reports_Collection)
+                                        {
+                                            if (item.Master_DB.FormNum_DB.Split('.')[0] == "2")
+                                            {
+                                                lst.Add(item);
+                                            }
+                                        }
+
+                                        var row = 2;
+                                        foreach (Reports reps in lst)
+                                        {
+                                            foreach (Report rep in reps.Report_Collection)
+                                            {
+                                                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                                                worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
+                                                worksheet.Cells[row, 3].Value = rep.FormNum_DB;
+                                                worksheet.Cells[row, 4].Value = rep.Year_DB;
+                                                worksheet.Cells[row, 5].Value = rep.CorrectionNumber_DB;
+                                                worksheet.Cells[row, 6].Value = rep.Rows.Count;
                                                 row++;
                                             }
                                         }
