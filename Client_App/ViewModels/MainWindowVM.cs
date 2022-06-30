@@ -2105,6 +2105,13 @@ namespace Client_App.ViewModels
 
         #region Excel
         public ReactiveCommand<Unit, Unit> Statistic_Excel_Export { get; private set; }
+
+        private string StringReverse(string _string) 
+        {
+            var charArray = _string.Replace("_", "0").Split(".");
+            Array.Reverse(charArray);
+            return string.Join("", charArray);
+        }
         private async Task _Statistic_Excel_Export()
         {
             var find_rep = 0;
@@ -2181,20 +2188,22 @@ namespace Client_App.ViewModels
                                                 
                                                 foreach (Report rep in item.Report_Collection)
                                                 {
+                                                    var start =  StringReverse(rep.StartPeriod_DB);
+                                                    var end = StringReverse(rep.EndPeriod_DB);
                                                     listSotrRep.Add(new ReportForSort()
                                                     {
                                                         RegNoRep = item.Master_DB.RegNoRep.Value == null ? "" : item.Master_DB.RegNoRep.Value,
                                                         OkpoRep = item.Master_DB.OkpoRep.Value == null ? "" : item.Master_DB.OkpoRep.Value,
                                                         FormNum = rep.FormNum_DB,
-                                                        StartPeriod = Convert.ToInt64(rep.StartPeriod_DB.Replace(".", "").Replace("_", "0")),
-                                                        EndPeriod = Convert.ToInt64(rep.EndPeriod_DB.Replace(".", "").Replace("_", "0")),
+                                                        StartPeriod = Convert.ToInt64(start),
+                                                        EndPeriod = Convert.ToInt64(end),
                                                         ShortYr = item.Master_DB.ShortJurLicoRep.Value
                                                     });
                                                 }
                                             }
                                         }
 
-                                        var newGen = listSotrRep.OrderBy(elem => elem.EndPeriod).GroupBy(x => x.RegNoRep).ToDictionary(gr => gr.Key, gr => gr.ToList().GroupBy(x => x.FormNum).ToDictionary(gr => gr.Key, gr => gr.ToList()));
+                                        var newGen = listSotrRep.GroupBy(x => x.RegNoRep).ToDictionary(gr => gr.Key, gr => gr.ToList().GroupBy(x => x.FormNum).ToDictionary(gr => gr.Key, gr => gr.ToList().OrderBy(elem => elem.EndPeriod)));
                                         var row = 2;
                                         foreach (var grp in newGen)
                                         {
@@ -2209,19 +2218,20 @@ namespace Client_App.ViewModels
                                                     {
                                                         if (g.StartPeriod < prev_end)
                                                         {
-                                                            var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : "0" + prev_end.ToString();
-                                                            var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : "0" + prev_start.ToString();
+                                                            var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : prev_end.ToString().Insert(6, "0");
+                                                            var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : prev_start.ToString().Insert(6, "0");
+                                  
 
-                                                            var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : "0" + g.StartPeriod.ToString();
-                                                            var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : "0" + g.EndPeriod.ToString();
+                                                            var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : g.StartPeriod.ToString().Insert(6, "0");
+                                                            var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : g.EndPeriod.ToString().Insert(6, "0");
 
                                                             worksheet.Cells[row, 1].Value = g.RegNoRep;
                                                             worksheet.Cells[row, 2].Value = g.OkpoRep;
                                                             worksheet.Cells[row, 3].Value = g.ShortYr;
                                                             worksheet.Cells[row, 4].Value = g.FormNum;
 
-                                                            worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[0..2]}.{prev_start_n[2..4]}.{prev_start_n[4..8]}";
-                                                            worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[0..2]}.{prev_end_n[2..4]}.{prev_end_n[4..8]}";
+                                                            worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[6..8]}.{prev_start_n[4..6]}.{prev_start_n[0..4]}";
+                                                            worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[6..8]}.{prev_end_n[4..6]}.{prev_end_n[0..4]}";
 
                                                             worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
                                                             worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
@@ -2234,19 +2244,19 @@ namespace Client_App.ViewModels
                                                         }
                                                         else
                                                         {
-                                                            var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : "0" + prev_end.ToString();
-                                                            var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : "0" + prev_start.ToString();
+                                                            var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : prev_end.ToString().Insert(6, "0");
+                                                            var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : prev_start.ToString().Insert(6, "0");
 
-                                                            var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : "0" + g.StartPeriod.ToString();
-                                                            var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : "0" + g.EndPeriod.ToString();
+                                                            var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : g.StartPeriod.ToString().Insert(6, "0");
+                                                            var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : g.EndPeriod.ToString().Insert(6, "0");
 
                                                             worksheet.Cells[row, 1].Value = g.RegNoRep;
                                                             worksheet.Cells[row, 2].Value = g.OkpoRep;
                                                             worksheet.Cells[row, 3].Value = g.ShortYr;
                                                             worksheet.Cells[row, 4].Value = g.FormNum;
 
-                                                            worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[0..2]}.{prev_start_n[2..4]}.{prev_start_n[4..8]}";
-                                                            worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[0..2]}.{prev_end_n[2..4]}.{prev_end_n[4..8]}";
+                                                            worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[6..8]}.{prev_start_n[4..6]}.{prev_start_n[0..4]}";
+                                                            worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[6..8]}.{prev_end_n[4..6]}.{prev_end_n[0..4]}";
 
                                                             worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
                                                             worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
