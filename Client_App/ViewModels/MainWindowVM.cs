@@ -2233,8 +2233,8 @@ namespace Client_App.ViewModels
                                                             worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[6..8]}.{prev_start_n[4..6]}.{prev_start_n[0..4]}";
                                                             worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[6..8]}.{prev_end_n[4..6]}.{prev_end_n[0..4]}";
 
-                                                            worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
-                                                            worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
+                                                            worksheet.Cells[row, 7].Value = $"{st_per[6..8]}.{st_per[4..6]}.{st_per[0..4]}";
+                                                            worksheet.Cells[row, 8].Value = $"{end_per[6..8]}.{end_per[4..6]}.{end_per[0..4]}";
 
                                                             worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
 
@@ -2258,8 +2258,8 @@ namespace Client_App.ViewModels
                                                             worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[6..8]}.{prev_start_n[4..6]}.{prev_start_n[0..4]}";
                                                             worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[6..8]}.{prev_end_n[4..6]}.{prev_end_n[0..4]}";
 
-                                                            worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
-                                                            worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
+                                                            worksheet.Cells[row, 7].Value = $"{st_per[6..8]}.{st_per[4..6]}.{st_per[0..4]}";
+                                                            worksheet.Cells[row, 8].Value = $"{end_per[6..8]}.{end_per[4..6]}.{end_per[0..4]}";
 
                                                             worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
 
