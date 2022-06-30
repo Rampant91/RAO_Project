@@ -2194,76 +2194,78 @@ namespace Client_App.ViewModels
                                             }
                                         }
 
-                                        var newGen = listSotrRep.OrderBy(elem => elem.EndPeriod).GroupBy(x => x.FormNum).ToDictionary(gr => gr.Key, gr => gr.ToList());
+                                        var newGen = listSotrRep.OrderBy(elem => elem.EndPeriod).GroupBy(x => x.RegNoRep).ToDictionary(gr => gr.Key, gr => gr.ToList().GroupBy(x => x.FormNum).ToDictionary(gr => gr.Key, gr => gr.ToList()));
                                         var row = 2;
-                                        foreach (var gr in newGen) 
+                                        foreach (var grp in newGen)
                                         {
-                                            var prev_end = gr.Value.FirstOrDefault().EndPeriod;
-                                            var prev_start = gr.Value.FirstOrDefault().StartPeriod;
-                                            var newGr = gr.Value.Skip(1).ToList();
-                                            foreach (var g in newGr)
+                                            foreach (var gr in grp.Value)
                                             {
-                                                if (g.StartPeriod != prev_end)
+                                                var prev_end = gr.Value.FirstOrDefault().EndPeriod;
+                                                var prev_start = gr.Value.FirstOrDefault().StartPeriod;
+                                                var newGr = gr.Value.Skip(1).ToList();
+                                                foreach (var g in newGr)
                                                 {
-                                                    if (g.StartPeriod < prev_end)
+                                                    if (g.StartPeriod != prev_end)
                                                     {
-                                                        var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : "0" + prev_end.ToString();
-                                                        var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : "0" + prev_start.ToString();
+                                                        if (g.StartPeriod < prev_end)
+                                                        {
+                                                            var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : "0" + prev_end.ToString();
+                                                            var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : "0" + prev_start.ToString();
 
-                                                        var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : "0" + g.StartPeriod.ToString();
-                                                        var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : "0" + g.EndPeriod.ToString();
+                                                            var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : "0" + g.StartPeriod.ToString();
+                                                            var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : "0" + g.EndPeriod.ToString();
 
-                                                        worksheet.Cells[row, 1].Value = g.RegNoRep;
-                                                        worksheet.Cells[row, 2].Value = g.OkpoRep;
-                                                        worksheet.Cells[row, 3].Value = g.ShortYr;
-                                                        worksheet.Cells[row, 4].Value = g.FormNum;
+                                                            worksheet.Cells[row, 1].Value = g.RegNoRep;
+                                                            worksheet.Cells[row, 2].Value = g.OkpoRep;
+                                                            worksheet.Cells[row, 3].Value = g.ShortYr;
+                                                            worksheet.Cells[row, 4].Value = g.FormNum;
 
-                                                        worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[0..2]}.{prev_start_n[2..4]}.{prev_start_n[4..8]}";
-                                                        worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[0..2]}.{prev_end_n[2..4]}.{prev_end_n[4..8]}";
+                                                            worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[0..2]}.{prev_start_n[2..4]}.{prev_start_n[4..8]}";
+                                                            worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[0..2]}.{prev_end_n[2..4]}.{prev_end_n[4..8]}";
 
-                                                        worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
-                                                        worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
+                                                            worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
+                                                            worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
 
-                                                        worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
+                                                            worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
 
-                                                        worksheet.Cells[row, 10].Value = "пересечение";
+                                                            worksheet.Cells[row, 10].Value = "пересечение";
 
-                                                        row++;
+                                                            row++;
+                                                        }
+                                                        else
+                                                        {
+                                                            var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : "0" + prev_end.ToString();
+                                                            var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : "0" + prev_start.ToString();
+
+                                                            var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : "0" + g.StartPeriod.ToString();
+                                                            var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : "0" + g.EndPeriod.ToString();
+
+                                                            worksheet.Cells[row, 1].Value = g.RegNoRep;
+                                                            worksheet.Cells[row, 2].Value = g.OkpoRep;
+                                                            worksheet.Cells[row, 3].Value = g.ShortYr;
+                                                            worksheet.Cells[row, 4].Value = g.FormNum;
+
+                                                            worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[0..2]}.{prev_start_n[2..4]}.{prev_start_n[4..8]}";
+                                                            worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[0..2]}.{prev_end_n[2..4]}.{prev_end_n[4..8]}";
+
+                                                            worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
+                                                            worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
+
+                                                            worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
+
+                                                            worksheet.Cells[row, 10].Value = "разрыв";
+
+                                                            row++;
+                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : "0" + prev_end.ToString();
-                                                        var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : "0" + prev_start.ToString();
 
-                                                        var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : "0" + g.StartPeriod.ToString();
-                                                        var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : "0" + g.EndPeriod.ToString();
-
-                                                        worksheet.Cells[row, 1].Value = g.RegNoRep;
-                                                        worksheet.Cells[row, 2].Value = g.OkpoRep;
-                                                        worksheet.Cells[row, 3].Value = g.ShortYr;
-                                                        worksheet.Cells[row, 4].Value = g.FormNum;
-
-                                                        worksheet.Cells[row, 5].Value = prev_start_n.Equals("нет даты начала периода") ? prev_start_n : $"{prev_start_n[0..2]}.{prev_start_n[2..4]}.{prev_start_n[4..8]}";
-                                                        worksheet.Cells[row, 6].Value = prev_end_n.Equals("нет даты конца периода") ? prev_end_n : $"{prev_end_n[0..2]}.{prev_end_n[2..4]}.{prev_end_n[4..8]}";
-
-                                                        worksheet.Cells[row, 7].Value = $"{st_per[0..2]}.{st_per[2..4]}.{st_per[4..8]}";
-                                                        worksheet.Cells[row, 8].Value = $"{end_per[0..2]}.{end_per[2..4]}.{end_per[4..8]}";
-
-                                                        worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
-
-                                                        worksheet.Cells[row, 10].Value = "разрыв";
-
-                                                        row++;
-                                                    }
+                                                    prev_end = g.EndPeriod;
+                                                    prev_start = g.StartPeriod;
                                                 }
-                                              
-                                                prev_end = g.EndPeriod;
-                                                prev_start = g.StartPeriod;
                                             }
                                         }
                                         worksheet.Column(1).AutoFit();
                                         worksheet.Column(2).AutoFit();
-                                        worksheet.Column(3).AutoFit();
                                         worksheet.Column(4).AutoFit();
                                         worksheet.Column(5).AutoFit();
                                         worksheet.Column(6).AutoFit();
