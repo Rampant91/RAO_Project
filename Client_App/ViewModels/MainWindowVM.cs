@@ -2214,9 +2214,9 @@ namespace Client_App.ViewModels
                                                 var newGr = gr.Value.Skip(1).ToList();
                                                 foreach (var g in newGr)
                                                 {
-                                                    if (g.StartPeriod != prev_end)
+                                                    if (g.StartPeriod != prev_end && g.StartPeriod != prev_start && g.EndPeriod != prev_end)
                                                     {
-                                                        if (g.StartPeriod < prev_end && g.StartPeriod != prev_start && g.EndPeriod != prev_end)
+                                                        if (g.StartPeriod < prev_end)
                                                         {
                                                             var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : prev_end.ToString().Insert(6, "0");
                                                             var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : prev_start.ToString().Insert(6, "0");
