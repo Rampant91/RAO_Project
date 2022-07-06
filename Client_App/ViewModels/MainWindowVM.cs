@@ -1389,8 +1389,8 @@ namespace Client_App.ViewModels
                 {
                     foreach (Report elem in first11.Report_Collection)
                     {
-                        DateTimeOffset st_elem = DateTimeOffset.Now;
-                        DateTimeOffset en_elem = DateTimeOffset.Now;
+                        DateTime st_elem = DateTime.Parse(DateTime.Now.ToShortDateString());
+                        DateTime en_elem = DateTime.Parse(DateTime.Now.ToShortDateString());
                         try
                         {
                             st_elem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.EndPeriod_DB) : DateTime.Parse(elem.StartPeriod_DB);
@@ -1399,8 +1399,8 @@ namespace Client_App.ViewModels
                         catch (Exception ex)
                         { }
 
-                        DateTimeOffset st_it = DateTimeOffset.Now;
-                        DateTimeOffset en_it = DateTimeOffset.Now;
+                        DateTime st_it = DateTime.Parse(DateTime.Now.ToShortDateString());
+                        DateTime en_it = DateTime.Parse(DateTime.Now.ToShortDateString());
                         try
                         {
                             st_it = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.EndPeriod_DB) : DateTime.Parse(it.StartPeriod_DB);
@@ -1765,6 +1765,7 @@ namespace Client_App.ViewModels
                         var skipAll = false;
                         foreach (var item in reportsCollection)
                         {
+                            item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
                             Reports first11 = await GetReports11FromLocalEqual(item);
                             Reports first21 = await GetReports21FromLocalEqual(item);
                             await RestoreReportsOrders(item);
