@@ -502,85 +502,85 @@ namespace Client_App.ViewModels
         {
             if (worksheet0.Name == "1.0") 
             {
-                newRepsFromExcel.Master_DB.Rows10[0].RegNo_DB = (string)worksheet0.Cells["F6"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].OrganUprav_DB = (string)worksheet0.Cells["F15"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].SubjectRF_DB = (string)worksheet0.Cells["F16"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].JurLico_DB = (string)worksheet0.Cells["F17"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null ? "" : (string)worksheet0.Cells["F18"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = (string)worksheet0.Cells["F19"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = (string)worksheet0.Cells["F20"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = (string)worksheet0.Cells["F21"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = (string)worksheet0.Cells["F22"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = (string)worksheet0.Cells["F23"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Email_DB = (string)worksheet0.Cells["F24"].Value;
+                newRepsFromExcel.Master_DB.Rows10[0].RegNo_DB = Convert.ToString(worksheet0.Cells["F6"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].OrganUprav_DB = Convert.ToString(worksheet0.Cells["F15"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null ? "" : Convert.ToString(worksheet0.Cells["F18"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Email_DB = Convert.ToString(worksheet0.Cells["F24"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[1].SubjectRF_DB = (string)worksheet0.Cells["F25"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].JurLico_DB = (string)worksheet0.Cells["F26"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null ? "" : (string)worksheet0.Cells["F27"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = (string)worksheet0.Cells["F28"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = (string)worksheet0.Cells["F29"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = (string)worksheet0.Cells["F30"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = (string)worksheet0.Cells["F31"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Email_DB = (string)worksheet0.Cells["F32"].Value;
+                newRepsFromExcel.Master_DB.Rows10[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null ? "" : Convert.ToString(worksheet0.Cells["F27"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Email_DB = Convert.ToString(worksheet0.Cells["F32"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = worksheet0.Cells["B36"].Value == null ? "" : (string)worksheet0.Cells["B36"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Okved_DB = (string)worksheet0.Cells["C36"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Okogu_DB = (string)worksheet0.Cells["D36"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Oktmo_DB = (string)worksheet0.Cells["E36"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Inn_DB = (string)worksheet0.Cells["F36"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Kpp_DB = (string)worksheet0.Cells["G36"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Okopf_DB = (string)worksheet0.Cells["H36"].Value;
-                newRepsFromExcel.Master_DB.Rows10[0].Okfs_DB = (string)worksheet0.Cells["I36"].Value;
+                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = worksheet0.Cells["B36"].Value == null ? "" : Convert.ToString(worksheet0.Cells["B36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okved_DB = Convert.ToString(worksheet0.Cells["C36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okogu_DB = Convert.ToString(worksheet0.Cells["D36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Oktmo_DB = Convert.ToString(worksheet0.Cells["E36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Inn_DB = Convert.ToString(worksheet0.Cells["F36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Kpp_DB = Convert.ToString(worksheet0.Cells["G36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okopf_DB = Convert.ToString(worksheet0.Cells["H36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okfs_DB = Convert.ToString(worksheet0.Cells["I36"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = worksheet0.Cells["B37"].Value == null ? "" : (string)worksheet0.Cells["B37"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Okved_DB = (string)worksheet0.Cells["C37"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Okogu_DB = (string)worksheet0.Cells["D37"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Oktmo_DB = (string)worksheet0.Cells["E37"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Inn_DB = (string)worksheet0.Cells["F37"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Kpp_DB = (string)worksheet0.Cells["G37"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Okopf_DB = (string)worksheet0.Cells["H37"].Value;
-                newRepsFromExcel.Master_DB.Rows10[1].Okfs_DB = (string)worksheet0.Cells["I37"].Value;
+                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = worksheet0.Cells["B37"].Value == null ? "" : Convert.ToString(worksheet0.Cells["B37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okved_DB = Convert.ToString(worksheet0.Cells["C37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okogu_DB = Convert.ToString(worksheet0.Cells["D37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Oktmo_DB = Convert.ToString(worksheet0.Cells["E37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Inn_DB = Convert.ToString(worksheet0.Cells["F37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Kpp_DB = Convert.ToString(worksheet0.Cells["G37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okopf_DB = Convert.ToString(worksheet0.Cells["H37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okfs_DB = Convert.ToString(worksheet0.Cells["I37"].Value);
             }
             if (worksheet0.Name == "2.0")
             {
-                newRepsFromExcel.Master_DB.Rows20[0].RegNo.Value = (string)worksheet0.Cells["F6"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].OrganUprav_DB = (string)worksheet0.Cells["F15"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = (string)worksheet0.Cells["F16"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = (string)worksheet0.Cells["F17"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = (string)worksheet0.Cells["F18"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = (string)worksheet0.Cells["F19"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = (string)worksheet0.Cells["F20"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = (string)worksheet0.Cells["F21"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = (string)worksheet0.Cells["F22"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = (string)worksheet0.Cells["F23"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Email_DB = (string)worksheet0.Cells["F24"].Value;
+                newRepsFromExcel.Master_DB.Rows20[0].RegNo.Value = Convert.ToString(worksheet0.Cells["F6"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].OrganUprav_DB = Convert.ToString(worksheet0.Cells["F15"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F18"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Email_DB = Convert.ToString(worksheet0.Cells["F24"].Value);
 
-                newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = (string)worksheet0.Cells["F25"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = (string)worksheet0.Cells["F26"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = (string)worksheet0.Cells["F27"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = (string)worksheet0.Cells["F28"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = (string)worksheet0.Cells["F29"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = (string)worksheet0.Cells["F30"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = (string)worksheet0.Cells["F31"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Email_DB = (string)worksheet0.Cells["F32"].Value;
+                newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F27"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Email_DB = Convert.ToString(worksheet0.Cells["F32"].Value);
 
-                newRepsFromExcel.Master_DB.Rows20[0].Okpo_DB = (string)worksheet0.Cells["B36"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Okved_DB = (string)worksheet0.Cells["C36"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Okogu_DB = (string)worksheet0.Cells["D36"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Oktmo_DB = (string)worksheet0.Cells["E36"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Inn_DB = (string)worksheet0.Cells["F36"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Kpp_DB = (string)worksheet0.Cells["G36"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Okopf_DB = (string)worksheet0.Cells["H36"].Value;
-                newRepsFromExcel.Master_DB.Rows20[0].Okfs_DB = (string)worksheet0.Cells["I36"].Value;
+                newRepsFromExcel.Master_DB.Rows20[0].Okpo_DB = Convert.ToString(worksheet0.Cells["B36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okved_DB = Convert.ToString(worksheet0.Cells["C36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okogu_DB = Convert.ToString(worksheet0.Cells["D36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Oktmo_DB = Convert.ToString(worksheet0.Cells["E36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Inn_DB = Convert.ToString(worksheet0.Cells["F36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Kpp_DB = Convert.ToString(worksheet0.Cells["G36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okopf_DB = Convert.ToString(worksheet0.Cells["H36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okfs_DB = Convert.ToString(worksheet0.Cells["I36"].Value);
 
-                newRepsFromExcel.Master_DB.Rows20[1].Okpo_DB = (string)worksheet0.Cells["B37"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Okved_DB = (string)worksheet0.Cells["C37"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Okogu_DB = (string)worksheet0.Cells["D37"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Oktmo_DB = (string)worksheet0.Cells["E37"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Inn_DB = (string)worksheet0.Cells["F37"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Kpp_DB = (string)worksheet0.Cells["G37"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Okopf_DB = (string)worksheet0.Cells["H37"].Value;
-                newRepsFromExcel.Master_DB.Rows20[1].Okfs_DB = (string)worksheet0.Cells["I37"].Value;
+                newRepsFromExcel.Master_DB.Rows20[1].Okpo_DB = Convert.ToString(worksheet0.Cells["B37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okved_DB = Convert.ToString(worksheet0.Cells["C37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okogu_DB = Convert.ToString(worksheet0.Cells["D37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Oktmo_DB = Convert.ToString(worksheet0.Cells["E37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Inn_DB = Convert.ToString(worksheet0.Cells["F37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Kpp_DB = Convert.ToString(worksheet0.Cells["G37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okopf_DB = Convert.ToString(worksheet0.Cells["H37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okfs_DB = Convert.ToString(worksheet0.Cells["I37"].Value);
             }
         }
         private async Task<Reports> CheckReps(ExcelWorksheet worksheet0) 
@@ -590,15 +590,15 @@ namespace Client_App.ViewModels
             if (worksheet0.Name == "1.0") 
             {
                 reps = from Reports t in Local_Reports.Reports_Collection10
-                           where (((string)worksheet0.Cells["B36"].Value == t.Master.Rows10[0].Okpo_DB &&
-                           (string)worksheet0.Cells["F6"].Value == t.Master.Rows10[0].RegNo_DB))
+                           where ((Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
+                           Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB))
                            select t;
             }
             if (worksheet0.Name == "2.0")
             {
                 reps = from Reports t in Local_Reports.Reports_Collection20
-                                        where (((string)worksheet0.Cells["B36"].Value == t.Master.Rows20[0].Okpo_DB &&
-                                        (string)worksheet0.Cells["F6"].Value == t.Master.Rows20[0].RegNo_DB))
+                                        where ((Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
+                                        Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB))
                                         select t;
             }
             
