@@ -1379,6 +1379,7 @@ namespace Client_App.ViewModels
             var not_in = false;
 
             var skipLess = false;
+            var doSomething = false;
             var skipNew = false;
             var _skipNew = false;
             var skipInter = false;
@@ -1428,7 +1429,7 @@ namespace Client_App.ViewModels
                                         "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
                                         "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
                                         "Количество строк - " + it.Rows.Count;
-                                    var an = await ShowMessage.Handle(new List<string>() { str, "Отчет", "OK" , "Пропустить для всех"});
+                                    var an = await ShowMessage.Handle(new List<string>() { str, "Отчет", "OK", "Пропустить для всех" });
                                     if (an == "Пропустить для всех")
                                     {
                                         skipLess = true;
@@ -1445,13 +1446,15 @@ namespace Client_App.ViewModels
                                     first11.Master.ShortJurLicoRep.Value + " " +
                                     first11.Master.OkpoRep.Value + "\n" +
                                     "Количество строк - " + it.Rows.Count;
+                                doSomething = true;
                                 var an = await ShowMessage.Handle(new List<string>(){str, "Отчет",
                                     "Заменить",
                                     "Дополнить",
                                     "Сохранить оба",
-                                    "Отменить" 
+                                    "Отменить"
                                 });
-                                await ChechAanswer(an, first11, elem, it);
+                                await ChechAanswer(an, first11, elem, it, doSomething);
+                                doSomething = true;
                             }
                             else
                             {
@@ -1472,6 +1475,7 @@ namespace Client_App.ViewModels
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                             "Сделайте резервную копию." + "\n" +
                                             "Количество строк - " + it.Rows.Count;
+                                        doSomething = true;
                                         an = await ShowMessage.Handle(new List<string>() {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена",
@@ -1494,35 +1498,41 @@ namespace Client_App.ViewModels
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                             "Сделайте резервную копию." + "\n" +
                                             "Количество строк - " + it.Rows.Count;
+                                        doSomething = true;
                                         an = await ShowMessage.Handle(new List<string>() {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена"
                                             });
                                     }
                                 }
-                                await ChechAanswer(an, first11, elem, it);
+                                await ChechAanswer(an, first11, elem, it, doSomething);
+                                doSomething = true;
                             }
                         }
-                        if ((st_elem > st_it && st_elem < en_it || en_elem > st_it && en_elem < en_it) && it.FormNum.Value == elem.FormNum.Value)
+                        else
                         {
-                            not_in = true;
-                            var an = "Отменить";
-                            if (!skipInter)
+                            if ((st_elem > st_it && st_elem < en_it || en_elem > st_it && en_elem < en_it) && it.FormNum.Value == elem.FormNum.Value)
                             {
-                                var str = "Пересечение даты в " + elem.FormNum_DB + " " +
-                                    elem.StartPeriod_DB + "-" +
-                                    elem.EndPeriod_DB + " \n" +
-                                    first11.Master.RegNoRep.Value + " " +
-                                    first11.Master.ShortJurLicoRep.Value + " " +
-                                    first11.Master.OkpoRep.Value + "\n" +
-                                    "Количество строк - " + it.Rows.Count;
-                                an = await ShowMessage.Handle(new List<string>(){str,"Отчет",
+                                not_in = true;
+                                var an = "Отменить";
+                                if (!skipInter)
+                                {
+                                    var str = "Пересечение даты в " + elem.FormNum_DB + " " +
+                                        elem.StartPeriod_DB + "-" +
+                                        elem.EndPeriod_DB + " \n" +
+                                        first11.Master.RegNoRep.Value + " " +
+                                        first11.Master.ShortJurLicoRep.Value + " " +
+                                        first11.Master.OkpoRep.Value + "\n" +
+                                        "Количество строк - " + it.Rows.Count;
+                                    an = await ShowMessage.Handle(new List<string>(){str,"Отчет",
                                 "Сохранить оба",
                                 "Отменить"
                                 });
-                                skipInter = true;
+                                    skipInter = true;
+                                }
+                                await ChechAanswer(an, first11, null, it, doSomething);
+                                doSomething = true;
                             }
-                            await ChechAanswer(an, first11, null, it);
                         }
                     }
                     if (!not_in)
@@ -1729,11 +1739,12 @@ namespace Client_App.ViewModels
                 await first21.SortAsync();
             }
         }
-        private async Task ChechAanswer(string an, Reports first, Report elem = null, Report it = null)
+        private async Task ChechAanswer(string an, Reports first, Report elem = null, Report it = null, bool doSomething = false)
         {
             if (an == "Сохранить оба" || an == "Да")
             {
-                first.Report_Collection.Add(it);
+                if (!doSomething)
+                    first.Report_Collection.Add(it);
             }
             if (an == "Заменить" || an == "Загрузить новую")
             {
