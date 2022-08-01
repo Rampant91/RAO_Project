@@ -1190,16 +1190,12 @@ namespace Client_App.ViewModels
                 //var t = db.Database.GetPendingMigrations();
                 //var a = db.Database.GetMigrations();
                 //var b = db.Database.GetAppliedMigrations();
+                await ProcessDataBaseFillEmpty(db);
+                await db.LoadTablesAsync();
 
                 await db.Database.MigrateAsync();
 
-                //var t1 = db.Database.GetPendingMigrations();
-                //var a1 = db.Database.GetMigrations();
-                //var b1 = db.Database.GetAppliedMigrations();
-
-                await db.LoadTablesAsync();
                 await ProcessDataBaseFillEmpty(db);
-                var t = db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count;
                 if (db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0)
                 {
                     lst = db.DBObservableDbSet.Local.First().Reports_Collection.ToList();
@@ -1776,7 +1772,10 @@ namespace Client_App.ViewModels
                         var skipAll = false;
                         foreach (var item in reportsCollection)
                         {
-                            item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
+                            if (item.Master.Rows10.Count != 0)
+                                item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
+                            else
+                                item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
                             Reports first11 = await GetReports11FromLocalEqual(item);
                             Reports first21 = await GetReports21FromLocalEqual(item);
                             await RestoreReportsOrders(item);

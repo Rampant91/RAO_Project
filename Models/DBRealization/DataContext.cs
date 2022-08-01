@@ -143,8 +143,16 @@ namespace Models.DBRealization
             await form_18.LoadAsync();
             await form_19.LoadAsync();
             await form_20.LoadAsync();
-            await form_21.LoadAsync();
-            await form_22.LoadAsync();
+            try
+            {
+                await form_21.LoadAsync();
+                await form_22.LoadAsync();
+            }
+            catch
+            {
+                form_21.Local.Clear();
+                form_22.Local.Clear();
+            }
             await form_23.LoadAsync();
             await form_24.LoadAsync();
             await form_25.LoadAsync();
