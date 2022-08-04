@@ -231,6 +231,7 @@ namespace Client_App.ViewModels
             AllForms1_Excel_Export = ReactiveCommand.CreateFromTask(_AllForms1_Excel_Export);
             AllForms2_Excel_Export = ReactiveCommand.CreateFromTask(_AllForms2_Excel_Export);
             Statistic_Excel_Export = ReactiveCommand.CreateFromTask(_Statistic_Excel_Export);
+            AllOrganization_Excel_Export = ReactiveCommand.CreateFromTask(_AllOrganization_Excel_Export);
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<List<string>, string>();
         }
@@ -1187,15 +1188,17 @@ namespace Client_App.ViewModels
             var lst = new List<Reports>();
             using (DBModel db = new DBModel(file))
             {
+                #region Test Version
                 //var t = db.Database.GetPendingMigrations();
                 //var a = db.Database.GetMigrations();
                 //var b = db.Database.GetAppliedMigrations();
-                await ProcessDataBaseFillEmpty(db);
-                await db.LoadTablesAsync();
+                #endregion
 
                 await db.Database.MigrateAsync();
-
                 await ProcessDataBaseFillEmpty(db);
+                await db.LoadTablesAsync();
+                await ProcessDataBaseFillEmpty(db);
+
                 if (db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0)
                 {
                     lst = db.DBObservableDbSet.Local.First().Reports_Collection.ToList();
@@ -2959,6 +2962,144 @@ namespace Client_App.ViewModels
                                                 worksheet.Cells[row, 6].Value = rep.Rows.Count;
                                                 row++;
                                             }
+                                        }
+
+                                        excelPackage.Save();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                int l = 10;
+            }
+        }
+        #endregion
+
+        #region AllOrganization_Excel_Export
+        public ReactiveCommand<Unit, Unit> AllOrganization_Excel_Export { get; private set; }
+        private async Task _AllOrganization_Excel_Export()
+        {
+            var find_reps = Local_Reports.Reports_Collection.Count;
+
+            if (find_reps == 0) return;
+            try
+            {
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    SaveFileDialog dial = new();
+                    var filter = new FileDialogFilter
+                    {
+                        Name = "Excel",
+                        Extensions = {
+                        "xlsx"
+                        }
+                    };
+                    dial.Filters.Add(filter);
+                    var res = await dial.ShowAsync(desktop.MainWindow);
+                    if (res != null)
+                    {
+                        if (res.Count() != 0)
+                        {
+                            var path = res;
+                            if (!path.Contains(".xlsx"))
+                            {
+                                path += ".xlsx";
+                            }
+                            if (File.Exists(path))
+                            {
+                                File.Delete(path);
+                            }
+                            if (path != null)
+                            {
+                                using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
+                                {
+
+                                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                    excelPackage.Workbook.Properties.Title = "Report";
+                                    excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+                                    if (Local_Reports.Reports_Collection.Count > 0)
+                                    {
+                                        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
+                                        worksheet.Cells[1, 1].Value = "Рег.№";
+                                        worksheet.Cells[1, 2].Value = "ОКПО";
+                                        worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                                        worksheet.Cells[1, 4].Value = "ИНН";
+
+                                        worksheet.Cells[1, 5].Value = "Форма 1.1";
+                                        worksheet.Cells[1, 6].Value = "Форма 1.2";
+                                        worksheet.Cells[1, 7].Value = "Форма 1.3";
+                                        worksheet.Cells[1, 8].Value = "Форма 1.4";
+                                        worksheet.Cells[1, 9].Value = "Форма 1.5";
+                                        worksheet.Cells[1, 10].Value = "Форма 1.6";
+                                        worksheet.Cells[1, 11].Value = "Форма 1.7";
+                                        worksheet.Cells[1, 12].Value = "Форма 1.8";
+                                        worksheet.Cells[1, 13].Value = "Форма 1.9";
+
+                                        worksheet.Cells[1, 14].Value = "Форма 2.1";
+                                        worksheet.Cells[1, 15].Value = "Форма 2.2";
+                                        worksheet.Cells[1, 16].Value = "Форма 2.3";
+                                        worksheet.Cells[1, 17].Value = "Форма 2.4";
+                                        worksheet.Cells[1, 18].Value = "Форма 2.5";
+                                        worksheet.Cells[1, 19].Value = "Форма 2.6";
+                                        worksheet.Cells[1, 20].Value = "Форма 2.7";
+                                        worksheet.Cells[1, 21].Value = "Форма 2.8";
+                                        worksheet.Cells[1, 22].Value = "Форма 2.9";
+                                        worksheet.Cells[1, 23].Value = "Форма 2.10";
+                                        worksheet.Cells[1, 24].Value = "Форма 2.11";
+                                        worksheet.Cells[1, 25].Value = "Форма 2.12";
+
+
+                                        var lst = new List<Reports>();
+
+                                        foreach (Reports item in Local_Reports.Reports_Collection)
+                                        {
+                                            lst.Add(item);
+                                        }
+
+                                        var row = 2;
+                                        foreach (Reports reps in lst)
+                                        {
+                                            worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                                            worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
+                                            worksheet.Cells[row, 3].Value = reps.Master.ShortJurLicoRep.Value;
+
+                                            var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
+                                                      !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
+                                                      !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
+                                                      reps.Master.Rows20[1].Inn_DB;
+
+                                            worksheet.Cells[row, 4].Value = inn;
+
+                                            worksheet.Cells[row, 5].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
+                                            worksheet.Cells[row, 6].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
+                                            worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
+                                            worksheet.Cells[row, 8].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
+                                            worksheet.Cells[row, 9].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
+                                            worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
+                                            worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
+                                            worksheet.Cells[row, 12].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
+                                            worksheet.Cells[row, 13].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
+
+                                            worksheet.Cells[row, 14].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
+                                            worksheet.Cells[row, 15].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
+                                            worksheet.Cells[row, 16].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
+                                            worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
+                                            worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
+                                            worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
+                                            worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
+                                            worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
+                                            worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
+                                            worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
+                                            worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
+                                            worksheet.Cells[row, 25].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
+
+                                            row++;
+
                                         }
 
                                         excelPackage.Save();

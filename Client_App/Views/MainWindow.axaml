@@ -19,6 +19,7 @@
         <MenuItem Header="Из Excel" Command="{Binding ImportFrom}"/>
       </MenuItem>
       <MenuItem Header="_Excel" FontSize="14">
+		<MenuItem Header="Список организаций" Command="{Binding AllOrganization_Excel_Export}"></MenuItem>
 		<MenuItem Header="Список форм 1" Command="{Binding AllForms1_Excel_Export}"></MenuItem>
 		<MenuItem Header="Список форм 2" Command="{Binding AllForms2_Excel_Export}"></MenuItem>
 		<MenuItem Header="Разрывы и пересечения" Command="{Binding Statistic_Excel_Export}"></MenuItem>
