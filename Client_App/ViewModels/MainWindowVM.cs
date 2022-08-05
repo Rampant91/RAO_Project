@@ -1906,7 +1906,7 @@ namespace Client_App.ViewModels
                                             if (rp.Master.Rows20.Count > 0)
                                             {
                                                 filename2 += rp.Master.RegNoRep.Value;
-                                                filename2 += rp.Master.OkpoRep.Value;
+                                                filename2 += "_" + rp.Master.OkpoRep.Value;
 
                                                 filename2 += "_" + rep.FormNum_DB;
                                                 filename2 += "_" + rep.Year_DB;
