@@ -73,7 +73,6 @@ namespace Models.DBRealization
                 ServerType = FbServerType.Embedded,
                 UserID = "SYSDBA",
                 Password = "masterkey",
-                Role = "ADMIN",
                 Pooling = false,
                 ConnectionLifeTime = 15,
                 ClientLibrary = Path.GetFullPath(pth)
