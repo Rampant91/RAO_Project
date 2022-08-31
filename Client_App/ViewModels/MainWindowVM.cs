@@ -272,6 +272,7 @@ namespace Client_App.ViewModels
 
             OnStartProgressBar = 70;
             Local_Reports = dbm.DBObservableDbSet.Local.First();
+
             await ProcessDataBaseFillNullOrder();
 
             OnStartProgressBar = 75;
@@ -656,11 +657,15 @@ namespace Client_App.ViewModels
                                 
 
                                 bool val = false;
-                                if (worksheet0.Name == "1.0" && Convert.ToString(worksheet0.Cells["A3"].Value) == "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ")
+                                if (worksheet0.Name == "1.0" && 
+                                    (Convert.ToString(worksheet0.Cells["A3"].Value) == "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ" ||
+                                     Convert.ToString(worksheet0.Cells["A3"].Value) == "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"))
                                 {
                                     val = true;
                                 }
-                                if (worksheet0.Name == "2.0" && Convert.ToString(worksheet0.Cells["A4"].Value) == "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ")
+                                if (worksheet0.Name == "2.0" && 
+                                    (Convert.ToString(worksheet0.Cells["A4"].Value) == "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ" ||
+                                     Convert.ToString(worksheet0.Cells["A4"].Value) == "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"))
                                 {
                                     val = true;
                                 }
@@ -688,8 +693,8 @@ namespace Client_App.ViewModels
                                     repFromEx.ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}";
                                     if (param1.Split('.')[0] == "1")
                                     {
-                                        repFromEx.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Value).Replace("/", ".");
-                                        repFromEx.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Value).Replace("/", ".");
+                                        repFromEx.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Text).Replace("/", ".");
+                                        repFromEx.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Text).Replace("/", ".");
                                         repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G5"].Value);
                                     }
                                     else
@@ -741,7 +746,7 @@ namespace Client_App.ViewModels
                                             default:
                                                 {
                                                     repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                                                    repFromEx.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                                                    repFromEx.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
                                                     break;
                                                 }
                                         }
@@ -753,13 +758,18 @@ namespace Client_App.ViewModels
 
                                     var start = 11;
                                     var end = $"A{start}";
-                                    while (worksheet1.Cells[end].Value != null)
+                                    while (worksheet1.Cells[end].Value != null && worksheet1.Cells[end].Value.ToString().ToLower() != "примечание:")
                                     {
                                         await GetDataFromRow(param1, worksheet1, start, repFromEx);
                                         start++;
                                         end = $"A{start}";
                                     }
-                                    start += 3;
+
+                                    if (worksheet1.Cells[end].Value.ToString().ToLower() != "примечание:")
+                                        start += 3;
+                                    else
+                                        start += 2;
+
                                     while (worksheet1.Cells[$"A{start}"].Value != null || worksheet1.Cells[$"B{start}"].Value != null || worksheet1.Cells[$"C{start}"].Value != null)
                                     {
                                         Note newNote = new Note();
@@ -1189,13 +1199,12 @@ namespace Client_App.ViewModels
             using (DBModel db = new DBModel(file))
             {
                 #region Test Version
-                //var t = db.Database.GetPendingMigrations();
-                //var a = db.Database.GetMigrations();
-                //var b = db.Database.GetAppliedMigrations();
+                var t = db.Database.GetPendingMigrations();
+                var a = db.Database.GetMigrations();
+                var b = db.Database.GetAppliedMigrations();
                 #endregion
 
                 await db.Database.MigrateAsync();
-                await ProcessDataBaseFillEmpty(db);
                 await db.LoadTablesAsync();
                 await ProcessDataBaseFillEmpty(db);
 
