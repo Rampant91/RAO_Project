@@ -2559,6 +2559,7 @@ namespace Client_App.ViewModels
                                     using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path), new FileInfo(pth)))
                                     {
                                         var form = (Report)forms.FirstOrDefault();
+                                        await form!.SortAsync();
                                         ExcelWorksheet worksheetTitul =
                                             excelPackage.Workbook.Worksheets[param.Split('.')[0] + ".0"];
                                         ExcelWorksheet worksheetMain =
