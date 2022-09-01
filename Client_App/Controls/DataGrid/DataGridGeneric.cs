@@ -885,7 +885,7 @@ namespace Client_App.Controls.DataGrid
 
                 ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == Row);
+                var tmp2 = Rows.Where(x => x.IsVisible).SelectMany(x => x.Children).Where(item => ((Cell)item).Row == Row);
 
                 foreach (Cell item in tmp2)
                 {
