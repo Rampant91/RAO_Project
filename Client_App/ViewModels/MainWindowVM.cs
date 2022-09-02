@@ -741,7 +741,7 @@ namespace Client_App.ViewModels
                                                     repFromEx.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
                                                     repFromEx.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
                                                     repFromEx.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
-                                                    return;
+                                                    break;
                                                 }
                                             default:
                                                 {
@@ -755,8 +755,16 @@ namespace Client_App.ViewModels
                                     repFromEx.FIOexecutor_DB = (string)worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value;
                                     repFromEx.ExecPhone_DB = (string)worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value;
                                     repFromEx.ExecEmail_DB = (string)worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value;
-
-                                    var start = 11;
+                                    int start;
+                                    switch (param1)
+                                    {
+                                        case "2.8":
+                                            start = 14;
+                                            break;
+                                        default:
+                                            start = 11;
+                                            break;
+                                    }
                                     var end = $"A{start}";
                                     while (worksheet1.Cells[end].Value != null && worksheet1.Cells[end].Value.ToString().ToLower() != "примечание:")
                                     {
@@ -765,9 +773,9 @@ namespace Client_App.ViewModels
                                         end = $"A{start}";
                                     }
 
-                                    if (worksheet1.Cells[end].Value.ToString().ToLower() != "примечание:")
+                                    if (worksheet1.Cells[end].Value == null)
                                         start += 3;
-                                    else
+                                    else if (worksheet1.Cells[end].Value.ToString().ToLower() == "примечание:")
                                         start += 2;
 
                                     while (worksheet1.Cells[$"A{start}"].Value != null || worksheet1.Cells[$"B{start}"].Value != null || worksheet1.Cells[$"C{start}"].Value != null)
