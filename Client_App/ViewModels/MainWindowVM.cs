@@ -755,14 +755,15 @@ namespace Client_App.ViewModels
                                     repFromEx.FIOexecutor_DB = (string)worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value;
                                     repFromEx.ExecPhone_DB = (string)worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value;
                                     repFromEx.ExecEmail_DB = (string)worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value;
-                                    int start;
+                                    int start = 11;
                                     if (param1 == "2.8")
-
-                                    start = param1 switch
                                     {
-                                        "2.8" => 14,
-                                        _ => 11
-                                    };
+                                        start = param1 switch
+                                        {
+                                            "2.8" => 14,
+                                            _ => 11
+                                        };
+                                    }
                                     var end = $"A{start}";
                                     while (worksheet1.Cells[end].Value != null && worksheet1.Cells[end].Value.ToString().ToLower() != "примечание:")
                                     {
