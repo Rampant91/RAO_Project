@@ -303,7 +303,21 @@ namespace Models
                     catch (Exception ex)
                     { }
                 }
-                AllowedWasteRemovalVolume_DB = value1;
+                if (!(this.NumberInOrder_DB < (this._pageNum - 1) * 30))
+                    AllowedWasteRemovalVolume_DB = value1;
+                else
+                {
+                    if (this._items != null)
+                    {
+                        foreach (Form frm in this._items)
+                        {
+                            if (frm.NumberInOrder_DB == this.NumberInOrder_DB + ((this._pageNum-1) * 30))
+                            {
+                                ((Form28)frm).AllowedWasteRemovalVolume_DB = value1;
+                            }
+                        }
+                    }
+                }    
             }
         }
         private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)

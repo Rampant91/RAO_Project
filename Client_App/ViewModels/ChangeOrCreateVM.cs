@@ -1487,9 +1487,9 @@ namespace Client_App.ViewModels
                     Storages.Report_Collection.QuickSort();
                 }
 
-                    //Storages.Report_Collection.Sorted = false;
-                    //Storages.Report_Collection.QuickSort();
-                }
+                //Storages.Report_Collection.Sorted = false;
+                //Storages.Report_Collection.QuickSort();
+            }
 
                 var dbm = StaticConfiguration.DBModel;
                 dbm.SaveChanges();

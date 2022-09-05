@@ -73,8 +73,15 @@ namespace Client_App.Controls.DataGrid
                 {
                     if (_items != value) 
                     {
-                        NowPage = "1";
+                        //NowPage = "1";
                     }
+                    //if (Items != null && Items.Count != 0 && Items.ToList<T>()[0] is not Reports && Items.ToList<T>()[0] is not Report)
+                    //{
+                    //    foreach (Form frm in Items)
+                    //    {
+                    //        frm._items = Items;
+                    //    }
+                    //}
                     SetAndRaise(ItemsProperty, ref _items, value);
                     UpdateCells();
                     SetSelectedControls();
@@ -576,6 +583,14 @@ namespace Client_App.Controls.DataGrid
                 try
                 {
                     var val = Convert.ToInt32(value);
+                    if (Items != null)
+                    {
+                        foreach (Form frm in Items)
+                        {
+                            frm._pageNum = Convert.ToInt32(value);
+                            frm._items = Items;
+                        }
+                    }
 
                     if (val != null&&Items!=null)
                     {
@@ -1395,6 +1410,13 @@ namespace Client_App.Controls.DataGrid
                         catch { }
                     }
                 }
+                //for (int i = 0; i < offset; i++)
+                //{
+                //    foreach (var item in Items)
+                //    {
+
+                //    }
+                //}
                 var t = typeof(T).FindInterfaces(new System.Reflection.TypeFilter((x,y)=> 
                 {
                     if (x.ToString() == y.ToString())

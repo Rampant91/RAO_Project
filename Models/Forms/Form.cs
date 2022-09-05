@@ -65,6 +65,11 @@ namespace Models.Abstracts
             }
         }
 
+        [NotMapped]
+        public int _pageNum { get; set; }
+        [NotMapped]
+        public IKeyCollection _items { get; set; }
+
         public void SetOrder(long index) 
         {
             if (NumberInOrder_DB != (int)index)
