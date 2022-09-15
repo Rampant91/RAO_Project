@@ -3121,9 +3121,7 @@ namespace Client_App.ViewModels
                                             worksheet.Cells[row, 26].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
                                             worksheet.Cells[row, 27].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
                                             row++;
-
                                         }
-
                                         excelPackage.Save();
                                     }
                                 }
