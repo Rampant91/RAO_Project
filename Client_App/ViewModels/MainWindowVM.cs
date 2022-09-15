@@ -3093,9 +3093,9 @@ namespace Client_App.ViewModels
                                                      !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
                                                      !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
                                                      !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) && !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
+                                                     !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
+                                                     !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
+                                                     !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
                                                      reps.Master.Rows20[0].JurLicoAddress_DB;
                                             worksheet.Cells[row, 5].Value = address;
                                             worksheet.Cells[row, 6].Value = inn;
@@ -3112,8 +3112,8 @@ namespace Client_App.ViewModels
                                             worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
                                             worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
                                             worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
-                                            worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
-                                            worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
+                                            worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
+                                            worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
                                             worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
                                             worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
                                             worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
