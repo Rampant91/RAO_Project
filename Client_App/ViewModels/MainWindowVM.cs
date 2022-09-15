@@ -3072,6 +3072,7 @@ namespace Client_App.ViewModels
 
 
                                         var lst = new List<Reports>();
+                                        var chekedLst = new List<Reports>();
 
                                         foreach (Reports item in Local_Reports.Reports_Collection)
                                         {
@@ -3081,46 +3082,118 @@ namespace Client_App.ViewModels
                                         var row = 2;
                                         foreach (Reports reps in lst)
                                         {
-                                            worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                                            worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
-                                            worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
-                                            worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
-                                            var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
-                                                      !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
-                                                      !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
-                                                      reps.Master.Rows20[1].Inn_DB;
-                                            var address = !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoFactAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) && !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
-                                                     !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
-                                                     reps.Master.Rows20[0].JurLicoAddress_DB;
-                                            worksheet.Cells[row, 5].Value = address;
-                                            worksheet.Cells[row, 6].Value = inn;
-                                            worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
-                                            worksheet.Cells[row, 8].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
-                                            worksheet.Cells[row, 9].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
-                                            worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
-                                            worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
-                                            worksheet.Cells[row, 12].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
-                                            worksheet.Cells[row, 13].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
-                                            worksheet.Cells[row, 14].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
-                                            worksheet.Cells[row, 15].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
-                                            worksheet.Cells[row, 16].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
-                                            worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
-                                            worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
-                                            worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
-                                            worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
-                                            worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
-                                            worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
-                                            worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
-                                            worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
-                                            worksheet.Cells[row, 25].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
-                                            worksheet.Cells[row, 26].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
-                                            worksheet.Cells[row, 27].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
-                                            row++;
+
+                                            if (chekedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
+                                            {
+                                                row--;
+                                                worksheet.Cells[row, 7].Value = (int)worksheet.Cells[row, 7].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
+                                                worksheet.Cells[row, 8].Value = (int)worksheet.Cells[row, 8].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
+                                                worksheet.Cells[row, 9].Value = (int)worksheet.Cells[row, 9].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
+                                                worksheet.Cells[row, 10].Value = (int)worksheet.Cells[row, 10].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
+                                                worksheet.Cells[row, 11].Value = (int)worksheet.Cells[row, 11].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
+                                                worksheet.Cells[row, 12].Value = (int)worksheet.Cells[row, 12].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
+                                                worksheet.Cells[row, 13].Value = (int)worksheet.Cells[row, 13].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
+                                                worksheet.Cells[row, 14].Value = (int)worksheet.Cells[row, 14].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
+                                                worksheet.Cells[row, 15].Value = (int)worksheet.Cells[row, 15].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
+                                                worksheet.Cells[row, 16].Value = (int)worksheet.Cells[row, 16].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
+                                                worksheet.Cells[row, 17].Value = (int)worksheet.Cells[row, 17].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
+                                                worksheet.Cells[row, 18].Value = (int)worksheet.Cells[row, 18].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
+                                                worksheet.Cells[row, 19].Value = (int)worksheet.Cells[row, 19].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
+                                                worksheet.Cells[row, 20].Value = (int)worksheet.Cells[row, 20].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
+                                                worksheet.Cells[row, 21].Value = (int)worksheet.Cells[row, 21].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
+                                                worksheet.Cells[row, 22].Value = (int)worksheet.Cells[row, 22].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
+                                                worksheet.Cells[row, 23].Value = (int)worksheet.Cells[row, 23].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
+                                                worksheet.Cells[row, 24].Value = (int)worksheet.Cells[row, 24].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
+                                                worksheet.Cells[row, 25].Value = (int)worksheet.Cells[row, 25].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
+                                                worksheet.Cells[row, 26].Value = (int)worksheet.Cells[row, 26].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
+                                                worksheet.Cells[row, 27].Value = (int)worksheet.Cells[row, 27].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
+                                                row++;
+                                            }
+                                            else
+                                            {
+                                                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                                                worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
+                                                worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
+                                                worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
+                                                var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
+                                                          !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
+                                                          !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
+                                                          reps.Master.Rows20[1].Inn_DB;
+                                                var address = !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoFactAddress_DB :
+                                                         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
+                                                         !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
+                                                         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) && !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoAddress_DB :
+                                                         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
+                                                         !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
+                                                         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
+                                                         reps.Master.Rows20[0].JurLicoAddress_DB;
+                                                worksheet.Cells[row, 5].Value = address;
+                                                worksheet.Cells[row, 6].Value = inn;
+                                                worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
+                                                worksheet.Cells[row, 8].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
+                                                worksheet.Cells[row, 9].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
+                                                worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
+                                                worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
+                                                worksheet.Cells[row, 12].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
+                                                worksheet.Cells[row, 13].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
+                                                worksheet.Cells[row, 14].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
+                                                worksheet.Cells[row, 15].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
+                                                worksheet.Cells[row, 16].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
+                                                worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
+                                                worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
+                                                worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
+                                                worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
+                                                worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
+                                                worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
+                                                worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
+                                                worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
+                                                worksheet.Cells[row, 25].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
+                                                worksheet.Cells[row, 26].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
+                                                worksheet.Cells[row, 27].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
+                                                row++;
+                                                chekedLst.Add(reps);
+                                            }
+
+                                            //worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                                            //worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
+                                            //worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
+                                            //worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
+                                            //var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
+                                            //          !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
+                                            //          !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
+                                            //          reps.Master.Rows20[1].Inn_DB;
+                                            //var address = !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoFactAddress_DB :
+                                            //         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
+                                            //         !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
+                                            //         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) && !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoAddress_DB :
+                                            //         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
+                                            //         !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
+                                            //         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
+                                            //         reps.Master.Rows20[0].JurLicoAddress_DB;
+                                            //worksheet.Cells[row, 5].Value = address;
+                                            //worksheet.Cells[row, 6].Value = inn;
+                                            //worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
+                                            //worksheet.Cells[row, 8].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
+                                            //worksheet.Cells[row, 9].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
+                                            //worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
+                                            //worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
+                                            //worksheet.Cells[row, 12].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
+                                            //worksheet.Cells[row, 13].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
+                                            //worksheet.Cells[row, 14].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
+                                            //worksheet.Cells[row, 15].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
+                                            //worksheet.Cells[row, 16].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
+                                            //worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
+                                            //worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
+                                            //worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
+                                            //worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
+                                            //worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
+                                            //worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
+                                            //worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
+                                            //worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
+                                            //worksheet.Cells[row, 25].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
+                                            //worksheet.Cells[row, 26].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
+                                            //worksheet.Cells[row, 27].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
+                                            //row++;
                                         }
                                         excelPackage.Save();
                                     }
