@@ -2142,6 +2142,8 @@ namespace Client_App.ViewModels
             Array.Reverse(charArray);
             return string.Join("", charArray);
         }
+
+        #region StatisticExcelExport
         private async Task _Statistic_Excel_Export()
         {
             var find_rep = 0;
@@ -2214,11 +2216,11 @@ namespace Client_App.ViewModels
                                             if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")
                                             {
                                                 lst.Add(item);
-                                                                                               
-                                                
+
+
                                                 foreach (Report rep in item.Report_Collection)
                                                 {
-                                                    var start =  StringReverse(rep.StartPeriod_DB);
+                                                    var start = StringReverse(rep.StartPeriod_DB);
                                                     var end = StringReverse(rep.EndPeriod_DB);
                                                     listSotrRep.Add(new ReportForSort()
                                                     {
@@ -2250,7 +2252,7 @@ namespace Client_App.ViewModels
                                                         {
                                                             var prev_end_n = prev_end.ToString().Length == 8 ? prev_end.ToString() : prev_end == 0 ? "нет даты конца периода" : prev_end.ToString().Insert(6, "0");
                                                             var prev_start_n = prev_start.ToString().Length == 8 ? prev_start.ToString() : prev_start == 0 ? "нет даты начала периода" : prev_start.ToString().Insert(6, "0");
-                                  
+
 
                                                             var st_per = g.StartPeriod.ToString().Length == 8 ? g.StartPeriod.ToString() : g.StartPeriod.ToString().Insert(6, "0");
                                                             var end_per = g.EndPeriod.ToString().Length == 8 ? g.EndPeriod.ToString() : g.EndPeriod.ToString().Insert(6, "0");
@@ -2325,7 +2327,9 @@ namespace Client_App.ViewModels
             catch (Exception ex)
             {
             }
-        }
+        } 
+        #endregion
+
         #region Statistic
 
         #endregion
@@ -3070,7 +3074,6 @@ namespace Client_App.ViewModels
                                         worksheet.Cells[1, 26].Value = "Форма 2.11";
                                         worksheet.Cells[1, 27].Value = "Форма 2.12";
 
-
                                         var lst = new List<Reports>();
                                         var chekedLst = new List<Reports>();
 
@@ -3078,11 +3081,9 @@ namespace Client_App.ViewModels
                                         {
                                             lst.Add(item);
                                         }
-
                                         var row = 2;
                                         foreach (Reports reps in lst)
                                         {
-
                                             if (chekedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
                                             {
                                                 row--;
@@ -3111,14 +3112,11 @@ namespace Client_App.ViewModels
                                             }
                                             else
                                             {
-                                                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                                                worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
-                                                worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
-                                                worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
                                                 var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
                                                           !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
                                                           !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
                                                           reps.Master.Rows20[1].Inn_DB;
+
                                                 var address = !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoFactAddress_DB :
                                                          !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
                                                          !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
@@ -3127,6 +3125,11 @@ namespace Client_App.ViewModels
                                                          !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
                                                          !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
                                                          reps.Master.Rows20[0].JurLicoAddress_DB;
+
+                                                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                                                worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
+                                                worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
+                                                worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
                                                 worksheet.Cells[row, 5].Value = address;
                                                 worksheet.Cells[row, 6].Value = inn;
                                                 worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
@@ -3153,47 +3156,6 @@ namespace Client_App.ViewModels
                                                 row++;
                                                 chekedLst.Add(reps);
                                             }
-
-                                            //worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                                            //worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
-                                            //worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
-                                            //worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
-                                            //var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
-                                            //          !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
-                                            //          !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
-                                            //          reps.Master.Rows20[1].Inn_DB;
-                                            //var address = !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoFactAddress_DB :
-                                            //         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
-                                            //         !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
-                                            //         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) && !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoAddress_DB :
-                                            //         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
-                                            //         !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
-                                            //         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
-                                            //         reps.Master.Rows20[0].JurLicoAddress_DB;
-                                            //worksheet.Cells[row, 5].Value = address;
-                                            //worksheet.Cells[row, 6].Value = inn;
-                                            //worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
-                                            //worksheet.Cells[row, 8].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
-                                            //worksheet.Cells[row, 9].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
-                                            //worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
-                                            //worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
-                                            //worksheet.Cells[row, 12].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
-                                            //worksheet.Cells[row, 13].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
-                                            //worksheet.Cells[row, 14].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
-                                            //worksheet.Cells[row, 15].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
-                                            //worksheet.Cells[row, 16].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
-                                            //worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
-                                            //worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
-                                            //worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
-                                            //worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
-                                            //worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
-                                            //worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
-                                            //worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
-                                            //worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
-                                            //worksheet.Cells[row, 25].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
-                                            //worksheet.Cells[row, 26].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
-                                            //worksheet.Cells[row, 27].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
-                                            //row++;
                                         }
                                         excelPackage.Save();
                                     }
@@ -3210,6 +3172,7 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region ExcelExportNotes
         private int _Excel_Export_Notes(string param, int StartRow, int StartColumn, ExcelWorksheet worksheetPrim, List<Report> forms, bool printID = false)
         {
             foreach (Report item in forms)
@@ -3286,6 +3249,9 @@ namespace Client_App.ViewModels
             }
             return StartRow;
         }
+        #endregion
+
+        #region ExcelExportRows
         private int _Excel_Export_Rows(string param, int StartRow, int StartColumn, ExcelWorksheet worksheet, List<Report> forms, bool ID = false)
         {
             foreach (Report item in forms)
@@ -3309,16 +3275,16 @@ namespace Client_App.ViewModels
                     if (param == "2.2")
                     {
                         t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB == true || ((Form22)x).SumGroup_DB == true);
-                        if (item[param].ToList<IKey>().Count() > 0 && t.Count() == 0) 
+                        if (item[param].ToList<IKey>().Count() > 0 && t.Count() == 0)
                         {
                             t = item[param].ToList<IKey>();
                         }
                     }
-                    if (param != "2.1" && param != "2.2") 
+                    if (param != "2.1" && param != "2.2")
                     {
                         t = item[param].ToList<IKey>();
                     }
-                    
+
                     List<IKey> lst = t.Count() > 0 ? item[param].ToList<IKey>().ToList() : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                     if (lst.Count > 0)
                     {
@@ -3485,6 +3451,9 @@ namespace Client_App.ViewModels
             }
             return StartRow;
         }
+        #endregion
+
+        #region ExcelPrintTitulExport
         private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
         {
             var findReports = from Reports t in Local_Reports.Reports_Collection
@@ -3584,6 +3553,9 @@ namespace Client_App.ViewModels
                 worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
             }
         }
+        #endregion
+
+        #region ExcelPrintSubMainExport
         private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
         {
             var findReports = from Reports t in Local_Reports.Reports_Collection
@@ -3654,6 +3626,9 @@ namespace Client_App.ViewModels
             worksheet.Cells["K18"].Value = form.ExecEmail_DB;
 
         }
+        #endregion
+
+        #region ExcelPrintNotesExport
         private void _Excel_Print_Notes_Export(string param, ExcelWorksheet worksheet, Report form)
         {
             int Start = 15;
@@ -3704,6 +3679,9 @@ namespace Client_App.ViewModels
                 Count++;
             }
         }
+        #endregion
+
+        #region ExcelPrintRowsExport
         private void _Excel_Print_Rows_Export(string param, ExcelWorksheet worksheet, Report form)
         {
             int Start = 11;
@@ -3831,7 +3809,8 @@ namespace Client_App.ViewModels
             //    new_number++;
             //    row++;
             //}
-        }
+        } 
+        #endregion
         #endregion
 
         #region INotifyPropertyChanged
