@@ -72,9 +72,17 @@ namespace Client_App.ViewModels
         {
             var tmp = "";
             var pty = "";
+            string path = "";
             try
             {
-                string path = Path.GetPathRoot(systemDirectory);
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    path = "/home/" + Environment.UserName + "/";
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    path = Path.GetPathRoot(systemDirectory);
+                }
                 tmp = Path.Combine(path, "RAO");
                 pty = tmp;
                 tmp = Path.Combine(tmp, "temp");

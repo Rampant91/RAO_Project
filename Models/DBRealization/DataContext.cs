@@ -17,7 +17,7 @@ namespace Models.DBRealization
             if (Path == "")
             {
                 string system;
-                string path;
+                string path = "";
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     system = Environment.GetFolderPath(Environment.SpecialFolder.System);
