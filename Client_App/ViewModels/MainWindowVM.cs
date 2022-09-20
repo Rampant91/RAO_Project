@@ -77,7 +77,7 @@ namespace Client_App.ViewModels
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    path = "/home/" + Environment.UserName + "/";
+                    path = "/home/andrey/";
                 }
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
