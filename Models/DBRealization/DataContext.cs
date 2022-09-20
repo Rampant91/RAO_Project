@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 using Models.DataAccess;
 using Models.Collections;
-using System.Runtime.InteropServices;
 
 namespace Models.DBRealization
 {
@@ -16,18 +15,8 @@ namespace Models.DBRealization
         {
             if (Path == "")
             {
-                string system;
-                string path = "";
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    system = Environment.GetFolderPath(Environment.SpecialFolder.System);
-                    path = System.IO.Path.GetPathRoot(system);
-                }
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    path = "/home/" + Environment.UserName + "/";
-                }
-                
+                string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                string path = System.IO.Path.GetPathRoot(system);
                 var tmp = System.IO.Path.Combine(path, "RAO");
                 tmp = System.IO.Path.Combine(tmp, "Local_temp.raodb");
                 _path = tmp;
