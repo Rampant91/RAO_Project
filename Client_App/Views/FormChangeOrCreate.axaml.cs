@@ -236,6 +236,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "ќчистить €чейки              Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.P,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Copy",
+                    ContextMenuText = new string[] { "ќткрыть паспорт              Ctrl+P" },
+                    Command = dataContext.OpenPasport
+                });
                 #endregion
 
                 #region Notes Context Menu

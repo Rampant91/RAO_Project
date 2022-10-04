@@ -3284,8 +3284,8 @@ namespace Client_App.ViewModels
                     {
                         t = item[param].ToList<IKey>();
                     }
-
                     List<IKey> lst = t.Count() > 0 ? item[param].ToList<IKey>().ToList() : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
+                    //List<IKey> lst = t.Count() > 0 ? item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList() : new();
                     if (lst.Count > 0)
                     {
                         var count = StartRow;

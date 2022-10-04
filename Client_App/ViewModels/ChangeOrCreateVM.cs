@@ -34,6 +34,8 @@ using Avalonia.Media;
 using Models.DataAccess;
 using System.Globalization;
 using Models.Classes;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 
 namespace Client_App.ViewModels
 {
@@ -1015,7 +1017,6 @@ namespace Client_App.ViewModels
             foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
             {
                 dic.Add(item.Order, new Dictionary<int, string>());
-
                 var dStructure = (IDataGridColumn)item;
                 var findStructure = dStructure.GetColumnStructure();
                 var Level = findStructure.Level;
@@ -1245,6 +1246,56 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region OpenPasport
+        public ReactiveCommand<object, Unit> OpenPasport { get; protected set; }
+        private async Task _OpenPasport(object _param)
+        {
+            object[] param = _param as object[];
+            IKeyCollection collection = param[0] as IKeyCollection;
+            var item = collection.GetEnumerable().OrderBy(x => x.Order).FirstOrDefault();
+            var dStructure = (IDataGridColumn)item;
+            var findStructure = dStructure.GetColumnStructure();
+            var Level = findStructure.Level;
+            var tre = findStructure.GetLevel(Level - 1);
+            var props = item.GetType().GetProperties();
+
+            string type = "";
+            string pasNum = "";
+            string factoryNum = "";
+            foreach (var prop in props)
+            {
+                var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
+                if (attr != null)
+                {
+                    if (attr.Names.Count() > 1 &&
+                        (attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
+                        && attr.Names[1] == "номер паспорта (сертификата)"))
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        pasNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+                    if (attr.Names.Count() > 1 &&
+                        (attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
+                        && attr.Names[1] == "тип"))
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        type = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+                    if (attr.Names.Count() > 1 &&
+                        (attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
+                        && attr.Names[1] == "номер"))
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        factoryNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+                }
+            }
+            string uniqPasName = type + "_" + pasNum + "_" + factoryNum;
+
+
+        }
+        #endregion
+
         #region Constacture
         public ChangeOrCreateVM(string param, in Report rep,Reports reps)
         {
@@ -1395,6 +1446,7 @@ namespace Client_App.ViewModels
             DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
             SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
             DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
+            OpenPasport = ReactiveCommand.CreateFromTask<object>(_OpenPasport);
 
             ShowDialog = new Interaction<object,int>();
             ShowDialogIn = new Interaction<int, int>();
