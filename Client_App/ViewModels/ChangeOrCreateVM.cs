@@ -36,6 +36,9 @@ using System.Globalization;
 using Models.Classes;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Client_App.ViewModels
 {
@@ -1259,41 +1262,141 @@ namespace Client_App.ViewModels
             var tre = findStructure.GetLevel(Level - 1);
             var props = item.GetType().GetProperties();
 
-            string type = "";
-            string pasNum = "";
-            string factoryNum = "";
+            string? okpo = "";
+            string? type = "";
+            string? year = "";
+            string? pasNum = "";
+            string? factoryNum = "";
+
             foreach (var prop in props)
             {
                 var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
-                if (attr != null)
+                if (attr != null && attr.Names.Count() > 1 && attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник")
                 {
-                    if (attr.Names.Count() > 1 &&
-                        (attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
-                        && attr.Names[1] == "номер паспорта (сертификата)"))
+                    if (attr.Names[1] == "код ОКПО изготовителя")
                     {
                         var midvalue = prop.GetMethod.Invoke(item, null);
-                        pasNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                        okpo = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
                     }
-                    if (attr.Names.Count() > 1 &&
-                        (attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
-                        && attr.Names[1] == "тип"))
+                    if (attr.Names[1] == "тип")
                     {
                         var midvalue = prop.GetMethod.Invoke(item, null);
                         type = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
                     }
-                    if (attr.Names.Count() > 1 &&
-                        (attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
-                        && attr.Names[1] == "номер"))
+                    if (attr.Names[1] == "дата выпуска")
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        year = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                        year = year.Substring(year.Length - 4);
+                    }
+                    if (attr.Names[1] == "номер паспорта (сертификата)")
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        pasNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+                    
+                    if (attr.Names[1] == "номер")
                     {
                         var midvalue = prop.GetMethod.Invoke(item, null);
                         factoryNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
                     }
                 }
             }
-            string uniqPasName = type + "_" + pasNum + "_" + factoryNum;
+            string PasFolderPath = @"C:\Test\";
+            string uniqPasName = okpo + "#" + type + "#" + year + "#" + pasNum + "#" + factoryNum + ".pdf";
+            uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
+            uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
 
-
+            ProcessStartInfo procInfo = new() { FileName = PasFolderPath + uniqPasName, UseShellExecute = true };
+            if (File.Exists(PasFolderPath + uniqPasName))
+            {
+                Process.Start(procInfo);
+            }
+            else if (File.Exists(PasFolderPath + TransliteToEng(uniqPasName)))
+            {
+                procInfo.FileName = PasFolderPath + TransliteToEng(uniqPasName);
+                Process.Start(procInfo);
+            }
+            else if (File.Exists(PasFolderPath + TransliteToRus(uniqPasName)))
+            {
+                procInfo.FileName = PasFolderPath + TransliteToRus(uniqPasName);
+                Process.Start(procInfo);
+            }
+            else
+            {
+                await ShowMessageT.Handle(new List<string>() { "Паспорт отсутствует в сетевом хранилище", "Ок" });
+            }
         }
+
+        #region Translite
+        private string TransliteToEng(string pasName)
+        {
+            Dictionary<string, string> dictRusToEng = new()
+            {
+                {"а", "a"},
+                {"А", "A"},
+                {"е", "e"},
+                {"Е", "E"},
+                {"к", "k"},
+                {"К", "K"},
+                {"м", "m"},
+                {"М", "M"},
+                {"о", "o"},
+                {"О", "O"},
+                {"р", "p"},
+                {"Р", "P"},
+                {"с", "c"},
+                {"С", "C"},
+                {"Т", "T"},
+                {"у", "y"},
+                {"У", "Y"},
+                {"х", "x"},
+                {"Х", "X"},
+            };
+            string newPasName = "";
+            foreach (var ch in pasName)
+            {
+                var ss = "";
+                if (dictRusToEng.TryGetValue(ch.ToString(), out ss)) newPasName += ss;
+                else newPasName += ch;
+            }
+            return newPasName;
+        }
+
+        private string TransliteToRus(string pasName)
+        {
+            Dictionary<string, string> dictEngToRus = new()
+            {
+                {"a", "а"},
+                {"A", "А"},
+                {"e", "е"},
+                {"E", "Е"},
+                {"k", "к"},
+                {"K", "К"},
+                {"m", "м"},
+                {"M", "М"},
+                {"o", "о"},
+                {"O", "О"},
+                {"p", "р"},
+                {"P", "Р"},
+                {"c", "с"},
+                {"C", "С"},
+                {"T", "Т"},
+                {"y", "у"},
+                {"Y", "У"},
+                {"x", "х"},
+                {"X", "Х"},
+            };
+            string newPasName = "";
+            foreach (var ch in pasName)
+            {
+                var ss = "";
+                if (dictEngToRus.TryGetValue(ch.ToString(), out ss)) newPasName += ss;
+                else newPasName += ch;
+            }
+            return newPasName;
+        } 
+        #endregion
         #endregion
 
         #region Constacture

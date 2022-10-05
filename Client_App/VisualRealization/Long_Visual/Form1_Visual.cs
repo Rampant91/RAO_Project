@@ -429,7 +429,7 @@ namespace Client_App.Long_Visual
             maingrid.Children.Add(topPnl1);
             #endregion
 
-            #region Centre
+            #region Center
             Controls.DataGrid.DataGridForm11 grd = new Controls.DataGrid.DataGridForm11()
             {
                 Name = "Form11Data_",
