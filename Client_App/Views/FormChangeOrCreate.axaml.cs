@@ -245,6 +245,15 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Открыть паспорт              Ctrl+P" },
                     Command = dataContext.OpenPasport
                 });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.P,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Copy",
+                    ContextMenuText = new string[] { "Выгрузка в Excel движения источника              Ctrl+E" },
+                    Command = dataContext.ExcelPasport
+                });
                 #endregion
 
                 #region Notes Context Menu

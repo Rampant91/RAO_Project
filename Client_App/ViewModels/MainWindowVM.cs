@@ -1996,7 +1996,7 @@ namespace Client_App.ViewModels
                         var rep = (Report)obj;
                         var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
                         string numForm = rep.FormNum.Value;
-                        ChangeOrCreateVM frm = new(numForm, rep, tre);
+                        ChangeOrCreateVM frm = new(numForm, rep, tre, Local_Reports);
                         if (numForm == "2.1")
                         {
                             Form2_Visual.tmpVM = frm;
@@ -2058,7 +2058,7 @@ namespace Client_App.ViewModels
                         var t = desktop.MainWindow as MainWindow;
                         var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
                         var rep = (Reports)obj;
-                        ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master, rep);
+                        ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master, rep, Local_Reports);
                         await ShowDialog.Handle(frm);
 
                         //Local_Reports.Reports_Collection.Sorted = false;
@@ -2134,8 +2134,6 @@ namespace Client_App.ViewModels
         #endregion
 
         #region Excel
-        public ReactiveCommand<Unit, Unit> Statistic_Excel_Export { get; private set; }
-
         private string StringReverse(string _string) 
         {
             var charArray = _string.Replace("_", "0").Split(".");
@@ -2144,6 +2142,7 @@ namespace Client_App.ViewModels
         }
 
         #region StatisticExcelExport
+        public ReactiveCommand<Unit, Unit> Statistic_Excel_Export { get; private set; }
         private async Task _Statistic_Excel_Export()
         {
             var find_rep = 0;
@@ -2328,10 +2327,6 @@ namespace Client_App.ViewModels
             {
             }
         } 
-        #endregion
-
-        #region Statistic
-
         #endregion
 
         #region Excel_Export

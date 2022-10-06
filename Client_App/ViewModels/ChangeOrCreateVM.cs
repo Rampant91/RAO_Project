@@ -115,6 +115,21 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region LocalReports
+        private DBObservable _localReports = new();
+        public DBObservable LocalReports
+        {
+            get => _localReports;
+            set
+            {
+                if (_localReports != value)
+                {
+                    _localReports = value;
+                }
+            }
+        }
+        #endregion
+
         #region DBO
         private DBObservable _DBO;
         public DBObservable DBO
@@ -1249,59 +1264,166 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region Pasport
+        #region ExcelPasport
+        public ReactiveCommand<object, Unit> ExcelPasport { get; protected set; }
+        private async Task _ExcelPasport(object param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
+                SaveFileDialog saveFileDialog = new();
+                FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
+                saveFileDialog.Filters.Add(filter);
+                var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
+                if (res != null)
+                {
+                    if (res.Length != 0)
+                    {
+                        var path = res;
+                        if (!path.Contains(".xlsx"))
+                        {
+                            path += ".xlsx";
+                        }
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                        if (path != null)
+                        {
+                            using (ExcelPackage excelPackage = new(new FileInfo(path)))
+                            {
+                                excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                excelPackage.Workbook.Properties.Title = "Report";
+                                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Операции с паспортом {pasNum}");
+                                ExcelWorksheet worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания");
+
+                                worksheet.Cells[1, 1].Value = "Рег. №";
+                                worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                                worksheet.Cells[1, 3].Value = "ОКПО";
+                                worksheet.Cells[1, 4].Value = "Форма";
+                                worksheet.Cells[1, 5].Value = "Дата начала периода";
+                                worksheet.Cells[1, 6].Value = "Дата конца периода";
+                                worksheet.Cells[1, 7].Value = "Номер корректировки";
+                                worksheet.Cells[1, 8].Value = "Количество строк";
+                                worksheet.Cells[1, 9].Value = "№ п/п";
+                                worksheet.Cells[1, 10].Value = "код";
+                                worksheet.Cells[1, 11].Value = "дата";
+                                worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
+                                worksheet.Cells[1, 13].Value = "тип";
+                                worksheet.Cells[1, 14].Value = "радионуклиды";
+                                worksheet.Cells[1, 15].Value = "номер";
+                                worksheet.Cells[1, 16].Value = "количество, шт";
+                                worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+                                worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
+                                worksheet.Cells[1, 19].Value = "дата выпуска";
+                                worksheet.Cells[1, 20].Value = "категория";
+                                worksheet.Cells[1, 21].Value = "НСС, мес";
+                                worksheet.Cells[1, 22].Value = "код формы собственности";
+                                worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
+                                worksheet.Cells[1, 24].Value = "вид";
+                                worksheet.Cells[1, 25].Value = "номер";
+                                worksheet.Cells[1, 26].Value = "дата";
+                                worksheet.Cells[1, 27].Value = "поставщика или получателя";
+                                worksheet.Cells[1, 28].Value = "перевозчика";
+                                worksheet.Cells[1, 29].Value = "наименование";
+                                worksheet.Cells[1, 30].Value = "тип";
+                                worksheet.Cells[1, 31].Value = "номер";
+
+                                worksheetComment.Cells[1, 1].Value = "ОКПО";
+                                worksheetComment.Cells[1, 2].Value = "Сокращенное наименование";
+                                worksheetComment.Cells[1, 3].Value = "Рег. №";
+                                worksheetComment.Cells[1, 4].Value = "Номер корректировки";
+                                worksheetComment.Cells[1, 5].Value = "Дата начала периода";
+                                worksheetComment.Cells[1, 6].Value = "Дата конца периода";
+                                worksheetComment.Cells[1, 7].Value = "№ строки";
+                                worksheetComment.Cells[1, 8].Value = "№ графы";
+                                worksheetComment.Cells[1, 9].Value = "Пояснение";
+
+                                int currentRow = 2;
+                                foreach (Reports reps in LocalReports.Reports_Collection10)
+                                {
+                                    var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                                    foreach (Report rep in form11)
+                                    {
+                                        var repPas = rep.Rows11.Where(x =>
+                                        x.CreatorOKPO_DB == okpo 
+                                        && x.Type_DB == type
+                                        && x.CreationDate_DB.Substring(x.CreationDate_DB.Length - 4) == year
+                                        && x.PassportNumber_DB == pasNum
+                                        && x.FactoryNumber_DB == factoryNum
+                                        );
+                                        foreach (Form11 repForm in repPas)
+                                        {
+                                            worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
+                                            worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+                                            worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
+                                            worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
+                                            worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+                                            worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+                                            worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
+                                            worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
+                                            worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
+                                            worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
+                                            worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
+                                            worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
+                                            worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
+                                            worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
+                                            worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
+                                            worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
+                                            worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
+                                            worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
+                                            worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
+                                            worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
+                                            worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
+                                            worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
+                                            worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
+                                            worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
+                                            worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
+                                            worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
+                                            worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+                                            worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
+                                            worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
+                                            worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
+                                            worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+                                            currentRow++;
+                                        }
+                                        currentRow = 2;
+                                        foreach (Note comment in rep.Notes)
+                                        {
+                                            worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
+                                            worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
+                                            worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
+                                            worksheetComment.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
+                                            worksheetComment.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+                                            worksheetComment.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+                                            worksheetComment.Cells[currentRow, 7].Value = comment.RowNumber_DB;
+                                            worksheetComment.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
+                                            worksheetComment.Cells[currentRow, 9].Value = comment.Comment_DB;
+                                            currentRow++;
+                                        }
+                                    }
+                                }
+                                excelPackage.Save();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region OpenPasport
         public ReactiveCommand<object, Unit> OpenPasport { get; protected set; }
-        private async Task _OpenPasport(object _param)
+        private async Task _OpenPasport(object param)
         {
-            object[] param = _param as object[];
-            IKeyCollection collection = param[0] as IKeyCollection;
-            var item = collection.GetEnumerable().OrderBy(x => x.Order).FirstOrDefault();
-            var dStructure = (IDataGridColumn)item;
-            var findStructure = dStructure.GetColumnStructure();
-            var Level = findStructure.Level;
-            var tre = findStructure.GetLevel(Level - 1);
-            var props = item.GetType().GetProperties();
-
             string? okpo = "";
             string? type = "";
             string? year = "";
             string? pasNum = "";
             string? factoryNum = "";
-
-            foreach (var prop in props)
-            {
-                var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
-                if (attr != null && attr.Names.Count() > 1 && attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник")
-                {
-                    if (attr.Names[1] == "код ОКПО изготовителя")
-                    {
-                        var midvalue = prop.GetMethod.Invoke(item, null);
-                        okpo = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                    }
-                    if (attr.Names[1] == "тип")
-                    {
-                        var midvalue = prop.GetMethod.Invoke(item, null);
-                        type = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                    }
-                    if (attr.Names[1] == "дата выпуска")
-                    {
-                        var midvalue = prop.GetMethod.Invoke(item, null);
-                        year = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                        year = year.Substring(year.Length - 4);
-                    }
-                    if (attr.Names[1] == "номер паспорта (сертификата)")
-                    {
-                        var midvalue = prop.GetMethod.Invoke(item, null);
-                        pasNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                    }
-                    
-                    if (attr.Names[1] == "номер")
-                    {
-                        var midvalue = prop.GetMethod.Invoke(item, null);
-                        factoryNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                    }
-                }
-            }
+            PasportUniqParam(param, out okpo, out type, out year, out pasNum, out factoryNum);
             string PasFolderPath = @"C:\Test\";
             string uniqPasName = okpo + "#" + type + "#" + year + "#" + pasNum + "#" + factoryNum + ".pdf";
             uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
@@ -1395,16 +1517,75 @@ namespace Client_App.ViewModels
                 else newPasName += ch;
             }
             return newPasName;
-        } 
+        }
         #endregion
+
+
+        #endregion
+
+        #region PasportUniqParam
+        private void PasportUniqParam(object param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum)
+        {
+            object[] par = param as object[];
+            IKeyCollection collection = par[0] as IKeyCollection;
+            var item = collection.GetEnumerable().OrderBy(x => x.Order).FirstOrDefault();
+            var dStructure = (IDataGridColumn)item;
+            var findStructure = dStructure.GetColumnStructure();
+            var Level = findStructure.Level;
+            var tre = findStructure.GetLevel(Level - 1);
+            var props = item.GetType().GetProperties();
+
+            okpo = "";
+            type = "";
+            year = "";
+            pasNum = "";
+            factoryNum = "";
+
+            foreach (var prop in props)
+            {
+                var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
+                if (attr != null && attr.Names.Count() > 1 && attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник")
+                {
+                    if (attr.Names[1] == "код ОКПО изготовителя")
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        okpo = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+                    if (attr.Names[1] == "тип")
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        type = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+                    if (attr.Names[1] == "дата выпуска")
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        year = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                        year = year.Substring(year.Length - 4);
+                    }
+                    if (attr.Names[1] == "номер паспорта (сертификата)")
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        pasNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+
+                    if (attr.Names[1] == "номер")
+                    {
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        factoryNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    }
+                }
+            }
+        }
+        #endregion 
         #endregion
 
         #region Constacture
-        public ChangeOrCreateVM(string param, in Report rep,Reports reps)
+        public ChangeOrCreateVM(string param, in Report rep, Reports reps, DBObservable localReports)
         {
             Storage = rep;
             Storages = reps;
             FormType = param;
+            LocalReports = localReports;
             var sumR21 = rep.Rows21.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
             var sumR22 = rep.Rows22.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
             if (sumR21 > 0 || sumR22 > 0)
@@ -1550,6 +1731,7 @@ namespace Client_App.ViewModels
             SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
             DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
             OpenPasport = ReactiveCommand.CreateFromTask<object>(_OpenPasport);
+            ExcelPasport = ReactiveCommand.CreateFromTask<object>(_ExcelPasport);
 
             ShowDialog = new Interaction<object,int>();
             ShowDialogIn = new Interaction<int, int>();
@@ -1721,7 +1903,7 @@ namespace Client_App.ViewModels
         }
         private string[] ParseInnerTextColumn(string Text)
         {
-            List<string> lst = new List<string>();
+            List<string> lst = new();
 
             bool comaFlag = false;
 
