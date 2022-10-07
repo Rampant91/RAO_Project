@@ -39,6 +39,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Match = System.Text.RegularExpressions.Match;
 
 namespace Client_App.ViewModels
 {
@@ -1287,7 +1288,15 @@ namespace Client_App.ViewModels
                         }
                         if (File.Exists(path))
                         {
-                            File.Delete(path);
+                            try
+                            {
+                                File.Delete(path);
+                            }
+                            catch (Exception e)
+                            {
+                                await ShowMessageT.Handle(new List<string>() { "Не удалось сохранить файл по указанному пути. Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                return;
+                            }
                         }
                         if (path != null)
                         {
@@ -1297,7 +1306,6 @@ namespace Client_App.ViewModels
                                 excelPackage.Workbook.Properties.Title = "Report";
                                 excelPackage.Workbook.Properties.Created = DateTime.Now;
                                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Операции с паспортом {pasNum}");
-                                ExcelWorksheet worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания");
 
                                 worksheet.Cells[1, 1].Value = "Рег. №";
                                 worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1331,17 +1339,9 @@ namespace Client_App.ViewModels
                                 worksheet.Cells[1, 30].Value = "тип";
                                 worksheet.Cells[1, 31].Value = "номер";
 
-                                worksheetComment.Cells[1, 1].Value = "ОКПО";
-                                worksheetComment.Cells[1, 2].Value = "Сокращенное наименование";
-                                worksheetComment.Cells[1, 3].Value = "Рег. №";
-                                worksheetComment.Cells[1, 4].Value = "Номер корректировки";
-                                worksheetComment.Cells[1, 5].Value = "Дата начала периода";
-                                worksheetComment.Cells[1, 6].Value = "Дата конца периода";
-                                worksheetComment.Cells[1, 7].Value = "№ строки";
-                                worksheetComment.Cells[1, 8].Value = "№ графы";
-                                worksheetComment.Cells[1, 9].Value = "Пояснение";
-
                                 int currentRow = 2;
+                                int rowInsert = currentRow;
+                                List<T> excelRows = new();
                                 foreach (Reports reps in LocalReports.Reports_Collection10)
                                 {
                                     var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
@@ -1356,61 +1356,92 @@ namespace Client_App.ViewModels
                                         );
                                         foreach (Form11 repForm in repPas)
                                         {
-                                            worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                                            worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                                            worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                                            worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                                            worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                                            worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                                            worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                                            worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                                            worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                                            worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                                            worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                                            worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                                            worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                                            worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                                            worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                                            worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                                            worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
-                                            worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
-                                            worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
-                                            worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
-                                            worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
-                                            worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
-                                            worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
-                                            worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
-                                            worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
-                                            worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
-                                            worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                                            worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
-                                            worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
-                                            worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
-                                            worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+                                            while (CompareDate(repForm.OperationDate_DB, (string) worksheet.Cells[rowInsert, 11].Value) < 0)
+                                            {
+                                                rowInsert--;
+                                            }
+                                            worksheet.InsertRow(rowInsert, 1);
+                                            worksheet.Cells[rowInsert, 1].Value = reps.Master.RegNoRep.Value;
+                                            worksheet.Cells[rowInsert, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+                                            worksheet.Cells[rowInsert, 3].Value = reps.Master.OkpoRep.Value;
+                                            worksheet.Cells[rowInsert, 4].Value = rep.FormNum_DB;
+                                            worksheet.Cells[rowInsert, 5].Value = rep.StartPeriod_DB;
+                                            worksheet.Cells[rowInsert, 6].Value = rep.EndPeriod_DB;
+                                            worksheet.Cells[rowInsert, 7].Value = rep.CorrectionNumber_DB;
+                                            worksheet.Cells[rowInsert, 8].Value = rep.Rows.Count;
+                                            worksheet.Cells[rowInsert, 9].Value = repForm.NumberInOrder_DB;
+                                            worksheet.Cells[rowInsert, 10].Value = repForm.OperationCode_DB;
+                                            worksheet.Cells[rowInsert, 11].Value = repForm.OperationDate_DB;
+                                            worksheet.Cells[rowInsert, 12].Value = repForm.PassportNumber_DB;
+                                            worksheet.Cells[rowInsert, 13].Value = repForm.Type_DB;
+                                            worksheet.Cells[rowInsert, 14].Value = repForm.Radionuclids_DB;
+                                            worksheet.Cells[rowInsert, 15].Value = repForm.FactoryNumber_DB;
+                                            worksheet.Cells[rowInsert, 16].Value = repForm.Quantity_DB;
+                                            worksheet.Cells[rowInsert, 17].Value = repForm.Activity_DB;
+                                            worksheet.Cells[rowInsert, 18].Value = repForm.CreatorOKPO_DB;
+                                            worksheet.Cells[rowInsert, 19].Value = repForm.CreationDate_DB;
+                                            worksheet.Cells[rowInsert, 20].Value = repForm.Category_DB;
+                                            worksheet.Cells[rowInsert, 21].Value = repForm.SignedServicePeriod_DB;
+                                            worksheet.Cells[rowInsert, 22].Value = repForm.PropertyCode_DB;
+                                            worksheet.Cells[rowInsert, 23].Value = repForm.Owner_DB;
+                                            worksheet.Cells[rowInsert, 24].Value = repForm.DocumentVid_DB;
+                                            worksheet.Cells[rowInsert, 25].Value = repForm.DocumentNumber_DB;
+                                            worksheet.Cells[rowInsert, 26].Value = repForm.DocumentDate_DB;
+                                            worksheet.Cells[rowInsert, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+                                            worksheet.Cells[rowInsert, 28].Value = repForm.TransporterOKPO_DB;
+                                            worksheet.Cells[rowInsert, 29].Value = repForm.PackName_DB;
+                                            worksheet.Cells[rowInsert, 30].Value = repForm.PackType_DB;
+                                            worksheet.Cells[rowInsert, 31].Value = repForm.PackNumber_DB;
                                             currentRow++;
-                                        }
-                                        currentRow = 2;
-                                        foreach (Note comment in rep.Notes)
-                                        {
-                                            worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                                            worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                                            worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                                            worksheetComment.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                                            worksheetComment.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                                            worksheetComment.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                                            worksheetComment.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                                            worksheetComment.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                                            worksheetComment.Cells[currentRow, 9].Value = comment.Comment_DB;
-                                            currentRow++;
+                                            rowInsert = currentRow;
                                         }
                                     }
                                 }
-                                excelPackage.Save();
+                                try
+                                {
+                                    excelPackage.Save();
+                                    res = await ShowMessageT.Handle(new List<string>() { $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути {path}", "Ок", "Открыть выгрузку" });
+                                    if (res.Equals("Открыть выгрузку"))
+                                    {
+                                        ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                                        Process.Start(procInfo);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    await ShowMessageT.Handle(new List<string>() { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+
+        private int CompareDate (string date1, string date2)
+        {
+            if (string.IsNullOrEmpty(date2))
+                return 1;
+            string pat = @"^(\d{2})\.(\d{2})\.(\d{4})$";
+            Regex r = new(pat);
+            if (r.IsMatch(date1) && r.IsMatch(date2))
+            {
+                Match m1 = r.Match(date1);
+                int day1 = Int32.Parse(m1.Groups[0].Value.ToString());
+                int month1 = Int32.Parse(m1.Groups[1].Value.ToString());
+                int year1 = Int32.Parse(m1.Groups[2].Value.ToString());
+                Match m2 = r.Match(date2);
+                int day2 = Int32.Parse(m2.Groups[0].Value.ToString());
+                int month2 = Int32.Parse(m2.Groups[1].Value.ToString());
+                int year2 = Int32.Parse(m2.Groups[2].Value.ToString());
+                if (year1 != year2)
+                    return year1 - year2;
+                if (month1 != month2)
+                    return month1 - month2;
+                if (day1 != day2)
+                    return day1 - day2;
+            }
+            return -1;
         }
         #endregion
 
@@ -1519,8 +1550,6 @@ namespace Client_App.ViewModels
             return newPasName;
         }
         #endregion
-
-
         #endregion
 
         #region PasportUniqParam
