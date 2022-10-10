@@ -1758,7 +1758,7 @@ namespace Client_App.ViewModels
         {
             if (an == "Сохранить оба" || an == "Да")
             {
-                if (!doSomething)
+                if (doSomething)
                     first.Report_Collection.Add(it);
             }
             if (an == "Заменить" || an == "Загрузить новую")
