@@ -256,15 +256,6 @@ namespace Client_App.Views
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.M,
-                    IsDoubleTappedCommand = false,
-                    IsContextMenuCommand = true,
-                    ParamName = "Copy",
-                    ContextMenuText = new string[] { "Выгрузка в Excel отчётов без паспартов   Ctrl+M" },
-                    Command = dataContext.ExcelMissingPas
-                });
-                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
-                {
                     Key = Avalonia.Input.Key.K,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
