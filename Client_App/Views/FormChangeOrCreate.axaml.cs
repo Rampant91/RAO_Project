@@ -154,7 +154,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectAll",
-                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    ContextMenuText = new string[] { "Выделить все                                            Ctrl+A" },
                     Command = null
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -164,7 +164,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
+                    ContextMenuText = new string[] { "Добавить строку                                      Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -174,7 +174,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
+                    ContextMenuText = new string[] { "Добавить N строк                                    Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -184,7 +184,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
+                    ContextMenuText = new string[] { "Добавить N строк перед                         Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -194,7 +194,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
+                    ContextMenuText = new string[] { "Копировать                                               Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -204,7 +204,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Paste",
-                    ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
+                    ContextMenuText = new string[] { "Вставить                                                    Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -214,7 +214,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
+                    ContextMenuText = new string[] { "Удалить строки                                         Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -224,7 +224,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
+                    ContextMenuText = new string[] { "Выставить номер п/п                               Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -233,7 +233,7 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = new string[] { "Очистить ячейки              Delete" },
+                    ContextMenuText = new string[] { "Очистить ячейки                                      Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -242,17 +242,35 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = new string[] { "Открыть паспорт              Ctrl+P" },
+                    ContextMenuText = new string[] { "Открыть паспорт                                      Ctrl+P" },
                     Command = dataContext.OpenPasport
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.P,
+                    Key = Avalonia.Input.Key.E,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = new string[] { "Выгрузка в Excel движения источника              Ctrl+E" },
+                    ContextMenuText = new string[] { "Выгрузка в Excel движения источника   Ctrl+E" },
                     Command = dataContext.ExcelPasport
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.M,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Copy",
+                    ContextMenuText = new string[] { "Выгрузка в Excel движения источника   Ctrl+" },
+                    Command = dataContext.ExcelPasport
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.K,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "Copy",
+                    ContextMenuText = new string[] { "Скопировать в буфер имя паспорта      Ctrl+K" },
+                    Command = dataContext.CopyPasName
                 });
                 #endregion
 

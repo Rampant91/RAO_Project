@@ -1,45 +1,30 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Metadata;
-using Models.Collections;
+using DynamicData;
 using Models;
+using Models.Abstracts;
+using Models.Attributes;
+using Models.Classes;
+using Models.Collections;
+using Models.DataAccess;
+using Models.DBRealization;
+using OfficeOpenXml;
 using ReactiveUI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Avalonia.Controls;
-using Models.DataAccess;
-using Avalonia.LogicalTree;
-using Client_App.Controls.DataGrid;
-using Models.DBRealization;
-using System;
-using Models.Attributes;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Models.Abstracts;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
-using Avalonia;
-using Client_App.Views;
-using DynamicData;
-using OfficeOpenXml;
-using Spravochniki;
-using System.IO;
-using System.Threading;
-using System.Timers;
-using Microsoft.EntityFrameworkCore;
 using System.Reactive.Linq;
-using Avalonia.Media;
-using Models.DataAccess;
-using System.Globalization;
-using Models.Classes;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Match = System.Text.RegularExpressions.Match;
+using System.Threading.Tasks;
 
 namespace Client_App.ViewModels
 {
@@ -562,7 +547,7 @@ namespace Client_App.ViewModels
 
                 }
             });
-            
+
 
             Storage.Rows22.Clear();
             var yu = ito.OrderBy(x => x.Value.Count);
@@ -731,7 +716,7 @@ namespace Client_App.ViewModels
             }
             var rows = Storage.Rows22.GetEnumerable();
             var count = 1;
-            foreach (Form22 row in rows) 
+            foreach (Form22 row in rows)
             {
                 row.SetOrder(count);
                 count++;
@@ -839,9 +824,9 @@ namespace Client_App.ViewModels
                 {
                     //var lst = new List<IKey>(Storage.Rows.GetEnumerable());
                     var countParam = param;
-                    var minItem = param.Min(x=>x.Order);
-                    var maxItem = param.Max(x=>x.Order);
-                    foreach (var item in param) 
+                    var minItem = param.Min(x => x.Order);
+                    var maxItem = param.Max(x => x.Order);
+                    foreach (var item in param)
                     {
                         if (item != null)
                         {
@@ -1090,9 +1075,9 @@ namespace Client_App.ViewModels
                         }
                         catch
                         {
-               
+
                         }
-                    }                                   
+                    }
                 }
             }
 
@@ -1150,10 +1135,10 @@ namespace Client_App.ViewModels
                     {
                         var newText = rowText.ToArray();
                         var count = 0;
-                        foreach(char t in newText)
+                        foreach (char t in newText)
                         {
                             count++;
-                            if (t.Equals('\t')) 
+                            if (t.Equals('\t'))
                             {
                                 break;
                             }
@@ -1213,7 +1198,7 @@ namespace Client_App.ViewModels
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
                                     else if (midvalue is RamAccess<string>)
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
-                                    else if(midvalue is RamAccess<byte?>)
+                                    else if (midvalue is RamAccess<byte?>)
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
                                     else if (midvalue is RamAccess<bool>)
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
@@ -1221,7 +1206,7 @@ namespace Client_App.ViewModels
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
                                 }
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
                                 int k = 8;
                             }
@@ -1242,7 +1227,7 @@ namespace Client_App.ViewModels
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
-                    foreach (Note item in param) 
+                    foreach (Note item in param)
                     {
                         if (item != null)
                         {
@@ -1346,13 +1331,13 @@ namespace Client_App.ViewModels
                                     foreach (Report rep in form11)
                                     {
                                         var repPas = rep.Rows11.Where(x =>
-                                        x.CreatorOKPO_DB == okpo 
+                                        x.CreatorOKPO_DB == okpo
                                         && x.Type_DB == type
                                         && x.CreationDate_DB.Substring(x.CreationDate_DB.Length - 4) == year
                                         && x.PassportNumber_DB == pasNum
                                         && x.FactoryNumber_DB == factoryNum
                                         );
-                                        
+
                                         foreach (Form11 repForm in repPas)
                                         {
                                             if (lastRow == 1)
@@ -1391,7 +1376,7 @@ namespace Client_App.ViewModels
                                             }
                                             for (int currentRow = lastRow; currentRow >= 2; currentRow--)
                                             {
-                                                if (CompareDate(repForm.OperationDate_DB, (string) worksheet.Cells[currentRow, 11].Value) > 0)
+                                                if (CompareDate(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) > 0)
                                                 {
                                                     worksheet.InsertRow(currentRow + 1, 1);
                                                     worksheet.Cells[currentRow + 1, 1].Value = reps.Master.RegNoRep.Value;
@@ -1454,7 +1439,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        private int CompareDate (string date1, string date2)
+        private int CompareDate(string date1, string date2)
         {
             if (string.IsNullOrEmpty(date1))
                 return 1;
@@ -1467,7 +1452,8 @@ namespace Client_App.ViewModels
                 date1 = StringDateReverse(date1);
                 date2 = StringDateReverse(date2);
                 return string.Compare(date1, date2);
-            } else if (!r.IsMatch(date1) && !r.IsMatch(date2))
+            }
+            else if (!r.IsMatch(date1) && !r.IsMatch(date2))
                 return string.Compare(date1, date2);
             else if (!r.IsMatch(date2))
                 return 1;
@@ -1492,12 +1478,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<object, Unit> OpenPasport { get; protected set; }
         private async Task _OpenPasport(object param)
         {
-            string? okpo = "";
-            string? type = "";
-            string? year = "";
-            string? pasNum = "";
-            string? factoryNum = "";
-            PasportUniqParam(param, out okpo, out type, out year, out pasNum, out factoryNum);
+            PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
             string PasFolderPath = @"C:\Test\";
             string uniqPasName = okpo + "#" + type + "#" + year + "#" + pasNum + "#" + factoryNum + ".pdf";
             uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
@@ -1594,6 +1575,22 @@ namespace Client_App.ViewModels
         }
         #endregion
         #endregion
+
+        #region CopyPasName
+        public ReactiveCommand<object, Unit> CopyPasName { get; protected set; }
+        private async Task _CopyPasName(object param)
+        {
+            PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
+            string uniqPasName = okpo + "#" + type + "#" + year + "#" + pasNum + "#" + factoryNum + ".pdf";
+            await Application.Current.Clipboard.SetTextAsync(uniqPasName);
+        }
+        #endregion
+
+        public ReactiveCommand<object, Unit> ExcelMissingPas { get; protected set; }
+        private async Task _ExcelMissingPas(object param)
+        {
+
+        }
 
         #region PasportUniqParam
         private void PasportUniqParam(object param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum)
@@ -1780,12 +1777,12 @@ namespace Client_App.ViewModels
         public void Init()
         {
             string a = FormType.Replace(".", "");
-            if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1")||(FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
+            if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
             {
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
                     " " + Storages.Master_DB.RegNoRep.Value + " " + Storages.Master_DB.ShortJurLicoRep.Value + " " + Storages.Master_DB.OkpoRep.Value;
             }
-            if(FormType=="1.0"||FormType=="2.0")
+            if (FormType == "1.0" || FormType == "2.0")
             {
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             }
@@ -1804,8 +1801,11 @@ namespace Client_App.ViewModels
             DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
             OpenPasport = ReactiveCommand.CreateFromTask<object>(_OpenPasport);
             ExcelPasport = ReactiveCommand.CreateFromTask<object>(_ExcelPasport);
+            CopyPasName = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
+            ExcelMissingPas = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
 
-            ShowDialog = new Interaction<object,int>();
+
+            ShowDialog = new Interaction<object, int>();
             ShowDialogIn = new Interaction<int, int>();
             ShowMessageT = new Interaction<List<string>, string>();
             if (!isSum)
@@ -1896,14 +1896,14 @@ namespace Client_App.ViewModels
                     Storages.Report_Collection.QuickSort();
                 }
 
-                    //Storages.Report_Collection.Sorted = false;
-                    //Storages.Report_Collection.QuickSort();
-                }
-
-                var dbm = StaticConfiguration.DBModel;
-                dbm.SaveChanges();
-                IsCanSaveReportEnabled = false;
+                //Storages.Report_Collection.Sorted = false;
+                //Storages.Report_Collection.QuickSort();
             }
+
+            var dbm = StaticConfiguration.DBModel;
+            dbm.SaveChanges();
+            IsCanSaveReportEnabled = false;
+        }
 
         //public void _AddRow10()
         //{
@@ -1936,19 +1936,19 @@ namespace Client_App.ViewModels
             List<string> lst = new List<string>();
 
             bool comaFlag = false;
-            Text = Text.Replace("\r\n","\n");
+            Text = Text.Replace("\r\n", "\n");
 
             string txt = "";
-            foreach(char item in Text)
+            foreach (char item in Text)
             {
-                if(item=='\"')
+                if (item == '\"')
                 {
                     txt += item;
                     comaFlag = !comaFlag;
                 }
                 else
                 {
-                    if((item=='\n'))//||(item=='\t'))
+                    if ((item == '\n'))//||(item=='\t'))
                     {
                         if (!comaFlag)
                         {
@@ -1966,7 +1966,7 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-            if(txt!="")
+            if (txt != "")
             {
                 lst.Add(txt);
             }
@@ -2006,11 +2006,11 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-            if(txt!="")
+            if (txt != "")
             {
                 lst.Add(txt);
             }
-            
+
             return lst.ToArray();
         }
         #endregion
