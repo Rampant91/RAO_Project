@@ -11,7 +11,6 @@ using Models.Collections;
 using Models.DataAccess;
 using Models.DBRealization;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using ReactiveUI;
 using System;
 using System.Collections;
@@ -1280,7 +1279,8 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessageT.Handle(new List<string>() { "Не удалось сохранить файл по указанному пути. Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                await ShowMessageT.Handle(new List<string>() { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                    + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -1345,6 +1345,7 @@ namespace Client_App.ViewModels
                                         {
                                             if (lastRow == 1)
                                             {
+                                                #region BindingCells
                                                 worksheet.Cells[2, 1].Value = reps.Master.RegNoRep.Value;
                                                 worksheet.Cells[2, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                                                 worksheet.Cells[2, 3].Value = reps.Master.OkpoRep.Value;
@@ -1376,12 +1377,14 @@ namespace Client_App.ViewModels
                                                 worksheet.Cells[2, 29].Value = repForm.PackName_DB;
                                                 worksheet.Cells[2, 30].Value = repForm.PackType_DB;
                                                 worksheet.Cells[2, 31].Value = repForm.PackNumber_DB;
+                                                #endregion
                                             }
                                             for (int currentRow = lastRow; currentRow >= 2; currentRow--)
                                             {
                                                 if (CompareDate(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) > 0)
                                                 {
                                                     worksheet.InsertRow(currentRow + 1, 1);
+                                                    #region BindingCells
                                                     worksheet.Cells[currentRow + 1, 1].Value = reps.Master.RegNoRep.Value;
                                                     worksheet.Cells[currentRow + 1, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                                                     worksheet.Cells[currentRow + 1, 3].Value = reps.Master.OkpoRep.Value;
@@ -1413,6 +1416,7 @@ namespace Client_App.ViewModels
                                                     worksheet.Cells[currentRow + 1, 29].Value = repForm.PackName_DB;
                                                     worksheet.Cells[currentRow + 1, 30].Value = repForm.PackType_DB;
                                                     worksheet.Cells[currentRow + 1, 31].Value = repForm.PackNumber_DB;
+                                                    #endregion
                                                     break;
                                                 }
                                             }
@@ -1423,7 +1427,8 @@ namespace Client_App.ViewModels
                                 try
                                 {
                                     excelPackage.Save();
-                                    res = await ShowMessageT.Handle(new List<string>() { $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути {path}", "Ок", "Открыть выгрузку" });
+                                    res = await ShowMessageT.Handle(new List<string>() { $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:"
+                                        + Environment.NewLine + path, "Ок", "Открыть выгрузку" });
                                     if (res.Equals("Открыть выгрузку"))
                                     {
                                         ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
@@ -1432,7 +1437,8 @@ namespace Client_App.ViewModels
                                 }
                                 catch (Exception e)
                                 {
-                                    await ShowMessageT.Handle(new List<string>() { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                                    await ShowMessageT.Handle(new List<string>() { $"Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                        + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 }
                             }
                         }
@@ -1503,7 +1509,8 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessageT.Handle(new List<string>() { "Не удалось сохранить файл по указанному пути. Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                await ShowMessageT.Handle(new List<string>() { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                    + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -1552,7 +1559,8 @@ namespace Client_App.ViewModels
 
                                 List<string> pasNames = new();
                                 List<string[]> pasUniqParam = new();
-                                FileInfo[] Files = new DirectoryInfo(@"C:\Test").GetFiles("*.pdf");
+                                DirectoryInfo directory = new(@"C:\Test");
+                                FileInfo[] Files = directory.GetFiles("*.pdf");
                                 foreach (FileInfo file in Files)
                                 {
                                     pasNames.Add(file.Name);
@@ -1564,17 +1572,18 @@ namespace Client_App.ViewModels
                                 }
 
                                 int currentRow = 2;
+                                bool findPasFile = false; ;
                                 foreach (Reports reps in LocalReports.Reports_Collection10)
                                 {
                                     var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
                                     foreach (Report rep in form11)
                                     {
-
-                                        List<Form11>  repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11"
+                                        List<Form11> repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11"
                                         && (x.Category_DB == 1 || x.Category_DB == 2 || x.Category_DB == 3)).ToList();
 
                                         foreach (Form11 repForm in repPas)
                                         {
+                                            findPasFile = false;
                                             foreach (string[] pasParam in pasUniqParam)
                                             {
                                                 if (repForm.CreatorOKPO_DB == pasParam[0]
@@ -1583,43 +1592,67 @@ namespace Client_App.ViewModels
                                                     && repForm.PassportNumber_DB == pasParam[3]
                                                     && repForm.FactoryNumber_DB == pasParam[4])
                                                 {
-                                                    worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                                                    worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                                                    worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                                                    worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                                                    worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                                                    worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                                                    worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                                                    worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                                                    worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                                                    worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                                                    worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                                                    worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                                                    worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                                                    worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                                                    worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                                                    worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                                                    worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
-                                                    worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
-                                                    worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
-                                                    worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
-                                                    worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
-                                                    worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
-                                                    worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
-                                                    worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
-                                                    worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
-                                                    worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
-                                                    worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                                                    worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
-                                                    worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
-                                                    worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
-                                                    worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
-                                                    currentRow++;
+                                                    findPasFile = true;
                                                     break;
                                                 }
                                             }
+                                            if (!findPasFile)
+                                            {
+                                                #region BindingCells
+                                                worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
+                                                worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+                                                worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
+                                                worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
+                                                worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+                                                worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+                                                worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
+                                                worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
+                                                worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
+                                                worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
+                                                worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
+                                                worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
+                                                worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
+                                                worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
+                                                worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
+                                                worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
+                                                worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
+                                                worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
+                                                worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
+                                                worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
+                                                worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
+                                                worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
+                                                worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
+                                                worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
+                                                worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
+                                                worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
+                                                worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+                                                worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
+                                                worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
+                                                worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
+                                                worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+                                                #endregion
+                                                currentRow++;
+                                            }
                                         }
                                     }
+                                }
+                                try
+                                {
+                                    excelPackage.Save();
+                                    res = await ShowMessageT.Handle(new List<string>() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3," 
+                                        + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}" 
+                                        + Environment.NewLine + $"сохранена по пути: {path}", "Ок", "Открыть выгрузку" });
+                                    if (res is null || res.Equals("Ок"))
+                                        return;
+                                    if (res.Equals("Открыть выгрузку"))
+                                    {
+                                        ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                                        Process.Start(procInfo);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    await ShowMessageT.Handle(new List<string>() { $"Не удалось сохранить файл по указанному пути", "Ок" });
                                 }
                             }
                         }
