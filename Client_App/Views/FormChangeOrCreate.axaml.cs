@@ -260,8 +260,8 @@ namespace Client_App.Views
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = new string[] { "Выгрузка в Excel движения источника   Ctrl+" },
-                    Command = dataContext.ExcelPasport
+                    ContextMenuText = new string[] { "Выгрузка в Excel отчётов без паспартов   Ctrl+M" },
+                    Command = dataContext.ExcelMissingPas
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {

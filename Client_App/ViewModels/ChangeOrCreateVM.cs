@@ -1439,7 +1439,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        private int CompareDate(string date1, string date2)
+        private static int CompareDate(string date1, string date2)
         {
             if (string.IsNullOrEmpty(date1))
                 return 1;
@@ -1460,7 +1460,7 @@ namespace Client_App.ViewModels
             return -1;
         }
 
-        private string StringDateReverse(string date)
+        private static string StringDateReverse(string date)
         {
             var charArray = date.Replace("_", "0").Replace("/", ".").Split(".");
             if (charArray[0].Length == 1)
@@ -1472,6 +1472,14 @@ namespace Client_App.ViewModels
             Array.Reverse(charArray);
             return string.Join("", charArray);
         }
+        #endregion
+
+        #region ExcelMissingPas
+        public ReactiveCommand<object, Unit> ExcelMissingPas { get; protected set; }
+        private async Task _ExcelMissingPas(object param)
+        {
+
+        } 
         #endregion
 
         #region OpenPasport
@@ -1585,12 +1593,6 @@ namespace Client_App.ViewModels
             await Application.Current.Clipboard.SetTextAsync(uniqPasName);
         }
         #endregion
-
-        public ReactiveCommand<object, Unit> ExcelMissingPas { get; protected set; }
-        private async Task _ExcelMissingPas(object param)
-        {
-
-        }
 
         #region PasportUniqParam
         private void PasportUniqParam(object param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum)
