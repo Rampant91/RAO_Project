@@ -19,6 +19,10 @@
         <MenuItem Header="Из Excel" Command="{Binding ImportFrom}"/>
       </MenuItem>
       <MenuItem Header="_Excel" FontSize="14">
+		<MenuItem Header="Паспорта">
+          <MenuItem Header="Отчеты без паспартов" Command="{Binding ExcelMissingPas}"></MenuItem>
+          <MenuItem Header="Паспорта без отчетов" Command="{Binding All_Excel_Export}"></MenuItem>
+        </MenuItem>  
 		<MenuItem Header="Список организаций" Command="{Binding AllOrganization_Excel_Export}"></MenuItem>
 		<MenuItem Header="Список форм 1" Command="{Binding AllForms1_Excel_Export}"></MenuItem>
 		<MenuItem Header="Список форм 2" Command="{Binding AllForms2_Excel_Export}"></MenuItem>
