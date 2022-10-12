@@ -24,6 +24,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Client_App.ViewModels
@@ -230,6 +231,7 @@ namespace Client_App.ViewModels
             Statistic_Excel_Export = ReactiveCommand.CreateFromTask(_Statistic_Excel_Export);
             AllOrganization_Excel_Export = ReactiveCommand.CreateFromTask(_AllOrganization_Excel_Export);
             ExcelMissingPas = ReactiveCommand.CreateFromTask<object>(_ExcelMissingPas);
+            ExcelPasWithoutRep = ReactiveCommand.CreateFromTask<object>(_ExcelPasWithoutRep);
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<List<string>, string>();
         }
@@ -3166,6 +3168,7 @@ namespace Client_App.ViewModels
         }
         #endregion
 
+        #region Pasports
         #region ExcelMissingPas
         public ReactiveCommand<object, Unit> ExcelMissingPas { get; protected set; }
         private async Task _ExcelMissingPas(object param)
@@ -3200,160 +3203,313 @@ namespace Client_App.ViewModels
                         }
                         if (path != null)
                         {
-                            using (ExcelPackage excelPackage = new(new FileInfo(path)))
+                            using ExcelPackage excelPackage = new(new FileInfo(path));
+                            excelPackage.Workbook.Properties.Author = "RAO_APP";
+                            excelPackage.Workbook.Properties.Title = "Report";
+                            excelPackage.Workbook.Properties.Created = DateTime.Now;
+                            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Список отчётов без файла паспорта");
+
+                            #region ColumnHeaders
+                            worksheet.Cells[1, 1].Value = "Рег. №";
+                            worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                            worksheet.Cells[1, 3].Value = "ОКПО";
+                            worksheet.Cells[1, 4].Value = "Форма";
+                            worksheet.Cells[1, 5].Value = "Дата начала периода";
+                            worksheet.Cells[1, 6].Value = "Дата конца периода";
+                            worksheet.Cells[1, 7].Value = "Номер корректировки";
+                            worksheet.Cells[1, 8].Value = "Количество строк";
+                            worksheet.Cells[1, 9].Value = "№ п/п";
+                            worksheet.Cells[1, 10].Value = "код";
+                            worksheet.Cells[1, 11].Value = "дата";
+                            worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
+                            worksheet.Cells[1, 13].Value = "тип";
+                            worksheet.Cells[1, 14].Value = "радионуклиды";
+                            worksheet.Cells[1, 15].Value = "номер";
+                            worksheet.Cells[1, 16].Value = "количество, шт";
+                            worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+                            worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
+                            worksheet.Cells[1, 19].Value = "дата выпуска";
+                            worksheet.Cells[1, 20].Value = "категория";
+                            worksheet.Cells[1, 21].Value = "НСС, мес";
+                            worksheet.Cells[1, 22].Value = "код формы собственности";
+                            worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
+                            worksheet.Cells[1, 24].Value = "вид";
+                            worksheet.Cells[1, 25].Value = "номер";
+                            worksheet.Cells[1, 26].Value = "дата";
+                            worksheet.Cells[1, 27].Value = "поставщика или получателя";
+                            worksheet.Cells[1, 28].Value = "перевозчика";
+                            worksheet.Cells[1, 29].Value = "наименование";
+                            worksheet.Cells[1, 30].Value = "тип";
+                            worksheet.Cells[1, 31].Value = "номер";
+                            #endregion
+
+                            List<string> pasNames = new();
+                            List<string[]> pasUniqParam = new();
+                            DirectoryInfo directory = new(@"C:\Test");
+                            FileInfo[] Files;
+                            try
                             {
-                                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                                excelPackage.Workbook.Properties.Title = "Report";
-                                excelPackage.Workbook.Properties.Created = DateTime.Now;
-                                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Список отчётов без файла паспорта");
-
-                                #region ColumnHeaders
-                                worksheet.Cells[1, 1].Value = "Рег. №";
-                                worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                                worksheet.Cells[1, 3].Value = "ОКПО";
-                                worksheet.Cells[1, 4].Value = "Форма";
-                                worksheet.Cells[1, 5].Value = "Дата начала периода";
-                                worksheet.Cells[1, 6].Value = "Дата конца периода";
-                                worksheet.Cells[1, 7].Value = "Номер корректировки";
-                                worksheet.Cells[1, 8].Value = "Количество строк";
-                                worksheet.Cells[1, 9].Value = "№ п/п";
-                                worksheet.Cells[1, 10].Value = "код";
-                                worksheet.Cells[1, 11].Value = "дата";
-                                worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
-                                worksheet.Cells[1, 13].Value = "тип";
-                                worksheet.Cells[1, 14].Value = "радионуклиды";
-                                worksheet.Cells[1, 15].Value = "номер";
-                                worksheet.Cells[1, 16].Value = "количество, шт";
-                                worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
-                                worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
-                                worksheet.Cells[1, 19].Value = "дата выпуска";
-                                worksheet.Cells[1, 20].Value = "категория";
-                                worksheet.Cells[1, 21].Value = "НСС, мес";
-                                worksheet.Cells[1, 22].Value = "код формы собственности";
-                                worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
-                                worksheet.Cells[1, 24].Value = "вид";
-                                worksheet.Cells[1, 25].Value = "номер";
-                                worksheet.Cells[1, 26].Value = "дата";
-                                worksheet.Cells[1, 27].Value = "поставщика или получателя";
-                                worksheet.Cells[1, 28].Value = "перевозчика";
-                                worksheet.Cells[1, 29].Value = "наименование";
-                                worksheet.Cells[1, 30].Value = "тип";
-                                worksheet.Cells[1, 31].Value = "номер";
-                                #endregion
-
-                                List<string> pasNames = new();
-                                List<string[]> pasUniqParam = new();
-                                DirectoryInfo directory = new(@"C:\Test"); 
-                                FileInfo[] Files;
-                                try
-                                {
-                                    Files = directory.GetFiles("*.pdf");
-                                }
-                                catch (Exception e)
-                                {
-                                    await ShowMessage.Handle(new List<string>() { $"Не удалось открыть сетевое хранилище паспортов:" 
+                                Files = directory.GetFiles("*#*#*#*#*.pdf");
+                            }
+                            catch (Exception e)
+                            {
+                                await ShowMessage.Handle(new List<string>() { $"Не удалось открыть сетевое хранилище паспортов:"
                                         + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
-                                    return;
-                                }
-                                foreach (FileInfo file in Files)
-                                {
-                                    pasNames.Add(file.Name);
-                                }
-                                foreach (string pasName in pasNames)
-                                {
-                                    string newPasName = pasName.Remove(pasName.Length - 4);
-                                    pasUniqParam.Add(newPasName.Split('#'));
-                                }
+                                return;
+                            }
+                            pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+                            pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
-                                int currentRow = 2;
-                                bool findPasFile = false; ;
-                                foreach (Reports reps in Local_Reports.Reports_Collection10)
+                            int currentRow = 2;
+                            bool findPasFile = false;
+                            foreach (Reports reps in Local_Reports.Reports_Collection10)
+                            {
+                                var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                                foreach (Report rep in form11)
                                 {
-                                    var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-                                    foreach (Report rep in form11)
+                                    List<Form11> repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11"
+                                    && (x.Category_DB == 1 || x.Category_DB == 2 || x.Category_DB == 3)).ToList();
+
+                                    foreach (Form11 repForm in repPas)
                                     {
-                                        List<Form11> repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11"
-                                        && (x.Category_DB == 1 || x.Category_DB == 2 || x.Category_DB == 3)).ToList();
-
-                                        foreach (Form11 repForm in repPas)
+                                        findPasFile = false;
+                                        foreach (string[] pasParam in pasUniqParam)
                                         {
-                                            findPasFile = false;
-                                            foreach (string[] pasParam in pasUniqParam)
+                                            if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
+                                                && ComparePasParam(repForm.Type_DB, pasParam[1])
+                                                && ComparePasParam(ConvertDBDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
+                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
                                             {
-                                                if (repForm.CreatorOKPO_DB == pasParam[0]
-                                                    && repForm.Type_DB == pasParam[1]
-                                                    && repForm.CreationDate_DB.Substring(repForm.CreationDate_DB.Length - 4) == pasParam[2]
-                                                    && repForm.PassportNumber_DB == pasParam[3]
-                                                    && repForm.FactoryNumber_DB == pasParam[4])
-                                                {
-                                                    findPasFile = true;
-                                                    break;
-                                                }
+                                                findPasFile = true;
+                                                break;
                                             }
-                                            if (!findPasFile)
-                                            {
-                                                #region BindingCells
-                                                worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                                                worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                                                worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                                                worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                                                worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                                                worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                                                worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                                                worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                                                worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                                                worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                                                worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                                                worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                                                worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                                                worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                                                worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                                                worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                                                worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
-                                                worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
-                                                worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
-                                                worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
-                                                worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
-                                                worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
-                                                worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
-                                                worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
-                                                worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
-                                                worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
-                                                worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                                                worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
-                                                worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
-                                                worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
-                                                worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
-                                                #endregion
-                                                currentRow++;
-                                            }
+                                        }
+                                        if (!findPasFile)
+                                        {
+                                            #region BindingCells
+                                            worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
+                                            worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+                                            worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
+                                            worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
+                                            worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+                                            worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+                                            worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
+                                            worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
+                                            worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
+                                            worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
+                                            worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
+                                            worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
+                                            worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
+                                            worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
+                                            worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
+                                            worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
+                                            worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
+                                            worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
+                                            worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
+                                            worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
+                                            worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
+                                            worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
+                                            worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
+                                            worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
+                                            worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
+                                            worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
+                                            worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+                                            worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
+                                            worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
+                                            worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
+                                            worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+                                            #endregion
+                                            currentRow++;
                                         }
                                     }
                                 }
-                                try
-                                {
-                                    excelPackage.Save();
-                                    res = await ShowMessage.Handle(new List<string>() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
+                            }
+                            try
+                            {
+                                excelPackage.Save();
+                                res = await ShowMessage.Handle(new List<string>() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
                                         + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
-                                        + Environment.NewLine + $"сохранена по пути: {path}", "", "Ок", "Открыть выгрузку" });
-                                    if (res is null || res.Equals("Ок"))
-                                        return;
-                                    if (res.Equals("Открыть выгрузку"))
-                                    {
-                                        ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
-                                        Process.Start(procInfo);
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    await ShowMessage.Handle(new List<string>() { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                                        + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
+                                if (res is null || res.Equals("Ок"))
                                     return;
+                                if (res.Equals("Открыть выгрузку"))
+                                {
+                                    ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                                    Process.Start(procInfo);
                                 }
+                            }
+                            catch (Exception e)
+                            {
+                                await ShowMessage.Handle(new List<string>() { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                                return;
                             }
                         }
                     }
                 }
             }
+        }
+        #endregion
+
+        #region ExcelPasWithoutRep
+        public ReactiveCommand<object, Unit> ExcelPasWithoutRep { get; protected set; }
+        private async Task _ExcelPasWithoutRep(object param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                SaveFileDialog saveFileDialog = new();
+                FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
+                saveFileDialog.Filters.Add(filter);
+                var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
+                if (res != null)
+                {
+                    if (res.Length != 0)
+                    {
+                        var path = res;
+                        if (!path.Contains(".xlsx"))
+                        {
+                            path += ".xlsx";
+                        }
+                        if (File.Exists(path))
+                        {
+                            try
+                            {
+                                File.Delete(path);
+                            }
+                            catch (Exception e)
+                            {
+                                await ShowMessage.Handle(new List<string>() { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                    + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                return;
+                            }
+                        }
+                        if (path != null)
+                        {
+                            using ExcelPackage excelPackage = new(new FileInfo(path));
+                            excelPackage.Workbook.Properties.Author = "RAO_APP";
+                            excelPackage.Workbook.Properties.Title = "Report";
+                            excelPackage.Workbook.Properties.Created = DateTime.Now;
+                            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчётов");
+
+                            worksheet.Cells[1, 1].Value = "Полное имя файла";
+                            worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
+                            worksheet.Cells[1, 3].Value = "Тип";
+                            worksheet.Cells[1, 4].Value = "Год выпуска";
+                            worksheet.Cells[1, 5].Value = "Номер паспорта";
+                            worksheet.Cells[1, 6].Value = "Номер";
+
+                            List<string> pasNames = new();
+                            List<string[]> pasUniqParam = new();
+                            DirectoryInfo directory = new(@"C:\Test");
+                            FileInfo[] Files;
+                            try
+                            {
+                                Files = directory.GetFiles("*#*#*#*#*.pdf");
+                            }
+                            catch (Exception e)
+                            {
+                                await ShowMessage.Handle(new List<string>() { $"Не удалось открыть сетевое хранилище паспортов:"
+                                        + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
+                                return;
+                            }
+                            pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+                            pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
+
+                            foreach (Reports reps in Local_Reports.Reports_Collection10)
+                            {
+                                var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                                foreach (Report rep in form11)
+                                {
+                                    List<Form11> repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11").ToList();
+                                    foreach (Form11 repForm in repPas)
+                                    {
+                                        foreach (string[] pasParam in pasUniqParam)
+                                        {
+                                            if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
+                                                && ComparePasParam(repForm.Type_DB, pasParam[1])
+                                                && ComparePasParam(ConvertDBDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
+                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
+                                            {
+                                                pasNames.Remove(pasParam[0] + '#' + pasParam[1] + '#' + pasParam[2] + '#' + pasParam[3] + '#' + pasParam[4]);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            int currentRow = 2;
+                            foreach (string pasName in pasNames)
+                            {
+                                worksheet.Cells[currentRow, 1].Value = pasName;
+                                worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
+                                worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
+                                worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
+                                worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
+                                worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
+                                currentRow++;
+                            }
+                            worksheet.Cells.AutoFitColumns();
+                            try
+                            {
+                                excelPackage.Save();
+                                res = await ShowMessage.Handle(new List<string>() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
+                                        + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
+                                        + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
+                                if (res is null || res.Equals("Ок"))
+                                    return;
+                                if (res.Equals("Открыть выгрузку"))
+                                {
+                                    ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                                    Process.Start(procInfo);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                await ShowMessage.Handle(new List<string>() { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        public static bool ComparePasParam(string nameDB, string namePas)
+        {
+            nameDB = Regex.Replace(nameDB, "[\\\\/:*?\"<>|]", "_");
+            nameDB = Regex.Replace(nameDB, "\\s+", "");
+            namePas = Regex.Replace(namePas, "[\\\\/:*?\"<>|]", "_");
+            namePas = Regex.Replace(namePas, "\\s+", "");
+
+            return nameDB.Equals(namePas, StringComparison.OrdinalIgnoreCase)
+                || ChangeOrCreateVM.TransliteToEng(nameDB).Equals(ChangeOrCreateVM.TransliteToEng(namePas), StringComparison.OrdinalIgnoreCase)
+                || ChangeOrCreateVM.TransliteToRus(nameDB).Equals(ChangeOrCreateVM.TransliteToRus(namePas), StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static string ConvertDBDateToYear(string DBDate)
+        {
+            Regex r = new(@"(\d{1,2}[.\/]){1,2}\d{4}");
+            if (!r.IsMatch(DBDate))
+                return "0000";
+            var matches = r.Matches(DBDate);
+            return matches.FirstOrDefault().Value.Substring(matches.FirstOrDefault().Value.Length - 4);
+        }
+
+        public static string ConvertPasNumAndFactNum(string num)
+        {
+            if (string.IsNullOrEmpty(num)
+                || num.Contains("прим", StringComparison.OrdinalIgnoreCase)
+                || num.Equals("бн", StringComparison.OrdinalIgnoreCase)
+                || num.Equals("бп", StringComparison.OrdinalIgnoreCase)
+                || num.Contains("без", StringComparison.OrdinalIgnoreCase)
+                || num.Contains("нет", StringComparison.OrdinalIgnoreCase)
+                || num.Contains("отсут", StringComparison.OrdinalIgnoreCase))
+            {
+                return "-";
+            }
+            else return num;
         }
         #endregion
 

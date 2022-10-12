@@ -1334,13 +1334,11 @@ namespace Client_App.ViewModels
                                     foreach (Report rep in form11)
                                     {
                                         var repPas = rep.Rows11.Where(x =>
-                                        x.CreatorOKPO_DB == okpo
-                                        && x.Type_DB == type
-                                        && x.CreationDate_DB.Substring(x.CreationDate_DB.Length - 4) == year
-                                        && x.PassportNumber_DB == pasNum
-                                        && x.FactoryNumber_DB == factoryNum
-                                        );
-
+                                            MainWindowVM.ComparePasParam(x.CreatorOKPO_DB, okpo)
+                                            && x.Type_DB == type
+                                            && x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)) == year
+                                            && x.PassportNumber_DB == pasNum
+                                            && x.FactoryNumber_DB == factoryNum);
                                         foreach (Form11 repForm in repPas)
                                         {
                                             if (lastRow == 1)
@@ -1514,7 +1512,7 @@ namespace Client_App.ViewModels
         }
 
         #region Translite
-        private string TransliteToEng(string pasName)
+        public static string TransliteToEng(string pasName)
         {
             Dictionary<string, string> dictRusToEng = new()
             {
@@ -1548,7 +1546,7 @@ namespace Client_App.ViewModels
             return newPasName;
         }
 
-        private string TransliteToRus(string pasName)
+        public static string TransliteToRus(string pasName)
         {
             Dictionary<string, string> dictEngToRus = new()
             {
@@ -1590,7 +1588,9 @@ namespace Client_App.ViewModels
         {
             PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
             string uniqPasName = okpo + "#" + type + "#" + year + "#" + pasNum + "#" + factoryNum;
-            new Regex("[\\\\/:*?\"<>|]").Replace(uniqPasName, "_");
+
+            uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
+            uniqPasName = Regex.Replace(uniqPasName, "\\s+", "");
             await Application.Current.Clipboard.SetTextAsync(uniqPasName);
         }
         #endregion
@@ -1632,7 +1632,7 @@ namespace Client_App.ViewModels
                     {
                         var midvalue = prop.GetMethod.Invoke(item, null);
                         year = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                        year = year.Substring(year.Length - 4);
+
                     }
                     if (attr.Names[1] == "номер паспорта (сертификата)")
                     {
