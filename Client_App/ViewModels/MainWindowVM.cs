@@ -233,6 +233,7 @@ namespace Client_App.ViewModels
             ExcelMissingPas = ReactiveCommand.CreateFromTask<object>(_ExcelMissingPas);
             ExcelPasWithoutRep = ReactiveCommand.CreateFromTask<object>(_ExcelPasWithoutRep);
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
+            ShowDialogMy = new Interaction<MyDialogVM, object>();
             ShowMessage = new Interaction<List<string>, string>();
         }
         private int GetNumberInOrder(IEnumerable lst)
@@ -308,6 +309,7 @@ namespace Client_App.ViewModels
 
         #region Interactions
         public Interaction<ChangeOrCreateVM, object> ShowDialog { get; private set; }
+        public Interaction<MyDialogVM, object> ShowDialogMy { get; private set; }
         public Interaction<List<string>, string> ShowMessage { get; private set; }
         #endregion
 
@@ -3360,6 +3362,21 @@ namespace Client_App.ViewModels
                 SaveFileDialog saveFileDialog = new();
                 FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
                 saveFileDialog.Filters.Add(filter);
+                var messageBoxWindow = MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxInputWindow(new MessageBox.Avalonia.DTO.MessageBoxInputParams
+                    {
+                        ContentTitle = "Выбор категории",
+                        ContentMessage = "Введите через запятую номера категорий (допускается несколько значений)",
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    });
+                var result = await messageBoxWindow.ShowDialog(desktop.MainWindow);
+                string[] categoriesStr;
+                int[] categories;
+                if (result.Button.Equals("Confirm"))
+                {
+                    categoriesStr = Regex.Replace(result.Message, "[\\D,]", "").Split(',');
+
+                }
                 var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
                 if (res != null)
                 {
@@ -4152,6 +4169,19 @@ namespace Client_App.ViewModels
             //}
         }
         #endregion
+        #endregion
+
+        #region MyDialog
+        public ReactiveCommand<object, Unit> MyDialog { get; private set; }
+        private async Task _MyDialog(object par)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var t = desktop.MainWindow as MainWindow;
+                MyDialogVM myDialog = new();
+                await ShowDialogMy.Handle(myDialog);
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged
