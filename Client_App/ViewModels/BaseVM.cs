@@ -1,9 +1,7 @@
-﻿using System;
-using ReactiveUI;
-namespace Client_App.ViewModels
+﻿namespace Client_App.ViewModels
 {
     public class BaseVM
     {
-
+        private protected string defaultPasFolder = @"C:\Test";
     }
 }
