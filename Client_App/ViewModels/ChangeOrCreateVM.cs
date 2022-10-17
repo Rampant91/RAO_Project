@@ -1334,10 +1334,10 @@ namespace Client_App.ViewModels
                                 {
                                     var repPas = rep.Rows11.Where(x =>
                                         MainWindowVM.ComparePasParam(x.CreatorOKPO_DB, okpo)
-                                        && x.Type_DB == type
-                                        && x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)) == year
-                                        && x.PassportNumber_DB == pasNum
-                                        && x.FactoryNumber_DB == factoryNum);
+                                        && MainWindowVM.ComparePasParam(x.Type_DB, type)
+                                        && MainWindowVM.ComparePasParam(x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)), year.Substring(Math.Max(0, year.Length - 4)))
+                                        && MainWindowVM.ComparePasParam(x.PassportNumber_DB, pasNum)
+                                        && MainWindowVM.ComparePasParam(x.FactoryNumber_DB, factoryNum));
                                     foreach (Form11 repForm in repPas)
                                     {
                                         if (lastRow == 1)
@@ -1378,7 +1378,7 @@ namespace Client_App.ViewModels
                                         }
                                         for (int currentRow = lastRow; currentRow >= 2; currentRow--)
                                         {
-                                            if (CompareDate(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) > 0)
+                                            if (CompareDate(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) >= 0)
                                             {
                                                 worksheet.InsertRow(currentRow + 1, 1);
                                                 #region BindingCells

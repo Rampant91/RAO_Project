@@ -267,7 +267,7 @@ namespace Models.Collections
                 }
                 if (FormNum_DB == "2.0")
                 {
-                    if (Rows20[1].Okpo_DB == "" || Rows10[1].Okpo_DB == "-")
+                    if (Rows20[1].Okpo_DB == "" || Rows20[1].Okpo_DB == "-")
                     {
                         tmp = Rows20[0].ShortJurLico;
                         tmp.PropertyChanged -= ShortJurLicoRepValueChanged;

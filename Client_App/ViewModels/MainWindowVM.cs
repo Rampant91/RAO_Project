@@ -1765,7 +1765,7 @@ namespace Client_App.ViewModels
         {
             if (an == "Сохранить оба" || an == "Да")
             {
-                if (doSomething)
+                if (!doSomething)
                     first.Report_Collection.Add(it);
             }
             if (an == "Заменить" || an == "Загрузить новую")
@@ -1783,73 +1783,77 @@ namespace Client_App.ViewModels
         }
         private async Task _ImportForm()
         {
-            var answ = await GetSelectedFilesFromDialog("RAODB", "raodb");
-            if (answ != null)
+            try
             {
-                foreach (var res in answ)
+                var answ = await GetSelectedFilesFromDialog("RAODB", "raodb");
+                if (answ != null)
                 {
-                    if (res != "")
+                    foreach (var res in answ)
                     {
-                        var file = await GetRaoFileName();
-                        var sourceFile = new FileInfo(res);
-                        sourceFile.CopyTo(file, true);
-
-                        var reportsCollection = await GetReportsFromDataBase(file);
-                        var skipAll = false;
-                        foreach (var item in reportsCollection)
+                        if (res != "")
                         {
-                            if (item.Master.Rows10.Count != 0)
-                                item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
-                            else
-                                item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
-                            Reports first11 = await GetReports11FromLocalEqual(item);
-                            Reports first21 = await GetReports21FromLocalEqual(item);
-                            await RestoreReportsOrders(item);
-                            item.CleanIds();
+                            var file = await GetRaoFileName();
+                            var sourceFile = new FileInfo(res);
+                            sourceFile.CopyTo(file, true);
 
-                            await ProcessIfNoteOrder0(item);
+                            var reportsCollection = await GetReportsFromDataBase(file);
+                            var skipAll = false;
+                            foreach (var item in reportsCollection)
+                            {
+                                if (item.Master.Rows10.Count != 0)
+                                    item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
+                                else
+                                    item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
+                                Reports first11 = await GetReports11FromLocalEqual(item);
+                                Reports first21 = await GetReports21FromLocalEqual(item);
+                                await RestoreReportsOrders(item);
+                                item.CleanIds();
 
-                            if (first11 != null)
-                            {
-                                await ProcessIfHasReports11(first11, item);
-                            }
-                            else if (first21 != null)
-                            {
-                                await ProcessIfHasReports21(first21, item);
-                            }
-                            else if (first21 == null && first11 == null)
-                            {
-                                var rep = item.Report_Collection.FirstOrDefault();
-                                string? an = null;
-                                if (rep != null)
+                                await ProcessIfNoteOrder0(item);
+
+                                if (first11 != null)
                                 {
-                                    if (!skipAll)
+                                    await ProcessIfHasReports11(first11, item);
+                                }
+                                else if (first21 != null)
+                                {
+                                    await ProcessIfHasReports21(first21, item);
+                                }
+                                else if (first21 == null && first11 == null)
+                                {
+                                    var rep = item.Report_Collection.FirstOrDefault();
+                                    string? an = null;
+                                    if (rep != null)
                                     {
-                                        var str = "Был добавлен отчет по форме " + rep.FormNum_DB + " за период " + rep.StartPeriod_DB + "-" + rep.EndPeriod_DB + ",\n" +
-                                            "номер корректировки " + rep.CorrectionNumber_DB + ", количество строк " + rep.Rows.Count + ".\n" +
-                                            "Организации:" + "\n" +
-                                            "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
-                                            "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
-                                            "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;
-                                        an = await ShowMessage.Handle(new List<string>() { str, "Новая организация", "Ок", "Пропустить для всех" });
-                                        if (an == "Пропустить для всех") skipAll = true;
+                                        if (!skipAll)
+                                        {
+                                            var str = "Был добавлен отчет по форме " + rep.FormNum_DB + " за период " + rep.StartPeriod_DB + "-" + rep.EndPeriod_DB + ",\n" +
+                                                "номер корректировки " + rep.CorrectionNumber_DB + ", количество строк " + rep.Rows.Count + ".\n" +
+                                                "Организации:" + "\n" +
+                                                "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
+                                                "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
+                                                "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;
+                                            an = await ShowMessage.Handle(new List<string>() { str, "Новая организация", "Ок", "Пропустить для всех" });
+                                            if (an == "Пропустить для всех") skipAll = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Local_Reports.Reports_Collection.Add(item);
+                                    }
+                                    if (an == "Пропустить для всех" || an == "Ок" || skipAll)
+                                    {
+                                        Local_Reports.Reports_Collection.Add(item);
                                     }
                                 }
-                                else
-                                {
-                                    Local_Reports.Reports_Collection.Add(item);
-                                }
-                                if (an == "Пропустить для всех" || an == "Ок" || skipAll)
-                                {
-                                    Local_Reports.Reports_Collection.Add(item);
-                                }
                             }
+                            await Local_Reports.Reports_Collection.QuickSortAsync();
                         }
-                        await Local_Reports.Reports_Collection.QuickSortAsync();
                     }
                 }
+                StaticConfiguration.DBModel.SaveChanges();
             }
-            StaticConfiguration.DBModel.SaveChanges();
+            catch { }
         }
         #endregion
 
