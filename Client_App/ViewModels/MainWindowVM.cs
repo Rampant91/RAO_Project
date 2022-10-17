@@ -2878,126 +2878,147 @@ namespace Client_App.ViewModels
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.1");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.1");
+                                NotesHeader();
                                 ExportForm11Data(selectedReports);
                             }
                             if (formnums.Contains("1.2"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.2");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.2");
+                                NotesHeader();
                                 ExportForm12Data(selectedReports);
                             }
                             if (formnums.Contains("1.3"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.3");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.3");
+                                NotesHeader();
                                 ExportForm13Data(selectedReports);
                             }
                             if (formnums.Contains("1.4"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.4");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.4");
+                                NotesHeader();
                                 ExportForm14Data(selectedReports);
                             }
                             if (formnums.Contains("1.5"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.5");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.5");
+                                NotesHeader();
                                 ExportForm15Data(selectedReports);
                             }
                             if (formnums.Contains("1.6"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.6");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.6");
+                                NotesHeader();
                                 ExportForm16Data(selectedReports);
                             }
                             if (formnums.Contains("1.7"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.7");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.7");
+                                NotesHeader();
                                 ExportForm17Data(selectedReports);
                             }
                             if (formnums.Contains("1.8"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.8");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.8");
+                                NotesHeader();
                                 ExportForm18Data(selectedReports);
                             }
                             if (formnums.Contains("1.9"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.9");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.9");
+                                NotesHeader();
                                 ExportForm19Data(selectedReports);
                             }
                             if (formnums.Contains("2.1"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.1");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.1");
+                                NotesHeader();
                                 ExportForm21Data(selectedReports);
                             }
                             if (formnums.Contains("2.2"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.2");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.2");
+                                NotesHeader();
                                 ExportForm22Data(selectedReports);
                             }
                             if (formnums.Contains("2.3"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.3");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.3");
+                                NotesHeader();
                                 ExportForm23Data(selectedReports);
                             }
                             if (formnums.Contains("2.4"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.4");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.4");
+                                NotesHeader();
                                 ExportForm24Data(selectedReports);
                             }
                             if (formnums.Contains("2.5"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.5");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.5");
+                                NotesHeader();
                                 ExportForm25Data(selectedReports);
                             }
                             if (formnums.Contains("2.6"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.6");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.6");
+                                NotesHeader();
                                 ExportForm26Data(selectedReports);
                             }
                             if (formnums.Contains("2.7"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.7");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.7");
+                                NotesHeader();
                                 ExportForm27Data(selectedReports);
                             }
                             if (formnums.Contains("2.8"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.8");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.8");
+                                NotesHeader();
                                 ExportForm28Data(selectedReports);
                             }
                             if (formnums.Contains("2.9"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.9");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.9");
+                                NotesHeader();
                                 ExportForm29Data(selectedReports);
                             }
                             if (formnums.Contains("2.10"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.10");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.10");
+                                NotesHeader();
                                 ExportForm210Data(selectedReports);
                             }
                             if (formnums.Contains("2.11"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.11");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.11");
+                                NotesHeader();
                                 ExportForm211Data(selectedReports);
                             }
                             if (formnums.Contains("2.12"))
                             {
                                 worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.12");
                                 worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.12");
+                                NotesHeader();
                                 ExportForm212Data(selectedReports);
                             }
                             excelPackage.Save();
@@ -4848,7 +4869,22 @@ namespace Client_App.ViewModels
                 }
             }
         }
-        #endregion 
+        #endregion
+
+        #region NotesHeader
+        private void NotesHeader()
+        {
+            worksheetComment.Cells[1, 1].Value = "ОКПО";
+            worksheetComment.Cells[1, 2].Value = "Сокращенное наименование";
+            worksheetComment.Cells[1, 3].Value = "Рег. №";
+            worksheetComment.Cells[1, 4].Value = "Номер корректировки";
+            worksheetComment.Cells[1, 5].Value = "Дата начала периода";
+            worksheetComment.Cells[1, 6].Value = "Дата конца периода";
+            worksheetComment.Cells[1, 7].Value = "№ строки";
+            worksheetComment.Cells[1, 8].Value = "№ графы";
+            worksheetComment.Cells[1, 9].Value = "Пояснение";
+        }        
+        #endregion
         #endregion
         #endregion
 
