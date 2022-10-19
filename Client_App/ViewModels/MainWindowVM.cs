@@ -2631,7 +2631,7 @@ namespace Client_App.ViewModels
                 {
                     var mainWindow = desktop.MainWindow as MainWindow;
                     Reports selectedReports = (Reports)mainWindow.SelectedReports.FirstOrDefault();
-                    if (selectedReports is null)
+                    if (selectedReports is null && forSelectedOrg)
                     {
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBox.Avalonia.DTO.MessageBoxStandardParams
