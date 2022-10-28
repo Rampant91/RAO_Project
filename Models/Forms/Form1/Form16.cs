@@ -1705,10 +1705,11 @@ namespace Models
         #region IExcel
         public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
+            double val;
             base.ExcelGetRow(worksheet, Row);
             CodeRAO_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
             StatusRAO_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
-            Volume_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            Volume_DB = worksheet.Cells[Row, 6].Value.ToString().Equals("0") ? "-" : double.TryParse(worksheet.Cells[Row, 6].Value.ToString(), out val) ? val.ToString("0.####E+0", CultureInfo.InvariantCulture) : worksheet.Cells[Row, 6].Value.ToString();
             Mass_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
             QuantityOZIII_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
             MainRadionuclids_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
