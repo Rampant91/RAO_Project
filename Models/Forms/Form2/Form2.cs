@@ -89,8 +89,8 @@ namespace Models.Abstracts
 
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column,bool Transpon=true)
         {
-            worksheet.Cells[Row, Column].Value = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
-                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[2];
+            worksheet.Cells[Row, Column].Value = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[2];
 
             return 1;
         }

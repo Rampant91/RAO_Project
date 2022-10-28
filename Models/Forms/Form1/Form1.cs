@@ -421,25 +421,24 @@ namespace Models.Abstracts
         {
             NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[Row, 1].Value);
             OperationCode_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-            OperationDate_DB  = Convert.ToString(worksheet.Cells[Row, 3].Value);
+            OperationDate_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
         }
         public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = NumberInOrder_DB;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = OperationCode_DB;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = OperationDate_DB;
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = NumberInOrder_DB;
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = OperationCode_DB;
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = OperationDate_DB;
 
             return 3;
         }
 
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-          
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
-                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[2];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationCode))
-                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationDate))
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
+                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[2];     
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationCode))
+                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];     
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationDate))
                 .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
 
             return 3;
