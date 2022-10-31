@@ -18,7 +18,7 @@ namespace Models.Attributes
             {
                Convert.ToInt32(Names[Names.Length-1]);
                Number = Names[Names.Length - 1];
-                List<string> lst = new List<string>(Names);
+                List<string> lst = new(Names);
                 if (!IsLastEnabled)
                 {
                     lst.RemoveAt(lst.Count - 1);
@@ -41,7 +41,7 @@ namespace Models.Attributes
                 {
                     if (Names[1] != Names[0])
                     {
-                        tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
+                        tmp.innertCol = new() { };
                     }
                 }
                 DataGridColumns _tmp = tmp;
@@ -76,7 +76,7 @@ namespace Models.Attributes
                         {
                             if (Names[i + 1] != null)
                             {
-                                it.innertCol = new System.Collections.Generic.List<DataGridColumns>();
+                                it.innertCol = new();
                                 _tmp = it;
                             }
                         }
@@ -93,18 +93,18 @@ namespace Models.Attributes
                     {
                         var new_tmp = new DataGridColumns();
                         new_tmp.name = "null-n";
-                        new_tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
+                        new_tmp.innertCol = new() { };
                         new_tmp.innertCol.Add(tmp);
 
                         _tmp.name = prev_data.name;
-                        _tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
+                        _tmp.innertCol = new() { };
                         _tmp.innertCol.Add(new_tmp);
 
                     }
                     else
                     {
                         _tmp.name = prev_data.name;
-                        _tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
+                        _tmp.innertCol = new() { };
                         _tmp.innertCol.Add(tmp);
                     }
                 }

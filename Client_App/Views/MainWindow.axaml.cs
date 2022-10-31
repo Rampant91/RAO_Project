@@ -63,7 +63,7 @@ namespace Client_App.Views
         private async Task DoShowDialogAsync(InteractionContext<ViewModels.ChangeOrCreateVM, object> interaction)
         {
 
-            FormChangeOrCreate frm = new FormChangeOrCreate(interaction.Input);
+            FormChangeOrCreate frm = new(interaction.Input);
 
             await frm.ShowDialog(this);
             interaction.SetOutput(null);
@@ -71,15 +71,15 @@ namespace Client_App.Views
 
         private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
         {
-            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new();
+            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new();
             par.ContentMessage = interaction.Input[0];
             interaction.Input.RemoveAt(0);
             par.ContentHeader = interaction.Input[0];
             interaction.Input.RemoveAt(0);
             foreach (var elem in interaction.Input)
             {
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+                lt.Add(new()
                 {
                     Type = MessageBox.Avalonia.Enums.ButtonType.Default,
                     Name = elem
@@ -112,7 +112,7 @@ namespace Client_App.Views
         public static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, ViewModels.MainWindowVM dataContext)
         {
             #region Grd1
-            grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd1.CommandsList.Add(new()
             {
                 Key = Avalonia.Input.Key.T,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -123,7 +123,7 @@ namespace Client_App.Views
                 Command = dataContext.AddReport
             });
 
-            grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd1.CommandsList.Add(new()
             {
                 IsDoubleTappedCommand = true,
                 IsContextMenuCommand = true,
@@ -131,7 +131,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Редактировать форму" },
                 Command = dataContext.ChangeReport
             });
-            grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd1.CommandsList.Add(new()
             {
                 Key = Avalonia.Input.Key.D,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -144,7 +144,7 @@ namespace Client_App.Views
 
             #endregion
             #region Grd2
-            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd2.CommandsList.Add(new()
             {
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
@@ -152,7 +152,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Выгрузка Excel", "Для печати" },
                 Command = dataContext.Print_Excel_Export
             });
-            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd2.CommandsList.Add(new()
             {
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
@@ -160,7 +160,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Выгрузка Excel", "Для анализа" },
                 Command = dataContext.Excel_Export
             });
-            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd2.CommandsList.Add(new()
             {
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
@@ -168,7 +168,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Выгрузка" },
                 Command = dataContext.ExportForm
             });
-            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd2.CommandsList.Add(new()
             {
                 IsDoubleTappedCommand = true,
                 IsContextMenuCommand = true,
@@ -176,7 +176,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Изменить форму" },
                 Command = dataContext.ChangeForm
             });
-            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd2.CommandsList.Add(new()
             {
                 Key = Avalonia.Input.Key.D,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -187,7 +187,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Удалить форму           Ctrl+D" },
                 Command = dataContext.DeleteForm
             });
-            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            grd2.CommandsList.Add(new()
             {
                 Key = Avalonia.Input.Key.J,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,

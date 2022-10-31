@@ -47,7 +47,7 @@ namespace Models.Collections
         }
         private void Init()
         {
-            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
+            Report_Collection = new();
             Report_Collection.CollectionChanged += CollectionChanged;
         }
 
@@ -125,7 +125,7 @@ namespace Models.Collections
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            if (PropertyChanged != null) PropertyChanged(this, new(prop));
         }
         //Property Changed
 

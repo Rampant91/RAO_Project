@@ -168,7 +168,7 @@ namespace Models.Abstracts
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                PropertyChanged(this, new(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

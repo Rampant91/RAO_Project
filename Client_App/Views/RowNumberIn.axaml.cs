@@ -134,7 +134,7 @@ namespace Client_App.Views
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                PropertyChanged(this, new(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

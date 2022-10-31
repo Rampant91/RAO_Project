@@ -369,7 +369,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;

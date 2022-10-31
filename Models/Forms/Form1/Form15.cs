@@ -466,7 +466,7 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -483,12 +483,12 @@ namespace Models
                 return false;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -568,7 +568,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -656,7 +656,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -725,7 +725,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -978,7 +978,7 @@ namespace Models
                 return false;
             }
             if (value.Value == "-") return true;
-            Regex a = new Regex("^[0-9]{8}$");
+            Regex a = new("^[0-9]{8}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -987,37 +987,37 @@ namespace Models
             var tmp = value.Value;
             if (tmp.Length == 8)
             {
-                Regex a0 = new Regex("^[1-9]");
+                Regex a0 = new("^[1-9]");
                 if (!a0.IsMatch(tmp.Substring(0, 1)))
                 {
                     value.AddError("Недопустимый вид пункта - " + tmp.Substring(0, 1));
                 }
-                Regex a1 = new Regex("^[1-3]");
+                Regex a1 = new("^[1-3]");
                 if (!a1.IsMatch(tmp.Substring(1, 1)))
                 {
                     value.AddError("Недопустимое состояние пункта - " + tmp.Substring(1, 1));
                 }
-                Regex a2 = new Regex("^[1-2]");
+                Regex a2 = new("^[1-2]");
                 if (!a2.IsMatch(tmp.Substring(2, 1)))
                 {
                     value.AddError("Недопустимая изоляция от окружающей среды - " + tmp.Substring(2, 1));
                 }
-                Regex a3 = new Regex("^[1-59]");
+                Regex a3 = new("^[1-59]");
                 if (!a3.IsMatch(tmp.Substring(3, 1)))
                 {
                     value.AddError("Недопустимая зона нахождения пунтка - " + tmp.Substring(3, 1));
                 }
-                Regex a4 = new Regex("^[0-4]");
+                Regex a4 = new("^[0-4]");
                 if (!a4.IsMatch(tmp.Substring(4, 1)))
                 {
                     value.AddError("Недопустимое значение пункта - " + tmp.Substring(4, 1));
                 }
-                Regex a5 = new Regex("^[1-49]");
+                Regex a5 = new("^[1-49]");
                 if (!a5.IsMatch(tmp.Substring(5, 1)))
                 {
                     value.AddError("Недопустимое размещение пункта хранения относительно поверхности земли - " + tmp.Substring(5, 1));
                 }
-                Regex a67 = new Regex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}");
+                Regex a67 = new("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}");
                 if (!a67.IsMatch(tmp.Substring(6, 2)))
                 {
                     value.AddError("Недопустимоый код типа РАО - " + tmp.Substring(6, 2));

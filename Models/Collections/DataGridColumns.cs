@@ -229,10 +229,10 @@ namespace Models.Collections
                 if (this.Level > Level)
                 {
                     int allLevel = this.Level-1;
-                    List<DataGridColumns> lst = new List<DataGridColumns>(innertCol);
+                    List<DataGridColumns> lst = new(innertCol);
                     while (allLevel != Level)
                     {
-                        List<DataGridColumns> lst2 = new List<DataGridColumns>();
+                        List<DataGridColumns> lst2 = new();
                         foreach (var item in lst)
                         {
                             lst2.AddRange(item.innertCol);
@@ -276,13 +276,13 @@ namespace Models.Collections
             {
                 if (col1.name == col2.name)
                 {
-                    DataGridColumns ret = new DataGridColumns();
+                    DataGridColumns ret = new();
                     ret.name = col1.name;
                     ret.binding = col1.binding;
                     ret.sizeCol = col1.sizeCol;
                     if (col2.innertCol != null)
                     {
-                        ret.innertCol = new List<DataGridColumns>();
+                        ret.innertCol = new();
                         foreach (var item in col2.innertCol)
                         {
                             item.parent = ret;
@@ -293,10 +293,10 @@ namespace Models.Collections
                 }
                 else
                 {
-                    DataGridColumns ret = new DataGridColumns();
+                    DataGridColumns ret = new();
                     ret.name = "";
                     ret.binding = "";
-                    ret.innertCol = new List<DataGridColumns>();
+                    ret.innertCol = new();
                     if (ret.name == col1.name)
                     {
                         foreach (var item in col1.innertCol)
@@ -330,9 +330,9 @@ namespace Models.Collections
                     }
 
                     var group = tmp.GroupBy(x => x.name);
-                    DataGridColumns ret = new DataGridColumns();
+                    DataGridColumns ret = new();
                     ret.name = col1.name;
-                    ret.innertCol = new List<DataGridColumns>();
+                    ret.innertCol = new();
                     foreach(var item in group)
                     {
                         DataGridColumns tr = item.FirstOrDefault();
@@ -347,10 +347,10 @@ namespace Models.Collections
                 }
                 else
                 {
-                    DataGridColumns ret = new DataGridColumns();
+                    DataGridColumns ret = new();
                     ret.name = "";
                     ret.binding = "";
-                    ret.innertCol = new List<DataGridColumns>();
+                    ret.innertCol = new();
                     if (ret.name == col1.name)
                     {
                         foreach (var item in col1.innertCol)
@@ -369,9 +369,9 @@ namespace Models.Collections
                     ret.innertCol.Add(col2);
 
                     var group = ret.innertCol.GroupBy(x => x.name);
-                    DataGridColumns _ret = new DataGridColumns();
+                    DataGridColumns _ret = new();
                     _ret.name = ret.name;
-                    _ret.innertCol = new List<DataGridColumns>();
+                    _ret.innertCol = new();
                     foreach (var item in group)
                     {
                         DataGridColumns tr = item.FirstOrDefault();
@@ -392,7 +392,7 @@ namespace Models.Collections
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                PropertyChanged(this, new(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

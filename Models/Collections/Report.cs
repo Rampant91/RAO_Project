@@ -1059,7 +1059,7 @@ namespace Models.Collections
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            Regex regex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             var tmp = value.Value;
             if (!regex.IsMatch(tmp)) 
             {
@@ -1245,7 +1245,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1261,12 +1261,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1354,7 +1354,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1370,12 +1370,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1423,7 +1423,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1439,12 +1439,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1532,7 +1532,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1548,12 +1548,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1641,7 +1641,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1657,12 +1657,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1710,7 +1710,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1726,12 +1726,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1818,7 +1818,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1834,12 +1834,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1927,7 +1927,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -1943,12 +1943,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1996,7 +1996,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -2012,12 +2012,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -2106,7 +2106,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -2122,12 +2122,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -2217,7 +2217,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -2233,12 +2233,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -2287,7 +2287,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -2303,12 +2303,12 @@ namespace Models.Collections
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -2772,76 +2772,76 @@ namespace Models.Collections
 
         private void Init()
         {
-            Rows10 = new ObservableCollectionWithItemPropertyChanged<Form10>();
+            Rows10 = new();
             Rows10.CollectionChanged += CollectionChanged10;
 
-            Rows11 = new ObservableCollectionWithItemPropertyChanged<Form11>();
+            Rows11 = new();
             Rows11.CollectionChanged += CollectionChanged11;
 
-            Rows12 = new ObservableCollectionWithItemPropertyChanged<Form12>();
+            Rows12 = new();
             Rows12.CollectionChanged += CollectionChanged12;
 
-            Rows13 = new ObservableCollectionWithItemPropertyChanged<Form13>();
+            Rows13 = new();
             Rows13.CollectionChanged += CollectionChanged13;
 
-            Rows14 = new ObservableCollectionWithItemPropertyChanged<Form14>();
+            Rows14 = new();
             Rows14.CollectionChanged += CollectionChanged14;
 
-            Rows15 = new ObservableCollectionWithItemPropertyChanged<Form15>();
+            Rows15 = new();
             Rows15.CollectionChanged += CollectionChanged15;
 
-            Rows16 = new ObservableCollectionWithItemPropertyChanged<Form16>();
+            Rows16 = new();
             Rows16.CollectionChanged += CollectionChanged16;
 
-            Rows17 = new ObservableCollectionWithItemPropertyChanged<Form17>();
+            Rows17 = new();
             Rows17.CollectionChanged += CollectionChanged17;
 
-            Rows18 = new ObservableCollectionWithItemPropertyChanged<Form18>();
+            Rows18 = new();
             Rows18.CollectionChanged += CollectionChanged18;
 
-            Rows19 = new ObservableCollectionWithItemPropertyChanged<Form19>();
+            Rows19 = new();
             Rows19.CollectionChanged += CollectionChanged19;
 
-            Rows20 = new ObservableCollectionWithItemPropertyChanged<Form20>();
+            Rows20 = new();
             Rows20.CollectionChanged += CollectionChanged20;
 
-            Rows21 = new ObservableCollectionWithItemPropertyChanged<Form21>();
+            Rows21 = new();
             Rows21.CollectionChanged += CollectionChanged21;
 
-            Rows22 = new ObservableCollectionWithItemPropertyChanged<Form22>();
+            Rows22 = new();
             Rows22.CollectionChanged += CollectionChanged22;
 
-            Rows23 = new ObservableCollectionWithItemPropertyChanged<Form23>();
+            Rows23 = new();
             Rows23.CollectionChanged += CollectionChanged23;
 
-            Rows24 = new ObservableCollectionWithItemPropertyChanged<Form24>();
+            Rows24 = new();
             Rows24.CollectionChanged += CollectionChanged24;
 
-            Rows25 = new ObservableCollectionWithItemPropertyChanged<Form25>();
+            Rows25 = new();
             Rows25.CollectionChanged += CollectionChanged25;
 
-            Rows26 = new ObservableCollectionWithItemPropertyChanged<Form26>();
+            Rows26 = new();
             Rows26.CollectionChanged += CollectionChanged26;
 
-            Rows27 = new ObservableCollectionWithItemPropertyChanged<Form27>();
+            Rows27 = new();
             Rows27.CollectionChanged += CollectionChanged27;
 
-            Rows28 = new ObservableCollectionWithItemPropertyChanged<Form28>();
+            Rows28 = new();
             Rows28.CollectionChanged += CollectionChanged28;
 
-            Rows29 = new ObservableCollectionWithItemPropertyChanged<Form29>();
+            Rows29 = new();
             Rows29.CollectionChanged += CollectionChanged29;
 
-            Rows210 = new ObservableCollectionWithItemPropertyChanged<Form210>();
+            Rows210 = new();
             Rows210.CollectionChanged += CollectionChanged210;
 
-            Rows211 = new ObservableCollectionWithItemPropertyChanged<Form211>();
+            Rows211 = new();
             Rows211.CollectionChanged += CollectionChanged211;
 
-            Rows212 = new ObservableCollectionWithItemPropertyChanged<Form212>();
+            Rows212 = new();
             Rows212.CollectionChanged += CollectionChanged212;
 
-            Notes = new ObservableCollectionWithItemPropertyChanged<Note>();
+            Notes = new();
             Notes.CollectionChanged += CollectionChangedNotes;
         }
 
@@ -2993,7 +2993,7 @@ namespace Models.Collections
             if (prop != "All")
             {
                 if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                    PropertyChanged(this, new(prop));
             }
             else
             {

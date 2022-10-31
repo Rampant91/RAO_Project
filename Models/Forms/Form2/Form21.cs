@@ -186,11 +186,11 @@ namespace Models
                     RamAccess<string> rm = null;
                     if (NumberInOrderSum_DB != "" && NumberInOrderSum_DB != null)
                     {
-                        rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrderSum_DB);
+                        rm = new(NumberInOrderSum_Validation, NumberInOrderSum_DB);
                     }
                     else
                     {
-                        rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
+                        rm = new(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
                     }
                     rm.PropertyChanged += NumberInOrderSumValueChanged;
                     Dictionary.Add(nameof(NumberInOrderSum), rm);
@@ -867,7 +867,7 @@ namespace Models
             }
             var tmp = value.Value.ToLower();
             tmp = tmp.Replace("х", "x");
-            Regex a = new Regex("^[0-9x+]{11}$");
+            Regex a = new("^[0-9x+]{11}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -875,52 +875,52 @@ namespace Models
             }
             if (tmp.Length == 11)
             {
-                Regex a0 = new Regex("^[1-3x+]");
+                Regex a0 = new("^[1-3x+]");
                 if (!a0.IsMatch(tmp.Substring(0, 1)))
                 {
                     value.AddError("Недопустимое агрегатное состояние - " + tmp.Substring(0, 1));
                 }
-                Regex a1 = new Regex("^[0-49x+]");
+                Regex a1 = new("^[0-49x+]");
                 if (!a1.IsMatch(tmp.Substring(1, 1)))
                 {
                     value.AddError("Недопустимое категория РАО - " + tmp.Substring(1, 1));
                 }
-                Regex a2 = new Regex("^[0-6x+]");
+                Regex a2 = new("^[0-6x+]");
                 if (!a2.IsMatch(tmp.Substring(2, 1)))
                 {
                     value.AddError("Недопустимый радионуклидный состав РАО - " + tmp.Substring(2, 1));
                 }
-                Regex a3 = new Regex("^[12x+]");
+                Regex a3 = new("^[12x+]");
                 if (!a3.IsMatch(tmp.Substring(3, 1)))
                 {
                     value.AddError("Недопустимое содержание ядерных материалов - " + tmp.Substring(3, 1));
                 }
-                Regex a4 = new Regex("^[12x+]");
+                Regex a4 = new("^[12x+]");
                 if (!a4.IsMatch(tmp.Substring(4, 1)))
                 {
                     value.AddError("Недопустимоый период полураспада - " + tmp.Substring(4, 1));
                 }
-                Regex a5 = new Regex("^[0-3x+]");
+                Regex a5 = new("^[0-3x+]");
                 if (!a5.IsMatch(tmp.Substring(5, 1)))
                 {
                     value.AddError("Недопустимоый период потенциальной опасности РАО - " + tmp.Substring(5, 1));
                 }
-                Regex a6 = new Regex("^[0-49x+]");
+                Regex a6 = new("^[0-49x+]");
                 if (!a6.IsMatch(tmp.Substring(6, 1)))
                 {
                     value.AddError("Недопустимоый способ переработки - " + tmp.Substring(6, 1));
                 }
-                Regex a7 = new Regex("^[0-79x+]");
+                Regex a7 = new("^[0-79x+]");
                 if (!a7.IsMatch(tmp.Substring(7, 1)))
                 {
                     value.AddError("Недопустимоый класс РАО - " + tmp.Substring(7, 1));
                 }
-                Regex a89 = new Regex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
+                Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
                 if (!a89.IsMatch(tmp.Substring(8, 2)))
                 {
                     value.AddError("Недопустимоый код типа РАО - " + tmp.Substring(8, 2));
                 }
-                Regex a10 = new Regex("^[12x+]");
+                Regex a10 = new("^[12x+]");
                 if (!a7.IsMatch(tmp.Substring(10, 1)))
                 {
                     value.AddError("Недопустимая горючесть - " + tmp.Substring(10, 1));
@@ -1027,7 +1027,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -1750,7 +1750,7 @@ namespace Models
             }
             var tmp = value.Value.ToLower();
             tmp = tmp.Replace("х", "x");
-            Regex a = new Regex("^[0-9x+]{11}$");
+            Regex a = new("^[0-9x+]{11}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -1758,52 +1758,52 @@ namespace Models
             }
             if (tmp.Length == 11)
             {
-                Regex a0 = new Regex("^[1-3x+]");
+                Regex a0 = new("^[1-3x+]");
                 if (!a0.IsMatch(tmp.Substring(0, 1)))
                 {
                     value.AddError("Недопустимое агрегатное состояние - " + tmp.Substring(0, 1));
                 }
-                Regex a1 = new Regex("^[0-49x+]");
+                Regex a1 = new("^[0-49x+]");
                 if (!a1.IsMatch(tmp.Substring(1, 1)))
                 {
                     value.AddError("Недопустимое категория РАО - " + tmp.Substring(1, 1));
                 }
-                Regex a2 = new Regex("^[0-6x+]");
+                Regex a2 = new("^[0-6x+]");
                 if (!a2.IsMatch(tmp.Substring(2, 1)))
                 {
                     value.AddError("Недопустимый радионуклидный состав РАО - " + tmp.Substring(2, 1));
                 }
-                Regex a3 = new Regex("^[12x+]");
+                Regex a3 = new("^[12x+]");
                 if (!a3.IsMatch(tmp.Substring(3, 1)))
                 {
                     value.AddError("Недопустимое содержание ядерных материалов - " + tmp.Substring(3, 1));
                 }
-                Regex a4 = new Regex("^[12x+]");
+                Regex a4 = new("^[12x+]");
                 if (!a4.IsMatch(tmp.Substring(4, 1)))
                 {
                     value.AddError("Недопустимоый период полураспада - " + tmp.Substring(4, 1));
                 }
-                Regex a5 = new Regex("^[0-3x+]");
+                Regex a5 = new("^[0-3x+]");
                 if (!a5.IsMatch(tmp.Substring(5, 1)))
                 {
                     value.AddError("Недопустимоый период потенциальной опасности РАО - " + tmp.Substring(5, 1));
                 }
-                Regex a6 = new Regex("^[0-49x+]");
+                Regex a6 = new("^[0-49x+]");
                 if (!a6.IsMatch(tmp.Substring(6, 1)))
                 {
                     value.AddError("Недопустимоый способ переработки - " + tmp.Substring(6, 1));
                 }
-                Regex a7 = new Regex("^[0-79x+]");
+                Regex a7 = new("^[0-79x+]");
                 if (!a7.IsMatch(tmp.Substring(7, 1)))
                 {
                     value.AddError("Недопустимоый класс РАО - " + tmp.Substring(7, 1));
                 }
-                Regex a89 = new Regex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
+                Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
                 if (!a89.IsMatch(tmp.Substring(8, 2)))
                 {
                     value.AddError("Недопустимоый код типа РАО - " + tmp.Substring(8, 2));
                 }
-                Regex a10 = new Regex("^[12x+]");
+                Regex a10 = new("^[12x+]");
                 if (!a7.IsMatch(tmp.Substring(10, 1)))
                 {
                     value.AddError("Недопустимая горючесть - " + tmp.Substring(10, 1));
@@ -1906,7 +1906,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;

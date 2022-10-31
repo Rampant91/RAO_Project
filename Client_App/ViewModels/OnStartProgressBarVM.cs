@@ -39,8 +39,8 @@ namespace Client_App.ViewModels
         public Task MainTask { get; set; }
         public OnStartProgressBarVM()
         {
-            ShowDialog = new Interaction<MainWindowVM, object>();
-            MainTask=new Task(() => Start());
+            ShowDialog = new();
+            MainTask=new(() => Start());
             MainTask.GetAwaiter().OnCompleted(async ()=> await ShowDialog.Handle(VMDataContext));
             MainTask.Start();
         }
@@ -60,7 +60,7 @@ namespace Client_App.ViewModels
         public MainWindowVM VMDataContext {get;set;}=null;
         public async Task Start()
         {
-            VMDataContext = new MainWindowVM();
+            VMDataContext = new();
             VMDataContext.PropertyChanged += OnVMPropertyChanged;
             await VMDataContext.Init();
         }
@@ -78,7 +78,7 @@ namespace Client_App.ViewModels
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                PropertyChanged(this, new(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

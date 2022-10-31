@@ -16,7 +16,7 @@ namespace Models.Collections
 
         public DBObservable()
         {
-            Reports_Collection_DB = new ObservableCollectionWithItemPropertyChanged<Reports>();
+            Reports_Collection_DB = new();
             Reports_Collection.CollectionChanged += CollectionChanged;
         }
 
@@ -77,7 +77,7 @@ namespace Models.Collections
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            if (PropertyChanged != null) PropertyChanged(this, new(prop));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

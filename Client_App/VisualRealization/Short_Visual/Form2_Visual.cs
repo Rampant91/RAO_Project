@@ -19,17 +19,17 @@ namespace Client_App.Short_Visual
             Controls.DataGrid.DataGridReports grd1 = (Controls.DataGrid.DataGridReports)Form0_Visual(tp);
             pnl0.Children.Add(grd1);
 
-            NameScope scp = new NameScope();
+            NameScope scp = new();
             scp.Register(grd1.Name, grd1);
             scp.Complete();
             Controls.DataGrid.DataGridReport grd2 = (Controls.DataGrid.DataGridReport)FormX_Visual(scp);
             pnlx.Children.Add(grd2);
 
-            Binding bd = new Binding
+            Binding bd = new()
             {
                 Path = "SelectedItems",
                 ElementName = "Form20AllDataGrid_",
-                NameScope = new WeakReference<INameScope>(scp),
+                NameScope = new(scp),
             };
             v.Bind(MainWindow.SelectedReportsProperty, bd);
 
@@ -40,7 +40,7 @@ namespace Client_App.Short_Visual
         //Форма 20
         private static Control Form0_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports
+            Controls.DataGrid.DataGridReports grd = new()
             {
                 Name = "Form20AllDataGrid_",
                 ShowAllReport = true,
@@ -63,11 +63,11 @@ namespace Client_App.Short_Visual
             //    (((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).Content as Panel).Height = 200;
             //}
 
-            Binding b = new Binding
+            Binding b = new()
             {
                 Path = "DataContext.Local_Reports.Reports_Collection20",
                 ElementName = "MainWindow",
-                NameScope = new WeakReference<INameScope>(scp)
+                NameScope = new(scp)
             };
 
             grd.Bind(Controls.DataGrid.DataGrid<Reports>.ItemsProperty, b);
@@ -78,7 +78,7 @@ namespace Client_App.Short_Visual
         //Форма 2X
         private static Control FormX_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReport grd = new Controls.DataGrid.DataGridReport("Form2AllDataGrid_")
+            Controls.DataGrid.DataGridReport grd = new("Form2AllDataGrid_")
             {
                 Name = "Form2AllDataGrid_",
                 CommentСhangeable = true,
@@ -92,11 +92,11 @@ namespace Client_App.Short_Visual
             grd.IsReadable = true;
             grd.IsAutoSizable = true;
             //((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).MaxHeight = 175;
-            Binding b = new Binding
+            Binding b = new()
             {
                 Path = "SelectedItems",
                 ElementName = "Form20AllDataGrid_",
-                NameScope = new WeakReference<INameScope>(scp),
+                NameScope = new(scp),
                 Converter = new Converters.ReportsToReport_Converter()
             };
 
@@ -108,13 +108,13 @@ namespace Client_App.Short_Visual
         //Кнопки создания или изменения формы
         private static Panel FormB_Visual()
         {
-            Panel panel = new Panel
+            Panel panel = new()
             {
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
             };
 
-            Button btn1 = new Button();
+            Button btn1 = new();
             btn1.Content = ((Form_ClassAttribute)Type.GetType("Models.Form21,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn1.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn1.CommandParameter = "2.1";
@@ -124,7 +124,7 @@ namespace Client_App.Short_Visual
             btn1.Margin = Thickness.Parse("5,0,0,0");
             panel.Children.Add(btn1);
 
-            Button btn2 = new Button();
+            Button btn2 = new();
             btn2.Content = ((Form_ClassAttribute)Type.GetType("Models.Form22,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn2.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn2.CommandParameter = "2.2";
@@ -134,7 +134,7 @@ namespace Client_App.Short_Visual
             btn2.Margin = Thickness.Parse("5,35,0,0");
             panel.Children.Add(btn2);
 
-            Button btn3 = new Button();
+            Button btn3 = new();
             btn3.Content = ((Form_ClassAttribute)Type.GetType("Models.Form23,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn3.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn3.CommandParameter = "2.3";
@@ -144,7 +144,7 @@ namespace Client_App.Short_Visual
             btn3.Margin = Thickness.Parse("5,70,0,0");
             panel.Children.Add(btn3);
 
-            Button btn4 = new Button();
+            Button btn4 = new();
             btn4.Content = ((Form_ClassAttribute)Type.GetType("Models.Form24,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn4.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn4.CommandParameter = "2.4";
@@ -154,7 +154,7 @@ namespace Client_App.Short_Visual
             btn4.Margin = Thickness.Parse("5,105,0,0");
             panel.Children.Add(btn4);
 
-            Button btn5 = new Button();
+            Button btn5 = new();
             btn5.Content = ((Form_ClassAttribute)Type.GetType("Models.Form25,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn5.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn5.CommandParameter = "2.5";
@@ -164,7 +164,7 @@ namespace Client_App.Short_Visual
             btn5.Margin = Thickness.Parse("5,140,0,0");
             panel.Children.Add(btn5);
 
-            Button btn6 = new Button();
+            Button btn6 = new();
             btn6.Content = ((Form_ClassAttribute)Type.GetType("Models.Form26,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn6.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn6.CommandParameter = "2.6";
@@ -174,7 +174,7 @@ namespace Client_App.Short_Visual
             btn6.Margin = Thickness.Parse("5,175,0,0");
             panel.Children.Add(btn6);
 
-            Button btn7 = new Button();
+            Button btn7 = new();
             btn7.Content = ((Form_ClassAttribute)Type.GetType("Models.Form27,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn7.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn7.CommandParameter = "2.7";
@@ -184,7 +184,7 @@ namespace Client_App.Short_Visual
             btn7.Margin = Thickness.Parse("5,210,0,0");
             panel.Children.Add(btn7);
 
-            Button btn8 = new Button();
+            Button btn8 = new();
             btn8.Content = ((Form_ClassAttribute)Type.GetType("Models.Form28,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn8.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn8.CommandParameter = "2.8";
@@ -194,7 +194,7 @@ namespace Client_App.Short_Visual
             btn8.Margin = Thickness.Parse("5,245,0,0");
             panel.Children.Add(btn8);
 
-            Button btn9 = new Button();
+            Button btn9 = new();
             btn9.Content = ((Form_ClassAttribute)Type.GetType("Models.Form29,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn9.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn9.CommandParameter = "2.9";
@@ -204,7 +204,7 @@ namespace Client_App.Short_Visual
             btn9.Margin = Thickness.Parse("5,280,0,0");
             panel.Children.Add(btn9);
 
-            Button btn10 = new Button();
+            Button btn10 = new();
             btn10.Content = ((Form_ClassAttribute)Type.GetType("Models.Form210,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn10.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn10.CommandParameter = "2.10";
@@ -214,7 +214,7 @@ namespace Client_App.Short_Visual
             btn10.Margin = Thickness.Parse("5,315,0,0");
             panel.Children.Add(btn10);
 
-            Button btn11 = new Button();
+            Button btn11 = new();
             btn11.Content = ((Form_ClassAttribute)Type.GetType("Models.Form211,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn11.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn11.CommandParameter = "2.11";
@@ -224,7 +224,7 @@ namespace Client_App.Short_Visual
             btn11.Margin = Thickness.Parse("5,350,0,0");
             panel.Children.Add(btn11);
 
-            Button btn12 = new Button();
+            Button btn12 = new();
             btn12.Content = ((Form_ClassAttribute)Type.GetType("Models.Form212,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn12.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn12.CommandParameter = "2.12";

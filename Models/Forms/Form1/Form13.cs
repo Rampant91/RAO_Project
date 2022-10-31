@@ -418,7 +418,7 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -441,12 +441,12 @@ namespace Models
                 return true;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -526,7 +526,7 @@ namespace Models
                 value.AddError("Недопустимое значение"); return false;
 
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -701,7 +701,7 @@ namespace Models
                 value.AddError("Недопустимое значение"); return false;
 
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -790,7 +790,7 @@ namespace Models
                 value.AddError("Недопустимое значение"); return false;
 
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -870,7 +870,7 @@ namespace Models
                 value.AddError("Недопустимое значение"); return false;
 
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;

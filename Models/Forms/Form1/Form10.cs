@@ -105,7 +105,7 @@ namespace Models
                 return false;
             }
 
-            Regex mask = new Regex("^[0123456789]{5}$");
+            Regex mask = new("^[0123456789]{5}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -631,7 +631,7 @@ namespace Models
                 return false;
             }
 
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -689,7 +689,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex ex = new Regex(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$");
+            Regex ex = new(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -747,7 +747,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{7}$");
+            Regex ex = new("^[0-9]{7}$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -806,7 +806,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{11}$");
+            Regex ex = new("^[0-9]{11}$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -865,7 +865,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{10}$");
+            Regex ex = new("^[0-9]{10}$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -924,7 +924,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{9}$|-");
+            Regex ex = new("^[0-9]{9}$|-");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -983,7 +983,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{5}$");
+            Regex ex = new("^[0-9]{5}$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -1042,7 +1042,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex("^[0-9]{2}$");
+            Regex ex = new("^[0-9]{2}$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");

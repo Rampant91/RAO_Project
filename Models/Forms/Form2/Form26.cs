@@ -136,7 +136,7 @@ namespace Models
             {
                 return true;
             }
-            List<string> spr = new List<string>()
+            List<string> spr = new()
             {
                 "ПП",
                 "СЗЗ",

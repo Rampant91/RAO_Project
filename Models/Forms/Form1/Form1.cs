@@ -151,7 +151,7 @@ namespace Models.Abstracts
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -168,12 +168,12 @@ namespace Models.Abstracts
                 return false;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
@@ -378,7 +378,7 @@ namespace Models.Abstracts
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
                 if (b.IsMatch(tmp))
                 {
                     tmp = tmp.Insert(6, "20");
@@ -395,12 +395,12 @@ namespace Models.Abstracts
                 return false;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");

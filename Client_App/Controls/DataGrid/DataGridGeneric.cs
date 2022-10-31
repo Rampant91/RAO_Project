@@ -644,70 +644,57 @@ namespace Client_App.Controls.DataGrid
         }
         private void CommandListChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            foreach (KeyComand item in args.NewItems)
+            if (args.NewItems.Cast<KeyComand>().Any(item => item.IsContextMenuCommand))
             {
-                if (item.IsContextMenuCommand)
-                {
-                    MakeContextMenu();
-                    break;
-                }
+                MakeContextMenu();
             }
         }
         private object GetParamByParamName(KeyComand param)
         {
-            if(param.ParamName=="SelectedItems")
+            switch (param.ParamName)
             {
-                return SelectedItems;
-            }
-            if (param.ParamName == "SelectedCells")
-            {
-                return SelectedCells;
-            }
-            if (param.ParamName == "FormType")
-            {
-                return SelectedCells;
-            }
-            if (param.ParamName == "Copy")
-            {
-                object[] answ = new object[3];
-                answ[0] = SelectedItems;
-                answ[1] = Math.Min(FirstPressedItem[1],LastPressedItem[1]);
-                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                return answ;
-            }
-            if (param.ParamName == "Paste")
-            {
-                object[] answ = new object[3];
-                answ[0] = SelectedItems;
-                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                return answ;
-            }
-            if (param.ParamName == "Del")
-            {
-                object[] answ = new object[3];
-                answ[0] = SelectedItems;
-                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                return answ;
-            }
-            if (param.ParamName == "SelectAll")
-            {
-                int maxRow = PageSize;
-                int maxColumn = Rows[0].Children.Count;
-                FirstPressedItem[0] = 0;
-                FirstPressedItem[1] = 0;
-                LastPressedItem[0] = maxRow-1;
-                LastPressedItem[1] = maxColumn-1;
-                SetSelectedControls();
-                ObservableCollectionWithItemPropertyChanged<IKey> lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                foreach (var item in Items)
+                case "SelectedItems":
+                    return SelectedItems;
+                case "SelectedCells":
+                    return SelectedCells;
+                case "FormType":
+                    return SelectedCells;
+                case "Copy":
                 {
-                    lst.Add(item);
+                    object[] answ = new object[3];
+                    answ[0] = SelectedItems;
+                    answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                    answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                    return answ;
                 }
-                SelectedItems = lst;
+                case "Paste" or "Del":
+                {
+                    object[] answ = new object[3];
+                    answ[0] = SelectedItems;
+                    answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                    answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                    return answ;
+                }
+                case "SelectAll":
+                {
+                    int maxRow = PageSize;
+                    int maxColumn = Rows[0].Children.Count;
+                    FirstPressedItem[0] = 0;
+                    FirstPressedItem[1] = 0;
+                    LastPressedItem[0] = maxRow-1;
+                    LastPressedItem[1] = maxColumn-1;
+                    SetSelectedControls();
+                    ObservableCollectionWithItemPropertyChanged<IKey> lst = new();
+                    foreach (var item in Items)
+                    {
+                        lst.Add(item);
+                    }
+                    SelectedItems = lst;
+                    break;
+                }
             }
-            if (param.ParamName is null or "")
+
+            if (string.IsNullOrEmpty(param.ParamName))
             {
                 return param.Param;
             }
@@ -883,7 +870,7 @@ namespace Client_App.Controls.DataGrid
 
                 SelectedCells.Clear();
 
-                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new();
 
                 var tmp2 = Rows.Where(x => x.IsVisible).SelectMany(x => x.Children).Where(item => ((Cell)item).Row == Row);
 
@@ -928,7 +915,7 @@ namespace Client_App.Controls.DataGrid
 
                 SelectedCells.Clear();
 
-                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new();
 
                 var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row && ((Cell)item.Children.FirstOrDefault()).Column == Column);
 
@@ -969,7 +956,7 @@ namespace Client_App.Controls.DataGrid
 
                 SelectedCells.Clear();
 
-                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new();
 
                 var tmp2 = Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
 
@@ -1014,7 +1001,7 @@ namespace Client_App.Controls.DataGrid
 
                 SelectedCells.Clear();
 
-                Dictionary<long,ObservableCollectionWithItemPropertyChanged<IKey>> tmpSelectedItems = new Dictionary<long, ObservableCollectionWithItemPropertyChanged<IKey>>();
+                Dictionary<long,ObservableCollectionWithItemPropertyChanged<IKey>> tmpSelectedItems = new();
 
                 var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
                                                   (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
@@ -1027,7 +1014,7 @@ namespace Client_App.Controls.DataGrid
                     {
                         if (!tmpSelectedItems.ContainsKey(((T)item.DataContext).Order))
                         {
-                            tmpSelectedItems.Add((((T)item.DataContext).Order), new ObservableCollectionWithItemPropertyChanged<IKey>());
+                            tmpSelectedItems.Add((((T)item.DataContext).Order), new());
                         }
                     }
                     else
@@ -1395,7 +1382,7 @@ namespace Client_App.Controls.DataGrid
                         catch { }
                     }
                 }
-                var t = typeof(T).FindInterfaces(new System.Reflection.TypeFilter((x,y)=> 
+                var t = typeof(T).FindInterfaces(new((x,y)=> 
                 {
                     if (x.ToString() == y.ToString())
                         return true;
@@ -1591,8 +1578,8 @@ namespace Client_App.Controls.DataGrid
                 lst = lst.Where(item => item.First().Key is Key.A or Key.C);
             }
 
-            ContextMenu menu = new ContextMenu();
-            List<MenuItem> lr = new List<MenuItem>();
+            ContextMenu menu = new();
+            List<MenuItem> lr = new();
             foreach (var item in lst)
             {
                 if (item.Count() == 1)
@@ -1603,14 +1590,14 @@ namespace Client_App.Controls.DataGrid
                 }
                 if (item.Count() == 2)
                 {
-                    List<MenuItem> inlr = new List<MenuItem>();
+                    List<MenuItem> inlr = new();
                     foreach (var it in item)
                     {
                         var tmp = new MenuItem { Header = it.ContextMenuText[1] };
                         tmp.Tapped += ComandTapped;
                         inlr.Add(tmp);
                     }
-                    lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                    lr.Add(new() { Header = item.Key, Items = inlr });
                 }
             }
             menu.Items = lr;
@@ -1642,11 +1629,11 @@ namespace Client_App.Controls.DataGrid
                 var tre = ls.GetLevel(Level-1);
                 for (int i = Level-1; i >= 1; i--)
                 {
-                    Grid HeaderRow = new Grid();
+                    Grid HeaderRow = new();
                     var count = 0;
                     foreach (var item in tre)
                     {
-                        Binding b = new Binding()
+                        Binding b = new()
                         {
                             Source = item,
                             Path = "GridLength",
@@ -1658,7 +1645,7 @@ namespace Client_App.Controls.DataGrid
                         };
                         HeaderRow.ColumnDefinitions.Add(Column);
 
-                        Cell cell = new Cell() {
+                        Cell cell = new() {
                             [Grid.ColumnProperty]=count
                         };
                         cell.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -1670,10 +1657,10 @@ namespace Client_App.Controls.DataGrid
                         {
                             cell.Height = 25;
                         }
-                        cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
+                        cell.BorderColor = new(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
 
-                        TextBlock textBlock = new TextBlock();
+                        TextBlock textBlock = new();
                         textBlock.TextWrapping = TextWrapping.Wrap;
                         textBlock.Text = item.name.Contains("null") ?"": item.name;
                         textBlock.TextAlignment = TextAlignment.Center;
@@ -1686,7 +1673,7 @@ namespace Client_App.Controls.DataGrid
                         HeaderRow.Children.Add(cell);
                         if (count + 1 < tre.Count * 2 - 1)
                         {
-                            HeaderRow.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
+                            HeaderRow.ColumnDefinitions.Add(new() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
                             if (i == 1&&IsColumnResize)
                             {
                                 HeaderRow.Children.Add(new GridSplitter()
@@ -1748,7 +1735,7 @@ namespace Client_App.Controls.DataGrid
 
                     foreach (var item in lst)
                     {
-                        Binding b = new Binding()
+                        Binding b = new()
                         {
                             Source = HeadersColumns[Column],
                             Path = nameof(ColumnDefinition.Width)
@@ -1758,14 +1745,14 @@ namespace Client_App.Controls.DataGrid
 
                         Control textBox = null;
 
-                        Cell cell = new Cell()
+                        Cell cell = new()
                         {
                             [Grid.ColumnProperty] = count
                         };
                         cell.HorizontalAlignment = HorizontalAlignment.Stretch;
                         cell.Row = i;
                         cell.Column = Column;
-                        cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
+                        cell.BorderColor = new(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
                         if (item.ChooseLine)
                         {
@@ -1787,7 +1774,7 @@ namespace Client_App.Controls.DataGrid
                                     ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                                     textBox.VerticalAlignment = VerticalAlignment.Stretch;
                                     textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                                    textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                                    textBox.ContextMenu = new() { Width = 0, Height = 0 };
                                     if (item.IsTextWrapping)
                                     {
                                         ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
@@ -1810,9 +1797,9 @@ namespace Client_App.Controls.DataGrid
                                     ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
                                     textBox.VerticalAlignment = VerticalAlignment.Center;
                                     textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                                    ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
+                                    ((TextBlock)textBox).Padding = new(0, 5, 0, 5);
                                     textBox.Height = 30;
-                                    textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                                    textBox.ContextMenu = new() { Width = 0, Height = 0 };
                                 }
                             }
                             else
@@ -1831,9 +1818,9 @@ namespace Client_App.Controls.DataGrid
                                 ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
                                 textBox.VerticalAlignment = VerticalAlignment.Center;
                                 textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                                ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
+                                ((TextBlock)textBox).Padding = new(0, 5, 0, 5);
                                 textBox.Height = 30;
-                                textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                                textBox.ContextMenu = new() { Width = 0, Height = 0 };
                             }
                         }
                         else
@@ -1847,7 +1834,7 @@ namespace Client_App.Controls.DataGrid
                             ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                             textBox.VerticalAlignment = VerticalAlignment.Stretch;
                             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                            textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                            textBox.ContextMenu = new() { Width = 0, Height = 0 };
                             if (item.IsTextWrapping)
                             {
                                 ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
@@ -1860,7 +1847,7 @@ namespace Client_App.Controls.DataGrid
                         RowStackPanel.Children.Add(cell);
                         if (count + 1 < lst.Count * 2 - 1)
                         {
-                            RowStackPanel.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
+                            RowStackPanel.ColumnDefinitions.Add(new() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
                             count += 2;
                         }
                         else
@@ -1898,7 +1885,7 @@ namespace Client_App.Controls.DataGrid
                 VerticalAlignment = VerticalAlignment.Stretch
             };
 
-            Grid MainStackPanel = new Grid() {};
+            Grid MainStackPanel = new() {};
             MainStackPanel.VerticalAlignment = VerticalAlignment.Stretch;
             MainStackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             MainPanel.Children.Add(MainStackPanel);
@@ -1907,7 +1894,7 @@ namespace Client_App.Controls.DataGrid
             #region Search
             if(Search)
             {
-                MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height=GridLength.Parse("35") });
+                MainStackPanel.RowDefinitions.Add(new() { Height=GridLength.Parse("35") });
                 Border HeaderSearchBorder = new()
                 {
                     Margin = Thickness.Parse("0,0,0,5"),
@@ -1929,7 +1916,7 @@ namespace Client_App.Controls.DataGrid
                 //HeaderSearchStackPanel.Orientation = Orientation.Vertical;
                 HeaderSearchBorder.Child = HeaderSearchStackPanel;
 
-                TextBox SearchTextBox = new TextBox()
+                TextBox SearchTextBox = new()
                 {
                     Name = "SearchText",
                     Watermark = "Поиск...",
@@ -1942,7 +1929,7 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Header
-            MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            MainStackPanel.RowDefinitions.Add(new() { Height = GridLength.Auto });
             Border HeaderBorder = new()
             {
                 BorderThickness = Thickness.Parse("1"),
@@ -1988,7 +1975,7 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Center
-            MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height=GridLength.Parse("*") });
+            MainStackPanel.RowDefinitions.Add(new() { Height=GridLength.Parse("*") });
             Border CenterBorder = new()
             {
                 Margin = Thickness.Parse("0,5,0,0"),
@@ -2010,7 +1997,7 @@ namespace Client_App.Controls.DataGrid
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
             if (!Sum)
             {
-                ScrollViewer CenterScrollViewer = new ScrollViewer();
+                ScrollViewer CenterScrollViewer = new();
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CenterScrollViewer.Content = CenterPanel;
                 CenterScrollViewer.VerticalAlignment = VerticalAlignment.Stretch;
@@ -2020,22 +2007,22 @@ namespace Client_App.Controls.DataGrid
             }
             else
             {
-                Panel pnl = new Panel();
+                Panel pnl = new();
                 int h = 500;
-                Canvas CenterCanvas = new Canvas() { Height=h};
+                Canvas CenterCanvas = new() { Height=h};
                 //CenterPanel.Height = h;
 
-                ScrollBar bar = new ScrollBar() {ZIndex=999,Height=h,HorizontalAlignment=HorizontalAlignment.Right};
+                ScrollBar bar = new() {ZIndex=999,Height=h,HorizontalAlignment=HorizontalAlignment.Right};
                 bar[!ScrollBar.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 CenterCanvas.Children.Add(bar);
 
-                Binding b = new Binding() {
+                Binding b = new() {
                     Source = bar,
                     Path = nameof(bar.Value),
                     Mode = BindingMode.TwoWay
                 };
 
-                ScrollViewer CenterScrollViewer = new ScrollViewer() { Height=h};
+                ScrollViewer CenterScrollViewer = new() { Height=h};
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
 
                 CenterScrollViewer.Content = CenterPanel;
@@ -2075,7 +2062,7 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region MiddleFooter
-            MainStackPanel.RowDefinitions.Add(new RowDefinition() {Height= GridLength.Auto });
+            MainStackPanel.RowDefinitions.Add(new() {Height= GridLength.Auto });
             Border MiddleFooterBorder = new()
             {
                 Margin = Thickness.Parse("0,5,0,0"),
@@ -2133,7 +2120,7 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Footer
-            MainStackPanel.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Parse("45") });
+            MainStackPanel.RowDefinitions.Add(new() { Height = GridLength.Parse("45") });
             Border FooterBorder = new()
             {
                 Margin = Thickness.Parse("0,5,0,0"),
@@ -2154,7 +2141,7 @@ namespace Client_App.Controls.DataGrid
             FooterPanel.Height = 40;
             FooterBorder.Child=FooterPanel;
 
-            StackPanel FooterStackPanel = new StackPanel()
+            StackPanel FooterStackPanel = new()
             {
                 Margin = Thickness.Parse("5,0,0,0"),
                 Orientation = Orientation.Horizontal,
@@ -2164,7 +2151,7 @@ namespace Client_App.Controls.DataGrid
             };
             FooterPanel.Children.Add(FooterStackPanel);
 
-            Button btnDown = new Button
+            Button btnDown = new()
             {
                 Content = "<",
                 Width = 30,
@@ -2175,7 +2162,7 @@ namespace Client_App.Controls.DataGrid
             btnDown.Click += NowPageDown;
             FooterStackPanel.Children.Add(btnDown);
 
-            TextBox box = new TextBox()
+            TextBox box = new()
             {
                 [!TextBox.TextProperty] = this[!DataGrid<T>.NowPageProperty],
                 TextAlignment = TextAlignment.Center,
@@ -2185,7 +2172,7 @@ namespace Client_App.Controls.DataGrid
             box.Height = 30;
             FooterStackPanel.Children.Add(box);
 
-            Button btnUp = new Button
+            Button btnUp = new()
             {
                 Content = ">",
                 Width = 30,

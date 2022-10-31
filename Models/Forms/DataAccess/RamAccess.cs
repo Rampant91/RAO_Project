@@ -177,10 +177,10 @@ namespace Models.DataAccess
                 _errorsByPropertyName : null;
             if (tmp != null)
             {
-                List<Exception> lst = new List<Exception>();
+                List<Exception> lst = new();
                 foreach (string item in tmp)
                 {
-                    lst.Add(new Exception(item));
+                    lst.Add(new(item));
                 }
                 return lst;
             }
@@ -191,7 +191,7 @@ namespace Models.DataAccess
         }
         protected void OnErrorsChanged(string propertyName)
         {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            ErrorsChanged?.Invoke(this, new(propertyName));
         }
         protected void ClearErrors(string propertyName)
         {

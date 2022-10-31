@@ -251,7 +251,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex a = new Regex("^[0-9]{6}$");
+            Regex a = new("^[0-9]{6}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
