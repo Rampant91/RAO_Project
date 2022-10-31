@@ -1,7 +1,7 @@
-﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
-using System; using System.Collections.Generic;
+﻿using Models.DataAccess; 
+using System.ComponentModel.DataAnnotations.Schema;
+using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Spravochniki;
 using System.Globalization;
 using System.ComponentModel;
@@ -13,8 +13,8 @@ using Models.Collections;
 namespace Models
 {
     [Serializable]
-    [Attributes.Form_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
-    public class Form27 : Abstracts.Form2
+    [Form_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
+    public class Form27 : Form2
     {
         public Form27() : base()
         {
@@ -441,37 +441,37 @@ namespace Models
             base.ExcelGetRow(worksheet, Row);
             ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
             RadionuclidName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-            AllowedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
-            FactedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
-            WasteOutbreakPreviousYear_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            AllowedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 3].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 3].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 3].Value);
+            FactedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
+            WasteOutbreakPreviousYear_DB = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 5].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 5].Value);
 
         }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
             double val;
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ObservedSourceNumber_DB;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = RadionuclidName_DB;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = AllowedWasteValue_DB == "" || AllowedWasteValue_DB == "-" || AllowedWasteValue_DB == null ? 0 : double.TryParse(AllowedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AllowedWasteValue_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = FactedWasteValue_DB == "" || FactedWasteValue_DB == "-" || FactedWasteValue_DB == null ? 0 :  double.TryParse(FactedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : FactedWasteValue_DB;
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = WasteOutbreakPreviousYear_DB== "" || WasteOutbreakPreviousYear_DB == "-" || WasteOutbreakPreviousYear_DB == null ? 0  : double.TryParse(WasteOutbreakPreviousYear_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : WasteOutbreakPreviousYear_DB;
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ObservedSourceNumber_DB;
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = RadionuclidName_DB;
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = string.IsNullOrEmpty(AllowedWasteValue_DB) || AllowedWasteValue_DB == null ? 0 : double.TryParse(AllowedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AllowedWasteValue_DB;
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(FactedWasteValue_DB) || FactedWasteValue_DB == null ? 0 : double.TryParse(FactedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : FactedWasteValue_DB;
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = string.IsNullOrEmpty(WasteOutbreakPreviousYear_DB) || WasteOutbreakPreviousYear_DB == null ? 0 : double.TryParse(WasteOutbreakPreviousYear_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : WasteOutbreakPreviousYear_DB;
             return 5;
         }
 
-        public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-            Column = Column +(Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form27,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form27,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form27,Models").GetProperty(nameof(AllowedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form27,Models").GetProperty(nameof(FactedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form27,Models").GetProperty(nameof(WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty(nameof(AllowedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty(nameof(FactedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty(nameof(WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
             return 5;
         }
         #endregion

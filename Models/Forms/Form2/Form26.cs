@@ -1,4 +1,5 @@
-﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
+﻿using Models.DataAccess; 
+using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Linq;
 using Spravochniki;
@@ -9,12 +10,13 @@ using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Models
 {
     [Serializable]
-    [Attributes.Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
-    public class Form26 : Abstracts.Form2
+    [Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
+    public class Form26 : Form2
     {
         public Form26() : base()
         {
@@ -533,46 +535,47 @@ namespace Models
         #region IExcel
         public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
+            double val;
             base.ExcelGetRow(worksheet, Row);
             ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
             ControlledAreaName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
             SupposedWasteSource_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
-            DistanceToWasteSource_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
-            TestDepth_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            DistanceToWasteSource_DB = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
+            TestDepth_DB = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 5].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 5].Value);
             RadionuclidName_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
-            AverageYearConcentration_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+            AverageYearConcentration_DB = Convert.ToString(worksheet.Cells[Row, 7].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 7].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 7].Value);
 
         }
-        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
             double val;
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ObservedSourceNumber_DB;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ControlledAreaName_DB;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = SupposedWasteSource_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = DistanceToWasteSource_DB== "" || DistanceToWasteSource_DB == "-" || DistanceToWasteSource_DB == null ? 0  : double.TryParse(DistanceToWasteSource_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : DistanceToWasteSource_DB;
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = TestDepth_DB== "" || TestDepth_DB == "-" || TestDepth_DB == null ? 0  : double.TryParse(TestDepth_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TestDepth_DB;
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = RadionuclidName_DB;
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = AverageYearConcentration_DB== "" || AverageYearConcentration_DB == "-" || AverageYearConcentration_DB == null ? 0  : double.TryParse(AverageYearConcentration_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AverageYearConcentration_DB;
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ObservedSourceNumber_DB;
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ControlledAreaName_DB;
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = SupposedWasteSource_DB;
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(DistanceToWasteSource_DB) || DistanceToWasteSource_DB == null ? 0  : double.TryParse(DistanceToWasteSource_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : DistanceToWasteSource_DB;
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = string.IsNullOrEmpty(TestDepth_DB) || TestDepth_DB == null ? 0 : double.TryParse(TestDepth_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TestDepth_DB;
+            worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = RadionuclidName_DB;
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = string.IsNullOrEmpty(AverageYearConcentration_DB) || AverageYearConcentration_DB == null ? 0 : double.TryParse(AverageYearConcentration_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AverageYearConcentration_DB;
             return 7;
         }
 
-        public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
             return 7;
         }
         #endregion

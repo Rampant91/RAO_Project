@@ -1,7 +1,7 @@
-﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
+﻿using Models.DataAccess; 
+using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using System.Globalization;
 using System.ComponentModel;
 using Spravochniki;
@@ -11,6 +11,7 @@ using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
 using Models.Interfaces;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Models
 {
@@ -2254,23 +2255,24 @@ namespace Models
         #region IExcel
         public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
+            double val;
             base.ExcelGetRow(worksheet, Row);
             StoragePlaceName.Value = Convert.ToString(worksheet.Cells[Row, 2].Value);
             StoragePlaceCode.Value = Convert.ToString(worksheet.Cells[Row, 3].Value);
             PackName.Value = Convert.ToString(worksheet.Cells[Row, 4].Value);
             PackType.Value = Convert.ToString(worksheet.Cells[Row, 5].Value);
-            PackQuantity_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+            PackQuantity_DB = Convert.ToString(worksheet.Cells[Row, 6].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 6].Value);
             CodeRAO_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
             StatusRAO_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
-            VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
-            VolumeInPack_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
-            MassOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
-            MassInPack_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
-            QuantityOZIII_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
-            TritiumActivity_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
-            BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
-            AlphaActivity_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
-            TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 9].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 9].Value);
+            VolumeInPack_DB = Convert.ToString(worksheet.Cells[Row, 10].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 10].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 10].Value);
+            MassOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 11].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 11].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 11].Value);
+            MassInPack_DB = Convert.ToString(worksheet.Cells[Row, 12].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 12].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 12].Value);
+            QuantityOZIII_DB = Convert.ToString(worksheet.Cells[Row, 13].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 13].Value);
+            TritiumActivity_DB = Convert.ToString(worksheet.Cells[Row, 14].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 14].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 14].Value);
+            BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[Row, 15].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 15].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 15].Value);
+            AlphaActivity_DB = Convert.ToString(worksheet.Cells[Row, 16].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 16].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 16].Value);
+            TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[Row, 17].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 17].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 17].Value);
             MainRadionuclids_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
             Subsidy_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
             FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
@@ -2279,58 +2281,58 @@ namespace Models
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon, SumNumber);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
             double val;
             int valInt;
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = StoragePlaceName.Value == null ? "" : StoragePlaceName.Value;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = StoragePlaceCode.Value == null ? "" : StoragePlaceCode.Value;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = PackName.Value == null ? "" : PackName.Value;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = PackType.Value == null ? "" : PackType.Value;
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = PackQuantity_DB== "" || PackQuantity_DB == null || PackQuantity_DB == "-"? 0  : int.TryParse(PackQuantity_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : PackQuantity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = CodeRAO_DB;
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = StatusRAO_DB;
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = VolumeOutOfPack_DB== "" || VolumeOutOfPack_DB == null || VolumeOutOfPack_DB == "-" ? 0  : double.TryParse(VolumeOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOutOfPack_DB;
-            worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = VolumeInPack_DB== "" || VolumeInPack_DB == null || VolumeInPack_DB == "-" ? 0  : double.TryParse(VolumeInPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeInPack_DB;
-            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = MassOutOfPack_DB== "" || MassOutOfPack_DB == null || MassOutOfPack_DB == "-" ? 0  : double.TryParse(MassOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOutOfPack_DB;
-            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = MassInPack_DB== "" || MassInPack_DB == null || MassInPack_DB == "-" ? 0  : double.TryParse(MassInPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassInPack_DB;
-            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = QuantityOZIII_DB== "" || QuantityOZIII_DB == null || QuantityOZIII_DB == "-" ? 0  : int.TryParse(QuantityOZIII_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityOZIII_DB;
-            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = TritiumActivity_DB== "" || TritiumActivity_DB == null || TritiumActivity_DB == "-" ? 0  : double.TryParse(TritiumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = BetaGammaActivity_DB== "" || BetaGammaActivity_DB == null || BetaGammaActivity_DB == "-" ? 0  : double.TryParse(BetaGammaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = AlphaActivity_DB== "" || AlphaActivity_DB == null || AlphaActivity_DB == "-" ? 0  : double.TryParse(AlphaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = TransuraniumActivity_DB== "" || TransuraniumActivity_DB == null || TransuraniumActivity_DB == "-" ? 0  : double.TryParse(TransuraniumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivity_DB;
-            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = MainRadionuclids_DB;
-            worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = Subsidy_DB;
-            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = FcpNumber_DB;
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = StoragePlaceName.Value == null ? "" : StoragePlaceName.Value;
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = StoragePlaceCode.Value == null ? "" : StoragePlaceCode.Value;
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = PackName.Value == null ? "" : PackName.Value;
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = PackType.Value == null ? "" : PackType.Value;
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = string.IsNullOrEmpty(PackQuantity_DB) || PackQuantity_DB == "-" ? 0 : int.TryParse(PackQuantity_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : PackQuantity_DB;
+            worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = CodeRAO_DB;
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = StatusRAO_DB;
+            worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = string.IsNullOrEmpty(VolumeOutOfPack_DB) || VolumeOutOfPack_DB == "-" ? 0 : double.TryParse(VolumeOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOutOfPack_DB;
+            worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = string.IsNullOrEmpty(VolumeInPack_DB) || VolumeInPack_DB == "-" ? 0 : double.TryParse(VolumeInPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeInPack_DB;
+            worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = string.IsNullOrEmpty(MassOutOfPack_DB) || MassOutOfPack_DB == "-" ? 0 : double.TryParse(MassOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOutOfPack_DB;
+            worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = string.IsNullOrEmpty(MassInPack_DB) || MassInPack_DB == "-" ? 0 : double.TryParse(MassInPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassInPack_DB;
+            worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = string.IsNullOrEmpty(QuantityOZIII_DB) || QuantityOZIII_DB == "-" ? 0 : int.TryParse(QuantityOZIII_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityOZIII_DB;
+            worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = string.IsNullOrEmpty(TritiumActivity_DB) || TritiumActivity_DB == "-" ? 0 : double.TryParse(TritiumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = string.IsNullOrEmpty(BetaGammaActivity_DB) || BetaGammaActivity_DB == "-" ? 0 : double.TryParse(BetaGammaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = string.IsNullOrEmpty(AlphaActivity_DB) || AlphaActivity_DB == "-" ? 0 : double.TryParse(AlphaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = string.IsNullOrEmpty(TransuraniumActivity_DB) || TransuraniumActivity_DB == "-" ? 0 : double.TryParse(TransuraniumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = MainRadionuclids_DB;
+            worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = Subsidy_DB;
+            worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = FcpNumber_DB;
             return 19;
         }
 
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(PackName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(PackType)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(PackQuantity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(StatusRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(VolumeOutOfPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(VolumeInPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(MassOutOfPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(MassInPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(TritiumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(BetaGammaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(AlphaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(TransuraniumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(MainRadionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(Subsidy)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(PackName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(PackType)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(PackQuantity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(StatusRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(VolumeOutOfPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(VolumeInPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(MassOutOfPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(MassInPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(TritiumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(BetaGammaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(AlphaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(TransuraniumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(MainRadionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(Subsidy)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
             return 19;
         }
         #endregion

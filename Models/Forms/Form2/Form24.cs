@@ -1,5 +1,6 @@
-﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization; using System.Collections.Generic;
+﻿using Models.DataAccess; 
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization; 
 using System.Text.RegularExpressions;
 using System;
 using System.ComponentModel;
@@ -8,12 +9,13 @@ using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Models
 {
     [Serializable]
-    [Attributes.Form_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
-    public class Form24 : Abstracts.Form2
+    [Form_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
+    public class Form24 : Form2
     {
         public Form24() : base()
         {
@@ -1228,74 +1230,75 @@ namespace Models
         #region IExcel
         public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
+            double val;
             base.ExcelGetRow(worksheet, Row);
             CodeOYAT_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
             FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
-            MassCreated_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
-            QuantityCreated_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
-            MassFromAnothers_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
-            QuantityFromAnothers_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
-            MassFromAnothersImported_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
-            QuantityFromAnothersImported_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
-            MassAnotherReasons_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
-            QuantityAnotherReasons_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
-            MassTransferredToAnother_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
-            QuantityTransferredToAnother_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
-            MassRefined_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
-            QuantityRefined_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
-            MassRemovedFromAccount_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
-            QuantityRemovedFromAccount_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
+            MassCreated_DB = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
+            QuantityCreated_DB = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 5].Value);
+            MassFromAnothers_DB = Convert.ToString(worksheet.Cells[Row, 6].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 6].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 6].Value);
+            QuantityFromAnothers_DB = Convert.ToString(worksheet.Cells[Row, 7].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 7].Value);
+            MassFromAnothersImported_DB = Convert.ToString(worksheet.Cells[Row, 8].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 8].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 8].Value);
+            QuantityFromAnothersImported_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 9].Value);
+            MassAnotherReasons_DB = Convert.ToString(worksheet.Cells[Row, 10].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 10].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 10].Value);
+            QuantityAnotherReasons_DB = Convert.ToString(worksheet.Cells[Row, 11].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 11].Value);
+            MassTransferredToAnother_DB = Convert.ToString(worksheet.Cells[Row, 12].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 12].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 12].Value);
+            QuantityTransferredToAnother_DB = Convert.ToString(worksheet.Cells[Row, 13].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 13].Value);
+            MassRefined_DB = Convert.ToString(worksheet.Cells[Row, 14].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 14].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 14].Value);
+            QuantityRefined_DB = Convert.ToString(worksheet.Cells[Row, 15].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 15].Value);
+            MassRemovedFromAccount_DB = Convert.ToString(worksheet.Cells[Row, 16].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 16].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 16].Value);
+            QuantityRemovedFromAccount_DB = Convert.ToString(worksheet.Cells[Row, 17].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 17].Value);
 
         }
-        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
             int valInt;
             double val;
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = CodeOYAT_DB;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = FcpNumber_DB;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = MassCreated_DB== "" || MassCreated_DB == "-" || MassCreated_DB == null ? 0  : double.TryParse(MassCreated_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassCreated_DB;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = QuantityCreated_DB== "" || QuantityCreated_DB == "-" || QuantityCreated_DB == null ? 0  : int.TryParse(QuantityCreated_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityCreated_DB;
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = MassFromAnothers_DB== "" || MassFromAnothers_DB == "-" || MassFromAnothers_DB == null ? 0  : double.TryParse(MassFromAnothers_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassFromAnothers_DB;
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = QuantityFromAnothers_DB== ""|| QuantityFromAnothers_DB == "-"|| QuantityFromAnothers_DB == null ? 0  : int.TryParse(QuantityFromAnothers_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityFromAnothers_DB;
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = MassFromAnothersImported_DB== "" || MassFromAnothersImported_DB == "-"|| MassFromAnothersImported_DB == null ? 0  : double.TryParse(MassFromAnothersImported_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassFromAnothersImported_DB;
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = QuantityFromAnothersImported_DB== "" || QuantityFromAnothersImported_DB == "-" || QuantityFromAnothersImported_DB == null ? 0  : int.TryParse(QuantityFromAnothersImported_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityFromAnothersImported_DB;
-            worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = MassAnotherReasons_DB== "" || MassAnotherReasons_DB == "-" || MassAnotherReasons_DB == null ? 0  : double.TryParse(MassAnotherReasons_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassAnotherReasons_DB;
-            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = QuantityAnotherReasons_DB== "" || QuantityAnotherReasons_DB == "-" || QuantityAnotherReasons_DB == null ? 0  : int.TryParse(QuantityAnotherReasons_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityAnotherReasons_DB;
-            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = MassTransferredToAnother_DB== "" || MassTransferredToAnother_DB == "-" || MassTransferredToAnother_DB == null ? 0  : double.TryParse(MassTransferredToAnother_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassTransferredToAnother_DB;
-            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = QuantityTransferredToAnother_DB== "" || QuantityTransferredToAnother_DB == "-" || QuantityTransferredToAnother_DB == null ? 0  : int.TryParse(QuantityTransferredToAnother_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityTransferredToAnother_DB;
-            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = MassRefined_DB== "" || MassRefined_DB == "-" || MassRefined_DB == null ? 0  : double.TryParse(MassRefined_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassRefined_DB;
-            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = QuantityRefined_DB== "" || QuantityRefined_DB == "-" || QuantityRefined_DB == null ? 0  : int.TryParse(QuantityRefined_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityRefined_DB;
-            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = MassRemovedFromAccount_DB== "" || MassRemovedFromAccount_DB == "-" || MassRemovedFromAccount_DB == null ? 0  : double.TryParse(MassRemovedFromAccount_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassRemovedFromAccount_DB;
-            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = QuantityRemovedFromAccount_DB== "" || QuantityRemovedFromAccount_DB == "-" || QuantityRemovedFromAccount_DB == null ? 0  : int.TryParse(QuantityRemovedFromAccount_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityRemovedFromAccount_DB;
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = CodeOYAT_DB;
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = FcpNumber_DB;
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = string.IsNullOrEmpty(MassCreated_DB) || MassCreated_DB == null ? 0  : double.TryParse(MassCreated_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassCreated_DB;
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(QuantityCreated_DB) || QuantityCreated_DB == null ? 0  : int.TryParse(QuantityCreated_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityCreated_DB;
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = string.IsNullOrEmpty(MassFromAnothers_DB) || MassFromAnothers_DB == null ? 0  : double.TryParse(MassFromAnothers_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassFromAnothers_DB;
+            worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = string.IsNullOrEmpty(QuantityFromAnothers_DB) || QuantityFromAnothers_DB == null ? 0  : int.TryParse(QuantityFromAnothers_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityFromAnothers_DB;
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = string.IsNullOrEmpty(MassFromAnothersImported_DB) || MassFromAnothersImported_DB == null ? 0  : double.TryParse(MassFromAnothersImported_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassFromAnothersImported_DB;
+            worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = string.IsNullOrEmpty(QuantityFromAnothersImported_DB) || QuantityFromAnothersImported_DB == null ? 0  : int.TryParse(QuantityFromAnothersImported_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityFromAnothersImported_DB;
+            worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = string.IsNullOrEmpty(MassAnotherReasons_DB) || MassAnotherReasons_DB == null ? 0  : double.TryParse(MassAnotherReasons_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassAnotherReasons_DB;
+            worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = string.IsNullOrEmpty(QuantityAnotherReasons_DB) || QuantityAnotherReasons_DB == null ? 0  : int.TryParse(QuantityAnotherReasons_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityAnotherReasons_DB;
+            worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = string.IsNullOrEmpty(MassTransferredToAnother_DB) || MassTransferredToAnother_DB == null ? 0  : double.TryParse(MassTransferredToAnother_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassTransferredToAnother_DB;
+            worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = string.IsNullOrEmpty(QuantityTransferredToAnother_DB) || QuantityTransferredToAnother_DB == null ? 0  : int.TryParse(QuantityTransferredToAnother_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityTransferredToAnother_DB;
+            worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = string.IsNullOrEmpty(MassRefined_DB) || MassRefined_DB == null ? 0  : double.TryParse(MassRefined_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassRefined_DB;
+            worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = string.IsNullOrEmpty(QuantityRefined_DB) || QuantityRefined_DB == null ? 0  : int.TryParse(QuantityRefined_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityRefined_DB;
+            worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = string.IsNullOrEmpty(MassRemovedFromAccount_DB) || MassRemovedFromAccount_DB == null ? 0  : double.TryParse(MassRemovedFromAccount_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassRemovedFromAccount_DB;
+            worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = string.IsNullOrEmpty(QuantityRemovedFromAccount_DB) || QuantityRemovedFromAccount_DB == null ? 0  : int.TryParse(QuantityRemovedFromAccount_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : QuantityRemovedFromAccount_DB;
             return 16;
         }
 
-        public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-            Column = Column +(Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
             return 16;
         }
         #endregion

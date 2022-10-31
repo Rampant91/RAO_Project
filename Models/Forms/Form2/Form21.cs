@@ -10,6 +10,7 @@ using OfficeOpenXml;
 using Models.Collections;
 using Models.Interfaces;
 using Models.DataAccess;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Models
 {
@@ -2576,90 +2577,91 @@ namespace Models
         #region IExcel
         public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
         {
+            double val;
             base.ExcelGetRow(worksheet, Row);
             RefineMachineName.Value = Convert.ToString(worksheet.Cells[Row, 2].Value);
             MachineCode.Value = Convert.ToByte(worksheet.Cells[Row, 3].Value);
-            MachinePower.Value = Convert.ToString(worksheet.Cells[Row, 4].Value);
-            NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[Row, 5].Value);
+            MachinePower.Value = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
+            NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 5].Value);
             CodeRAOIn_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
             StatusRAOIn_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
-            VolumeIn_DB = Convert.ToString(worksheet.Cells[Row, 8].Value);
-            MassIn_DB = Convert.ToString(worksheet.Cells[Row, 9].Value);
+            VolumeIn_DB = Convert.ToString(worksheet.Cells[Row, 8].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 8].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 8].Value);
+            MassIn_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 9].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 9].Value);
             QuantityIn_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
-            TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
-            BetaGammaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
-            AlphaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
-            TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 14].Value);
+            TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 11].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 11].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 11].Value);
+            BetaGammaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 12].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 12].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 12].Value);
+            AlphaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 13].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 13].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 13].Value);
+            TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 14].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 14].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 14].Value);
             CodeRAOout_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
             StatusRAOout_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
-            VolumeOut_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
-            MassOut_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
+            VolumeOut_DB = Convert.ToString(worksheet.Cells[Row, 17].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 18].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 17].Value);
+            MassOut_DB = Convert.ToString(worksheet.Cells[Row, 18].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 18].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 18].Value);
             QuantityOZIIIout_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
-            TritiumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
-            BetaGammaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 21].Value);
-            AlphaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 22].Value);
-            TransuraniumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 23].Value);
+            TritiumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 20].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 20].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 20].Value);
+            BetaGammaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 21].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 21].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 21].Value);
+            AlphaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 22].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 22].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 22].Value);
+            TransuraniumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 23].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 23].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 23].Value);
         }
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon, SumNumber);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
             double val = 0;
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = RefineMachineName.Value == null ? "" : RefineMachineName.Value;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = MachineCode.Value == null ? "" : MachineCode.Value;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = MachinePower.Value == null || MachinePower.Value == "" || MachinePower.Value == "-" ? 0 : double.TryParse(MachinePower.Value.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MachinePower.Value;
-            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = NumberOfHoursPerYear.Value == null || NumberOfHoursPerYear.Value == "" || NumberOfHoursPerYear.Value == "-" ? 0 : int.TryParse(NumberOfHoursPerYear.Value.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : NumberOfHoursPerYear.Value;
-            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = CodeRAOIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = StatusRAOIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = VolumeIn_DB == null || VolumeIn_DB == "" || VolumeIn_DB == "-" ? 0 : double.TryParse(VolumeIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = MassIn_DB == null || MassIn_DB == "" || MassIn_DB == "-" ? 0 : double.TryParse(MassIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = QuantityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = TritiumActivityIn_DB == null || TritiumActivityIn_DB == "" || TritiumActivityIn_DB == "-" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = BetaGammaActivityIn_DB == null || BetaGammaActivityIn_DB == "" || BetaGammaActivityIn_DB == "-" ? 0 : double.TryParse(BetaGammaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val)  ?  val : BetaGammaActivityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = AlphaActivityIn_DB == null || AlphaActivityIn_DB ==  "" || AlphaActivityIn_DB == "-" ? 0 : double.TryParse(AlphaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ?  val : AlphaActivityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = TritiumActivityIn_DB == null || TritiumActivityIn_DB == "" || TritiumActivityIn_DB == "-" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
-            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = CodeRAOout_DB;
-            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = StatusRAOout_DB;
-            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = VolumeOut_DB == null || VolumeOut_DB == "" || VolumeOut_DB == "-" ? 0 : double.TryParse(VolumeOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = MassOut_DB == null || MassOut_DB == "" || MassOut_DB == "-" ? 0 : double.TryParse(MassOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = QuantityOZIIIout_DB;
-            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = TritiumActivityOut_DB == null || TritiumActivityOut_DB == "" || TritiumActivityOut_DB == "-" ? 0 : double.TryParse(TritiumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 19 : 0), Column + (Transpon == true ? 19 : 0)].Value = BetaGammaActivityOut_DB == null || BetaGammaActivityOut_DB == "" || BetaGammaActivityOut_DB == "-" ? 0 : double.TryParse(BetaGammaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivityOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20 : 0)].Value = AlphaActivityOut_DB == null || AlphaActivityOut_DB == "" || AlphaActivityOut_DB == "-" ? 0 : double.TryParse(AlphaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivityOut_DB;
-            worksheet.Cells[Row + (Transpon == false ? 21 : 0), Column + (Transpon == true ? 21 : 0)].Value = TransuraniumActivityOut_DB == null || TransuraniumActivityOut_DB == "" || TransuraniumActivityOut_DB == "-" ? 0 : double.TryParse(TransuraniumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivityOut_DB;
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = RefineMachineName.Value == null ? "" : RefineMachineName.Value;
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = MachineCode.Value == null ? "" : MachineCode.Value;
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = string.IsNullOrEmpty(MachinePower.Value) || MachinePower.Value == "-" ? 0 : double.TryParse(MachinePower.Value.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MachinePower.Value;
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(NumberOfHoursPerYear.Value) || NumberOfHoursPerYear.Value == "-" ? 0 : int.TryParse(NumberOfHoursPerYear.Value.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : NumberOfHoursPerYear.Value;
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = CodeRAOIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = StatusRAOIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = string.IsNullOrEmpty(VolumeIn_DB) || VolumeIn_DB == "-" ? 0 : double.TryParse(VolumeIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = string.IsNullOrEmpty(MassIn_DB) || MassIn_DB == "-" ? 0 : double.TryParse(MassIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = QuantityIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = string.IsNullOrEmpty(TritiumActivityIn_DB) || TritiumActivityIn_DB == "-" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = string.IsNullOrEmpty(BetaGammaActivityIn_DB) || BetaGammaActivityIn_DB == "-" ? 0 : double.TryParse(BetaGammaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val)  ?  val : BetaGammaActivityIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = string.IsNullOrEmpty(AlphaActivityIn_DB) || AlphaActivityIn_DB == "-" ? 0 : double.TryParse(AlphaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ?  val : AlphaActivityIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = string.IsNullOrEmpty(TritiumActivityIn_DB) || TritiumActivityIn_DB == "-" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
+            worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = CodeRAOout_DB;
+            worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = StatusRAOout_DB;
+            worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = string.IsNullOrEmpty(VolumeOut_DB) || VolumeOut_DB == "-" ? 0 : double.TryParse(VolumeOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOut_DB;
+            worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = string.IsNullOrEmpty(MassOut_DB) || MassOut_DB == "-" ? 0 : double.TryParse(MassOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOut_DB;
+            worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = QuantityOZIIIout_DB;
+            worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = string.IsNullOrEmpty(TritiumActivityOut_DB) || TritiumActivityOut_DB == "-" ? 0 : double.TryParse(TritiumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityOut_DB;
+            worksheet.Cells[Row + (!Transpon ? 19 : 0), Column + (Transpon ? 19 : 0)].Value = string.IsNullOrEmpty(BetaGammaActivityOut_DB) || BetaGammaActivityOut_DB == "-" ? 0 : double.TryParse(BetaGammaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivityOut_DB;
+            worksheet.Cells[Row + (!Transpon ? 20 : 0), Column + (Transpon ? 20 : 0)].Value = string.IsNullOrEmpty(AlphaActivityOut_DB) || AlphaActivityOut_DB == "-" ? 0 : double.TryParse(AlphaActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivityOut_DB;
+            worksheet.Cells[Row + (!Transpon ? 21 : 0), Column + (Transpon ? 21 : 0)].Value = string.IsNullOrEmpty(TransuraniumActivityOut_DB) || TransuraniumActivityOut_DB == "-" ? 0 : double.TryParse(TransuraniumActivityOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivityOut_DB;
 
             return 22;
         }
 
-        public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon=true)
         {
             var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-            Column = Column +(Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column += (Transpon ? cnt : 0);
+            Row += (!Transpon ? cnt : 0);
 
-           worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 19 : 0), Column + (Transpon == true ? 19 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-           worksheet.Cells[Row + (Transpon == false ? 21 : 0), Column + (Transpon == true ? 21 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 19 : 0), Column + (Transpon ? 19 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 20 : 0), Column + (Transpon ? 20 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+           worksheet.Cells[Row + (!Transpon ? 21 : 0), Column + (Transpon ? 21 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
 
             return 22;
         }
