@@ -888,10 +888,7 @@ namespace Models
                 bool a = (tmp >= 10) && (tmp <= 12);
                 bool b = (tmp >= 41) && (tmp <= 43);
                 bool c = (tmp >= 71) && (tmp <= 73);
-                bool d = (tmp == 15) || (tmp == 17) || (tmp == 18) || (tmp == 46) ||
-                    (tmp == 47) || (tmp == 48) || (tmp == 53) || (tmp == 54) ||
-                    (tmp == 58) || (tmp == 61) || (tmp == 62) || (tmp == 65) ||
-                    (tmp == 67) || (tmp == 68) || (tmp == 75) || (tmp == 76);
+                bool d = tmp is 15 or 17 or 18 or 46 or 47 or 48 or 53 or 54 or 58 or 61 or 62 or 65 or 67 or 68 or 75 or 76;
                 if (a || b || c || d)
                 {
                     //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
@@ -1180,14 +1177,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            if ((value.Value == "01") || (value.Value == "13") ||
-            (value.Value == "14") || (value.Value == "16") ||
-            (value.Value == "26") || (value.Value == "36") ||
-            (value.Value == "44") || (value.Value == "45") ||
-            (value.Value == "49") || (value.Value == "51") ||
-            (value.Value == "52") || (value.Value == "55") ||
-            (value.Value == "56") || (value.Value == "57") ||
-            (value.Value == "59") || (value.Value == "76"))
+            if (value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55" or "56" or "57" or "59" or "76")
             {
                 value.AddError("Код операции не может быть использован для РВ");
             }
@@ -1230,10 +1220,10 @@ namespace Models
             worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = Name_DB;
             worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = Sort_DB;
             worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = Radionuclids_DB;
-            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = Activity_DB== "" || Activity_DB == "-" || Activity_DB == null ? 0  : double.TryParse(Activity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Activity_DB;
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = Activity_DB is "" or "-" or null ? 0  : double.TryParse(Activity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Activity_DB;
             worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ActivityMeasurementDate_DB;
-            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = Volume_DB== "" || Volume_DB == "-" || Volume_DB == null ? 0  : double.TryParse(Volume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume_DB;
-            worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = Mass_DB== "" || Mass_DB == "-" || Mass_DB == null ? 0  : double.TryParse(Mass_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass_DB;
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = Volume_DB is "" or "-" or null ? 0  : double.TryParse(Volume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume_DB;
+            worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = Mass_DB is "" or "-" or null ? 0  : double.TryParse(Mass_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass_DB;
             worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = AggregateState_DB;
             worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = PropertyCode_DB;
             worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = Owner_DB;

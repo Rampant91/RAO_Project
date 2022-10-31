@@ -125,7 +125,7 @@ namespace Models.Collections
                 RamAccess<string> tmp = null;
                 if (FormNum_DB == "1.0")
                 {
-                    if (Rows10[1].Okpo_DB == "" || Rows10[1].Okpo_DB == "-")
+                    if (Rows10[1].Okpo_DB is "" or "-")
                     {
                         tmp = Rows10[0].Okpo;
                         tmp.PropertyChanged -= OkpoRepValueChanged;
@@ -144,7 +144,7 @@ namespace Models.Collections
                 }
                 if (FormNum_DB == "2.0")
                 {
-                    if (Rows20[1].Okpo_DB == "" || Rows20[1].Okpo_DB == "-")
+                    if (Rows20[1].Okpo_DB is "" or "-")
                     {
                         tmp = Rows20[0].Okpo;
                         tmp.PropertyChanged -= OkpoRepValueChanged;
@@ -248,7 +248,7 @@ namespace Models.Collections
                 RamAccess<string> tmp = null;
                 if (FormNum_DB == "1.0")
                 {
-                    if (Rows10[1].Okpo_DB == "" || Rows10[1].Okpo_DB == "-")
+                    if (Rows10[1].Okpo_DB is "" or "-")
                     {
                         tmp = Rows10[0].ShortJurLico;
                         tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
@@ -267,7 +267,7 @@ namespace Models.Collections
                 }
                 if (FormNum_DB == "2.0")
                 {
-                    if (Rows20[1].Okpo_DB == "" || Rows20[1].Okpo_DB == "-")
+                    if (Rows20[1].Okpo_DB is "" or "-")
                     {
                         tmp = Rows20[0].ShortJurLico;
                         tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
@@ -2421,7 +2421,7 @@ namespace Models.Collections
             try 
             {
                 var k = Convert.ToInt32(value.Value);
-                if ((k < 2010) || (k > 2060))
+                if (k is < 2010 or > 2060)
                 {
                     value.AddError("Недопустимое значение");
                     return false;

@@ -2173,9 +2173,9 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            bool ab = (OperationCode.Value == "51") || (OperationCode.Value == "52");
+            bool ab = OperationCode.Value is "51" or "52";
             bool c =  (OperationCode.Value == "68");
-            bool d =  (OperationCode.Value == "18") || (OperationCode.Value == "55");
+            bool d =  OperationCode.Value is "18" or "55";
             if (ab || c || d)
             {
                 if (!tmp.Equals(OperationDate))

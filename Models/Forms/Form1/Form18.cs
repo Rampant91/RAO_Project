@@ -1967,8 +1967,8 @@ namespace Models
                 return false;
             }
             bool b = (OperationCode.Value == "68");
-            bool c = (OperationCode.Value == "52") || (OperationCode.Value == "55");
-            bool d = (OperationCode.Value == "18") || (OperationCode.Value == "51");
+            bool c = OperationCode.Value is "52" or "55";
+            bool d = OperationCode.Value is "18" or "51";
             if (b || c || d)
             {
                 if (!tmp.Equals(OperationDate))
@@ -2020,11 +2020,11 @@ namespace Models
 
             worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = IndividualNumberZHRO_DB;
             worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = PassportNumber_DB;
-            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = Volume6_DB== "" || Volume6_DB == "-" || Volume6_DB == null ? 0  : double.TryParse(Volume6_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume6_DB;
-            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = Mass7_DB== "" || Mass7_DB == "-" || Mass7_DB == null ? 0  : double.TryParse(Mass7_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass7_DB;
-            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = SaltConcentration_DB== "" || SaltConcentration_DB == "-" || SaltConcentration_DB == null ? 0  : int.TryParse(SaltConcentration_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : SaltConcentration_DB;
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = Volume6_DB is "" or "-" or null ? 0  : double.TryParse(Volume6_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume6_DB;
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = Mass7_DB is "" or "-" or null ? 0  : double.TryParse(Mass7_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass7_DB;
+            worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = SaltConcentration_DB is "" or "-" or null ? 0  : int.TryParse(SaltConcentration_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : SaltConcentration_DB;
             worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = Radionuclids_DB;
-            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = SpecificActivity_DB== "" || SpecificActivity_DB == "-" || SpecificActivity_DB == null ? 0  : double.TryParse(SpecificActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = SpecificActivity_DB is "" or "-" or null ? 0  : double.TryParse(SpecificActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivity_DB;
             worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = DocumentVid_DB;
             worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = DocumentNumber_DB;
             worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = DocumentDate_DB;
@@ -2034,14 +2034,14 @@ namespace Models
             worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = StoragePlaceCode_DB;
             worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = CodeRAO_DB;
             worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = StatusRAO_DB;
-            worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = Volume20_DB== "" || Volume20_DB == "-" || Volume20_DB == null ? 0  : double.TryParse(Volume20_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume20_DB;
-            worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = Mass21_DB== "" || Mass21_DB == "-" || Mass21_DB == null ? 0  : double.TryParse(Mass21_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass21_DB;
-            worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = TritiumActivity_DB== "" || TritiumActivity_DB == "-" || TritiumActivity_DB == null ? 0  : double.TryParse(TritiumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivity_DB;
-            worksheet.Cells[Row + (!Transpon ? 19 : 0), Column + (Transpon ? 19 : 0)].Value = BetaGammaActivity_DB== "" || BetaGammaActivity_DB == "-" || BetaGammaActivity_DB == null ? 0  : double.TryParse(BetaGammaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivity_DB;
-            worksheet.Cells[Row + (!Transpon ? 20 : 0), Column + (Transpon ? 20 : 0)].Value = AlphaActivity_DB== "" || AlphaActivity_DB == "-" || AlphaActivity_DB == null ? 0  : double.TryParse(AlphaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivity_DB;
-            worksheet.Cells[Row + (!Transpon ? 21 : 0), Column + (Transpon ? 21 : 0)].Value = TransuraniumActivity_DB== "" || TransuraniumActivity_DB == "-" || TransuraniumActivity_DB == null ? 0  : double.TryParse(TransuraniumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = Volume20_DB is "" or "-" or null ? 0  : double.TryParse(Volume20_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume20_DB;
+            worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = Mass21_DB is "" or "-" or null ? 0  : double.TryParse(Mass21_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass21_DB;
+            worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = TritiumActivity_DB is "" or "-" or null ? 0  : double.TryParse(TritiumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 19 : 0), Column + (Transpon ? 19 : 0)].Value = BetaGammaActivity_DB is "" or "-" or null ? 0  : double.TryParse(BetaGammaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 20 : 0), Column + (Transpon ? 20 : 0)].Value = AlphaActivity_DB is "" or "-" or null ? 0  : double.TryParse(AlphaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivity_DB;
+            worksheet.Cells[Row + (!Transpon ? 21 : 0), Column + (Transpon ? 21 : 0)].Value = TransuraniumActivity_DB is "" or "-" or null ? 0  : double.TryParse(TransuraniumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivity_DB;
             worksheet.Cells[Row + (!Transpon ? 22 : 0), Column + (Transpon ? 22 : 0)].Value = RefineOrSortRAOCode_DB;
-            worksheet.Cells[Row + (!Transpon ? 23 : 0), Column + (Transpon ? 23 : 0)].Value = Subsidy_DB== "" || Subsidy_DB == "-" || Subsidy_DB == null ? 0  : int.TryParse(Subsidy_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : Subsidy_DB;
+            worksheet.Cells[Row + (!Transpon ? 23 : 0), Column + (Transpon ? 23 : 0)].Value = Subsidy_DB is "" or "-" or null ? 0  : int.TryParse(Subsidy_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt) ? valInt : Subsidy_DB;
             worksheet.Cells[Row + (!Transpon ? 24 : 0), Column + (Transpon ? 24 : 0)].Value = FcpNumber_DB;
 
             return 25;

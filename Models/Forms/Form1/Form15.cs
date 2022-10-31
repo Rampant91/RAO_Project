@@ -645,9 +645,7 @@ namespace Models
                 bool b = (tmp >= 41) && (tmp <= 45);
                 bool c = (tmp >= 71) && (tmp <= 73);
                 bool e = (tmp >= 55) && (tmp <= 57);
-                bool d = (tmp == 1) || (tmp == 16) || (tmp == 18) || (tmp == 48) ||
-                    (tmp == 49) || (tmp == 51) || (tmp == 52) || (tmp == 59) ||
-                    (tmp == 68) || (tmp == 75) || (tmp == 76);
+                bool d = tmp is 1 or 16 or 18 or 48 or 49 or 51 or 52 or 59 or 68 or 75 or 76;
                 if (a || b || c || d || e)
                 {
                     //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";

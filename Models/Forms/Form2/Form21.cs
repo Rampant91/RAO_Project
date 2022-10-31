@@ -447,8 +447,7 @@ namespace Models
             bool e = (value.Value >= 51) && (value.Value <= 56);
             bool f = (value.Value >= 61) && (value.Value <= 63);
             bool g = (value.Value >= 71) && (value.Value <= 73);
-            bool h = (value.Value == 19) || (value.Value == 29) || (value.Value == 39) || (value.Value == 49) ||
-                     (value.Value == 99) || (value.Value == 79);
+            bool h = value.Value is 19 or 29 or 39 or 49 or 99 or 79;
             if (!(a || b || c || d || e || f || g || h))
             {
                 value.AddError("Недопустимое значение");

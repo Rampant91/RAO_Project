@@ -71,7 +71,7 @@ namespace Client_App.Controls.DataGrid
             {
                 if (value != null)
                 {
-                    if (_items != value) 
+                    if (_items != value)
                     {
                         NowPage = "1";
                     }
@@ -707,11 +707,11 @@ namespace Client_App.Controls.DataGrid
                 }
                 SelectedItems = lst;
             }
-            if (param.ParamName ==null|| param.ParamName =="")
+            if (param.ParamName is null or "")
             {
                 return param.Param;
             }
-            if (param.ParamName == "1.0" || param.ParamName == "2.0")
+            if (param.ParamName is "1.0" or "2.0")
             {
                 return param.ParamName;
             }
@@ -1144,7 +1144,7 @@ namespace Client_App.Controls.DataGrid
             var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
             bool doSetItemFlag = false;
 
-            if (paramKey == PointerUpdateKind.LeftButtonPressed || paramKey == PointerUpdateKind.RightButtonPressed)
+            if (paramKey is PointerUpdateKind.LeftButtonPressed or PointerUpdateKind.RightButtonPressed)
             {
                 var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
                 if (paramKey == PointerUpdateKind.RightButtonPressed)
@@ -1547,7 +1547,7 @@ namespace Client_App.Controls.DataGrid
             var rt = CommandsList.Where(item => item.Key == args.Key && item.KeyModifiers == args.KeyModifiers);
             if (IsReadableSum)
             {
-                rt = rt.Where(item => item.Key == args.Key && (item.Key == Key.A || item.Key == Key.C) && item.KeyModifiers == args.KeyModifiers);  
+                rt = rt.Where(item => item.Key == args.Key && item.Key is Key.A or Key.C && item.KeyModifiers == args.KeyModifiers);  
             }
 
             foreach (var item in rt)
@@ -1588,7 +1588,7 @@ namespace Client_App.Controls.DataGrid
             else
             {
                 lst = CommandsList.Where(item => item.IsContextMenuCommand).GroupBy(item => item.ContextMenuText[0]);
-                lst = lst.Where(item => item.First().Key == Key.A || item.First().Key == Key.C);
+                lst = lst.Where(item => item.First().Key is Key.A or Key.C);
             }
 
             ContextMenu menu = new ContextMenu();
@@ -1775,7 +1775,7 @@ namespace Client_App.Controls.DataGrid
                         {
                             if (this.Sum || this.CommentСhangeable)
                             {
-                                var f22 = item.Binding == "PackQuantity" || item.Binding == "VolumeInPack" || item.Binding == "MassInPack" || item.Binding == "Comments";
+                                var f22 = item.Binding is "PackQuantity" or "VolumeInPack" or "MassInPack" or "Comments";
                                 if (f22)
                                 {
                                     textBox = new TextBox()

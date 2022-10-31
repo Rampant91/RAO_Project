@@ -1763,12 +1763,12 @@ namespace Client_App.ViewModels
         }
         private async Task ChechAanswer(string an, Reports first, Report elem = null, Report it = null, bool doSomething = false)
         {
-            if (an == "Сохранить оба" || an == "Да")
+            if (an is "Сохранить оба" or "Да")
             {
                 if (!doSomething)
                     first.Report_Collection.Add(it);
             }
-            if (an == "Заменить" || an == "Загрузить новую")
+            if (an is "Заменить" or "Загрузить новую")
             {
                 first.Report_Collection.Remove(elem);
                 first.Report_Collection.Add(it);
@@ -1841,7 +1841,7 @@ namespace Client_App.ViewModels
                                     {
                                         Local_Reports.Reports_Collection.Add(item);
                                     }
-                                    if (an == "Пропустить для всех" || an == "Ок" || skipAll)
+                                    if (an is "Пропустить для всех" or "Ок" || skipAll)
                                     {
                                         Local_Reports.Reports_Collection.Add(item);
                                     }
@@ -5241,7 +5241,7 @@ namespace Client_App.ViewModels
                                 foreach (Report rep in form11)
                                 {
                                     List<Form11> repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11"
-                                    && (x.Category_DB == 1 || x.Category_DB == 2 || x.Category_DB == 3)).ToList();
+                                    && x.Category_DB is 1 or 2 or 3).ToList();
 
                                     foreach (Form11 repForm in repPas)
                                     {
@@ -5304,7 +5304,7 @@ namespace Client_App.ViewModels
                                 res = await ShowMessage.Handle(new List<string>() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
                                         + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
                                         + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
-                                if (res is null || res.Equals("Ок"))
+                                if (res is null or "Ок")
                                     return;
                                 if (res.Equals("Открыть выгрузку"))
                                 {
@@ -5456,7 +5456,7 @@ namespace Client_App.ViewModels
                                 res = await ShowMessage.Handle(new List<string>() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
                                         + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
                                         + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
-                                if (res is null || res.Equals("Ок"))
+                                if (res is null or "Ок")
                                     return;
                                 if (res.Equals("Открыть выгрузку"))
                                 {

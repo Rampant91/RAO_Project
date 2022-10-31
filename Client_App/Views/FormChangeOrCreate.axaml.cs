@@ -105,7 +105,7 @@ namespace Client_App.Views
                         }
                         else
                         {
-                            if (tmp.FormType == "1.0" || tmp.FormType == "2.0")
+                            if (tmp.FormType is "1.0" or "2.0")
                             {
                                 tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
                                 tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));

@@ -58,8 +58,7 @@ namespace Models.Collections
         public bool Sorted { get; set; } = false;
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove ||
-                e.Action == NotifyCollectionChangedAction.Replace)
+            if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.OldItems)
                 {
@@ -69,8 +68,7 @@ namespace Models.Collections
 
             }
 
-            if (e.Action == NotifyCollectionChangedAction.Add ||
-                e.Action == NotifyCollectionChangedAction.Replace)
+            if (e.Action is NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.NewItems)
                 {
