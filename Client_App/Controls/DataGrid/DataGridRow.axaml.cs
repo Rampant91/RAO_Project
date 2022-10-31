@@ -33,7 +33,7 @@ namespace Client_App.Controls.DataGrid
                 o => o.ChooseColor,
                 (o, v) => o.ChooseColor = v);
 
-        private SolidColorBrush _ChooseColor = new SolidColorBrush(Color.Parse("White"));
+        private SolidColorBrush _ChooseColor = new(Color.Parse("White"));
         public SolidColorBrush ChooseColor
         {
             get => _ChooseColor;

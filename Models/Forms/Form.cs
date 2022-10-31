@@ -13,7 +13,7 @@ namespace Models.Abstracts
     {
         public int Id { get; set; }
         [NotMapped]
-        protected Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
+        protected Dictionary<string, RamAccess> Dictionary { get; set; } = new();
 
         #region FormNum
         public string FormNum_DB { get; set; } = "";

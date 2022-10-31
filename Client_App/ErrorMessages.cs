@@ -10,7 +10,7 @@ namespace Client_App
     {
         #region Error1
         public static List<string> Error1=
-            new List<string>(new string[] { 
+            new(new string[] { 
                 "Программа не может обработать функцию нахождения системной директории!\n Local Error: 1 \n Программа будет закрыта" ,
                 "Ок"
             });
@@ -18,7 +18,7 @@ namespace Client_App
 
         #region Error2
         public static List<string> Error2 =
-            new List<string>(new string[] {
+            new(new string[] {
                 "Программа не может обработать функцию создания системной директории: temp!\n Local Error: 2 \n Программа будет закрыта" ,
                 "Ок"
             });
@@ -26,7 +26,7 @@ namespace Client_App
 
         #region Error3
         public static List<string> Error3 =
-            new List<string>(new string[] {
+            new(new string[] {
                 "Программа не может обработать функцию удаления системной директории: temp!\n Local Error: 3 \n Программа будет закрыта" ,
                 "Ок"
             });

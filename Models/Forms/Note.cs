@@ -30,7 +30,7 @@ namespace Models
             OnPropertyChanged(args.PropertyName);
         }
         [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new();
         public void Init()
         {
             RowNumber_Validation(RowNumber);

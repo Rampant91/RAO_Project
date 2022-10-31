@@ -168,7 +168,7 @@ namespace Models.DataAccess
         #endregion
 
         #region INotifyDataErrorInfo
-        protected readonly List<string> _errorsByPropertyName = new List<string>();
+        protected readonly List<string> _errorsByPropertyName = new();
         public bool HasErrors => _errorsByPropertyName.Any();
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
         public IEnumerable GetErrors(string propertyName)

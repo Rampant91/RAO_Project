@@ -8,7 +8,7 @@ namespace Models.Classes
 {
     public class LetterAlgebra
     {
-        private List<char> _innerNumberRng  = new List<char>();
+        private List<char> _innerNumberRng  = new();
 
         public LetterAlgebra(IEnumerable<char> Obj)
         {

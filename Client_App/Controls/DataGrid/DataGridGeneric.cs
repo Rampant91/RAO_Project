@@ -633,7 +633,7 @@ namespace Client_App.Controls.DataGrid
                 o => o.CommandsList,
                 (o, v) => o.CommandsList = v);
 
-        private ObservableCollection<KeyComand> _CommandsList = new ObservableCollection<KeyComand>();
+        private ObservableCollection<KeyComand> _CommandsList = new();
         public ObservableCollection<KeyComand> CommandsList
         {
             get => _CommandsList;
@@ -823,7 +823,7 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        private List<DataGridRow> Rows { get; set; } = new List<DataGridRow>();
+        private List<DataGridRow> Rows { get; set; } = new();
 
         private StackPanel HeaderStackPanel { get; set; }
         private StackPanel CenterStackPanel { get; set; }
@@ -1617,7 +1617,7 @@ namespace Client_App.Controls.DataGrid
             this.ContextMenu = menu;
         }
 
-        List<ColumnDefinition> HeadersColumns = new List<ColumnDefinition>();
+        List<ColumnDefinition> HeadersColumns = new();
         int GridSplitterSize = 2;
         private void MakeHeaderInner(DataGridColumns ls)
         {

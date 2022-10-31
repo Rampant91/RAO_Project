@@ -8,7 +8,7 @@ namespace Spravochniki
 {
     public static class Spravochniks
     {
-        public static List<string> OKSM = new List<string>
+        public static List<string> OKSM = new()
         {
             "АФГАНИСТАН","АЛБАНИЯ","АНТАРКТИДА","АЛЖИР","АМЕРИКАНСКОЕ САМОА","АНДОРРА","АНГОЛА","АНТИГУА И БАРБУДА","АЗЕРБАЙДЖАН","АРГЕНТИНА","АВСТРАЛИЯ","АВСТРИЯ","БАГАМЫ","БАХРЕЙН",
             "БАНГЛАДЕШ","АРМЕНИЯ","БАРБАДОС","БЕЛЬГИЯ","БЕРМУДЫ","БУТАН","БОЛИВИЯ, МНОГОНАЦИОНАЛЬНОЕ ГОСУДАРСТВО","БОСНИЯ И ГЕРЦЕГОВИНА","БОТСВАНА","ОСТРОВ БУВЕ","БРАЗИЛИЯ","БЕЛИЗ",
@@ -32,35 +32,35 @@ namespace Spravochniki
             "ТУВАЛУ","УГАНДА","УКРАИНА","СЕВЕРНАЯ МАКЕДОНИЯ","ЕГИПЕТ","СОЕДИНЕННОЕ КОРОЛЕВСТВО","ГЕРНСИ","ДЖЕРСИ","ОСТРОВ МЭН","ТАНЗАНИЯ, ОБЪЕДИНЕННАЯ РЕСПУБЛИКА","СОЕДИНЕННЫЕ ШТАТЫ",
             "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
         };
-        public static List<short> SprAccObjCodes = new List<short>
+        public static List<short> SprAccObjCodes = new()
         {
             11,12,13,21,22,23,31,32,33,99
         };
-        public static List<string> SprPlotCodes = new List<string>
+        public static List<string> SprPlotCodes = new()
         {
 
         };
-        public static List<short> SprCodeTypesAccObjects = new List<short>
+        public static List<short> SprCodeTypesAccObjects = new()
         {
             11,12,13,21,22,23,31,32,33,99
         };
-        public static List<string> SprOpCodes = new List<string>
+        public static List<string> SprOpCodes = new()
         {
             "01","10","11","12","13","14","15","16","17","18","21","22","25","26","27","28","29","31","32","35","36","37","38","39","41","42","43","44","45",
             "46","47","48","49","51","52","53","54","55","56","57","58","59","61","62","63","64","65","66","67","68","71","72","73","74","75","76","81","82",
             "83","84","85","86","87","88","97","98","99"
         };
-        public static List<short> SprOpCodes1 = new List<short>
+        public static List<short> SprOpCodes1 = new()
         {
             1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
             46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63,64,65,66,67,68,71,72,73,74,75,76,81,82,
             83,84,85,86,87,88,97,98,99
         };
-        public static List<string> SprRecieverTypeCode = new List<string>
+        public static List<string> SprRecieverTypeCode = new()
         {
             "101","201","211","301","311","401","411","501","601","611","811","821","831","911","921","991","102","202","212","302","312","402","412","502","602","612","812","822","832","912","922","992","109","209","219","309","319","409","419","509","609","619","819","829","839","919","929","999"
         };
-        public static List<string> SprRifineOrSortCodes = new List<string>
+        public static List<string> SprRifineOrSortCodes = new()
         {
             "11","12","13","14","15","16","17","19","21","22","23","24","29","31","32","39","41","42","43","49","51","52","53","54","55","61","62","63","71","72","73","74","79","99"
         };
@@ -75,8 +75,8 @@ namespace Spravochniki
 
             }
         }
-        public static List<Tuple<byte?, string>> SprDocumentVidName = new List<Tuple<byte?, string>>
-            {
+        public static List<Tuple<byte?, string>> SprDocumentVidName = new()
+        {
                 new Tuple<byte?, string>(0,""),
                 new Tuple<byte?, string>(1,""),
                 new Tuple<byte?, string>(2,""),

@@ -14,7 +14,7 @@ namespace Models.Interfaces
     }
     public interface IBaseColor
     {
-        public static List<Color> ColorTypeList = new List<Color>()
+        public static List<Color> ColorTypeList = new()
         {
             Color.White,
             Color.FromArgb(100, 0, 255, 0),

@@ -772,7 +772,7 @@ namespace Models.Collections
         #endregion
 
         [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new();
         #region FormNum
         public string FormNum_DB { get; set; } = "";
         [NotMapped]
