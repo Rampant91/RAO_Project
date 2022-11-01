@@ -2,16 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Layout;
 using Client_App.Controls.DataGrid;
 using Avalonia.Media;
 using Models.Attributes;
-using Models;
 using Client_App.Converters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Client_App.ViewModels;
 
 namespace Client_App.Long_Visual

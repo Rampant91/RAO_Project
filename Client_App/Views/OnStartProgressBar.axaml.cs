@@ -1,12 +1,6 @@
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Avalonia.Data;
-using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
 using Client_App.ViewModels;

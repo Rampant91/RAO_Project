@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Models.DBRealization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Models.Collections

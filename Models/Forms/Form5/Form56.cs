@@ -1,7 +1,4 @@
-﻿using Models.DataAccess;
-using System;
-
-namespace Models
+﻿namespace Models
 {
     //[Serializable]
     //[Attributes.Form_Class("Форма 5.6: Сведения о наличии в подведомственных организациях изделий из обедненного урана")]

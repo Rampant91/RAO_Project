@@ -1,10 +1,4 @@
-﻿using Models.DataAccess;
-using System;
-using Spravochniki;
-using System.Globalization;
-using System.Linq;
-
-namespace Models
+﻿namespace Models
 {
 //    [Serializable]
 //    [Attributes.Form_Class("Форма 5.4: Сведения о наличии в подведомственных организациях ОРИ")]

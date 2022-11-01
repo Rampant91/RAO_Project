@@ -1,11 +1,4 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using Spravochniki;
-using System.Linq;
-
-namespace Models
+﻿namespace Models
 {
     //[Serializable]
     //[Attributes.Form_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]

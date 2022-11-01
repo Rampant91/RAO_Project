@@ -4,12 +4,8 @@ using Avalonia.Data;
 using Avalonia.Media;
 using Models.Attributes;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Client_App.Views;
-using Avalonia.Interactivity;
-using System.Windows;
-using Models.Collections;
 
 namespace Client_App.Short_Visual
 {

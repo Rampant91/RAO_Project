@@ -1,16 +1,7 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Avalonia;
-using System;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
-using Avalonia.VisualTree;
-using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Interactivity;
 
 namespace Client_App.Controls.DataGrid
 {

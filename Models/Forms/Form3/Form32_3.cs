@@ -1,7 +1,4 @@
-﻿using Models.DataAccess;
-using System;
-
-namespace Models
+﻿namespace Models
 {
     //[Serializable]
     //[Attributes.Form_Class("Идентификаторы:")]

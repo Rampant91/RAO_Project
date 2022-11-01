@@ -1,12 +1,4 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using Spravochniki;
-using System.Linq;
-
-namespace Models
+﻿namespace Models
 {
     //[Serializable]
     //[Attributes.Form_Class("Форма 5.1: Сведения о ЗРИ, полученных/переданных подведомственными организациями сторонним организациям и переведенных в РАО")]

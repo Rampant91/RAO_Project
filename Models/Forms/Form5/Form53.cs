@@ -1,12 +1,4 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using Spravochniki;
-using System.Linq;
-
-namespace Models
+﻿namespace Models
 {
 //    [Serializable]
 //    [Attributes.Form_Class("Форма 5.3: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций, расходовании и переводе в РАО ОРИ")]

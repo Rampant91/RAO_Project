@@ -1,36 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
+﻿using System.Threading.Tasks;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
-using Avalonia.Data;
-using Models.Collections;
 using ReactiveUI;
-using Avalonia.Controls.ApplicationLifetimes;
-using Client_App.Views;
-using Models.DBRealization;
-using DynamicData;
-using Models.Abstracts;
-using Models;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using Spravochniki;
-using System.IO;
 using System.Reactive.Linq;
-using System.Reactive;
-using System.Threading;
-using System.Timers;
-using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
-using System.Collections;
-using FirebirdSql.Data.FirebirdClient;
 
 namespace Client_App.ViewModels
 {

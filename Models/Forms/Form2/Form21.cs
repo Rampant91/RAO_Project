@@ -1,5 +1,5 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
-using System; using System.Collections.Generic;
+using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
@@ -9,8 +9,6 @@ using Models.Attributes;
 using OfficeOpenXml;
 using Models.Collections;
 using Models.Interfaces;
-using Models.DataAccess;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Models
 {

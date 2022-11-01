@@ -3,17 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Avalonia.Interactivity;
-using Models.Collections;
 using System.ComponentModel;
-using System.Linq;
-using Models.DBRealization;
-using Models;
-using ReactiveUI;
-using System.Collections.Generic;
-using Models.DataAccess;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
-using OfficeOpenXml;
 
 namespace Client_App.Views
 {

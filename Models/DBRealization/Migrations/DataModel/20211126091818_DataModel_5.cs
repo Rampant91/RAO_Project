@@ -1,5 +1,4 @@
-﻿using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Models.DBRealization.Migrations.DataModel
 {

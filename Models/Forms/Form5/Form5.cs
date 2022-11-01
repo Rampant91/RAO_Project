@@ -1,6 +1,4 @@
-﻿using Models.DataAccess;
-
-namespace Models.Abstracts
+﻿namespace Models.Abstracts
 {
     //public abstract class Form5 : Form
     //{

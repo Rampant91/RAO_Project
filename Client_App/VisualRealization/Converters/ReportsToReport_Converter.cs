@@ -1,11 +1,7 @@
-﻿using Avalonia.Collections;
-using Avalonia.Data.Converters;
+﻿using Avalonia.Data.Converters;
 using Models.Collections;
 using System;
-using System.Collections;
-using System.ComponentModel;
 using System.Globalization;
-using Models.DataAccess;
 
 namespace Client_App.Converters
 {

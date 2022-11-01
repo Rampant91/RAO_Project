@@ -2,13 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Models.Attributes;
-using Models;
 using Avalonia.Controls.Primitives;
 using Client_App.Converters;
 
