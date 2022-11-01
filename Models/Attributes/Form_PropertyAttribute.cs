@@ -33,15 +33,17 @@ namespace Models.Attributes
 
         public DataGridColumns GetDataColumnStructureD(DataGridColumns prev_data = null)
         {
-            DataGridColumns tmp = new();
-            tmp.name = Names[0];
+            DataGridColumns tmp = new()
+            {
+                name = Names[0]
+            };
             if (Names.Length > 1)
             {
                 if (Names[1] != null)
                 {
                     if (Names[1] != Names[0])
                     {
-                        tmp.innertCol = new() { };
+                        tmp.innertCol = new List<DataGridColumns> { };
                     }
                 }
                 DataGridColumns _tmp = tmp;
@@ -49,9 +51,11 @@ namespace Models.Attributes
                 {
                     if (_tmp.name != Names[i])
                     {
-                        DataGridColumns it = new();
-                        it.name = Names[i];
-                        it.parent = _tmp;
+                        DataGridColumns it = new()
+                        {
+                            name = Names[i],
+                            parent = _tmp
+                        };
 
                         try
                         {
@@ -76,7 +80,7 @@ namespace Models.Attributes
                         {
                             if (Names[i + 1] != null)
                             {
-                                it.innertCol = new();
+                                it.innertCol = new List<DataGridColumns>();
                                 _tmp = it;
                             }
                         }
@@ -91,20 +95,24 @@ namespace Models.Attributes
                 {
                     if (prev_data.Level - 2 == tmp.Level)
                     {
-                        var new_tmp = new DataGridColumns();
-                        new_tmp.name = "null-n";
-                        new_tmp.innertCol = new() { };
-                        new_tmp.innertCol.Add(tmp);
+                        var new_tmp = new DataGridColumns
+                        {
+                            name = "null-n",
+                            innertCol = new List<DataGridColumns>
+                            {
+                                tmp
+                            }
+                        };
 
                         _tmp.name = prev_data.name;
-                        _tmp.innertCol = new() { };
+                        _tmp.innertCol = new List<DataGridColumns> { };
                         _tmp.innertCol.Add(new_tmp);
 
                     }
                     else
                     {
                         _tmp.name = prev_data.name;
-                        _tmp.innertCol = new() { };
+                        _tmp.innertCol = new List<DataGridColumns> { };
                         _tmp.innertCol.Add(tmp);
                     }
                 }

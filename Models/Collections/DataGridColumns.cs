@@ -276,13 +276,15 @@ namespace Models.Collections
             {
                 if (col1.name == col2.name)
                 {
-                    DataGridColumns ret = new();
-                    ret.name = col1.name;
-                    ret.binding = col1.binding;
-                    ret.sizeCol = col1.sizeCol;
+                    DataGridColumns ret = new()
+                    {
+                        name = col1.name,
+                        binding = col1.binding,
+                        sizeCol = col1.sizeCol
+                    };
                     if (col2.innertCol != null)
                     {
-                        ret.innertCol = new();
+                        ret.innertCol = new List<DataGridColumns>();
                         foreach (var item in col2.innertCol)
                         {
                             item.parent = ret;
@@ -293,10 +295,12 @@ namespace Models.Collections
                 }
                 else
                 {
-                    DataGridColumns ret = new();
-                    ret.name = "";
-                    ret.binding = "";
-                    ret.innertCol = new();
+                    DataGridColumns ret = new()
+                    {
+                        name = "",
+                        binding = "",
+                        innertCol = new List<DataGridColumns>()
+                    };
                     if (ret.name == col1.name)
                     {
                         foreach (var item in col1.innertCol)
@@ -330,9 +334,11 @@ namespace Models.Collections
                     }
 
                     var group = tmp.GroupBy(x => x.name);
-                    DataGridColumns ret = new();
-                    ret.name = col1.name;
-                    ret.innertCol = new();
+                    DataGridColumns ret = new()
+                    {
+                        name = col1.name,
+                        innertCol = new List<DataGridColumns>()
+                    };
                     foreach(var item in group)
                     {
                         DataGridColumns tr = item.FirstOrDefault();
@@ -347,10 +353,12 @@ namespace Models.Collections
                 }
                 else
                 {
-                    DataGridColumns ret = new();
-                    ret.name = "";
-                    ret.binding = "";
-                    ret.innertCol = new();
+                    DataGridColumns ret = new()
+                    {
+                        name = "",
+                        binding = "",
+                        innertCol = new List<DataGridColumns>()
+                    };
                     if (ret.name == col1.name)
                     {
                         foreach (var item in col1.innertCol)
@@ -369,9 +377,11 @@ namespace Models.Collections
                     ret.innertCol.Add(col2);
 
                     var group = ret.innertCol.GroupBy(x => x.name);
-                    DataGridColumns _ret = new();
-                    _ret.name = ret.name;
-                    _ret.innertCol = new();
+                    DataGridColumns _ret = new()
+                    {
+                        name = ret.name,
+                        innertCol = new List<DataGridColumns>()
+                    };
                     foreach (var item in group)
                     {
                         DataGridColumns tr = item.FirstOrDefault();
@@ -392,7 +402,7 @@ namespace Models.Collections
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new(prop));
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

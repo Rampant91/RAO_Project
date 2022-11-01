@@ -50,11 +50,11 @@ namespace Models.Collections
 		{
             dictionary.Add(key, value);
 
-			CollectionChanged(this, new(NotifyCollectionChangedAction.Add,
+			CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,
 				new KeyValuePair<TKey, TValue>(key, value)));
-			PropertyChanged(this, new("Count"));
-			PropertyChanged(this, new("Keys"));
-			PropertyChanged(this, new("Values"));
+			PropertyChanged(this, new PropertyChangedEventArgs("Count"));
+			PropertyChanged(this, new PropertyChangedEventArgs("Keys"));
+			PropertyChanged(this, new PropertyChangedEventArgs("Values"));
 		}
 
 		bool RemoveWithNotification(TKey key)
@@ -62,11 +62,11 @@ namespace Models.Collections
 			TValue value;
 			if (dictionary.TryGetValue(key, out value) && dictionary.Remove(key))
 			{
-				CollectionChanged(this, new(NotifyCollectionChangedAction.Remove,
+				CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
 					new KeyValuePair<TKey, TValue>(key, value)));
-				PropertyChanged(this, new("Count"));
-				PropertyChanged(this, new("Keys"));
-				PropertyChanged(this, new("Values"));
+				PropertyChanged(this, new PropertyChangedEventArgs("Count"));
+				PropertyChanged(this, new PropertyChangedEventArgs("Keys"));
+				PropertyChanged(this, new PropertyChangedEventArgs("Values"));
 
 				return true;
 			}
@@ -81,10 +81,10 @@ namespace Models.Collections
 			{
 				dictionary[key] = value;
 
-				CollectionChanged(this, new(NotifyCollectionChangedAction.Replace,
+				CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
 					new KeyValuePair<TKey, TValue>(key, value),
 					new KeyValuePair<TKey, TValue>(key, existing)));
-				PropertyChanged(this, new("Values"));
+				PropertyChanged(this, new PropertyChangedEventArgs("Values"));
 			}
 			else
 			{
@@ -198,10 +198,10 @@ namespace Models.Collections
 		{
 			((ICollection<KeyValuePair<TKey, TValue>>)dictionary).Clear();
 
-			CollectionChanged(this, new(NotifyCollectionChangedAction.Reset));
-			PropertyChanged(this, new("Count"));
-			PropertyChanged(this, new("Keys"));
-			PropertyChanged(this, new("Values"));
+			CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+			PropertyChanged(this, new PropertyChangedEventArgs("Count"));
+			PropertyChanged(this, new PropertyChangedEventArgs("Keys"));
+			PropertyChanged(this, new PropertyChangedEventArgs("Values"));
 		}
 
 		bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)

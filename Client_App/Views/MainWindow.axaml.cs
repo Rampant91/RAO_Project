@@ -10,6 +10,8 @@ using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
+using MessageBox.Avalonia.Models;
+
 namespace Client_App.Views
 {
     public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
@@ -79,7 +81,7 @@ namespace Client_App.Views
             interaction.Input.RemoveAt(0);
             foreach (var elem in interaction.Input)
             {
-                lt.Add(new()
+                lt.Add(new ButtonDefinition
                 {
                     Type = MessageBox.Avalonia.Enums.ButtonType.Default,
                     Name = elem
@@ -112,7 +114,7 @@ namespace Client_App.Views
         public static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, ViewModels.MainWindowVM dataContext)
         {
             #region Grd1
-            grd1.CommandsList.Add(new()
+            grd1.CommandsList.Add(new KeyComand
             {
                 Key = Avalonia.Input.Key.T,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -123,7 +125,7 @@ namespace Client_App.Views
                 Command = dataContext.AddReport
             });
 
-            grd1.CommandsList.Add(new()
+            grd1.CommandsList.Add(new KeyComand
             {
                 IsDoubleTappedCommand = true,
                 IsContextMenuCommand = true,
@@ -131,7 +133,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Редактировать форму" },
                 Command = dataContext.ChangeReport
             });
-            grd1.CommandsList.Add(new()
+            grd1.CommandsList.Add(new KeyComand
             {
                 Key = Avalonia.Input.Key.D,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -144,7 +146,7 @@ namespace Client_App.Views
 
             #endregion
             #region Grd2
-            grd2.CommandsList.Add(new()
+            grd2.CommandsList.Add(new KeyComand
             {
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
@@ -152,7 +154,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Выгрузка Excel", "Для печати" },
                 Command = dataContext.Print_Excel_Export
             });
-            grd2.CommandsList.Add(new()
+            grd2.CommandsList.Add(new KeyComand
             {
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
@@ -160,7 +162,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Выгрузка Excel", "Для анализа" },
                 Command = dataContext.Excel_Export
             });
-            grd2.CommandsList.Add(new()
+            grd2.CommandsList.Add(new KeyComand
             {
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
@@ -168,7 +170,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Выгрузка" },
                 Command = dataContext.ExportForm
             });
-            grd2.CommandsList.Add(new()
+            grd2.CommandsList.Add(new KeyComand
             {
                 IsDoubleTappedCommand = true,
                 IsContextMenuCommand = true,
@@ -176,7 +178,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Изменить форму" },
                 Command = dataContext.ChangeForm
             });
-            grd2.CommandsList.Add(new()
+            grd2.CommandsList.Add(new KeyComand
             {
                 Key = Avalonia.Input.Key.D,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -187,7 +189,7 @@ namespace Client_App.Views
                 ContextMenuText = new string[] { "Удалить форму           Ctrl+D" },
                 Command = dataContext.DeleteForm
             });
-            grd2.CommandsList.Add(new()
+            grd2.CommandsList.Add(new KeyComand
             {
                 Key = Avalonia.Input.Key.J,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,

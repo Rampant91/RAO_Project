@@ -34,7 +34,7 @@ namespace Client_App.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #region FormType
@@ -230,7 +230,7 @@ namespace Client_App.ViewModels
 
             foreach (var item in y)
             {
-                ito.Add(item.Key, new());
+                ito.Add(item.Key, new List<Form21>());
             }
 
             foreach (var item in y)
@@ -258,10 +258,10 @@ namespace Client_App.ViewModels
                         var first = itemT.FirstOrDefault() as Form21;
                         sumRow = (Form21)FormCreator.Create("2.1");
 
-                        sumRow.RefineMachineName_Hidden_Set = new(false);
-                        sumRow.MachineCode_Hidden_Set = new(false);
-                        sumRow.MachinePower_Hidden_Set = new(false);
-                        sumRow.NumberOfHoursPerYear_Hidden_Set = new(false);
+                        sumRow.RefineMachineName_Hidden_Set = new RefBool(false);
+                        sumRow.MachineCode_Hidden_Set = new RefBool(false);
+                        sumRow.MachinePower_Hidden_Set = new RefBool(false);
+                        sumRow.NumberOfHoursPerYear_Hidden_Set = new RefBool(false);
 
                         sumRow.RefineMachineName_DB = first.RefineMachineName_DB;
                         sumRow.MachineCode_DB = first.MachineCode_DB;
@@ -310,10 +310,10 @@ namespace Client_App.ViewModels
                         var form = itemThread;
                         form.SumGroup_DB = true;
 
-                        form.RefineMachineName_Hidden_Set = new(false);
-                        form.MachineCode_Hidden_Set = new(false);
-                        form.MachinePower_Hidden_Set = new(false);
-                        form.NumberOfHoursPerYear_Hidden_Set = new(false);
+                        form.RefineMachineName_Hidden_Set = new RefBool(false);
+                        form.MachineCode_Hidden_Set = new RefBool(false);
+                        form.MachinePower_Hidden_Set = new RefBool(false);
+                        form.NumberOfHoursPerYear_Hidden_Set = new RefBool(false);
 
                         form.RefineMachineName_Hidden_Get.Set(false);
                         form.MachineCode_Hidden_Get.Set(false);
@@ -393,7 +393,7 @@ namespace Client_App.ViewModels
             {
                 if (item.Value.Count != 0 && item.Value.Count != 1)
                 {
-                    ((List<Form21>)item.Value).FirstOrDefault().NumberInOrderSum = new(null, count.ToString());
+                    ((List<Form21>)item.Value).FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
                     Storage.Rows21.AddRange(item.Value);
                     count++;
                 }
@@ -416,7 +416,7 @@ namespace Client_App.ViewModels
 
             foreach (var item in y)
             {
-                ito.Add(item.Key, new());
+                ito.Add(item.Key, new List<Form22>());
             }
 
             foreach (var item in y)
@@ -444,10 +444,10 @@ namespace Client_App.ViewModels
                         var first = itemT.FirstOrDefault() as Form22;
                         sumRow = (Form22)FormCreator.Create("2.2");
 
-                        sumRow.StoragePlaceName_Hidden_Set = new(false);
-                        sumRow.StoragePlaceCode_Hidden_Set = new(false);
-                        sumRow.PackName_Hidden_Set = new(false);
-                        sumRow.PackType_Hidden_Set = new(false);
+                        sumRow.StoragePlaceName_Hidden_Set = new RefBool(false);
+                        sumRow.StoragePlaceCode_Hidden_Set = new RefBool(false);
+                        sumRow.PackName_Hidden_Set = new RefBool(false);
+                        sumRow.PackType_Hidden_Set = new RefBool(false);
 
                         sumRow.StoragePlaceName_DB = first.StoragePlaceName_DB;
                         sumRow.StoragePlaceCode_DB = first.StoragePlaceCode_DB;
@@ -487,10 +487,10 @@ namespace Client_App.ViewModels
                         form.MassInPack_Hidden = true;
 
                         form.SumGroup_DB = true;
-                        form.StoragePlaceName_Hidden_Set = new(false);
-                        form.StoragePlaceCode_Hidden_Set = new(false);
-                        form.PackName_Hidden_Set = new(false);
-                        form.PackType_Hidden_Set = new(false);
+                        form.StoragePlaceName_Hidden_Set = new RefBool(false);
+                        form.StoragePlaceCode_Hidden_Set = new RefBool(false);
+                        form.PackName_Hidden_Set = new RefBool(false);
+                        form.PackType_Hidden_Set = new RefBool(false);
 
                         //form.StoragePlaceName_Hidden_Get.Set(false);
                         //form.StoragePlaceCode_Hidden_Get.Set(false);
@@ -557,7 +557,7 @@ namespace Client_App.ViewModels
             {
                 if (item.Value.Count != 0 && item.Value.Count != 1)
                 {
-                    var o = ((List<Form22>)item.Value).FirstOrDefault().NumberInOrderSum = new(null, count.ToString());
+                    var o = ((List<Form22>)item.Value).FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
                     Storage.Rows22.AddRange(item.Value);
                     count++;
                 }
@@ -688,7 +688,7 @@ namespace Client_App.ViewModels
             {
                 row.SetOrder(count);
                 count++;
-                row.NumberInOrderSum = new(null, "");
+                row.NumberInOrderSum = new RamAccess<string>(null, "");
             }
         }
 
@@ -720,7 +720,7 @@ namespace Client_App.ViewModels
             {
                 row.SetOrder(count);
                 count++;
-                row.NumberInOrderSum = new(null, "");
+                row.NumberInOrderSum = new RamAccess<string>(null, "");
             }
         }
         #endregion
@@ -733,8 +733,10 @@ namespace Client_App.ViewModels
         public ReactiveCommand<object, Unit> AddNote { get; protected set; }
         private async Task _AddNote(object param)
         {
-            Note? nt = new();
-            nt.Order = GetNumberInOrder(Storage.Notes);
+            Note? nt = new()
+            {
+                Order = GetNumberInOrder(Storage.Notes)
+            };
             Storage.Notes.Add(nt);
             await Storage.SortAsync();
         }
@@ -819,7 +821,7 @@ namespace Client_App.ViewModels
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var param = (IEnumerable<IKey>)_param;
-                var answ = await ShowMessageT.Handle(new() { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
+                var answ = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     //var lst = new List<IKey>(Storage.Rows.GetEnumerable());
@@ -847,7 +849,7 @@ namespace Client_App.ViewModels
                         {
                             row.SetOrder(count);
                             count++;
-                            row.NumberInOrderSum = new(null, "");
+                            row.NumberInOrderSum = new RamAccess<string>(null, "");
                         }
                     }
                     else if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.2"))
@@ -857,7 +859,7 @@ namespace Client_App.ViewModels
                         {
                             row.SetOrder(count);
                             count++;
-                            row.NumberInOrderSum = new(null, "");
+                            row.NumberInOrderSum = new RamAccess<string>(null, "");
                         }
                     }
                     else
@@ -917,8 +919,10 @@ namespace Client_App.ViewModels
                     var r = GetNumberInOrder(Storage.Notes);
                     for (int i = 0; i < t; i++)
                     {
-                        var frm = new Note();
-                        frm.Order = r;
+                        var frm = new Note
+                        {
+                            Order = r
+                        };
                         Storage.Notes.Add(frm);
                         r++;
                     }
@@ -1020,7 +1024,7 @@ namespace Client_App.ViewModels
 
             foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
             {
-                dic.Add(item.Order, new());
+                dic.Add(item.Order, new Dictionary<int, string>());
                 var dStructure = (IDataGridColumn)item;
                 var findStructure = dStructure.GetColumnStructure();
                 var Level = findStructure.Level;
@@ -1224,7 +1228,7 @@ namespace Client_App.ViewModels
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var param = (IEnumerable)_param;
-                var answ = await ShowMessageT.Handle(new() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
+                var answ = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     foreach (Note item in param)
@@ -1279,8 +1283,9 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessageT.Handle(new() { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                await ShowMessageT.Handle(new List<string>
+                                { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -1424,8 +1429,9 @@ namespace Client_App.ViewModels
                             try
                             {
                                 excelPackage.Save();
-                                res = await ShowMessageT.Handle(new() { $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:"
-                                                                        + Environment.NewLine + path, "Ок", "Открыть выгрузку" });
+                                res = await ShowMessageT.Handle(new List<string>
+                                { $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:"
+                                  + Environment.NewLine + path, "Ок", "Открыть выгрузку" });
                                 if (res.Equals("Открыть выгрузку"))
                                 {
                                     ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
@@ -1434,8 +1440,9 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessageT.Handle(new() { $"Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                await ShowMessageT.Handle(new List<string>
+                                { $"Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                             }
                         }
                     }
@@ -1504,7 +1511,7 @@ namespace Client_App.ViewModels
             }
             else
             {
-                await ShowMessageT.Handle(new() { "Паспорт отсутствует в сетевом хранилище", "Ок" });
+                await ShowMessageT.Handle(new List<string> { "Паспорт отсутствует в сетевом хранилище", "Ок" });
             }
         }
 
@@ -1669,7 +1676,7 @@ namespace Client_App.ViewModels
         }
         public ChangeOrCreateVM(string param, in Reports reps)
         {
-            Storage = new()
+            Storage = new Report
             {
                 FormNum_DB = param
             };
@@ -1738,7 +1745,7 @@ namespace Client_App.ViewModels
         }
         public ChangeOrCreateVM(string param, in DBObservable reps)
         {
-            Storage = new()
+            Storage = new Report
             {
                 FormNum_DB = param
             };
@@ -1804,9 +1811,9 @@ namespace Client_App.ViewModels
             CopyPasName = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
 
 
-            ShowDialog = new();
-            ShowDialogIn = new();
-            ShowMessageT = new();
+            ShowDialog = new Interaction<object, int>();
+            ShowDialogIn = new Interaction<int, int>();
+            ShowMessageT = new Interaction<List<string>, string>();
             if (!isSum)
             {
                 Storage.Sort();
@@ -1828,7 +1835,7 @@ namespace Client_App.ViewModels
 
                 _isCanSaveReportEnabled = value;
                 PropertyChanged?
-                    .Invoke(this, new(nameof(IsCanSaveReportEnabled)));
+                    .Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
             }
         }
 
@@ -1846,8 +1853,10 @@ namespace Client_App.ViewModels
             {
                 if (DBO != null)
                 {
-                    var tmp = new Reports();
-                    tmp.Master = Storage;
+                    var tmp = new Reports
+                    {
+                        Master = Storage
+                    };
                     if (tmp.Master.Rows10.Count != 0)
                     {
                         tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;

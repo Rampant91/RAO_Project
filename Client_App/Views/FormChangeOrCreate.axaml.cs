@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections;
 using System.Threading;
+using Client_App.Controls.DataGrid;
+using MessageBox.Avalonia.Models;
 using Models.Abstracts;
 
 namespace Client_App.Views
@@ -53,7 +55,7 @@ namespace Client_App.Views
             {
                 flag = false;
                 var tmp = this.DataContext as ViewModels.ChangeOrCreateVM;
-                Answ = tmp.ShowMessageT.Handle(new() { "Сохранить?", "Да", "Нет" }).GetAwaiter();
+                Answ = tmp.ShowMessageT.Handle(new List<string> { "Сохранить?", "Да", "Нет" }).GetAwaiter();
                 Answ.Subscribe(x =>
                 {
                     if (x == "Да")
@@ -147,7 +149,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm11)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -157,7 +159,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                                            Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -167,7 +169,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку                                      Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -177,7 +179,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк                                    Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -187,7 +189,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед                         Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -197,7 +199,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                                               Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -207,7 +209,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                                                    Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -217,7 +219,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                                         Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -227,7 +229,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п                               Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -236,7 +238,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Очистить ячейки                                      Delete" },
                     Command = dataContext.DeleteDataInRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.P,
                     IsDoubleTappedCommand = false,
@@ -245,7 +247,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Открыть паспорт                                      Ctrl+P" },
                     Command = dataContext.OpenPasport
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.E,
                     IsDoubleTappedCommand = false,
@@ -254,7 +256,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выгрузка в Excel движения источника   Ctrl+E" },
                     Command = dataContext.ExcelPasport
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.K,
                     IsDoubleTappedCommand = false,
@@ -267,7 +269,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -277,7 +279,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -287,7 +289,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -297,7 +299,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -307,7 +309,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -317,7 +319,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -337,7 +339,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm12)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -347,7 +349,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -357,7 +359,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -367,7 +369,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -377,7 +379,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -387,7 +389,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -397,7 +399,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -407,7 +409,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -417,7 +419,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -430,7 +432,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -440,7 +442,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -450,7 +452,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -460,7 +462,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -470,7 +472,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -480,7 +482,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -500,7 +502,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm13)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -510,7 +512,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -520,7 +522,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -530,7 +532,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -540,7 +542,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -550,7 +552,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -560,7 +562,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -570,7 +572,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -580,7 +582,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -593,7 +595,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -603,7 +605,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -613,7 +615,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -623,7 +625,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -633,7 +635,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -643,7 +645,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -663,7 +665,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm14)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -673,7 +675,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -683,7 +685,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -693,7 +695,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -703,7 +705,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -713,7 +715,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -723,7 +725,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -733,7 +735,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -743,7 +745,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -756,7 +758,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -766,7 +768,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -776,7 +778,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -786,7 +788,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -796,7 +798,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -806,7 +808,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -826,7 +828,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm15)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -836,7 +838,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -846,7 +848,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -856,7 +858,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -866,7 +868,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -876,7 +878,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -886,7 +888,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -896,7 +898,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -906,7 +908,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -919,7 +921,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -929,7 +931,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -939,7 +941,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -949,7 +951,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -959,7 +961,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -969,7 +971,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -989,7 +991,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm16)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -999,7 +1001,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1009,7 +1011,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1019,7 +1021,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1029,7 +1031,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1039,7 +1041,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1049,7 +1051,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1059,7 +1061,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1069,7 +1071,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1082,7 +1084,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1092,7 +1094,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1102,7 +1104,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1112,7 +1114,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1122,7 +1124,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1132,7 +1134,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1152,7 +1154,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm17)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1162,7 +1164,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1172,7 +1174,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1182,7 +1184,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1192,7 +1194,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1202,7 +1204,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1212,7 +1214,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1222,7 +1224,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1232,7 +1234,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1245,7 +1247,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1255,7 +1257,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1265,7 +1267,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1275,7 +1277,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1285,7 +1287,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1295,7 +1297,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1315,7 +1317,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm18)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1325,7 +1327,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1335,7 +1337,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1345,7 +1347,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1355,7 +1357,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1365,7 +1367,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1375,7 +1377,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1385,7 +1387,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1395,7 +1397,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1408,7 +1410,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1418,7 +1420,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1428,7 +1430,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1438,7 +1440,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1448,7 +1450,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1458,7 +1460,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1478,7 +1480,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm19)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1488,7 +1490,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1498,7 +1500,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1508,7 +1510,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1518,7 +1520,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1528,7 +1530,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1538,7 +1540,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1548,7 +1550,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1558,7 +1560,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1571,7 +1573,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1581,7 +1583,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1591,7 +1593,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1601,7 +1603,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1611,7 +1613,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1621,7 +1623,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1649,7 +1651,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm21)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1659,7 +1661,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1669,7 +1671,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1679,7 +1681,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1689,7 +1691,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1699,7 +1701,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1709,7 +1711,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1719,7 +1721,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1729,7 +1731,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1742,7 +1744,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1752,7 +1754,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1762,7 +1764,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1772,7 +1774,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1782,7 +1784,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1792,7 +1794,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1812,7 +1814,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm22)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1822,7 +1824,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1832,7 +1834,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1842,7 +1844,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1852,7 +1854,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1862,7 +1864,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1872,7 +1874,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1882,7 +1884,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1892,7 +1894,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1905,7 +1907,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1915,7 +1917,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1925,7 +1927,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1935,7 +1937,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1945,7 +1947,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1955,7 +1957,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -1975,7 +1977,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm23)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1985,7 +1987,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -1995,7 +1997,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2005,7 +2007,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2015,7 +2017,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2025,7 +2027,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2035,7 +2037,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2045,7 +2047,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2055,7 +2057,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2068,7 +2070,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2078,7 +2080,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2088,7 +2090,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2098,7 +2100,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2108,7 +2110,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2118,7 +2120,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2138,7 +2140,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm24)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2148,7 +2150,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2158,7 +2160,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2168,7 +2170,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2178,7 +2180,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2188,7 +2190,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2198,7 +2200,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2208,7 +2210,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2218,7 +2220,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2231,7 +2233,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2241,7 +2243,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2251,7 +2253,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2261,7 +2263,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2271,7 +2273,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2281,7 +2283,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2301,7 +2303,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2311,7 +2313,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2321,7 +2323,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2331,7 +2333,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2341,7 +2343,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2351,7 +2353,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2361,7 +2363,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2371,7 +2373,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2381,7 +2383,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2394,7 +2396,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2404,7 +2406,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2414,7 +2416,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2424,7 +2426,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2434,7 +2436,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2444,7 +2446,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2464,7 +2466,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm26)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2474,7 +2476,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2484,7 +2486,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2494,7 +2496,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2504,7 +2506,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2514,7 +2516,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2524,7 +2526,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2534,7 +2536,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2544,7 +2546,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2557,7 +2559,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2567,7 +2569,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2577,7 +2579,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2587,7 +2589,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2597,7 +2599,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2607,7 +2609,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2627,7 +2629,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm27)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2637,7 +2639,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2647,7 +2649,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2657,7 +2659,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2667,7 +2669,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2677,7 +2679,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2687,7 +2689,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2697,7 +2699,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2707,7 +2709,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2720,7 +2722,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2730,7 +2732,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2740,7 +2742,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2750,7 +2752,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2760,7 +2762,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2770,7 +2772,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2790,7 +2792,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm28)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2800,7 +2802,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2810,7 +2812,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2820,7 +2822,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2830,7 +2832,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2840,7 +2842,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2850,7 +2852,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2860,7 +2862,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2870,7 +2872,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2883,7 +2885,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2893,7 +2895,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2903,7 +2905,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2913,7 +2915,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2923,7 +2925,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2933,7 +2935,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -2953,7 +2955,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm29)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2963,7 +2965,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2973,7 +2975,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2983,7 +2985,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -2993,7 +2995,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3003,7 +3005,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3013,7 +3015,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3023,7 +3025,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3033,7 +3035,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3046,7 +3048,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3056,7 +3058,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3066,7 +3068,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3076,7 +3078,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3086,7 +3088,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3096,7 +3098,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3116,7 +3118,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm210)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3126,7 +3128,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3136,7 +3138,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3146,7 +3148,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3156,7 +3158,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3166,7 +3168,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3176,7 +3178,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3186,7 +3188,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3196,7 +3198,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3209,7 +3211,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3219,7 +3221,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3229,7 +3231,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3239,7 +3241,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3249,7 +3251,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3259,7 +3261,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3279,7 +3281,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm211)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3289,7 +3291,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3299,7 +3301,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3309,7 +3311,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3319,7 +3321,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3329,7 +3331,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3339,7 +3341,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3349,7 +3351,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3359,7 +3361,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3372,7 +3374,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3382,7 +3384,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3392,7 +3394,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3402,7 +3404,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3412,7 +3414,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3422,7 +3424,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3442,7 +3444,7 @@ namespace Client_App.Views
 
                 #region Rows Context Menu
                 var Rgrd = (Controls.DataGrid.DataGridForm212)((StackPanel)grd.Content).Children[1];
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3452,7 +3454,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
                     Command = null
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3462,7 +3464,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3472,7 +3474,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
                     Command = dataContext.DuplicateRowsx1
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.I,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3482,7 +3484,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
                     Command = dataContext.AddRowIn
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3492,7 +3494,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                      Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3502,7 +3504,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                            Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3512,7 +3514,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
                     Command = dataContext.DeleteRow
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.O,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3522,7 +3524,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Выставить номер п/п              Ctrl+O" },
                     Command = dataContext.SetNumberOrder
                 });
-                Rgrd.CommandsList.Add(new()
+                Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3535,7 +3537,7 @@ namespace Client_App.Views
 
                 #region Notes Context Menu
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3545,7 +3547,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.N,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3555,7 +3557,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
                     Command = dataContext.DuplicateNotes
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.C,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3565,7 +3567,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Копировать                  Ctrl+C" },
                     Command = dataContext.CopyRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3575,7 +3577,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Вставить                        Ctrl+V" },
                     Command = dataContext.PasteRows
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.D,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
@@ -3585,7 +3587,7 @@ namespace Client_App.Views
                     ContextMenuText = new string[] { "Удалить строки             Ctrl+D" },
                     Command = dataContext.DeleteNote
                 });
-                Ngrd.CommandsList.Add(new()
+                Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.Delete,
                     IsDoubleTappedCommand = false,
@@ -3631,7 +3633,7 @@ namespace Client_App.Views
             interaction.Input.RemoveAt(0);
             foreach (var elem in interaction.Input) 
             {
-                lt.Add(new()
+                lt.Add(new ButtonDefinition
                 {
                     Type = MessageBox.Avalonia.Enums.ButtonType.Default,
                     Name = elem

@@ -12,12 +12,12 @@ namespace Models.Classes
 
         public LetterAlgebra(IEnumerable<char> Obj)
         {
-            _innerNumberRng = new(Obj);
+            _innerNumberRng = new List<char>(Obj);
         }
 
         public LetterAlgebra(string Obj)
         {
-            _innerNumberRng = new(Obj);
+            _innerNumberRng = new List<char>(Obj);
         }
 
         public LetterAlgebra(char Obj)

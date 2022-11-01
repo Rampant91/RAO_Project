@@ -128,7 +128,7 @@ namespace Models.Collections
                     if (!CheckForSort())
                     {
                         QuickSort(0, Items.Count - 1);
-                        OnCollectionChanged(new(NotifyCollectionChangedAction.Reset));
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         Sorted = true;
                     }
                 }
@@ -147,7 +147,7 @@ namespace Models.Collections
                     if (!CheckForSort())
                     {
                         QuickSort(0, Items.Count - 1);
-                        OnCollectionChanged(new(NotifyCollectionChangedAction.Reset));
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         Sorted = true;
                     }
                 }
@@ -178,12 +178,12 @@ namespace Models.Collections
         protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
         {
             ItemPropertyChanged?.Invoke(this, e);
-            OnCollectionChanged(new(NotifyCollectionChangedAction.Reset));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         protected void OnItemPropertyChanged(int index, PropertyChangedEventArgs e)
         {
-            OnItemPropertyChanged(new(index, e));
+            OnItemPropertyChanged(new ItemPropertyChangedEventArgs(index, e));
         }
 
         protected override void ClearItems()
@@ -216,7 +216,7 @@ namespace Models.Collections
                 Items.Add(item);
             }
             Sorted = false;
-            OnCollectionChanged(new(NotifyCollectionChangedAction.Add,items.ToList()));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,items.ToList()));
         }
         public void AddRangeNoChange(IEnumerable<T> items)
         {
@@ -281,7 +281,7 @@ namespace Models.Collections
             }
 
             Sorted = false;
-            OnCollectionChanged(new(NotifyCollectionChangedAction.Reset));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
         public T1 Get<T1>(int index) where T1 : class, IKey
         {

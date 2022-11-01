@@ -18,7 +18,7 @@ namespace Client_App.Long_Visual
     {
         public static Button CreateButton(string content, string thickness, int height, string commProp)
         {
-            return new()
+            return new Button
             {
                 Height = height,
                 Margin = Thickness.Parse(thickness),
@@ -42,7 +42,7 @@ namespace Client_App.Long_Visual
             {
                 Path = textProp,
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             if (_flag == "")
             {
@@ -78,7 +78,7 @@ namespace Client_App.Long_Visual
             TextBlock tmp = null;
             if (width != 0)
             {
-                tmp = new()
+                tmp = new TextBlock
                 {
                     Width = width,
                     Height = height,
@@ -90,7 +90,7 @@ namespace Client_App.Long_Visual
             }
             else
             {
-                tmp = new()
+                tmp = new TextBlock
                 {
                     Height = height,
                     Margin = Thickness.Parse(margin),
@@ -105,8 +105,8 @@ namespace Client_App.Long_Visual
         static Grid Create10Item(string Property, string BindingPrefix, INameScope scp, int index)
         {
             Grid itemStackPanel = new();
-            itemStackPanel.ColumnDefinitions.Add(new() { Width = GridLength.Parse("1*") });
-            itemStackPanel.ColumnDefinitions.Add(new() { Width = GridLength.Parse("1*") });
+            itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
+            itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
 
             var tmp1 = CreateTextBlock("5,0,0,0", 30, ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[index], 0);
             tmp1.SetValue(Grid.ColumnProperty, 0);
@@ -121,13 +121,17 @@ namespace Client_App.Long_Visual
         {
             string BindingPrefix = "DataContext.Storage.Rows10";
 
-            ScrollViewer vw = new();
-            vw.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                VerticalScrollBarVisibility = ScrollBarVisibility.Visible
+            };
 
             #region Main
             Panel mainPanel = new();
-            var mainCanvas = new Canvas();
-            mainCanvas.Height = 1223;
+            var mainCanvas = new Canvas
+            {
+                Height = 1223
+            };
             mainPanel.Children.Add(mainCanvas);
             vw.Content = mainPanel;
             #endregion
@@ -143,23 +147,25 @@ namespace Client_App.Long_Visual
             Border brdH = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 ZIndex = 999,
-                Background = new SolidColorBrush(Color.Parse("White"))
+                Background = new SolidColorBrush(Color.Parse("White")),
+                [!Border.MarginProperty] = b,
+                Child = headerPanel
             };
-            brdH[!Border.MarginProperty] = b;
-            brdH.Child = headerPanel;
             mainCanvas.Children.Add(brdH);
 
-            StackPanel headerStackPanel = new();
-            headerStackPanel.Orientation = Orientation.Vertical;
+            StackPanel headerStackPanel = new()
+            {
+                Orientation = Orientation.Vertical
+            };
             headerPanel.Children.Add(headerStackPanel);
 
             Grid headerOrganUprav = new();
-            headerOrganUprav.ColumnDefinitions.Add(new() { Width = GridLength.Parse("1*") });
-            headerOrganUprav.ColumnDefinitions.Add(new() { Width = GridLength.Parse("1*") });
+            headerOrganUprav.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
+            headerOrganUprav.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
 
             headerStackPanel.Children.Add(headerOrganUprav);
             var tmp1 = CreateTextBlock("5,0,0,0", 30,
@@ -174,8 +180,8 @@ namespace Client_App.Long_Visual
             headerOrganUprav.Children.Add(tmp2);
 
             Grid headerRegNo = new();
-            headerRegNo.ColumnDefinitions.Add(new() { Width = GridLength.Parse("1*") });
-            headerRegNo.ColumnDefinitions.Add(new() { Width = GridLength.Parse("1*") });
+            headerRegNo.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
+            headerRegNo.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
 
             headerStackPanel.Children.Add(headerRegNo);
 
@@ -190,8 +196,10 @@ namespace Client_App.Long_Visual
             tmp2.SetValue(Grid.ColumnProperty, 1);
             headerRegNo.Children.Add(tmp2);
 
-            StackPanel headerButtons = new();
-            headerButtons.Orientation = Orientation.Horizontal;
+            StackPanel headerButtons = new()
+            {
+                Orientation = Orientation.Horizontal
+            };
             headerStackPanel.Children.Add(headerButtons);
             headerButtons.Children.Add(CreateButton("Поменять местами", "5,5,0,0", 30, "ChangeReportOrder"));
             headerButtons.Children.Add(CreateButton("Проверить", "5,5,0,0", 30, "CheckReport"));
@@ -208,16 +216,18 @@ namespace Client_App.Long_Visual
             Border brdUr = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = urLicoPanel
             };
-            brdUr.Child = urLicoPanel;
             centerStackPanel.Children.Add(brdUr);
 
-            StackPanel urLicoStackPanel = new();
-            urLicoStackPanel.Orientation = Orientation.Vertical;
+            StackPanel urLicoStackPanel = new()
+            {
+                Orientation = Orientation.Vertical
+            };
             urLicoPanel.Children.Add(urLicoStackPanel);
 
             urLicoStackPanel.Children.Add(new TextBlock
@@ -255,16 +265,18 @@ namespace Client_App.Long_Visual
             Border brdOb = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = obosobPodrazdPanel
             };
-            brdOb.Child = obosobPodrazdPanel;
             centerStackPanel.Children.Add(brdOb);
 
-            StackPanel obosobPodrazdStackPanel = new();
-            obosobPodrazdStackPanel.Orientation = Orientation.Vertical;
+            StackPanel obosobPodrazdStackPanel = new()
+            {
+                Orientation = Orientation.Vertical
+            };
             obosobPodrazdPanel.Children.Add(obosobPodrazdStackPanel);
 
             obosobPodrazdStackPanel.Children.Add(new TextBlock
@@ -302,8 +314,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form11_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -338,7 +352,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -346,7 +360,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -354,7 +368,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -365,13 +379,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -384,14 +399,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -399,7 +414,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -407,7 +422,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -415,7 +430,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -452,7 +467,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows11",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm11.ItemsProperty, b);
 
@@ -464,7 +479,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -503,7 +518,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -515,8 +530,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form12_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -552,7 +569,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -560,7 +577,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -568,7 +585,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -579,13 +596,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -598,14 +616,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -613,7 +631,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -621,7 +639,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -629,7 +647,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -666,7 +684,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows12",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm12.ItemsProperty, b);
 
@@ -678,7 +696,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -717,7 +735,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -729,8 +747,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form13_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -766,7 +786,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -774,7 +794,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -782,7 +802,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -794,13 +814,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -813,14 +834,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -828,7 +849,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -836,7 +857,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -844,7 +865,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -881,7 +902,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows13",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm13.ItemsProperty, b);
 
@@ -893,7 +914,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -932,7 +953,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -944,8 +965,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form14_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -981,7 +1004,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -989,7 +1012,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -997,7 +1020,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1009,13 +1032,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -1028,14 +1052,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1043,7 +1067,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1051,7 +1075,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1059,7 +1083,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1096,7 +1120,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows14",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm14.ItemsProperty, b);
 
@@ -1108,7 +1132,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -1147,7 +1171,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -1159,8 +1183,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form15_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -1196,7 +1222,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1204,7 +1230,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1212,7 +1238,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1224,13 +1250,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -1243,14 +1270,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1258,7 +1285,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1266,7 +1293,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1274,7 +1301,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1311,7 +1338,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows15",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm15.ItemsProperty, b);
 
@@ -1323,7 +1350,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -1362,7 +1389,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -1374,8 +1401,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form16_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -1411,7 +1440,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1419,7 +1448,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1427,7 +1456,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1439,13 +1468,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -1458,14 +1488,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1473,7 +1503,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1481,7 +1511,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1489,7 +1519,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1526,7 +1556,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows16",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm16.ItemsProperty, b);
 
@@ -1538,7 +1568,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -1577,7 +1607,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -1590,8 +1620,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form17_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -1627,7 +1659,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1635,7 +1667,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1643,7 +1675,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1655,13 +1687,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -1674,14 +1707,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1689,7 +1722,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1697,7 +1730,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1705,7 +1738,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1742,7 +1775,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows17",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm17.ItemsProperty, b);
 
@@ -1754,7 +1787,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -1793,7 +1826,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -1805,8 +1838,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form18_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -1842,7 +1877,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1850,7 +1885,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1858,7 +1893,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1870,13 +1905,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -1889,14 +1925,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1904,7 +1940,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1912,7 +1948,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1920,7 +1956,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -1957,7 +1993,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows18",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm18.ItemsProperty, b);
 
@@ -1969,7 +2005,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -2008,7 +2044,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
@@ -2021,8 +2057,10 @@ namespace Client_App.Long_Visual
 
         public static Control Form19_Visual(INameScope scp)
         {
-            ScrollViewer vw = new();
-            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new()
+            {
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            };
             StackPanel maingrid = new();
             vw.Content = maingrid;
             Binding ind = new()
@@ -2058,7 +2096,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -2066,7 +2104,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -2074,7 +2112,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             leftStPT.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -2086,13 +2124,14 @@ namespace Client_App.Long_Visual
             Border brdC = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,5,5,5")
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = leftStPT
             };
-            brdC.Child = leftStPT;
+
             #endregion
 
             #region Right
@@ -2105,14 +2144,14 @@ namespace Client_App.Long_Visual
             Border brdR = new()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new(1),
-                CornerRadius = new(3),
-                Padding = new(4),
-                Margin = Thickness.Parse("5,5,5,5")
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                Child = rigthStP
             };
-            brdR.Child = rigthStP;
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -2120,7 +2159,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -2128,7 +2167,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -2136,7 +2175,7 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
             rigthStP.Children.Add(content);
 
-            content = new()
+            content = new StackPanel
             {
                 Orientation = Orientation.Horizontal
             };
@@ -2173,7 +2212,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Rows19",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGridForm19.ItemsProperty, b);
 
@@ -2185,7 +2224,7 @@ namespace Client_App.Long_Visual
             };
             var column = new ColumnDefinition
             {
-                Width = new(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl22.ColumnDefinitions.Add(column);
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -2224,7 +2263,7 @@ namespace Client_App.Long_Visual
             {
                 Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
-                NameScope = new(scp)
+                NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 

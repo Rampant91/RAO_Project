@@ -180,7 +180,7 @@ namespace Models
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new(prop));
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

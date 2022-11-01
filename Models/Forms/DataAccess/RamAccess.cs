@@ -180,7 +180,7 @@ namespace Models.DataAccess
                 List<Exception> lst = new();
                 foreach (string item in tmp)
                 {
-                    lst.Add(new(item));
+                    lst.Add(new Exception(item));
                 }
                 return lst;
             }
@@ -191,7 +191,7 @@ namespace Models.DataAccess
         }
         protected void OnErrorsChanged(string propertyName)
         {
-            ErrorsChanged?.Invoke(this, new(propertyName));
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
         protected void ClearErrors(string propertyName)
         {

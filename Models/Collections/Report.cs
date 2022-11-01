@@ -2772,76 +2772,76 @@ namespace Models.Collections
 
         private void Init()
         {
-            Rows10 = new();
+            Rows10 = new ObservableCollectionWithItemPropertyChanged<Form10>();
             Rows10.CollectionChanged += CollectionChanged10;
 
-            Rows11 = new();
+            Rows11 = new ObservableCollectionWithItemPropertyChanged<Form11>();
             Rows11.CollectionChanged += CollectionChanged11;
 
-            Rows12 = new();
+            Rows12 = new ObservableCollectionWithItemPropertyChanged<Form12>();
             Rows12.CollectionChanged += CollectionChanged12;
 
-            Rows13 = new();
+            Rows13 = new ObservableCollectionWithItemPropertyChanged<Form13>();
             Rows13.CollectionChanged += CollectionChanged13;
 
-            Rows14 = new();
+            Rows14 = new ObservableCollectionWithItemPropertyChanged<Form14>();
             Rows14.CollectionChanged += CollectionChanged14;
 
-            Rows15 = new();
+            Rows15 = new ObservableCollectionWithItemPropertyChanged<Form15>();
             Rows15.CollectionChanged += CollectionChanged15;
 
-            Rows16 = new();
+            Rows16 = new ObservableCollectionWithItemPropertyChanged<Form16>();
             Rows16.CollectionChanged += CollectionChanged16;
 
-            Rows17 = new();
+            Rows17 = new ObservableCollectionWithItemPropertyChanged<Form17>();
             Rows17.CollectionChanged += CollectionChanged17;
 
-            Rows18 = new();
+            Rows18 = new ObservableCollectionWithItemPropertyChanged<Form18>();
             Rows18.CollectionChanged += CollectionChanged18;
 
-            Rows19 = new();
+            Rows19 = new ObservableCollectionWithItemPropertyChanged<Form19>();
             Rows19.CollectionChanged += CollectionChanged19;
 
-            Rows20 = new();
+            Rows20 = new ObservableCollectionWithItemPropertyChanged<Form20>();
             Rows20.CollectionChanged += CollectionChanged20;
 
-            Rows21 = new();
+            Rows21 = new ObservableCollectionWithItemPropertyChanged<Form21>();
             Rows21.CollectionChanged += CollectionChanged21;
 
-            Rows22 = new();
+            Rows22 = new ObservableCollectionWithItemPropertyChanged<Form22>();
             Rows22.CollectionChanged += CollectionChanged22;
 
-            Rows23 = new();
+            Rows23 = new ObservableCollectionWithItemPropertyChanged<Form23>();
             Rows23.CollectionChanged += CollectionChanged23;
 
-            Rows24 = new();
+            Rows24 = new ObservableCollectionWithItemPropertyChanged<Form24>();
             Rows24.CollectionChanged += CollectionChanged24;
 
-            Rows25 = new();
+            Rows25 = new ObservableCollectionWithItemPropertyChanged<Form25>();
             Rows25.CollectionChanged += CollectionChanged25;
 
-            Rows26 = new();
+            Rows26 = new ObservableCollectionWithItemPropertyChanged<Form26>();
             Rows26.CollectionChanged += CollectionChanged26;
 
-            Rows27 = new();
+            Rows27 = new ObservableCollectionWithItemPropertyChanged<Form27>();
             Rows27.CollectionChanged += CollectionChanged27;
 
-            Rows28 = new();
+            Rows28 = new ObservableCollectionWithItemPropertyChanged<Form28>();
             Rows28.CollectionChanged += CollectionChanged28;
 
-            Rows29 = new();
+            Rows29 = new ObservableCollectionWithItemPropertyChanged<Form29>();
             Rows29.CollectionChanged += CollectionChanged29;
 
-            Rows210 = new();
+            Rows210 = new ObservableCollectionWithItemPropertyChanged<Form210>();
             Rows210.CollectionChanged += CollectionChanged210;
 
-            Rows211 = new();
+            Rows211 = new ObservableCollectionWithItemPropertyChanged<Form211>();
             Rows211.CollectionChanged += CollectionChanged211;
 
-            Rows212 = new();
+            Rows212 = new ObservableCollectionWithItemPropertyChanged<Form212>();
             Rows212.CollectionChanged += CollectionChanged212;
 
-            Notes = new();
+            Notes = new ObservableCollectionWithItemPropertyChanged<Note>();
             Notes.CollectionChanged += CollectionChangedNotes;
         }
 
@@ -2993,7 +2993,7 @@ namespace Models.Collections
             if (prop != "All")
             {
                 if (PropertyChanged != null)
-                    PropertyChanged(this, new(prop));
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
             else
             {

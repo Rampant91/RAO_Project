@@ -30,6 +30,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MessageBox.Avalonia.DTO;
 
 namespace Client_App.ViewModels
 {
@@ -86,7 +87,7 @@ namespace Client_App.ViewModels
             {
                 Console.WriteLine(e.Message);
                 await ShowMessage.Handle(ErrorMessages.Error2);
-                throw new(ErrorMessages.Error2[0]);
+                throw new Exception(ErrorMessages.Error2[0]);
             }
             try
             {
@@ -101,7 +102,7 @@ namespace Client_App.ViewModels
             {
                 Console.WriteLine(e.Message);
                 await ShowMessage.Handle(ErrorMessages.Error3);
-                throw new(ErrorMessages.Error3[0]);
+                throw new Exception(ErrorMessages.Error3[0]);
             }
         }
         private async Task<string> GetSystemDirectory()
@@ -123,7 +124,7 @@ namespace Client_App.ViewModels
             {
                 Console.WriteLine(e.Message);
                 await ShowMessage.Handle(ErrorMessages.Error1);
-                throw new(ErrorMessages.Error1[0]);
+                throw new Exception(ErrorMessages.Error1[0]);
             }
         }
         private async Task ProcessSpravochniks()
@@ -143,7 +144,7 @@ namespace Client_App.ViewModels
                     string[] names = file.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
                     Current_Db = "Интерактивное пособие по вводу данных ver.1.2.1.53 Текущая база данных - " + names[names.Length - 1];
                     StaticConfiguration.DBPath = file;
-                    StaticConfiguration.DBModel = new(StaticConfiguration.DBPath);
+                    StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                     dbm = StaticConfiguration.DBModel;
                     await dbm.Database.MigrateAsync();
                     flag = true;
@@ -157,14 +158,14 @@ namespace Client_App.ViewModels
             {
                 Current_Db = "Интерактивное пособие по вводу данных ver.1.2.1.53 Текущая база данных - " + "Local" + "_" + i + ".raodb";
                 StaticConfiguration.DBPath = Path.Combine(tempDirectory, "Local" + "_" + i + ".raodb");
-                StaticConfiguration.DBModel = new(StaticConfiguration.DBPath);
+                StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
                 await dbm.Database.MigrateAsync();
             }
         }
         private async Task ProcessDataBaseFillEmpty(DataContext dbm)
         {
-            if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new());
+            if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
             foreach (var item in dbm.DBObservableDbSet)
             {
                 foreach (Reports it in item.Reports_Collection)
@@ -238,8 +239,8 @@ namespace Client_App.ViewModels
             ExcelMissingPas = ReactiveCommand.CreateFromTask<object>(_ExcelMissingPas);
             ExcelPasWithoutRep = ReactiveCommand.CreateFromTask<object>(_ExcelPasWithoutRep);
             ChangePasDir = ReactiveCommand.CreateFromTask<object>(_ChangePasDir);
-            ShowDialog = new();
-            ShowMessage = new();
+            ShowDialog = new Interaction<ChangeOrCreateVM, object>();
+            ShowMessage = new Interaction<List<string>, string>();
         }
         private int GetNumberInOrder(IEnumerable lst)
         {
@@ -618,7 +619,7 @@ namespace Client_App.ViewModels
             {
                 var newRepsFromExcel = new Reports();
                 var param0 = worksheet0.Name;
-                newRepsFromExcel.Master_DB = new()
+                newRepsFromExcel.Master_DB = new Report
                 {
                     FormNum_DB = param0
                 };
@@ -692,11 +693,11 @@ namespace Client_App.ViewModels
 
                                     ExcelWorksheet worksheet1 = excelPackage.Workbook.Worksheets[1];
                                     var param1 = worksheet1.Name;
-                                    var repFromEx = new Report()
+                                    var repFromEx = new Report
                                     {
-                                        FormNum_DB = param1
+                                        FormNum_DB = param1,
+                                        ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}"
                                     };
-                                    repFromEx.ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}";
                                     if (param1.Split('.')[0] == "1")
                                     {
                                         repFromEx.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Text).Replace("/", ".");
@@ -844,7 +845,7 @@ namespace Client_App.ViewModels
                                                                 "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
                                                                 "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                                 "Количество строк - " + repFromEx.Rows.Count;
-                                                            var an = await ShowMessage.Handle(new() { str, "Отчет", "OK", "Пропустить для всех" });
+                                                            var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                                             if (an == "Пропустить для всех")
                                                             {
                                                                 skipLess = true;
@@ -861,7 +862,8 @@ namespace Client_App.ViewModels
                                                             newRepsFromExcel.Master.ShortJurLicoRep.Value + " " +
                                                             newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                             "Количество строк - " + repFromEx.Rows.Count;
-                                                        var an = await ShowMessage.Handle(new(){str, "Отчет",
+                                                        var an = await ShowMessage.Handle(new List<string>
+                                                        {str, "Отчет",
                                                     "Заменить",
                                                     "Дополнить",
                                                     "Сохранить оба",
@@ -888,7 +890,8 @@ namespace Client_App.ViewModels
                                                                     rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                                                     "Сделайте резервную копию." + "\n" +
                                                                     "Количество строк - " + repFromEx.Rows.Count;
-                                                                an = await ShowMessage.Handle(new() {str, "Отчет",
+                                                                an = await ShowMessage.Handle(new List<string>
+                                                                {str, "Отчет",
                                                         "Загрузить новую",
                                                         "Отмена",
                                                         "Загрузить для все"
@@ -910,7 +913,8 @@ namespace Client_App.ViewModels
                                                                     rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                                                     "Сделайте резервную копию." + "\n" +
                                                                     "Количество строк - " + repFromEx.Rows.Count;
-                                                                an = await ShowMessage.Handle(new() {str, "Отчет",
+                                                                an = await ShowMessage.Handle(new List<string>
+                                                                {str, "Отчет",
                                                                 "Загрузить новую",
                                                                 "Отмена"
                                                                 });
@@ -932,7 +936,8 @@ namespace Client_App.ViewModels
                                                             newRepsFromExcel.Master.ShortJurLicoRep.Value + " " +
                                                             newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                             "Количество строк - " + repFromEx.Rows.Count;
-                                                        an = await ShowMessage.Handle(new(){str,"Отчет",
+                                                        an = await ShowMessage.Handle(new List<string>
+                                                        {str,"Отчет",
                                                         "Сохранить оба",
                                                         "Отменить"
                                                         });
@@ -957,7 +962,8 @@ namespace Client_App.ViewModels
                                                             "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
                                                             "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                             "Количество строк - " + repFromEx.Rows.Count;
-                                                        an = await ShowMessage.Handle(new(){str, "Отчет",
+                                                        an = await ShowMessage.Handle(new List<string>
+                                                        {str, "Отчет",
                                                         "Да",
                                                         "Нет",
                                                         "Загрузить для всех"
@@ -974,7 +980,8 @@ namespace Client_App.ViewModels
                                                             "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
                                                             "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                             "Количество строк - " + repFromEx.Rows.Count;
-                                                        an = await ShowMessage.Handle(new(){str, "Отчет",
+                                                        an = await ShowMessage.Handle(new List<string>
+                                                        {str, "Отчет",
                                                         "Да",
                                                         "Нет"
                                                         });
@@ -1010,7 +1017,7 @@ namespace Client_App.ViewModels
                                                                 "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
                                                                 "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                                 "Количество строк - " + repFromEx.Rows.Count;
-                                                            var an = await ShowMessage.Handle(new() { str, "Отчет", "OK", "Пропустить для всех" });
+                                                            var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                                             if (an == "Пропустить для всех") skipLess = true;
                                                         }
                                                     }
@@ -1023,7 +1030,8 @@ namespace Client_App.ViewModels
                                                         newRepsFromExcel.Master.ShortJurLicoRep.Value + " " +
                                                         newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                         "Количество строк - " + repFromEx.Rows.Count;
-                                                        var an = await ShowMessage.Handle(new(){str, "Отчет",
+                                                        var an = await ShowMessage.Handle(new List<string>
+                                                        {str, "Отчет",
                                                         "Заменить",
                                                         "Сохранить оба",
                                                         "Отменить"
@@ -1048,7 +1056,8 @@ namespace Client_App.ViewModels
                                                                 rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                                                 "Сделайте резервную копию." + "\n" +
                                                                 "Количество строк - " + repFromEx.Rows.Count;
-                                                                an = await ShowMessage.Handle(new() {
+                                                                an = await ShowMessage.Handle(new List<string>
+                                                                {
                                                                         str,
                                                                         "Отчет",
                                                                         "Загрузить новую",
@@ -1071,7 +1080,8 @@ namespace Client_App.ViewModels
                                                                     rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                                                     "Сделайте резервную копию." + "\n" +
                                                                     "Количество строк - " + repFromEx.Rows.Count;
-                                                                an = await ShowMessage.Handle(new() {
+                                                                an = await ShowMessage.Handle(new List<string>
+                                                                {
                                                                         str,
                                                                         "Отчет",
                                                                         "Загрузить новую",
@@ -1098,7 +1108,8 @@ namespace Client_App.ViewModels
                                                             "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
                                                             "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                             "Количество строк - " + repFromEx.Rows.Count;
-                                                        an = await ShowMessage.Handle(new(){str, "Отчет",
+                                                        an = await ShowMessage.Handle(new List<string>
+                                                        {str, "Отчет",
                                                             "Да",
                                                             "Нет",
                                                             "Загрузить для всех"
@@ -1116,7 +1127,8 @@ namespace Client_App.ViewModels
                                                             "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
                                                             "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
                                                             "Количество строк - " + repFromEx.Rows.Count;
-                                                        an = await ShowMessage.Handle(new(){str, "Отчет",
+                                                        an = await ShowMessage.Handle(new List<string>
+                                                        {str, "Отчет",
                                                             "Да",
                                                             "Нет"
                                                         });
@@ -1137,7 +1149,8 @@ namespace Client_App.ViewModels
                                 else
                                 {
                                     var str = "Не соответствует формат данных!";
-                                    var an = await ShowMessage.Handle(new(){str, "Формат данных",
+                                    var an = await ShowMessage.Handle(new List<string>
+                                    {str, "Формат данных",
                                                     "Ок"
                                                 });
                                 }
@@ -1159,14 +1172,16 @@ namespace Client_App.ViewModels
             string[]? answ = null;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                OpenFileDialog dial = new();
-                dial.AllowMultiple = true;
+                OpenFileDialog dial = new()
+                {
+                    AllowMultiple = true
+                };
                 var filter = new FileDialogFilter
                 {
                     Name = Name,
-                    Extensions = new(Extensions)
+                    Extensions = new List<string>(Extensions)
                 };
-                dial.Filters = new() { filter };
+                dial.Filters = new List<FileDialogFilter> { filter };
 
                 answ = await dial.ShowAsync(desktop.MainWindow);
             }
@@ -1189,7 +1204,7 @@ namespace Client_App.ViewModels
             {
                 Console.WriteLine(e.Message);
                 await ShowMessage.Handle(ErrorMessages.Error2);
-                throw new(ErrorMessages.Error2[0]);
+                throw new Exception(ErrorMessages.Error2[0]);
             }
         }
         private async Task<string> GetRaoFileName()
@@ -1451,7 +1466,7 @@ namespace Client_App.ViewModels
                                         "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
                                         "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
                                         "Количество строк - " + it.Rows.Count;
-                                    var an = await ShowMessage.Handle(new() { str, "Отчет", "OK", "Пропустить для всех" });
+                                    var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                     if (an == "Пропустить для всех")
                                     {
                                         skipLess = true;
@@ -1469,7 +1484,8 @@ namespace Client_App.ViewModels
                                     first11.Master.OkpoRep.Value + "\n" +
                                     "Количество строк - " + it.Rows.Count;
                                 doSomething = true;
-                                var an = await ShowMessage.Handle(new(){str, "Отчет",
+                                var an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
                                     "Заменить",
                                     "Дополнить",
                                     "Сохранить оба",
@@ -1498,7 +1514,8 @@ namespace Client_App.ViewModels
                                             "Сделайте резервную копию." + "\n" +
                                             "Количество строк - " + it.Rows.Count;
                                         doSomething = true;
-                                        an = await ShowMessage.Handle(new() {str, "Отчет",
+                                        an = await ShowMessage.Handle(new List<string>
+                                        {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена",
                                             "Загрузить для все"
@@ -1521,7 +1538,8 @@ namespace Client_App.ViewModels
                                             "Сделайте резервную копию." + "\n" +
                                             "Количество строк - " + it.Rows.Count;
                                         doSomething = true;
-                                        an = await ShowMessage.Handle(new() {str, "Отчет",
+                                        an = await ShowMessage.Handle(new List<string>
+                                        {str, "Отчет",
                                             "Загрузить новую",
                                             "Отмена"
                                             });
@@ -1546,7 +1564,8 @@ namespace Client_App.ViewModels
                                         first11.Master.ShortJurLicoRep.Value + " " +
                                         first11.Master.OkpoRep.Value + "\n" +
                                         "Количество строк - " + it.Rows.Count;
-                                    an = await ShowMessage.Handle(new(){str,"Отчет",
+                                    an = await ShowMessage.Handle(new List<string>
+                                    {str,"Отчет",
                                 "Сохранить оба",
                                 "Отменить"
                                 });
@@ -1573,7 +1592,8 @@ namespace Client_App.ViewModels
                                     "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
                                     "Количество строк - " + it.Rows.Count;
-                                an = await ShowMessage.Handle(new(){str, "Отчет",
+                                an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
                                     "Да",
                                     "Нет",
                                     "Загрузить для всех"
@@ -1591,7 +1611,8 @@ namespace Client_App.ViewModels
                                     "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
                                     "Количество строк - " + it.Rows.Count;
-                                an = await ShowMessage.Handle(new(){str, "Отчет",
+                                an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
                                 "Да",
                                 "Нет"
                                 });
@@ -1638,7 +1659,7 @@ namespace Client_App.ViewModels
                                         "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
                                         "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
                                         "Количество строк - " + it.Rows.Count;
-                                    var an = await ShowMessage.Handle(new() { str, "Отчет", "OK", "Пропустить для всех" });
+                                    var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                     if (an == "Пропустить для всех") skipLess = true;
                                 }
                             }
@@ -1651,7 +1672,8 @@ namespace Client_App.ViewModels
                                 first21.Master.ShortJurLicoRep.Value + " " +
                                 first21.Master.OkpoRep.Value + "\n" +
                                 "Количество строк - " + it.Rows.Count;
-                                var an = await ShowMessage.Handle(new(){str, "Отчет",
+                                var an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
                                     "Заменить",
                                     "Сохранить оба",
                                     "Отменить"
@@ -1676,7 +1698,8 @@ namespace Client_App.ViewModels
                                         elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                         "Сделайте резервную копию." + "\n" +
                                         "Количество строк - " + it.Rows.Count;
-                                        an = await ShowMessage.Handle(new() {
+                                        an = await ShowMessage.Handle(new List<string>
+                                        {
                                                                         str,
                                                                         "Отчет",
                                                                         "Загрузить новую",
@@ -1699,7 +1722,8 @@ namespace Client_App.ViewModels
                                             elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                             "Сделайте резервную копию." + "\n" +
                                             "Количество строк - " + it.Rows.Count;
-                                        an = await ShowMessage.Handle(new() {
+                                        an = await ShowMessage.Handle(new List<string>
+                                        {
                                                                         str,
                                                                         "Отчет",
                                                                         "Загрузить новую",
@@ -1726,7 +1750,8 @@ namespace Client_App.ViewModels
                                     "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
                                     "Количество строк - " + it.Rows.Count;
-                                an = await ShowMessage.Handle(new(){str, "Отчет",
+                                an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
                                     "Да",
                                     "Нет",
                                     "Загрузить для всех"
@@ -1744,7 +1769,8 @@ namespace Client_App.ViewModels
                                     "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
                                     "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
                                     "Количество строк - " + it.Rows.Count;
-                                an = await ShowMessage.Handle(new(){str, "Отчет",
+                                an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
                                     "Да",
                                     "Нет"
                                 });
@@ -1833,7 +1859,7 @@ namespace Client_App.ViewModels
                                                 "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
                                                 "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
                                                 "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;
-                                            an = await ShowMessage.Handle(new() { str, "Новая организация", "Ок", "Пропустить для всех" });
+                                            an = await ShowMessage.Handle(new List<string> { str, "Новая организация", "Ок", "Пропустить для всех" });
                                             if (an == "Пропустить для всех") skipAll = true;
                                         }
                                     }
@@ -1909,8 +1935,10 @@ namespace Client_App.ViewModels
                                     DBModel db = new(tmp);
                                     try
                                     {
-                                        Reports rp = new();
-                                        rp.Master = rt.Master;
+                                        Reports rp = new()
+                                        {
+                                            Master = rt.Master
+                                        };
                                         rp.Report_Collection.Add(rep);
 
                                         db.Database.MigrateAsync();
@@ -2028,7 +2056,7 @@ namespace Client_App.ViewModels
                                 Dictionary<long, List<string>> dic = new();
                                 foreach (var oldR in sumRow)
                                 {
-                                    dic[oldR.NumberInOrder_DB] = new() { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
+                                    dic[oldR.NumberInOrder_DB] = new List<string> { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
                                 }
 
                                 await frm.UnSum22();
@@ -2087,7 +2115,7 @@ namespace Client_App.ViewModels
             var param = par as IEnumerable;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var answ = (string)await ShowMessage.Handle(new() { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
+                var answ = (string)await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     var t = desktop.MainWindow as MainWindow;
@@ -2117,7 +2145,7 @@ namespace Client_App.ViewModels
             var param = par as IEnumerable;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var answ = (string)await ShowMessage.Handle(new() { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
+                var answ = (string)await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     if (param != null)
@@ -2234,7 +2262,7 @@ namespace Client_App.ViewModels
                                                 {
                                                     var start = StringReverse(rep.StartPeriod_DB);
                                                     var end = StringReverse(rep.EndPeriod_DB);
-                                                    listSotrRep.Add(new()
+                                                    listSotrRep.Add(new ReportForSort
                                                     {
                                                         RegNoRep = item.Master_DB.RegNoRep.Value == null ? "" : item.Master_DB.RegNoRep.Value,
                                                         OkpoRep = item.Master_DB.OkpoRep.Value == null ? "" : item.Master_DB.OkpoRep.Value,
@@ -2575,7 +2603,7 @@ namespace Client_App.ViewModels
 #endif
                                 if (path != null)
                                 {
-                                    using (ExcelPackage excelPackage = new(new(path), new FileInfo(pth)))
+                                    using (ExcelPackage excelPackage = new(new FileInfo(path), new FileInfo(pth)))
                                     {
                                         var form = (Report)forms.FirstOrDefault();
                                         await form!.SortAsync();
@@ -2634,7 +2662,7 @@ namespace Client_App.ViewModels
                     if (selectedReports is null && forSelectedOrg)
                     {
                         await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new()
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                                 ContentTitle = "Выгрузка в Excel",
@@ -2834,7 +2862,7 @@ namespace Client_App.ViewModels
                 if (selectedReports is null)
                 {
                     await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new()
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                             ContentTitle = "Выгрузка в Excel",
@@ -5169,8 +5197,9 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessage.Handle(new() { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                                                 + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                await ShowMessage.Handle(new List<string>
+                                { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -5226,8 +5255,9 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessage.Handle(new() { $"Не удалось открыть сетевое хранилище паспортов:"
-                                                                 + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
+                                await ShowMessage.Handle(new List<string>
+                                { $"Не удалось открыть сетевое хранилище паспортов:"
+                                  + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
                                 return;
                             }
                             pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
@@ -5301,9 +5331,10 @@ namespace Client_App.ViewModels
                             try
                             {
                                 excelPackage.Save();
-                                res = await ShowMessage.Handle(new() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
-                                                                       + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
-                                                                       + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
+                                res = await ShowMessage.Handle(new List<string>
+                                { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
+                                  + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
+                                  + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
                                 if (res is null or "Ок")
                                     return;
                                 if (res.Equals("Открыть выгрузку"))
@@ -5314,7 +5345,7 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessage.Handle(new() { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                                await ShowMessage.Handle(new List<string> { $"Не удалось сохранить файл по указанному пути", "Ок" });
                                 return;
                             }
                         }
@@ -5334,7 +5365,7 @@ namespace Client_App.ViewModels
                 FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
                 saveFileDialog.Filters.Add(filter);
                 var messageBoxWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxInputWindow(new()
+                    .GetMessageBoxInputWindow(new MessageBoxInputParams
                     {
                         ButtonDefinitions = new[]
                         {
@@ -5351,7 +5382,7 @@ namespace Client_App.ViewModels
                 try
                 {
                     if (!result.Button.Equals("Ок"))
-                        throw new();
+                        throw new Exception();
                     categories = Regex.Replace(result.Message, "[^\\d,]", "").Split(',').Select((short.Parse)).Cast<short?>().ToList();
                 }
                 catch (Exception e)
@@ -5378,8 +5409,9 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessage.Handle(new() { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                                                 + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                await ShowMessage.Handle(new List<string>
+                                { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
+                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -5408,8 +5440,9 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessage.Handle(new() { $"Не удалось открыть сетевое хранилище паспортов:"
-                                                                 + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
+                                await ShowMessage.Handle(new List<string>
+                                { $"Не удалось открыть сетевое хранилище паспортов:"
+                                  + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
                                 return;
                             }
                             pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
@@ -5453,9 +5486,10 @@ namespace Client_App.ViewModels
                             try
                             {
                                 excelPackage.Save();
-                                res = await ShowMessage.Handle(new() { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
-                                                                       + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
-                                                                       + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
+                                res = await ShowMessage.Handle(new List<string>
+                                { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
+                                  + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
+                                  + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
                                 if (res is null or "Ок")
                                     return;
                                 if (res.Equals("Открыть выгрузку"))
@@ -5466,7 +5500,7 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-                                await ShowMessage.Handle(new() { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                                await ShowMessage.Handle(new List<string> { $"Не удалось сохранить файл по указанному пути", "Ок" });
                                 return;
                             }
                         }
@@ -6170,7 +6204,7 @@ namespace Client_App.ViewModels
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new(prop));
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

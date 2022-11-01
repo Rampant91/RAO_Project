@@ -77,24 +77,24 @@ namespace Spravochniki
         }
         public static List<Tuple<byte?, string>> SprDocumentVidName = new()
         {
-                new(0,""),
-                new(1,""),
-                new(2,""),
-                new(3,""),
-                new(4,""),
-                new(5,""),
-                new(6,""),
-                new(7,""),
-                new(8,""),
-                new(9,""),
-                new(10,""),
-                new(11,""),
-                new(12,""),
-                new(13,""),
-                new(14,""),
-                new(15,""),
-                new(19,""),
-                new(null,"")
+                new Tuple<byte?, string>(0,""),
+                new Tuple<byte?, string>(1,""),
+                new Tuple<byte?, string>(2,""),
+                new Tuple<byte?, string>(3,""),
+                new Tuple<byte?, string>(4,""),
+                new Tuple<byte?, string>(5,""),
+                new Tuple<byte?, string>(6,""),
+                new Tuple<byte?, string>(7,""),
+                new Tuple<byte?, string>(8,""),
+                new Tuple<byte?, string>(9,""),
+                new Tuple<byte?, string>(10,""),
+                new Tuple<byte?, string>(11,""),
+                new Tuple<byte?, string>(12,""),
+                new Tuple<byte?, string>(13,""),
+                new Tuple<byte?, string>(14,""),
+                new Tuple<byte?, string>(15,""),
+                new Tuple<byte?, string>(19,""),
+                new Tuple<byte?, string>(null,"")
             };
         public static List<Tuple<string,string>> SprTypesToRadionuclidsFor11
         {
@@ -207,7 +207,7 @@ namespace Spravochniki
                 string i1 = tmp[0];
                 long i2 = long.Parse(tmp[1]);
                 long i3 = long.Parse(tmp[2]);
-                res.Add(new(i1, i2, i3));
+                res.Add(new Tuple<string, long, long>(i1, i2, i3));
             }
             return res;
         }
@@ -221,7 +221,7 @@ namespace Spravochniki
                 var tmp = rows[k].Split(";", 2);
                 string i1 = tmp[0];
                 string i2 = tmp[1];
-                res.Add(new(i1, i2));
+                res.Add(new Tuple<string, string>(i1, i2));
             }
             return res;
         }
@@ -234,7 +234,7 @@ namespace Spravochniki
                 var tmp = rows[k].Split(";", 7);
                 string i1 = tmp[1];
                 string i2 = tmp[5];
-                res.Add(new(i1, i2));
+                res.Add(new Tuple<string, string>(i1, i2));
             }
             return res;
         }

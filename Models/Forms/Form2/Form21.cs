@@ -186,11 +186,11 @@ namespace Models
                     RamAccess<string> rm = null;
                     if (NumberInOrderSum_DB != "" && NumberInOrderSum_DB != null)
                     {
-                        rm = new(NumberInOrderSum_Validation, NumberInOrderSum_DB);
+                        rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrderSum_DB);
                     }
                     else
                     {
-                        rm = new(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
+                        rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
                     }
                     rm.PropertyChanged += NumberInOrderSumValueChanged;
                     Dictionary.Add(nameof(NumberInOrderSum), rm);
