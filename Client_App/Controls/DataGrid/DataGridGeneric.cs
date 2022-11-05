@@ -1364,14 +1364,8 @@ namespace Client_App.Controls.DataGrid
                         catch { }
                     }
                 }
-                var t = typeof(T).FindInterfaces(new TypeFilter((x,y)=> 
-                {
-                    if (x.ToString() == y.ToString())
-                        return true;
-                    else
-                        return false;
-                }), typeof(IBaseColor).FullName);
-                if (t.Count()!=0)
+                var t = typeof(T).FindInterfaces((x,y) => x.ToString() == y.ToString(), typeof(IBaseColor).FullName);
+                if (t.Count() != 0)
                 {
                     for (int i = 0; i < PageSize; i++)
                     {
