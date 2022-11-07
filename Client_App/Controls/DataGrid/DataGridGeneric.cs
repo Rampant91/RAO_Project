@@ -1337,6 +1337,8 @@ namespace Client_App.Controls.DataGrid
                     {
                         if (count < PageSize && i < tmp_coll.Count)
                         {
+                            Rows[count].DataContext = null; // правит баг с записью данных в пустые ячейки на первых страницах
+
                             Rows[count].DataContext = tmp_coll.Get<T>(i);
 
                             Rows[count].IsVisible = true;
