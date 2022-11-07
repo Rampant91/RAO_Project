@@ -17,6 +17,7 @@ using Client_App.Converters;
 using Models.Attributes;
 using System.Text.RegularExpressions;
 using Models.Interfaces;
+using ReactiveUI;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -1280,6 +1281,7 @@ namespace Client_App.Controls.DataGrid
         private void UpdateCells()
         {
             var count = 0;
+            //MakeCenterRows();
 
             var num = Convert.ToInt32(_nowPage);
             var offset = (num-1) * (PageSize);
@@ -1337,6 +1339,8 @@ namespace Client_App.Controls.DataGrid
                     {
                         if (count < PageSize && i < tmp_coll.Count)
                         {
+                            Rows[count].DataContext = null;
+
                             Rows[count].DataContext = tmp_coll.Get<T>(i);
 
                             Rows[count].IsVisible = true;
