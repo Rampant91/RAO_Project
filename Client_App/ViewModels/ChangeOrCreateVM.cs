@@ -1463,9 +1463,9 @@ namespace Client_App.ViewModels
                 date2 = StringDateReverse(date2);
                 return string.Compare(date1, date2);
             }
-            else if (!r.IsMatch(date1) && !r.IsMatch(date2))
+            if (!r.IsMatch(date1) && !r.IsMatch(date2))
                 return string.Compare(date1, date2);
-            else if (!r.IsMatch(date2))
+            if (!r.IsMatch(date2))
                 return 1;
             return -1;
         }
@@ -1652,7 +1652,23 @@ namespace Client_App.ViewModels
                 }
             }
         }
-        #endregion 
+        #endregion
+        #endregion
+
+        #region CopyExecutorData
+        public ReactiveCommand<object, Unit> CopyExecutorData { get; protected set; }
+        private async Task _CopyExecutorData(object param)
+        {
+            var a = Storages.Report_Collection.Where(x => x.FormNum_DB == FormType && !Storages.Report_Collection.Contains(Storage)).FirstOrDefault();
+            var a = Storages.Report_Collection.Max(x => x.EndPeriod_DB, CompareDate);
+            if (a != null)
+            {
+                Storage.FIOexecutor.Value = a.FIOexecutor_DB;
+                Storage.ExecEmail.Value = a.ExecEmail_DB;
+                Storage.ExecPhone.Value = a.ExecPhone_DB;
+                Storage.GradeExecutor.Value = a.GradeExecutor_DB;
+            }
+        }
         #endregion
 
         #region Constacture
@@ -1809,6 +1825,7 @@ namespace Client_App.ViewModels
             OpenPasport = ReactiveCommand.CreateFromTask<object>(_OpenPasport);
             ExcelPasport = ReactiveCommand.CreateFromTask<object>(_ExcelPasport);
             CopyPasName = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
+            CopyExecutorData = ReactiveCommand.CreateFromTask<object>(_CopyExecutorData);
 
 
             ShowDialog = new Interaction<object, int>();
