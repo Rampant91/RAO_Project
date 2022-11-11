@@ -1383,7 +1383,7 @@ namespace Client_App.ViewModels
                                         }
                                         for (int currentRow = lastRow; currentRow >= 2; currentRow--)
                                         {
-                                            if (CompareDate(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) >= 0)
+                                            if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) >= 0)
                                             {
                                                 worksheet.InsertRow(currentRow + 1, 1);
                                                 #region BindingCells
@@ -1448,39 +1448,6 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-        }
-
-        private static int CompareDate(string date1, string date2)
-        {
-            if (string.IsNullOrEmpty(date1))
-                return 1;
-            if (string.IsNullOrEmpty(date2))
-                return -1;
-            Regex r = new(@"^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$");
-            if (r.IsMatch(date1) && r.IsMatch(date2))
-            {
-                date1 = StringDateReverse(date1);
-                date2 = StringDateReverse(date2);
-                return string.Compare(date1, date2);
-            }
-            if (!r.IsMatch(date1) && !r.IsMatch(date2))
-                return string.Compare(date1, date2);
-            if (!r.IsMatch(date2))
-                return 1;
-            return -1;
-        }
-
-        private static string StringDateReverse(string date)
-        {
-            var charArray = date.Replace("_", "0").Replace("/", ".").Split(".");
-            if (charArray[0].Length == 1)
-                charArray[0] = '0' + charArray[0];
-            if (charArray[1].Length == 1)
-                charArray[1] = '0' + charArray[0];
-            if (charArray[2].Length == 2)
-                charArray[2] = "20" + charArray[0];
-            Array.Reverse(charArray);
-            return string.Join("", charArray);
         }
         #endregion
 
@@ -1655,18 +1622,59 @@ namespace Client_App.ViewModels
         #endregion
         #endregion
 
+        #region CustomStringDateComparer
+        private class CustomStringDateComparer : IComparer<string>
+        {
+            public CustomStringDateComparer(IComparer<string> baseComparer) { }
+            public int Compare(string? date1, string? date2)
+            {
+                if (string.IsNullOrEmpty(date1))
+                    return 1;
+                if (string.IsNullOrEmpty(date2))
+                    return -1;
+                Regex r = new(@"^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$");
+                if (r.IsMatch(date1) && r.IsMatch(date2))
+                {
+                    date1 = StringDateReverse(date1);
+                    date2 = StringDateReverse(date2);
+                    return string.CompareOrdinal(date1, date2);
+                }
+                if (!r.IsMatch(date1) && !r.IsMatch(date2))
+                    return string.CompareOrdinal(date1, date2);
+                if (!r.IsMatch(date2))
+                    return 1;
+                return -1;
+            }
+        }
+
+        private static string StringDateReverse(string date)
+        {
+            var charArray = date.Replace("_", "0").Replace("/", ".").Split(".");
+            if (charArray[0].Length == 1)
+                charArray[0] = '0' + charArray[0];
+            if (charArray[1].Length == 1)
+                charArray[1] = '0' + charArray[0];
+            if (charArray[2].Length == 2)
+                charArray[2] = "20" + charArray[0];
+            Array.Reverse(charArray);
+            return string.Join("", charArray);
+        } 
+        #endregion
+
         #region CopyExecutorData
         public ReactiveCommand<object, Unit> CopyExecutorData { get; protected set; }
         private async Task _CopyExecutorData(object param)
         {
-            var a = Storages.Report_Collection.Where(x => x.FormNum_DB == FormType && !Storages.Report_Collection.Contains(Storage)).FirstOrDefault();
-            var a = Storages.Report_Collection.Max(x => x.EndPeriod_DB, CompareDate);
-            if (a != null)
+            var comparator = new CustomStringDateComparer(StringComparer.CurrentCulture);
+            var lastReport = Storages.Report_Collection
+                .Where(rep => rep.FormNum_DB == FormType && !rep.Equals(Storage))
+                .MaxBy(rep => rep.EndPeriod_DB, comparator);
+            if (lastReport != null)
             {
-                Storage.FIOexecutor.Value = a.FIOexecutor_DB;
-                Storage.ExecEmail.Value = a.ExecEmail_DB;
-                Storage.ExecPhone.Value = a.ExecPhone_DB;
-                Storage.GradeExecutor.Value = a.GradeExecutor_DB;
+                Storage.FIOexecutor.Value = lastReport.FIOexecutor_DB;
+                Storage.ExecEmail.Value = lastReport.ExecEmail_DB;
+                Storage.ExecPhone.Value = lastReport.ExecPhone_DB;
+                Storage.GradeExecutor.Value = lastReport.GradeExecutor_DB;
             }
         }
         #endregion
