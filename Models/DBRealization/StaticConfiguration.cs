@@ -1,19 +1,18 @@
-﻿namespace Models.DBRealization
+﻿namespace Models.DBRealization;
+
+public class StaticConfiguration
 {
-    public class StaticConfiguration
+    public static string _dbPath { get; set; } = "";
+    public static string DBPath
     {
-        public static string _dbPath { get; set; } = "";
-        public static string DBPath
+        get
         {
-            get
-            {
-                return _dbPath;
-            }
-            set
-            {
-                _dbPath = value;
-            }
+            return _dbPath;
         }
-        public static DBModel DBModel;
+        set
+        {
+            _dbPath = value;
+        }
     }
+    public static DBModel DBModel;
 }

@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace Models.Collections
+namespace Models.Collections;
+
+public interface IKey:INotifyPropertyChanged,INumberInOrder,IExcel
 {
-    public interface IKey:INotifyPropertyChanged,INumberInOrder,IExcel
-    {
-        int Id { get; set; } 
-    }
+    int Id { get; set; } 
 }

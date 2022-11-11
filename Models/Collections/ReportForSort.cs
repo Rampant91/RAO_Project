@@ -1,75 +1,74 @@
-﻿namespace Models.Collections
+﻿namespace Models.Collections;
+
+public class ReportForSort
 {
-    public class ReportForSort
+    #region RegNoRep
+    private string _regNoRep;
+    public string RegNoRep
     {
-        #region RegNoRep
-        private string _regNoRep;
-        public string RegNoRep
+        get => _regNoRep;
+        set
         {
-            get => _regNoRep;
-            set
-            {
-                _regNoRep = value;
-            }
+            _regNoRep = value;
         }
-        #endregion
+    }
+    #endregion
 
-        #region OkpoRep
-        private string _okpoRep;
-        public string OkpoRep
+    #region OkpoRep
+    private string _okpoRep;
+    public string OkpoRep
+    {
+        get => _okpoRep;
+        set
         {
-            get => _okpoRep;
-            set
-            {
-                _okpoRep = value;
-            }
+            _okpoRep = value;
         }
-        #endregion
+    }
+    #endregion
 
-        #region FormNum
-        private string _formNum;
-        public string FormNum
+    #region FormNum
+    private string _formNum;
+    public string FormNum
+    {
+        get => _formNum;
+        set 
         {
-            get => _formNum;
-            set 
-            {
-                _formNum = value;
-            }
+            _formNum = value;
         }
-        #endregion
+    }
+    #endregion
 
-        #region StartPeriod
-        private long _startPeriod;
-        public long StartPeriod
+    #region StartPeriod
+    private long _startPeriod;
+    public long StartPeriod
+    {
+        get => _startPeriod;
+        set
         {
-            get => _startPeriod;
-            set
-            {
-                _startPeriod = value;
-            }
+            _startPeriod = value;
         }
-        #endregion
+    }
+    #endregion
 
-        #region EndPeriod
-        private long _endPeriod;
-        public long EndPeriod
+    #region EndPeriod
+    private long _endPeriod;
+    public long EndPeriod
+    {
+        get => _endPeriod;
+        set
         {
-            get => _endPeriod;
-            set
-            {
-                _endPeriod = value;
-            }
+            _endPeriod = value;
         }
-        #endregion
+    }
+    #endregion
 
-        private string _shortYr;
-        public string ShortYr
+    private string _shortYr;
+    public string ShortYr
+    {
+        get => _shortYr;
+        set
         {
-            get => _shortYr;
-            set
-            {
-                _shortYr = value;
-            }
+            _shortYr = value;
         }
     }
 }

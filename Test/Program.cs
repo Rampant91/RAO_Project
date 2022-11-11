@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Test
+namespace Test;
+
+class Program
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {       
+    static void Main(string[] args)
+    {       
 
-            Console.ReadKey();
+        Console.ReadKey();
 
-        }
     }
 }

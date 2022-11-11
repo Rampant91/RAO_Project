@@ -1,20 +1,17 @@
 using Avalonia.Markup.Xaml;
 using Models.Collections;
 
-namespace Client_App.Controls.DataGrid.DataGrids
+namespace Client_App.Controls.DataGrid.DataGrids;
+
+public class DataGridReports : DataGrid<Reports>
 {
-    public class DataGridReports : DataGrid<Reports>
+    public DataGridReports()
     {
-        public DataGridReports() : base()
-        {
-            InitializeComponent();
-
-            this.Init();
-        }
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        InitializeComponent();
+        Init();
     }
-
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
+    }
 }

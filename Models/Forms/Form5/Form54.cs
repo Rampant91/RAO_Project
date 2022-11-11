@@ -1,5 +1,5 @@
-﻿namespace Models
-{
+﻿namespace Models;
+
 //    [Serializable]
 //    [Attributes.Form_Class("Форма 5.4: Сведения о наличии в подведомственных организациях ОРИ")]
 //    public class Form54 : Abstracts.Form5
@@ -366,4 +366,3 @@
 //        }
 //        //Mass Property
 //    }
-}

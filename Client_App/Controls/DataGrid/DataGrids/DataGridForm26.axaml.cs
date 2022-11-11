@@ -1,24 +1,22 @@
 using Avalonia.Markup.Xaml;
 using Models;
 
-namespace Client_App.Controls.DataGrid.DataGrids
-{
-    public class DataGridForm26 : DataGrid<Form26>
-    {
-        public DataGridForm26() : base()
-        {
-            InitializeComponent();
-            this.Init();
-        }
-        public DataGridForm26(string Name) : base(Name)
-        {
-            InitializeComponent();
-            this.Init();
-        }
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-    }
+namespace Client_App.Controls.DataGrid.DataGrids;
 
+public class DataGridForm26 : DataGrid<Form26>
+{
+    public DataGridForm26()
+    {
+        InitializeComponent();
+        Init();
+    }
+    public DataGridForm26(string name) : base(name)
+    {
+        InitializeComponent();
+        Init();
+    }
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
+    }
 }

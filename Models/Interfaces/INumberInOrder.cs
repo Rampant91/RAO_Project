@@ -1,8 +1,7 @@
-﻿namespace Models.Collections
+﻿namespace Models.Collections;
+
+public interface INumberInOrder
 {
-    public interface INumberInOrder
-    {
-        long Order { get; }
-        void SetOrder(long order);
-    }
+    long Order { get; }
+    void SetOrder(long order);
 }

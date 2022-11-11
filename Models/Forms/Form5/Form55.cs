@@ -1,5 +1,5 @@
-﻿namespace Models
-{
+﻿namespace Models;
+
 //    [Serializable]
 //    [Attributes.Form_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
 //    public class Form55 : Abstracts.Form5
@@ -262,4 +262,3 @@
 //        }
 //        //Mass Property
 //    }
-}

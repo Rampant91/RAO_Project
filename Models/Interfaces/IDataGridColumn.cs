@@ -1,7 +1,6 @@
-﻿namespace Models.Collections
+﻿namespace Models.Collections;
+
+public interface IDataGridColumn
 {
-    public interface IDataGridColumn
-    {
-        DataGridColumns GetColumnStructure(string param = "");
-    }
+    DataGridColumns GetColumnStructure(string param = "");
 }

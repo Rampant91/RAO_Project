@@ -1,7 +1,3 @@
-﻿namespace Client_App.Controls.DataGrid
-{
-    public interface IDataGrid
-    {
+﻿namespace Client_App.Controls.DataGrid;
 
-    }
-}
+public interface IDataGrid { }

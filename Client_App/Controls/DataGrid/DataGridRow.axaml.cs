@@ -3,90 +3,86 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 
-namespace Client_App.Controls.DataGrid
+namespace Client_App.Controls.DataGrid;
+
+public class DataGridRow : Grid
 {
-    public class DataGridRow : Grid
+    #region Row
+    public static readonly DirectProperty<DataGridRow, int> RowProperty =
+        AvaloniaProperty.RegisterDirect<DataGridRow, int>(
+            nameof(Row),
+            o => o.Row,
+            (o, v) => o.Row = v,defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
+
+    private int _Row = -1;
+    public int Row
     {
-        #region Row
-        public static readonly DirectProperty<DataGridRow, int> RowProperty =
-            AvaloniaProperty.RegisterDirect<DataGridRow, int>(
-                nameof(Row),
-                o => o.Row,
-                (o, v) => o.Row = v,defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
+        get => _Row;
+        set => SetAndRaise(RowProperty, ref _Row, value);
+    }
+    #endregion
 
-        private int _Row = -1;
-        public int Row
+    #region ChooseColor
+    public static readonly DirectProperty<DataGridRow, SolidColorBrush> ChooseColorProperty =
+        AvaloniaProperty.RegisterDirect<DataGridRow, SolidColorBrush>(
+            nameof(ChooseColor),
+            o => o.ChooseColor,
+            (o, v) => o.ChooseColor = v);
+
+    private SolidColorBrush _ChooseColor = new(Color.Parse("White"));
+    public SolidColorBrush ChooseColor
+    {
+        get => _ChooseColor;
+        set
         {
-            get => _Row;
-            set
-            {
-                SetAndRaise(RowProperty, ref _Row, value);
-            }
+            SetAndRaise(ChooseColorProperty, ref _ChooseColor, value);
         }
-        #endregion
+    }
+    #endregion
 
-        #region ChooseColor
-        public static readonly DirectProperty<DataGridRow, SolidColorBrush> ChooseColorProperty =
-            AvaloniaProperty.RegisterDirect<DataGridRow, SolidColorBrush>(
-                nameof(ChooseColor),
-                o => o.ChooseColor,
-                (o, v) => o.ChooseColor = v);
+    //#region Orientation
+    //public static readonly DirectProperty<DataGridRow, Orientation> OrientationProperty =
+    //    AvaloniaProperty.RegisterDirect<DataGridRow, Orientation>(
+    //        nameof(Orientation),
+    //        o => o.Orientation,
+    //        (o, v) => o.Orientation = v);
 
-        private SolidColorBrush _ChooseColor = new(Color.Parse("White"));
-        public SolidColorBrush ChooseColor
-        {
-            get => _ChooseColor;
-            set
-            {
-                SetAndRaise(ChooseColorProperty, ref _ChooseColor, value);
-            }
-        }
-        #endregion
+    //private Orientation _Orientation = Orientation.Horizontal;
+    //public Orientation Orientation
+    //{
+    //    get => _Orientation;
+    //    set
+    //    {
+    //        SetAndRaise(OrientationProperty, ref _Orientation, value);
+    //    }
+    //}
+    //#endregion
 
-        //#region Orientation
-        //public static readonly DirectProperty<DataGridRow, Orientation> OrientationProperty =
-        //    AvaloniaProperty.RegisterDirect<DataGridRow, Orientation>(
-        //        nameof(Orientation),
-        //        o => o.Orientation,
-        //        (o, v) => o.Orientation = v);
+    //#region Children
+    //public static readonly DirectProperty<DataGridRow, Avalonia.Controls.Controls> ChildrenProperty =
+    //    AvaloniaProperty.RegisterDirect<DataGridRow, Avalonia.Controls.Controls>(
+    //        nameof(Children),
+    //        o => o.Children,
+    //        (o, v) => o.Children = v);
 
-        //private Orientation _Orientation = Orientation.Horizontal;
-        //public Orientation Orientation
-        //{
-        //    get => _Orientation;
-        //    set
-        //    {
-        //        SetAndRaise(OrientationProperty, ref _Orientation, value);
-        //    }
-        //}
-        //#endregion
+    //private Avalonia.Controls.Controls _Children = new Avalonia.Controls.Controls();
+    //public Avalonia.Controls.Controls Children
+    //{
+    //    get => _Children;
+    //    set
+    //    {
+    //        SetAndRaise(ChildrenProperty, ref _Children, value);
+    //    }
+    //}
+    //#endregion
 
-        //#region Children
-        //public static readonly DirectProperty<DataGridRow, Avalonia.Controls.Controls> ChildrenProperty =
-        //    AvaloniaProperty.RegisterDirect<DataGridRow, Avalonia.Controls.Controls>(
-        //        nameof(Children),
-        //        o => o.Children,
-        //        (o, v) => o.Children = v);
+    public DataGridRow()
+    {
+        InitializeComponent();
+    }
 
-        //private Avalonia.Controls.Controls _Children = new Avalonia.Controls.Controls();
-        //public Avalonia.Controls.Controls Children
-        //{
-        //    get => _Children;
-        //    set
-        //    {
-        //        SetAndRaise(ChildrenProperty, ref _Children, value);
-        //    }
-        //}
-        //#endregion
-
-        public DataGridRow()
-        {
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

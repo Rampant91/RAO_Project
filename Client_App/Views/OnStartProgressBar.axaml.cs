@@ -6,34 +6,33 @@ using ReactiveUI;
 using Client_App.ViewModels;
 using Avalonia.Controls.ApplicationLifetimes;
 
-namespace Client_App.Views
+namespace Client_App.Views;
+
+public partial class OnStartProgressBar : ReactiveWindow<ViewModels.OnStartProgressBarVM>
 {
-    public partial class OnStartProgressBar : ReactiveWindow<ViewModels.OnStartProgressBarVM>
+    public OnStartProgressBar()
     {
-        public OnStartProgressBar()
-        {
-            InitializeComponent();
+        InitializeComponent();
 #if DEBUG
-            this.AttachDevTools();
+        this.AttachDevTools();
 #endif
-            this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-        }
+        this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+    }
 
-        private async Task DoShowDialogAsync(InteractionContext<ViewModels.MainWindowVM, object> interaction)
+    private async Task DoShowDialogAsync(InteractionContext<ViewModels.MainWindowVM, object> interaction)
+    {
+        if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow = new MainWindow(interaction.Input);
-                desktop.MainWindow.Show();
-                this.Close();
-            }
-            interaction.SetOutput(null);
+            desktop.MainWindow = new MainWindow(interaction.Input);
+            desktop.MainWindow.Show();
+            this.Close();
         }
+        interaction.SetOutput(null);
+    }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            this.DataContext = new OnStartProgressBarVM();
-        }
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
+        this.DataContext = new OnStartProgressBarVM();
     }
 }

@@ -4,41 +4,41 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Data.Common;
 
-namespace Models.DBRealization
+namespace Models.DBRealization;
+
+public class RedDataBaseCreation
 {
-    public class RedDataBaseCreation
+    public static DbConnection GetConnectionString(string _path)
     {
-        public static DbConnection GetConnectionString(string _path)
+        string direct = Path.GetDirectoryName(_path);
+        if (!Directory.Exists(direct))
         {
-            string direct = Path.GetDirectoryName(_path);
-            if (!Directory.Exists(direct))
-            {
-                Directory.CreateDirectory(direct);
-            }
+            Directory.CreateDirectory(direct);
+        }
 #if DEBUG
-            string pth = "";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        string pth = "";
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
-                if (RuntimeInformation.OSArchitecture == Architecture.X64)
-                {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "win-x64"), "fbclient.dll");
-                }
-                if (RuntimeInformation.OSArchitecture == Architecture.X86)
-                {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "win-x32"), "fbclient.dll");
-                }
+                pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "win-x64"), "fbclient.dll");
             }
-            else
+            if (RuntimeInformation.OSArchitecture == Architecture.X86)
             {
-                if (RuntimeInformation.OSArchitecture == Architecture.X64)
-                {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux-x64"), "lib"), "libfbclient.so");
-                }
-                if (RuntimeInformation.OSArchitecture == Architecture.X86)
-                {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux-x32"), "lib"), "libfbclient.so");
-                }
+                pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "win-x32"), "fbclient.dll");
             }
+        }
+        else
+        {
+            if (RuntimeInformation.OSArchitecture == Architecture.X64)
+            {
+                pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux-x64"), "lib"), "libfbclient.so");
+            }
+            if (RuntimeInformation.OSArchitecture == Architecture.X86)
+            {
+                pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux-x32"), "lib"), "libfbclient.so");
+            }
+        }
 #else
             string pth = "";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -64,20 +64,19 @@ namespace Models.DBRealization
                 }
             }
 #endif
-            Console.WriteLine(_path);
-            string connstring= new FbConnectionStringBuilder
-            {
+        Console.WriteLine(_path);
+        string connstring= new FbConnectionStringBuilder
+        {
 
-                Database = _path,
-                ServerType = FbServerType.Embedded,
-                UserID = "SYSDBA",
-                Password = "masterkey",
-                Pooling = false,
-                ConnectionLifeTime = 15,
-                ClientLibrary = Path.GetFullPath(pth)
-            }.ToString();
+            Database = _path,
+            ServerType = FbServerType.Embedded,
+            UserID = "SYSDBA",
+            Password = "masterkey",
+            Pooling = false,
+            ConnectionLifeTime = 15,
+            ClientLibrary = Path.GetFullPath(pth)
+        }.ToString();
 
-            return new FbConnection(connstring);
-        }
+        return new FbConnection(connstring);
     }
 }

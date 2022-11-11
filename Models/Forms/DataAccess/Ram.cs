@@ -1,20 +1,19 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Models.DataAccess
-{
-    public abstract class RamAccess: INotifyPropertyChanged
-    {
-        #region INotifyPropertyChanged
+namespace Models.DataAccess;
 
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+public abstract class RamAccess: INotifyPropertyChanged
+{
+    #region INotifyPropertyChanged
+
+    public void OnPropertyChanged([CallerMemberName] string prop = "")
+    {
+        if (PropertyChanged != null)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
+            PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
     }
+    public event PropertyChangedEventHandler PropertyChanged;
+    #endregion
 }

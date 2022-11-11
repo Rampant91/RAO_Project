@@ -1,5 +1,5 @@
-﻿namespace Models
-{
+﻿namespace Models;
+
 //    [Serializable]
 //    [Attributes.Form_Class("")]
 //    public class Form32_1 : Abstracts.Form3
@@ -590,4 +590,3 @@
 
 //        //ValidThru property
 //    }
-}
