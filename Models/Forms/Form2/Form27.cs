@@ -190,14 +190,14 @@ namespace Models
                         AllowedWasteValue_DB = value1;
                         return;
                     }
-                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
                     try
                     {
                         var value2 = Convert.ToDouble(value1);
-                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                        value1 = $"{value2:0.######################################################e+00}";
                     }
                     catch (Exception ex)
                     { }
@@ -218,7 +218,7 @@ namespace Models
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
@@ -281,14 +281,14 @@ namespace Models
                         FactedWasteValue_DB = value1;
                         return;
                     }
-                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
                     try
                     {
                         var value2 = Convert.ToDouble(value1);
-                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                        value1 = $"{value2:0.######################################################e+00}";
                     }
                     catch (Exception ex)
                     { }
@@ -309,13 +309,13 @@ namespace Models
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             string tmp = value1;
             int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            if (tmp[0] == '(' && tmp[len - 1] == ')')
             {
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
@@ -379,14 +379,14 @@ namespace Models
                         WasteOutbreakPreviousYear_DB = value1;
                         return;
                     }
-                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
                     {
                         value1 = value1.Replace("+", "e+").Replace("-", "e-");
                     }
                     try
                     {
                         var value2 = Convert.ToDouble(value1);
-                        value1 = String.Format("{0:0.######################################################e+00}", value2);
+                        value1 = $"{value2:0.######################################################e+00}";
                     }
                     catch (Exception ex)
                     { }
@@ -407,13 +407,13 @@ namespace Models
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             string tmp = value1;
             int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            if (tmp[0] == '(' && tmp[len - 1] == ')')
             {
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
@@ -450,8 +450,8 @@ namespace Models
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-            Column += (Transpon ? cnt : 0);
-            Row += (!Transpon ? cnt : 0);
+            Column += Transpon ? cnt : 0;
+            Row += !Transpon ? cnt : 0;
             double val;
 
             worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ObservedSourceNumber_DB;
@@ -465,8 +465,8 @@ namespace Models
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-            Column += (Transpon ? cnt : 0);
-            Row += (!Transpon ? cnt : 0);
+            Column += Transpon ? cnt : 0;
+            Row += !Transpon ? cnt : 0;
 
             worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
             worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];

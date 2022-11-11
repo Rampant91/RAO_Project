@@ -34,7 +34,7 @@ namespace Models.Classes
             {
                 for (int i = obj._innerNumberRng.Count() - 1; i >= 0; i--)
                 {
-                    if (obj._innerNumberRng[i] + zap == ('Z' + zap))
+                    if (obj._innerNumberRng[i] + zap == 'Z' + zap)
                     {
                         obj._innerNumberRng[i] = 'A';
                         zap = 1;

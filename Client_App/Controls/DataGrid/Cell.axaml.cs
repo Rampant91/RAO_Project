@@ -110,7 +110,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     _Control = value;
 
-                    var t = ((Panel)((Border)Content).Child);
+                    var t = (Panel)((Border)Content).Child;
                     t.Children.Add(_Control);
                 }
             } 
@@ -123,7 +123,7 @@ namespace Client_App.Controls.DataGrid
 
             if (Control != null)
             {
-                var t = ((Panel)((Border)Content).Child);
+                var t = (Panel)((Border)Content).Child;
                 t.Children.Add(Control);
             }
         }

@@ -17,7 +17,7 @@ namespace Client_App.Converters
                     try
                     {
                         var ty = (int)rps.Y;
-                        var lg = Thickness.Parse(("0," + ty) + ",0,0");
+                        var lg = Thickness.Parse($"0,{ty},0,0");
                         return lg;
                     }
                     catch
@@ -30,7 +30,7 @@ namespace Client_App.Converters
                     try
                     {
                         int ty = System.Convert.ToInt32(Value);
-                        var lg = Thickness.Parse(("0," + ty) + ",0,0");
+                        var lg = Thickness.Parse($"0,{ty},0,0");
                         return lg;
                     }
                     catch

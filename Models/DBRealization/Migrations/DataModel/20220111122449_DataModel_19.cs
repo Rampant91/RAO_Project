@@ -92,7 +92,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"form_12\" (" + attrWCol + ") SELECT " + attrWCol + " FROM FORM_12_TEMP");
+            migrationBuilder.Sql($"INSERT INTO \"form_12\" ({attrWCol}) SELECT {attrWCol} FROM FORM_12_TEMP");
             migrationBuilder.DropTable("FORM_12_TEMP");
         }
     }

@@ -11,7 +11,7 @@ namespace Models.DBRealization.Migrations.DataModel
             string a = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"" +
            "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_19_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_19\";");
-            migrationBuilder.Sql("INSERT INTO \"form_19_tmp\" (" + a + ") SELECT " + a + " FROM \"form_19\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_19_tmp\" ({a}) SELECT {a} FROM \"form_19\"");
             migrationBuilder.DropTable(name: "form_19");
             migrationBuilder.CreateTable(
                 name: "form_19",
@@ -49,7 +49,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 });
             string b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
                         "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_19_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_19_NEW_COLUMN INNER JOIN \"form_19_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_19_TEMP\" ({b}) SELECT {b} FROM FORM_19_NEW_COLUMN INNER JOIN \"form_19_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_19_NEW_COLUMN");
             migrationBuilder.DropTable("form_19_tmp");
             #endregion
@@ -61,7 +62,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"" +
             "DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_18_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_18\";");
-            migrationBuilder.Sql("INSERT INTO \"form_18_tmp\" (" + a + ") SELECT " + a + " FROM \"form_18\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_18_tmp\" ({a}) SELECT {a} FROM \"form_18\"");
             migrationBuilder.DropTable(name: "form_18");
             migrationBuilder.CreateTable(
                 name: "form_18",
@@ -132,7 +133,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "\"Volume20_DB\",\"Mass21_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\",\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"RefineOrSortRAOCode_DB\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\",\"" +
             "NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"" +
             "DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_18_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_18_NEW_COLUMN INNER JOIN \"form_18_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_18_TEMP\" ({b}) SELECT {b} FROM FORM_18_NEW_COLUMN INNER JOIN \"form_18_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_18_NEW_COLUMN");
             migrationBuilder.DropTable("form_18_tmp");
             #endregion
@@ -144,7 +146,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_17_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_17\";");
-            migrationBuilder.Sql("INSERT INTO \"form_17_tmp\" (" + a + ") SELECT " + a + " FROM \"form_17\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_17_tmp\" ({a}) SELECT {a} FROM \"form_17\"");
             migrationBuilder.DropTable(name: "form_17");
             migrationBuilder.CreateTable(
                 name: "form_17",
@@ -222,7 +224,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "StoragePlaceName_Hidden_Priv\",\"StoragePlaceCode_DB\",\"StoragePlaceCode_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"CodeRAO_DB\",\"StatusRAO_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"Quantity_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\",\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"RefineOrSortRAOCode_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"" +
             "NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_17_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_17_NEW_COLUMN INNER JOIN \"form_17_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_17_TEMP\" ({b}) SELECT {b} FROM FORM_17_NEW_COLUMN INNER JOIN \"form_17_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_17_NEW_COLUMN");
             migrationBuilder.DropTable("form_17_tmp");
             #endregion
@@ -232,7 +235,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_16_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_16\";");
-            migrationBuilder.Sql("INSERT INTO \"form_16_tmp\" (" + a + ") SELECT " + a + " FROM \"form_16\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_16_tmp\" ({a}) SELECT {a} FROM \"form_16\"");
             migrationBuilder.DropTable(name: "form_16");
             migrationBuilder.CreateTable(
                 name: "form_16",
@@ -290,7 +293,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"Subsidy_DB\",\"FcpNumber_DB\",\"RefineOrSortRAOCode_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"" +
             "OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_16_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_16_NEW_COLUMN INNER JOIN \"form_16_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_16_TEMP\" ({b}) SELECT {b} FROM FORM_16_NEW_COLUMN INNER JOIN \"form_16_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_16_NEW_COLUMN");
             migrationBuilder.DropTable("form_16_tmp");
             #endregion
@@ -300,7 +304,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_15_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_15\";");
-            migrationBuilder.Sql("INSERT INTO \"form_15_tmp\" (" + a + ") SELECT " + a + " FROM \"form_15\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_15_tmp\" ({a}) SELECT {a} FROM \"form_15\"");
             migrationBuilder.DropTable(name: "form_15");
             migrationBuilder.CreateTable(
                 name: "form_15",
@@ -355,7 +359,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_15_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_15_NEW_COLUMN INNER JOIN \"form_15_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_15_TEMP\" ({b}) SELECT {b} FROM FORM_15_NEW_COLUMN INNER JOIN \"form_15_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_15_NEW_COLUMN");
             migrationBuilder.DropTable("form_15_tmp");
             #endregion
@@ -363,7 +368,7 @@ namespace Models.DBRealization.Migrations.DataModel
             a = "\"Id\",\"PassportNumber_DB\",\"Name_DB\",\"Sort_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ActivityMeasurementDate_DB\",\"Volume_DB\",\"Mass_DB\",\"AggregateState_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_14_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_14\";");
-            migrationBuilder.Sql("INSERT INTO \"form_14_tmp\" (" + a + ") SELECT " + a + " FROM \"form_14\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_14_tmp\" ({a}) SELECT {a} FROM \"form_14\"");
             migrationBuilder.DropTable(name: "form_14");
             migrationBuilder.CreateTable(
                 name: "form_14",
@@ -414,7 +419,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 });
             b = "\"Id\",\"PassportNumber_DB\",\"Name_DB\",\"Sort_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ActivityMeasurementDate_DB\",\"Volume_DB\",\"Mass_DB\",\"AggregateState_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_14_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_14_NEW_COLUMN INNER JOIN \"form_14_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_14_TEMP\" ({b}) SELECT {b} FROM FORM_14_NEW_COLUMN INNER JOIN \"form_14_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_14_NEW_COLUMN");
             migrationBuilder.DropTable("form_14_tmp");
             #endregion
@@ -424,7 +430,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_13_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_13\";");
-            migrationBuilder.Sql("INSERT INTO \"form_13_tmp\" (" + a + ") SELECT " + a + " FROM \"form_13\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_13_tmp\" ({a}) SELECT {a} FROM \"form_13\"");
             migrationBuilder.DropTable(name: "form_13");
             migrationBuilder.CreateTable(
                 name: "form_13",
@@ -476,7 +482,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_13_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_13_NEW_COLUMN INNER JOIN \"form_13_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_13_TEMP\" ({b}) SELECT {b} FROM FORM_13_NEW_COLUMN INNER JOIN \"form_13_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_13_NEW_COLUMN");
             migrationBuilder.DropTable("form_13_tmp");
             #endregion
@@ -486,7 +493,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_12_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_12\";");
-            migrationBuilder.Sql("INSERT INTO \"form_12_tmp\" (" + a + ") SELECT " + a + " FROM \"form_12\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_12_tmp\" ({a}) SELECT {a} FROM \"form_12\"");
             migrationBuilder.DropTable(name: "form_12");
             migrationBuilder.CreateTable(
                 name: "form_12",
@@ -537,7 +544,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_12_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_12_TEMP\" ({b}) SELECT {b} FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_12_NEW_COLUMN");
             migrationBuilder.DropTable("form_12_tmp");
             #endregion
@@ -547,7 +555,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_11_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_11\";");
-            migrationBuilder.Sql("INSERT INTO \"form_11_tmp\" (" + a + ") SELECT " + a + " FROM \"form_11\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_11_tmp\" ({a}) SELECT {a} FROM \"form_11\"");
             migrationBuilder.DropTable(name: "form_11");
             migrationBuilder.CreateTable(
                 name: "form_11",
@@ -601,7 +609,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_11_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_11_NEW_COLUMN INNER JOIN \"form_11_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_11_TEMP\" ({b}) SELECT {b} FROM FORM_11_NEW_COLUMN INNER JOIN \"form_11_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_11_NEW_COLUMN");
             migrationBuilder.DropTable("form_11_tmp");
             #endregion
@@ -613,7 +622,7 @@ namespace Models.DBRealization.Migrations.DataModel
             string a = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"" +
            "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_19_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_19\";");
-            migrationBuilder.Sql("INSERT INTO \"form_19_tmp\" (" + a + ") SELECT " + a + " FROM \"form_19\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_19_tmp\" ({a}) SELECT {a} FROM \"form_19\"");
             migrationBuilder.DropTable(name: "form_19");
             migrationBuilder.CreateTable(
                 name: "form_19",
@@ -651,7 +660,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 });
             string b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
                         "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_19_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_19_NEW_COLUMN INNER JOIN \"form_19_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_19_TEMP\" ({b}) SELECT {b} FROM FORM_19_NEW_COLUMN INNER JOIN \"form_19_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_19_NEW_COLUMN");
             migrationBuilder.DropTable("form_19_tmp");
             #endregion
@@ -663,7 +673,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"" +
             "DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_18_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_18\";");
-            migrationBuilder.Sql("INSERT INTO \"form_18_tmp\" (" + a + ") SELECT " + a + " FROM \"form_18\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_18_tmp\" ({a}) SELECT {a} FROM \"form_18\"");
             migrationBuilder.DropTable(name: "form_18");
             migrationBuilder.CreateTable(
                 name: "form_18",
@@ -734,7 +744,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "\"Volume20_DB\",\"Mass21_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\",\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"RefineOrSortRAOCode_DB\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\",\"" +
             "NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"" +
             "DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_18_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_18_NEW_COLUMN INNER JOIN \"form_18_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_18_TEMP\" ({b}) SELECT {b} FROM FORM_18_NEW_COLUMN INNER JOIN \"form_18_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_18_NEW_COLUMN");
             migrationBuilder.DropTable("form_18_tmp");
             #endregion
@@ -746,7 +757,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_17_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_17\";");
-            migrationBuilder.Sql("INSERT INTO \"form_17_tmp\" (" + a + ") SELECT " + a + " FROM \"form_17\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_17_tmp\" ({a}) SELECT {a} FROM \"form_17\"");
             migrationBuilder.DropTable(name: "form_17");
             migrationBuilder.CreateTable(
                 name: "form_17",
@@ -824,7 +835,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "StoragePlaceName_Hidden_Priv\",\"StoragePlaceCode_DB\",\"StoragePlaceCode_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"CodeRAO_DB\",\"StatusRAO_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"Quantity_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\",\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"RefineOrSortRAOCode_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"" +
             "NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_17_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_17_NEW_COLUMN INNER JOIN \"form_17_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_17_TEMP\" ({b}) SELECT {b} FROM FORM_17_NEW_COLUMN INNER JOIN \"form_17_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_17_NEW_COLUMN");
             migrationBuilder.DropTable("form_17_tmp");
             #endregion
@@ -834,7 +846,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_16_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_16\";");
-            migrationBuilder.Sql("INSERT INTO \"form_16_tmp\" (" + a + ") SELECT " + a + " FROM \"form_16\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_16_tmp\" ({a}) SELECT {a} FROM \"form_16\"");
             migrationBuilder.DropTable(name: "form_16");
             migrationBuilder.CreateTable(
                 name: "form_16",
@@ -892,7 +904,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"Subsidy_DB\",\"FcpNumber_DB\",\"RefineOrSortRAOCode_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"" +
             "OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
             "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_16_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_16_NEW_COLUMN INNER JOIN \"form_16_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_16_TEMP\" ({b}) SELECT {b} FROM FORM_16_NEW_COLUMN INNER JOIN \"form_16_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_16_NEW_COLUMN");
             migrationBuilder.DropTable("form_16_tmp");
             #endregion
@@ -902,7 +915,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_15_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_15\";");
-            migrationBuilder.Sql("INSERT INTO \"form_15_tmp\" (" + a + ") SELECT " + a + " FROM \"form_15\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_15_tmp\" ({a}) SELECT {a} FROM \"form_15\"");
             migrationBuilder.DropTable(name: "form_15");
             migrationBuilder.CreateTable(
                 name: "form_15",
@@ -957,7 +970,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_15_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_15_NEW_COLUMN INNER JOIN \"form_15_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_15_TEMP\" ({b}) SELECT {b} FROM FORM_15_NEW_COLUMN INNER JOIN \"form_15_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_15_NEW_COLUMN");
             migrationBuilder.DropTable("form_15_tmp");
             #endregion
@@ -965,7 +979,7 @@ namespace Models.DBRealization.Migrations.DataModel
             a = "\"Id\",\"PassportNumber_DB\",\"Name_DB\",\"Sort_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ActivityMeasurementDate_DB\",\"Volume_DB\",\"Mass_DB\",\"AggregateState_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_14_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_14\";");
-            migrationBuilder.Sql("INSERT INTO \"form_14_tmp\" (" + a + ") SELECT " + a + " FROM \"form_14\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_14_tmp\" ({a}) SELECT {a} FROM \"form_14\"");
             migrationBuilder.DropTable(name: "form_14");
             migrationBuilder.CreateTable(
                 name: "form_14",
@@ -1016,7 +1030,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 });
             b = "\"Id\",\"PassportNumber_DB\",\"Name_DB\",\"Sort_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ActivityMeasurementDate_DB\",\"Volume_DB\",\"Mass_DB\",\"AggregateState_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_14_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_14_NEW_COLUMN INNER JOIN \"form_14_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_14_TEMP\" ({b}) SELECT {b} FROM FORM_14_NEW_COLUMN INNER JOIN \"form_14_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_14_NEW_COLUMN");
             migrationBuilder.DropTable("form_14_tmp");
             #endregion
@@ -1026,7 +1041,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_13_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_13\";");
-            migrationBuilder.Sql("INSERT INTO \"form_13_tmp\" (" + a + ") SELECT " + a + " FROM \"form_13\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_13_tmp\" ({a}) SELECT {a} FROM \"form_13\"");
             migrationBuilder.DropTable(name: "form_13");
             migrationBuilder.CreateTable(
                 name: "form_13",
@@ -1078,7 +1093,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_13_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_13_NEW_COLUMN INNER JOIN \"form_13_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_13_TEMP\" ({b}) SELECT {b} FROM FORM_13_NEW_COLUMN INNER JOIN \"form_13_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_13_NEW_COLUMN");
             migrationBuilder.DropTable("form_13_tmp");
             #endregion
@@ -1088,7 +1104,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_12_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_12\";");
-            migrationBuilder.Sql("INSERT INTO \"form_12_tmp\" (" + a + ") SELECT " + a + " FROM \"form_12\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_12_tmp\" ({a}) SELECT {a} FROM \"form_12\"");
             migrationBuilder.DropTable(name: "form_12");
             migrationBuilder.CreateTable(
                 name: "form_12",
@@ -1139,7 +1155,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_12_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_12_TEMP\" ({b}) SELECT {b} FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_12_NEW_COLUMN");
             migrationBuilder.DropTable("form_12_tmp");
             #endregion
@@ -1149,7 +1166,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_11_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_11\";");
-            migrationBuilder.Sql("INSERT INTO \"form_11_tmp\" (" + a + ") SELECT " + a + " FROM \"form_11\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_11_tmp\" ({a}) SELECT {a} FROM \"form_11\"");
             migrationBuilder.DropTable(name: "form_11");
             migrationBuilder.CreateTable(
                 name: "form_11",
@@ -1203,7 +1220,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_11_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_11_NEW_COLUMN INNER JOIN \"form_11_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_11_TEMP\" ({b}) SELECT {b} FROM FORM_11_NEW_COLUMN INNER JOIN \"form_11_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_11_NEW_COLUMN");
             migrationBuilder.DropTable("form_11_tmp");
             #endregion

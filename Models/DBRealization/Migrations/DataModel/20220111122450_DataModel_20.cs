@@ -12,7 +12,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_12_NEW_COLUMN (\"IdNew\",\"SignedServicePeriod_DB\") SELECT \"Id\",CAST(\"SignedServicePeriod_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_12\";");
-            migrationBuilder.Sql("INSERT INTO \"form_12_tmp\" (" + attrNoCol + ") SELECT " + attrNoCol + " FROM \"form_12\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_12_tmp\" ({attrNoCol}) SELECT {attrNoCol} FROM \"form_12\"");
             migrationBuilder.DropTable(name: "form_12");
             migrationBuilder.CreateTable(
                 name: "form_12",
@@ -63,7 +63,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_12_TEMP\" (" + attrWCol + ") SELECT " + attrWCol + " FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_12_TEMP\" ({attrWCol}) SELECT {attrWCol} FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_12_NEW_COLUMN");
             migrationBuilder.DropTable("form_12_tmp");
         }
@@ -75,7 +76,7 @@ namespace Models.DBRealization.Migrations.DataModel
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO FORM_12_NEW_COLUMN (\"IdNew\",\"SignedServicePeriod_DB\") SELECT \"Id\",CAST(\"SignedServicePeriod_DB\" AS FLOAT) FROM \"form_12\";");
-            migrationBuilder.Sql("INSERT INTO \"form_12_tmp\" (" + attrNoCol + ") SELECT " + attrNoCol + " FROM \"form_12\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_12_tmp\" ({attrNoCol}) SELECT {attrNoCol} FROM \"form_12\"");
             migrationBuilder.DropTable(name: "form_12");
             migrationBuilder.CreateTable(
                 name: "form_12",
@@ -126,7 +127,8 @@ namespace Models.DBRealization.Migrations.DataModel
             "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
             "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
             "DocumentDate_Hidden_Priv\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_12_TEMP\" (" + attrWCol + ") SELECT " + attrWCol + " FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_12_TEMP\" ({attrWCol}) SELECT {attrWCol} FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_12_NEW_COLUMN");
             migrationBuilder.DropTable("form_12_tmp");
         }

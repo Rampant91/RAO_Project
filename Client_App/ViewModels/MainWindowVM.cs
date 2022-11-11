@@ -138,7 +138,8 @@ namespace Client_App.ViewModels
                 try
                 {
                     string[] names = file.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
-                    Current_Db = "Интерактивное пособие по вводу данных ver.1.2.2.0 Текущая база данных - " + names[names.Length - 1];
+                    Current_Db =
+                        $"Интерактивное пособие по вводу данных ver.1.2.2.0 Текущая база данных - {names[names.Length - 1]}";
                     StaticConfiguration.DBPath = file;
                     StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                     dbm = StaticConfiguration.DBModel;
@@ -152,8 +153,8 @@ namespace Client_App.ViewModels
             }
             if (!flag)
             {
-                Current_Db = "Интерактивное пособие по вводу данных ver.1.2.2.0 Текущая база данных - " + "Local" + "_" + i + ".raodb";
-                StaticConfiguration.DBPath = Path.Combine(tempDirectory, "Local" + "_" + i + ".raodb");
+                Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.0 Текущая база данных - Local_{i}.raodb";
+                StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"Local_{i}.raodb");
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
                 await dbm.Database.MigrateAsync();
@@ -595,15 +596,15 @@ namespace Client_App.ViewModels
             if (worksheet0.Name == "1.0")
             {
                 reps = from Reports t in Local_Reports.Reports_Collection10
-                       where ((Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
-                       Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB))
+                       where Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
+                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB
                        select t;
             }
             if (worksheet0.Name == "2.0")
             {
                 reps = from Reports t in Local_Reports.Reports_Collection20
-                       where ((Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
-                       Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB))
+                       where Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
+                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB
                        select t;
             }
 
@@ -678,11 +679,11 @@ namespace Client_App.ViewModels
                                     var timeCreate = new List<string>() { excelPackage.File.CreationTime.Day.ToString(), excelPackage.File.CreationTime.Month.ToString(), excelPackage.File.CreationTime.Year.ToString() };
                                     if (timeCreate[0].Length == 1)
                                     {
-                                        timeCreate[0] = "0" + timeCreate[0];
+                                        timeCreate[0] = $"0{timeCreate[0]}";
                                     }
                                     if (timeCreate[1].Length == 1)
                                     {
-                                        timeCreate[1] = "0" + timeCreate[1];
+                                        timeCreate[1] = $"0{timeCreate[1]}";
                                     }
 
                                     Reports newRepsFromExcel = await CheckReps(worksheet0);
@@ -830,17 +831,8 @@ namespace Client_App.ViewModels
                                                     {
                                                         if (!skipLess)
                                                         {
-                                                            var str = " Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
-                                                                repFromEx.CorrectionNumber_DB + ",\n" +
-                                                                "при текущем значении корректировки - " +
-                                                                rep.CorrectionNumber_DB + ".\n" +
-                                                                "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                                "Начало отчетного периода - " + repFromEx.StartPeriod_DB + "\n" +
-                                                                "Конец отчетного периода - " + repFromEx.EndPeriod_DB + "\n" +
-                                                                "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                                "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                                "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                                "Количество строк - " + repFromEx.Rows.Count;
+                                                            var str =
+                                                                $" Вы пытаетесь загрузить форму с наименьщим номером корректировки - {repFromEx.CorrectionNumber_DB},\nпри текущем значении корректировки - {rep.CorrectionNumber_DB}.\nНомер формы - {repFromEx.FormNum_DB}\nНачало отчетного периода - {repFromEx.StartPeriod_DB}\nКонец отчетного периода - {repFromEx.EndPeriod_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                             var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                                             if (an == "Пропустить для всех")
                                                             {
@@ -850,14 +842,8 @@ namespace Client_App.ViewModels
                                                     }
                                                     else if (repFromEx.CorrectionNumber_DB == rep.CorrectionNumber_DB)
                                                     {
-                                                        var str = "Совпадение даты в " + rep.FormNum_DB + " " +
-                                                            rep.StartPeriod_DB + "-" +
-                                                            rep.EndPeriod_DB + " .\n" +
-                                                            "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                            newRepsFromExcel.Master.RegNoRep.Value + " " +
-                                                            newRepsFromExcel.Master.ShortJurLicoRep.Value + " " +
-                                                            newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                            "Количество строк - " + repFromEx.Rows.Count;
+                                                        var str =
+                                                            $"Совпадение даты в {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB} .\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\n{newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                         var an = await ShowMessage.Handle(new List<string>
                                                         {str, "Отчет",
                                                     "Заменить",
@@ -874,18 +860,8 @@ namespace Client_App.ViewModels
                                                         {
                                                             if (newRepsFromExcel.Report_Collection.Count() > 1)
                                                             {
-                                                                var str = "Загрузить новую форму? \n" +
-                                                                    "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                                    "Начало отчетного периода - " + repFromEx.StartPeriod_DB + "\n" +
-                                                                    "Конец отчетного периода - " + repFromEx.EndPeriod_DB + "\n" +
-                                                                    "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                                    "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                                    "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                                    "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                                    "Форма с предыдущим номером корректировки №" +
-                                                                    rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                                                    "Сделайте резервную копию." + "\n" +
-                                                                    "Количество строк - " + repFromEx.Rows.Count;
+                                                                var str =
+                                                                    $"Загрузить новую форму? \nНомер формы - {repFromEx.FormNum_DB}\nНачало отчетного периода - {repFromEx.StartPeriod_DB}\nКонец отчетного периода - {repFromEx.EndPeriod_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {repFromEx.Rows.Count}";
                                                                 an = await ShowMessage.Handle(new List<string>
                                                                 {str, "Отчет",
                                                         "Загрузить новую",
@@ -897,18 +873,8 @@ namespace Client_App.ViewModels
                                                             }
                                                             else
                                                             {
-                                                                var str = "Загрузить новую форму? \n" +
-                                                                    "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                                    "Начало отчетного периода - " + repFromEx.StartPeriod_DB + "\n" +
-                                                                    "Конец отчетного периода - " + repFromEx.EndPeriod_DB + "\n" +
-                                                                    "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                                    "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                                    "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                                    "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                                    "Форма с предыдущим номером корректировки №" +
-                                                                    rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                                                    "Сделайте резервную копию." + "\n" +
-                                                                    "Количество строк - " + repFromEx.Rows.Count;
+                                                                var str =
+                                                                    $"Загрузить новую форму? \nНомер формы - {repFromEx.FormNum_DB}\nНачало отчетного периода - {repFromEx.StartPeriod_DB}\nКонец отчетного периода - {repFromEx.EndPeriod_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {repFromEx.Rows.Count}";
                                                                 an = await ShowMessage.Handle(new List<string>
                                                                 {str, "Отчет",
                                                                 "Загрузить новую",
@@ -925,13 +891,8 @@ namespace Client_App.ViewModels
                                                     var an = "Отменить";
                                                     if (!skipInter)
                                                     {
-                                                        var str = "Пересечение даты в " + rep.FormNum_DB + " " +
-                                                            rep.StartPeriod_DB + "-" +
-                                                            rep.EndPeriod_DB + " \n" +
-                                                            newRepsFromExcel.Master.RegNoRep.Value + " " +
-                                                            newRepsFromExcel.Master.ShortJurLicoRep.Value + " " +
-                                                            newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                            "Количество строк - " + repFromEx.Rows.Count;
+                                                        var str =
+                                                            $"Пересечение даты в {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB} \n{newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                         an = await ShowMessage.Handle(new List<string>
                                                         {str,"Отчет",
                                                         "Сохранить оба",
@@ -949,15 +910,8 @@ namespace Client_App.ViewModels
                                                 {
                                                     if (newRepsFromExcel.Report_Collection.Count() > 1)
                                                     {
-                                                        var str = "Загрузить новую форму?\n" +
-                                                            "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                            "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                            "Начало отчетного периода - " + repFromEx.StartPeriod_DB + "\n" +
-                                                            "Конец отчетного периода - " + repFromEx.EndPeriod_DB + "\n" +
-                                                            "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                            "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                            "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                            "Количество строк - " + repFromEx.Rows.Count;
+                                                        var str =
+                                                            $"Загрузить новую форму?\nНомер формы - {repFromEx.FormNum_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nНачало отчетного периода - {repFromEx.StartPeriod_DB}\nКонец отчетного периода - {repFromEx.EndPeriod_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                         an = await ShowMessage.Handle(new List<string>
                                                         {str, "Отчет",
                                                         "Да",
@@ -967,15 +921,8 @@ namespace Client_App.ViewModels
                                                     }
                                                     else
                                                     {
-                                                        var str = "Загрузить новую форму?\n" +
-                                                            "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                            "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                            "Начало отчетного периода - " + repFromEx.StartPeriod_DB + "\n" +
-                                                            "Конец отчетного периода - " + repFromEx.EndPeriod_DB + "\n" +
-                                                            "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                            "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                            "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                            "Количество строк - " + repFromEx.Rows.Count;
+                                                        var str =
+                                                            $"Загрузить новую форму?\nНомер формы - {repFromEx.FormNum_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nНачало отчетного периода - {repFromEx.StartPeriod_DB}\nКонец отчетного периода - {repFromEx.EndPeriod_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                         an = await ShowMessage.Handle(new List<string>
                                                         {str, "Отчет",
                                                         "Да",
@@ -1003,29 +950,16 @@ namespace Client_App.ViewModels
                                                     {
                                                         if (!skipLess)
                                                         {
-                                                            var str = " Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
-                                                                repFromEx.CorrectionNumber_DB + ",\n" +
-                                                                "при текущем значении корректировки - " +
-                                                                rep.CorrectionNumber_DB + ".\n" +
-                                                                "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                                "Отчетный год - " + repFromEx.Year_DB + "\n" +
-                                                                "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                                "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                                "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                                "Количество строк - " + repFromEx.Rows.Count;
+                                                            var str =
+                                                                $" Вы пытаетесь загрузить форму с наименьщим номером корректировки - {repFromEx.CorrectionNumber_DB},\nпри текущем значении корректировки - {rep.CorrectionNumber_DB}.\nНомер формы - {repFromEx.FormNum_DB}\nОтчетный год - {repFromEx.Year_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                             var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                                             if (an == "Пропустить для всех") skipLess = true;
                                                         }
                                                     }
                                                     else if (repFromEx.CorrectionNumber_DB == rep.CorrectionNumber_DB)
                                                     {
-                                                        var str = "Совпадение даты в " + rep.FormNum_DB + " " +
-                                                        rep.Year_DB + " .\n" +
-                                                        "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                        newRepsFromExcel.Master.RegNoRep.Value + " \n" +
-                                                        newRepsFromExcel.Master.ShortJurLicoRep.Value + " " +
-                                                        newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                        "Количество строк - " + repFromEx.Rows.Count;
+                                                        var str =
+                                                            $"Совпадение даты в {rep.FormNum_DB} {rep.Year_DB} .\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\n{newRepsFromExcel.Master.RegNoRep.Value} \n{newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                         var an = await ShowMessage.Handle(new List<string>
                                                         {str, "Отчет",
                                                         "Заменить",
@@ -1041,17 +975,8 @@ namespace Client_App.ViewModels
                                                         {
                                                             if (newRepsFromExcel.Report_Collection.Count() > 1)
                                                             {
-                                                                var str = "Загрузить новую форму? \n" +
-                                                                "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                                "Отчетный год - " + repFromEx.Year_DB + "\n" +
-                                                                "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                                "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                                "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                                "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                                "Форма с предыдущим номером корректировки №" +
-                                                                rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                                                "Сделайте резервную копию." + "\n" +
-                                                                "Количество строк - " + repFromEx.Rows.Count;
+                                                                var str =
+                                                                    $"Загрузить новую форму? \nНомер формы - {repFromEx.FormNum_DB}\nОтчетный год - {repFromEx.Year_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {repFromEx.Rows.Count}";
                                                                 an = await ShowMessage.Handle(new List<string>
                                                                 {
                                                                         str,
@@ -1065,17 +990,8 @@ namespace Client_App.ViewModels
                                                             }
                                                             else
                                                             {
-                                                                var str = "Загрузить новую форму? \n" +
-                                                                    "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                                    "Отчетный год - " + repFromEx.Year_DB + "\n" +
-                                                                    "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                                    "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                                    "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                                    "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                                    "Форма с предыдущим номером корректировки №" +
-                                                                    rep.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                                                    "Сделайте резервную копию." + "\n" +
-                                                                    "Количество строк - " + repFromEx.Rows.Count;
+                                                                var str =
+                                                                    $"Загрузить новую форму? \nНомер формы - {repFromEx.FormNum_DB}\nОтчетный год - {repFromEx.Year_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {repFromEx.Rows.Count}";
                                                                 an = await ShowMessage.Handle(new List<string>
                                                                 {
                                                                         str,
@@ -1096,14 +1012,8 @@ namespace Client_App.ViewModels
                                                 {
                                                     if (newRepsFromExcel.Report_Collection.Count() > 1)
                                                     {
-                                                        var str = "Загрузить новую форму? \n" +
-                                                            "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                            "Отчетный год - " + repFromEx.Year_DB + "\n" +
-                                                            "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                            "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                            "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                            "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                            "Количество строк - " + repFromEx.Rows.Count;
+                                                        var str =
+                                                            $"Загрузить новую форму? \nНомер формы - {repFromEx.FormNum_DB}\nОтчетный год - {repFromEx.Year_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                         an = await ShowMessage.Handle(new List<string>
                                                         {str, "Отчет",
                                                             "Да",
@@ -1115,14 +1025,8 @@ namespace Client_App.ViewModels
                                                     }
                                                     else
                                                     {
-                                                        var str = "Загрузить новую форму? \n" +
-                                                            "Номер формы - " + repFromEx.FormNum_DB + "\n" +
-                                                            "Отчетный год - " + repFromEx.Year_DB + "\n" +
-                                                            "Номер корректировки -" + repFromEx.CorrectionNumber_DB + "\n" +
-                                                            "Регистрационный номер - " + newRepsFromExcel.Master.RegNoRep.Value + "\n" +
-                                                            "Сокращенное наименование - " + newRepsFromExcel.Master.ShortJurLicoRep.Value + "\n" +
-                                                            "ОКПО - " + newRepsFromExcel.Master.OkpoRep.Value + "\n" +
-                                                            "Количество строк - " + repFromEx.Rows.Count;
+                                                        var str =
+                                                            $"Загрузить новую форму? \nНомер формы - {repFromEx.FormNum_DB}\nОтчетный год - {repFromEx.Year_DB}\nНомер корректировки -{repFromEx.CorrectionNumber_DB}\nРегистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}\nСокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}\nОКПО - {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
                                                         an = await ShowMessage.Handle(new List<string>
                                                         {str, "Отчет",
                                                             "Да",
@@ -1211,7 +1115,7 @@ namespace Client_App.ViewModels
             var count = 0;
             do
             {
-                file = Path.Combine(tmp, "file_imp_" + (count++) + ".raodb");
+                file = Path.Combine(tmp, $"file_imp_{(count++)}.raodb");
             }
             while (File.Exists(file));
 
@@ -1451,17 +1355,8 @@ namespace Client_App.ViewModels
                             {
                                 if (!skipLess)
                                 {
-                                    var str = " Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
-                                        it.CorrectionNumber_DB + ",\n" +
-                                        "при текущем значении корректировки - " +
-                                        elem.CorrectionNumber_DB + ".\n" +
-                                        "Номер формы - " + it.FormNum_DB + "\n" +
-                                        "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
-                                        "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
-                                        "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
-                                        "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                        "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
-                                        "Количество строк - " + it.Rows.Count;
+                                    var str =
+                                        $" Вы пытаетесь загрузить форму с наименьщим номером корректировки - {it.CorrectionNumber_DB},\nпри текущем значении корректировки - {elem.CorrectionNumber_DB}.\nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                     var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                     if (an == "Пропустить для всех")
                                     {
@@ -1471,14 +1366,8 @@ namespace Client_App.ViewModels
                             }
                             else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB && it.ExportDate_DB == elem.ExportDate_DB)
                             {
-                                var str = "Совпадение даты в " + elem.FormNum_DB + " " +
-                                    elem.StartPeriod_DB + "-" +
-                                    elem.EndPeriod_DB + " .\n" +
-                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                    first11.Master.RegNoRep.Value + " " +
-                                    first11.Master.ShortJurLicoRep.Value + " " +
-                                    first11.Master.OkpoRep.Value + "\n" +
-                                    "Количество строк - " + it.Rows.Count;
+                                var str =
+                                    $"Совпадение даты в {elem.FormNum_DB} {elem.StartPeriod_DB}-{elem.EndPeriod_DB} .\nНомер корректировки -{it.CorrectionNumber_DB}\n{first11.Master.RegNoRep.Value} {first11.Master.ShortJurLicoRep.Value} {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                 doSomething = true;
                                 var an = await ShowMessage.Handle(new List<string>
                                 {str, "Отчет",
@@ -1497,18 +1386,8 @@ namespace Client_App.ViewModels
                                 {
                                     if (item.Report_Collection.Count() > 1)
                                     {
-                                        var str = "Загрузить новую форму? \n" +
-                                            "Номер формы - " + it.FormNum_DB + "\n" +
-                                            "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
-                                            "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
-                                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                            "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
-                                            "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                            "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
-                                            "Форма с предыдущим номером корректировки №" +
-                                            elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                            "Сделайте резервную копию." + "\n" +
-                                            "Количество строк - " + it.Rows.Count;
+                                        var str =
+                                            $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
                                         doSomething = true;
                                         an = await ShowMessage.Handle(new List<string>
                                         {str, "Отчет",
@@ -1521,18 +1400,8 @@ namespace Client_App.ViewModels
                                     }
                                     else
                                     {
-                                        var str = "Загрузить новую форму? \n" +
-                                            "Номер формы - " + it.FormNum_DB + "\n" +
-                                            "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
-                                            "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
-                                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                            "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
-                                            "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                            "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
-                                            "Форма с предыдущим номером корректировки №" +
-                                            elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                            "Сделайте резервную копию." + "\n" +
-                                            "Количество строк - " + it.Rows.Count;
+                                        var str =
+                                            $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
                                         doSomething = true;
                                         an = await ShowMessage.Handle(new List<string>
                                         {str, "Отчет",
@@ -1553,13 +1422,8 @@ namespace Client_App.ViewModels
                                 var an = "Отменить";
                                 if (!skipInter)
                                 {
-                                    var str = "Пересечение даты в " + elem.FormNum_DB + " " +
-                                        elem.StartPeriod_DB + "-" +
-                                        elem.EndPeriod_DB + " \n" +
-                                        first11.Master.RegNoRep.Value + " " +
-                                        first11.Master.ShortJurLicoRep.Value + " " +
-                                        first11.Master.OkpoRep.Value + "\n" +
-                                        "Количество строк - " + it.Rows.Count;
+                                    var str =
+                                        $"Пересечение даты в {elem.FormNum_DB} {elem.StartPeriod_DB}-{elem.EndPeriod_DB} \n{first11.Master.RegNoRep.Value} {first11.Master.ShortJurLicoRep.Value} {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                     an = await ShowMessage.Handle(new List<string>
                                     {str,"Отчет",
                                 "Сохранить оба",
@@ -1579,15 +1443,8 @@ namespace Client_App.ViewModels
                         {
                             if (item.Report_Collection.Count() > 1)
                             {
-                                var str = "Загрузить новую форму?\n" +
-                                    "Номер формы - " + it.FormNum_DB + "\n" +
-                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                    "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
-                                    "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
-                                    "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
-                                    "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
-                                    "Количество строк - " + it.Rows.Count;
+                                var str =
+                                    $"Загрузить новую форму?\nНомер формы - {it.FormNum_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                 an = await ShowMessage.Handle(new List<string>
                                 {str, "Отчет",
                                     "Да",
@@ -1598,15 +1455,8 @@ namespace Client_App.ViewModels
                             }
                             else
                             {
-                                var str = "Загрузить новую форму?\n" +
-                                    "Номер формы - " + it.FormNum_DB + "\n" +
-                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                    "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
-                                    "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
-                                    "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
-                                    "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
-                                    "Количество строк - " + it.Rows.Count;
+                                var str =
+                                    $"Загрузить новую форму?\nНомер формы - {it.FormNum_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                 an = await ShowMessage.Handle(new List<string>
                                 {str, "Отчет",
                                 "Да",
@@ -1645,29 +1495,16 @@ namespace Client_App.ViewModels
                             {
                                 if (!skipLess)
                                 {
-                                    var str = " Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
-                                        it.CorrectionNumber_DB + ",\n" +
-                                        "при текущем значении корректировки - " +
-                                        elem.CorrectionNumber_DB + ".\n" +
-                                        "Номер формы - " + it.FormNum_DB + "\n" +
-                                        "Отчетный год - " + it.Year_DB + "\n" +
-                                        "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
-                                        "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                        "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
-                                        "Количество строк - " + it.Rows.Count;
+                                    var str =
+                                        $" Вы пытаетесь загрузить форму с наименьщим номером корректировки - {it.CorrectionNumber_DB},\nпри текущем значении корректировки - {elem.CorrectionNumber_DB}.\nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                     var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                     if (an == "Пропустить для всех") skipLess = true;
                                 }
                             }
                             else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB && it.ExportDate_DB == elem.ExportDate_DB)
                             {
-                                var str = "Совпадение даты в " + elem.FormNum_DB + " " +
-                                elem.Year_DB + " .\n" +
-                                "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                first21.Master.RegNoRep.Value + " \n" +
-                                first21.Master.ShortJurLicoRep.Value + " " +
-                                first21.Master.OkpoRep.Value + "\n" +
-                                "Количество строк - " + it.Rows.Count;
+                                var str =
+                                    $"Совпадение даты в {elem.FormNum_DB} {elem.Year_DB} .\nНомер корректировки -{it.CorrectionNumber_DB}\n{first21.Master.RegNoRep.Value} \n{first21.Master.ShortJurLicoRep.Value} {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                 var an = await ShowMessage.Handle(new List<string>
                                 {str, "Отчет",
                                     "Заменить",
@@ -1683,17 +1520,8 @@ namespace Client_App.ViewModels
                                 {
                                     if (item.Report_Collection.Count() > 1)
                                     {
-                                        var str = "Загрузить новую форму? \n" +
-                                        "Номер формы - " + it.FormNum_DB + "\n" +
-                                        "Отчетный год - " + it.Year_DB + "\n" +
-                                        "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                        "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
-                                        "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                        "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
-                                        "Форма с предыдущим номером корректировки №" +
-                                        elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                        "Сделайте резервную копию." + "\n" +
-                                        "Количество строк - " + it.Rows.Count;
+                                        var str =
+                                            $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
                                         an = await ShowMessage.Handle(new List<string>
                                         {
                                                                         str,
@@ -1707,17 +1535,8 @@ namespace Client_App.ViewModels
                                     }
                                     else
                                     {
-                                        var str = "Загрузить новую форму? \n" +
-                                            "Номер формы - " + it.FormNum_DB + "\n" +
-                                            "Отчетный год - " + it.Year_DB + "\n" +
-                                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                            "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
-                                            "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                            "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
-                                            "Форма с предыдущим номером корректировки №" +
-                                            elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
-                                            "Сделайте резервную копию." + "\n" +
-                                            "Количество строк - " + it.Rows.Count;
+                                        var str =
+                                            $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
                                         an = await ShowMessage.Handle(new List<string>
                                         {
                                                                         str,
@@ -1738,14 +1557,8 @@ namespace Client_App.ViewModels
                         {
                             if (item.Report_Collection.Count() > 1)
                             {
-                                var str = "Загрузить новую форму? \n" +
-                                    "Номер формы - " + it.FormNum_DB + "\n" +
-                                    "Отчетный год - " + it.Year_DB + "\n" +
-                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                    "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
-                                    "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
-                                    "Количество строк - " + it.Rows.Count;
+                                var str =
+                                    $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                 an = await ShowMessage.Handle(new List<string>
                                 {str, "Отчет",
                                     "Да",
@@ -1757,14 +1570,8 @@ namespace Client_App.ViewModels
                             }
                             else
                             {
-                                var str = "Загрузить новую форму? \n" +
-                                    "Номер формы - " + it.FormNum_DB + "\n" +
-                                    "Отчетный год - " + it.Year_DB + "\n" +
-                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
-                                    "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
-                                    "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
-                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
-                                    "Количество строк - " + it.Rows.Count;
+                                var str =
+                                    $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                 an = await ShowMessage.Handle(new List<string>
                                 {str, "Отчет",
                                     "Да",
@@ -1849,12 +1656,8 @@ namespace Client_App.ViewModels
                                     {
                                         if (!skipAll)
                                         {
-                                            var str = "Был добавлен отчет по форме " + rep.FormNum_DB + " за период " + rep.StartPeriod_DB + "-" + rep.EndPeriod_DB + ",\n" +
-                                                "номер корректировки " + rep.CorrectionNumber_DB + ", количество строк " + rep.Rows.Count + ".\n" +
-                                                "Организации:" + "\n" +
-                                                "   1.Регистрационный номер  " + item.Master.RegNoRep.Value + "\n" +
-                                                "   2.Сокращенное наименование  " + item.Master.ShortJurLicoRep.Value + "\n" +
-                                                "   3.ОКПО  " + item.Master.OkpoRep.Value + "\n"; ;
+                                            var str =
+                                                $"Был добавлен отчет по форме {rep.FormNum_DB} за период {rep.StartPeriod_DB}-{rep.EndPeriod_DB},\nномер корректировки {rep.CorrectionNumber_DB}, количество строк {rep.Rows.Count}.\nОрганизации:\n   1.Регистрационный номер  {item.Master.RegNoRep.Value}\n   2.Сокращенное наименование  {item.Master.ShortJurLicoRep.Value}\n   3.ОКПО  {item.Master.OkpoRep.Value}\n"; ;
                                             an = await ShowMessage.Handle(new List<string> { str, "Новая организация", "Ок", "Пропустить для всех" });
                                             if (an == "Пропустить для всех") skipAll = true;
                                         }
@@ -1897,24 +1700,22 @@ namespace Client_App.ViewModels
                             var a = DateTime.Now.Date;
                             var aDay = a.Day.ToString();
                             var aMonth = a.Month.ToString();
-                            if (aDay.Length < 2) aDay = "0" + aDay;
-                            if (aMonth.Length < 2) aMonth = "0" + aMonth;
-                            ((Report)item).ExportDate.Value = aDay + "." + aMonth + "." + a.Year;
+                            if (aDay.Length < 2) aDay = $"0{aDay}";
+                            if (aMonth.Length < 2) aMonth = $"0{aMonth}";
+                            ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
                         }
                         if (res != "")
                         {
                             var dt = DateTime.Now;
-                            var filename = "Report_" +
-                                           dt.Year + "_" + dt.Month + "_" + dt.Day + "_" + dt.Hour + "_" + dt.Minute +
-                                           "_" + dt.Second;
+                            var filename = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                             var rep = (Report)obj;
 
                             var dtDay = dt.Day.ToString();
                             var dtMonth = dt.Month.ToString();
-                            if (dtDay.Length < 2) dtDay = "0" + dtDay;
-                            if (dtMonth.Length < 2) dtMonth = "0" + dtMonth;
+                            if (dtDay.Length < 2) dtDay = $"0{dtDay}";
+                            if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
 
-                            rep.ExportDate.Value = dtDay + "." + dtMonth + "." + dt.Year;
+                            rep.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
                             var findReports = from Reports t in Local_Reports.Reports_Collection
                                               where t.Report_Collection.Contains(rep)
                                               select t;
@@ -1924,7 +1725,8 @@ namespace Client_App.ViewModels
                             var rt = findReports.FirstOrDefault();
                             if (rt != null)
                             {
-                                var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), filename + "_exp" + ".raodb");
+                                var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()),
+                                    $"{filename}_exp.raodb");
 
                                 var tsk = new Task(() =>
                                 {
@@ -1945,27 +1747,27 @@ namespace Client_App.ViewModels
                                         if (rp.Master_DB.FormNum_DB == "1.0")
                                         {
                                             filename2 += rp.Master.RegNoRep.Value;
-                                            filename2 += "_" + rp.Master.OkpoRep.Value;
+                                            filename2 += $"_{rp.Master.OkpoRep.Value}";
 
-                                            filename2 += "_" + rep.FormNum_DB;
-                                            filename2 += "_" + rep.StartPeriod_DB;
-                                            filename2 += "_" + rep.EndPeriod_DB;
-                                            filename2 += "_" + rep.CorrectionNumber_DB;
+                                            filename2 += $"_{rep.FormNum_DB}";
+                                            filename2 += $"_{rep.StartPeriod_DB}";
+                                            filename2 += $"_{rep.EndPeriod_DB}";
+                                            filename2 += $"_{rep.CorrectionNumber_DB}";
                                         }
                                         else
                                         {
                                             if (rp.Master.Rows20.Count > 0)
                                             {
                                                 filename2 += rp.Master.RegNoRep.Value;
-                                                filename2 += "_" + rp.Master.OkpoRep.Value;
+                                                filename2 += $"_{rp.Master.OkpoRep.Value}";
 
-                                                filename2 += "_" + rep.FormNum_DB;
-                                                filename2 += "_" + rep.Year_DB;
-                                                filename2 += "_" + rep.CorrectionNumber_DB;
+                                                filename2 += $"_{rep.FormNum_DB}";
+                                                filename2 += $"_{rep.Year_DB}";
+                                                filename2 += $"_{rep.CorrectionNumber_DB}";
                                             }
                                         }
 
-                                        res = Path.Combine(res, filename2 + ".raodb");
+                                        res = Path.Combine(res, $"{filename2}.raodb");
 
 
                                         var t = db.Database.GetDbConnection() as FbConnection;
@@ -2421,9 +2223,9 @@ namespace Client_App.ViewModels
                                         if (forms.Count > 0)
                                         {
                                             ExcelWorksheet worksheet =
-                                                excelPackage.Workbook.Worksheets.Add("Отчеты " + param);
+                                                excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
                                             ExcelWorksheet worksheetPrim =
-                                                excelPackage.Workbook.Worksheets.Add("Примечания " + param);
+                                                excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
 
                                             var masterheaderlength = 0;
                                             if (param.Split('.')[0] == "1")
@@ -2593,7 +2395,8 @@ namespace Client_App.ViewModels
                                     File.Delete(path);
                                 }
 #if DEBUG
-                                string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "Excel"), param + ".xlsx");
+                                string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "Excel"),
+                                    $"{param}.xlsx");
 #else
                                 string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"), "Excel"), param+".xlsx");
 #endif
@@ -2604,7 +2407,7 @@ namespace Client_App.ViewModels
                                         var form = (Report)forms.FirstOrDefault();
                                         await form!.SortAsync();
                                         ExcelWorksheet worksheetTitul =
-                                            excelPackage.Workbook.Worksheets[param.Split('.')[0] + ".0"];
+                                            excelPackage.Workbook.Worksheets[$"{param.Split('.')[0]}.0"];
                                         ExcelWorksheet worksheetMain =
                                             excelPackage.Workbook.Worksheets[param];
                                         worksheetTitul.Cells.Style.ShrinkToFit = true;
@@ -2701,9 +2504,9 @@ namespace Client_App.ViewModels
                                     if (Local_Reports.Reports_Collection.Count > 0)
                                     {
                                         ExcelWorksheet worksheet =
-                                            excelPackage.Workbook.Worksheets.Add("Отчеты " + param);
+                                            excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
                                         ExcelWorksheet worksheetPrim =
-                                            excelPackage.Workbook.Worksheets.Add("Примечания " + param);
+                                            excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
 
                                         var masterheaderlength = 0;
                                         if (param.Split('.')[0] == "1")
@@ -5194,8 +4997,8 @@ namespace Client_App.ViewModels
                             catch (Exception e)
                             {
                                 await ShowMessage.Handle(new List<string>
-                                { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                {
+                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -5252,8 +5055,8 @@ namespace Client_App.ViewModels
                             catch (Exception e)
                             {
                                 await ShowMessage.Handle(new List<string>
-                                { $"Не удалось открыть сетевое хранилище паспортов:"
-                                  + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
+                                {
+                                    $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}", "Ошибка", "Ок" });
                                 return;
                             }
                             pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
@@ -5328,9 +5131,8 @@ namespace Client_App.ViewModels
                             {
                                 excelPackage.Save();
                                 res = await ShowMessage.Handle(new List<string>
-                                { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
-                                  + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
-                                  + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
+                                {
+                                    $"Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}", "", "Ок", "Открыть выгрузку" });
                                 if (res is null or "Ок")
                                     return;
                                 if (res.Equals("Открыть выгрузку"))
@@ -5384,8 +5186,8 @@ namespace Client_App.ViewModels
                 catch (Exception e)
                 {
                     await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow("Уведомление", "Номера категорий не были введены, либо были введены некорректно"
-                        + Environment.NewLine + "Выгрузка будет осуществленна по всем категориям").ShowDialog(desktop.MainWindow);
+                        .GetMessageBoxStandardWindow("Уведомление",
+                            $"Номера категорий не были введены, либо были введены некорректно{Environment.NewLine}Выгрузка будет осуществленна по всем категориям").ShowDialog(desktop.MainWindow);
                 }
                 var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
                 if (res != null)
@@ -5406,8 +5208,8 @@ namespace Client_App.ViewModels
                             catch (Exception e)
                             {
                                 await ShowMessage.Handle(new List<string>
-                                { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                {
+                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -5437,8 +5239,8 @@ namespace Client_App.ViewModels
                             catch (Exception e)
                             {
                                 await ShowMessage.Handle(new List<string>
-                                { $"Не удалось открыть сетевое хранилище паспортов:"
-                                  + Environment.NewLine + directory.FullName, "Ошибка", "Ок" });
+                                {
+                                    $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}", "Ошибка", "Ок" });
                                 return;
                             }
                             pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
@@ -5460,7 +5262,8 @@ namespace Client_App.ViewModels
                                                 && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
                                                 && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
                                             {
-                                                pasNames.Remove(pasParam[0] + '#' + pasParam[1] + '#' + pasParam[2] + '#' + pasParam[3] + '#' + pasParam[4]);
+                                                pasNames.Remove(
+                                                    $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                                                 break;
                                             }
                                         }
@@ -5483,9 +5286,8 @@ namespace Client_App.ViewModels
                             {
                                 excelPackage.Save();
                                 res = await ShowMessage.Handle(new List<string>
-                                { "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,"
-                                  + Environment.NewLine + $"для которых отсутствуют файлы паспортов по пути: {directory.FullName}"
-                                  + Environment.NewLine + $"сохранена по пути:" + Environment.NewLine + path, "", "Ок", "Открыть выгрузку" });
+                                {
+                                    $"Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}", "", "Ок", "Открыть выгрузку" });
                                 if (res is null or "Ок")
                                     return;
                                 if (res.Equals("Открыть выгрузку"))
@@ -6022,7 +5824,7 @@ namespace Client_App.ViewModels
             for (int i = 0; i < form.Notes.Count - 1; i++)
             {
                 worksheet.InsertRow(Start + 1, 1, Start);
-                var cells = worksheet.Cells["A" + (Start + 1) + ":B" + (Start + 1)];
+                var cells = worksheet.Cells[$"A{(Start + 1)}:B{(Start + 1)}"];
                 foreach (var cell in cells)
                 {
                     var btm = cell.Style.Border.Bottom;
@@ -6038,7 +5840,7 @@ namespace Client_App.ViewModels
                     top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
                     top.Color.SetColor(255, 0, 0, 0);
                 }
-                var cellCL = worksheet.Cells["C" + (Start + 1) + ":L" + (Start + 1)];
+                var cellCL = worksheet.Cells[$"C{(Start + 1)}:L{(Start + 1)}"];
                 cellCL.Merge = true;
                 var btmCL = cellCL.Style.Border.Bottom;
                 var lftCL = cellCL.Style.Border.Left;
@@ -6075,7 +5877,7 @@ namespace Client_App.ViewModels
             for (int i = 0; i < form[param].Count - 1; i++)
             {
                 worksheet.InsertRow(Start + 1, 1, Start);
-                var cells = worksheet.Cells["A" + (Start + 1) + ":B" + (Start + 1)];
+                var cells = worksheet.Cells[$"A{(Start + 1)}:B{(Start + 1)}"];
                 foreach (var cell in cells)
                 {
                     var btm = cell.Style.Border.Bottom;

@@ -632,7 +632,7 @@ namespace Models
                 return false;
             }
 
-            if ((value.Value.Length != 8) && (value.Value.Length != 14))
+            if (value.Value.Length != 8 && value.Value.Length != 14)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1118,8 +1118,8 @@ namespace Models
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string ID = "")
         {
             var cnt = Form.ExcelHeader(worksheet, Row, Column, Transpon);
-            Column += (Transpon == true ? cnt : 0);
-            Row += (Transpon == false ? cnt : 0);
+            Column += Transpon == true ? cnt : 0;
+            Row += Transpon == false ? cnt : 0;
 
             if (ID.Equals(""))
             {

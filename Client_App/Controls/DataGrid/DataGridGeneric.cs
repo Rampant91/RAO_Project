@@ -561,7 +561,7 @@ namespace Client_App.Controls.DataGrid
 
                     if (val != null&&Items!=null)
                     {
-                        int maxpage = (Items.Count / PageSize) + 1;
+                        int maxpage = Items.Count / PageSize + 1;
                         if (val.ToString() != _nowPage)
                         {
                             if (val <= maxpage && val >= 1)
@@ -940,7 +940,7 @@ namespace Client_App.Controls.DataGrid
 
                 ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new();
 
-                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
+                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow);
 
                 foreach (Cell item in tmp2)
                 {
@@ -973,8 +973,8 @@ namespace Client_App.Controls.DataGrid
 
             if (minRow != -1 && maxRow != -1 && minColumn != -1 && maxColumn != -1)
             {
-                var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
-                                                (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
+                var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !(((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow &&
+                                                                            ((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn));
 
                 foreach (Cell item in tmp1)
                 {
@@ -985,8 +985,8 @@ namespace Client_App.Controls.DataGrid
 
                 Dictionary<long,ObservableCollectionWithItemPropertyChanged<IKey>> tmpSelectedItems = new();
 
-                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
-                                                  (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
+                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow &&
+                                                                          ((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn);
 
                 foreach (Cell item in tmp2)
                 {
@@ -996,14 +996,14 @@ namespace Client_App.Controls.DataGrid
                     {
                         if (!tmpSelectedItems.ContainsKey(((T)item.DataContext).Order))
                         {
-                            tmpSelectedItems.Add((((T)item.DataContext).Order), new ObservableCollectionWithItemPropertyChanged<IKey>());
+                            tmpSelectedItems.Add(((T)item.DataContext).Order, new ObservableCollectionWithItemPropertyChanged<IKey>());
                         }
                     }
                     else
                     {
                         break;
                     }
-                    tmpSelectedItems[(((T)item.DataContext).Order)].Add((T)item.DataContext);
+                    tmpSelectedItems[((T)item.DataContext).Order].Add((T)item.DataContext);
                 }
                 var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>();
                 foreach (var item in tmpSelectedItems)
@@ -1165,7 +1165,7 @@ namespace Client_App.Controls.DataGrid
                     {
 
                         this.ContextMenu.Close();
-                        var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1])).FirstOrDefault();
+                        var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1]).FirstOrDefault();
                         this.ContextMenu.PlacementTarget = tmp1;
                         this.ContextMenu.Open();
 
@@ -1282,8 +1282,8 @@ namespace Client_App.Controls.DataGrid
             var count = 0;
 
             var num = Convert.ToInt32(_nowPage);
-            var offset = (num-1) * (PageSize);
-            var offsetMax= num * (PageSize);
+            var offset = (num-1) * PageSize;
+            var offsetMax= num * PageSize;
 
             if (Items != null)
             {
@@ -1292,22 +1292,21 @@ namespace Client_App.Controls.DataGrid
                 {
                     IKeyCollection tmp2_coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
                     var searchText = ((TextBox)
-                        (
                         ((Panel)
-                        ((Border)
-                        ((Grid)
-                        ((Panel)
-                        this.Content).
-                        Children[0]).
-                        Children[0]).
-                        Child).
-                        Children[0])).Text;
+                            ((Border)
+                                ((Grid)
+                                    ((Panel)
+                                        this.Content).
+                                    Children[0]).
+                                Children[0]).
+                            Child).
+                        Children[0]).Text;
                     if (searchText != null && searchText != "")
                     {
                         //NowPage = "1";
                         num = Convert.ToInt32(_nowPage);
-                        offset = (num - 1) * (PageSize);
-                        offsetMax = num * (PageSize);
+                        offset = (num - 1) * PageSize;
+                        offsetMax = num * PageSize;
 
 
                         searchText = searchText.ToLower();

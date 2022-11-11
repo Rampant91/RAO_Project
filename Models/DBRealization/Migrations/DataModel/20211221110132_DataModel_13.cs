@@ -120,7 +120,7 @@ namespace Models.DBRealization.Migrations.DataModel
                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
-            migrationBuilder.Sql("INSERT INTO \"form_22\" (" + b + ") SELECT " + b + " FROM FORM_22_TEMP");
+            migrationBuilder.Sql($"INSERT INTO \"form_22\" ({b}) SELECT {b} FROM FORM_22_TEMP");
             migrationBuilder.DropTable("FORM_22_TEMP");
         }
     }

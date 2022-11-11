@@ -12,7 +12,7 @@ namespace Models.DBRealization.Migrations.DataModel
                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\","+
                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
             migrationBuilder.Sql("INSERT INTO FORM_22_NEW_COLUMN (\"IdNew\",\"PackQuantity_DB\") SELECT \"Id\",CAST(\"PackQuantity_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_22\";");
-            migrationBuilder.Sql("INSERT INTO \"form_22_tmp\" (" + a + ") SELECT " + a + " FROM \"form_22\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_22_tmp\" ({a}) SELECT {a} FROM \"form_22\"");
             migrationBuilder.DropTable(name: "form_22");
             migrationBuilder.CreateTable(
                 name: "form_22",
@@ -77,7 +77,8 @@ namespace Models.DBRealization.Migrations.DataModel
                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_22_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_22_NEW_COLUMN INNER JOIN \"form_22_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_22_TEMP\" ({b}) SELECT {b} FROM FORM_22_NEW_COLUMN INNER JOIN \"form_22_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_22_NEW_COLUMN");
             migrationBuilder.DropTable("form_22_tmp");
         }
@@ -89,7 +90,7 @@ namespace Models.DBRealization.Migrations.DataModel
                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
             migrationBuilder.Sql("INSERT INTO FORM_22_NEW_COLUMN (\"IdNew\",\"PackQuantity_DB\") SELECT \"Id\",CAST(\"PackQuantity_DB\" AS INTEGER) FROM \"form_22\";");
-            migrationBuilder.Sql("INSERT INTO \"form_22_tmp\" (" + a + ") SELECT " + a + " FROM \"form_22\"");
+            migrationBuilder.Sql($"INSERT INTO \"form_22_tmp\" ({a}) SELECT {a} FROM \"form_22\"");
             migrationBuilder.DropTable(name: "form_22");
             migrationBuilder.CreateTable(
                 name: "form_22",
@@ -154,7 +155,8 @@ namespace Models.DBRealization.Migrations.DataModel
                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
-            migrationBuilder.Sql("INSERT INTO \"FORM_22_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_22_NEW_COLUMN INNER JOIN \"form_22_tmp\" ON \"Id\"=\"IdNew\"");
+            migrationBuilder.Sql(
+                $"INSERT INTO \"FORM_22_TEMP\" ({b}) SELECT {b} FROM FORM_22_NEW_COLUMN INNER JOIN \"form_22_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_22_NEW_COLUMN");
             migrationBuilder.DropTable("form_22_tmp");
         }

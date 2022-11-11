@@ -108,7 +108,7 @@ namespace Client_App.Long_Visual
 
             var tmp1 = CreateTextBlock("5,0,0,0", 30, ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[index], 0);
             tmp1.SetValue(Grid.ColumnProperty, 0);
-            var tmp2 = CreateTextBox("5,0,0,0", 30, BindingPrefix + "[" + index + "]." + Property, 400, scp);
+            var tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[{index}].{Property}", 400, scp);
             tmp2.SetValue(Grid.ColumnProperty, 1);
             itemStackPanel.Children.Add(tmp1);
             itemStackPanel.Children.Add(tmp2);
@@ -173,7 +173,7 @@ namespace Client_App.Long_Visual
             tmp1.SetValue(Grid.ColumnProperty, 0);
             headerOrganUprav.Children.Add(tmp1);
 
-            var tmp2 = CreateTextBox("5,0,0,0", 30, BindingPrefix + "[0]." + "OrganUprav", 400, scp);
+            var tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[0].OrganUprav", 400, scp);
             tmp2.SetValue(Grid.ColumnProperty, 1);
             headerOrganUprav.Children.Add(tmp2);
 
@@ -190,7 +190,7 @@ namespace Client_App.Long_Visual
             tmp1.SetValue(Grid.ColumnProperty, 0);
             headerRegNo.Children.Add(tmp1);
 
-            tmp2 = CreateTextBox("5,0,0,0", 30, BindingPrefix + "[0]." + "RegNo", 400, scp);
+            tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[0].RegNo", 400, scp);
             tmp2.SetValue(Grid.ColumnProperty, 1);
             headerRegNo.Children.Add(tmp2);
 

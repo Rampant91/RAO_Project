@@ -371,7 +371,7 @@ namespace Client_App.ViewModels
                     {
                         if ((t as Form21).Sum_DB != true)
                         {
-                            var form = (t as Form21);
+                            var form = t as Form21;
                             //form.RefineMachineName_Hidden_Get.Set(true);
                             //form.MachineCode_Hidden_Get.Set(true);
                             //form.MachinePower_Hidden_Get.Set(true);
@@ -531,7 +531,7 @@ namespace Client_App.ViewModels
                     {
                         if ((t as Form22).Sum_DB != true)
                         {
-                            var form = (t as Form22);
+                            var form = t as Form22;
                             //form.StoragePlaceName_Hidden_Get.Set(true);
                             //form.StoragePlaceCode_Hidden_Get.Set(true);
                             //form.PackName_Hidden_Get.Set(true);
@@ -579,7 +579,7 @@ namespace Client_App.ViewModels
                 {
                     if (len > 2)
                     {
-                        if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+                        if (tmp[0] == '(' && tmp[len - 1] == ')')
                         {
                             tmp = tmp.Remove(len - 1, 1);
                             tmp = tmp.Remove(0, 1);
@@ -616,7 +616,7 @@ namespace Client_App.ViewModels
                 {
                     if (len > 2)
                     {
-                        if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+                        if (tmp[0] == '(' && tmp[len - 1] == ')')
                         {
                             tmp = tmp.Remove(len - 1, 1);
                             tmp = tmp.Remove(0, 1);
@@ -940,7 +940,7 @@ namespace Client_App.ViewModels
             int minColumn = Convert.ToInt32(param[1]) + 1;
             int maxColumn = Convert.ToInt32(param[2]) + 1;
             var collectionEn = collection.GetEnumerable();
-            if ((collectionEn.FirstOrDefault() is Form1) || (collectionEn.FirstOrDefault() is Form2))
+            if (collectionEn.FirstOrDefault() is Form1 || collectionEn.FirstOrDefault() is Form2)
             {
                 if (minColumn == 1) minColumn++;
             }
@@ -1014,7 +1014,7 @@ namespace Client_App.ViewModels
             IKeyCollection collection = param[0] as IKeyCollection;
             int minColumn = Convert.ToInt32(param[1]) + 1;
             int maxColumn = Convert.ToInt32(param[2]) + 1;
-            if ((param[0] is Form1) || (param[0] is Form2))
+            if (param[0] is Form1 || param[0] is Form2)
             {
                 if (minColumn == 1) minColumn++;
             }
@@ -1091,11 +1091,11 @@ namespace Client_App.ViewModels
                 {
                     if (it.Value.Contains('\n') || it.Value.Contains('\r'))
                     {
-                        txt += "\"" + it.Value + "\"" + "\t";
+                        txt += $"\"{it.Value}\"\t";
                     }
                     else
                     {
-                        txt += it.Value + "\t";
+                        txt += $"{it.Value}\t";
                     }
                 }
                 txt = txt.Remove(txt.Length - 1, 1);
@@ -1120,7 +1120,7 @@ namespace Client_App.ViewModels
             int minColumn = Convert.ToInt32(param[1]) + 1;
             int maxColumn = Convert.ToInt32(param[2]) + 1;
             var collectionEn = collection.GetEnumerable();
-            if ((collectionEn.FirstOrDefault() is Form1) || (collectionEn.FirstOrDefault() is Form2))
+            if (collectionEn.FirstOrDefault() is Form1 || collectionEn.FirstOrDefault() is Form2)
             {
                 if (minColumn == 1) minColumn++;
             }
@@ -1239,7 +1239,7 @@ namespace Client_App.ViewModels
                             {
                                 if (it.Order > item.Order)
                                 {
-                                    it.Order = it.Order - 1;
+                                    it.Order -= 1;
                                 }
                             }
                             foreach (Note nt in param)
@@ -1284,8 +1284,8 @@ namespace Client_App.ViewModels
                             catch (Exception e)
                             {
                                 await ShowMessageT.Handle(new List<string>
-                                { "Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                {
+                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                                 return;
                             }
                         }
@@ -1430,8 +1430,8 @@ namespace Client_App.ViewModels
                             {
                                 excelPackage.Save();
                                 res = await ShowMessageT.Handle(new List<string>
-                                { $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:"
-                                  + Environment.NewLine + path, "Ок", "Открыть выгрузку" });
+                                {
+                                    $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}", "Ок", "Открыть выгрузку" });
                                 if (res.Equals("Открыть выгрузку"))
                                 {
                                     ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
@@ -1441,8 +1441,8 @@ namespace Client_App.ViewModels
                             catch (Exception e)
                             {
                                 await ShowMessageT.Handle(new List<string>
-                                { $"Не удалось сохранить файл по пути: " + path + Environment.NewLine
-                                  + "Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                                {
+                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
                             }
                         }
                     }
@@ -1457,7 +1457,7 @@ namespace Client_App.ViewModels
         {
             PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
             string PasFolderPath = @"C:\Test\";
-            string uniqPasName = okpo + "#" + type + "#" + year + "#" + pasNum + "#" + factoryNum + ".pdf";
+            string uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
             uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
             uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
 
@@ -1558,7 +1558,7 @@ namespace Client_App.ViewModels
         private async Task _CopyPasName(object param)
         {
             PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
-            string uniqPasName = okpo + "#" + type + "#" + year + "#" + pasNum + "#" + factoryNum;
+            string uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
 
             uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
             uniqPasName = Regex.Replace(uniqPasName, "\\s+", "");
@@ -1651,11 +1651,11 @@ namespace Client_App.ViewModels
         {
             var charArray = date.Replace("_", "0").Replace("/", ".").Split(".");
             if (charArray[0].Length == 1)
-                charArray[0] = '0' + charArray[0];
+                charArray[0] = $"0{charArray[0]}";
             if (charArray[1].Length == 1)
-                charArray[1] = '0' + charArray[0];
+                charArray[1] = $"0{charArray[0]}";
             if (charArray[2].Length == 2)
-                charArray[2] = "20" + charArray[0];
+                charArray[2] = $"20{charArray[0]}";
             Array.Reverse(charArray);
             return string.Join("", charArray);
         } 
@@ -1810,12 +1810,12 @@ namespace Client_App.ViewModels
             string a = FormType.Replace(".", "");
             if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
             {
-                WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
-                    " " + Storages.Master_DB.RegNoRep.Value + " " + Storages.Master_DB.ShortJurLicoRep.Value + " " + Storages.Master_DB.OkpoRep.Value;
+                WindowHeader =
+                    $"{((Form_ClassAttribute)Type.GetType($"Models.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
             }
             if (FormType is "1.0" or "2.0")
             {
-                WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+                WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             }
             AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
             AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
@@ -1981,7 +1981,7 @@ namespace Client_App.ViewModels
                 }
                 else
                 {
-                    if ((item == '\n'))//||(item=='\t'))
+                    if (item == '\n')//||(item=='\t'))
                     {
                         if (!comaFlag)
                         {

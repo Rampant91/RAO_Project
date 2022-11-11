@@ -27,7 +27,7 @@ namespace Client_App.Converters
         public object ConvertBack(object Value, Type tp, object Param, CultureInfo info)
         {
             GridLength rps = (GridLength)Value;
-            return rps.Value + "*";
+            return $"{rps.Value}*";
         }
     }
 }

@@ -106,7 +106,7 @@ namespace Models.Collections
         {
             get
             {
-                return SizeCol +"*";
+                return $"{SizeCol}*";
             }
             set
             {

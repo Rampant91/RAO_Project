@@ -15,7 +15,7 @@ namespace Client_App.Converters
                 try
                 {
                     var ty = (int)rps.Y;
-                    var lg = Thickness.Parse("0,0,"+("0,"+ty));
+                    var lg = Thickness.Parse($"0,0,{("0," + ty)}");
                     return lg;
                 }
                 catch
