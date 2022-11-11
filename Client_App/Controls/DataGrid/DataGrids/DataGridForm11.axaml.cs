@@ -1,7 +1,7 @@
 using Avalonia.Markup.Xaml;
 using Models;
 
-namespace Client_App.Controls.DataGrid
+namespace Client_App.Controls.DataGrid.DataGrids
 {
     public class DataGridForm11 : DataGrid<Form11>
     {

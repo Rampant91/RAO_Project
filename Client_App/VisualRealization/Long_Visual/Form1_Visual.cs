@@ -8,6 +8,7 @@ using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Models.Attributes;
 using Avalonia.Controls.Primitives;
+using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Converters;
 
 namespace Client_App.Long_Visual
@@ -450,7 +451,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Center
-            Controls.DataGrid.DataGridForm11 grd = new()
+            DataGridForm11 grd = new()
             {
                 Name = "Form11Data_",
                 Focusable = true,
@@ -474,7 +475,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm11.ItemsProperty, b);
+            grd.Bind(DataGridForm11.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -502,7 +503,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -525,7 +526,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -674,7 +675,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm12 grd = new()
+            DataGridForm12 grd = new()
             {
                 Name = "Form12Data_",
                 Focusable = true,
@@ -698,7 +699,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm12.ItemsProperty, b);
+            grd.Bind(DataGridForm12.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -726,7 +727,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -749,7 +750,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -899,7 +900,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm13 grd = new()
+            DataGridForm13 grd = new()
             {
                 Name = "Form13Data_",
                 Focusable = true,
@@ -923,7 +924,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm13.ItemsProperty, b);
+            grd.Bind(DataGridForm13.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -951,7 +952,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -974,7 +975,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -1124,7 +1125,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm14 grd = new()
+            DataGridForm14 grd = new()
             {
                 Name = "Form14Data_",
                 Focusable = true,
@@ -1148,7 +1149,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm14.ItemsProperty, b);
+            grd.Bind(DataGridForm14.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -1176,7 +1177,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -1199,7 +1200,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -1349,7 +1350,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm15 grd = new()
+            DataGridForm15 grd = new()
             {
                 Name = "Form15Data_",
                 Focusable = true,
@@ -1373,7 +1374,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm15.ItemsProperty, b);
+            grd.Bind(DataGridForm15.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -1401,7 +1402,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -1424,7 +1425,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -1574,7 +1575,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm16 grd = new()
+            DataGridForm16 grd = new()
             {
                 Name = "Form16Data_",
                 Focusable = true,
@@ -1598,7 +1599,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm16.ItemsProperty, b);
+            grd.Bind(DataGridForm16.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -1626,7 +1627,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -1649,7 +1650,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -1800,7 +1801,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm17 grd = new()
+            DataGridForm17 grd = new()
             {
                 Name = "Form17Data_",
                 Focusable = true,
@@ -1824,7 +1825,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm17.ItemsProperty, b);
+            grd.Bind(DataGridForm17.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -1852,7 +1853,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -1875,7 +1876,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -2025,7 +2026,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm18 grd = new()
+            DataGridForm18 grd = new()
             {
                 Name = "Form18Data_",
                 Focusable = true,
@@ -2049,7 +2050,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm18.ItemsProperty, b);
+            grd.Bind(DataGridForm18.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -2077,7 +2078,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -2100,7 +2101,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion
@@ -2251,7 +2252,7 @@ namespace Client_App.Long_Visual
             #endregion
 
             #region Centre
-            Controls.DataGrid.DataGridForm19 grd = new()
+            DataGridForm19 grd = new()
             {
                 Name = "Form12Data_",
                 Focusable = true,
@@ -2275,7 +2276,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGridForm19.ItemsProperty, b);
+            grd.Bind(DataGridForm19.ItemsProperty, b);
 
             maingrid.Children.Add(grd);
 
@@ -2303,7 +2304,7 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 4,
                 [!Control.MarginProperty] = ind
             };
-            Controls.DataGrid.DataGridNote grd1 = new()
+            DataGridNote grd1 = new()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -2326,7 +2327,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
+            grd1.Bind(DataGridNote.ItemsProperty, b1);
 
             maingrid.Children.Add(prt);
             #endregion

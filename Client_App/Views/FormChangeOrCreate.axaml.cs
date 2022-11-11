@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Client_App.Controls.DataGrid;
+using Client_App.Controls.DataGrid.DataGrids;
 using MessageBox.Avalonia.Models;
 using Models.Abstracts;
 
@@ -144,7 +145,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form11_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm11)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm11)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -264,7 +265,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -334,7 +335,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm12)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm12)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -427,7 +428,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -497,7 +498,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm13)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm13)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -590,7 +591,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -660,7 +661,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm14)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm14)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -753,7 +754,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -823,7 +824,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm15)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm15)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -916,7 +917,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -986,7 +987,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm16)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm16)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -1079,7 +1080,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -1149,7 +1150,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm17)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm17)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -1242,7 +1243,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -1312,7 +1313,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm18)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm18)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -1405,7 +1406,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -1475,7 +1476,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm19)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm19)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -1568,7 +1569,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -1646,7 +1647,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form21_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm21)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm21)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -1739,7 +1740,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -1809,7 +1810,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form22_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm22)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm22)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -1902,7 +1903,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -1972,7 +1973,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form23_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm23)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm23)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2065,7 +2066,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -2135,7 +2136,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form24_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm24)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm24)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2228,7 +2229,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -2298,7 +2299,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form25_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm25)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm25)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2391,7 +2392,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -2461,7 +2462,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form26_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm26)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm26)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2554,7 +2555,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -2624,7 +2625,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form27_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm27)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm27)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2717,7 +2718,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -2787,7 +2788,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form28_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm28)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm28)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -2880,7 +2881,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -2950,7 +2951,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form29_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm29)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm29)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -3043,7 +3044,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -3113,7 +3114,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form210_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm210)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm210)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -3206,7 +3207,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -3276,7 +3277,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form211_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm211)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm211)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -3369,7 +3370,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,
@@ -3439,7 +3440,7 @@ namespace Client_App.Views
                 var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form212_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
-                var Rgrd = (Controls.DataGrid.DataGridForm212)((StackPanel)grd.Content).Children[1];
+                var Rgrd = (DataGridForm212)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.A,
@@ -3532,7 +3533,7 @@ namespace Client_App.Views
                 #endregion
 
                 #region Notes Context Menu
-                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyComand
                 {
                     Key = Avalonia.Input.Key.T,

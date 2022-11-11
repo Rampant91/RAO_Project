@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Models.Attributes;
 using System;
 using System.Linq;
+using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Views;
 
 namespace Client_App.Short_Visual
@@ -15,13 +16,13 @@ namespace Client_App.Short_Visual
         public static void FormF_Visual(MainWindow v,in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
             INameScope? tp = pnl0.FindNameScope();
-            Controls.DataGrid.DataGridReports grd1 = (Controls.DataGrid.DataGridReports)Form0_Visual(tp);
+            DataGridReports grd1 = (DataGridReports)Form0_Visual(tp);
             pnl0.Children.Add(grd1);
 
             NameScope scp = new();
             scp.Register(grd1.Name, grd1);
             scp.Complete();
-            Controls.DataGrid.DataGridReport grd2 = (Controls.DataGrid.DataGridReport)FormX_Visual(scp);
+            DataGridReport grd2 = (DataGridReport)FormX_Visual(scp);
             pnlx.Children.Add(grd2);
 
             Binding bd = new()
@@ -40,7 +41,7 @@ namespace Client_App.Short_Visual
         //Форма 10
         private static Control Form0_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReports grd = new()
+            DataGridReports grd = new()
             {
                 Name= "Form10AllDataGrid_",
                 ShowAllReport=true,
@@ -70,7 +71,7 @@ namespace Client_App.Short_Visual
                 NameScope = new WeakReference<INameScope>(scp)
             };
 
-            grd.Bind(Controls.DataGrid.DataGridReports.ItemsProperty, b);
+            grd.Bind(DataGridReports.ItemsProperty, b);
 
             return grd;
         }
@@ -78,7 +79,7 @@ namespace Client_App.Short_Visual
         //Форма 1X
         private static Control FormX_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReport grd = new("Form1AllDataGrid_")
+            DataGridReport grd = new("Form1AllDataGrid_")
             {
                 Name = "Form1AllDataGrid_",
                 CommentСhangeable = true,
@@ -99,7 +100,7 @@ namespace Client_App.Short_Visual
                 NameScope = new WeakReference<INameScope>(scp),
                 Converter = new Converters.ReportsToReport_Converter(),
             };
-            grd.Bind(Controls.DataGrid.DataGridReport.ItemsProperty, b);
+            grd.Bind(DataGridReport.ItemsProperty, b);
 
             return grd;
         }

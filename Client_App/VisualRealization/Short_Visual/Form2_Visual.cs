@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Models.Attributes;
 using System;
 using System.Linq;
+using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Views;
 using Models.Collections;
 
@@ -15,13 +16,13 @@ namespace Client_App.Short_Visual
         public static void FormF_Visual(MainWindow v, in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
             INameScope? tp = pnl0.FindNameScope();
-            Controls.DataGrid.DataGridReports grd1 = (Controls.DataGrid.DataGridReports)Form0_Visual(tp);
+            DataGridReports grd1 = (DataGridReports)Form0_Visual(tp);
             pnl0.Children.Add(grd1);
 
             NameScope scp = new();
             scp.Register(grd1.Name, grd1);
             scp.Complete();
-            Controls.DataGrid.DataGridReport grd2 = (Controls.DataGrid.DataGridReport)FormX_Visual(scp);
+            DataGridReport grd2 = (DataGridReport)FormX_Visual(scp);
             pnlx.Children.Add(grd2);
 
             Binding bd = new()
@@ -39,7 +40,7 @@ namespace Client_App.Short_Visual
         //Форма 20
         private static Control Form0_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReports grd = new()
+            DataGridReports grd = new()
             {
                 Name = "Form20AllDataGrid_",
                 ShowAllReport = true,
@@ -77,7 +78,7 @@ namespace Client_App.Short_Visual
         //Форма 2X
         private static Control FormX_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReport grd = new("Form2AllDataGrid_")
+            DataGridReport grd = new("Form2AllDataGrid_")
             {
                 Name = "Form2AllDataGrid_",
                 CommentСhangeable = true,
