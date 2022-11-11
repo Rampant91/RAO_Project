@@ -462,6 +462,13 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
+            rigthStP.Children.Add(content);
             #endregion
 
             topPnl1.Children.Add(brdC);
@@ -683,6 +690,13 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
+            rigthStP.Children.Add(content);
             #endregion
 
             topPnl1.Children.Add(brdC);
@@ -895,6 +909,13 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
+            rigthStP.Children.Add(content);
             #endregion
 
             topPnl1.Children.Add(brdC);
@@ -1106,6 +1127,13 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
+            rigthStP.Children.Add(content);
             #endregion
 
             topPnl1.Children.Add(brdC);
@@ -1316,6 +1344,13 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
+            rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
             rigthStP.Children.Add(content);
             #endregion
 
@@ -1535,6 +1570,13 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
+            rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
             rigthStP.Children.Add(content);
             #endregion
 
@@ -1767,6 +1809,13 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
+            rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
             rigthStP.Children.Add(content);
             #endregion
 
@@ -2044,6 +2093,13 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
+            rigthStP.Children.Add(content);
             #endregion
 
             topPnl1.Children.Add(brdC);
@@ -2254,6 +2310,13 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
+            rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
             rigthStP.Children.Add(content);
             #endregion
 
@@ -2466,6 +2529,13 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
+            rigthStP.Children.Add(content);
             #endregion
 
             topPnl1.Children.Add(brdC);
@@ -2677,6 +2747,13 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
+            rigthStP.Children.Add(content);
             #endregion
 
             topPnl1.Children.Add(brdC);
@@ -2887,6 +2964,13 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
+            rigthStP.Children.Add(content);
+
+            content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
             rigthStP.Children.Add(content);
             #endregion
 
