@@ -1674,15 +1674,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                           || !string.IsNullOrEmpty(rep.ExecPhone_DB) && rep.ExecPhone_DB != "-"
                           || !string.IsNullOrEmpty(rep.GradeExecutor_DB) && rep.GradeExecutor_DB != "-"))
             .MaxBy(rep => rep.EndPeriod_DB, comparator);
-
-        var lastReport = Storages.Report_Collection
-            .Where(rep => rep.FormNum_DB.Equals(FormType) && !rep.Equals(Storage))
-            .MaxBy(rep => rep.EndPeriod_DB, comparator);
-
         if (lastReportWithExecutor is null)
         {
             #region ShowMessageMissingExecutorData
             var orgName = "данной организации";
+            var lastReport = Storages.Report_Collection
+                .Where(rep => rep.FormNum_DB.Equals(FormType) && !rep.Equals(Storage))
+                .MaxBy(rep => rep.EndPeriod_DB, comparator);
             if ((FormType.ToCharArray()[0]) == '1')
             {
                 if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[1].ShortJurLico_DB) && Storages.Master_DB.Rows10[1].ShortJurLico_DB != "-")
