@@ -1456,6 +1456,23 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private async Task _OpenPasport(object param)
     {
         PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
+        if (string.IsNullOrEmpty(okpo) || okpo == "-" 
+                                       || string.IsNullOrEmpty(type) || type == "-"
+                                       || string.IsNullOrEmpty(year) || year == "-"
+                                       || string.IsNullOrEmpty(pasNum) || pasNum == "-"
+                                       || string.IsNullOrEmpty(factoryNum) || factoryNum == "-")
+        {
+            var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow("Уведомление", "Паспорт не может быть открыт, поскольку не заполнены все требуемые поля:"
+                                                            + Environment.NewLine + "- номер паспорта (сертификата)"
+                                                            + Environment.NewLine + "- тип"
+                                                            + Environment.NewLine + "- номер"
+                                                            + Environment.NewLine + "- код ОКПО изготовителя"
+                                                            + Environment.NewLine + "- дата выпуска")
+                .ShowDialog(desktop!.MainWindow.OwnedWindows.First());
+            return;
+        }
         string PasFolderPath = @"C:\Test\";
         string uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
@@ -1478,7 +1495,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
         else
         {
-            await ShowMessageT.Handle(new List<string> { "Паспорт отсутствует в сетевом хранилище", "Ок" });
+            await ShowMessageT.Handle(new List<string>
+            {
+                $"Паспорт {uniqPasName}" + Environment.NewLine + "отсутствует в сетевом хранилище", "Ок"
+            });
         }
     }
 
@@ -1558,63 +1578,71 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private async Task _CopyPasName(object param)
     {
         PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
-        string uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
-
+        if (string.IsNullOrEmpty(okpo) || okpo == "-" 
+            || string.IsNullOrEmpty(type) || type == "-"
+            || string.IsNullOrEmpty(year) || year == "-"
+            || string.IsNullOrEmpty(pasNum) || pasNum == "-"
+            || string.IsNullOrEmpty(factoryNum) || factoryNum == "-")
+        {
+            var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow("Уведомление", "Данные паспорта не были скопированы, не заполнены все требуемые поля:"
+                                                            + Environment.NewLine + "- номер паспорта (сертификата)"
+                                                            + Environment.NewLine + "- тип"
+                                                            + Environment.NewLine + "- номер"
+                                                            + Environment.NewLine + "- код ОКПО изготовителя"
+                                                            + Environment.NewLine + "- дата выпуска")
+                .ShowDialog(desktop!.MainWindow.OwnedWindows.First());
+            return;
+        }
+        var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, "\\s+", "");
-        await Application.Current.Clipboard.SetTextAsync(uniqPasName);
+        await Application.Current!.Clipboard!.SetTextAsync(uniqPasName);
     }
     #endregion
 
     #region PasportUniqParam
     private void PasportUniqParam(object param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum)
     {
-        object[] par = param as object[];
-        IKeyCollection collection = par[0] as IKeyCollection;
-        var item = collection.GetEnumerable().OrderBy(x => x.Order).FirstOrDefault();
-        var dStructure = (IDataGridColumn)item;
-        var findStructure = dStructure.GetColumnStructure();
-        var Level = findStructure.Level;
-        var tre = findStructure.GetLevel(Level - 1);
-        var props = item.GetType().GetProperties();
+        var par = param as object[];
+        var collection = par?[0] as IKeyCollection;
+        var item = collection?.GetEnumerable().MinBy(x => x.Order);
+        var props = item?.GetType().GetProperties();
 
         okpo = "";
         type = "";
         year = "";
         pasNum = "";
         factoryNum = "";
-
-        foreach (var prop in props)
+        foreach (var prop in props!)
         {
-            var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
-            if (attr != null && attr.Names.Count() > 1 && attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник")
+            var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault()!;
+            if (attr != null && attr.Names.Length > 1 && attr.Names[0] == "Сведения из паспорта (сертификата) на закрытый радионуклидный источник")
             {
-                if (attr.Names[1] == "код ОКПО изготовителя")
+                if (attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска"
+                    or "номер паспорта (сертификата)" or "номер")) continue;
+                var midValue = prop.GetMethod?.Invoke(item, null);
+                if (midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null) is not (null or "" or "-"))
                 {
-                    var midvalue = prop.GetMethod.Invoke(item, null);
-                    okpo = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                }
-                if (attr.Names[1] == "тип")
-                {
-                    var midvalue = prop.GetMethod.Invoke(item, null);
-                    type = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                }
-                if (attr.Names[1] == "дата выпуска")
-                {
-                    var midvalue = prop.GetMethod.Invoke(item, null);
-                    year = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-
-                }
-                if (attr.Names[1] == "номер паспорта (сертификата)")
-                {
-                    var midvalue = prop.GetMethod.Invoke(item, null);
-                    pasNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
-                }
-
-                if (attr.Names[1] == "номер")
-                {
-                    var midvalue = prop.GetMethod.Invoke(item, null);
-                    factoryNum = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null).ToString();
+                    switch (attr.Names[1])
+                    {
+                        case "код ОКПО изготовителя":
+                            okpo = midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                            break;
+                        case "тип":
+                            type = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                            break;
+                        case "дата выпуска":
+                            year = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                            break;
+                        case "номер паспорта (сертификата)":
+                            pasNum = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                            break;
+                        case "номер":
+                            factoryNum = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                            break;
+                    }
                 }
             }
         }
