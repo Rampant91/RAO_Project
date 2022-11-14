@@ -1658,7 +1658,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             charArray[2] = $"20{charArray[0]}";
         Array.Reverse(charArray);
         return string.Join("", charArray);
-    } 
+    }
     #endregion
 
     #region CopyExecutorData
@@ -1667,32 +1667,56 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         var comparator = new CustomStringDateComparer(StringComparer.CurrentCulture);
         var lastReportWithExecutor = Storages.Report_Collection
-            .Where(rep => rep.FormNum_DB == FormType 
-                          && !rep.Equals(Storage) 
-                          && (rep.FIOexecutor_DB is not null or "" or "-"
-                              || rep.ExecEmail_DB is not null or "" or "-" 
-                              || rep.ExecPhone_DB is not null or "" or "-"
-                              || rep.GradeExecutor_DB is not null or "" or "-"))
+            .Where(rep => rep.FormNum_DB == FormType
+                          && !rep.Equals(Storage)
+                          && (!string.IsNullOrEmpty(rep.FIOexecutor_DB) && rep.FIOexecutor_DB != "-" 
+                          || !string.IsNullOrEmpty(rep.ExecEmail_DB) && rep.ExecEmail_DB != "-"
+                          || !string.IsNullOrEmpty(rep.ExecPhone_DB) && rep.ExecPhone_DB != "-"
+                          || !string.IsNullOrEmpty(rep.GradeExecutor_DB) && rep.GradeExecutor_DB != "-"))
             .MaxBy(rep => rep.EndPeriod_DB, comparator);
         var lastReport = Storages.Report_Collection
-            .Where(rep => rep.FormNum_DB == FormType 
+            .Where(rep => rep.FormNum_DB == FormType
                           && !rep.Equals(Storage))
             .MaxBy(rep => rep.EndPeriod_DB, comparator);
-        var orgName = !string.IsNullOrEmpty(Storages.Master_DB._ShortJurLicoRep)
-            ? Storages.Master_DB._ShortJurLicoRep
-            : "данной организации";
+
         if (lastReportWithExecutor is null)
         {
-            MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление", $"У {orgName} в формах {FormType} не заполнены данные исполнителя");
+            #region ShowMessageMissingExecutorData
+            var orgName = "данной организации";
+            if ((FormType.ToCharArray()[0]) == '1')
+            {
+                if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[1].ShortJurLico_DB) && Storages.Master_DB.Rows10[1].ShortJurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows10[1].ShortJurLico_DB;
+                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[1].JurLico_DB) && Storages.Master_DB.Rows10[1].JurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows10[1].JurLico_DB;
+                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[0].ShortJurLico_DB) && Storages.Master_DB.Rows10[0].ShortJurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows10[1].ShortJurLico_DB;
+                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[0].JurLico_DB) && Storages.Master_DB.Rows10[0].JurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows10[1].JurLico_DB;
+            }
+            if ((FormType.ToCharArray()[0]) == '2')
+            {
+                if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[1].ShortJurLico_DB) && Storages.Master_DB.Rows20[1].ShortJurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows20[1].ShortJurLico_DB;
+                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[1].JurLico_DB) && Storages.Master_DB.Rows20[1].JurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows20[1].JurLico_DB;
+                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[0].ShortJurLico_DB) && Storages.Master_DB.Rows20[0].ShortJurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows20[1].ShortJurLico_DB;
+                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[0].JurLico_DB) && Storages.Master_DB.Rows20[0].JurLico_DB != "-")
+                    orgName = Storages.Master_DB.Rows20[1].JurLico_DB;
+            }
+            var msg = lastReport is null
+                ? $"У {orgName}" + Environment.NewLine + $"отсутствуют другие формы {FormType}"
+                : $"У {orgName}" + Environment.NewLine + $"в формах {FormType} не заполнены данные исполнителя";
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow("Уведомление", msg)
+                    .ShowDialog(desktop.MainWindow.OwnedWindows.First());
+            }
+            #endregion
             return;
-        }
-        if (lastReport is null)
-        {
-            MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление", $"У {orgName} отсутствуют другие формы {FormType}");
-            return;
-        }
+        } 
         Storage.FIOexecutor.Value = lastReportWithExecutor.FIOexecutor_DB;
         Storage.ExecEmail.Value = lastReportWithExecutor.ExecEmail_DB;
         Storage.ExecPhone.Value = lastReportWithExecutor.ExecPhone_DB;
