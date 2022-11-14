@@ -16,7 +16,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         MainTask.GetAwaiter().OnCompleted(async ()=> await ShowDialog.Handle(VMDataContext));
         MainTask.Start();
     }
-    private double _OnStartProgressBar = 0;
+    private double _OnStartProgressBar;
     public double OnStartProgressBar
     {
         get => _OnStartProgressBar;
@@ -29,7 +29,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
-    public MainWindowVM VMDataContext {get;set;}=null;
+    public MainWindowVM VMDataContext {get;set;}
     public async Task Start()
     {
         VMDataContext = new MainWindowVM();

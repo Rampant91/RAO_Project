@@ -9,11 +9,11 @@ namespace Models.Collections;
 public class DataGridColumns:INotifyPropertyChanged
 {
     public string name;
-    public List<DataGridColumns> innertCol = null;
-    public DataGridColumns parent = null;
+    public List<DataGridColumns> innertCol;
+    public DataGridColumns parent;
 
     #region Blocked
-    bool _Blocked = false;
+    bool _Blocked;
     public bool Blocked { 
         get 
         {
@@ -38,7 +38,7 @@ public class DataGridColumns:INotifyPropertyChanged
     #endregion
 
     #region ChooseLine
-    bool _ChooseLine = false;
+    bool _ChooseLine;
     public bool ChooseLine
     {
         get
@@ -126,7 +126,7 @@ public class DataGridColumns:INotifyPropertyChanged
     }
 
 
-    bool textW = false;
+    bool textW;
     public bool IsTextWrapping
     {
         get { return textW; }
@@ -137,7 +137,7 @@ public class DataGridColumns:INotifyPropertyChanged
     }
 
     #region SizeCol
-    double sizeCol = 0;
+    double sizeCol;
     public double SizeCol
     {
         get 

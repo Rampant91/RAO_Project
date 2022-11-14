@@ -8,7 +8,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 namespace Client_App.Views;
 
-public partial class OnStartProgressBar : ReactiveWindow<ViewModels.OnStartProgressBarVM>
+public partial class OnStartProgressBar : ReactiveWindow<OnStartProgressBarVM>
 {
     public OnStartProgressBar()
     {
@@ -19,13 +19,13 @@ public partial class OnStartProgressBar : ReactiveWindow<ViewModels.OnStartProgr
         this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
     }
 
-    private async Task DoShowDialogAsync(InteractionContext<ViewModels.MainWindowVM, object> interaction)
+    private async Task DoShowDialogAsync(InteractionContext<MainWindowVM, object> interaction)
     {
-        if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow(interaction.Input);
             desktop.MainWindow.Show();
-            this.Close();
+            Close();
         }
         interaction.SetOutput(null);
     }
@@ -33,6 +33,6 @@ public partial class OnStartProgressBar : ReactiveWindow<ViewModels.OnStartProgr
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        this.DataContext = new OnStartProgressBarVM();
+        DataContext = new OnStartProgressBarVM();
     }
 }

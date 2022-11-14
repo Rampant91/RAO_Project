@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Models.Attributes;
 
-public class Form_PropertyAttribute : System.Attribute
+public class Form_PropertyAttribute : Attribute
 {
     public string[] Names { get; set; }
     public bool OneLevel { get; set; }

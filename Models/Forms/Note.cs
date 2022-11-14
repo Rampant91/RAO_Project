@@ -43,9 +43,9 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
     public long Order { get;set; }
 
     #region RowNUmber
-    public string? RowNumber_DB { get; set; } = null;
+    public string? RowNumber_DB { get; set; }
     [NotMapped]
-    [Attributes.Form_Property(false, "№ строки", "1")]
+    [Form_Property(false, "№ строки", "1")]
 #nullable enable
     public RamAccess<string?> RowNumber
     {
@@ -85,9 +85,9 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
     #endregion
 
     #region GraphNumber
-    public string? GraphNumber_DB { get; set; } = null;
+    public string? GraphNumber_DB { get; set; }
     [NotMapped]
-    [Attributes.Form_Property(false, "№ графы", "2")]
+    [Form_Property(false, "№ графы", "2")]
 #nullable enable
     public RamAccess<string?> GraphNumber
     {
@@ -129,7 +129,7 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
     #region Comment
     public string? Comment_DB { get; set; } = "";
     [NotMapped]
-    [Attributes.Form_Property(false, "Пояснение", "3")]
+    [Form_Property(false, "Пояснение", "3")]
     public RamAccess<string> Comment
     {
         get
@@ -202,9 +202,9 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
 
     public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
     {
-        worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
         return 3;
     }
     #endregion
@@ -213,18 +213,18 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
     public DataGridColumns GetColumnStructure(string param = "")
     {
 
-        DataGridColumns RowNumberN = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.RowNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        DataGridColumns RowNumberN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         RowNumberN.SizeCol = 100;
-        RowNumberN.Binding = nameof(Note.RowNumber);
+        RowNumberN.Binding = nameof(RowNumber);
             
-        DataGridColumns GraphNumberN = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.GraphNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        DataGridColumns GraphNumberN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         GraphNumberN.SizeCol = 100;
-        GraphNumberN.Binding = nameof(Note.GraphNumber);
+        GraphNumberN.Binding = nameof(GraphNumber);
         RowNumberN += GraphNumberN;
 
-        DataGridColumns CommentN = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.Comment)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        DataGridColumns CommentN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Comment)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         CommentN.SizeCol = 660;
-        CommentN.Binding = nameof(Note.Comment);
+        CommentN.Binding = nameof(Comment);
         CommentN.IsTextWrapping = true;
         RowNumberN += CommentN;
 

@@ -73,7 +73,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
     {
         MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new();
-        List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new();
+        List<ButtonDefinition> lt = new();
         par.ContentMessage = interaction.Input[0];
         interaction.Input.RemoveAt(0);
         par.ContentHeader = interaction.Input[0];
@@ -203,7 +203,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     }
     private void ShowInit()
     {
-        var dataContext = (ViewModels.MainWindowVM)this.DataContext;
+        var dataContext = (ViewModels.MainWindowVM)DataContext;
 
         Panel tab10 = this.FindControl<Panel>("Forms_p1_0");
         Panel tab1X = this.FindControl<Panel>("Forms_p1_X");
@@ -211,8 +211,8 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
         Short_Visual.Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
 
         #region Form10 DataGrid
-        var grd1 = (Controls.DataGrid.DataGrid<Reports>)tab10.Children[0];
-        var grd2 = (Controls.DataGrid.DataGrid<Report>)tab1X.Children[0];
+        var grd1 = (DataGrid<Reports>)tab10.Children[0];
+        var grd2 = (DataGrid<Report>)tab1X.Children[0];
 
         SetCommandList(grd1, grd2, "1.0", dataContext);
         #endregion
@@ -223,8 +223,8 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
         Short_Visual.Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
 
         #region Form20 DataGrid
-        var grd3 = (Controls.DataGrid.DataGrid<Reports>)tab20.Children[0];
-        var grd4 = (Controls.DataGrid.DataGrid<Report>)tab2X.Children[0];
+        var grd3 = (DataGrid<Reports>)tab20.Children[0];
+        var grd4 = (DataGrid<Report>)tab2X.Children[0];
 
         SetCommandList(grd3, grd4, "2.0", dataContext);
         #endregion

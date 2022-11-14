@@ -23,8 +23,8 @@ public class Form2_Visual
         {
             Height = height,
             Margin = Thickness.Parse(thickness),
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
             Content = content,
             [!Button.CommandProperty] = new Binding(commProp)
         };
@@ -36,8 +36,8 @@ public class Form2_Visual
         {
             Height = height,
             Margin = Thickness.Parse(thickness),
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
             IsChecked = tmpVM.isSum
         };
         a.Checked += tmpVM._SumRow;
@@ -51,8 +51,8 @@ public class Form2_Visual
         {
             Width = width,
             Margin = Thickness.Parse(thickness),
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Right
         };
         Binding b = new()
         {
@@ -64,7 +64,7 @@ public class Form2_Visual
         {
             textCell.Control = new TextBox()
             {
-                [!TextBox.DataContextProperty] = b,
+                [!StyledElement.DataContextProperty] = b,
                 [!TextBox.TextProperty] = new Binding("Value")
             };
         }
@@ -72,8 +72,8 @@ public class Form2_Visual
         {
             textCell.Control = new MaskedTextBox()
             {
-                [!MaskedTextBox.DataContextProperty] = b,
-                [!MaskedTextBox.TextProperty] = new Binding("Value"),
+                [!StyledElement.DataContextProperty] = b,
+                [!TextBox.TextProperty] = new Binding("Value"),
             };
             ((MaskedTextBox)textCell.Control).Mask = "+7 (000) 000-00-00";
         }
@@ -81,7 +81,7 @@ public class Form2_Visual
         {
             textCell.Control = new TextBox()
             {
-                [!TextBox.DataContextProperty] = b,
+                [!StyledElement.DataContextProperty] = b,
                 [!TextBox.TextProperty] = new Binding("Value"),
             };
             //textCell.Control = new MaskedTextBox()
@@ -104,8 +104,8 @@ public class Form2_Visual
                 Width = width,
                 Height = height,
                 Margin = Thickness.Parse(margin),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
                 Text = text
             };
         }
@@ -115,8 +115,8 @@ public class Form2_Visual
             {
                 Height = height,
                 Margin = Thickness.Parse(margin),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
                 Text = text
             };
         }
@@ -175,7 +175,7 @@ public class Form2_Visual
             Margin = Thickness.Parse("5,5,5,5"),
             ZIndex = 999,
             Background = new SolidColorBrush(Color.Parse("White")),
-            [!Border.MarginProperty] = b,
+            [!Layoutable.MarginProperty] = b,
             Child = headerPanel
         };
         mainCanvas.Children.Add(brdH);
@@ -257,8 +257,8 @@ public class Form2_Visual
         {
             Height = 30,
             Margin = Thickness.Parse("0,0,0,0"),
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Left,
             TextAlignment = TextAlignment.Center,
             FontWeight = FontWeight.Bold,
             FontSize = 16,
@@ -306,8 +306,8 @@ public class Form2_Visual
         {
             Height = 30,
             Margin = Thickness.Parse("0,0,0,0"),
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Left,
             TextAlignment = TextAlignment.Center,
             FontWeight = FontWeight.Bold,
             FontSize = 16,
@@ -339,7 +339,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -356,7 +356,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -483,15 +483,15 @@ public class Form2_Visual
             Name = "Form21Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
             Margin = Thickness.Parse("5,0,0,0"),
             [!DataGridForm21.FixedContentProperty] = ind,
-            [!DataGridForm21.IsReadableSumProperty] = testS[!ToggleSwitch.IsCheckedProperty]
+            [!DataGridForm21.IsReadableSumProperty] = testS[!ToggleButton.IsCheckedProperty]
         };
         grd.SetValue(Grid.RowProperty, 2);
 
@@ -516,11 +516,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -529,15 +529,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -566,7 +566,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -583,7 +583,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -711,15 +711,15 @@ public class Form2_Visual
             Name = "Form22Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
             Margin = Thickness.Parse("5,0,0,0"),
             [!DataGridForm22.FixedContentProperty] = ind,
-            [!DataGridForm22.IsReadableSumProperty] = testS[!ToggleSwitch.IsCheckedProperty]
+            [!DataGridForm22.IsReadableSumProperty] = testS[!ToggleButton.IsCheckedProperty]
         };
         grd.SetValue(Grid.RowProperty, 2);
 
@@ -744,11 +744,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -757,15 +757,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -794,7 +794,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -811,7 +811,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -930,8 +930,8 @@ public class Form2_Visual
             Name = "Form23Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -962,11 +962,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -975,15 +975,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1012,7 +1012,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1029,7 +1029,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -1148,8 +1148,8 @@ public class Form2_Visual
             Name = "Form24Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1180,11 +1180,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -1193,15 +1193,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1230,7 +1230,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1247,7 +1247,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -1366,8 +1366,8 @@ public class Form2_Visual
             Name = "Form25Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1398,11 +1398,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -1411,15 +1411,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1448,7 +1448,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1465,7 +1465,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -1592,8 +1592,8 @@ public class Form2_Visual
             Name = "Form26Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1624,11 +1624,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -1637,15 +1637,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1674,7 +1674,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1831,8 +1831,8 @@ public class Form2_Visual
             Name = "Form27Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1863,11 +1863,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -1876,15 +1876,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -1913,7 +1913,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2114,8 +2114,8 @@ public class Form2_Visual
             Name = "Form28Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2146,11 +2146,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -2159,15 +2159,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2196,7 +2196,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2213,7 +2213,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -2332,8 +2332,8 @@ public class Form2_Visual
             Name = "Form29Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2364,11 +2364,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -2377,15 +2377,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2414,7 +2414,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2431,7 +2431,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -2550,8 +2550,8 @@ public class Form2_Visual
             Name = "Form210Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2582,11 +2582,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -2595,15 +2595,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2632,7 +2632,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2649,7 +2649,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -2768,8 +2768,8 @@ public class Form2_Visual
             Name = "Form211Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2800,11 +2800,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -2813,15 +2813,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -2850,7 +2850,7 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2867,7 +2867,7 @@ public class Form2_Visual
         {
             Orientation = Orientation.Horizontal,
             Spacing = 5,
-            [!StackPanel.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
 
 
@@ -2986,8 +2986,8 @@ public class Form2_Visual
             Name = "Form212Data_",
             Focusable = true,
             Sum = true,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
@@ -3018,11 +3018,11 @@ public class Form2_Visual
             Width = new GridLength(1, GridUnitType.Star)
         };
         topPnl22.ColumnDefinitions.Add(column);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
         topPnl22.SetValue(Grid.RowProperty, 3);
-        topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
+        topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
         #endregion
@@ -3031,15 +3031,15 @@ public class Form2_Visual
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
-            [!Control.MarginProperty] = ind
+            [!Layoutable.MarginProperty] = ind
         };
         DataGridNote grd1 = new()
         {
             Name = "Form21Notes_",
             Focusable = true,
             Comment = "Примечания",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Stretch,
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),

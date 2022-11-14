@@ -75,7 +75,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     }
 
     #region NumberInOrder
-    public int NumberInOrder_DB { get; set; } = 0;
+    public int NumberInOrder_DB { get; set; }
 
     [NotMapped]
     [Attributes.Form_Property(true, "null-1-1", "null-1","№ п/п","1")]
@@ -117,7 +117,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     #endregion
 
     #region NumberOfFields
-    public int NumberOfFields_DB { get; set; } = 0;
+    public int NumberOfFields_DB { get; set; }
     [NotMapped]
     [Attributes.Form_Property(true,"Число полей")]
     public RamAccess<int> NumberOfFields

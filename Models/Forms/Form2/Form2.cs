@@ -9,7 +9,7 @@ namespace Models.Abstracts;
 
 public abstract class Form2 : Form
 {
-    [Attributes.Form_Property(true,"Форма")]
+    [Form_Property(true,"Форма")]
     public Form2()
     {
 
@@ -21,10 +21,10 @@ public abstract class Form2 : Form
 
     #region CorrectionNumber
 
-    public byte CorrectionNumber_DB { get; set; } = 0;
+    public byte CorrectionNumber_DB { get; set; }
 
     [NotMapped]
-    [Attributes.Form_Property(true,"Номер корректировки")]
+    [Form_Property(true,"Номер корректировки")]
     public RamAccess<byte> CorrectionNumber
     {
         get
@@ -88,7 +88,7 @@ public abstract class Form2 : Form
 
     public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column,bool Transpon=true)
     {
-        worksheet.Cells[Row, Column].Value = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
+        worksheet.Cells[Row, Column].Value = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))
             .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[2];
 
         return 1;

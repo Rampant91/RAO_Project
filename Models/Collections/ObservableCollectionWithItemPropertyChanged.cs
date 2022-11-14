@@ -52,7 +52,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         ObserveAll();
     }
 
-    public bool Sorted { get; set; } = false;
+    public bool Sorted { get; set; }
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
         if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace)
@@ -249,7 +249,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     }
     public void AddRange<T1>(IEnumerable<T1> obj) where T1 : class, IKey
     {
-        this.AddRange(obj.Cast<T>());
+        AddRange(obj.Cast<T>());
     }
     public void AddRange<T1>(int index, IEnumerable<T1> obj) where T1 : class, IKey
     {
@@ -287,7 +287,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     public void Clear<T1>() where T1 : class, IKey
     {
-        this.Clear();
+        Clear();
     }
     public List<T1> ToList<T1>()where T1:class,IKey
     {
@@ -321,16 +321,16 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     #region IExcel
     public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
     public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool Tanspon=true, string SumNumber = "")
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
     #endregion
 }

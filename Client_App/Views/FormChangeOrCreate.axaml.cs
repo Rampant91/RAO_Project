@@ -32,7 +32,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
         this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
         this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
 
-        this.Closing += OnStandartClosing;
+        Closing += OnStandartClosing;
             
         Init();
     }
@@ -44,14 +44,14 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 #endif
     }
 
-    System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; } = null;
-    bool flag = false;
+    System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; }
+    bool flag;
     protected void OnStandartClosing(object sender, CancelEventArgs args)
     {
         if (Answ == null)
         {
             flag = false;
-            var tmp = this.DataContext as ViewModels.ChangeOrCreateVM;
+            var tmp = DataContext as ViewModels.ChangeOrCreateVM;
             Answ = tmp.ShowMessageT.Handle(new List<string> { "Сохранить?", "Да", "Нет" }).GetAwaiter();
             Answ.Subscribe(x =>
             {
@@ -118,7 +118,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
             {
                 if (flag)
                 {
-                    this.Close();
+                    Close();
                 }
                 else
                 {
@@ -134,7 +134,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     #region Init
     private void Form1Init(in Panel panel)
     {
-        var dataContext = (ViewModels.ChangeOrCreateVM)this.DataContext;
+        var dataContext = (ViewModels.ChangeOrCreateVM)DataContext;
         if (_param == "1.0")
         {
             panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
@@ -1637,7 +1637,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
     private void Form2Init(in Panel panel)
     {
-        var dataContext = (ViewModels.ChangeOrCreateVM)this.DataContext;
+        var dataContext = (ViewModels.ChangeOrCreateVM)DataContext;
         if (_param == "2.0")
         {
             panel.Children.Add(Long_Visual.Form2_Visual.Form20_Visual(this.FindNameScope()));
@@ -3625,7 +3625,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
     {
         MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new();
-        List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new();
+        List<ButtonDefinition> lt = new();
         par.ContentMessage = interaction.Input[0];
         interaction.Input.RemoveAt(0);
         foreach (var elem in interaction.Input) 

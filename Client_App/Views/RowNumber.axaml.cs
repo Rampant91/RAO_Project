@@ -52,7 +52,7 @@ public class RowNumber : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyProp
 #endif
     }
 
-    bool flag = false;
+    bool flag;
     protected override void OnClosing(CancelEventArgs e)
     {
         if(!flag)
@@ -73,7 +73,7 @@ public class RowNumber : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyProp
     private void OnButtonClick(object sender, RoutedEventArgs e)
     {
         flag = true;
-        this.Close();
+        Close();
     }
 
     #region INotifyPropertyChanged

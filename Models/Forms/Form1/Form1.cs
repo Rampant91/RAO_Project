@@ -13,7 +13,7 @@ namespace Models.Abstracts;
 
 public abstract class Form1 : Form
 {
-    [Attributes.Form_Property(true,"Форма")]
+    [Form_Property(true,"Форма")]
 
     [NotMapped]
     public bool flag = false;
@@ -33,7 +33,7 @@ public abstract class Form1 : Form
 
     #region OperationCode
     public string OperationCode_DB { get; set; } = "";
-    public bool OperationCode_Hidden_Priv { get; set; } = false;
+    public bool OperationCode_Hidden_Priv { get; set; }
     [NotMapped]
     public bool OperationCode_Hidden
     {
@@ -45,7 +45,7 @@ public abstract class Form1 : Form
     }
 
     [NotMapped]
-    [Attributes.Form_Property(true, "Сведения об операции","код","2")]
+    [Form_Property(true, "Сведения об операции","код","2")]
     public RamAccess<string> OperationCode
     {
         get
@@ -97,7 +97,7 @@ public abstract class Form1 : Form
 
     #region OperationDate
     public string OperationDate_DB { get; set; } = "";
-    public bool OperationDate_Hidden_Priv { get; set; } = false;
+    public bool OperationDate_Hidden_Priv { get; set; }
     [NotMapped]
     public bool OperationDate_Hidden
     {
@@ -109,7 +109,7 @@ public abstract class Form1 : Form
     }
 
     [NotMapped]
-    [Attributes.Form_Property(true, "Сведения об операции", "дата", "3")]
+    [Form_Property(true, "Сведения об операции", "дата", "3")]
     public RamAccess<string> OperationDate
     {
         get
@@ -189,8 +189,8 @@ public abstract class Form1 : Form
 
     #region DocumentVid
         
-    public byte? DocumentVid_DB { get; set; } = null;
-    public bool DocumentVid_Hidden_Priv { get; set; } = false;
+    public byte? DocumentVid_DB { get; set; }
+    public bool DocumentVid_Hidden_Priv { get; set; }
     [NotMapped]
     public bool DocumentVid_Hidden
     {
@@ -202,7 +202,7 @@ public abstract class Form1 : Form
     }
 
     [NotMapped]
-    [Attributes.Form_Property(true,"Документ","вид", "16")]
+    [Form_Property(true,"Документ","вид", "16")]
     public RamAccess<byte?> DocumentVid
     {
         get
@@ -264,7 +264,7 @@ public abstract class Form1 : Form
 
     #region DocumentNumber
     public string DocumentNumber_DB { get; set; } = "";
-    public bool DocumentNumber_Hidden_Priv { get; set; } = false;
+    public bool DocumentNumber_Hidden_Priv { get; set; }
     [NotMapped]
     public bool DocumentNumber_Hidden
     {
@@ -276,7 +276,7 @@ public abstract class Form1 : Form
     }
 
     [NotMapped]
-    [Attributes.Form_Property(true,"Документ", "номер", "17")]
+    [Form_Property(true,"Документ", "номер", "17")]
     public RamAccess<string> DocumentNumber
     {
         get
@@ -324,7 +324,7 @@ public abstract class Form1 : Form
 
     #region DocumentDate
     public string DocumentDate_DB { get; set; } = "";
-    public bool DocumentDate_Hidden_Priv { get; set; } = false;
+    public bool DocumentDate_Hidden_Priv { get; set; }
     [NotMapped]
     public bool DocumentDate_Hidden
     {
@@ -336,7 +336,7 @@ public abstract class Form1 : Form
     }
 
     [NotMapped]
-    [Attributes.Form_Property(true,"Документ", "дата", "18")]
+    [Form_Property(true,"Документ", "дата", "18")]
     public RamAccess<string> DocumentDate
     {
         get
@@ -432,12 +432,12 @@ public abstract class Form1 : Form
 
     public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
     {
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
-            .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[2];     
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationCode))
-            .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];     
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationDate))
-            .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))
+            .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[2];     
+        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode))
+            .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];     
+        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate))
+            .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
 
         return 3;
     }

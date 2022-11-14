@@ -54,7 +54,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region isSum
-    private bool _isSum = false;
+    private bool _isSum;
     public bool isSum
     {
         get => _isSum;
@@ -945,7 +945,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (minColumn == 1) minColumn++;
         }
 
-        if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
         {
             foreach (IKey item in collectionEn.OrderBy(x => x.Order))
             {
@@ -1103,7 +1103,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
         txt = txt.Remove(txt.Length - 1, 1);
 
-        if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
         {
             await clip.ClearAsync();
             await clip.SetTextAsync(txt);
@@ -1125,7 +1125,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (minColumn == 1) minColumn++;
         }
 
-        if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
         {
             string? text = await clip.GetTextAsync();
             var rowsText = ParseInnerTextRows(text);
@@ -1666,16 +1666,37 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private async Task _CopyExecutorData(object param)
     {
         var comparator = new CustomStringDateComparer(StringComparer.CurrentCulture);
-        var lastReport = Storages.Report_Collection
-            .Where(rep => rep.FormNum_DB == FormType && !rep.Equals(Storage))
+        var lastReportWithExecutor = Storages.Report_Collection
+            .Where(rep => rep.FormNum_DB == FormType 
+                          && !rep.Equals(Storage) 
+                          && (rep.FIOexecutor_DB is not null or "" or "-"
+                              || rep.ExecEmail_DB is not null or "" or "-" 
+                              || rep.ExecPhone_DB is not null or "" or "-"
+                              || rep.GradeExecutor_DB is not null or "" or "-"))
             .MaxBy(rep => rep.EndPeriod_DB, comparator);
-        if (lastReport != null)
+        var lastReport = Storages.Report_Collection
+            .Where(rep => rep.FormNum_DB == FormType 
+                          && !rep.Equals(Storage))
+            .MaxBy(rep => rep.EndPeriod_DB, comparator);
+        var orgName = !string.IsNullOrEmpty(Storages.Master_DB._ShortJurLicoRep)
+            ? Storages.Master_DB._ShortJurLicoRep
+            : "данной организации";
+        if (lastReportWithExecutor is null)
         {
-            Storage.FIOexecutor.Value = lastReport.FIOexecutor_DB;
-            Storage.ExecEmail.Value = lastReport.ExecEmail_DB;
-            Storage.ExecPhone.Value = lastReport.ExecPhone_DB;
-            Storage.GradeExecutor.Value = lastReport.GradeExecutor_DB;
+            MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow("Уведомление", $"У {orgName} в формах {FormType} не заполнены данные исполнителя");
+            return;
         }
+        if (lastReport is null)
+        {
+            MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow("Уведомление", $"У {orgName} отсутствуют другие формы {FormType}");
+            return;
+        }
+        Storage.FIOexecutor.Value = lastReportWithExecutor.FIOexecutor_DB;
+        Storage.ExecEmail.Value = lastReportWithExecutor.ExecEmail_DB;
+        Storage.ExecPhone.Value = lastReportWithExecutor.ExecPhone_DB;
+        Storage.GradeExecutor.Value = lastReportWithExecutor.GradeExecutor_DB;
     }
     #endregion
 
@@ -1846,7 +1867,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
 
     #region IsCanSaveReportEnabled
-    private bool _isCanSaveReportEnabled = false;
+    private bool _isCanSaveReportEnabled;
 
     private bool IsCanSaveReportEnabled
     {
@@ -1874,7 +1895,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public void SaveReport()
     {
-        if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             if (DBO != null)
             {

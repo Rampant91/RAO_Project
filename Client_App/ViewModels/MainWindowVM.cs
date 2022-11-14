@@ -295,7 +295,7 @@ namespace Client_App.ViewModels
         #endregion
 
         #region OnStartProgressBar
-        private double _OnStartProgressBar = 0;
+        private double _OnStartProgressBar;
         public double OnStartProgressBar
         {
             get => _OnStartProgressBar;

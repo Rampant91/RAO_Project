@@ -25,7 +25,7 @@ public class Cell : UserControl
             o => o.BorderColor,
             (o, v) => o.BorderColor = v);
 
-    private SolidColorBrush _BorderColor = null;
+    private SolidColorBrush _BorderColor;
 
     public SolidColorBrush BorderColor
     {
@@ -47,7 +47,7 @@ public class Cell : UserControl
             o => o.ChooseColor,
             (o, v) => o.ChooseColor = v);
 
-    private SolidColorBrush _ChooseColor = null;
+    private SolidColorBrush _ChooseColor;
 
     public SolidColorBrush ChooseColor
     {
@@ -90,7 +90,7 @@ public class Cell : UserControl
     #endregion
 
     #region Control
-    IControl _Control = null;
+    IControl _Control;
     public IControl Control 
     {
         get => _Control;

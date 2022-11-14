@@ -89,7 +89,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
     {
         this.Handler = Handler;
-        this._value = Value;
+        _value = Value;
         if (Handler != null)
         {
             Handler(this);
@@ -98,7 +98,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     public RamAccess(Func<RamAccess<T>, bool> Handler, T Value,RefBool IsGet,RefBool IsSet)
     {
         this.Handler = Handler;
-        this._value = Value;
+        _value = Value;
         if (Handler != null)
         {
             Handler(this);
@@ -209,12 +209,12 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     #region IExcel
     public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
     #endregion
 }
