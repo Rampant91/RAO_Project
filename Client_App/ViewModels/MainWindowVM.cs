@@ -5310,11 +5310,11 @@ namespace Client_App.ViewModels
 
         public static bool ComparePasParam(string nameDB, string namePas)
         {
+            nameDB ??= "";
             nameDB = Regex.Replace(nameDB, "[\\\\/:*?\"<>|]", "_");
             nameDB = Regex.Replace(nameDB, "\\s+", "");
             namePas = Regex.Replace(namePas, "[\\\\/:*?\"<>|]", "_");
             namePas = Regex.Replace(namePas, "\\s+", "");
-
             return nameDB.Equals(namePas, StringComparison.OrdinalIgnoreCase)
                 || ChangeOrCreateVM.TransliteToEng(nameDB).Equals(ChangeOrCreateVM.TransliteToEng(namePas), StringComparison.OrdinalIgnoreCase)
                 || ChangeOrCreateVM.TransliteToRus(nameDB).Equals(ChangeOrCreateVM.TransliteToRus(namePas), StringComparison.OrdinalIgnoreCase);
@@ -5326,7 +5326,7 @@ namespace Client_App.ViewModels
             if (!r.IsMatch(DBDate))
                 return "0000";
             var matches = r.Matches(DBDate);
-            return matches.FirstOrDefault().Value.Substring(matches.FirstOrDefault().Value.Length - 4);
+            return matches.FirstOrDefault()!.Value.Substring(matches.FirstOrDefault()!.Value.Length - 4);
         }
 
         public static string ConvertPasNumAndFactNum(string num)
@@ -5348,10 +5348,10 @@ namespace Client_App.ViewModels
         public ReactiveCommand<object, Unit> ChangePasDir { get; protected set; }
         private async Task _ChangePasDir(object param)
         {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                OpenFolderDialog openFolderDialog = new() { DefaultDirectory = defaultPasFolder };
-                defaultPasFolder = await openFolderDialog.ShowAsync(desktop.MainWindow) ?? defaultPasFolder;
+                OpenFolderDialog openFolderDialog = new() { Directory = PasFolderPath };
+                PasFolderPath = await openFolderDialog.ShowAsync(desktop.MainWindow) ?? PasFolderPath;
             }
         }
         #endregion
