@@ -116,10 +116,10 @@ public partial class DataModel_13 : Migration
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        string b = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
-                   "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
-                   "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
-                   "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var b = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
+                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
+                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
+                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql($"INSERT INTO \"form_22\" ({b}) SELECT {b} FROM FORM_22_TEMP");
         migrationBuilder.DropTable("FORM_22_TEMP");
     }

@@ -13,8 +13,8 @@ public class DataContext:DbContext
     {
         if (Path == "")
         {
-            string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
-            string path = System.IO.Path.GetPathRoot(system);
+            var system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            var path = System.IO.Path.GetPathRoot(system);
             var tmp = System.IO.Path.Combine(path, "RAO");
             tmp = System.IO.Path.Combine(tmp, "Local_temp.raodb");
             _path = tmp;

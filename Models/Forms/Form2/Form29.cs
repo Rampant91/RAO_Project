@@ -216,8 +216,8 @@ public class Form29 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -304,8 +304,8 @@ public class Form29 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -368,32 +368,32 @@ public class Form29 : Form2
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            DataGridColumns NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region WasteSourceName (2)
-            DataGridColumns WasteSourceNameR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var WasteSourceNameR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             WasteSourceNameR.SetSizeColToAllLevels(268);
             WasteSourceNameR.Binding = nameof(WasteSourceName);
             NumberInOrderR += WasteSourceNameR;
             #endregion
             #region RadionuclidName (3)
-            DataGridColumns RadionuclidNameR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RadionuclidNameR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidNameR.SetSizeColToAllLevels(183);
             RadionuclidNameR.Binding = nameof(RadionuclidName);
             NumberInOrderR += RadionuclidNameR;
             #endregion
             #region AllowedActivity (4)
-            DataGridColumns AllowedActivityR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(AllowedActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AllowedActivityR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(AllowedActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AllowedActivityR.SetSizeColToAllLevels(94);
             AllowedActivityR.Binding = nameof(AllowedActivity);
             NumberInOrderR += AllowedActivityR;
             #endregion
             #region FactedActivity (5)
-            DataGridColumns FactedActivityR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(FactedActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var FactedActivityR = ((Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(FactedActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             FactedActivityR.SetSizeColToAllLevels(94);
             FactedActivityR.Binding = nameof(FactedActivity);
             NumberInOrderR += FactedActivityR;

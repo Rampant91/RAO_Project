@@ -140,7 +140,7 @@ public class Form2_Visual
 
     public static Control Form20_Visual(INameScope scp)
     {
-        string BindingPrefix = "DataContext.Storage.Rows20";
+        var BindingPrefix = "DataContext.Storage.Rows20";
 
         ScrollViewer vw = new()
         {

@@ -79,7 +79,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                     try
                     {
                         var dt = DateTimeOffset.Parse(EndPeriod_DB);
-                        string num = dt.Year.ToString();
+                        var num = dt.Year.ToString();
                         num += dt.Month < 10 ? $"0{dt.Month}" : dt.Month.ToString();
                         num += dt.Day < 10 ? $"0{dt.Day}" : dt.Day.ToString();
                         num = num.Insert(0, "1");
@@ -3009,7 +3009,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                         var objec = proper.GetValue(this);
                         if (objec is RamAccess)
                         {
-                            RamAccess rm = objec as RamAccess;
+                            var rm = objec as RamAccess;
 
                             OnPropertyChanged(proper.Name);
                             rm.OnPropertyChanged("Value");
@@ -3028,56 +3028,56 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region IDataGridColumn
     public DataGridColumns GetColumnStructure(string param = "")
     {
-        DataGridColumns FormNumR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(FormNum)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var FormNumR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(FormNum)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         FormNumR.SizeCol = 100;
         FormNumR.Binding = nameof(FormNum);
 
         if (param == "1.0") 
         {
 
-            DataGridColumns StartPeriodR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(StartPeriod)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var StartPeriodR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(StartPeriod)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             StartPeriodR.SizeCol = 170;
             StartPeriodR.Binding = nameof(StartPeriod);
             FormNumR += StartPeriodR;
 
-            DataGridColumns EndPeriodR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(EndPeriod)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var EndPeriodR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(EndPeriod)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             EndPeriodR.SizeCol = 170;
             EndPeriodR.Binding = nameof(EndPeriod);
             FormNumR += EndPeriodR;
 
-            DataGridColumns ExportDateR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var ExportDateR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             ExportDateR.SizeCol = 170;
             ExportDateR.Binding = nameof(ExportDate);
             FormNumR += ExportDateR;
 
-            DataGridColumns CorrectionNumberR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CorrectionNumberR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CorrectionNumberR.SizeCol = 170;
             CorrectionNumberR.Binding = nameof(CorrectionNumber);
             FormNumR += CorrectionNumberR;
 
-            DataGridColumns CommentsR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CommentsR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CommentsR.SizeCol = 343;
             CommentsR.Binding = nameof(Comments);
             FormNumR += CommentsR;
         }
         if (param == "2.0")
         {
-            DataGridColumns YearR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Year)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var YearR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Year)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             YearR.SizeCol = 170;
             YearR.Binding = nameof(Year);
             FormNumR += YearR; 
 
-            DataGridColumns ExportDateR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var ExportDateR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             ExportDateR.SizeCol = 170;
             ExportDateR.Binding = nameof(ExportDate);
             FormNumR += ExportDateR;
 
-            DataGridColumns CorrectionNumberR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CorrectionNumberR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CorrectionNumberR.SizeCol = 170;
             CorrectionNumberR.Binding = nameof(CorrectionNumber);
             FormNumR += CorrectionNumberR;
 
-            DataGridColumns CommentsR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CommentsR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CommentsR.SizeCol = 513;
             CommentsR.Binding = nameof(Comments);
             FormNumR += CommentsR;

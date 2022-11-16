@@ -8,8 +8,8 @@ public partial class DataModel_17 : Migration
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         #region form19
-        string a = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"" +
-                   "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+        var a = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"" +
+                "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql("INSERT INTO FORM_19_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_19\";");
         migrationBuilder.Sql($"INSERT INTO \"form_19_tmp\" ({a}) SELECT {a} FROM \"form_19\"");
         migrationBuilder.DropTable(name: "form_19");
@@ -47,8 +47,8 @@ public partial class DataModel_17 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
-                   "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+        var b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
+                "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_19_TEMP\" ({b}) SELECT {b} FROM FORM_19_NEW_COLUMN INNER JOIN \"form_19_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_19_NEW_COLUMN");
@@ -619,8 +619,8 @@ public partial class DataModel_17 : Migration
     protected override void Down(MigrationBuilder migrationBuilder)//NOT READY
     {
         #region form19
-        string a = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"" +
-                   "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+        var a = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_Hidden_Priv\",\"" +
+                "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql("INSERT INTO FORM_19_NEW_COLUMN (\"IdNew\",\"OperationCode_DB\") SELECT \"Id\",CAST(\"OperationCode_DB\" AS SMALLINT) FROM \"form_19\";");
         migrationBuilder.Sql($"INSERT INTO \"form_19_tmp\" ({a}) SELECT {a} FROM \"form_19\"");
         migrationBuilder.DropTable(name: "form_19");
@@ -658,8 +658,8 @@ public partial class DataModel_17 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
-                   "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+        var b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
+                "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_19_TEMP\" ({b}) SELECT {b} FROM FORM_19_NEW_COLUMN INNER JOIN \"form_19_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_19_NEW_COLUMN");

@@ -3601,7 +3601,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
     private void Init()
     {
-        Panel? panel = this.FindControl<Panel>("ChangingPanel");
+        var panel = this.FindControl<Panel>("ChangingPanel");
         Form1Init(panel);
         Form2Init(panel);
     }

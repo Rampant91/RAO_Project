@@ -13,7 +13,7 @@ public class VectorToMarginTop_Converter : IValueConverter
         {
             if (Value is Vector)
             {
-                Vector rps = (Vector)Value;
+                var rps = (Vector)Value;
                 try
                 {
                     var ty = (int)rps.Y;
@@ -29,7 +29,7 @@ public class VectorToMarginTop_Converter : IValueConverter
             {
                 try
                 {
-                    int ty = System.Convert.ToInt32(Value);
+                    var ty = System.Convert.ToInt32(Value);
                     var lg = Thickness.Parse($"0,{ty},0,0");
                     return lg;
                 }

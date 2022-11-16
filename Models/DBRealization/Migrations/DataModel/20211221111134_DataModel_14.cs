@@ -7,10 +7,10 @@ public partial class DataModel_14 : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        string a = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
-                   "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\","+
-                   "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\","+
-                   "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var a = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
+                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\","+
+                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\","+
+                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql("INSERT INTO FORM_22_NEW_COLUMN (\"IdNew\",\"PackQuantity_DB\") SELECT \"Id\",CAST(\"PackQuantity_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_22\";");
         migrationBuilder.Sql($"INSERT INTO \"form_22_tmp\" ({a}) SELECT {a} FROM \"form_22\"");
         migrationBuilder.DropTable(name: "form_22");
@@ -73,10 +73,10 @@ public partial class DataModel_14 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string b = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"PackQuantity_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
-                   "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
-                   "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
-                   "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var b = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"PackQuantity_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
+                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
+                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
+                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_22_TEMP\" ({b}) SELECT {b} FROM FORM_22_NEW_COLUMN INNER JOIN \"form_22_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_22_NEW_COLUMN");
@@ -85,10 +85,10 @@ public partial class DataModel_14 : Migration
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        string a = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
-                   "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
-                   "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
-                   "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var a = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
+                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
+                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
+                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql("INSERT INTO FORM_22_NEW_COLUMN (\"IdNew\",\"PackQuantity_DB\") SELECT \"Id\",CAST(\"PackQuantity_DB\" AS INTEGER) FROM \"form_22\";");
         migrationBuilder.Sql($"INSERT INTO \"form_22_tmp\" ({a}) SELECT {a} FROM \"form_22\"");
         migrationBuilder.DropTable(name: "form_22");
@@ -151,10 +151,10 @@ public partial class DataModel_14 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string b = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"PackQuantity_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
-                   "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
-                   "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
-                   "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var b = "\"Id\",\"PackName_Hidden_Priv\",\"PackName_Hidden_Priv2\",\"PackType_Hidden_Priv\",\"PackType_Hidden_Priv2\",\"StoragePlaceCode_Hidden_Priv\",\"StoragePlaceCode_Hidden_Priv2\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceName_Hidden_Priv2\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"PackQuantity_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
+                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
+                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
+                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_22_TEMP\" ({b}) SELECT {b} FROM FORM_22_NEW_COLUMN INNER JOIN \"form_22_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_22_NEW_COLUMN");

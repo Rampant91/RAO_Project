@@ -118,7 +118,7 @@ public class Form1_Visual
 
     public static Control Form10_Visual(INameScope scp)
     {
-        string BindingPrefix = "DataContext.Storage.Rows10";
+        var BindingPrefix = "DataContext.Storage.Rows10";
 
         ScrollViewer vw = new()
         {

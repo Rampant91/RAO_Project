@@ -11,11 +11,11 @@ public class VectorToMarginBot_Converter : IValueConverter
     {
         if (Value != null)
         {
-            Vector rps = (Vector)Value;
+            var rps = (Vector)Value;
             try
             {
                 var ty = (int)rps.Y;
-                var lg = Thickness.Parse($"0,0,{("0," + ty)}");
+                var lg = Thickness.Parse($"0,0,{"0," + ty}");
                 return lg;
             }
             catch

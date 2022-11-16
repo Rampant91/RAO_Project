@@ -157,8 +157,8 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     public bool CheckForSort()
     {
-        int count = 1;
-        bool flag = true;
+        var count = 1;
+        var flag = true;
         foreach(var item in Items)
         {
             if(item.Order != count)
@@ -185,7 +185,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     protected override void ClearItems()
     {
-        foreach (T item in Items)
+        foreach (var item in Items)
             item.PropertyChanged -= ChildPropertyChanged;
 
         base.ClearItems();
@@ -199,7 +199,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     protected void ObserveAll()
     {
-        foreach (T item in Items)
+        foreach (var item in Items)
             item.PropertyChanged += ChildPropertyChanged;
 
         // QuickSort();
@@ -226,8 +226,8 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     protected void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        T typedSender = (T) sender;
-        int i = Items.IndexOf(typedSender);
+        var typedSender = (T) sender;
+        var i = Items.IndexOf(typedSender);
 
         if (i < 0)
             throw new ArgumentException("Received property notification from item not in collection");

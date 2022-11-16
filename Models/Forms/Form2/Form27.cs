@@ -222,8 +222,8 @@ public class Form27 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -313,15 +313,15 @@ public class Form27 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -411,15 +411,15 @@ public class Form27 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -484,38 +484,38 @@ public class Form27 : Form2
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            DataGridColumns NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region ObservedSourceNumber (2)
-            DataGridColumns ObservedSourceNumberR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ObservedSourceNumberR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ObservedSourceNumberR.SetSizeColToAllLevels(228);
             ObservedSourceNumberR.Binding = nameof(ObservedSourceNumber);
             NumberInOrderR += ObservedSourceNumberR;
             #endregion
             #region RadionuclidName (3)
-            DataGridColumns RadionuclidNameR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RadionuclidNameR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidNameR.SetSizeColToAllLevels(183);
             RadionuclidNameR.Binding = nameof(RadionuclidName);
             NumberInOrderR += RadionuclidNameR;
             #endregion
             #region AllowedWasteValue (4)
-            DataGridColumns AllowedWasteValueR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(AllowedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AllowedWasteValueR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(AllowedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AllowedWasteValueR.SetSizeColToAllLevels(170);
             AllowedWasteValueR.Binding = nameof(AllowedWasteValue);
             NumberInOrderR += AllowedWasteValueR;
             #endregion
             #region FactedWasteValue (5)
-            DataGridColumns FactedWasteValueR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(FactedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var FactedWasteValueR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(FactedWasteValue)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             FactedWasteValueR.SetSizeColToAllLevels(170);
             FactedWasteValueR.Binding = nameof(FactedWasteValue);
             NumberInOrderR += FactedWasteValueR;
             #endregion
             #region WasteOutbreakPreviousYear (6)
-            DataGridColumns WasteOutbreakPreviousYearR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var WasteOutbreakPreviousYearR = ((Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             WasteOutbreakPreviousYearR.SetSizeColToAllLevels(363);
             WasteOutbreakPreviousYearR.Binding = nameof(WasteOutbreakPreviousYear);
             NumberInOrderR += WasteOutbreakPreviousYearR;

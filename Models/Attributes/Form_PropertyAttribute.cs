@@ -46,8 +46,8 @@ public class Form_PropertyAttribute : Attribute
                     tmp.innertCol = new List<DataGridColumns> { };
                 }
             }
-            DataGridColumns _tmp = tmp;
-            for (int i = 1; i < Names.Length; i++)
+            var _tmp = tmp;
+            for (var i = 1; i < Names.Length; i++)
             {
                 if (_tmp.name != Names[i])
                 {

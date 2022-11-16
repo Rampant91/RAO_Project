@@ -250,7 +250,7 @@ public abstract class Form1 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        foreach (Tuple<byte?, string> item in Spravochniks.SprDocumentVidName)
+        foreach (var item in Spravochniks.SprDocumentVidName)
         {
             if (value.Value == item.Item1)
             {

@@ -10,13 +10,13 @@ public class RedDataBaseCreation
 {
     public static DbConnection GetConnectionString(string _path)
     {
-        string direct = Path.GetDirectoryName(_path);
+        var direct = Path.GetDirectoryName(_path);
         if (!Directory.Exists(direct))
         {
             Directory.CreateDirectory(direct);
         }
 #if DEBUG
-        string pth = "";
+        var pth = "";
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             if (RuntimeInformation.OSArchitecture == Architecture.X64)
@@ -65,7 +65,7 @@ public class RedDataBaseCreation
             }
 #endif
         Console.WriteLine(_path);
-        string connstring= new FbConnectionStringBuilder
+        var connstring= new FbConnectionStringBuilder
         {
 
             Database = _path,

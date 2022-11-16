@@ -10,6 +10,7 @@ using Models.Classes;
 using Models.Collections;
 using Models.DataAccess;
 using Models.DBRealization;
+using Models.Interfaces;
 using OfficeOpenXml;
 using ReactiveUI;
 using System;
@@ -25,6 +26,9 @@ using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
 
 namespace Client_App.ViewModels;
 
@@ -138,7 +142,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         get
         {
-            int count = Storage.Rows10.Count;
+            var count = Storage.Rows10.Count;
             return Storage.Rows10[count - 1];
         }
         set
@@ -158,7 +162,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         get
         {
-            int count = Storage.Rows20.Count;
+            var count = Storage.Rows20.Count;
             return Storage.Rows20[count - 1];
         }
         set
@@ -220,42 +224,35 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public async Task Sum21()
     {
-        var tItems = Storage.Rows21.GroupBy(x => (x as Form21).RefineMachineName_DB +
-                                                 (x as Form21).MachineCode_DB +
-                                                 (x as Form21).MachinePower_DB +
-                                                 (x as Form21).NumberOfHoursPerYear_DB).ToList();
+        var tItems = Storage.Rows21
+            .GroupBy(x => x.RefineMachineName_DB
+                          + x.MachineCode_DB
+                          + x.MachinePower_DB
+                          + x.NumberOfHoursPerYear_DB)
+            .ToList();
         var y = tItems.ToList();
 
-        var ito = new Dictionary<string, List<Form21>>();
+        var ito = y.ToDictionary(item => item.Key, _ => new List<Form21>());
 
-        foreach (var item in y)
+        foreach (var item in y.Where(item => item.Key == ""))
         {
-            ito.Add(item.Key, new List<Form21>());
-        }
-
-        foreach (var item in y)
-        {
-            if (item.Key == "")
+            foreach (var t in item)
             {
-                foreach (var t in item)
-                {
-                    ito[item.Key].Add(t);
-                }
-                tItems.Remove(item);
+                ito[item.Key].Add(t);
             }
+            tItems.Remove(item);
         }
-        List<Task> rtl = new();
 
         Parallel.ForEach(tItems, itemT =>
         {
-            var sums = itemT.Where(x => (x as Form21).Sum_DB == true).FirstOrDefault();
+            var sums = itemT.FirstOrDefault(x => x.Sum_DB);
 
-            Form21 sumRow = sums as Form21;
+            var sumRow = sums;
             if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
             {
                 if (sumRow == null)
                 {
-                    var first = itemT.FirstOrDefault() as Form21;
+                    var first = itemT.FirstOrDefault();
                     sumRow = (Form21)FormCreator.Create("2.1");
 
                     sumRow.RefineMachineName_Hidden_Set = new RefBool(false);
@@ -278,7 +275,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     sumRow.StatusRAOout_Hidden = true;
 
                     sumRow.Sum_DB = true;
-                    sumRow.BaseColor = Models.Interfaces.ColorType.Green;
+                    sumRow.BaseColor = ColorType.Green;
 
                 }
 
@@ -300,14 +297,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 double tritOutSum = 0;
                 double transOutSum = 0;
 
-                string refinemachinename = "";
+                var refinemachinename = "";
                 byte? machinecode = 0;
 
                 List<Form21> lst = new();
-                var u = itemT.OrderBy(x => (x as Form21).NumberInOrder_DB);
-                foreach (var itemThread in u)
+                var u = itemT.OrderBy(x => x.NumberInOrder_DB);
+                foreach (var form in u)
                 {
-                    var form = itemThread;
                     form.SumGroup_DB = true;
 
                     form.RefineMachineName_Hidden_Set = new RefBool(false);
@@ -320,7 +316,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     form.MachinePower_Hidden_Get.Set(false);
                     form.NumberOfHoursPerYear_Hidden_Get.Set(false);
 
-                    form.BaseColor = Models.Interfaces.ColorType.Yellow;
+                    form.BaseColor = ColorType.Yellow;
 
                     volumeInSum += StringToNumber(form.VolumeIn_DB);
                     massInSum += StringToNumber(form.MassIn_DB);
@@ -338,8 +334,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     tritOutSum += StringToNumber(form.TritiumActivityOut_DB);
                     transOutSum += StringToNumber(form.TransuraniumActivityOut_DB);
 
-                    lst.Add(form as Form21);
-
+                    lst.Add(form);
                 }
 
                 sumRow.VolumeIn_DB = volumeInSum >= double.Epsilon ? volumeInSum.ToString("E2") : "-";
@@ -349,7 +344,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 sumRow.BetaGammaActivityIn_DB = betaInSum >= double.Epsilon ? sumRow.BetaGammaActivityIn_DB = betaInSum.ToString("E2") : "-";
                 sumRow.TritiumActivityIn_DB = tritInSum >= double.Epsilon ? sumRow.TritiumActivityIn_DB = tritInSum.ToString("E2") : "-";
                 sumRow.TransuraniumActivityIn_DB = transInSum >= double.Epsilon ? sumRow.TransuraniumActivityIn_DB = transInSum.ToString("E2") : "-";
-
                 sumRow.VolumeOut_DB = volumeOutSum >= double.Epsilon ? sumRow.VolumeOut_DB = volumeOutSum.ToString("E2") : "-";
                 sumRow.MassOut_DB = massOutSum >= double.Epsilon ? sumRow.MassOut_DB = massOutSum.ToString("E2") : "-";
                 sumRow.QuantityOZIIIout_DB = quantityOutSum >= double.Epsilon ? sumRow.QuantityOZIIIout_DB = quantityOutSum.ToString("F0") : "-";
@@ -358,8 +352,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 sumRow.TritiumActivityOut_DB = tritOutSum >= double.Epsilon ? sumRow.TritiumActivityOut_DB = tritOutSum.ToString("E2") : "-";
                 sumRow.TransuraniumActivityOut_DB = transOutSum >= double.Epsilon ? sumRow.TransuraniumActivityOut_DB = transOutSum.ToString("E2") : "-";
 
-
-                ito[itemT.Key].Add(sumRow as Form21);
+                ito[itemT.Key].Add(sumRow);
                 foreach (var r in lst)
                 {
                     ito[itemT.Key].Add(r);
@@ -369,9 +362,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 foreach (var t in itemT)
                 {
-                    if ((t as Form21).Sum_DB != true)
+                    if (!t.Sum_DB)
                     {
-                        var form = t as Form21;
+                        //var form = t;
                         //form.RefineMachineName_Hidden_Get.Set(true);
                         //form.MachineCode_Hidden_Get.Set(true);
                         //form.MachinePower_Hidden_Get.Set(true);
@@ -383,8 +376,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
         });
 
-
-
         Storage.Rows21.Clear();
         var yu = ito.OrderBy(x => x.Value.Count);
         var count = new LetterAlgebra("A");
@@ -393,7 +384,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             if (item.Value.Count != 0 && item.Value.Count != 1)
             {
-                ((List<Form21>)item.Value).FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
+                item.Value.FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
                 Storage.Rows21.AddRange(item.Value);
                 count++;
             }
@@ -406,83 +397,67 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public async Task Sum22()
     {
-        var tItems = Storage.Rows22.GroupBy(x => (x as Form22).StoragePlaceName_DB +
-                                                 (x as Form22).StoragePlaceCode_DB +
-                                                 (x as Form22).PackName_DB +
-                                                 (x as Form22).PackType_DB).ToList();
+        var tItems = Storage.Rows22
+            .GroupBy(x => x.StoragePlaceName_DB
+                          + x.StoragePlaceCode_DB
+                          + x.PackName_DB
+                          + x.PackType_DB)
+            .ToList();
         var y = tItems.ToList();
 
-        var ito = new Dictionary<string, List<Form22>>();
+        var ito = y.ToDictionary(item => item.Key, _ => new List<Form22>());
 
-        foreach (var item in y)
+        foreach (var item in y.Where(item => item.Key == ""))
         {
-            ito.Add(item.Key, new List<Form22>());
-        }
-
-        foreach (var item in y)
-        {
-            if (item.Key == "")
+            foreach (var t in item)
             {
-                foreach (var t in item)
-                {
-                    ito[item.Key].Add(t);
-                }
-                tItems.Remove(item);
+                ito[item.Key].Add(t);
             }
+            tItems.Remove(item);
         }
-        List<Task> rtl = new();
 
         Parallel.ForEach(tItems, itemT =>
         {
-            var sums = itemT.Where(x => (x as Form22).Sum_DB == true).FirstOrDefault();
+            var sums = itemT.FirstOrDefault(x => x.Sum_DB);
 
-            Form22 sumRow = sums as Form22;
+            var sumRow = sums;
             if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
             {
                 if (sumRow == null)
                 {
-                    var first = itemT.FirstOrDefault() as Form22;
+                    var first = itemT.FirstOrDefault();
                     sumRow = (Form22)FormCreator.Create("2.2");
 
                     sumRow.StoragePlaceName_Hidden_Set = new RefBool(false);
                     sumRow.StoragePlaceCode_Hidden_Set = new RefBool(false);
                     sumRow.PackName_Hidden_Set = new RefBool(false);
                     sumRow.PackType_Hidden_Set = new RefBool(false);
-
                     sumRow.StoragePlaceName_DB = first.StoragePlaceName_DB;
                     sumRow.StoragePlaceCode_DB = first.StoragePlaceCode_DB;
                     sumRow.PackName_DB = first.PackName_DB;
                     sumRow.PackType_DB = first.PackType_DB;
-
-
                     sumRow.CodeRAO_Hidden = true;
                     sumRow.StatusRAO_Hidden = true;
                     sumRow.MainRadionuclids_Hidden = true;
                     sumRow.Subsidy_Hidden = true;
                     sumRow.FcpNumber_Hidden = true;
-
                     sumRow.Sum_DB = true;
-                    sumRow.BaseColor = Models.Interfaces.ColorType.Green;
-
+                    sumRow.BaseColor = ColorType.Green;
                 }
 
                 sumRow.NumberInOrder_DB = 0;
-
                 double volumeSum = 0;
                 double massSum = 0;
-                int quantitySum = 0;
-
+                var quantitySum = 0;
                 double alphaSum = 0;
                 double betaSum = 0;
                 double tritSum = 0;
                 double transSum = 0;
 
                 List<Form22> lst = new();
-                var u = itemT.OrderBy(x => (x as Form22).NumberInOrder_DB);
-                foreach (var itemThread in u)
+                var u = itemT.OrderBy(x => x.NumberInOrder_DB);
+                foreach (var form in u)
                 {
-                    var form = itemThread;
-
                     form.VolumeInPack_Hidden = true;
                     form.MassInPack_Hidden = true;
 
@@ -496,7 +471,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     //form.StoragePlaceCode_Hidden_Get.Set(false);
                     //form.PackName_Hidden_Get.Set(false);
                     //form.PackType_Hidden_Get.Set(false);
-                    form.BaseColor = Models.Interfaces.ColorType.Yellow;
+                    form.BaseColor = ColorType.Yellow;
 
                     volumeSum += StringToNumber(form.VolumeOutOfPack_DB);
                     massSum += StringToNumber(form.MassOutOfPack_DB);
@@ -506,8 +481,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     tritSum += StringToNumber(form.TritiumActivity_DB);
                     transSum += StringToNumber(form.TransuraniumActivity_DB);
 
-                    lst.Add(form as Form22);
-
+                    lst.Add(form);
                 }
 
                 sumRow.VolumeOutOfPack_DB = volumeSum >= double.Epsilon ? volumeSum.ToString("E2") : "-";
@@ -518,7 +492,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 sumRow.TritiumActivity_DB = tritSum >= double.Epsilon ? tritSum.ToString("E2") : "-";
                 sumRow.TransuraniumActivity_DB = transSum >= double.Epsilon ? transSum.ToString("E2") : "-";
 
-                ito[itemT.Key].Add(sumRow as Form22);
+                ito[itemT.Key].Add(sumRow);
                 foreach (var r in lst)
                 {
                     ito[itemT.Key].Add(r);
@@ -529,9 +503,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
                 foreach (var t in itemT)
                 {
-                    if ((t as Form22).Sum_DB != true)
+                    if (!t.Sum_DB)
                     {
-                        var form = t as Form22;
+                        //var form = t;
                         //form.StoragePlaceName_Hidden_Get.Set(true);
                         //form.StoragePlaceCode_Hidden_Get.Set(true);
                         //form.PackName_Hidden_Get.Set(true);
@@ -548,7 +522,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
         });
 
-
         Storage.Rows22.Clear();
         var yu = ito.OrderBy(x => x.Value.Count);
         var count = new LetterAlgebra("A");
@@ -557,7 +530,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             if (item.Value.Count != 0 && item.Value.Count != 1)
             {
-                var o = ((List<Form22>)item.Value).FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
+                var o = item.Value.FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
                 Storage.Rows22.AddRange(item.Value);
                 count++;
             }
@@ -568,13 +541,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    double StringToNumber(string Num)
+    double StringToNumber(string num)
     {
-        if (Num != null)
+        if (num != null)
         {
-            string tmp = Num;
+            var tmp = num;
             tmp.Replace(" ", "");
-            int len = tmp.Length;
+            var len = tmp.Length;
             if (len >= 1)
             {
                 if (len > 2)
@@ -591,7 +564,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 }
 
                 tmp = tmp.Replace(",", ".");
-                NumberStyles styles = NumberStyles.Any;
+                var styles = NumberStyles.Any;
                 try
                 {
                     return double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"));
@@ -605,13 +578,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         return 0;
     }
 
-    int StringToNumberInt(string Num)
+    int StringToNumberInt(string num)
     {
-        if (Num != null)
+        if (num != null)
         {
-            string tmp = Num;
+            var tmp = num;
             tmp.Replace(" ", "");
-            int len = tmp.Length;
+            var len = tmp.Length;
             if (len >= 1)
             {
                 if (len > 2)
@@ -628,7 +601,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 }
 
                 tmp = tmp.Replace(",", ".");
-                NumberStyles styles = NumberStyles.Any;
+                var styles = NumberStyles.Any;
                 try
                 {
                     return int.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"));
@@ -662,30 +635,29 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public async Task UnSum21()
     {
-        var sum_rows = Storage.Rows21.Where(x => x.Sum_DB == true);
+        var sumRows = Storage.Rows21.Where(x => x.Sum_DB);
 
-        Storage.Rows21.RemoveMany(sum_rows);
+        Storage.Rows21.RemoveMany(sumRows);
 
-        var sum_rows_group = Storage.Rows21.Where(x => x.SumGroup_DB == true);
-        foreach (var row in sum_rows_group)
+        var sumRowsGroup = Storage.Rows21.Where(x => x.SumGroup_DB);
+        foreach (var row in sumRowsGroup)
         {
             row.RefineMachineName_Hidden_Set.Set(true);
             row.MachineCode_Hidden_Set.Set(true);
             row.MachinePower_Hidden_Set.Set(true);
             row.NumberOfHoursPerYear_Hidden_Set.Set(true);
-
             row.RefineMachineName_Hidden_Get.Set(true);
             row.MachineCode_Hidden_Get.Set(true);
             row.MachinePower_Hidden_Get.Set(true);
             row.NumberOfHoursPerYear_Hidden_Get.Set(true);
-
             row.SumGroup_DB = false;
-            row.BaseColor = Models.Interfaces.ColorType.None;
+            row.BaseColor = ColorType.None;
         }
         var rows = Storage.Rows21.GetEnumerable();
         var count = 1;
-        foreach (Form21 row in rows)
+        foreach (var item in rows)
         {
+            var row = (Form21)item;
             row.SetOrder(count);
             count++;
             row.NumberInOrderSum = new RamAccess<string>(null, "");
@@ -694,30 +666,29 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public async Task UnSum22()
     {
-        var sum_rows = Storage.Rows22.Where(x => x.Sum_DB == true);
+        var sumRows = Storage.Rows22.Where(x => x.Sum_DB);
 
-        Storage.Rows22.RemoveMany(sum_rows);
+        Storage.Rows22.RemoveMany(sumRows);
 
-        var sum_rows_group = Storage.Rows22.Where(x => x.SumGroup_DB == true);
-        foreach (var row in sum_rows_group)
+        var sumRowsGroup = Storage.Rows22.Where(x => x.SumGroup_DB);
+        foreach (var row in sumRowsGroup)
         {
             row.StoragePlaceName_Hidden_Set.Set(true);
             row.StoragePlaceCode_Hidden_Set.Set(true);
             row.PackName_Hidden_Set.Set(true);
             row.PackType_Hidden_Set.Set(true);
-
             row.StoragePlaceName_Hidden_Get.Set(true);
             row.StoragePlaceCode_Hidden_Get.Set(true);
             row.PackName_Hidden_Get.Set(true);
             row.PackType_Hidden_Get.Set(true);
-
             row.SumGroup_DB = false;
-            row.BaseColor = Models.Interfaces.ColorType.None;
+            row.BaseColor = ColorType.None;
         }
         var rows = Storage.Rows22.GetEnumerable();
         var count = 1;
-        foreach (Form22 row in rows)
+        foreach (var item in rows)
         {
+            var row = (Form22)item;
             row.SetOrder(count);
             count++;
             row.NumberInOrderSum = new RamAccess<string>(null, "");
@@ -725,18 +696,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region AddSort
-    public ReactiveCommand<string, Unit> AddSort { get; protected set; }
-    #endregion
+    //#region AddSort
+    //public ReactiveCommand<string, Unit> AddSort { get; protected set; }
+    //#endregion
 
     #region AddNote
     public ReactiveCommand<object, Unit> AddNote { get; protected set; }
     private async Task _AddNote(object param)
     {
-        Note? nt = new()
-        {
-            Order = GetNumberInOrder(Storage.Notes)
-        };
+        Note? nt = new() { Order = GetNumberInOrder(Storage.Notes) };
         Storage.Notes.Add(nt);
         await Storage.SortAsync();
     }
@@ -744,7 +712,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #region SetNumberOrder
     public ReactiveCommand<object, Unit> SetNumberOrder { get; protected set; }
-    private async Task _SetNumberOrder(object Param)
+    private async Task _SetNumberOrder(object param)
     {
         var count = 1;
         var rows = Storage.Rows.GetEnumerable();
@@ -758,7 +726,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #region AddRow
     public ReactiveCommand<object, Unit> AddRow { get; protected set; }
-    private async Task _AddRow(object Param)
+    private async Task _AddRow(object param)
     {
         var frm = FormCreator.Create(FormType);
         frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
@@ -772,41 +740,33 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private async Task _AddRowIn(object _param)
     {
         var param = (IEnumerable)_param;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
-            List<Form> lst = new();
-            foreach (object? item1 in param)
-            {
-                lst.Add((Form)item1);
-            }
-
-            var item = lst.FirstOrDefault();
-
+            var item = param.Cast<Form>().ToList().FirstOrDefault();
             if (item != null)
             {
-                var number_cell = item.NumberInOrder_DB;
-                var t2 = await ShowDialogIn.Handle(number_cell);
+                var numberCell = item.NumberInOrder_DB;
+                var t2 = await ShowDialogIn.Handle(numberCell);
 
                 if (t2 > 0)
                 {
-                    foreach (Form it in Storage[item.FormNum_DB])
+                    foreach (var key in Storage[item.FormNum_DB])
                     {
-                        if (it.NumberInOrder_DB > number_cell - 1)
+                        var it = (Form)key;
+                        if (it.NumberInOrder_DB > numberCell - 1)
                         {
                             it.NumberInOrder.Value = it.NumberInOrder_DB + t2;
                         }
                     }
-
-                    List<Form> _lst = new();
-                    for (int i = 0; i < t2; i++)
+                    List<Form> lst = new();
+                    for (var i = 0; i < t2; i++)
                     {
                         var frm = FormCreator.Create(FormType);
-                        frm.NumberInOrder_DB = number_cell;
-
-                        _lst.Add(frm);
-                        number_cell++;
+                        frm.NumberInOrder_DB = numberCell;
+                        lst.Add(frm);
+                        numberCell++;
                     }
-                    Storage[Storage.FormNum_DB].AddRange(_lst);
+                    Storage[Storage.FormNum_DB].AddRange(lst);
                     await Storage.SortAsync();
                 }
             }
@@ -818,14 +778,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteRow { get; protected set; }
     private async Task _DeleteRow(object _param)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
             var param = (IEnumerable<IKey>)_param;
-            var answ = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
-            if (answ == "Да")
+            var answer = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
+            if (answer == "Да")
             {
                 //var lst = new List<IKey>(Storage.Rows.GetEnumerable());
-                var countParam = param;
                 var minItem = param.Min(x => x.Order);
                 var maxItem = param.Max(x => x.Order);
                 foreach (var item in param)
@@ -845,8 +804,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.1"))
                 {
                     var count = 1;
-                    foreach (Form21 row in rows)
+                    foreach (var key in rows)
                     {
+                        var row = (Form21)key;
                         row.SetOrder(count);
                         count++;
                         row.NumberInOrderSum = new RamAccess<string>(null, "");
@@ -888,13 +848,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DuplicateRowsx1 { get; protected set; }
     private async Task _DuplicateRowsx1(object param)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var t = await ShowDialog.Handle(desktop.MainWindow);
             if (t > 0)
             {
                 var number = GetNumberInOrder(Storage.Rows);
-                for (int i = 0; i < t; i++)
+                for (var i = 0; i < t; i++)
                 {
                     var frm = FormCreator.Create(FormType);
                     frm.NumberInOrder_DB = number;
@@ -910,19 +870,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DuplicateNotes { get; protected set; }
     private async Task _DuplicateNotes(object param)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var t = await ShowDialog.Handle(desktop.MainWindow);
-
             if (t > 0)
             {
                 var r = GetNumberInOrder(Storage.Notes);
-                for (int i = 0; i < t; i++)
+                for (var i = 0; i < t; i++)
                 {
-                    var frm = new Note
-                    {
-                        Order = r
-                    };
+                    var frm = new Note { Order = r };
                     Storage.Notes.Add(frm);
                     r++;
                 }
@@ -935,19 +891,19 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteDataInRows { get; protected set; }
     private async Task _DeleteDataInRows(object _param)
     {
-        object[] param = _param as object[];
-        IKeyCollection collection = param[0] as IKeyCollection;
-        int minColumn = Convert.ToInt32(param[1]) + 1;
-        int maxColumn = Convert.ToInt32(param[2]) + 1;
+        var param = _param as object[];
+        var collection = param[0] as IKeyCollection;
+        var minColumn = Convert.ToInt32(param[1]) + 1;
+        var maxColumn = Convert.ToInt32(param[2]) + 1;
         var collectionEn = collection.GetEnumerable();
-        if (collectionEn.FirstOrDefault() is Form1 || collectionEn.FirstOrDefault() is Form2)
+        if (minColumn == 1 && collectionEn.FirstOrDefault() is Form1 or Form2)
         {
-            if (minColumn == 1) minColumn++;
+            minColumn++;
         }
 
-        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current?.Clipboard is Avalonia.Input.Platform.IClipboard)
         {
-            foreach (IKey item in collectionEn.OrderBy(x => x.Order))
+            foreach (var item in collectionEn.OrderBy(x => x.Order))
             {
                 var props = item.GetType().GetProperties();
                 var dStructure = (IDataGridColumn)item;
@@ -955,50 +911,47 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 var Level = findStructure.Level;
                 var tre = findStructure.GetLevel(Level - 1);
 
-
                 foreach (var prop in props)
                 {
                     var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
-                    if (attr != null)
+                    if (attr is null) continue;
+                    try
                     {
-                        try
+                        int columnNum;
+                        if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
                         {
-                            var columnNum = 0;
-                            if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
-                            {
-                                columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
-                            }
+                            columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                        }
+                        else
+                        {
+                            columnNum = Convert.ToInt32(attr.Number);
+                        }
+                        if (columnNum >= minColumn && columnNum <= maxColumn)
+                        {
+                            var midvalue = prop.GetMethod.Invoke(item, null);
+                            if (midvalue is RamAccess<int?>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
+                            else if (midvalue is RamAccess<float?>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { float.Parse("") });
+                            else if (midvalue is RamAccess<short>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
+                            else if (midvalue is RamAccess<short?>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
+                            else if (midvalue is RamAccess<int>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
+                            else if (midvalue is RamAccess<string>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
+                            else if (midvalue is RamAccess<byte?>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
+                            else if (midvalue is RamAccess<bool>)
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
                             else
-                            {
-                                columnNum = Convert.ToInt32(attr.Number);
-                            }
-                            if (columnNum >= minColumn && columnNum <= maxColumn)
-                            {
-                                var midvalue = prop.GetMethod.Invoke(item, null);
-                                if (midvalue is RamAccess<int?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
-                                else if (midvalue is RamAccess<float?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { float.Parse("") });
-                                else if (midvalue is RamAccess<short>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
-                                else if (midvalue is RamAccess<short?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
-                                else if (midvalue is RamAccess<int>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
-                                else if (midvalue is RamAccess<string>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
-                                else if (midvalue is RamAccess<byte?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
-                                else if (midvalue is RamAccess<bool>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
-                                else
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
-                            }
+                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
                         }
-                        catch (Exception e)
-                        {
-                            int k = 8;
-                        }
+                    }
+                    catch (Exception)
+                    {
+                        var k = 8;
                     }
                 }
             }
@@ -1010,77 +963,69 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> CopyRows { get; protected set; }
     private async Task _CopyRows(object _param)
     {
-        object[] param = _param as object[];
-        IKeyCollection collection = param[0] as IKeyCollection;
-        int minColumn = Convert.ToInt32(param[1]) + 1;
-        int maxColumn = Convert.ToInt32(param[2]) + 1;
-        if (param[0] is Form1 || param[0] is Form2)
+        var param = _param as object[];
+        var collection = param[0] as IKeyCollection;
+        var minColumn = Convert.ToInt32(param[1]) + 1;
+        var maxColumn = Convert.ToInt32(param[2]) + 1;
+        if (minColumn == 1 && param[0] is Form1 or Form2)
         {
-            if (minColumn == 1) minColumn++;
+            minColumn++;
         }
-        string txt = "";
+        var txt = "";
 
         Dictionary<long, Dictionary<int, string>> dic = new();
 
-        foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
+        foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
         {
             dic.Add(item.Order, new Dictionary<int, string>());
             var dStructure = (IDataGridColumn)item;
             var findStructure = dStructure.GetColumnStructure();
-            var Level = findStructure.Level;
-            var tre = findStructure.GetLevel(Level - 1);
+            var level = findStructure.Level;
+            var tre = findStructure.GetLevel(level - 1);
             var props = item.GetType().GetProperties();
             foreach (var prop in props)
             {
                 var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
-                if (attr != null)
+                if (attr == null) continue;
+                int newNum;
+                if (attr.Names.Length > 1 && attr.Names[0] != "null-1-1")
                 {
-                    var newNum = 0;
-                    if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1" && attr.Names[0] == "Документ")
+                    newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                }
+                else
+                {
+                    newNum = Convert.ToInt32(attr.Number);
+                }
+                //var numAttr = Convert.ToInt32(attr.Number);
+                try
+                {
+                    if (newNum >= minColumn && newNum <= maxColumn)
                     {
-                        newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
-                    }
-                    else if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
-                    {
-                        newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
-                    }
-                    else
-                    {
-                        newNum = Convert.ToInt32(attr.Number);
-                    }
-                    //var numAttr = Convert.ToInt32(attr.Number);
-
-                    try
-                    {
-                        var columnNum = newNum;
-                        if (columnNum >= minColumn && columnNum <= maxColumn)
+                        var midvalue = prop.GetMethod.Invoke(item, null);
+                        var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
+                        if (value != null)
                         {
-                            var midvalue = prop.GetMethod.Invoke(item, null);
-                            var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
-                            if (value != null)
+                            try
                             {
-                                try
+                                if (dic[item.Order][newNum] == "")
                                 {
-                                    if (dic[item.Order][columnNum] == "")
-                                    {
-                                        dic[item.Order][columnNum] = value.ToString();
-                                    }
-                                }
-                                catch
-                                {
-                                    dic[item.Order].Add(columnNum, value.ToString());
+                                    dic[item.Order][newNum] = value.ToString();
                                 }
                             }
-                            else
+                            catch
                             {
-                                dic[item.Order].Add(columnNum, "");
+                                dic[item.Order].Add(newNum, value.ToString());
                             }
                         }
+                        else
+                        {
+                            dic[item.Order].Add(newNum, "");
+                        }
                     }
-                    catch
-                    {
+                }
+                catch
+                {
 
-                    }
                 }
             }
         }
@@ -1103,7 +1048,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
         txt = txt.Remove(txt.Length - 1, 1);
 
-        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current?.Clipboard is Avalonia.Input.Platform.IClipboard clip)
         {
             await clip.ClearAsync();
             await clip.SetTextAsync(txt);
@@ -1115,31 +1060,30 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> PasteRows { get; protected set; }
     private async Task _PasteRows(object _param)
     {
-        object[] param = _param as object[];
-        IKeyCollection collection = param[0] as IKeyCollection;
-        int minColumn = Convert.ToInt32(param[1]) + 1;
-        int maxColumn = Convert.ToInt32(param[2]) + 1;
+        var param = _param as object[];
+        var collection = param[0] as IKeyCollection;
+        var minColumn = Convert.ToInt32(param[1]) + 1;
+        var maxColumn = Convert.ToInt32(param[2]) + 1;
         var collectionEn = collection.GetEnumerable();
-        if (collectionEn.FirstOrDefault() is Form1 || collectionEn.FirstOrDefault() is Form2)
+        if (minColumn == 1 && collectionEn.FirstOrDefault() is Form1 or Form2)
         {
-            if (minColumn == 1) minColumn++;
+            minColumn++;
         }
 
-        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current?.Clipboard is Avalonia.Input.Platform.IClipboard clip)
         {
-            string? text = await clip.GetTextAsync();
+            var text = await clip.GetTextAsync();
             var rowsText = ParseInnerTextRows(text);
 
-            foreach (IKey item in collectionEn.OrderBy(x => x.Order))
+            foreach (var item in collectionEn.OrderBy(x => x.Order))
             {
                 var props = item.GetType().GetProperties();
-
                 var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
-                if (Convert.ToInt32(param[1]) == 0 && !(collectionEn.FirstOrDefault() is Note))
+                if (Convert.ToInt32(param[1]) == 0 && collectionEn.FirstOrDefault() is not Note)
                 {
                     var newText = rowText.ToArray();
                     var count = 0;
-                    foreach (char t in newText)
+                    foreach (var t in newText)
                     {
                         count++;
                         if (t.Equals('\t'))
@@ -1163,57 +1107,55 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 foreach (var prop in props)
                 {
                     var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
-                    if (attr != null)
+                    if (attr == null) continue;
+                    try
                     {
-                        try
+                        var columnNum = 0;
+                        if (attr.Names.Count() > 1 && attr.Names.Count() != 4 && attr.Names[0] != "null-1-1" && attr.Names[0] != "Документ" && attr.Names[0] != "Сведения об операции")
                         {
-                            var columnNum = 0;
-                            if (attr.Names.Count() > 1 && attr.Names.Count() != 4 && attr.Names[0] != "null-1-1" && attr.Names[0] != "Документ" && attr.Names[0] != "Сведения об операции")
+                            columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                        }
+                        else if (attr.Names[0] == "Документ")
+                        {
+                            var findDock = tre.Where(x => x.name == "null-n");
+                            if (findDock.Any())
                             {
-                                columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
-                            }
-                            else if (attr.Names[0] == "Документ")
-                            {
-                                var findDock = tre.Where(x => x.name == "null-n");
-                                if (findDock.Count() >= 1)
-                                {
-                                    columnNum = Convert.ToInt32(findDock.FirstOrDefault().innertCol.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
-                                }
-                                else
-                                    columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                                columnNum = Convert.ToInt32(findDock.FirstOrDefault().innertCol.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                             }
                             else
-                            {
-                                columnNum = Convert.ToInt32(attr.Number);
-                            }
-                            //var columnNum = Convert.ToInt32(attr.Number);
-                            if (columnNum >= minColumn && columnNum <= maxColumn)
-                            {
-                                var midvalue = prop.GetMethod.Invoke(item, null);
-                                if (midvalue is RamAccess<int?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
-                                else if (midvalue is RamAccess<float?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { float.Parse(columnsText[columnNum - minColumn]) });
-                                else if (midvalue is RamAccess<short>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
-                                else if (midvalue is RamAccess<short?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
-                                else if (midvalue is RamAccess<int>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
-                                else if (midvalue is RamAccess<string>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
-                                else if (midvalue is RamAccess<byte?>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
-                                else if (midvalue is RamAccess<bool>)
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
-                                else
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
-                            }
+                                columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
                         }
-                        catch (Exception e)
+                        else
                         {
-                            int k = 8;
+                            columnNum = Convert.ToInt32(attr.Number);
                         }
+                        //var columnNum = Convert.ToInt32(attr.Number);
+                        if (columnNum >= minColumn && columnNum <= maxColumn)
+                        {
+                            var midValue = prop.GetMethod.Invoke(item, null);
+                            if (midValue is RamAccess<int?>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
+                            else if (midValue is RamAccess<float?>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { float.Parse(columnsText[columnNum - minColumn]) });
+                            else if (midValue is RamAccess<short>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
+                            else if (midValue is RamAccess<short?>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
+                            else if (midValue is RamAccess<int>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
+                            else if (midValue is RamAccess<string>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
+                            else if (midValue is RamAccess<byte?>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
+                            else if (midValue is RamAccess<bool>)
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
+                            else
+                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        var k = 8;
                     }
                 }
             }
@@ -1228,15 +1170,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var param = (IEnumerable)_param;
-            var answ = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
-            if (answ == "Да")
+            var answer = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
+            if (answer == "Да")
             {
                 foreach (Note item in param)
                 {
                     if (item != null)
                     {
-                        foreach (Note it in Storage.Notes)
+                        foreach (var key in Storage.Notes)
                         {
+                            var it = (Note)key;
                             if (it.Order > item.Order)
                             {
                                 it.Order -= 1;
@@ -1244,7 +1187,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                         foreach (Note nt in param)
                         {
-                            Storage.Notes.Remove((Note)nt);
+                            Storage.Notes.Remove(nt);
                         }
                     }
                 }
@@ -1259,9 +1202,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> ExcelPasport { get; protected set; }
     private async Task _ExcelPasport(object param)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
+            PasportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
             SaveFileDialog saveFileDialog = new();
             FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
             saveFileDialog.Filters.Add(filter);
@@ -1281,11 +1224,18 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         {
                             File.Delete(path);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            await ShowMessageT.Handle(new List<string>
-                            {
-                                $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                            await MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                {
+                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                    ContentTitle = "Выгрузка в Excel",
+                                    ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(desktop.MainWindow.OwnedWindows.First());
                             return;
                         }
                     }
@@ -1295,7 +1245,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         excelPackage.Workbook.Properties.Author = "RAO_APP";
                         excelPackage.Workbook.Properties.Title = "Report";
                         excelPackage.Workbook.Properties.Created = DateTime.Now;
-                        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Операции с паспортом {pasNum}");
+                        var worksheet = excelPackage.Workbook.Worksheets.Add($"Операции с паспортом {pasNum}");
 
                         #region ColumnHeaders
                         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -1331,11 +1281,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         worksheet.Cells[1, 31].Value = "номер";
                         #endregion
 
-                        int lastRow = 1;
-                        foreach (Reports reps in LocalReports.Reports_Collection10)
+                        var lastRow = 1;
+                        foreach (var key in LocalReports.Reports_Collection10)
                         {
+                            var reps = (Reports)key;
                             var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-                            foreach (Report rep in form11)
+                            foreach (var rep in form11)
                             {
                                 var repPas = rep.Rows11.Where(x =>
                                     MainWindowVM.ComparePasParam(x.CreatorOKPO_DB, okpo)
@@ -1343,7 +1294,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                                     && MainWindowVM.ComparePasParam(x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)), year.Substring(Math.Max(0, year.Length - 4)))
                                     && MainWindowVM.ComparePasParam(x.PassportNumber_DB, pasNum)
                                     && MainWindowVM.ComparePasParam(x.FactoryNumber_DB, factoryNum));
-                                foreach (Form11 repForm in repPas)
+                                foreach (var repForm in repPas)
                                 {
                                     if (lastRow == 1)
                                     {
@@ -1381,7 +1332,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                                         worksheet.Cells[2, 31].Value = repForm.PackNumber_DB;
                                         #endregion
                                     }
-                                    for (int currentRow = lastRow; currentRow >= 2; currentRow--)
+                                    for (var currentRow = lastRow; currentRow >= 2; currentRow--)
                                     {
                                         if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) >= 0)
                                         {
@@ -1429,20 +1380,38 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         try
                         {
                             excelPackage.Save();
-                            res = await ShowMessageT.Handle(new List<string>
-                            {
-                                $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}", "Ок", "Открыть выгрузку" });
+                            res = await MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                {
+                                    ButtonDefinitions = new []
+                                    {
+                                        new ButtonDefinition {Name = "Ок"},
+                                        new ButtonDefinition {Name = "Открыть выгрузку"}
+                                    },
+                                    ContentTitle = "Выгрузка в Excel",
+                                    ContentMessage = $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(desktop.MainWindow.OwnedWindows.First());
                             if (res.Equals("Открыть выгрузку"))
                             {
                                 ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
                                 Process.Start(procInfo);
                             }
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            await ShowMessageT.Handle(new List<string>
-                            {
-                                $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                            await MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                {
+                                    ButtonDefinitions = ButtonEnum.Ok,
+                                    ContentTitle = "Выгрузка в Excel",
+                                    ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(desktop.MainWindow.OwnedWindows.First());
                         }
                     }
                 }
@@ -1455,12 +1424,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> OpenPasport { get; protected set; }
     private async Task _OpenPasport(object param)
     {
-        PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
-        if (string.IsNullOrEmpty(okpo) || okpo == "-" 
-                                       || string.IsNullOrEmpty(type) || type == "-"
-                                       || string.IsNullOrEmpty(year) || year == "-"
-                                       || string.IsNullOrEmpty(pasNum) || pasNum == "-"
-                                       || string.IsNullOrEmpty(factoryNum) || factoryNum == "-")
+        PasportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+        if (okpo is null or "" or "-"
+            || type is null or "" or "-"
+            || year is null or "" or "-"
+            || pasNum is null or "" or "-"
+            || factoryNum is null or "" or "-")
         {
             var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             await MessageBox.Avalonia.MessageBoxManager
@@ -1473,7 +1442,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 .ShowDialog(desktop!.MainWindow.OwnedWindows.First());
             return;
         }
-        string uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
+        var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
 
@@ -1482,14 +1451,14 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             Process.Start(procInfo);
         }
-        else if (File.Exists(PasFolderPath + TransliteToEng(uniqPasName)))
+        else if (File.Exists(PasFolderPath + TranslateToEng(uniqPasName)))
         {
-            procInfo.FileName = PasFolderPath + TransliteToEng(uniqPasName);
+            procInfo.FileName = PasFolderPath + TranslateToEng(uniqPasName);
             Process.Start(procInfo);
         }
-        else if (File.Exists(PasFolderPath + TransliteToRus(uniqPasName)))
+        else if (File.Exists(PasFolderPath + TranslateToRus(uniqPasName)))
         {
-            procInfo.FileName = PasFolderPath + TransliteToRus(uniqPasName);
+            procInfo.FileName = PasFolderPath + TranslateToRus(uniqPasName);
             Process.Start(procInfo);
         }
         else
@@ -1502,8 +1471,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    #region Translite
-    public static string TransliteToEng(string pasName)
+    #region Translate
+    public static string TranslateToEng(string pasName)
     {
         Dictionary<string, string> dictRusToEng = new()
         {
@@ -1527,17 +1496,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {"х", "x"},
             {"Х", "X"},
         };
-        string newPasName = "";
+        var newPasName = "";
         foreach (var ch in pasName)
         {
-            var ss = "";
-            if (dictRusToEng.TryGetValue(ch.ToString(), out ss)) newPasName += ss;
+            if (dictRusToEng.TryGetValue(ch.ToString(), out var ss)) newPasName += ss;
             else newPasName += ch;
         }
         return newPasName;
     }
 
-    public static string TransliteToRus(string pasName)
+    public static string TranslateToRus(string pasName)
     {
         Dictionary<string, string> dictEngToRus = new()
         {
@@ -1561,11 +1529,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {"x", "х"},
             {"X", "Х"},
         };
-        string newPasName = "";
+        var newPasName = "";
         foreach (var ch in pasName)
         {
-            var ss = "";
-            if (dictEngToRus.TryGetValue(ch.ToString(), out ss)) newPasName += ss;
+            if (dictEngToRus.TryGetValue(ch.ToString(), out var ss)) newPasName += ss;
             else newPasName += ch;
         }
         return newPasName;
@@ -1577,12 +1544,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> CopyPasName { get; protected set; }
     private async Task _CopyPasName(object param)
     {
-        PasportUniqParam(param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum);
-        if (string.IsNullOrEmpty(okpo) || okpo == "-" 
-            || string.IsNullOrEmpty(type) || type == "-"
-            || string.IsNullOrEmpty(year) || year == "-"
-            || string.IsNullOrEmpty(pasNum) || pasNum == "-"
-            || string.IsNullOrEmpty(factoryNum) || factoryNum == "-")
+        PasportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+        if (okpo is null or "" or "-"
+            || type is null or "" or "-"
+            || year is null or "" or "-"
+            || pasNum is null or "" or "-"
+            || factoryNum is null or "" or "-")
         {
             var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             await MessageBox.Avalonia.MessageBoxManager
@@ -1618,7 +1585,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         foreach (var prop in props!)
         {
             var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault()!;
-            if (attr.Names.Length <= 1 
+            if (attr.Names.Length <= 1
                 || attr.Names[0] != "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
                 || attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска" or "номер паспорта (сертификата)" or "номер")) continue;
             var midValue = prop.GetMethod?.Invoke(item, null);
@@ -1695,10 +1662,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var lastReportWithExecutor = Storages.Report_Collection
             .Where(rep => rep.FormNum_DB == FormType
                           && !rep.Equals(Storage)
-                          && (!string.IsNullOrEmpty(rep.FIOexecutor_DB) && rep.FIOexecutor_DB != "-" 
-                          || !string.IsNullOrEmpty(rep.ExecEmail_DB) && rep.ExecEmail_DB != "-"
-                          || !string.IsNullOrEmpty(rep.ExecPhone_DB) && rep.ExecPhone_DB != "-"
-                          || !string.IsNullOrEmpty(rep.GradeExecutor_DB) && rep.GradeExecutor_DB != "-"))
+                          && (rep.FIOexecutor_DB is not (null or "" or "-")
+                              || rep.ExecEmail_DB is not (null or "" or "-")
+                              || rep.ExecPhone_DB is not (null or "" or "-")
+                              || rep.GradeExecutor_DB is not (null or "" or "-")))
             .MaxBy(rep => rep.EndPeriod_DB, comparator);
         if (lastReportWithExecutor is null)
         {
@@ -1707,7 +1674,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             var lastReport = Storages.Report_Collection
                 .Where(rep => rep.FormNum_DB.Equals(FormType) && !rep.Equals(Storage))
                 .MaxBy(rep => rep.EndPeriod_DB, comparator);
-            if ((FormType.ToCharArray()[0]) == '1')
+            if (FormType.ToCharArray()[0] == '1')
             {
                 if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[1].ShortJurLico_DB) && Storages.Master_DB.Rows10[1].ShortJurLico_DB != "-")
                     orgName = Storages.Master_DB.Rows10[1].ShortJurLico_DB;
@@ -1718,7 +1685,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[0].JurLico_DB) && Storages.Master_DB.Rows10[0].JurLico_DB != "-")
                     orgName = Storages.Master_DB.Rows10[1].JurLico_DB;
             }
-            if ((FormType.ToCharArray()[0]) == '2')
+            if (FormType.ToCharArray()[0] == '2')
             {
                 if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[1].ShortJurLico_DB) && Storages.Master_DB.Rows20[1].ShortJurLico_DB != "-")
                     orgName = Storages.Master_DB.Rows20[1].ShortJurLico_DB;
@@ -1740,7 +1707,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
             #endregion
             return;
-        } 
+        }
         Storage.FIOexecutor.Value = lastReportWithExecutor.FIOexecutor_DB;
         Storage.ExecEmail.Value = lastReportWithExecutor.ExecEmail_DB;
         Storage.ExecPhone.Value = lastReportWithExecutor.ExecPhone_DB;
@@ -1755,24 +1722,14 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         Storages = reps;
         FormType = param;
         LocalReports = localReports;
-        var sumR21 = rep.Rows21.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
-        var sumR22 = rep.Rows22.Where(x => x.Sum_DB == true || x.SumGroup_DB == true).Count();
-        if (sumR21 > 0 || sumR22 > 0)
-        {
-            isSum = true;
-        }
-        else
-        {
-            isSum = false;
-        }
+        var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
+        var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
+        isSum = sumR21 > 0 || sumR22 > 0;
         Init();
     }
     public ChangeOrCreateVM(string param, in Reports reps)
     {
-        Storage = new Report
-        {
-            FormNum_DB = param
-        };
+        Storage = new Report { FormNum_DB = param };
 
         if (param.Split('.')[0] == "1")
         {
@@ -1780,8 +1737,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 try
                 {
-                    var ty = (from Report t in reps.Report_Collection where t.FormNum_DB == param && t.EndPeriod_DB != "" orderby DateTimeOffset.Parse(t.EndPeriod_DB) select t.EndPeriod_DB).LastOrDefault();
-
+                    var ty = reps.Report_Collection
+                        .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
+                        .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
+                        .Select(t => t.EndPeriod_DB)
+                        .LastOrDefault();
                     FormType = param;
                     Storage.StartPeriod.Value = ty;
                 }
@@ -1797,14 +1757,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 try
                 {
-                    var ty = (from Report t in reps.Report_Collection where t.FormNum_DB == param && t.Year_DB != null orderby t.Year_DB select t.Year_DB).LastOrDefault();
-
+                    var ty = reps.Report_Collection
+                        .Where(t => t.FormNum_DB == param && t.Year_DB != null)
+                        .OrderBy(t => t.Year_DB)
+                        .Select(t => t.Year_DB)
+                        .LastOrDefault();
                     FormType = param;
                     if (ty != null)
                     {
-                        int ty_int = Convert.ToInt32(ty) + 1;
-                        string ty_str = Convert.ToString(ty_int);
-                        Storage.Year.Value = ty_str;
+                        Storage.Year.Value = (Convert.ToInt32(ty) + 1).ToString();
                     }
                 }
                 catch
@@ -1838,11 +1799,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     public ChangeOrCreateVM(string param, in DBObservable reps)
     {
-        Storage = new Report
-        {
-            FormNum_DB = param
-        };
-
+        Storage = new Report { FormNum_DB = param };
         if (param == "1.0")
         {
             var ty1 = (Form10)FormCreator.Create(param);
@@ -1861,7 +1818,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             Storage.Rows20.Add(ty1);
             Storage.Rows20.Add(ty2);
         }
-
         FormType = param;
         DBO = reps;
         Init();
@@ -1876,7 +1832,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public void Init()
     {
-        string a = FormType.Replace(".", "");
+        var a = FormType.Replace(".", "");
         if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
         {
             WindowHeader =
@@ -1943,14 +1899,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public void SaveReport()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
             if (DBO != null)
             {
-                var tmp = new Reports
-                {
-                    Master = Storage
-                };
+                var tmp = new Reports { Master = Storage };
                 if (tmp.Master.Rows10.Count != 0)
                 {
                     tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;
@@ -1977,10 +1930,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
-                else
-                {
-
-                }
             }
             if (Storages != null)
             {
@@ -1997,7 +1946,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 Storages.Report_Collection.Sorted = false;
                 Storages.Report_Collection.QuickSort();
             }
-
             //Storages.Report_Collection.Sorted = false;
             //Storages.Report_Collection.QuickSort();
         }
@@ -2016,10 +1964,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     //    Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20;
     //}
 
-    int GetNumberInOrder(IKeyCollection lst)
+    private static int GetNumberInOrder(IKeyCollection lst)
     {
-        int maxNum = 0;
-
+        var maxNum = 0;
         foreach (var item in lst)
         {
             var frm = (INumberInOrder)item;
@@ -2028,20 +1975,17 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 maxNum++;
             }
         }
-
         return maxNum + 1;
     }
 
     #region ParseInnerText
-    private string[] ParseInnerTextRows(string Text)
+    private static string[] ParseInnerTextRows(string text)
     {
         List<string> lst = new();
-
-        bool comaFlag = false;
-        Text = Text.Replace("\r\n", "\n");
-
-        string txt = "";
-        foreach (char item in Text)
+        var comaFlag = false;
+        text = text.Replace("\r\n", "\n");
+        var txt = "";
+        foreach (var item in text)
         {
             if (item == '\"')
             {
@@ -2075,14 +2019,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         lst.Add("");
         return lst.ToArray();
     }
-    private string[] ParseInnerTextColumn(string Text)
+    private static string[] ParseInnerTextColumn(string text)
     {
         List<string> lst = new();
-
-        bool comaFlag = false;
-
-        string txt = "";
-        foreach (char item in Text)
+        var comaFlag = false;
+        var txt = "";
+        foreach (var item in text)
         {
             if (item == '\"')
             {
@@ -2112,7 +2054,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             lst.Add(txt);
         }
-
         return lst.ToArray();
     }
     #endregion

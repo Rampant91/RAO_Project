@@ -205,9 +205,9 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     {
         var dataContext = (ViewModels.MainWindowVM)DataContext;
 
-        Panel tab10 = this.FindControl<Panel>("Forms_p1_0");
-        Panel tab1X = this.FindControl<Panel>("Forms_p1_X");
-        Panel tab1B = this.FindControl<Panel>("Forms_p1_B");
+        var tab10 = this.FindControl<Panel>("Forms_p1_0");
+        var tab1X = this.FindControl<Panel>("Forms_p1_X");
+        var tab1B = this.FindControl<Panel>("Forms_p1_B");
         Short_Visual.Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
 
         #region Form10 DataGrid
@@ -217,9 +217,9 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
         SetCommandList(grd1, grd2, "1.0", dataContext);
         #endregion
 
-        Panel tab20 = this.FindControl<Panel>("Forms_p2_0");
-        Panel tab2X = this.FindControl<Panel>("Forms_p2_X");
-        Panel tab2B = this.FindControl<Panel>("Forms_p2_B");
+        var tab20 = this.FindControl<Panel>("Forms_p2_0");
+        var tab2X = this.FindControl<Panel>("Forms_p2_X");
+        var tab2B = this.FindControl<Panel>("Forms_p2_B");
         Short_Visual.Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
 
         #region Form20 DataGrid

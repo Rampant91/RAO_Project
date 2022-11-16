@@ -213,16 +213,16 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
     public DataGridColumns GetColumnStructure(string param = "")
     {
 
-        DataGridColumns RowNumberN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var RowNumberN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         RowNumberN.SizeCol = 100;
         RowNumberN.Binding = nameof(RowNumber);
             
-        DataGridColumns GraphNumberN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var GraphNumberN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         GraphNumberN.SizeCol = 100;
         GraphNumberN.Binding = nameof(GraphNumber);
         RowNumberN += GraphNumberN;
 
-        DataGridColumns CommentN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Comment)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var CommentN = ((Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Comment)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         CommentN.SizeCol = 660;
         CommentN.Binding = nameof(Comment);
         CommentN.IsTextWrapping = true;

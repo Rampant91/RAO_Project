@@ -12,12 +12,12 @@ public class ReportsToReport_Converter : IValueConverter
     {
         if (Value != null)
         {
-            IKeyCollection rps_coll = (IKeyCollection)Value;
+            var rps_coll = (IKeyCollection)Value;
             try
             {
                 if (rps_coll.Count != 0)
                 {
-                    Reports? rps = (Reports)rps_coll.Get<Reports>(0);
+                    var rps = (Reports)rps_coll.Get<Reports>(0);
                     last_item = rps;
                     if (rps != null)
                     {

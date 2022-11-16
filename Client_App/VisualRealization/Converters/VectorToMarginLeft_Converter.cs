@@ -11,7 +11,7 @@ public class VectorToMarginLeft_Converter : IValueConverter
     {
         if (Value != null)
         {
-            Vector rps = (Vector)Value;
+            var rps = (Vector)Value;
             try
             {
                     

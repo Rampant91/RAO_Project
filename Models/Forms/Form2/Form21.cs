@@ -438,14 +438,14 @@ public class Form21 : Form2, IBaseColor
             return false;
         }
 
-        bool a = value.Value >= 11 && value.Value <= 17;
-        bool b = value.Value >= 21 && value.Value <= 24;
-        bool c = value.Value >= 31 && value.Value <= 32;
-        bool d = value.Value >= 41 && value.Value <= 43;
-        bool e = value.Value >= 51 && value.Value <= 56;
-        bool f = value.Value >= 61 && value.Value <= 63;
-        bool g = value.Value >= 71 && value.Value <= 73;
-        bool h = value.Value is 19 or 29 or 39 or 49 or 99 or 79;
+        var a = value.Value >= 11 && value.Value <= 17;
+        var b = value.Value >= 21 && value.Value <= 24;
+        var c = value.Value >= 31 && value.Value <= 32;
+        var d = value.Value >= 41 && value.Value <= 43;
+        var e = value.Value >= 51 && value.Value <= 56;
+        var f = value.Value >= 61 && value.Value <= 63;
+        var g = value.Value >= 71 && value.Value <= 73;
+        var h = value.Value is 19 or 29 or 39 or 49 or 99 or 79;
         if (!(a || b || c || d || e || f || g || h))
         {
             value.AddError("Недопустимое значение");
@@ -598,16 +598,16 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
 
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -768,14 +768,14 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -1109,15 +1109,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
 
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -1211,14 +1211,14 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1278,8 +1278,8 @@ public class Form21 : Form2, IBaseColor
         {
             return true;
         }
-        string tmp = value1.Value;
-        int len = tmp.Length;
+        var tmp = value1.Value;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
@@ -1375,15 +1375,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1469,15 +1469,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1563,15 +1563,15 @@ public class Form21 : Form2, IBaseColor
         {
             return true;
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1657,15 +1657,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1987,15 +1987,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -2083,15 +2083,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -2158,8 +2158,8 @@ public class Form21 : Form2, IBaseColor
         {
             return true;
         }
-        string tmp = value1.Value;
-        int len = tmp.Length;
+        var tmp = value1.Value;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
@@ -2256,15 +2256,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -2350,15 +2350,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -2445,15 +2445,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -2548,15 +2548,15 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        string tmp = value1;
-        int len = tmp.Length;
+        var tmp = value1;
+        var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -2608,7 +2608,7 @@ public class Form21 : Form2, IBaseColor
         worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = RefineMachineName.Value == null ? "" : RefineMachineName.Value;
         worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = MachineCode.Value == null ? "" : MachineCode.Value;
         worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = string.IsNullOrEmpty(MachinePower.Value) || MachinePower.Value == "-" ? 0 : double.TryParse(MachinePower.Value.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MachinePower.Value;
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(NumberOfHoursPerYear.Value) || NumberOfHoursPerYear.Value == "-" ? 0 : int.TryParse(NumberOfHoursPerYear.Value.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : NumberOfHoursPerYear.Value;
+        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(NumberOfHoursPerYear.Value) || NumberOfHoursPerYear.Value == "-" ? 0 : int.TryParse(NumberOfHoursPerYear.Value.Replace("(", "").Replace(")", "").Replace(".", ","), out var valInt) ? valInt : NumberOfHoursPerYear.Value;
         worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = CodeRAOIn_DB;
         worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = StatusRAOIn_DB;
         worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = string.IsNullOrEmpty(VolumeIn_DB) || VolumeIn_DB == "-" ? 0 : double.TryParse(VolumeIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeIn_DB;
@@ -2670,7 +2670,7 @@ public class Form21 : Form2, IBaseColor
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            DataGridColumns NumberInOrderR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(NumberInOrderSum)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(NumberInOrderSum)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrderSum);
             NumberInOrderR.Blocked = true;
@@ -2678,154 +2678,154 @@ public class Form21 : Form2, IBaseColor
             #endregion
 
             #region RefineMachineName (2)
-            DataGridColumns RefineMachineNameR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RefineMachineNameR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RefineMachineNameR.SetSizeColToAllLevels(200);
             RefineMachineNameR.Binding = nameof(RefineMachineName);
             NumberInOrderR += RefineMachineNameR;
             #endregion
 
             #region MachineCode (3)
-            DataGridColumns MachineCodeR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MachineCodeR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MachineCodeR.SetSizeColToAllLevels(60);
             MachineCodeR.Binding = nameof(MachineCode);
             NumberInOrderR += MachineCodeR;
             #endregion
 
             #region MachinePower (4)
-            DataGridColumns MachinePowerR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MachinePowerR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MachinePowerR.SetSizeColToAllLevels(80);
             MachinePowerR.Binding = nameof(MachinePower);
             NumberInOrderR += MachinePowerR;
             #endregion
 
             #region NumberOfHoursPerYear (5)
-            DataGridColumns NumberOfHoursPerYearR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var NumberOfHoursPerYearR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             NumberOfHoursPerYearR.SetSizeColToAllLevels(110);
             NumberOfHoursPerYearR.Binding = nameof(NumberOfHoursPerYear);
             NumberInOrderR += NumberOfHoursPerYearR;
             #endregion
 
             #region CodeRAOIn (6)
-            DataGridColumns CodeRAOInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var CodeRAOInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             CodeRAOInR.SetSizeColToAllLevels(88);
             CodeRAOInR.Binding = nameof(CodeRAOIn);
             NumberInOrderR += CodeRAOInR;
             #endregion
 
             #region StatusRAOIn (7)
-            DataGridColumns StatusRAOInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var StatusRAOInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             StatusRAOInR.SetSizeColToAllLevels(88);
             StatusRAOInR.Binding = nameof(StatusRAOIn);
             NumberInOrderR += StatusRAOInR;
             #endregion
 
             #region VolumeIn (8)
-            DataGridColumns VolumeInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var VolumeInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             VolumeInR.SetSizeColToAllLevels(88);
             VolumeInR.Binding = nameof(VolumeIn);
             NumberInOrderR += VolumeInR;
             #endregion
 
             #region MassIn (9)
-            DataGridColumns MassInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MassInR.SetSizeColToAllLevels(88);
             MassInR.Binding = nameof(MassIn);
             NumberInOrderR += MassInR;
             #endregion
 
             #region QuantityIn (10)
-            DataGridColumns QuantityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             QuantityInR.SetSizeColToAllLevels(88);
             QuantityInR.Binding = nameof(QuantityIn);
             NumberInOrderR += QuantityInR;
             #endregion
 
             #region TritiumActivityIn (11)
-            DataGridColumns TritiumActivityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TritiumActivityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TritiumActivityInR.SetSizeColToAllLevels(163);
             TritiumActivityInR.Binding = nameof(TritiumActivityIn);
             NumberInOrderR += TritiumActivityInR;
             #endregion
 
             #region BetaGammaActivityIn (12)
-            DataGridColumns BetaGammaActivityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var BetaGammaActivityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             BetaGammaActivityInR.SetSizeColToAllLevels(160);
             BetaGammaActivityInR.Binding = nameof(BetaGammaActivityIn);
             NumberInOrderR += BetaGammaActivityInR;
             #endregion
 
             #region AlphaActivity (13)
-            DataGridColumns AlphaActivityR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AlphaActivityR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AlphaActivityR.SetSizeColToAllLevels(170);
             AlphaActivityR.Binding = nameof(AlphaActivityIn);
             NumberInOrderR += AlphaActivityR;
             #endregion
 
             #region TransuraniumActivity (14)
-            DataGridColumns TransuraniumActivityR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TransuraniumActivityR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TransuraniumActivityR.SetSizeColToAllLevels(200);
             TransuraniumActivityR.Binding = nameof(TransuraniumActivityIn);
             NumberInOrderR += TransuraniumActivityR;
             #endregion
 
             #region CodeRAOout (15)
-            DataGridColumns CodeRAOoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var CodeRAOoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             CodeRAOoutR.SetSizeColToAllLevels(88);
             CodeRAOoutR.Binding = nameof(CodeRAOout);
             NumberInOrderR += CodeRAOoutR;
             #endregion
 
             #region StatusRAOout (16)
-            DataGridColumns StatusRAOoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var StatusRAOoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             StatusRAOoutR.SetSizeColToAllLevels(88);
             StatusRAOoutR.Binding = nameof(StatusRAOout);
             NumberInOrderR += StatusRAOoutR;
             #endregion
 
             #region VolumeOut (17)
-            DataGridColumns VolumeOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var VolumeOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             VolumeOutR.SetSizeColToAllLevels(88);
             VolumeOutR.Binding = nameof(VolumeOut);
             NumberInOrderR += VolumeOutR;
             #endregion
 
             #region MassOut (18)
-            DataGridColumns MassOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MassOutR.SetSizeColToAllLevels(88);
             MassOutR.Binding = nameof(MassOut);
             NumberInOrderR += MassOutR;
             #endregion
 
             #region QuantityOZIIIout (19)
-            DataGridColumns QuantityOZIIIoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityOZIIIoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             QuantityOZIIIoutR.SetSizeColToAllLevels(88);
             QuantityOZIIIoutR.Binding = nameof(QuantityOZIIIout);
             NumberInOrderR += QuantityOZIIIoutR;
             #endregion
 
             #region TritiumActivityOut (20)
-            DataGridColumns TritiumActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TritiumActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TritiumActivityOutR.SetSizeColToAllLevels(163);
             TritiumActivityOutR.Binding = nameof(TritiumActivityOut);
             NumberInOrderR += TritiumActivityOutR;
             #endregion
 
             #region BetaGammaActivityOut (21)
-            DataGridColumns BetaGammaActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var BetaGammaActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             BetaGammaActivityOutR.SetSizeColToAllLevels(170);
             BetaGammaActivityOutR.Binding = nameof(BetaGammaActivityOut);
             NumberInOrderR += BetaGammaActivityOutR;
             #endregion
 
             #region AlphaActivityOut (22)
-            DataGridColumns AlphaActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AlphaActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AlphaActivityOutR.SetSizeColToAllLevels(170);
             AlphaActivityOutR.Binding = nameof(AlphaActivityOut);
             NumberInOrderR += AlphaActivityOutR;
             #endregion
 
             #region TransuraniumActivityOut (23)
-            DataGridColumns TransuraniumActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TransuraniumActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TransuraniumActivityOutR.SetSizeColToAllLevels(163);
             TransuraniumActivityOutR.Binding = nameof(TransuraniumActivityOut);
             NumberInOrderR += TransuraniumActivityOutR;

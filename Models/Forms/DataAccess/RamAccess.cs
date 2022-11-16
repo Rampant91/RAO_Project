@@ -168,12 +168,12 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
     public IEnumerable GetErrors(string propertyName)
     {
-        List<string> tmp = _errorsByPropertyName.Count > 0 ?
+        var tmp = _errorsByPropertyName.Count > 0 ?
             _errorsByPropertyName : null;
         if (tmp != null)
         {
             List<Exception> lst = new();
-            foreach (string item in tmp)
+            foreach (var item in tmp)
             {
                 lst.Add(new Exception(item));
             }

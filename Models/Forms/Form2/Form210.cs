@@ -331,8 +331,8 @@ public class Form210 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -417,8 +417,8 @@ public class Form210 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -506,8 +506,8 @@ public class Form210 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -598,8 +598,8 @@ public class Form210 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -686,8 +686,8 @@ public class Form210 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -808,68 +808,68 @@ public class Form210 : Form2
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            DataGridColumns NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region IndicatorName (2)
-            DataGridColumns IndicatorNameR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(IndicatorName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var IndicatorNameR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(IndicatorName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             IndicatorNameR.SetSizeColToAllLevels(163);
             IndicatorNameR.Binding = nameof(IndicatorName);
             NumberInOrderR += IndicatorNameR;
             #endregion
             #region PlotName (3)
-            DataGridColumns PlotNameR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PlotNameR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotNameR.SetSizeColToAllLevels(163);
             PlotNameR.Binding = nameof(PlotName);
             NumberInOrderR += PlotNameR;
             #endregion
             #region PlotKadastrNumber (4)
-            DataGridColumns PlotKadastrNumberR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PlotKadastrNumberR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotKadastrNumberR.SetSizeColToAllLevels(173);
             PlotKadastrNumberR.Binding = nameof(PlotKadastrNumber);
             NumberInOrderR += PlotKadastrNumberR;
             #endregion
             #region PlotCode (5)
-            DataGridColumns PlotCodeR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PlotCodeR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotCodeR.SetSizeColToAllLevels(88);
             PlotCodeR.Binding = nameof(PlotCode);
             NumberInOrderR += PlotCodeR;
             #endregion
             #region InfectedArea (6)
-            DataGridColumns InfectedAreaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var InfectedAreaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             InfectedAreaR.SetSizeColToAllLevels(188);
             InfectedAreaR.Binding = nameof(InfectedArea);
             NumberInOrderR += InfectedAreaR;
             #endregion
             #region AvgGammaRaysDosePower (7)
-            DataGridColumns AvgGammaRaysDosePowerR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(AvgGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AvgGammaRaysDosePowerR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(AvgGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AvgGammaRaysDosePowerR.SetSizeColToAllLevels(113);
             AvgGammaRaysDosePowerR.Binding = nameof(AvgGammaRaysDosePower);
             NumberInOrderR += AvgGammaRaysDosePowerR;
             #endregion
             #region MaxGammaRaysDosePower (8)
-            DataGridColumns MaxGammaRaysDosePowerR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(MaxGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MaxGammaRaysDosePowerR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(MaxGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MaxGammaRaysDosePowerR.SetSizeColToAllLevels(143);
             MaxGammaRaysDosePowerR.Binding = nameof(MaxGammaRaysDosePower);
             NumberInOrderR += MaxGammaRaysDosePowerR;
             #endregion
             #region WasteDensityAlpha (9)
-            DataGridColumns WasteDensityAlphaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityAlpha)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var WasteDensityAlphaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityAlpha)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             WasteDensityAlphaR.SetSizeColToAllLevels(162);
             WasteDensityAlphaR.Binding = nameof(WasteDensityAlpha);
             NumberInOrderR += WasteDensityAlphaR;
             #endregion
             #region WasteDensityBeta (10)
-            DataGridColumns WasteDensityBetaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityBeta)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var WasteDensityBetaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityBeta)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             WasteDensityBetaR.SetSizeColToAllLevels(154);
             WasteDensityBetaR.Binding = nameof(WasteDensityBeta);
             NumberInOrderR += WasteDensityBetaR;
             #endregion
             #region FcpNumber (11)
-            DataGridColumns FcpNumberR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var FcpNumberR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             FcpNumberR.SetSizeColToAllLevels(163);
             FcpNumberR.Binding = nameof(FcpNumber);
             NumberInOrderR += FcpNumberR;

@@ -200,13 +200,13 @@ namespace Spravochniki
         private static List<Tuple<string, long, long>> ReadCsv(string path)
         {
             var res = new List<Tuple<string, long, long>>();
-            string[] rows = File.ReadAllLines(path);
-            for (int k = 1; k < rows.Count(); k++)
+            var rows = File.ReadAllLines(path);
+            for (var k = 1; k < rows.Count(); k++)
             {
                 var tmp = rows[k].Split(";");
-                string i1 = tmp[0];
-                long i2 = long.Parse(tmp[1]);
-                long i3 = long.Parse(tmp[2]);
+                var i1 = tmp[0];
+                var i2 = long.Parse(tmp[1]);
+                var i3 = long.Parse(tmp[2]);
                 res.Add(new Tuple<string, long, long>(i1, i2, i3));
             }
             return res;
@@ -215,12 +215,12 @@ namespace Spravochniki
         private static List<Tuple<string, string>> ReadCsv1(string path)
         {
             var res = new List<Tuple<string, string>>();
-            string[] rows = File.ReadAllLines(path);
-            for (int k = 1; k < rows.Count(); k++)
+            var rows = File.ReadAllLines(path);
+            for (var k = 1; k < rows.Count(); k++)
             {
                 var tmp = rows[k].Split(";", 2);
-                string i1 = tmp[0];
-                string i2 = tmp[1];
+                var i1 = tmp[0];
+                var i2 = tmp[1];
                 res.Add(new Tuple<string, string>(i1, i2));
             }
             return res;
@@ -228,12 +228,12 @@ namespace Spravochniki
         private static List<Tuple<string, string>> ReadCsvFor11(string path)
         {
             var res = new List<Tuple<string, string>>();
-            string[] rows = File.ReadAllLines(path);
-            for (int k = 3; k < rows.Count(); k++)
+            var rows = File.ReadAllLines(path);
+            for (var k = 3; k < rows.Count(); k++)
             {
                 var tmp = rows[k].Split(";", 7);
-                string i1 = tmp[1];
-                string i2 = tmp[5];
+                var i1 = tmp[1];
+                var i2 = tmp[5];
                 res.Add(new Tuple<string, string>(i1, i2));
             }
             return res;

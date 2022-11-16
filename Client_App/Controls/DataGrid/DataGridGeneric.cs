@@ -262,17 +262,17 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     public string GetSum()
     {
-        object[] answ = new object[3];
+        var answ = new object[3];
         answ[0] = SelectedItems;
         answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
         answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-        IKeyCollection collection = answ[0] as IKeyCollection;
-        int minColumn = Convert.ToInt32(answ[1]) + 1;
-        int maxColumn = Convert.ToInt32(answ[2]) + 1;
-        Double _s = 0.0;
+        var collection = answ[0] as IKeyCollection;
+        var minColumn = Convert.ToInt32(answ[1]) + 1;
+        var maxColumn = Convert.ToInt32(answ[2]) + 1;
+        var _s = 0.0;
         if (minColumn == maxColumn)
         {
-            foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
+            foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
             {
                 var props = item.GetType().GetProperties();
                 foreach (var prop in props)
@@ -548,7 +548,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
                 if (val != null && Items != null)
                 {
-                    int maxpage = Items.Count / PageSize + 1;
+                    var maxpage = Items.Count / PageSize + 1;
                     if (val.ToString() != _nowPage)
                     {
                         if (val <= maxpage && val >= 1)
@@ -630,7 +630,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 return SelectedCells;
             case "Copy":
                 {
-                    object[] answ = new object[3];
+                    var answ = new object[3];
                     answ[0] = SelectedItems;
                     answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
                     answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
@@ -638,7 +638,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
             case "Paste" or "Del":
                 {
-                    object[] answ = new object[3];
+                    var answ = new object[3];
                     answ[0] = SelectedItems;
                     answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
                     answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
@@ -646,8 +646,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
             case "SelectAll":
                 {
-                    int maxRow = PageSize;
-                    int maxColumn = Rows[0].Children.Count;
+                    var maxRow = PageSize;
+                    var maxColumn = Rows[0].Children.Count;
                     FirstPressedItem[0] = 0;
                     FirstPressedItem[1] = 0;
                     LastPressedItem[0] = maxRow - 1;
@@ -704,7 +704,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (_Columns == null)
             {
                 var t = new T();
-                string tmp = "";
+                var tmp = "";
                 if (Name == "Form1AllDataGrid_")
                 {
                     tmp = "1.0";
@@ -877,7 +877,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
             var tmp1 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row && ((Cell)item.Children.FirstOrDefault()).Column != Column);
 
-            foreach (DataGridRow item in tmp1)
+            foreach (var item in tmp1)
             {
                 item.ChooseColor = (SolidColorBrush)Background;
             }
@@ -888,7 +888,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
             var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row && ((Cell)item.Children.FirstOrDefault()).Column == Column);
 
-            foreach (DataGridRow item in tmp2)
+            foreach (var item in tmp2)
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
@@ -1098,7 +1098,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     {
         var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
-        bool doSetItemFlag = false;
+        var doSetItemFlag = false;
 
         if (paramKey is PointerUpdateKind.LeftButtonPressed or PointerUpdateKind.RightButtonPressed)
         {
@@ -1177,7 +1177,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 SetSelectedControls();
                 if (paramKey == PointerUpdateKind.LeftButtonPressed)
                 {
-                    Cell item = (Cell)SelectedCells.FirstOrDefault();
+                    var item = (Cell)SelectedCells.FirstOrDefault();
                     if (item != null)
                     {
                         if (item.Control is TextBox)
@@ -1319,7 +1319,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             if (tmp_coll.Count != 0)
             {
-                for (int i = offset; i < offsetMax; i++)
+                for (var i = offset; i < offsetMax; i++)
                 {
                     if (count < PageSize && i < tmp_coll.Count)
                     {
@@ -1340,7 +1340,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
             if (tmp_coll.Count < offsetMax)
             {
-                for (int i = tmp_coll.Count; i < offsetMax; i++)
+                for (var i = tmp_coll.Count; i < offsetMax; i++)
                 {
                     try
                     {
@@ -1355,7 +1355,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             var t = typeof(T).FindInterfaces((x, y) => x.ToString() == y.ToString(), typeof(IBaseColor).FullName);
             if (t.Count() != 0)
             {
-                for (int i = 0; i < PageSize; i++)
+                for (var i = 0; i < PageSize; i++)
                 {
                     if (Rows[i].DataContext is IBaseColor)
                     {
@@ -1364,7 +1364,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         {
 
                             var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == i);
-                            int index = (int)_t.BaseColor;
+                            var index = (int)_t.BaseColor;
                             var color = IBaseColor.ColorTypeList[index];
 
                             foreach (Cell item in tmp2)
@@ -1399,7 +1399,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 FirstPressedItem[1] = LastPressedItem[1];
             }
             SetSelectedControls();
-            Cell item = (Cell)SelectedCells.FirstOrDefault();
+            var item = (Cell)SelectedCells.FirstOrDefault();
             if (item != null)
             {
                 if (item.Control is TextBox)
@@ -1425,7 +1425,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 FirstPressedItem[1] = LastPressedItem[1];
             }
             SetSelectedControls();
-            Cell item = (Cell)SelectedCells.FirstOrDefault();
+            var item = (Cell)SelectedCells.FirstOrDefault();
             if (item != null)
             {
                 if (item.Control is TextBox)
@@ -1451,7 +1451,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 FirstPressedItem[1] = LastPressedItem[1];
             }
             SetSelectedControls();
-            Cell item = (Cell)SelectedCells.FirstOrDefault();
+            var item = (Cell)SelectedCells.FirstOrDefault();
             if (item != null)
             {
                 if (item.Control is TextBox)
@@ -1477,7 +1477,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 FirstPressedItem[1] = LastPressedItem[1];
             }
             SetSelectedControls();
-            Cell item = (Cell)SelectedCells.FirstOrDefault();
+            var item = (Cell)SelectedCells.FirstOrDefault();
             if (item != null)
             {
                 if (item.Control is TextBox)
@@ -1579,7 +1579,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
         else
         {
-            int Level = ls.Level;
+            var Level = ls.Level;
 
             if (!IsAutoSizable)
             {
@@ -1591,7 +1591,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             HeadersColumns.Clear();
             var tre = ls.GetLevel(Level - 1);
-            for (int i = Level - 1; i >= 1; i--)
+            for (var i = Level - 1; i >= 1; i--)
             {
                 Grid HeaderRow = new();
                 var count = 0;
@@ -1687,7 +1687,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Rows.Clear();
             var lst = ls.GetLevel(1);
 
-            for (int i = 0; i < PageSize; i++)
+            for (var i = 0; i < PageSize; i++)
             {
                 var Column = 0;
                 var count = 0;
@@ -1978,7 +1978,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         else
         {
             Panel pnl = new();
-            int h = 500;
+            var h = 500;
             Canvas CenterCanvas = new() { Height = h };
             //CenterPanel.Height = h;
 
@@ -2015,7 +2015,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (!IsAutoSizable)
             {
                 double w = 0;
-                int i = 0;
+                var i = 0;
                 var RDef = ((DataGridRow)CenterStackPanel.Children.FirstOrDefault()).ColumnDefinitions;
                 foreach (var r in RDef)
                 {

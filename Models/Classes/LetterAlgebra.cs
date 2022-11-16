@@ -28,11 +28,11 @@ public class LetterAlgebra
 
     public static LetterAlgebra operator++(LetterAlgebra obj)
     {
-        int zap = 1;
+        var zap = 1;
 
         if (obj != null)
         {
-            for (int i = obj._innerNumberRng.Count() - 1; i >= 0; i--)
+            for (var i = obj._innerNumberRng.Count() - 1; i >= 0; i--)
             {
                 if (obj._innerNumberRng[i] + zap == 'Z' + zap)
                 {

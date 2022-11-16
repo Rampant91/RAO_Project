@@ -274,8 +274,8 @@ public class Form26 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -368,8 +368,8 @@ public class Form26 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -515,8 +515,8 @@ public class Form26 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -585,50 +585,50 @@ public class Form26 : Form2
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            DataGridColumns NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region ObservedSourceNumber (2)
-            DataGridColumns ObservedSourceNumberR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ObservedSourceNumberR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ObservedSourceNumberR.SetSizeColToAllLevels(164);
             ObservedSourceNumberR.Binding = nameof(ObservedSourceNumber);
             NumberInOrderR += ObservedSourceNumberR;
             #endregion
             #region ControlledAreaName (3)
-            DataGridColumns ControlledAreaNameR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ControlledAreaNameR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ControlledAreaNameR.SetSizeColToAllLevels(166);
             ControlledAreaNameR.Binding = nameof(ControlledAreaName);
             NumberInOrderR += ControlledAreaNameR;
             #endregion
             #region SupposedWasteSource (4)
-            DataGridColumns SupposedWasteSourceR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var SupposedWasteSourceR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SupposedWasteSourceR.SetSizeColToAllLevels(238);
             SupposedWasteSourceR.Binding = nameof(SupposedWasteSource);
             NumberInOrderR += SupposedWasteSourceR;
             #endregion
             #region DistanceToWasteSource (5)
-            DataGridColumns DistanceToWasteSourceR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DistanceToWasteSourceR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DistanceToWasteSourceR.SetSizeColToAllLevels(337);
             DistanceToWasteSourceR.Binding = nameof(DistanceToWasteSource);
             NumberInOrderR += DistanceToWasteSourceR;
             #endregion
             #region TestDepth (6)
-            DataGridColumns TestDepthR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TestDepthR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TestDepthR.SetSizeColToAllLevels(180);
             TestDepthR.Binding = nameof(TestDepth);
             NumberInOrderR += TestDepthR;
             #endregion
             #region RadionuclidName (7)
-            DataGridColumns RadionuclidNameR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RadionuclidNameR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidNameR.SetSizeColToAllLevels(230);
             RadionuclidNameR.Binding = nameof(RadionuclidName);
             NumberInOrderR += RadionuclidNameR;
             #endregion
             #region AverageYearConcentration (8)
-            DataGridColumns AverageYearConcentrationR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AverageYearConcentrationR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AverageYearConcentrationR.SetSizeColToAllLevels(200);
             AverageYearConcentrationR.Binding = nameof(AverageYearConcentration);
             NumberInOrderR += AverageYearConcentrationR;

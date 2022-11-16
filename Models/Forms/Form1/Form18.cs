@@ -346,8 +346,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -453,8 +453,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -556,8 +556,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
@@ -617,12 +617,12 @@ public class Form18 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        string[] nuclids = value.Value.Split(";");
-        for (int k = 0; k < nuclids.Length; k++)
+        var nuclids = value.Value.Split(";");
+        for (var k = 0; k < nuclids.Length; k++)
         {
             nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
         }
-        bool flag = true;
+        var flag = true;
         foreach (var nucl in nuclids)
         {
             var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
@@ -706,8 +706,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -773,7 +773,7 @@ public class Form18 : Form1
     {
         if (args.PropertyName == "Value")
         {
-            string value1 = ((RamAccess<string>)Value).Value;
+            var value1 = ((RamAccess<string>)Value).Value;
             if (value1 != null)
                 if (Spravochniks.OKSM.Contains(value1.ToUpper()))
                 {
@@ -1281,8 +1281,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1362,8 +1362,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1448,8 +1448,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1533,8 +1533,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1618,8 +1618,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1703,8 +1703,8 @@ public class Form18 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                              NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                     NumberStyles.AllowExponent;
         try
         {
             if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
@@ -1827,7 +1827,7 @@ public class Form18 : Form1
         }
         try
         {
-            int tmp = int.Parse(value.Value);
+            var tmp = int.Parse(value.Value);
             if (!(tmp > 0 && tmp <= 100))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -1894,20 +1894,20 @@ public class Form18 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        bool a0 = value.Value == "01";
-        bool a2 = value.Value == "18";
-        bool a3 = value.Value == "55";
-        bool a4 = value.Value == "63";
-        bool a5 = value.Value == "64";
-        bool a6 = value.Value == "68";
-        bool a7 = value.Value == "97";
-        bool a8 = value.Value == "98";
-        bool a9 = value.Value == "99";
-        bool a12 = value.Value == "51";
-        bool a13 = value.Value == "52";
-        bool a14 = value.Value == "10";
-        bool a10 = int.Parse(value.Value) >= 21 && int.Parse(value.Value) <= 29;
-        bool a11 = int.Parse(value.Value) >= 31 && int.Parse(value.Value) <= 39;
+        var a0 = value.Value == "01";
+        var a2 = value.Value == "18";
+        var a3 = value.Value == "55";
+        var a4 = value.Value == "63";
+        var a5 = value.Value == "64";
+        var a6 = value.Value == "68";
+        var a7 = value.Value == "97";
+        var a8 = value.Value == "98";
+        var a9 = value.Value == "99";
+        var a12 = value.Value == "51";
+        var a13 = value.Value == "52";
+        var a14 = value.Value == "10";
+        var a10 = int.Parse(value.Value) >= 21 && int.Parse(value.Value) <= 29;
+        var a11 = int.Parse(value.Value) >= 31 && int.Parse(value.Value) <= 39;
         if (!(a0 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14))
         {
             value.AddError("Код операции не может быть использован в форме 1.7");
@@ -1925,7 +1925,7 @@ public class Form18 : Form1
     protected override bool DocumentVid_Validation(RamAccess<byte?> value)
     {
         value.ClearErrors();
-        foreach (Tuple<byte?, string> item in Spravochniks.SprDocumentVidName)
+        foreach (var item in Spravochniks.SprDocumentVidName)
         {
             if (value.Value == item.Item1)
             {
@@ -1965,9 +1965,9 @@ public class Form18 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        bool b = OperationCode.Value == "68";
-        bool c = OperationCode.Value is "52" or "55";
-        bool d = OperationCode.Value is "18" or "51";
+        var b = OperationCode.Value == "68";
+        var c = OperationCode.Value is "52" or "55";
+        var d = OperationCode.Value is "18" or "51";
         if (b || c || d)
         {
             if (!tmp.Equals(OperationDate))
@@ -2021,7 +2021,7 @@ public class Form18 : Form1
         worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = PassportNumber_DB;
         worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = Volume6_DB is "" or "-" or null ? 0  : double.TryParse(Volume6_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume6_DB;
         worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = Mass7_DB is "" or "-" or null ? 0  : double.TryParse(Mass7_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass7_DB;
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = SaltConcentration_DB is "" or "-" or null ? 0  : int.TryParse(SaltConcentration_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out int valInt) ? valInt : SaltConcentration_DB;
+        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = SaltConcentration_DB is "" or "-" or null ? 0  : int.TryParse(SaltConcentration_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out var valInt) ? valInt : SaltConcentration_DB;
         worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = Radionuclids_DB;
         worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = SpecificActivity_DB is "" or "-" or null ? 0  : double.TryParse(SpecificActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivity_DB;
         worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = DocumentVid_DB;
@@ -2089,170 +2089,170 @@ public class Form18 : Form1
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            DataGridColumns NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region OperationCode (2)
-            DataGridColumns OperationCodeR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var OperationCodeR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             OperationCodeR.SetSizeColToAllLevels(88);
             OperationCodeR.Binding = nameof(OperationCode);
             NumberInOrderR += OperationCodeR;
             #endregion
             #region OperationDate (3)
-            DataGridColumns OperationDateR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var OperationDateR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             OperationDateR.SetSizeColToAllLevels(88);
             OperationDateR.Binding = nameof(OperationDate);
             NumberInOrderR += OperationDateR;
             #endregion
             #region IndividualNumberZHRO (4)
-            DataGridColumns IndividualNumberZHROR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(IndividualNumberZHRO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var IndividualNumberZHROR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(IndividualNumberZHRO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             IndividualNumberZHROR.SetSizeColToAllLevels(320);
             IndividualNumberZHROR.Binding = nameof(IndividualNumberZHRO);
             NumberInOrderR += IndividualNumberZHROR;
             #endregion
             #region PassportNumber (5)
-            DataGridColumns PassportNumberR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(PassportNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PassportNumberR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(PassportNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PassportNumberR.SetSizeColToAllLevels(100);
             PassportNumberR.Binding = nameof(PassportNumber);
             NumberInOrderR += PassportNumberR;
             #endregion
             #region Volume6 (6)
-            DataGridColumns Volume6R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Volume6)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var Volume6R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Volume6)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             Volume6R.SetSizeColToAllLevels(88);
             Volume6R.Binding = nameof(Volume6);
             NumberInOrderR += Volume6R;
             #endregion
             #region Mass7 (7)
-            DataGridColumns Mass7R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Mass7)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var Mass7R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Mass7)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             Mass7R.SetSizeColToAllLevels(88);
             Mass7R.Binding = nameof(Mass7);
             NumberInOrderR += Mass7R;
             #endregion
             #region SaltConcentration (8)
-            DataGridColumns SaltConcentrationR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(SaltConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var SaltConcentrationR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(SaltConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SaltConcentrationR.SetSizeColToAllLevels(125);
             SaltConcentrationR.Binding = nameof(SaltConcentration);
             NumberInOrderR += SaltConcentrationR;
             #endregion
             #region Radionuclids (9)
-            DataGridColumns RadionuclidsR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RadionuclidsR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidsR.SetSizeColToAllLevels(170);
             RadionuclidsR.Binding = nameof(Radionuclids);
             NumberInOrderR += RadionuclidsR;
             #endregion
             #region SpecificActivity (10)
-            DataGridColumns SpecificActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(SpecificActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var SpecificActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(SpecificActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SpecificActivityR.SetSizeColToAllLevels(163);
             SpecificActivityR.Binding = nameof(SpecificActivity);
             NumberInOrderR += SpecificActivityR;
             #endregion
             #region DocumentVid (11)
-            DataGridColumns DocumentVidR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DocumentVidR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentVidR.SetSizeColToAllLevels(88);
             DocumentVidR.Binding = nameof(DocumentVid);
             NumberInOrderR += DocumentVidR;
             #endregion
             #region DocumentNumber (12)
-            DataGridColumns DocumentNumberR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DocumentNumberR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentNumberR.SetSizeColToAllLevels(103);
             DocumentNumberR.Binding = nameof(DocumentNumber);
             NumberInOrderR += DocumentNumberR;
             #endregion
             #region DocumentDate (13)
-            DataGridColumns DocumentDateR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DocumentDateR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentDateR.SetSizeColToAllLevels(88);
             DocumentDateR.Binding = nameof(DocumentDate);
             NumberInOrderR += DocumentDateR;
             #endregion
             #region ProviderOrRecieverOKPO (14)
-            DataGridColumns ProviderOrRecieverOKPOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ProviderOrRecieverOKPOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ProviderOrRecieverOKPOR.SetSizeColToAllLevels(100);
             ProviderOrRecieverOKPOR.Binding = nameof(ProviderOrRecieverOKPO);
             NumberInOrderR += ProviderOrRecieverOKPOR;
             #endregion
             #region TransporterOKPO (15)
-            DataGridColumns TransporterOKPOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(TransporterOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TransporterOKPOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(TransporterOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TransporterOKPOR.SetSizeColToAllLevels(163);
             TransporterOKPOR.Binding = nameof(TransporterOKPO);
             NumberInOrderR += TransporterOKPOR;
             #endregion
             #region StoragePlaceName (16)
-            DataGridColumns StoragePlaceNameR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var StoragePlaceNameR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             StoragePlaceNameR.SetSizeColToAllLevels(103);
             StoragePlaceNameR.Binding = nameof(StoragePlaceName);
             NumberInOrderR += StoragePlaceNameR;
             #endregion
             #region StoragePlaceCode (17)
-            DataGridColumns StoragePlaceCodeR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var StoragePlaceCodeR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             StoragePlaceCodeR.SetSizeColToAllLevels(88);
             StoragePlaceCodeR.Binding = nameof(StoragePlaceCode);
             NumberInOrderR += StoragePlaceCodeR;
             #endregion
             #region CodeRAO (18)
-            DataGridColumns CodeRAOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var CodeRAOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             CodeRAOR.SetSizeColToAllLevels(88);
             CodeRAOR.Binding = nameof(CodeRAO);
             NumberInOrderR += CodeRAOR;
             #endregion
             #region StatusRAO (19)
-            DataGridColumns StatusRAOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(StatusRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var StatusRAOR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(StatusRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             StatusRAOR.SetSizeColToAllLevels(88);
             StatusRAOR.Binding = nameof(StatusRAO);
             NumberInOrderR += StatusRAOR;
             #endregion
             #region Volume20 (20)
-            DataGridColumns Volume20R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Volume20)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var Volume20R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Volume20)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             Volume20R.SetSizeColToAllLevels(88);
             Volume20R.Binding = nameof(Volume20);
             NumberInOrderR += Volume20R;
             #endregion
             #region Mass21 (21)
-            DataGridColumns Mass21R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Mass21)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var Mass21R = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Mass21)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             Mass21R.SetSizeColToAllLevels(88);
             Mass21R.Binding = nameof(Mass21);
             NumberInOrderR += Mass21R;
             #endregion
             #region TritiumActivity (22)
-            DataGridColumns TritiumActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(TritiumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TritiumActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(TritiumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TritiumActivityR.SetSizeColToAllLevels(163);
             TritiumActivityR.Binding = nameof(TritiumActivity);
             NumberInOrderR += TritiumActivityR;
             #endregion
             #region BetaGammaActivity (23)
-            DataGridColumns BetaGammaActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(BetaGammaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var BetaGammaActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(BetaGammaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             BetaGammaActivityR.SetSizeColToAllLevels(160);
             BetaGammaActivityR.Binding = nameof(BetaGammaActivity);
             NumberInOrderR += BetaGammaActivityR;
             #endregion
             #region AlphaActivity (24)
-            DataGridColumns AlphaActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(AlphaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AlphaActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(AlphaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AlphaActivityR.SetSizeColToAllLevels(163);
             AlphaActivityR.Binding = nameof(AlphaActivity);
             NumberInOrderR += AlphaActivityR;
             #endregion
             #region TransuraniumActivity (25)
-            DataGridColumns TransuraniumActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(TransuraniumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TransuraniumActivityR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(TransuraniumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TransuraniumActivityR.SetSizeColToAllLevels(200);
             TransuraniumActivityR.Binding = nameof(TransuraniumActivity);
             NumberInOrderR += TransuraniumActivityR;
             #endregion
             #region RefineOrSortRAOCode (26)
-            DataGridColumns RefineOrSortRAOCodeR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(RefineOrSortRAOCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RefineOrSortRAOCodeR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(RefineOrSortRAOCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RefineOrSortRAOCodeR.SetSizeColToAllLevels(120);
             RefineOrSortRAOCodeR.Binding = nameof(RefineOrSortRAOCode);
             NumberInOrderR += RefineOrSortRAOCodeR;
             #endregion
             #region Subsidy (27)
-            DataGridColumns SubsidyR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Subsidy)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var SubsidyR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(Subsidy)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SubsidyR.SetSizeColToAllLevels(88);
             SubsidyR.Binding = nameof(Subsidy);
             NumberInOrderR += SubsidyR;
             #endregion
             #region FcpNumber (28)
-            DataGridColumns FcpNumberR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var FcpNumberR = ((Form_PropertyAttribute)typeof(Form18).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             FcpNumberR.SetSizeColToAllLevels(163);
             FcpNumberR.Binding = nameof(FcpNumber);
             NumberInOrderR += FcpNumberR;

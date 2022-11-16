@@ -19,10 +19,10 @@ public class ObservableDictionary<TKey, TValue> :
     readonly IDictionary<TKey, TValue> dictionary;
 
     /// <summary>Event raised when the collection changes.</summary>
-    public event NotifyCollectionChangedEventHandler CollectionChanged = (sender, args) => { };
+    public event NotifyCollectionChangedEventHandler CollectionChanged = (_, _) => { };
 
     /// <summary>Event raised when a property on the collection changes.</summary>
-    public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
+    public event PropertyChangedEventHandler PropertyChanged = (_, _) => { };
 
     /// <summary>
     /// Initializes an instance of the class.

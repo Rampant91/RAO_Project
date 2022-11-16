@@ -7,8 +7,8 @@ public partial class DataModel_11 : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        string a = "\"Id\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
-                   "DocumentDate_DB\",\"ExpirationDate_DB\",\"DocumentName_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var a = "\"Id\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
+                "DocumentDate_DB\",\"ExpirationDate_DB\",\"DocumentName_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql("INSERT INTO FORM_23_NEW_COLUMN (\"IdNew\",\"QuantityOZIII_DB\") SELECT \"Id\",CAST(\"QuantityOZIII_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_23\";");
         migrationBuilder.Sql($"INSERT INTO \"form_23_tmp\" ({a}) SELECT {a} FROM \"form_23\"");
         migrationBuilder.DropTable(name: "form_23");
@@ -46,8 +46,8 @@ public partial class DataModel_11 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string b = "\"Id\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"QuantityOZIII_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
-                   "DocumentDate_DB\",\"ExpirationDate_DB\",\"DocumentName_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var b = "\"Id\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"QuantityOZIII_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
+                "DocumentDate_DB\",\"ExpirationDate_DB\",\"DocumentName_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_23_TEMP\" ({b}) SELECT {b} FROM FORM_23_NEW_COLUMN INNER JOIN \"form_23_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_23_NEW_COLUMN");
@@ -56,12 +56,12 @@ public partial class DataModel_11 : Migration
 
     protected override void Down(MigrationBuilder migrationBuilder)//NOT READY YET
     {
-        string a = "\"Id\",\"Sum_DB\",\"PackName_DB\",\"PackName_Hidden_Priv\",\"PackType_DB\",\"PackType_Hidden_Priv\",\"PackNumber_DB\",\"PackNumber_Hidden_Priv\",\"PackFactoryNumber_DB\",\"" +
-                   "PackFactoryNumber_Hidden_Priv\",\"FormingDate_DB\",\"FormingDate_Hidden_Priv\",\"Volume_DB\",\"Volume_Hidden_Priv\",\"Mass_DB\",\"Mass_Hidden_Priv\",\"PassportNumber_DB\",\"PassportNumber_Hidden_Priv\",\"" +
-                   "Radionuclids_DB\",\"SpecificActivity_DB\",\"ProviderOrRecieverOKPO_DB\",\"ProviderOrRecieverOKPO_Hidden_~\",\"TransporterOKPO_DB\",\"TransporterOKPO_Hidden_Priv\",\"StoragePlaceName_DB\",\"" +
-                   "StoragePlaceName_Hidden_Priv\",\"StoragePlaceCode_DB\",\"StoragePlaceCode_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"CodeRAO_DB\",\"StatusRAO_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\",\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"RefineOrSortRAOCode_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"" +
-                   "NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
-                   "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+        var a = "\"Id\",\"Sum_DB\",\"PackName_DB\",\"PackName_Hidden_Priv\",\"PackType_DB\",\"PackType_Hidden_Priv\",\"PackNumber_DB\",\"PackNumber_Hidden_Priv\",\"PackFactoryNumber_DB\",\"" +
+                "PackFactoryNumber_Hidden_Priv\",\"FormingDate_DB\",\"FormingDate_Hidden_Priv\",\"Volume_DB\",\"Volume_Hidden_Priv\",\"Mass_DB\",\"Mass_Hidden_Priv\",\"PassportNumber_DB\",\"PassportNumber_Hidden_Priv\",\"" +
+                "Radionuclids_DB\",\"SpecificActivity_DB\",\"ProviderOrRecieverOKPO_DB\",\"ProviderOrRecieverOKPO_Hidden_~\",\"TransporterOKPO_DB\",\"TransporterOKPO_Hidden_Priv\",\"StoragePlaceName_DB\",\"" +
+                "StoragePlaceName_Hidden_Priv\",\"StoragePlaceCode_DB\",\"StoragePlaceCode_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"CodeRAO_DB\",\"StatusRAO_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\",\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"RefineOrSortRAOCode_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"" +
+                "NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"" +
+                "DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql("INSERT INTO FORM_17_NEW_COLUMN (\"IdNew\",\"Quantity_DB\") SELECT \"Id\" FROM \"form_17\"");
         migrationBuilder.Sql(
             $"INSERT INTO \"form_17_tmp\" ({a}) SELECT \"Id\",\"Sum_DB\",\"PackName_DB\",\"PackName_Hidden_Priv\",\"PackType_DB\",\"PackType_Hidden_Priv\",\"PackNumber_DB\",\"PackNumber_Hidden_Priv\",\"PackFactoryNumber_DB\",\"PackFactoryNumber_Hidden_Priv\",\"FormingDate_DB\",\"FormingDate_Hidden_Priv\",\"Volume_DB\",\"Volume_Hidden_Priv\",\"Mass_DB\",\"Mass_Hidden_Priv\",\"PassportNumber_DB\",\"PassportNumber_Hidden_Priv\",\"Radionuclids_DB\",\"SpecificActivity_DB\",\"ProviderOrRecieverOKPO_DB\",\"ProviderOrRecieverOKPO_Hidden_~\",\"TransporterOKPO_DB\",\"TransporterOKPO_Hidden_Priv\",\"StoragePlaceName_DB\",\"StoragePlaceName_Hidden_Priv\",\"StoragePlaceCode_DB\",\"StoragePlaceCode_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"CodeRAO_DB\",\"StatusRAO_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\",\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"RefineOrSortRAOCode_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\" FROM \"form_17\"");
@@ -137,8 +137,8 @@ public partial class DataModel_11 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string b = "\"Id\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"QuantityOZIII_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
-                   "DocumentDate_DB\",\"ExpirationDate_DB\",\"DocumentName_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
+        var b = "\"Id\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"QuantityOZIII_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
+                "DocumentDate_DB\",\"ExpirationDate_DB\",\"DocumentName_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_17_TEMP\" ({b}) SELECT {b} FROM FORM_17_NEW_COLUMN INNER JOIN \"form_17_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_17_NEW_COLUMN");

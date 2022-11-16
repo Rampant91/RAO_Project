@@ -15,14 +15,14 @@ public class Form1_Visual
     //Полный вывод
     public static void FormF_Visual(MainWindow v,in Panel pnl0, in Panel pnlx, in Panel pnlb)
     {
-        INameScope? tp = pnl0.FindNameScope();
-        DataGridReports grd1 = (DataGridReports)Form0_Visual(tp);
+        var tp = pnl0.FindNameScope();
+        var grd1 = (DataGridReports)Form0_Visual(tp);
         pnl0.Children.Add(grd1);
 
         NameScope scp = new();
         scp.Register(grd1.Name, grd1);
         scp.Complete();
-        DataGridReport grd2 = (DataGridReport)FormX_Visual(scp);
+        var grd2 = (DataGridReport)FormX_Visual(scp);
         pnlx.Children.Add(grd2);
 
         Binding bd = new()
@@ -34,7 +34,7 @@ public class Form1_Visual
         v.Bind(MainWindow.SelectedReportsProperty, bd);
 
 
-        Panel? grd3 = FormB_Visual();
+        var grd3 = FormB_Visual();
         pnlb.Children.Add(grd3);
     }
 

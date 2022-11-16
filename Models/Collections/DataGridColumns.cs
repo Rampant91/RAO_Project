@@ -221,7 +221,7 @@ public class DataGridColumns:INotifyPropertyChanged
         {
             if (this.Level > Level)
             {
-                int allLevel = this.Level-1;
+                var allLevel = this.Level-1;
                 List<DataGridColumns> lst = new(innertCol);
                 while (allLevel != Level)
                 {
@@ -233,7 +233,7 @@ public class DataGridColumns:INotifyPropertyChanged
                     }
                     lst = lst2;
 
-                    bool flag = true;
+                    var flag = true;
                     foreach (var item in lst)
                     {
                         if (item.Level != Level)
@@ -334,8 +334,8 @@ public class DataGridColumns:INotifyPropertyChanged
                 };
                 foreach(var item in group)
                 {
-                    DataGridColumns tr = item.FirstOrDefault();
-                    for(int i=1;i<item.Count();i++)
+                    var tr = item.FirstOrDefault();
+                    for(var i=1;i<item.Count();i++)
                     {
                         tr += item.ElementAt(i);
                     }
@@ -377,8 +377,8 @@ public class DataGridColumns:INotifyPropertyChanged
                 };
                 foreach (var item in group)
                 {
-                    DataGridColumns tr = item.FirstOrDefault();
-                    for (int i = 1; i < item.Count(); i++)
+                    var tr = item.FirstOrDefault();
+                    for (var i = 1; i < item.Count(); i++)
                     {
                         tr += item.ElementAt(i);
                     }

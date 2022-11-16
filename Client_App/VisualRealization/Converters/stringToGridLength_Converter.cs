@@ -11,7 +11,7 @@ public class stringToGridLength_Converter : IValueConverter
     {
         if (Value != null)
         {
-            string rps = (string)Value;
+            var rps = (string)Value;
             try
             {
                 var lg = GridLength.Parse(rps.Replace(",","."));
@@ -26,7 +26,7 @@ public class stringToGridLength_Converter : IValueConverter
     }
     public object ConvertBack(object Value, Type tp, object Param, CultureInfo info)
     {
-        GridLength rps = (GridLength)Value;
+        var rps = (GridLength)Value;
         return $"{rps.Value}*";
     }
 }

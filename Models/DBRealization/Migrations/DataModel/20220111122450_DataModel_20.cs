@@ -7,10 +7,10 @@ public partial class DataModel_20 : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        string attrNoCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
-                           "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
-                           "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
-                           "DocumentDate_Hidden_Priv\"";
+        var attrNoCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
+                        "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
+                        "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
+                        "DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql("INSERT INTO FORM_12_NEW_COLUMN (\"IdNew\",\"SignedServicePeriod_DB\") SELECT \"Id\",CAST(\"SignedServicePeriod_DB\" AS BLOB SUB_TYPE TEXT) FROM \"form_12\";");
         migrationBuilder.Sql($"INSERT INTO \"form_12_tmp\" ({attrNoCol}) SELECT {attrNoCol} FROM \"form_12\"");
         migrationBuilder.DropTable(name: "form_12");
@@ -59,10 +59,10 @@ public partial class DataModel_20 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string attrWCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"SignedServicePeriod_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
-                          "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
-                          "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
-                          "DocumentDate_Hidden_Priv\"";
+        var attrWCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"SignedServicePeriod_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
+                       "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
+                       "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
+                       "DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_12_TEMP\" ({attrWCol}) SELECT {attrWCol} FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_12_NEW_COLUMN");
@@ -71,10 +71,10 @@ public partial class DataModel_20 : Migration
 
     protected override void Down(MigrationBuilder migrationBuilder)//NOT READY YET
     {
-        string attrNoCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
-                           "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
-                           "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
-                           "DocumentDate_Hidden_Priv\"";
+        var attrNoCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
+                        "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
+                        "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
+                        "DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql("INSERT INTO FORM_12_NEW_COLUMN (\"IdNew\",\"SignedServicePeriod_DB\") SELECT \"Id\",CAST(\"SignedServicePeriod_DB\" AS FLOAT) FROM \"form_12\";");
         migrationBuilder.Sql($"INSERT INTO \"form_12_tmp\" ({attrNoCol}) SELECT {attrNoCol} FROM \"form_12\"");
         migrationBuilder.DropTable(name: "form_12");
@@ -123,10 +123,10 @@ public partial class DataModel_20 : Migration
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Restrict);
             });
-        string attrWCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"SignedServicePeriod_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
-                          "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
-                          "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
-                          "DocumentDate_Hidden_Priv\"";
+        var attrWCol = "\"Id\",\"PassportNumber_DB\",\"NameIOU_DB\",\"FactoryNumber_DB\",\"Mass_DB\",\"CreatorOKPO_DB\",\"CreationDate_DB\",\"SignedServicePeriod_DB\",\"PropertyCode_DB\",\"Owner_DB\",\"ProviderOrRecieverOKPO_DB\",\"TransporterOKPO_DB\",\"PackName_DB\",\"PackType_DB\",\"PackNumber_DB\",\"" +
+                       "ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"" +
+                       "DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"" +
+                       "DocumentDate_Hidden_Priv\"";
         migrationBuilder.Sql(
             $"INSERT INTO \"FORM_12_TEMP\" ({attrWCol}) SELECT {attrWCol} FROM FORM_12_NEW_COLUMN INNER JOIN \"form_12_tmp\" ON \"Id\"=\"IdNew\"");
         migrationBuilder.DropTable("FORM_12_NEW_COLUMN");
