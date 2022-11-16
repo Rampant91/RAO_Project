@@ -5,6 +5,7 @@ using Avalonia.ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
@@ -72,28 +73,20 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
 
     private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
     {
-        MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new();
-        List<ButtonDefinition> lt = new();
-        par.ContentMessage = interaction.Input[0];
+        MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new() { ContentMessage = interaction.Input[0] };
         interaction.Input.RemoveAt(0);
         par.ContentHeader = interaction.Input[0];
         interaction.Input.RemoveAt(0);
-        foreach (var elem in interaction.Input)
-        {
-            lt.Add(new ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = elem
-            });
-
-        }
+        var lt = interaction.Input
+            .Select(elem => new ButtonDefinition { Type = MessageBox.Avalonia.Enums.ButtonType.Default, Name = elem })
+            .ToList();
         par.ButtonDefinitions = lt;
         par.ContentTitle = "Уведомление";
             
-        var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-        var answ = await mssg.ShowDialog(this);
+        var msg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+        var answer = await msg.ShowDialog(this);
             
-        interaction.SetOutput(answ);
+        interaction.SetOutput(answer);
     }
     #endregion
 
@@ -110,7 +103,8 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     #endregion
 
     #region ShowInit
-    public static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, ViewModels.MainWindowVM dataContext)
+
+    private static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, ViewModels.MainWindowVM dataContext)
     {
         #region Grd1
         grd1.CommandsList.Add(new KeyCommand
@@ -120,7 +114,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = paramVal,
-            ContextMenuText = new string[] { "Добавить форму        Ctrl+T" },
+            ContextMenuText = new[] { "Добавить форму        Ctrl+T" },
             Command = dataContext.AddReport
         });
 
@@ -129,7 +123,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsDoubleTappedCommand = true,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new string[] { "Редактировать форму" },
+            ContextMenuText = new[] { "Редактировать форму" },
             Command = dataContext.ChangeReport
         });
         grd1.CommandsList.Add(new KeyCommand
@@ -139,7 +133,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new string[] { "Удалить форму           Ctrl+D" },
+            ContextMenuText = new[] { "Удалить форму           Ctrl+D" },
             Command = dataContext.DeleteReport
         });
 
@@ -150,7 +144,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new string[] { "Выгрузка Excel", "Для печати" },
+            ContextMenuText = new[] { "Выгрузка Excel", "Для печати" },
             Command = dataContext.Print_Excel_Export
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -158,7 +152,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new string[] { "Выгрузка Excel", "Для анализа" },
+            ContextMenuText = new[] { "Выгрузка Excel", "Для анализа" },
             Command = dataContext.Excel_Export
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -166,7 +160,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new string[] { "Выгрузка" },
+            ContextMenuText = new[] { "Выгрузка" },
             Command = dataContext.ExportForm
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -174,7 +168,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsDoubleTappedCommand = true,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new string[] { "Изменить форму" },
+            ContextMenuText = new[] { "Изменить форму" },
             Command = dataContext.ChangeForm
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -185,7 +179,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             IsUpdateCells = true,
-            ContextMenuText = new string[] { "Удалить форму           Ctrl+D" },
+            ContextMenuText = new[] { "Удалить форму           Ctrl+D" },
             Command = dataContext.DeleteForm
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -196,7 +190,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             IsUpdateCells = true,
-            ContextMenuText = new string[] { "Сохранить комментарий           Ctrl+J" },
+            ContextMenuText = new[] { "Сохранить комментарий           Ctrl+J" },
             Command = dataContext.SaveReport
         });
         #endregion

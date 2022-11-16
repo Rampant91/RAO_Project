@@ -1553,7 +1553,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление", "Данные паспорта не были скопированы, не заполнены все требуемые поля:"
+                .GetMessageBoxStandardWindow("Уведомление", "Имя паспорта не было скопировано, не заполнены все требуемые поля:"
                                                             + Environment.NewLine + "- номер паспорта (сертификата)"
                                                             + Environment.NewLine + "- тип"
                                                             + Environment.NewLine + "- номер"
@@ -1585,9 +1585,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         foreach (var prop in props!)
         {
             var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault()!;
-            if (attr.Names.Length <= 1
+            if (attr != null
+                && (attr.Names.Length <= 1
                 || attr.Names[0] != "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
-                || attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска" or "номер паспорта (сертификата)" or "номер")) continue;
+                || attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска" or "номер паспорта (сертификата)" or "номер"))) continue;
             var midValue = prop.GetMethod?.Invoke(item, null);
             if (midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null) is not (null or "" or "-"))
             {

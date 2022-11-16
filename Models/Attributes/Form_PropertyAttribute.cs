@@ -12,31 +12,28 @@ public class Form_PropertyAttribute : Attribute
 
     public string Number { get; set; }
 
-    public Form_PropertyAttribute(bool IsLastEnabled=true,params string[] Names)
+    public Form_PropertyAttribute(bool isLastEnabled = true, params string[] names)
     {
         try
         {
-            Convert.ToInt32(Names[Names.Length-1]);
-            Number = Names[Names.Length - 1];
-            List<string> lst = new(Names);
-            if (!IsLastEnabled)
+            Convert.ToInt32(names[^1]);
+            Number = names[^1];
+            List<string> lst = new(names);
+            if (!isLastEnabled)
             {
                 lst.RemoveAt(lst.Count - 1);
             }
-            this.Names = lst.ToArray();
+            Names = lst.ToArray();
         }
         catch
         {
-            this.Names = Names;
+            Names = names;
         }
     }
 
-    public DataGridColumns GetDataColumnStructureD(DataGridColumns prev_data = null)
+    public DataGridColumns GetDataColumnStructureD(DataGridColumns prevData = null)
     {
-        DataGridColumns tmp = new()
-        {
-            name = Names[0]
-        };
+        DataGridColumns tmp = new() { name = Names[0] };
         if (Names.Length > 1)
         {
             if (Names[1] != null)
@@ -59,21 +56,21 @@ public class Form_PropertyAttribute : Attribute
 
                     try
                     {
-                        if (Names[i] == Names[Names.Count()-1])
+                        if (Names[i] == Names[^1])
                         {
-                            if (prev_data != null)
+                            if (prevData != null)
                             {
-                                var inner = prev_data.innertCol[prev_data.innertCol.Count() - 1];
+                                var inner = prevData.innertCol[^1];
                                 while (inner.innertCol != null)
                                 {
-                                    inner = inner.innertCol[inner.innertCol.Count()-1];
+                                    inner = inner.innertCol[^1];
                                 }
-                                var current_num = Convert.ToInt32(inner.name);
-                                it.name = Convert.ToString(current_num+1);
+                                var currentNum = Convert.ToInt32(inner.name);
+                                it.name = Convert.ToString(currentNum + 1);
                             }
                         }
                     }
-                    catch (Exception e) { }
+                    catch (Exception) { }
 
                     _tmp.innertCol.Add(it);
                     try
@@ -84,36 +81,30 @@ public class Form_PropertyAttribute : Attribute
                             _tmp = it;
                         }
                     }
-                    catch(Exception e){ }
+                    catch(Exception){ }
                 }
             }
         }
-        if (prev_data != null)
+        if (prevData != null)
         {
             DataGridColumns _tmp = new();
-            if (prev_data.Level > tmp.Level)
+            if (prevData.Level > tmp.Level)
             {
-                if (prev_data.Level - 2 == tmp.Level)
+                if (prevData.Level - 2 == tmp.Level)
                 {
-                    var new_tmp = new DataGridColumns
+                    var newTmp = new DataGridColumns
                     {
                         name = "null-n",
-                        innertCol = new List<DataGridColumns>
-                        {
-                            tmp
-                        }
+                        innertCol = new List<DataGridColumns> { tmp }
                     };
 
-                    _tmp.name = prev_data.name;
-                    _tmp.innertCol = new List<DataGridColumns> { };
-                    _tmp.innertCol.Add(new_tmp);
-
+                    _tmp.name = prevData.name;
+                    _tmp.innertCol = new List<DataGridColumns> { newTmp };
                 }
                 else
                 {
-                    _tmp.name = prev_data.name;
-                    _tmp.innertCol = new List<DataGridColumns> { };
-                    _tmp.innertCol.Add(tmp);
+                    _tmp.name = prevData.name;
+                    _tmp.innertCol = new List<DataGridColumns> { tmp };
                 }
             }
             else

@@ -20,7 +20,7 @@
       </MenuItem>
       <MenuItem Header="_Excel" FontSize="14">
 		<MenuItem Header="Паспорта">
-          <MenuItem Header="Отчеты без паспартов" Command="{Binding ExcelMissingPas}"></MenuItem>
+          <MenuItem Header="Отчеты без паспортов" Command="{Binding ExcelMissingPas}"></MenuItem>
           <MenuItem Header="Паспорта без отчетов" Command="{Binding ExcelPasWithoutRep}"></MenuItem>
           <MenuItem Header="Изменить расположение паспортов по умолчанию" Command="{Binding ChangePasDir}"></MenuItem>
         </MenuItem>  
