@@ -529,6 +529,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
+    IKeyCollection tatata;
+
     #region NowPage
     public static readonly DirectProperty<DataGrid<T>, string> NowPageProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
@@ -545,10 +547,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             try
             {
                 var val = Convert.ToInt32(value);
-
                 if (val != null && Items != null)
                 {
-                    var maxpage = Items.Count / PageSize + 1;
+                    var maxpage = string.IsNullOrEmpty(SearchText) || tatata is null
+                        ? Items.Count / PageSize + 1 
+                        : tatata.Count / PageSize + 1;
                     if (val.ToString() != _nowPage)
                     {
                         if (val <= maxpage && val >= 1)
@@ -1300,7 +1303,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
                     if (searchText != "")
                     {
-                        //NowPage = "1";
                         foreach (var it in tmp_coll)
                         {
                             var rowsText = ((Reports)it).Master_DB.OkpoRep.Value +
@@ -1313,7 +1315,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 tmp2_coll.Add(it);
                             }
                         }
+                        if (int.Parse(NowPage) >= tmp2_coll.Count / PageSize)
+                            NowPage = "1";
                         tmp_coll = tmp2_coll;
+                        tatata = tmp2_coll;
                     }
                 }
             }
