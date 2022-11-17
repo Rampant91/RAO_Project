@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace Models.Attributes;
 
-public class Form_PropertyAttribute : Attribute
+public class FormPropertyAttribute : Attribute
 {
     public string[] Names { get; set; }
     public bool OneLevel { get; set; }
 
     public string Number { get; set; }
 
-    public Form_PropertyAttribute(bool isLastEnabled = true, params string[] names)
+    public FormPropertyAttribute(bool isLastEnabled = true, params string[] names)
     {
         try
         {

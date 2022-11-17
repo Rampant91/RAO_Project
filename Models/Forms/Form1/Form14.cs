@@ -63,7 +63,7 @@ public class Form14 : Form1
     #region PassportNumber
     public string PassportNumber_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "номер паспорта","4")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "номер паспорта","4")]
     public RamAccess<string> PassportNumber
     {
         get
@@ -116,7 +116,7 @@ public class Form14 : Form1
     #region Name
     public string Name_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "наименование","5")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "наименование","5")]
     public RamAccess<string> Name
     {
         get
@@ -162,7 +162,7 @@ public class Form14 : Form1
     #region Sort
     public byte? Sort_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "вид","6")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "вид","6")]
     public RamAccess<byte?> Sort
     {
         get
@@ -214,7 +214,7 @@ public class Form14 : Form1
     #region Radionuclids
     public string Radionuclids_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "радионуклиды","7")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "радионуклиды","7")]
     public RamAccess<string> Radionuclids
     {
         get
@@ -282,7 +282,7 @@ public class Form14 : Form1
     #region Activity
     public string Activity_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "активность, Бк","8")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "активность, Бк","8")]
     public RamAccess<string> Activity
     {
         get
@@ -376,7 +376,7 @@ public class Form14 : Form1
     #region ActivityMeasurementDate
     public string ActivityMeasurementDate_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "дата измерения активности","9")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "дата измерения активности","9")]
     public RamAccess<string> ActivityMeasurementDate
     {
         get
@@ -451,7 +451,7 @@ public class Form14 : Form1
     #region Volume
     public string Volume_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "объем, куб. м","10")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "объем, куб. м","10")]
     public RamAccess<string> Volume
     {
         get
@@ -548,7 +548,7 @@ public class Form14 : Form1
     #region Mass
     public string Mass_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "масса, кг","11")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "масса, кг","11")]
     public RamAccess<string> Mass
     {
         get
@@ -649,7 +649,7 @@ public class Form14 : Form1
     #region AggregateState
     public byte? AggregateState_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "агрегатное состояние","12")]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "агрегатное состояние","12")]
     public RamAccess<byte?> AggregateState//1 2 3
     {
         get
@@ -700,7 +700,7 @@ public class Form14 : Form1
     #region PropertyCode
     public byte? PropertyCode_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Право собственности на ОРИ", "код формы собственности","13")]
+    [FormProperty(true,"Право собственности на ОРИ", "код формы собственности","13")]
     public RamAccess<byte?> PropertyCode
     {
         get
@@ -751,7 +751,7 @@ public class Form14 : Form1
     #region Owner
     public string Owner_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Право собственности на ОРИ", "код ОКПО правообладателя","14")]
+    [FormProperty(true,"Право собственности на ОРИ", "код ОКПО правообладателя","14")]
     public RamAccess<string> Owner
     {
         get
@@ -824,7 +824,7 @@ public class Form14 : Form1
     #region ProviderOrRecieverOKPO
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Код ОКПО", "поставщика или получателя","18")]
+    [FormProperty(true,"Код ОКПО", "поставщика или получателя","18")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -915,7 +915,7 @@ public class Form14 : Form1
     #region TransporterOKPO
     public string TransporterOKPO_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Код ОКПО", "перевозчика","19")]
+    [FormProperty(true,"Код ОКПО", "перевозчика","19")]
     public RamAccess<string> TransporterOKPO
     {
         get
@@ -996,7 +996,7 @@ public class Form14 : Form1
     #region PackName
     public string PackName_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "наименование","20")]
+    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "наименование","20")]
     public RamAccess<string> PackName
     {
         get
@@ -1047,7 +1047,7 @@ public class Form14 : Form1
     #region PackType
     public string PackType_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "тип","21")]
+    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "тип","21")]
     public RamAccess<string> PackType
     {
         get
@@ -1099,7 +1099,7 @@ public class Form14 : Form1
     #region PackNumber
     public string PackNumber_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "номер упаковки","22")]
+    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "номер упаковки","22")]
     public RamAccess<string> PackNumber
     {
         get
@@ -1245,25 +1245,25 @@ public class Form14 : Form1
         Column += Transpon == true ? cnt : 0;
         Row += Transpon == false ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PassportNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Name)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Sort)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Activity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(ActivityMeasurementDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Volume)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Mass)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(AggregateState)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PropertyCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Owner)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(TransporterOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PackName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PackType)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PackNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PassportNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Name)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Sort)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(ActivityMeasurementDate)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Volume)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Mass)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(AggregateState)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PropertyCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(Owner)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(TransporterOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PackName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PackType)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form14,Models").GetProperty(nameof(PackNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
 
         return 19;
     }
@@ -1275,134 +1275,134 @@ public class Form14 : Form1
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region OperationCode (2)
-            var OperationCodeR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var OperationCodeR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             OperationCodeR.SetSizeColToAllLevels(88);
             OperationCodeR.Binding = nameof(OperationCode);
             NumberInOrderR += OperationCodeR;
             #endregion
             #region OperationDate (3)
-            var OperationDateR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var OperationDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             OperationDateR.SetSizeColToAllLevels(88);
             OperationDateR.Binding = nameof(OperationDate);
             NumberInOrderR += OperationDateR;
             #endregion
             #region PassportNumber (4)
-            var PassportNumberR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(PassportNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PassportNumberR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(PassportNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PassportNumberR.SetSizeColToAllLevels(95);
             PassportNumberR.Binding = nameof(PassportNumber);
             NumberInOrderR += PassportNumberR;
             #endregion
             #region Name (5)
-            var NameR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(Name)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var NameR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(Name)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             NameR.SetSizeColToAllLevels(125);
             NameR.Binding = nameof(Name);
             NumberInOrderR += NameR;
             #endregion
             #region Sort (6)
-            var SortR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(Sort)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var SortR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(Sort)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SortR.SetSizeColToAllLevels(88);
             SortR.Binding = nameof(Sort);
             NumberInOrderR += SortR;
             #endregion
             #region Radionuclids (7)
-            var RadionuclidsR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RadionuclidsR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidsR.SetSizeColToAllLevels(143);
             RadionuclidsR.Binding = nameof(Radionuclids);
             NumberInOrderR += RadionuclidsR;
             #endregion
             #region Activity (8)
-            var ActivityR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ActivityR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ActivityR.SetSizeColToAllLevels(88);
             ActivityR.Binding = nameof(Activity);
             NumberInOrderR += ActivityR;
             #endregion
             #region ActivityMeasurementDate (9)
-            var ActivityMeasurementDateR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(ActivityMeasurementDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ActivityMeasurementDateR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(ActivityMeasurementDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ActivityMeasurementDateR.SetSizeColToAllLevels(163);
             ActivityMeasurementDateR.Binding = nameof(ActivityMeasurementDate);
             NumberInOrderR += ActivityMeasurementDateR;
             #endregion
             #region Volume (10)
-            var VolumeR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(Volume)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var VolumeR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(Volume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             VolumeR.SetSizeColToAllLevels(88);
             VolumeR.Binding = nameof(Volume);
             NumberInOrderR += VolumeR;
             #endregion
             #region Mass (11)
-            var MassR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(Mass)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(Mass)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MassR.SetSizeColToAllLevels(88);
             MassR.Binding = nameof(Mass);
             NumberInOrderR += MassR;
             #endregion
             #region AggregateState (12)
-            var AggregateStateR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(AggregateState)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AggregateStateR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(AggregateState)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AggregateStateR.SetSizeColToAllLevels(163);
             AggregateStateR.Binding = nameof(AggregateState);
             NumberInOrderR += AggregateStateR;
             #endregion
             #region PropertyCode (13)
-            var PropertyCodeR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(PropertyCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PropertyCodeR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(PropertyCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PropertyCodeR.SetSizeColToAllLevels(90);
             PropertyCodeR.Binding = nameof(PropertyCode);
             NumberInOrderR += PropertyCodeR;
             #endregion
             #region Owner (14)
-            var OwnerR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(Owner)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var OwnerR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(Owner)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             OwnerR.SetSizeColToAllLevels(100);
             OwnerR.Binding = nameof(Owner);
             NumberInOrderR += OwnerR;
             #endregion
             #region DocumentVid (15)
-            var DocumentVidR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DocumentVidR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentVidR.SetSizeColToAllLevels(60);
             DocumentVidR.Binding = nameof(DocumentVid);
             NumberInOrderR += DocumentVidR;
             #endregion
             #region DocumentNumber (16)
-            var DocumentNumberR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DocumentNumberR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentNumberR.SetSizeColToAllLevels(100);
             DocumentNumberR.Binding = nameof(DocumentNumber);
             NumberInOrderR += DocumentNumberR;
             #endregion
             #region DocumentDate (17)
-            var DocumentDateR = ((Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DocumentDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentDateR.SetSizeColToAllLevels(80);
             DocumentDateR.Binding = nameof(DocumentDate);
             NumberInOrderR += DocumentDateR;
             #endregion
             #region ProviderOrRecieverOKPO (18)
-            var ProviderOrRecieverOKPOR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ProviderOrRecieverOKPOR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ProviderOrRecieverOKPOR.SetSizeColToAllLevels(100);
             ProviderOrRecieverOKPOR.Binding = nameof(ProviderOrRecieverOKPO);
             NumberInOrderR += ProviderOrRecieverOKPOR;
             #endregion
             #region TransporterOKPO (19)
-            var TransporterOKPOR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(TransporterOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TransporterOKPOR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(TransporterOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TransporterOKPOR.SetSizeColToAllLevels(90);
             TransporterOKPOR.Binding = nameof(TransporterOKPO);
             NumberInOrderR += TransporterOKPOR;
             #endregion
             #region PackName (20)
-            var PackNameR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(PackName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PackNameR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(PackName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PackNameR.SetSizeColToAllLevels(143);
             PackNameR.Binding = nameof(PackName);
             NumberInOrderR += PackNameR;
             #endregion
             #region PackType (21)
-            var PackTypeR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(PackType)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PackTypeR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(PackType)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PackTypeR.SetSizeColToAllLevels(88);
             PackTypeR.Binding = nameof(PackType);
             NumberInOrderR += PackTypeR;
             #endregion
             #region PackNumber (22)
-            var PackNumberR = ((Form_PropertyAttribute)typeof(Form14).GetProperty(nameof(PackNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PackNumberR = ((FormPropertyAttribute)typeof(Form14).GetProperty(nameof(PackNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PackNumberR.SetSizeColToAllLevels(125);
             PackNumberR.Binding = nameof(PackNumber);
             NumberInOrderR += PackNumberR;

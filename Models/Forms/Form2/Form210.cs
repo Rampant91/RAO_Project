@@ -36,7 +36,7 @@ public class Form210 : Form2
         FcpNumber_Validation(FcpNumber);
     }
 
-    [Form_Property(true,"Форма")]    
+    [FormProperty(true,"Форма")]    
     public override bool Object_Validation()
     {
         return !(IndicatorName.HasErrors||
@@ -55,7 +55,7 @@ public class Form210 : Form2
     #region  IndicatorName
     public string IndicatorName_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-2","Наименование показателя","2")]
+    [FormProperty(true,"null-2","Наименование показателя","2")]
     public RamAccess<string> IndicatorName
     {
         get
@@ -112,7 +112,7 @@ public class Form210 : Form2
     #region  PlotName
     public string PlotName_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-3","Наименование участка","3")]
+    [FormProperty(true,"null-3","Наименование участка","3")]
     public RamAccess<string> PlotName
     {
         get
@@ -161,7 +161,7 @@ public class Form210 : Form2
     #region PlotKadastrNumber 
     public string PlotKadastrNumber_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-4","Кадастровый номер участка","4")]
+    [FormProperty(true,"null-4","Кадастровый номер участка","4")]
     public RamAccess<string> PlotKadastrNumber
     {
         get
@@ -210,7 +210,7 @@ public class Form210 : Form2
     #region  PlotCode
     public string PlotCode_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-5","Код участка","5")]
+    [FormProperty(true,"null-5","Код участка","5")]
     public RamAccess<string> PlotCode
     {
         get
@@ -265,7 +265,7 @@ public class Form210 : Form2
     #region  InfectedArea
     public string InfectedArea_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"null-6","Площадь загрязненной территории, кв. м","6")]
+    [FormProperty(true,"null-6","Площадь загрязненной территории, кв. м","6")]
     public RamAccess<string> InfectedArea
     {
         get
@@ -351,7 +351,7 @@ public class Form210 : Form2
     #region  AvgGammaRaysDosePower
     public string AvgGammaRaysDosePower_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Мощность дозы гамма-излучения, мкЗв/час", "средняя","7")]
+    [FormProperty(true,"Мощность дозы гамма-излучения, мкЗв/час", "средняя","7")]
     public RamAccess<string> AvgGammaRaysDosePower
     {
         get
@@ -440,7 +440,7 @@ public class Form210 : Form2
     #region  MaxGammaRaysDosePower
     public string MaxGammaRaysDosePower_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Мощность дозы гамма-излучения, мкЗв/час", "максимальная","8")]
+    [FormProperty(true,"Мощность дозы гамма-излучения, мкЗв/час", "максимальная","8")]
     public RamAccess<string> MaxGammaRaysDosePower
     {
         get
@@ -529,7 +529,7 @@ public class Form210 : Form2
     #region  WasteDensityAlpha
     public string WasteDensityAlpha_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Плотность загрязнения (средняя), Бк/кв.м", "альфа-излучающие радионуклиды","9")]
+    [FormProperty(true,"Плотность загрязнения (средняя), Бк/кв.м", "альфа-излучающие радионуклиды","9")]
     public RamAccess<string> WasteDensityAlpha
     {
         get
@@ -618,7 +618,7 @@ public class Form210 : Form2
     #region  WasteDensityBeta
     public string WasteDensityBeta_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Плотность загрязнения (средняя), Бк/кв.м", "бета-излучающие радионуклиды","10")]
+    [FormProperty(true,"Плотность загрязнения (средняя), Бк/кв.м", "бета-излучающие радионуклиды","10")]
     public RamAccess<string> WasteDensityBeta
     {
         get
@@ -706,7 +706,7 @@ public class Form210 : Form2
     #region  FcpNumber
     public string FcpNumber_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-7","Номер мероприятия ФЦП","11")]
+    [FormProperty(true,"null-7","Номер мероприятия ФЦП","11")]
     public RamAccess<string> FcpNumber
     {
         get
@@ -788,16 +788,16 @@ public class Form210 : Form2
         Column += Transpon ? cnt : 0;
         Row += !Transpon ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(IndicatorName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(AvgGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(MaxGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(WasteDensityAlpha)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(WasteDensityBeta)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(IndicatorName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(AvgGammaRaysDosePower)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(MaxGammaRaysDosePower)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(WasteDensityAlpha)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(WasteDensityBeta)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form210,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
         return 10;
     }
     #endregion
@@ -808,68 +808,68 @@ public class Form210 : Form2
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region IndicatorName (2)
-            var IndicatorNameR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(IndicatorName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var IndicatorNameR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(IndicatorName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             IndicatorNameR.SetSizeColToAllLevels(163);
             IndicatorNameR.Binding = nameof(IndicatorName);
             NumberInOrderR += IndicatorNameR;
             #endregion
             #region PlotName (3)
-            var PlotNameR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PlotNameR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotNameR.SetSizeColToAllLevels(163);
             PlotNameR.Binding = nameof(PlotName);
             NumberInOrderR += PlotNameR;
             #endregion
             #region PlotKadastrNumber (4)
-            var PlotKadastrNumberR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PlotKadastrNumberR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotKadastrNumberR.SetSizeColToAllLevels(173);
             PlotKadastrNumberR.Binding = nameof(PlotKadastrNumber);
             NumberInOrderR += PlotKadastrNumberR;
             #endregion
             #region PlotCode (5)
-            var PlotCodeR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var PlotCodeR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotCodeR.SetSizeColToAllLevels(88);
             PlotCodeR.Binding = nameof(PlotCode);
             NumberInOrderR += PlotCodeR;
             #endregion
             #region InfectedArea (6)
-            var InfectedAreaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var InfectedAreaR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             InfectedAreaR.SetSizeColToAllLevels(188);
             InfectedAreaR.Binding = nameof(InfectedArea);
             NumberInOrderR += InfectedAreaR;
             #endregion
             #region AvgGammaRaysDosePower (7)
-            var AvgGammaRaysDosePowerR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(AvgGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AvgGammaRaysDosePowerR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(AvgGammaRaysDosePower)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AvgGammaRaysDosePowerR.SetSizeColToAllLevels(113);
             AvgGammaRaysDosePowerR.Binding = nameof(AvgGammaRaysDosePower);
             NumberInOrderR += AvgGammaRaysDosePowerR;
             #endregion
             #region MaxGammaRaysDosePower (8)
-            var MaxGammaRaysDosePowerR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(MaxGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MaxGammaRaysDosePowerR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(MaxGammaRaysDosePower)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MaxGammaRaysDosePowerR.SetSizeColToAllLevels(143);
             MaxGammaRaysDosePowerR.Binding = nameof(MaxGammaRaysDosePower);
             NumberInOrderR += MaxGammaRaysDosePowerR;
             #endregion
             #region WasteDensityAlpha (9)
-            var WasteDensityAlphaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityAlpha)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var WasteDensityAlphaR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityAlpha)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             WasteDensityAlphaR.SetSizeColToAllLevels(162);
             WasteDensityAlphaR.Binding = nameof(WasteDensityAlpha);
             NumberInOrderR += WasteDensityAlphaR;
             #endregion
             #region WasteDensityBeta (10)
-            var WasteDensityBetaR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityBeta)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var WasteDensityBetaR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(WasteDensityBeta)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             WasteDensityBetaR.SetSizeColToAllLevels(154);
             WasteDensityBetaR.Binding = nameof(WasteDensityBeta);
             NumberInOrderR += WasteDensityBetaR;
             #endregion
             #region FcpNumber (11)
-            var FcpNumberR = ((Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var FcpNumberR = ((FormPropertyAttribute)typeof(Form210).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             FcpNumberR.SetSizeColToAllLevels(163);
             FcpNumberR.Binding = nameof(FcpNumber);
             NumberInOrderR += FcpNumberR;

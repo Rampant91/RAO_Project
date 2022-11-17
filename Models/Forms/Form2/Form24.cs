@@ -42,7 +42,7 @@ public class Form24 : Form2
         MassRefined_Validation(MassRefined);
     }
 
-    [Form_Property(true,"Форма")]
+    [FormProperty(true,"Форма")]
     public override bool Object_Validation()
     {
         return !(CodeOYAT.HasErrors||
@@ -66,7 +66,7 @@ public class Form24 : Form2
     //CodeOYAT property
     #region  CodeOYAT
     public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"null-2","Код ОЯТ","2")]
+    [FormProperty(true,"null-2","Код ОЯТ","2")]
     public RamAccess<string> CodeOYAT
     {
         get
@@ -118,7 +118,7 @@ public class Form24 : Form2
     //FcpNumber property
     #region  FcpNumber
     public string FcpNumber_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true, "null-3","Номер мероприятия ФЦП","3")]
+    [FormProperty(true, "null-3","Номер мероприятия ФЦП","3")]
     public RamAccess<string> FcpNumber
     {
         get
@@ -161,7 +161,7 @@ public class Form24 : Form2
     //MassCreated Property
     #region  MassCreated
     public string MassCreated_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true, "Поставлено на учет в организации", "масса образованного, т","4")]
+    [FormProperty(true, "Поставлено на учет в организации", "масса образованного, т","4")]
     public RamAccess<string> MassCreated
     {
         get
@@ -253,7 +253,7 @@ public class Form24 : Form2
     #region  QuantityCreated
     public string QuantityCreated_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true, "Поставлено на учет в организации", "количество образованного, шт","5")]
+    [FormProperty(true, "Поставлено на учет в организации", "количество образованного, шт","5")]
     public RamAccess<string> QuantityCreated
     {
         get
@@ -315,7 +315,7 @@ public class Form24 : Form2
     #region  MassFromAnothers
     public string MassFromAnothers_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Поставлено на учет в организации", "масса поступивших от сторонних, т","6")]
+    [FormProperty(true,"Поставлено на учет в организации", "масса поступивших от сторонних, т","6")]
     public RamAccess<string> MassFromAnothers
     {
         get
@@ -406,7 +406,7 @@ public class Form24 : Form2
     //QuantityFromAnothers property
     #region  QuantityFromAnothers
     public string QuantityFromAnothers_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Поставлено на учет в организации", "количество поступиших от сторонних, шт","7")]
+    [FormProperty(true,"Поставлено на учет в организации", "количество поступиших от сторонних, шт","7")]
     public RamAccess<string> QuantityFromAnothers
     {
         get
@@ -467,7 +467,7 @@ public class Form24 : Form2
     //MassFromAnothersImported Property
     #region  MassFromAnothersImported
     public string MassFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Поставлено на учет в организации", "масса импортированных от сторонних, т","8")]
+    [FormProperty(true,"Поставлено на учет в организации", "масса импортированных от сторонних, т","8")]
     public RamAccess<string> MassFromAnothersImported
     {
         get
@@ -558,7 +558,7 @@ public class Form24 : Form2
     //QuantityFromAnothersImported property
     #region  QuantityFromAnothersImported
     public string QuantityFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Поставлено на учет в организации","количество импортированных от сторонних, шт","9")]
+    [FormProperty(true,"Поставлено на учет в организации","количество импортированных от сторонних, шт","9")]
     public RamAccess<string> QuantityFromAnothersImported
     {
         get
@@ -619,7 +619,7 @@ public class Form24 : Form2
     //MassAnotherReasons Property
     #region  MassAnotherReasons
     public string MassAnotherReasons_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Поставлено на учет в организации","масса учтенных по другим причинам, т","10")]
+    [FormProperty(true,"Поставлено на учет в организации","масса учтенных по другим причинам, т","10")]
     public RamAccess<string> MassAnotherReasons
     {
         get
@@ -711,7 +711,7 @@ public class Form24 : Form2
     #region  QuantityAnotherReasons
     public string QuantityAnotherReasons_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Поставлено на учет в организации","количество учтенных по другим причинам, шт","11")]
+    [FormProperty(true,"Поставлено на учет в организации","количество учтенных по другим причинам, шт","11")]
     public RamAccess<string> QuantityAnotherReasons
     {
         get
@@ -773,7 +773,7 @@ public class Form24 : Form2
     #region  MassTransferredToAnother
     public string MassTransferredToAnother_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Снято с учета в организации","масса переданных сторонним, т","12")]
+    [FormProperty(true,"Снято с учета в организации","масса переданных сторонним, т","12")]
     public RamAccess<string> MassTransferredToAnother
     {
         get
@@ -864,7 +864,7 @@ public class Form24 : Form2
     //QuantityTransferredToAnother property
     #region  QuantityTransferredToAnother
     public string QuantityTransferredToAnother_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Снято с учета в организации","количество переданных сторонним, шт","13")]
+    [FormProperty(true,"Снято с учета в организации","количество переданных сторонним, шт","13")]
     public RamAccess<string> QuantityTransferredToAnother
     {
         get
@@ -925,7 +925,7 @@ public class Form24 : Form2
     //MassRefined Property
     #region  MassRefined
     public string MassRefined_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Снято с учета в организации","масса переработанных, т","14")]
+    [FormProperty(true,"Снято с учета в организации","масса переработанных, т","14")]
     public RamAccess<string> MassRefined
     {
         get
@@ -1016,7 +1016,7 @@ public class Form24 : Form2
     //QuantityRefined property
     #region  QuantityRefined
     public string QuantityRefined_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Снято с учета в организации","количество переработанных, шт","15")]
+    [FormProperty(true,"Снято с учета в организации","количество переработанных, шт","15")]
     public RamAccess<string> QuantityRefined
     {
         get
@@ -1077,7 +1077,7 @@ public class Form24 : Form2
     //MassRemovedFromAccount Property
     #region  MassRemovedFromAccount
     public string MassRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Снято с учета в организации","масса снятых с учета, т","16")]
+    [FormProperty(true,"Снято с учета в организации","масса снятых с учета, т","16")]
     public RamAccess<string> MassRemovedFromAccount
     {
         get
@@ -1168,7 +1168,7 @@ public class Form24 : Form2
     //QuantityRemovedFromAccount property
     #region  QuantityRemovedFromAccount
     public string QuantityRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"Снято с учета в организации","количество снятых с учета, шт","17")]
+    [FormProperty(true,"Снято с учета в организации","количество снятых с учета, шт","17")]
     public RamAccess<string> QuantityRemovedFromAccount
     {
         get
@@ -1282,22 +1282,22 @@ public class Form24 : Form2
         Column += Transpon ? cnt : 0;
         Row += !Transpon ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassCreated)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityCreated)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothers)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothers)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothersImported)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothersImported)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassAnotherReasons)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityAnotherReasons)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassTransferredToAnother)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityTransferredToAnother)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRefined)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRefined)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRemovedFromAccount)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRemovedFromAccount)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
         return 16;
     }
     #endregion
@@ -1312,7 +1312,7 @@ public class Form24 : Form2
             //DataGridColumns insert = new DataGridColumns(); insert.name = ".kj";
             //DataGridColumns insert2 = new DataGridColumns(); insert2.name = "po["; insert2.parent = insert;
             //insert.innertCol = new List<DataGridColumns> { insert2 };
-            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             //insert.parent = NumberInOrderR;
             //List<DataGridColumns> child = NumberInOrderR.innertCol;
             //child[0].parent = insert.innertCol[0];
@@ -1328,7 +1328,7 @@ public class Form24 : Form2
             //insert = new DataGridColumns(); insert.name = "gfh";
             //insert2 = new DataGridColumns(); insert2.name = "yiu"; insert2.parent = insert;
             //insert.innertCol = new List<DataGridColumns> { insert2 };
-            var CodeOYATR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var CodeOYATR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = CodeOYATR;
             //child = CodeOYATR.innertCol;
             //child[0].parent = insert.innertCol[0];
@@ -1342,7 +1342,7 @@ public class Form24 : Form2
             //insert = new DataGridColumns(); insert.name = "nmm";
             //insert2 = new DataGridColumns(); insert2.name = "dsgf"; insert2.parent = insert;
             //insert.innertCol = new List<DataGridColumns> { insert2 };
-            var FcpNumberR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var FcpNumberR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = FcpNumberR;
             //child = FcpNumberR.innertCol;
             //child[0].parent = insert.innertCol[0];
@@ -1354,7 +1354,7 @@ public class Form24 : Form2
             #endregion
             #region MassCreated (4)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var MassCreatedR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(MassCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassCreatedR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(MassCreated)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = MassCreatedR;
             //List<DataGridColumns> child = MassCreatedR.innertCol;
             //child[0].parent = insert;
@@ -1366,7 +1366,7 @@ public class Form24 : Form2
             #endregion
             #region QuantityCreated (5)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var QuantityCreatedR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityCreatedR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityCreated)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = QuantityCreatedR;
             //child = QuantityCreatedR.innertCol;
             //child[0].parent = insert;
@@ -1378,7 +1378,7 @@ public class Form24 : Form2
             #endregion
             #region MassFromAnothers (6)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var MassFromAnothersR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(MassFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassFromAnothersR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(MassFromAnothers)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = MassFromAnothersR;
             //child = MassFromAnothersR.innertCol;
             //child[0].parent = insert;
@@ -1390,7 +1390,7 @@ public class Form24 : Form2
             #endregion
             #region QuantityFromAnothers (7)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var QuantityFromAnothersR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityFromAnothersR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityFromAnothers)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = QuantityFromAnothersR;
             //child = QuantityFromAnothersR.innertCol;
             //child[0].parent = insert;
@@ -1402,7 +1402,7 @@ public class Form24 : Form2
             #endregion
             #region MassFromAnothersImported (8)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var MassFromAnothersImportedR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(MassFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassFromAnothersImportedR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(MassFromAnothersImported)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = MassFromAnothersImportedR;
             //child = MassFromAnothersImportedR.innertCol;
             //child[0].parent = insert;
@@ -1414,7 +1414,7 @@ public class Form24 : Form2
             #endregion
             #region QuantityFromAnothersImported (9)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var QuantityFromAnothersImportedR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityFromAnothersImportedR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityFromAnothersImported)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = QuantityFromAnothersImportedR;
             //child = QuantityFromAnothersImportedR.innertCol;
             //child[0].parent = insert;
@@ -1426,7 +1426,7 @@ public class Form24 : Form2
             #endregion
             #region MassAnotherReasons (10)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var MassAnotherReasonsR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(MassAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassAnotherReasonsR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(MassAnotherReasons)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = MassAnotherReasonsR;
             //child = MassAnotherReasonsR.innertCol;
             //child[0].parent = insert;
@@ -1438,7 +1438,7 @@ public class Form24 : Form2
             #endregion
             #region QuantityAnotherReasons (11)
             //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
-            var QuantityAnotherReasonsR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityAnotherReasonsR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityAnotherReasons)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = QuantityAnotherReasonsR;
             //child = QuantityAnotherReasonsR.innertCol;
             //child[0].parent = insert;
@@ -1450,7 +1450,7 @@ public class Form24 : Form2
             #endregion
             #region MassTransferredToAnother (12)
             //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
-            var MassTransferredToAnotherR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(MassTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassTransferredToAnotherR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(MassTransferredToAnother)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = MassTransferredToAnotherR;
             //child = MassTransferredToAnotherR.innertCol;
             //child[0].parent = insert;
@@ -1462,7 +1462,7 @@ public class Form24 : Form2
             #endregion
             #region QuantityTransferredToAnother (13)
             //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
-            var QuantityTransferredToAnotherR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityTransferredToAnotherR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityTransferredToAnother)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = QuantityTransferredToAnotherR;
             //child = QuantityTransferredToAnotherR.innertCol;
             //child[0].parent = insert;
@@ -1474,7 +1474,7 @@ public class Form24 : Form2
             #endregion
             #region MassRefined (14)
             //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
-            var MassRefinedR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(MassRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassRefinedR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(MassRefined)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = MassRefinedR;
             //child = MassRefinedR.innertCol;
             //child[0].parent = insert;
@@ -1486,7 +1486,7 @@ public class Form24 : Form2
             #endregion
             #region QuantityRefined (15)
             //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
-            var QuantityRefinedR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityRefinedR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityRefined)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = QuantityRefinedR;
             //child = QuantityRefinedR.innertCol;
             //child[0].parent = insert;
@@ -1498,7 +1498,7 @@ public class Form24 : Form2
             #endregion
             #region MassRemovedFromAccount (16)
             //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
-            var MassRemovedFromAccountR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(MassRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassRemovedFromAccountR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(MassRemovedFromAccount)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = MassRemovedFromAccountR;
             //child = MassRemovedFromAccountR.innertCol;
             //child[0].parent = insert;
@@ -1510,7 +1510,7 @@ public class Form24 : Form2
             #endregion
             #region QuantityRemovedFromAccount (17)
             //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
-            var QuantityRemovedFromAccountR = ((Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityRemovedFromAccountR = ((FormPropertyAttribute)typeof(Form24).GetProperty(nameof(QuantityRemovedFromAccount)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             //insert.parent = QuantityRemovedFromAccountR;
             //child = QuantityRemovedFromAccountR.innertCol;
             //child[0].parent = insert;

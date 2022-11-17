@@ -242,7 +242,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                 IsContextMenuCommand = true,
                 ParamName = "Copy",
                 ContextMenuText = new string[] { "Открыть паспорт                                      Ctrl+P" },
-                Command = dataContext.OpenPasport
+                Command = dataContext.OpenPassport
             });
             Rgrd.CommandsList.Add(new KeyCommand
             {
@@ -251,7 +251,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                 IsContextMenuCommand = true,
                 ParamName = "Copy",
                 ContextMenuText = new string[] { "Выгрузка в Excel движения источника   Ctrl+E" },
-                Command = dataContext.ExcelPasport
+                Command = dataContext.ExcelPassport
             });
             Rgrd.CommandsList.Add(new KeyCommand
             {

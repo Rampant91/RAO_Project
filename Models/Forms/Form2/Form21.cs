@@ -162,7 +162,7 @@ public class Form21 : Form2, IBaseColor
     public string NumberInOrderSum_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true, "null-1-1", "null-1", "№ п/п", "1")]
+    [FormProperty(true, "null-1-1", "null-1", "№ п/п", "1")]
     public RamAccess<string> NumberInOrderSum
     {
         get
@@ -278,7 +278,7 @@ public class Form21 : Form2, IBaseColor
     }
 
     [NotMapped]
-    [Form_Property(true, "Установки переработки", "наименование", "2")]
+    [FormProperty(true, "Установки переработки", "наименование", "2")]
     public RamAccess<string> RefineMachineName
     {
         get
@@ -390,7 +390,7 @@ public class Form21 : Form2, IBaseColor
     }
 
     [NotMapped]
-    [Form_Property(true, "Установки переработки", "код", "3")]
+    [FormProperty(true, "Установки переработки", "код", "3")]
     public RamAccess<byte?> MachineCode
     {
         get
@@ -521,7 +521,7 @@ public class Form21 : Form2, IBaseColor
 
     public string MachinePower_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true, "Установки переработки", "мощность, куб. м/год", "4")]
+    [FormProperty(true, "Установки переработки", "мощность, куб. м/год", "4")]
     public RamAccess<string> MachinePower
     {
         get
@@ -691,7 +691,7 @@ public class Form21 : Form2, IBaseColor
     }
 
     [NotMapped]
-    [Form_Property(true, "Установки переработки", "количество часов работы за год", "5")]
+    [FormProperty(true, "Установки переработки", "количество часов работы за год", "5")]
     public RamAccess<string> NumberOfHoursPerYear
     {
         get
@@ -811,7 +811,7 @@ public class Form21 : Form2, IBaseColor
     }
 
     [NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "код РАО", "6")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "код РАО", "6")]
     public RamAccess<string> CodeRAOIn
     {
         get
@@ -947,7 +947,7 @@ public class Form21 : Form2, IBaseColor
         }
     }
     [NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "статус РАО", "7")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "статус РАО", "7")]
     public RamAccess<string> StatusRAOIn  //1 cyfer or OKPO.
     {
         get
@@ -1038,7 +1038,7 @@ public class Form21 : Form2, IBaseColor
     //VolumeIn property
     #region  VolumeIn
     public string VolumeIn_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "куб. м", "8")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "куб. м", "8")]
     public RamAccess<string> VolumeIn//SUMMARIZABLE
     {
         get
@@ -1141,7 +1141,7 @@ public class Form21 : Form2, IBaseColor
     //MassIn Property
     #region  MassIn
     public string MassIn_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "т", "9")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "т", "9")]
     public RamAccess<string> MassIn//SUMMARIZABLE
     {
         get
@@ -1235,7 +1235,7 @@ public class Form21 : Form2, IBaseColor
     //QuantityIn property
     #region  QuantityIn
     public string QuantityIn_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт", "10")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт", "10")]
     public RamAccess<string> QuantityIn//SUMMARIZABLE
     {
         get
@@ -1306,7 +1306,7 @@ public class Form21 : Form2, IBaseColor
     //TritiumActivityIn property
     #region  TritiumActivityIn
     public string TritiumActivityIn_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "тритий", "11")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "тритий", "11")]
     public RamAccess<string> TritiumActivityIn//SUMMARIZABLE
     {
         get
@@ -1400,7 +1400,7 @@ public class Form21 : Form2, IBaseColor
     //BetaGammaActivityIn property
     #region  BetaGammaActivityIn
     public string BetaGammaActivityIn_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "12")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "12")]
     public RamAccess<string> BetaGammaActivityIn//SUMMARIZABLE
     {
         get
@@ -1494,7 +1494,7 @@ public class Form21 : Form2, IBaseColor
     //AlphaActivityIn property
     #region  AlphaActivityIn
     public string AlphaActivityIn_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)", "13")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)", "13")]
     public RamAccess<string> AlphaActivityIn//SUMMARIZABLE
     {
         get
@@ -1588,7 +1588,7 @@ public class Form21 : Form2, IBaseColor
     //TransuraniumActivityIn property
     #region  TransuraniumActivityIn
     public string TransuraniumActivityIn_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды", "14")]
+    [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды", "14")]
     public RamAccess<string> TransuraniumActivityIn//SUMMARIZABLE
     {
         get
@@ -1694,7 +1694,7 @@ public class Form21 : Form2, IBaseColor
     }
 
     [NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "код РАО", "15")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "код РАО", "15")]
     public RamAccess<string> CodeRAOout
     {
         get
@@ -1831,7 +1831,7 @@ public class Form21 : Form2, IBaseColor
     }
 
     [NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "статус РАО", "16")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "статус РАО", "16")]
     public RamAccess<string> StatusRAOout  //1 cyfer or OKPO.
     {
         get
@@ -1917,7 +1917,7 @@ public class Form21 : Form2, IBaseColor
     //VolumeOut property
     #region  VolumeOut
     public string VolumeOut_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "куб. м", "17")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "куб. м", "17")]
     public RamAccess<string> VolumeOut//SUMMARIZABLE
     {
         get
@@ -2013,7 +2013,7 @@ public class Form21 : Form2, IBaseColor
     #region  MassOut
     public string MassOut_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "т", "18")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "т", "18")]
     public RamAccess<string> MassOut//SUMMARIZABLE
     {
         get
@@ -2110,7 +2110,7 @@ public class Form21 : Form2, IBaseColor
     #region  QuantityOZIIIout
     public string QuantityOZIIIout_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт", "19")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт", "19")]
     public RamAccess<string> QuantityOZIIIout//SUMMARIZABLE
     {
         get
@@ -2186,7 +2186,7 @@ public class Form21 : Form2, IBaseColor
     //TritiumActivityOut property
     #region  TritiumActivityOut
     public string TritiumActivityOut_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "тритий", "20")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "тритий", "20")]
     public RamAccess<string> TritiumActivityOut//SUMMARIZABLE
     {
         get
@@ -2281,7 +2281,7 @@ public class Form21 : Form2, IBaseColor
     //BetaGammaActivityOut property
     #region  BetaGammaActivityOut
     public string BetaGammaActivityOut_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "21")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "21")]
     public RamAccess<string> BetaGammaActivityOut//SUMMARIZABLE
     {
         get
@@ -2375,7 +2375,7 @@ public class Form21 : Form2, IBaseColor
     //AlphaActivityOut property
     #region  AlphaActivityOut
     public string AlphaActivityOut_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "альфа-излучающие радионуклиды (исключая трансурановые)", "22")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "альфа-излучающие радионуклиды (исключая трансурановые)", "22")]
     public RamAccess<string> AlphaActivityOut//SUMMARIZABLE
     {
         get
@@ -2470,7 +2470,7 @@ public class Form21 : Form2, IBaseColor
     //TransuraniumActivityOut property
     #region  TransuraniumActivityOut
     public string TransuraniumActivityOut_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "трансурановые радионуклиды", "23")]
+    [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "трансурановые радионуклиды", "23")]
     public RamAccess<string> TransuraniumActivityOut//SUMMARIZABLE
     {
         get
@@ -2637,28 +2637,28 @@ public class Form21 : Form2, IBaseColor
         Column += Transpon ? cnt : 0;
         Row += !Transpon ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 19 : 0), Column + (Transpon ? 19 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 20 : 0), Column + (Transpon ? 20 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 21 : 0), Column + (Transpon ? 21 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 16 : 0), Column + (Transpon ? 16 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 17 : 0), Column + (Transpon ? 17 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 18 : 0), Column + (Transpon ? 18 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 19 : 0), Column + (Transpon ? 19 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 20 : 0), Column + (Transpon ? 20 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 21 : 0), Column + (Transpon ? 21 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
 
         return 22;
     }
@@ -2670,7 +2670,7 @@ public class Form21 : Form2, IBaseColor
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(NumberInOrderSum)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(NumberInOrderSum)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrderSum);
             NumberInOrderR.Blocked = true;
@@ -2678,154 +2678,154 @@ public class Form21 : Form2, IBaseColor
             #endregion
 
             #region RefineMachineName (2)
-            var RefineMachineNameR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RefineMachineNameR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RefineMachineNameR.SetSizeColToAllLevels(200);
             RefineMachineNameR.Binding = nameof(RefineMachineName);
             NumberInOrderR += RefineMachineNameR;
             #endregion
 
             #region MachineCode (3)
-            var MachineCodeR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MachineCodeR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MachineCodeR.SetSizeColToAllLevels(60);
             MachineCodeR.Binding = nameof(MachineCode);
             NumberInOrderR += MachineCodeR;
             #endregion
 
             #region MachinePower (4)
-            var MachinePowerR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MachinePowerR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MachinePowerR.SetSizeColToAllLevels(80);
             MachinePowerR.Binding = nameof(MachinePower);
             NumberInOrderR += MachinePowerR;
             #endregion
 
             #region NumberOfHoursPerYear (5)
-            var NumberOfHoursPerYearR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var NumberOfHoursPerYearR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             NumberOfHoursPerYearR.SetSizeColToAllLevels(110);
             NumberOfHoursPerYearR.Binding = nameof(NumberOfHoursPerYear);
             NumberInOrderR += NumberOfHoursPerYearR;
             #endregion
 
             #region CodeRAOIn (6)
-            var CodeRAOInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var CodeRAOInR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             CodeRAOInR.SetSizeColToAllLevels(88);
             CodeRAOInR.Binding = nameof(CodeRAOIn);
             NumberInOrderR += CodeRAOInR;
             #endregion
 
             #region StatusRAOIn (7)
-            var StatusRAOInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var StatusRAOInR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             StatusRAOInR.SetSizeColToAllLevels(88);
             StatusRAOInR.Binding = nameof(StatusRAOIn);
             NumberInOrderR += StatusRAOInR;
             #endregion
 
             #region VolumeIn (8)
-            var VolumeInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var VolumeInR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             VolumeInR.SetSizeColToAllLevels(88);
             VolumeInR.Binding = nameof(VolumeIn);
             NumberInOrderR += VolumeInR;
             #endregion
 
             #region MassIn (9)
-            var MassInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassInR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MassInR.SetSizeColToAllLevels(88);
             MassInR.Binding = nameof(MassIn);
             NumberInOrderR += MassInR;
             #endregion
 
             #region QuantityIn (10)
-            var QuantityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityInR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             QuantityInR.SetSizeColToAllLevels(88);
             QuantityInR.Binding = nameof(QuantityIn);
             NumberInOrderR += QuantityInR;
             #endregion
 
             #region TritiumActivityIn (11)
-            var TritiumActivityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TritiumActivityInR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TritiumActivityInR.SetSizeColToAllLevels(163);
             TritiumActivityInR.Binding = nameof(TritiumActivityIn);
             NumberInOrderR += TritiumActivityInR;
             #endregion
 
             #region BetaGammaActivityIn (12)
-            var BetaGammaActivityInR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var BetaGammaActivityInR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             BetaGammaActivityInR.SetSizeColToAllLevels(160);
             BetaGammaActivityInR.Binding = nameof(BetaGammaActivityIn);
             NumberInOrderR += BetaGammaActivityInR;
             #endregion
 
             #region AlphaActivity (13)
-            var AlphaActivityR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AlphaActivityR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AlphaActivityR.SetSizeColToAllLevels(170);
             AlphaActivityR.Binding = nameof(AlphaActivityIn);
             NumberInOrderR += AlphaActivityR;
             #endregion
 
             #region TransuraniumActivity (14)
-            var TransuraniumActivityR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TransuraniumActivityR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityIn)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TransuraniumActivityR.SetSizeColToAllLevels(200);
             TransuraniumActivityR.Binding = nameof(TransuraniumActivityIn);
             NumberInOrderR += TransuraniumActivityR;
             #endregion
 
             #region CodeRAOout (15)
-            var CodeRAOoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var CodeRAOoutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             CodeRAOoutR.SetSizeColToAllLevels(88);
             CodeRAOoutR.Binding = nameof(CodeRAOout);
             NumberInOrderR += CodeRAOoutR;
             #endregion
 
             #region StatusRAOout (16)
-            var StatusRAOoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var StatusRAOoutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             StatusRAOoutR.SetSizeColToAllLevels(88);
             StatusRAOoutR.Binding = nameof(StatusRAOout);
             NumberInOrderR += StatusRAOoutR;
             #endregion
 
             #region VolumeOut (17)
-            var VolumeOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var VolumeOutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             VolumeOutR.SetSizeColToAllLevels(88);
             VolumeOutR.Binding = nameof(VolumeOut);
             NumberInOrderR += VolumeOutR;
             #endregion
 
             #region MassOut (18)
-            var MassOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var MassOutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             MassOutR.SetSizeColToAllLevels(88);
             MassOutR.Binding = nameof(MassOut);
             NumberInOrderR += MassOutR;
             #endregion
 
             #region QuantityOZIIIout (19)
-            var QuantityOZIIIoutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var QuantityOZIIIoutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             QuantityOZIIIoutR.SetSizeColToAllLevels(88);
             QuantityOZIIIoutR.Binding = nameof(QuantityOZIIIout);
             NumberInOrderR += QuantityOZIIIoutR;
             #endregion
 
             #region TritiumActivityOut (20)
-            var TritiumActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TritiumActivityOutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TritiumActivityOutR.SetSizeColToAllLevels(163);
             TritiumActivityOutR.Binding = nameof(TritiumActivityOut);
             NumberInOrderR += TritiumActivityOutR;
             #endregion
 
             #region BetaGammaActivityOut (21)
-            var BetaGammaActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var BetaGammaActivityOutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             BetaGammaActivityOutR.SetSizeColToAllLevels(170);
             BetaGammaActivityOutR.Binding = nameof(BetaGammaActivityOut);
             NumberInOrderR += BetaGammaActivityOutR;
             #endregion
 
             #region AlphaActivityOut (22)
-            var AlphaActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AlphaActivityOutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AlphaActivityOutR.SetSizeColToAllLevels(170);
             AlphaActivityOutR.Binding = nameof(AlphaActivityOut);
             NumberInOrderR += AlphaActivityOutR;
             #endregion
 
             #region TransuraniumActivityOut (23)
-            var TransuraniumActivityOutR = ((Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TransuraniumActivityOutR = ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityOut)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TransuraniumActivityOutR.SetSizeColToAllLevels(163);
             TransuraniumActivityOutR.Binding = nameof(TransuraniumActivityOut);
             NumberInOrderR += TransuraniumActivityOutR;

@@ -34,7 +34,7 @@ public class Form26 : Form2
         AverageYearConcentration_Validation(AverageYearConcentration);
     }
 
-    [Form_Property(true,"Форма")]
+    [FormProperty(true,"Форма")]
     public override bool Object_Validation()
     {
         return !(ObservedSourceNumber.HasErrors||
@@ -49,7 +49,7 @@ public class Form26 : Form2
     //ObservedSourceNumber property
     #region ObservedSourceNumber
     public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"null-1","Номер наблюдательной скважины","2")]
+    [FormProperty(true,"null-1","Номер наблюдательной скважины","2")]
     public RamAccess<string> ObservedSourceNumber
     {
         get
@@ -91,7 +91,7 @@ public class Form26 : Form2
     //ControlledAreaName property
     #region ControlledAreaName
     public string ControlledAreaName_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"null-1", "Наименование зоны контроля","3")]
+    [FormProperty(true,"null-1", "Наименование зоны контроля","3")]
     public RamAccess<string> ControlledAreaName
     {
         get
@@ -156,7 +156,7 @@ public class Form26 : Form2
     #region SupposedWasteSource
     public string SupposedWasteSource_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-1", "Предполагаемый источник поступления радиоактивных веществ","4")]
+    [FormProperty(true,"null-1", "Предполагаемый источник поступления радиоактивных веществ","4")]
     public RamAccess<string> SupposedWasteSource
     {
         get
@@ -200,7 +200,7 @@ public class Form26 : Form2
     #region DistanceToWasteSource
     public string DistanceToWasteSource_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-1", "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м","5")]
+    [FormProperty(true,"null-1", "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м","5")]
     public RamAccess<string> DistanceToWasteSource
     {
         get
@@ -294,7 +294,7 @@ public class Form26 : Form2
     #region TestDepth
     public string TestDepth_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"null-1", "Глубина отбора проб, м","6")]
+    [FormProperty(true,"null-1", "Глубина отбора проб, м","6")]
     public RamAccess<string> TestDepth
     {
         get
@@ -390,7 +390,7 @@ public class Form26 : Form2
     //RadionuclidName property
     #region RadionuclidName
     public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
-    [Form_Property(true,"null-1", "Наименование радионуклида","7")]
+    [FormProperty(true,"null-1", "Наименование радионуклида","7")]
     public RamAccess<string> RadionuclidName
     {
         get
@@ -445,7 +445,7 @@ public class Form26 : Form2
     //AverageYearConcentration property
     #region AverageYearConcentration 
     public string AverageYearConcentration_DB { get; set; } [NotMapped]
-    [Form_Property(true,"null-1", "Среднегодовое содержание радионуклида, Бк/кг","8")]
+    [FormProperty(true,"null-1", "Среднегодовое содержание радионуклида, Бк/кг","8")]
     public RamAccess<string> AverageYearConcentration
     {
         get
@@ -568,13 +568,13 @@ public class Form26 : Form2
         Column += Transpon ? cnt : 0;
         Row += !Transpon ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Form26,Models").GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
         return 7;
     }
     #endregion
@@ -585,50 +585,50 @@ public class Form26 : Form2
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            var NumberInOrderR = ((Form_PropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(NumberInOrder);
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
             #region ObservedSourceNumber (2)
-            var ObservedSourceNumberR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ObservedSourceNumberR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ObservedSourceNumberR.SetSizeColToAllLevels(164);
             ObservedSourceNumberR.Binding = nameof(ObservedSourceNumber);
             NumberInOrderR += ObservedSourceNumberR;
             #endregion
             #region ControlledAreaName (3)
-            var ControlledAreaNameR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var ControlledAreaNameR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ControlledAreaNameR.SetSizeColToAllLevels(166);
             ControlledAreaNameR.Binding = nameof(ControlledAreaName);
             NumberInOrderR += ControlledAreaNameR;
             #endregion
             #region SupposedWasteSource (4)
-            var SupposedWasteSourceR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var SupposedWasteSourceR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SupposedWasteSourceR.SetSizeColToAllLevels(238);
             SupposedWasteSourceR.Binding = nameof(SupposedWasteSource);
             NumberInOrderR += SupposedWasteSourceR;
             #endregion
             #region DistanceToWasteSource (5)
-            var DistanceToWasteSourceR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var DistanceToWasteSourceR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DistanceToWasteSourceR.SetSizeColToAllLevels(337);
             DistanceToWasteSourceR.Binding = nameof(DistanceToWasteSource);
             NumberInOrderR += DistanceToWasteSourceR;
             #endregion
             #region TestDepth (6)
-            var TestDepthR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var TestDepthR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             TestDepthR.SetSizeColToAllLevels(180);
             TestDepthR.Binding = nameof(TestDepth);
             NumberInOrderR += TestDepthR;
             #endregion
             #region RadionuclidName (7)
-            var RadionuclidNameR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var RadionuclidNameR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidNameR.SetSizeColToAllLevels(230);
             RadionuclidNameR.Binding = nameof(RadionuclidName);
             NumberInOrderR += RadionuclidNameR;
             #endregion
             #region AverageYearConcentration (8)
-            var AverageYearConcentrationR = ((Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+            var AverageYearConcentrationR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             AverageYearConcentrationR.SetSizeColToAllLevels(200);
             AverageYearConcentrationR.Binding = nameof(AverageYearConcentration);
             NumberInOrderR += AverageYearConcentrationR;

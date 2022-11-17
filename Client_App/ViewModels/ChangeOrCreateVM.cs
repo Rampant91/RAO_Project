@@ -913,7 +913,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
                 foreach (var prop in props)
                 {
-                    var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
+                    var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
                     if (attr is null) continue;
                     try
                     {
@@ -985,7 +985,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             var props = item.GetType().GetProperties();
             foreach (var prop in props)
             {
-                var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
+                var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
                 if (attr == null) continue;
                 int newNum;
                 if (attr.Names.Length > 1 && attr.Names[0] != "null-1-1")
@@ -1106,7 +1106,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
                 foreach (var prop in props)
                 {
-                    var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
+                    var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
                     if (attr == null) continue;
                     try
                     {
@@ -1197,14 +1197,14 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region Pasport
-    #region ExcelPasport
-    public ReactiveCommand<object, Unit> ExcelPasport { get; protected set; }
-    private async Task _ExcelPasport(object param)
+    #region Passport
+    #region ExcelPassport
+    public ReactiveCommand<object, Unit> ExcelPassport { get; protected set; }
+    private async Task _ExcelPassport(object param)
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            PasportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+            PassportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
             SaveFileDialog saveFileDialog = new();
             FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
             saveFileDialog.Filters.Add(filter);
@@ -1420,11 +1420,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region OpenPasport
-    public ReactiveCommand<object, Unit> OpenPasport { get; protected set; }
-    private async Task _OpenPasport(object param)
+    #region OpenPassport
+    public ReactiveCommand<object, Unit> OpenPassport { get; protected set; }
+    private async Task _OpenPassport(object param)
     {
-        PasportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+        PassportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
         if (okpo is null or "" or "-"
             || type is null or "" or "-"
             || year is null or "" or "-"
@@ -1544,7 +1544,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> CopyPasName { get; protected set; }
     private async Task _CopyPasName(object param)
     {
-        PasportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+        PassportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
         if (okpo is null or "" or "-"
             || type is null or "" or "-"
             || year is null or "" or "-"
@@ -1569,8 +1569,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region PasportUniqParam
-    private void PasportUniqParam(object param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum)
+    #region PassportUniqParam
+    private static void PassportUniqParam(object param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum)
     {
         var par = param as object[];
         var collection = par?[0] as IKeyCollection;
@@ -1584,11 +1584,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         factoryNum = "";
         foreach (var prop in props!)
         {
-            var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault()!;
-            if (attr != null
-                && (attr.Names.Length <= 1
+            var attr = (FormPropertyAttribute?)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
+            if (attr is null
+                || attr.Names.Length <= 1
                 || attr.Names[0] != "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
-                || attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска" or "номер паспорта (сертификата)" or "номер"))) continue;
+                || attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска" or "номер паспорта (сертификата)" or "номер")) continue;
             var midValue = prop.GetMethod?.Invoke(item, null);
             if (midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null) is not (null or "" or "-"))
             {
@@ -1831,7 +1831,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public Interaction<List<string>, string> ShowMessageT { get; protected set; }
     #endregion
 
-    public void Init()
+    private void Init()
     {
         var a = FormType.Replace(".", "");
         if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
@@ -1856,8 +1856,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
         SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
         DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
-        OpenPasport = ReactiveCommand.CreateFromTask<object>(_OpenPasport);
-        ExcelPasport = ReactiveCommand.CreateFromTask<object>(_ExcelPasport);
+        OpenPassport = ReactiveCommand.CreateFromTask<object>(_OpenPassport);
+        ExcelPassport = ReactiveCommand.CreateFromTask<object>(_ExcelPassport);
         CopyPasName = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
         CopyExecutorData = ReactiveCommand.CreateFromTask<object>(_CopyExecutorData);
 

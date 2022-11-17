@@ -50,7 +50,7 @@ public class Form20 : Form
     public string RegNo_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"Рег. №")]
+    [FormProperty(true,"Рег. №")]
     public RamAccess<string> RegNo
     {
         get
@@ -120,7 +120,7 @@ public class Form20 : Form
     public string OrganUprav_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"Орган управления использованием атомной энергии")]
+    [FormProperty(true,"Орган управления использованием атомной энергии")]
     public RamAccess<string> OrganUprav
     {
         get
@@ -167,7 +167,7 @@ public class Form20 : Form
     public string SubjectRF_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true, "Субъект Российской Федерации", "Субъект Российской Федерации")]
+    [FormProperty(true, "Субъект Российской Федерации", "Субъект Российской Федерации")]
     public RamAccess<string> SubjectRF
     {
         get
@@ -214,7 +214,7 @@ public class Form20 : Form
     public string JurLico_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true, "Наименование юридического лица", "Наименование обособленного подразделения")]
+    [FormProperty(true, "Наименование юридического лица", "Наименование обособленного подразделения")]
     public RamAccess<string> JurLico
     {
         get
@@ -261,7 +261,7 @@ public class Form20 : Form
     public string ShortJurLico_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true, "Сокращенное наименование", "Сокращенное наименование")]
+    [FormProperty(true, "Сокращенное наименование", "Сокращенное наименование")]
     public RamAccess<string> ShortJurLico
     {
         get
@@ -308,7 +308,7 @@ public class Form20 : Form
     public string JurLicoAddress_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true, "Адрес места нахождения юридического лица", "Адрес места нахождения обособленного подразделения")]
+    [FormProperty(true, "Адрес места нахождения юридического лица", "Адрес места нахождения обособленного подразделения")]
     public RamAccess<string> JurLicoAddress
     {
         get
@@ -355,7 +355,7 @@ public class Form20 : Form
     public string JurLicoFactAddress_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true, "Фактический адрес юр. лица", "Фактический адрес обособленного подразделения")]
+    [FormProperty(true, "Фактический адрес юр. лица", "Фактический адрес обособленного подразделения")]
     public RamAccess<string> JurLicoFactAddress
     {
         get
@@ -402,7 +402,7 @@ public class Form20 : Form
     public string GradeFIO_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ФИО, должность руководителя", "ФИО, должность руководителя")]
+    [FormProperty(true,"ФИО, должность руководителя", "ФИО, должность руководителя")]
     public RamAccess<string> GradeFIO
     {
         get
@@ -449,7 +449,7 @@ public class Form20 : Form
     public string Telephone_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"Телефон организации", "Телефон организации")]
+    [FormProperty(true,"Телефон организации", "Телефон организации")]
     public RamAccess<string> Telephone
     {
         get
@@ -496,7 +496,7 @@ public class Form20 : Form
     public string Fax_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"Факс организации", "Факс организации")]
+    [FormProperty(true,"Факс организации", "Факс организации")]
     public RamAccess<string> Fax
     {
         get
@@ -543,7 +543,7 @@ public class Form20 : Form
     public string Email_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"Эл. почта организации", "Эл. почта организации")]
+    [FormProperty(true,"Эл. почта организации", "Эл. почта организации")]
     public RamAccess<string> Email
     {
         get
@@ -590,7 +590,7 @@ public class Form20 : Form
     public string Okpo_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ОКПО", "ОКПО")]
+    [FormProperty(true,"ОКПО", "ОКПО")]
     public RamAccess<string> Okpo
     {
         get
@@ -657,7 +657,7 @@ public class Form20 : Form
     public string Okved_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ОКВЭД", "ОКВЭД")]
+    [FormProperty(true,"ОКВЭД", "ОКВЭД")]
     public RamAccess<string> Okved
     {
         get
@@ -718,7 +718,7 @@ public class Form20 : Form
     public string Okogu_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ОКОГУ", "ОКОГУ")]
+    [FormProperty(true,"ОКОГУ", "ОКОГУ")]
     public RamAccess<string> Okogu
     {
         get
@@ -779,7 +779,7 @@ public class Form20 : Form
     public string Oktmo_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ОКТМО", "ОКТМО")]
+    [FormProperty(true,"ОКТМО", "ОКТМО")]
     public RamAccess<string> Oktmo
     {
         get
@@ -840,7 +840,7 @@ public class Form20 : Form
     public string Inn_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ИНН", "ИНН")]
+    [FormProperty(true,"ИНН", "ИНН")]
     public RamAccess<string> Inn
     {
         get
@@ -901,7 +901,7 @@ public class Form20 : Form
     public string Kpp_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"КПП", "КПП")]
+    [FormProperty(true,"КПП", "КПП")]
     public RamAccess<string> Kpp
     {
         get
@@ -962,7 +962,7 @@ public class Form20 : Form
     public string Okopf_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ОКОПФ", "ОКОПФ")]
+    [FormProperty(true,"ОКОПФ", "ОКОПФ")]
     public RamAccess<string> Okopf
     {
         get
@@ -1023,7 +1023,7 @@ public class Form20 : Form
     public string Okfs_DB { get; set; } = "";
 
     [NotMapped]
-    [Form_Property(true,"ОКФС", "ОКФС")]
+    [FormProperty(true,"ОКФС", "ОКФС")]
     public RamAccess<string> Okfs
     {
         get
@@ -1123,23 +1123,23 @@ public class Form20 : Form
 
         if (ID.Equals(""))
         {
-            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(Okpo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];                        
-            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(ShortJurLico))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];                        
-            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(RegNo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];                        
+            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(Okpo))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                        
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(ShortJurLico))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                        
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(RegNo))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                        
             return 3;                                                                                                 
         }                                                                                                             
         else                                                                                                          
         {                                                                                                             
             worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ID;                       
-            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(Okpo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];                        
-            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(ShortJurLico))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];                        
-            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(RegNo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(Okpo))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                        
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(ShortJurLico))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                        
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty(nameof(RegNo))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
             return 4;
         }
     }

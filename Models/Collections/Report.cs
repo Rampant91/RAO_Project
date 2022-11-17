@@ -774,7 +774,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region FormNum
     public string FormNum_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Форма")]
+    [FormProperty(true,"Форма")]
     public RamAccess<string> FormNum
     {
         get
@@ -814,7 +814,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region IsCorrection
     public bool IsCorrection_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Корректирующий отчет")]
+    [FormProperty(true,"Корректирующий отчет")]
     public RamAccess<bool> IsCorrection
     {
         get
@@ -854,7 +854,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region CorrectionNumber
     public byte CorrectionNumber_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Номер корректировки")]
+    [FormProperty(true,"Номер корректировки")]
     public RamAccess<byte> CorrectionNumber
     {
         get
@@ -895,7 +895,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region FIOexecutor
     public string FIOexecutor_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Номер корректировки")]
+    [FormProperty(true,"Номер корректировки")]
     public RamAccess<string> FIOexecutor
     {
         get
@@ -936,7 +936,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region GradeExecutor
     public string GradeExecutor_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Номер корректировки")]
+    [FormProperty(true,"Номер корректировки")]
     public RamAccess<string> GradeExecutor
     {
         get
@@ -977,7 +977,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region ExecPhone
     public string ExecPhone_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Номер корректировки")]
+    [FormProperty(true,"Номер корректировки")]
     public RamAccess<string> ExecPhone
     {
         get
@@ -1018,7 +1018,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region ExecEmail
     public string ExecEmail_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Номер корректировки")]
+    [FormProperty(true,"Номер корректировки")]
     public RamAccess<string> ExecEmail
     {
         get
@@ -1071,7 +1071,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region NumberInOrder
     public string NumberInOrder_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Номер")]
+    [FormProperty(true,"Номер")]
     public RamAccess<string> NumberInOrder
     {
         get
@@ -1111,7 +1111,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region Comments
     public string Comments_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Комментарий")]
+    [FormProperty(true,"Комментарий")]
     public RamAccess<string> Comments
     {
         get
@@ -1150,7 +1150,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region Notes
 
-    [Form_Property(true,"Примечания")]
+    [FormProperty(true,"Примечания")]
     ObservableCollectionWithItemPropertyChanged<Note> Notes_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Note> Notes
     {
@@ -1172,7 +1172,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region PermissionNumber_28 
     public string PermissionNumber_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Номер разрешительного документа")]
+    [FormProperty(true,"Номер разрешительного документа")]
     public RamAccess<string> PermissionNumber_28
     {
         get
@@ -1213,7 +1213,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region PermissionIssueDate_28
     public string PermissionIssueDate_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Дата выпуска разрешительного документа")]
+    [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> PermissionIssueDate_28
     {
         get
@@ -1282,7 +1282,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region PermissionDocumentName_28 
     public string PermissionDocumentName_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Наименование разрешительного документа")]
+    [FormProperty(true,"Наименование разрешительного документа")]
     public RamAccess<string> PermissionDocumentName_28
     {
         get
@@ -1322,7 +1322,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ValidBegin_28
     public string ValidBegin_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует с")]
+    [FormProperty(true,"Действует с")]
     public RamAccess<string> ValidBegin_28
     {
         get
@@ -1391,7 +1391,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ValidThru_28
     public string ValidThru_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует по")]
+    [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru_28
     {
         get
@@ -1460,7 +1460,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region PermissionNumber1_28 
     public string PermissionNumber1_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Номер разрешительного документа")]
+    [FormProperty(true,"Номер разрешительного документа")]
     public RamAccess<string> PermissionNumber1_28
     {
         get
@@ -1500,7 +1500,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region PermissionIssueDate1_28 
     public string PermissionIssueDate1_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Дата выпуска разрешительного документа")]
+    [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> PermissionIssueDate1_28
     {
         get
@@ -1569,7 +1569,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region PermissionDocumentName1_28
     public string PermissionDocumentName1_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Наименование разрешительного документа")]
+    [FormProperty(true,"Наименование разрешительного документа")]
     public RamAccess<string> PermissionDocumentName1_28
     {
         get
@@ -1609,7 +1609,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ValidBegin1_28
     public string ValidBegin1_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует с")]
+    [FormProperty(true,"Действует с")]
     public RamAccess<string> ValidBegin1_28
     {
         get
@@ -1678,7 +1678,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ValidThru1_28 
     public string ValidThru1_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует по")]
+    [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru1_28
     {
         get
@@ -1747,7 +1747,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ContractNumber_28 
     public string ContractNumber_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Номер договора на передачу сточных вод")]
+    [FormProperty(true,"Номер договора на передачу сточных вод")]
     public RamAccess<string> ContractNumber_28
     {
         get
@@ -1787,7 +1787,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ContractIssueDate2_28
     public string ContractIssueDate2_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Дата выпуска разрешительного документа")]
+    [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> ContractIssueDate2_28
     {
         get
@@ -1855,7 +1855,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region OrganisationReciever_28
     public string OrganisationReciever_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Организация, осуществляющая прием сточных вод")]
+    [FormProperty(true,"Организация, осуществляющая прием сточных вод")]
     public RamAccess<string> OrganisationReciever_28
     {
         get
@@ -1895,7 +1895,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ValidBegin2_28
     public string ValidBegin2_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует с")]
+    [FormProperty(true,"Действует с")]
     public RamAccess<string> ValidBegin2_28
     {
         get
@@ -1964,7 +1964,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region ValidThru2_28
     public string ValidThru2_28_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует по")]
+    [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru2_28
     {
         get
@@ -2033,7 +2033,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region  PermissionNumber27
     public string PermissionNumber27_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Номер разрешительного документа")]
+    [FormProperty(true,"Номер разрешительного документа")]
     public RamAccess<string> PermissionNumber27
     {
         get
@@ -2074,7 +2074,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region  PermissionIssueDate27
     public string PermissionIssueDate27_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Дата выпуска разрешительного документа")]
+    [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> PermissionIssueDate27
     {
         get
@@ -2143,7 +2143,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region  PermissionDocumentName27
     public string PermissionDocumentName27_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Наименование разрешительного документа")]
+    [FormProperty(true,"Наименование разрешительного документа")]
     public RamAccess<string> PermissionDocumentName27
     {
         get
@@ -2184,7 +2184,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region  ValidBegin27
     public string ValidBegin27_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует с")]
+    [FormProperty(true,"Действует с")]
     public RamAccess<string> ValidBegin27
     {
         get
@@ -2254,7 +2254,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     #region  ValidThru27
     public string ValidThru27_DB { get; set; } = "";[NotMapped]
-    [Form_Property(true,"Действует по")]
+    [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru27
     {
         get
@@ -2325,7 +2325,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region SourcesQuantity26
     public int? SourcesQuantity26_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Количество источников, шт")]
+    [FormProperty(true,"Количество источников, шт")]
     public RamAccess<int?> SourcesQuantity26
     {
         get
@@ -2376,7 +2376,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region Year
     public string Year_DB { get; set; }
     [NotMapped]
-    [Form_Property(true,"Отчетный год")]
+    [FormProperty(true,"Отчетный год")]
     public RamAccess<string> Year
     {
         get
@@ -2437,7 +2437,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region StartPeriod
     public string StartPeriod_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Дата начала периода")]
+    [FormProperty(true,"Дата начала периода")]
     public RamAccess<string> StartPeriod
     {
         get
@@ -2507,7 +2507,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region EndPeriod
     public string EndPeriod_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Дата конца периода")]
+    [FormProperty(true,"Дата конца периода")]
     public RamAccess<string> EndPeriod
     {
         get
@@ -2587,7 +2587,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     public string ExportDate_DB { get; set; } = "";
     [NotMapped]
-    [Form_Property(true,"Дата выгрузки")]
+    [FormProperty(true,"Дата выгрузки")]
     public RamAccess<string> ExportDate
     {
         get
@@ -2964,20 +2964,20 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     {
         if (FormNum.Split('.')[0] == "1")
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(StartPeriod))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(EndPeriod))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(StartPeriod))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(EndPeriod))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
             return 3;
         }
         if (FormNum.Split('.')[0] == "2")
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(Year))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(Year))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
             return 2;
         }
         return 0;
@@ -3028,56 +3028,56 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region IDataGridColumn
     public DataGridColumns GetColumnStructure(string param = "")
     {
-        var FormNumR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(FormNum)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var FormNumR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(FormNum)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         FormNumR.SizeCol = 100;
         FormNumR.Binding = nameof(FormNum);
 
         if (param == "1.0") 
         {
 
-            var StartPeriodR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(StartPeriod)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var StartPeriodR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(StartPeriod)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             StartPeriodR.SizeCol = 170;
             StartPeriodR.Binding = nameof(StartPeriod);
             FormNumR += StartPeriodR;
 
-            var EndPeriodR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(EndPeriod)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var EndPeriodR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(EndPeriod)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             EndPeriodR.SizeCol = 170;
             EndPeriodR.Binding = nameof(EndPeriod);
             FormNumR += EndPeriodR;
 
-            var ExportDateR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var ExportDateR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             ExportDateR.SizeCol = 170;
             ExportDateR.Binding = nameof(ExportDate);
             FormNumR += ExportDateR;
 
-            var CorrectionNumberR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CorrectionNumberR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CorrectionNumberR.SizeCol = 170;
             CorrectionNumberR.Binding = nameof(CorrectionNumber);
             FormNumR += CorrectionNumberR;
 
-            var CommentsR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CommentsR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CommentsR.SizeCol = 343;
             CommentsR.Binding = nameof(Comments);
             FormNumR += CommentsR;
         }
         if (param == "2.0")
         {
-            var YearR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Year)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var YearR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Year)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             YearR.SizeCol = 170;
             YearR.Binding = nameof(Year);
             FormNumR += YearR; 
 
-            var ExportDateR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var ExportDateR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             ExportDateR.SizeCol = 170;
             ExportDateR.Binding = nameof(ExportDate);
             FormNumR += ExportDateR;
 
-            var CorrectionNumberR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CorrectionNumberR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CorrectionNumberR.SizeCol = 170;
             CorrectionNumberR.Binding = nameof(CorrectionNumber);
             FormNumR += CorrectionNumberR;
 
-            var CommentsR = ((Form_PropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            var CommentsR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CommentsR.SizeCol = 513;
             CommentsR.Binding = nameof(Comments);
             FormNumR += CommentsR;
