@@ -588,7 +588,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             try
-            
             {
                 var val = Convert.ToInt32(value);
                 if (val != null && Items != null)
@@ -1327,12 +1326,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 tmp2Coll.Add(it);
                             }
                         }
-                        if (int.Parse(NowPage) > (tmp2Coll.Count % PageSize == 0
+
+                        //if (tmp2Coll.Count < PageSize || tmp2Coll.Count % PageSize == 0)
+                        //{
+
+                        //}
+                        if (int.Parse(NowPage) > (tmp2Coll.Count < PageSize || tmp2Coll.Count % PageSize == 0
                                 ? tmp2Coll.Count / PageSize + 1
-                                : tmp2Coll.Count / PageSize))
+                                : tmp2Coll.Count / PageSize + 1))
                         {
-                            NowPage = "1";
-                            offset = 0;
+                            SetAndRaise(NowPageProperty, ref _nowPage, "1");
+                            offsetMax = 5;
+                            UpdateCells();
                         }
                         tmpColl = tmp2Coll;
                         _itemsWithSearch = tmp2Coll;
