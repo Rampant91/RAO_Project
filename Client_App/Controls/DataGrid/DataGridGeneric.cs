@@ -532,15 +532,43 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-            SetAndRaise(PageCountProperty, ref _PageCount, searchText != ""
-                ? (_itemsWithSearch != null 
-                    ? _itemsWithSearch.Count > PageSize
-                        ? (_itemsWithSearch.Count / PageSize + 1).ToString()
-                        : _itemsWithSearch.Count == 0 
-                            ? "0" 
-                            : "1"
-                    : "0")
-                : (Items != null ? Items.Count / PageSize + 1 : 0).ToString());
+            int pageCount;
+            if (_itemsWithSearch != null && _itemsWithSearch.Count != 0)
+            {
+                if (_itemsWithSearch.Count <= PageSize)
+                {
+                    pageCount = 1;
+                }
+                else if (_itemsWithSearch.Count % PageSize == 0)
+                {
+                    pageCount = _itemsWithSearch.Count / PageSize;
+                }
+                else
+                {
+                    pageCount = (_itemsWithSearch.Count / PageSize) + 1;
+                }
+            }
+            else
+            {
+                if (Items != null)
+                {
+                    pageCount = Items.Count / PageSize + 1;
+                }
+                else
+                {
+                    pageCount = 0;
+                }
+            }
+            SetAndRaise(PageCountProperty, ref _PageCount, pageCount.ToString());
+
+                //? (_itemsWithSearch != null 
+                //    ? _itemsWithSearch.Count > PageSize
+                //        ? (_itemsWithSearch.Count / PageSize + 1).ToString()
+                //        : _itemsWithSearch.Count == 0 
+                //            ? "0" 
+                //            : "1"
+                //    : "0")
+                //: (Items != null ? Items.Count / PageSize + 1 : 0).ToString());
         }
     }
     #endregion
@@ -592,9 +620,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var val = Convert.ToInt32(value);
                 if (val != null && Items != null)
                 {
-                    var maxpage = string.IsNullOrEmpty(SearchText) || _itemsWithSearch.Count == 0
+                    int maxpage;
+                    var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+                    maxpage = string.IsNullOrEmpty(searchText) || !string.IsNullOrEmpty(searchText) && _itemsWithSearch?.Count == 0
                         ? Items.Count / PageSize + 1
-                        : _itemsWithSearch.Count < PageSize
+                        : _itemsWithSearch?.Count < PageSize
                             ? 1
                             : _itemsWithSearch.Count / PageSize + 1;
                     if (val.ToString() != _nowPage)
