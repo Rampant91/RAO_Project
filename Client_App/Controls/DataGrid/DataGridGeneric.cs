@@ -63,28 +63,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
-    #region ItemsCount
-    public static readonly DirectProperty<DataGrid<T>, string> ItemsCountProperty =
-        AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
-            nameof(ItemsCount),
-            o => o.ItemsCount,
-            (o, v) => o.ItemsCount = v);
-
-    private string _ItemsCount = "0";
-    public string ItemsCount
-    {
-        get => Items != null ? Items.Count.ToString() : "0";
-        set
-        {
-            if (Items != null)
-            {
-                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items != null ? Items.Count.ToString() : "0");
-
-            }
-        }
-    }
-    #endregion
-
     #region SelectedItems
     public static readonly DirectProperty<DataGrid<T>, IKeyCollection> SelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, IKeyCollection>(
@@ -511,6 +489,35 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
+    #region Count
+    #region ItemsCount
+    public static readonly DirectProperty<DataGrid<T>, string> ItemsCountProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+            nameof(ItemsCount),
+            o => o.ItemsCount,
+            (o, v) => o.ItemsCount = v);
+
+    private string _ItemsCount = "0";
+    public string ItemsCount
+    {
+        get => _ItemsCount;
+        set
+        {
+            if (Items != null)
+            {
+                var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+                SetAndRaise(ItemsCountProperty, ref _ItemsCount, searchText != ""
+                    ? _itemsWithSearch != null 
+                        ? _itemsWithSearch.Count.ToString() 
+                        : "0"
+                    : Items != null
+                        ? Items.Count.ToString()
+                        : "0");
+            }
+        }
+    }
+    #endregion
+
     #region PageCount
     public static readonly DirectProperty<DataGrid<T>, string> PageCountProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
@@ -521,15 +528,45 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private string _PageCount = "0";
     public string PageCount
     {
-        get => (Items != null ? Items.Count / PageSize + 1 : 0).ToString();
+        get => _PageCount;
         set
         {
-            SetAndRaise(PageCountProperty, ref _PageCount, (Items != null ? Items.Count / PageSize + 1 : 0).ToString());
+            var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+            SetAndRaise(PageCountProperty, ref _PageCount, searchText != ""
+                ? (_itemsWithSearch != null ? _itemsWithSearch.Count / PageSize + 1 : 0).ToString()
+                : (Items != null ? Items.Count / PageSize + 1 : 0).ToString());
         }
     }
     #endregion
 
-    IKeyCollection tatata;
+    #region ReportCount
+    public static readonly DirectProperty<DataGrid<T>, string> ReportCountProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+            nameof(ReportCount),
+            o => o.ReportCount,
+            (o, v) => o.ReportCount = v);
+
+    private string _ReportCount = "0";
+    public string ReportCount
+    {
+        get => _ReportCount;
+        set
+        {
+            if (Items != null)
+            {
+                var countR = 0;
+                var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+                foreach (var item in searchText != "" && _itemsWithSearch != null ? _itemsWithSearch : Items)
+                {
+                    var reps = (Reports)item;
+                    countR += reps.Report_Collection.Count;
+                }
+                SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
+            }
+        }
+    }
+    #endregion
+    #endregion
 
     #region NowPage
     public static readonly DirectProperty<DataGrid<T>, string> NowPageProperty =
@@ -541,7 +578,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private string _nowPage = "1";
     public string NowPage
     {
-        get => _nowPage.ToString();
+        get => _nowPage;
         set
         {
             try
@@ -549,9 +586,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var val = Convert.ToInt32(value);
                 if (val != null && Items != null)
                 {
-                    var maxpage = string.IsNullOrEmpty(SearchText) || tatata is null
-                        ? Items.Count / PageSize + 1 
-                        : tatata.Count / PageSize + 1;
+                    var maxpage = string.IsNullOrEmpty(SearchText) || _itemsWithSearch is null
+                        ? Items.Count / PageSize + 1
+                        : _itemsWithSearch.Count / PageSize + 1;
                     if (val.ToString() != _nowPage)
                     {
                         if (val <= maxpage && val >= 1)
@@ -731,6 +768,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
+    private IKeyCollection _itemsWithSearch;
+
     #region SearchText
     public static readonly DirectProperty<DataGrid<T>, string> SearchTextProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
@@ -740,10 +779,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private string _SearchText = "";
     public string SearchText
     {
-        get
-        {
-            return _SearchText;
-        }
+        get => _SearchText;
         set
         {
             if (value != null && value != _SearchText)
@@ -751,33 +787,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 SetAndRaise(SearchTextProperty, ref _SearchText, value);
                 UpdateCells();
             }
-        }
-    }
-    #endregion
-
-    #region ReportCount
-    public static readonly DirectProperty<DataGrid<T>, string> ReportCountProperty =
-        AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
-            nameof(ReportCount),
-            o => o.ReportCount,
-            (o, v) => o.ReportCount = v);
-
-    private string _ReportCount = "0";
-    public string ReportCount
-    {
-        get => _ReportCount;
-        set
-        {
-            var countR = 0;
-            if (Items != null)
-            {
-                foreach (Reports reps in Items)
-                {
-                    countR += reps.Report_Collection.Count;
-                }
-                SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
-            }
-
         }
     }
     #endregion
@@ -1270,17 +1279,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private void UpdateCells()
     {
         var count = 0;
-
         var num = Convert.ToInt32(_nowPage);
         var offset = (num - 1) * PageSize;
         var offsetMax = num * PageSize;
-
         if (Items != null)
         {
-            IKeyCollection tmp_coll = new ObservableCollectionWithItemPropertyChanged<IKey>(Items.GetEnumerable());
+            IKeyCollection tmpColl = new ObservableCollectionWithItemPropertyChanged<IKey>(Items.GetEnumerable());
             if (Search)
             {
-                IKeyCollection tmp2_coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                IKeyCollection tmp2Coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
                 var searchText = ((TextBox)
                     ((Panel)
                         ((Border)
@@ -1291,19 +1298,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             Children[0]).
                         Child).
                     Children[0]).Text;
-                if (searchText != null && searchText != "")
+                if (!string.IsNullOrEmpty(searchText))
                 {
-                    //NowPage = "1";
                     num = Convert.ToInt32(_nowPage);
                     offset = (num - 1) * PageSize;
                     offsetMax = num * PageSize;
-
-
-                    searchText = searchText.ToLower();
-                    searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
+                    searchText = Regex.Replace(searchText.ToLower(), "[-.?!)(,: ]", "");
                     if (searchText != "")
                     {
-                        foreach (var it in tmp_coll)
+                        foreach (var it in tmpColl)
                         {
                             var rowsText = ((Reports)it).Master_DB.OkpoRep.Value +
                                            ((Reports)it).Master_DB.ShortJurLicoRep.Value +
@@ -1312,40 +1315,38 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             rowsText = Regex.Replace(rowsText, "[-.?!)(,: ]", "");
                             if (rowsText.Contains(searchText))
                             {
-                                tmp2_coll.Add(it);
+                                tmp2Coll.Add(it);
                             }
                         }
-                        if (int.Parse(NowPage) >= tmp2_coll.Count / PageSize)
+                        if (int.Parse(NowPage) > (tmp2Coll.Count % PageSize == 0
+                                ? tmp2Coll.Count / PageSize
+                                : tmp2Coll.Count / PageSize + 1))
+                        {
                             NowPage = "1";
-                        tmp_coll = tmp2_coll;
-                        tatata = tmp2_coll;
+                            offset = 0;
+                        }
+                        tmpColl = tmp2Coll;
+                        _itemsWithSearch = tmp2Coll;
                     }
                 }
             }
-            if (tmp_coll.Count != 0)
+            if (tmpColl.Count != 0)
             {
                 for (var i = offset; i < offsetMax; i++)
                 {
-                    if (count < PageSize && i < tmp_coll.Count)
+                    if (count < PageSize && i < tmpColl.Count)
                     {
                         Rows[count].DataContext = null; // правит баг с записью данных в пустые ячейки на первых страницах
-
-                        Rows[count].DataContext = tmp_coll.Get<T>(i);
-
+                        Rows[count].DataContext = tmpColl.Get<T>(i);
                         Rows[count].IsVisible = true;
-
                         count++;
                     }
-                    else
-                    {
-                        break;
-                    }
+                    else break;
                 }
             }
-
-            if (tmp_coll.Count < offsetMax)
+            if (tmpColl.Count < offsetMax)
             {
-                for (var i = tmp_coll.Count; i < offsetMax; i++)
+                for (var i = tmpColl.Count; i < offsetMax; i++)
                 {
                     try
                     {
@@ -1372,8 +1373,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             var index = (int)_t.BaseColor;
                             var color = IBaseColor.ColorTypeList[index];
 
-                            foreach (Cell item in tmp2)
+                            foreach (var control in tmp2)
                             {
+                                var item = (Cell)control;
                                 item.Background = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
                             }
                         }
