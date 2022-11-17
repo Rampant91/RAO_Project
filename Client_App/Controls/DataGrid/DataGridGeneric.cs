@@ -533,7 +533,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
             SetAndRaise(PageCountProperty, ref _PageCount, searchText != ""
-                ? (_itemsWithSearch != null ? _itemsWithSearch.Count / PageSize + 1 : 0).ToString()
+                ? (_itemsWithSearch != null 
+                    ? _itemsWithSearch.Count > PageSize
+                        ? (_itemsWithSearch.Count / PageSize + 1).ToString()
+                        : _itemsWithSearch.Count == 0 
+                            ? "0" 
+                            : "1"
+                    : "0")
                 : (Items != null ? Items.Count / PageSize + 1 : 0).ToString());
         }
     }
@@ -582,13 +588,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             try
+            
             {
                 var val = Convert.ToInt32(value);
                 if (val != null && Items != null)
                 {
-                    var maxpage = string.IsNullOrEmpty(SearchText) || _itemsWithSearch is null
+                    var maxpage = string.IsNullOrEmpty(SearchText) || _itemsWithSearch.Count == 0
                         ? Items.Count / PageSize + 1
-                        : _itemsWithSearch.Count / PageSize + 1;
+                        : _itemsWithSearch.Count < PageSize
+                            ? 1
+                            : _itemsWithSearch.Count / PageSize + 1;
                     if (val.ToString() != _nowPage)
                     {
                         if (val <= maxpage && val >= 1)
@@ -1319,8 +1328,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             }
                         }
                         if (int.Parse(NowPage) > (tmp2Coll.Count % PageSize == 0
-                                ? tmp2Coll.Count / PageSize
-                                : tmp2Coll.Count / PageSize + 1))
+                                ? tmp2Coll.Count / PageSize + 1
+                                : tmp2Coll.Count / PageSize))
                         {
                             NowPage = "1";
                             offset = 0;
