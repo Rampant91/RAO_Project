@@ -526,14 +526,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _PageCount;
         set
         {
-            int pageCount = _itemsWithSearch != null
+            var pageCount = _itemsWithSearch != null
                 ? _itemsWithSearch.Count == 0
                     ? 0
                     : _itemsWithSearch.Count <= PageSize
                         ? 1
                         : _itemsWithSearch.Count % PageSize == 0
                             ? _itemsWithSearch.Count / PageSize
-                            : (_itemsWithSearch.Count / PageSize) + 1
+                            : _itemsWithSearch.Count / PageSize + 1
                 : Items != null
                     ? Items.Count / PageSize + 1
                     : 0;
@@ -589,9 +589,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var val = Convert.ToInt32(value);
                 if (val != null)
                 {
-                    int maxpage = 1;
                     var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                    maxpage = searchText == ""
+                    var maxPage = searchText == ""
                         ? Items != null
                             ? Items.Count % PageSize == 0
                                 ? Items.Count / PageSize
@@ -606,18 +605,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             : 1;
                     if (val.ToString() != _nowPage)
                     {
-                        if (val <= maxpage && val >= 1)
+                        if (val <= maxPage && val >= 1)
                         {
                             SetAndRaise(NowPageProperty, ref _nowPage, value);
                             UpdateCells();
                         }
                         else
                         {
-                            if (val > maxpage)
+                            if (val > maxPage)
                             {
-                                if (_nowPage != maxpage.ToString())
+                                if (_nowPage != maxPage.ToString())
                                 {
-                                    SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
+                                    SetAndRaise(NowPageProperty, ref _nowPage, maxPage.ToString());
                                     UpdateCells();
                                 }
                             }
@@ -1333,14 +1332,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 tmp2Coll.Add(it);
                             }
                         }
-
-                        //if (tmp2Coll.Count < PageSize || tmp2Coll.Count % PageSize == 0)
-                        //{
-
-                        //}
-                        if (int.Parse(NowPage) > (tmp2Coll.Count < PageSize || tmp2Coll.Count % PageSize == 0
-                                ? tmp2Coll.Count / PageSize + 1
-                                : tmp2Coll.Count / PageSize + 1))
+                        if (int.Parse(NowPage) > (tmp2Coll.Count / PageSize + 1))
                         {
                             SetAndRaise(NowPageProperty, ref _nowPage, "1");
                             offsetMax = 5;
@@ -1380,7 +1372,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
             }
             var t = typeof(T).FindInterfaces((x, y) => x.ToString() == y.ToString(), typeof(IBaseColor).FullName);
-            if (t.Count() != 0)
+            if (t.Length != 0)
             {
                 for (var i = 0; i < PageSize; i++)
                 {
