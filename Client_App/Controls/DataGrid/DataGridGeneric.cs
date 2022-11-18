@@ -506,13 +506,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (Items != null)
             {
                 var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                SetAndRaise(ItemsCountProperty, ref _ItemsCount, searchText != ""
-                    ? _itemsWithSearch != null 
-                        ? _itemsWithSearch.Count.ToString() 
-                        : "0"
-                    : Items != null
-                        ? Items.Count.ToString()
-                        : "0");
+                var val = searchText == "" ? Items.Count : _itemsWithSearch != null ? _itemsWithSearch.Count : 0;
+                SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
             }
         }
     }
@@ -531,44 +526,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _PageCount;
         set
         {
-            var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-            int pageCount;
-            if (_itemsWithSearch != null && _itemsWithSearch.Count != 0)
-            {
-                if (_itemsWithSearch.Count <= PageSize)
-                {
-                    pageCount = 1;
-                }
-                else if (_itemsWithSearch.Count % PageSize == 0)
-                {
-                    pageCount = _itemsWithSearch.Count / PageSize;
-                }
-                else
-                {
-                    pageCount = (_itemsWithSearch.Count / PageSize) + 1;
-                }
-            }
-            else
-            {
-                if (Items != null)
-                {
-                    pageCount = Items.Count / PageSize + 1;
-                }
-                else
-                {
-                    pageCount = 0;
-                }
-            }
+            int pageCount = _itemsWithSearch != null
+                ? _itemsWithSearch.Count == 0
+                    ? 0
+                    : _itemsWithSearch.Count <= PageSize
+                        ? 1
+                        : _itemsWithSearch.Count % PageSize == 0
+                            ? _itemsWithSearch.Count / PageSize
+                            : (_itemsWithSearch.Count / PageSize) + 1
+                : Items != null
+                    ? Items.Count / PageSize + 1
+                    : 0;
             SetAndRaise(PageCountProperty, ref _PageCount, pageCount.ToString());
-
-                //? (_itemsWithSearch != null 
-                //    ? _itemsWithSearch.Count > PageSize
-                //        ? (_itemsWithSearch.Count / PageSize + 1).ToString()
-                //        : _itemsWithSearch.Count == 0 
-                //            ? "0" 
-                //            : "1"
-                //    : "0")
-                //: (Items != null ? Items.Count / PageSize + 1 : 0).ToString());
         }
     }
     #endregion
@@ -618,15 +587,23 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             try
             {
                 var val = Convert.ToInt32(value);
-                if (val != null && Items != null)
+                if (val != null)
                 {
-                    int maxpage;
+                    int maxpage = 1;
                     var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                    maxpage = string.IsNullOrEmpty(searchText) || !string.IsNullOrEmpty(searchText) && _itemsWithSearch?.Count == 0
-                        ? Items.Count / PageSize + 1
-                        : _itemsWithSearch?.Count < PageSize
-                            ? 1
-                            : _itemsWithSearch.Count / PageSize + 1;
+                    maxpage = searchText == ""
+                        ? Items != null
+                            ? Items.Count % PageSize == 0
+                                ? Items.Count / PageSize
+                                : Items.Count / PageSize + 1
+                            : 1
+                        : _itemsWithSearch != null
+                            ? _itemsWithSearch.Count == 0
+                                ? 1
+                                : _itemsWithSearch.Count % PageSize == 0
+                                    ? _itemsWithSearch.Count / PageSize
+                                    : _itemsWithSearch.Count / PageSize + 1
+                            : 1;
                     if (val.ToString() != _nowPage)
                     {
                         if (val <= maxpage && val >= 1)
