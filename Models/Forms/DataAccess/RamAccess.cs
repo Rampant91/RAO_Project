@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using OfficeOpenXml;
 
-namespace Models.DataAccess;
+namespace Models.Forms.DataAccess;
 
 public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChanged
 {
@@ -31,7 +31,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     {
         get
         {
-            if (IsGet==null?true:IsGet.Get())
+            if (IsGet == null || IsGet.Get())
             {
                 return _value;
             }
@@ -42,14 +42,11 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
         }
         set
         {
-            if (IsSet == null ? true : IsSet.Get())
+            if (IsSet?.Get() ?? true)
             {
                 _value = value;
                 OnPropertyChanged(nameof(Value));
-                if (Handler != null)
-                {
-                    Handler(this);
-                }
+                Handler?.Invoke(this);
             }
         }
     }
@@ -79,10 +76,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
         set
         {
             _value = value;
-            if (Handler != null)
-            {
-                Handler(this);
-            }
+            Handler?.Invoke(this);
         }
     }
 
@@ -90,19 +84,13 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     {
         this.Handler = Handler;
         _value = Value;
-        if (Handler != null)
-        {
-            Handler(this);
-        }
+        Handler?.Invoke(this);
     }
     public RamAccess(Func<RamAccess<T>, bool> Handler, T Value,RefBool IsGet,RefBool IsSet)
     {
         this.Handler = Handler;
         _value = Value;
-        if (Handler != null)
-        {
-            Handler(this);
-        }
+        Handler?.Invoke(this);
         this.IsGet = IsGet;
         this.IsGet.PropertyChanged += IsGetChanged;
         this.IsSet = IsSet;
@@ -126,16 +114,13 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     #region Equals
     public override bool Equals(object obj)
     {
-        if (obj is RamAccess<T>)
+        if (obj is RamAccess<T> ramAccess)
         {
             dynamic val1 = Value;
-            dynamic val2 = (obj as RamAccess<T>).Value;
+            dynamic val2 = ramAccess.Value;
             return val1 == val2;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     public static bool operator ==(RamAccess<T> obj1, RamAccess<T> obj2)
@@ -170,19 +155,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     {
         var tmp = _errorsByPropertyName.Count > 0 ?
             _errorsByPropertyName : null;
-        if (tmp != null)
-        {
-            List<Exception> lst = new();
-            foreach (var item in tmp)
-            {
-                lst.Add(new Exception(item));
-            }
-            return lst;
-        }
-        else
-        {
-            return null;
-        }
+        return tmp?.Select(item => new Exception(item)).ToList();
     }
     protected void OnErrorsChanged(string propertyName)
     {
@@ -207,12 +180,12 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     #endregion
 
     #region IExcel
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true)
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool tanspon = true)
     {
         throw new NotImplementedException();
     }
 
-    public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+    public int ExcelHeader(ExcelWorksheet worksheet, int row,int column,bool transpon=true)
     {
         throw new NotImplementedException();
     }

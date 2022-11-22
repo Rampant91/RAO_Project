@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using Models.DataAccess;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Models.Collections;
 using Models.Attributes;
-using OfficeOpenXml;
-using System;
+using Models.Collections;
+using Models.Forms.DataAccess;
 using Models.Interfaces;
+using OfficeOpenXml;
 
-namespace Models;
+namespace Models.Forms;
 
 public class Note : IKey, INumberInOrder, IDataGridColumn
 {
@@ -71,11 +71,11 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             OnPropertyChanged(nameof(RowNumber));
         }
     }
-    private void RowNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void RowNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            RowNumber_DB = ((RamAccess<string?>)Value).Value;
+            RowNumber_DB = ((RamAccess<string?>)value).Value;
         }
     }
     private bool RowNumber_Validation(RamAccess<string?> value)
@@ -113,11 +113,11 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             OnPropertyChanged(nameof(GraphNumber));
         }
     }
-    private void GraphNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void GraphNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            GraphNumber_DB = ((RamAccess<string?>)Value).Value;
+            GraphNumber_DB = ((RamAccess<string?>)value).Value;
         }
     }
     private bool GraphNumber_Validation(RamAccess<string?> value)
@@ -154,11 +154,11 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             OnPropertyChanged(nameof(Comment));
         }
     }
-    private void CommentValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CommentValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Comment_DB = ((RamAccess<string>)Value).Value;
+            Comment_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool Comment_Validation(RamAccess<string> value)
@@ -186,26 +186,26 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
     public event PropertyChangedEventHandler PropertyChanged;
     //Property Changed
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        RowNumber_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
-        GraphNumber_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        Comment_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+        RowNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+        GraphNumber_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        Comment_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "")
     {
-        worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = RowNumber_DB;
-        worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = GraphNumber_DB;
-        worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = Comment_DB;
+        worksheet.Cells[row + 0, column + 0].Value = RowNumber_DB;
+        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = GraphNumber_DB;
+        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = Comment_DB;
 
         return 3;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
     {
-        worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[row + 0, column + 0].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
         return 3;
     }
     #endregion
