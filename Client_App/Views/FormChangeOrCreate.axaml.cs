@@ -12,8 +12,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Abstracts;
+using Models.Forms;
 
 namespace Client_App.Views;
 
@@ -137,12 +139,12 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
         var dataContext = (ViewModels.ChangeOrCreateVM)DataContext;
         if (_param == "1.0")
         {
-            panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
+            panel.Children.Add(Form1_Visual.Form10_Visual(this.FindNameScope()));
         }
 
         if (_param == "1.1")
         {   
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form11_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form11_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm11)((StackPanel)grd.Content).Children[1];
@@ -332,7 +334,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.2")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form12_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm12)((StackPanel)grd.Content).Children[1];
@@ -495,7 +497,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.3")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form13_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm13)((StackPanel)grd.Content).Children[1];
@@ -658,7 +660,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.4")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form14_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm14)((StackPanel)grd.Content).Children[1];
@@ -821,7 +823,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.5")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form15_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm15)((StackPanel)grd.Content).Children[1];
@@ -984,7 +986,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.6")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form16_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm16)((StackPanel)grd.Content).Children[1];
@@ -1147,7 +1149,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.7")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form17_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm17)((StackPanel)grd.Content).Children[1];
@@ -1310,7 +1312,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.8")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form18_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm18)((StackPanel)grd.Content).Children[1];
@@ -1473,7 +1475,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "1.9")
         {
-            var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form1_Visual.Form19_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm19)((StackPanel)grd.Content).Children[1];
@@ -1640,11 +1642,11 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
         var dataContext = (ViewModels.ChangeOrCreateVM)DataContext;
         if (_param == "2.0")
         {
-            panel.Children.Add(Long_Visual.Form2_Visual.Form20_Visual(this.FindNameScope()));
+            panel.Children.Add(Form2_Visual.Form20_Visual(this.FindNameScope()));
         }
         if (_param == "2.1")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form21_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form21_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm21)((StackPanel)grd.Content).Children[1];
@@ -1807,7 +1809,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.2")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form22_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form22_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm22)((StackPanel)grd.Content).Children[1];
@@ -1970,7 +1972,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.3")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form23_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form23_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm23)((StackPanel)grd.Content).Children[1];
@@ -2133,7 +2135,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.4")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form24_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form24_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm24)((StackPanel)grd.Content).Children[1];
@@ -2296,7 +2298,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.5")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form25_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form25_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm25)((StackPanel)grd.Content).Children[1];
@@ -2459,7 +2461,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.6")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form26_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form26_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm26)((StackPanel)grd.Content).Children[1];
@@ -2622,7 +2624,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.7")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form27_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form27_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm27)((StackPanel)grd.Content).Children[1];
@@ -2785,7 +2787,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.8")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form28_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form28_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm28)((StackPanel)grd.Content).Children[1];
@@ -2948,7 +2950,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.9")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form29_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form29_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm29)((StackPanel)grd.Content).Children[1];
@@ -3111,7 +3113,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.10")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form210_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form210_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm210)((StackPanel)grd.Content).Children[1];
@@ -3274,7 +3276,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.11")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form211_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form211_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm211)((StackPanel)grd.Content).Children[1];
@@ -3437,7 +3439,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 
         if (_param == "2.12")
         {
-            var grd = (ScrollViewer)Long_Visual.Form2_Visual.Form212_Visual(this.FindNameScope());
+            var grd = (ScrollViewer)Form2_Visual.Form212_Visual(this.FindNameScope());
 
             #region Rows Context Menu
             var Rgrd = (DataGridForm212)((StackPanel)grd.Content).Children[1];

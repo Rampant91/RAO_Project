@@ -1,9 +1,9 @@
-﻿using Avalonia.Data.Converters;
-using Avalonia.Controls;
-using System;
+﻿using System;
 using System.Globalization;
+using Avalonia.Controls;
+using Avalonia.Data.Converters;
 
-namespace Client_App.Converters;
+namespace Client_App.VisualRealization.Converters;
 
 public class stringToGridLength_Converter : IValueConverter
 {

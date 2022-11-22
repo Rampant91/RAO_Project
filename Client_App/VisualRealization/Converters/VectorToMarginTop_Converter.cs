@@ -1,9 +1,9 @@
-﻿using Avalonia.Data.Converters;
-using Avalonia;
-using System;
+﻿using System;
 using System.Globalization;
+using Avalonia;
+using Avalonia.Data.Converters;
 
-namespace Client_App.Converters;
+namespace Client_App.VisualRealization.Converters;
 
 public class VectorToMarginTop_Converter : IValueConverter
 {

@@ -1,4 +1,6 @@
-﻿namespace Models.Collections;
+﻿using Models.Collections;
+
+namespace Models.Interfaces;
 
 public interface IDataGridColumn
 {

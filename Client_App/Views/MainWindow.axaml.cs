@@ -10,7 +10,9 @@ using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
+using Client_App.VisualRealization.Short_Visual;
 using MessageBox.Avalonia.Models;
+using Models.Interfaces;
 
 namespace Client_App.Views;
 
@@ -202,7 +204,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
         var tab10 = this.FindControl<Panel>("Forms_p1_0");
         var tab1X = this.FindControl<Panel>("Forms_p1_X");
         var tab1B = this.FindControl<Panel>("Forms_p1_B");
-        Short_Visual.Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
+        Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
 
         #region Form10 DataGrid
         var grd1 = (DataGrid<Reports>)tab10.Children[0];
@@ -214,7 +216,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
         var tab20 = this.FindControl<Panel>("Forms_p2_0");
         var tab2X = this.FindControl<Panel>("Forms_p2_X");
         var tab2B = this.FindControl<Panel>("Forms_p2_B");
-        Short_Visual.Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
+        Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
 
         #region Form20 DataGrid
         var grd3 = (DataGrid<Reports>)tab20.Children[0];

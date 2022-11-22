@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
+using Models.Forms;
 
 namespace Client_App.ViewModels;
 

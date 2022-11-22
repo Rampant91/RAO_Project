@@ -1,9 +1,10 @@
-﻿using Avalonia.Data.Converters;
-using Models.Collections;
-using System;
+﻿using System;
 using System.Globalization;
+using Avalonia.Data.Converters;
+using Models.Collections;
+using Models.Interfaces;
 
-namespace Client_App.Converters;
+namespace Client_App.VisualRealization.Converters;
 
 public class ReportsToReport_Converter : IValueConverter
 {

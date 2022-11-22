@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using OfficeOpenXml;
 using System.Linq;
 using System.Threading.Tasks;
+using Models.Interfaces;
 
 namespace Models.Collections;
 

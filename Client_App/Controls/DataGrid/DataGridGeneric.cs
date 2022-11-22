@@ -6,7 +6,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Client_App.Converters;
 using Models.Attributes;
 using Models.Collections;
 using Models.Interfaces;
@@ -16,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Client_App.VisualRealization.Converters;
 
 namespace Client_App.Controls.DataGrid;
 

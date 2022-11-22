@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Models.Collections;
+namespace Models.Interfaces;
 
 public interface IKey:INotifyPropertyChanged,INumberInOrder,IExcel
 {

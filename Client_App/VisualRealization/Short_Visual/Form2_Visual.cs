@@ -1,15 +1,16 @@
-﻿using Avalonia;
+﻿using System;
+using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
-using Models.Attributes;
-using System;
-using System.Linq;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Views;
+using Client_App.VisualRealization.Converters;
+using Models.Attributes;
 using Models.Collections;
 
-namespace Client_App.Short_Visual;
+namespace Client_App.VisualRealization.Short_Visual;
 
 public class Form2_Visual
 {
@@ -97,7 +98,7 @@ public class Form2_Visual
             Path = "SelectedItems",
             ElementName = "Form20AllDataGrid_",
             NameScope = new WeakReference<INameScope>(scp),
-            Converter = new Converters.ReportsToReport_Converter()
+            Converter = new ReportsToReport_Converter()
         };
 
         grd.Bind(Controls.DataGrid.DataGrid<Report>.ItemsProperty, b);

@@ -1,4 +1,4 @@
-﻿namespace Models.Collections;
+﻿namespace Models.Interfaces;
 
 public interface INumberInOrder
 {

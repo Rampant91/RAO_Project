@@ -1,6 +1,6 @@
 ﻿using OfficeOpenXml;
 
-namespace Models.Collections;
+namespace Models.Interfaces;
 
 public interface IExcel
 {

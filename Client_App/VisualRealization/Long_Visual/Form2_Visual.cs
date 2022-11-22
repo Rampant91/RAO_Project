@@ -1,18 +1,18 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Data;
-using System;
+﻿using System;
 using System.Linq;
-using Avalonia.Layout;
-using Client_App.Controls.DataGrid;
-using Avalonia.Media;
-using Models.Attributes;
-using Client_App.Converters;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.ViewModels;
+using Client_App.VisualRealization.Converters;
+using Models.Attributes;
 
-namespace Client_App.Long_Visual;
+namespace Client_App.VisualRealization.Long_Visual;
 
 public class Form2_Visual
 {

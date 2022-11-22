@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Models.Collections;
+namespace Models.Interfaces;
 
 public interface IKeyCollection
 {

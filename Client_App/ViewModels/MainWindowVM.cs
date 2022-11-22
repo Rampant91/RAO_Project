@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Client_App.Long_Visual;
 using Client_App.Views;
 using FirebirdSql.Data.FirebirdClient;
 using MessageBox.Avalonia.Models;
@@ -26,7 +25,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.DTO;
+using Models.Forms;
+using Models.Interfaces;
 
 namespace Client_App.ViewModels
 {
