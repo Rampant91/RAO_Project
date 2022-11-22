@@ -2678,9 +2678,7 @@ namespace Client_App.ViewModels
                 var filter = new FileDialogFilter
                 {
                     Name = "Excel",
-                    Extensions = {
-                        "xlsx"
-                        }
+                    Extensions = { "xlsx" }
                 };
                 dial.Filters.Add(filter);
                 var res = await dial.ShowAsync(desktop.MainWindow);
@@ -5290,7 +5288,9 @@ namespace Client_App.ViewModels
                                 excelPackage.Save();
                                 res = await ShowMessage.Handle(new List<string>
                                 {
-                                    $"Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}", "", "Ок", "Открыть выгрузку" });
+                                    "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3," +
+                                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}" +
+                                    $"{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}", "", "Ок", "Открыть выгрузку" });
                                 if (res is null or "Ок")
                                     return;
                                 if (res.Equals("Открыть выгрузку"))
@@ -5299,7 +5299,7 @@ namespace Client_App.ViewModels
                                     Process.Start(procInfo);
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 await ShowMessage.Handle(new List<string> { $"Не удалось сохранить файл по указанному пути", "Ок" });
                                 return;
@@ -5323,7 +5323,7 @@ namespace Client_App.ViewModels
                 || ChangeOrCreateVM.TranslateToRus(nameDB).Equals(ChangeOrCreateVM.TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
         }
 
-        public static string ConvertDBDateToYear(string DBDate)
+        private static string ConvertDBDateToYear(string DBDate)
         {
             Regex r = new(@"(\d{1,2}[.\/]){1,2}\d{4}");
             if (!r.IsMatch(DBDate))
@@ -5332,7 +5332,7 @@ namespace Client_App.ViewModels
             return matches.FirstOrDefault()!.Value.Substring(matches.FirstOrDefault()!.Value.Length - 4);
         }
 
-        public static string ConvertPasNumAndFactNum(string num)
+        private static string ConvertPasNumAndFactNum(string num)
         {
             if (string.IsNullOrEmpty(num)
                 || num.Contains("прим", StringComparison.OrdinalIgnoreCase)
@@ -5344,7 +5344,7 @@ namespace Client_App.ViewModels
             {
                 return "-";
             }
-            else return num;
+            return num;
         }
 
         #region ChangePasDir
@@ -5363,21 +5363,19 @@ namespace Client_App.ViewModels
         #region ExcelExportNotes
         private int _Excel_Export_Notes(string param, int StartRow, int StartColumn, ExcelWorksheet worksheetPrim, List<Report> forms, bool printID = false)
         {
-            foreach (Report item in forms)
+            foreach (var item in forms)
             {
 
-                var findReports = from Reports t in Local_Reports.Reports_Collection
-                                  where t.Report_Collection.Contains(item)
-                                  select t;
+                var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(item));
                 var reps = findReports.FirstOrDefault();
                 if (reps != null)
                 {
                     var cnty = StartRow;
-                    foreach (Note i in item.Notes)
+                    foreach (var i in item.Notes)
                     {
                         var mstrep = reps.Master_DB;
                         i.ExcelRow(worksheetPrim, cnty, StartColumn + 1);
-                        var yu = 0;
+                        int yu;
                         if (printID)
                         {
                             if (param.Split('.')[0] == "1")
@@ -5440,30 +5438,28 @@ namespace Client_App.ViewModels
         #endregion
 
         #region ExcelExportRows
-        private int _Excel_Export_Rows(string param, int StartRow, int StartColumn, ExcelWorksheet worksheet, List<Report> forms, bool ID = false)
+        private int _Excel_Export_Rows(string param, int startRow, int startColumn, ExcelWorksheet worksheet, List<Report> forms, bool id = false)
         {
             foreach (Report item in forms)
             {
 
-                var findReports = from Reports t in Local_Reports.Reports_Collection
-                                  where t.Report_Collection.Contains(item)
-                                  select t;
+                var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(item));
                 var reps = findReports.FirstOrDefault();
                 if (reps != null)
                 {
                     IEnumerable<IKey> t = null;
                     if (param == "2.1")
                     {
-                        t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB == true || ((Form21)x).SumGroup_DB == true);
-                        if (item[param].ToList<IKey>().Count() > 0 && t.Count() == 0)
+                        t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
+                        if (item[param].ToList<IKey>().Any() && !t.Any())
                         {
                             t = item[param].ToList<IKey>();
                         }
                     }
                     if (param == "2.2")
                     {
-                        t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB == true || ((Form22)x).SumGroup_DB == true);
-                        if (item[param].ToList<IKey>().Count() > 0 && t.Count() == 0)
+                        t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
+                        if (item[param].ToList<IKey>().Any() && !t.Any())
                         {
                             t = item[param].ToList<IKey>();
                         }
@@ -5472,156 +5468,137 @@ namespace Client_App.ViewModels
                     {
                         t = item[param].ToList<IKey>();
                     }
-                    List<IKey> lst = t.Count() > 0 ? item[param].ToList<IKey>().ToList() : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
+                    var lst = t.Any() 
+                        ? item[param].ToList<IKey>().ToList()
+                        : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                     if (lst.Count > 0)
                     {
-                        var count = StartRow;
-                        StartRow--;
-                        foreach (var it in lst)
+                        var count = startRow;
+                        startRow--;
+                        foreach (var it in lst.Where(it => it != null))
                         {
-                            if (it != null)
+                            switch (it)
                             {
-                                if (it is Form11)
-                                {
-                                    ((Form11)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form12)
-                                {
-                                    ((Form12)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form13)
-                                {
-                                    ((Form13)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form14)
-                                {
-                                    ((Form14)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form15)
-                                {
-                                    ((Form15)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form16)
-                                {
-                                    ((Form16)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form17)
-                                {
-                                    ((Form17)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form18)
-                                {
-                                    ((Form18)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form19)
-                                {
-                                    ((Form19)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
+                                case Form11 form11:
+                                    form11.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form12 form12:
+                                    form12.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form13 form13:
+                                    form13.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form14 form14:
+                                    form14.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form15 form15:
+                                    form15.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form16 form16:
+                                    form16.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form17 form17:
+                                    form17.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form18 form18:
+                                    form18.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form19 form19:
+                                    form19.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form21 form21:
+                                    form21.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form21.NumberInOrderSum_DB);
+                                    break;
+                                case Form22 form22:
+                                    form22.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form22.NumberInOrderSum_DB);
+                                    break;
+                                case Form23 form23:
+                                    form23.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form24 form24:
+                                    form24.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form25 form25:
+                                    form25.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form26 form26:
+                                    form26.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form27 form27:
+                                    form27.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form28 form28:
+                                    form28.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form29 form29:
+                                    form29.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form210 form210:
+                                    form210.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form211 form211:
+                                    form211.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                                case Form212 form212:
+                                    form212.ExcelRow(worksheet, count, startColumn + 1);
+                                    break;
+                            }
 
-                                if (it is Form21)
+                            var mstrep = reps.Master_DB;
+                            var yu = 0;
+                            if (id)
+                            {
+                                if (param.Split('.')[0] == "1")
                                 {
-                                    ((Form21)it).ExcelRow(worksheet, count, StartColumn + 1, SumNumber: ((Form21)it).NumberInOrderSum_DB);
-                                }
-                                if (it is Form22)
-                                {
-                                    ((Form22)it).ExcelRow(worksheet, count, StartColumn + 1, SumNumber: ((Form22)it).NumberInOrderSum_DB);
-                                }
-                                if (it is Form23)
-                                {
-                                    ((Form23)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form24)
-                                {
-                                    ((Form24)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form25)
-                                {
-                                    ((Form25)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form26)
-                                {
-                                    ((Form26)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form27)
-                                {
-                                    ((Form27)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form28)
-                                {
-                                    ((Form28)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form29)
-                                {
-                                    ((Form29)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form210)
-                                {
-                                    ((Form210)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form211)
-                                {
-                                    ((Form211)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                if (it is Form212)
-                                {
-                                    ((Form212)it).ExcelRow(worksheet, count, StartColumn + 1);
-                                }
-                                var mstrep = reps.Master_DB;
-                                var yu = 0;
-                                if (ID)
-                                {
-                                    if (param.Split('.')[0] == "1")
+                                    if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                                     {
-                                        if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                        {
-                                            yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1;
-                                        }
-                                        else
-                                        {
-                                            yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1;
-                                        }
+                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1;
                                     }
                                     else
                                     {
-                                        if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                        {
-                                            yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
-                                        }
-                                        else
-                                        {
-                                            yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1;
-                                        }
+                                        yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1;
                                     }
                                 }
                                 else
                                 {
-                                    if (param.Split('.')[0] == "1")
+                                    if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
                                     {
-                                        if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                        {
-                                            yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1;
-                                        }
-                                        else
-                                        {
-                                            yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1;
-                                        }
+                                        yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
                                     }
                                     else
                                     {
-                                        if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                        {
-                                            yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1;
-                                        }
-                                        else
-                                        {
-                                            yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
-                                        }
+                                        yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1;
                                     }
                                 }
-
-                                item.ExcelRow(worksheet, count, yu);
-                                count++;
                             }
+                            else
+                            {
+                                if (param.Split('.')[0] == "1")
+                                {
+                                    if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                                    {
+                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1;
+                                    }
+                                    else
+                                    {
+                                        yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                                    {
+                                        yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1;
+                                    }
+                                    else
+                                    {
+                                        yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
+                                    }
+                                }
+                            }
+
+                            item.ExcelRow(worksheet, count, yu);
+                            count++;
                         }
                         //if (param.Split('.')[0] == "2")
                         //{
@@ -5632,23 +5609,20 @@ namespace Client_App.ViewModels
                         //        new_number++;
                         //    }
                         //}
-                        StartRow = count;
+                        startRow = count;
                     }
                 }
             }
-            return StartRow;
+            return startRow;
         }
         #endregion
 
         #region ExcelPrintTitulExport
         private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = from Reports t in Local_Reports.Reports_Collection
-                              where t.Report_Collection.Contains(form)
-                              select t;
+            var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(form));
             var reps = findReports.FirstOrDefault();
-
-            Report master = reps.Master_DB;
+            var master = reps.Master_DB;
 
             if (param.Split('.')[0] == "2")
             {
@@ -5745,11 +5719,9 @@ namespace Client_App.ViewModels
         #region ExcelPrintSubMainExport
         private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = from Reports t in Local_Reports.Reports_Collection
-                              where t.Report_Collection.Contains(form)
-                              select t;
+            var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(form));
             var reps = findReports.FirstOrDefault();
-            Report master = reps.Master_DB;
+            var master = reps.Master_DB;
 
             if (param.Split('.')[0] == "1")
             {
@@ -5824,7 +5796,7 @@ namespace Client_App.ViewModels
                 Start = 18;
             }
 
-            for (int i = 0; i < form.Notes.Count - 1; i++)
+            for (var i = 0; i < form.Notes.Count - 1; i++)
             {
                 worksheet.InsertRow(Start + 1, 1, Start);
                 var cells = worksheet.Cells[$"A{Start + 1}:B{Start + 1}"];
@@ -5871,13 +5843,13 @@ namespace Client_App.ViewModels
         #region ExcelPrintRowsExport
         private void _Excel_Print_Rows_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            int Start = 11;
+            var Start = 11;
             if (param == "2.8")
             {
                 Start = 14;
             }
 
-            for (int i = 0; i < form[param].Count - 1; i++)
+            for (var i = 0; i < form[param].Count - 1; i++)
             {
                 worksheet.InsertRow(Start + 1, 1, Start);
                 var cells = worksheet.Cells[$"A{Start + 1}:B{Start + 1}"];
@@ -5897,96 +5869,76 @@ namespace Client_App.ViewModels
                     top.Color.SetColor(255, 0, 0, 0);
                 }
             }
-
-            int Count = Start;
+            var count = Start;
             foreach (var it in form[param])
             {
-                if (it is Form11)
+                switch (it)
                 {
-                    ((Form11)it).ExcelRow(worksheet, Count, 1);
+                    case Form11 form11:
+                        form11.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form12 form12:
+                        form12.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form13 form13:
+                        form13.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form14 form14:
+                        form14.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form15 form15:
+                        form15.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form16 form16:
+                        form16.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form17 form17:
+                        form17.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form18 form18:
+                        form18.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form19 form19:
+                        form19.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form21 form21:
+                        form21.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form22 form22:
+                        form22.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form23 form23:
+                        form23.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form24 form24:
+                        form24.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form25 form25:
+                        form25.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form26 form26:
+                        form26.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form27 form27:
+                        form27.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form28 form28:
+                        form28.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form29 form29:
+                        form29.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form210 form210:
+                        form210.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form211 form211:
+                        form211.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form212 form212:
+                        form212.ExcelRow(worksheet, count, 1);
+                        break;
                 }
-                if (it is Form12)
-                {
-                    ((Form12)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form13)
-                {
-                    ((Form13)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form14)
-                {
-                    ((Form14)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form15)
-                {
-                    ((Form15)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form16)
-                {
-                    ((Form16)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form17)
-                {
-                    ((Form17)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form18)
-                {
-                    ((Form18)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form19)
-                {
-                    ((Form19)it).ExcelRow(worksheet, Count, 1);
-                }
-
-                if (it is Form21)
-                {
-                    ((Form21)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form22)
-                {
-                    ((Form22)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form23)
-                {
-                    ((Form23)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form24)
-                {
-                    ((Form24)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form25)
-                {
-                    ((Form25)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form26)
-                {
-                    ((Form26)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form27)
-                {
-                    ((Form27)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form28)
-                {
-                    ((Form28)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form29)
-                {
-                    ((Form29)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form210)
-                {
-                    ((Form210)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form211)
-                {
-                    ((Form211)it).ExcelRow(worksheet, Count, 1);
-                }
-                if (it is Form212)
-                {
-                    ((Form212)it).ExcelRow(worksheet, Count, 1);
-                }
-                Count++;
+                count++;
             }
             //var new_number = 1;
             //var row = 10;
@@ -6001,12 +5953,10 @@ namespace Client_App.ViewModels
         #endregion
 
         #region INotifyPropertyChanged
-        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+
+        private void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
