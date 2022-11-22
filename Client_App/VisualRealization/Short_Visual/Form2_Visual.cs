@@ -117,7 +117,7 @@ public class Form2_Visual
 
         Button btn1 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form21,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form21,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn1.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn1.CommandParameter = "2.1";
@@ -129,7 +129,7 @@ public class Form2_Visual
 
         Button btn2 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form22,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form22,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn2.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn2.CommandParameter = "2.2";
@@ -141,7 +141,7 @@ public class Form2_Visual
 
         Button btn3 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form23,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form23,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn3.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn3.CommandParameter = "2.3";
@@ -153,7 +153,7 @@ public class Form2_Visual
 
         Button btn4 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form24,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form24,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn4.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn4.CommandParameter = "2.4";
@@ -165,7 +165,7 @@ public class Form2_Visual
 
         Button btn5 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form25,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form25,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn5.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn5.CommandParameter = "2.5";
@@ -177,7 +177,7 @@ public class Form2_Visual
 
         Button btn6 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form26,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form26,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn6.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn6.CommandParameter = "2.6";
@@ -189,7 +189,7 @@ public class Form2_Visual
 
         Button btn7 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form27,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form27,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn7.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn7.CommandParameter = "2.7";
@@ -201,7 +201,7 @@ public class Form2_Visual
 
         Button btn8 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form28,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form28,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn8.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn8.CommandParameter = "2.8";
@@ -213,7 +213,7 @@ public class Form2_Visual
 
         Button btn9 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form29,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form29,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn9.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn9.CommandParameter = "2.9";
@@ -225,7 +225,7 @@ public class Form2_Visual
 
         Button btn10 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form210,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form210,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn10.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn10.CommandParameter = "2.10";
@@ -237,7 +237,7 @@ public class Form2_Visual
 
         Button btn11 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form211,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form211,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn11.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn11.CommandParameter = "2.11";
@@ -249,7 +249,7 @@ public class Form2_Visual
 
         Button btn12 = new()
         {
-            Content = ((Form_ClassAttribute)Type.GetType("Models.Form212,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            Content = ((Form_ClassAttribute)Type.GetType("Models.Forms.Form2.Form212,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
         };
         btn12.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn12.CommandParameter = "2.12";

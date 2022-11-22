@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.Forms;
 using Models.Forms.DataAccess;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 using Models.Interfaces;
 
 namespace Models.Collections;

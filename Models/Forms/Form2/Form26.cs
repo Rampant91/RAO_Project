@@ -1,18 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System;
-using System.Linq;
-using Spravochniki;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.ComponentModel;
-using Models.Abstracts;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Linq;
 using Models.Attributes;
-using OfficeOpenXml;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.DataAccess;
+using OfficeOpenXml;
+using Spravochniki;
 
-namespace Models;
+namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]

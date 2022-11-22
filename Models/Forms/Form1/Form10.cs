@@ -1,16 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Models.Abstracts;
+using System.Text.RegularExpressions;
 using Models.Attributes;
-using OfficeOpenXml;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.DataAccess;
+using OfficeOpenXml;
 
-namespace Models;
+namespace Models.Forms.Form1;
 
 [Serializable]
 [Form_Class("Форма 1.0: Титульный лист оперативного отчета организации")]

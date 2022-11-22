@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using Spravochniki;
-using System.Linq;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using Models.Abstracts;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Models.Attributes;
-using OfficeOpenXml;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.DataAccess;
-using Models.Forms.Form1;
+using OfficeOpenXml;
+using Spravochniki;
 
-namespace Models;
+namespace Models.Forms.Form1;
 
 [Serializable]
 [Form_Class("Форма 1.1: Сведения о ЗРИ")]

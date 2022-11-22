@@ -1,4 +1,7 @@
-﻿namespace Models.Forms;
+﻿using Models.Forms.Form1;
+using Models.Forms.Form2;
+
+namespace Models.Forms;
 
 public static class FormCreator
 {

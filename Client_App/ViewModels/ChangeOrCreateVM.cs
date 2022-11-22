@@ -4,7 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Metadata;
 using DynamicData;
 using Models;
-using Models.Abstracts;
 using Models.Attributes;
 using Models.Classes;
 using Models.Collections;
@@ -31,6 +30,7 @@ using MessageBox.Avalonia.Models;
 using Models.Forms;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
+using Models.Forms.Form2;
 
 namespace Client_App.ViewModels;
 
@@ -1839,11 +1839,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
         {
             WindowHeader =
-                $"{((Form_ClassAttribute)Type.GetType($"Models.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
+                $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
         }
         if (FormType is "1.0" or "2.0")
         {
-            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
         AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
         AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);

@@ -129,7 +129,7 @@ public class Form2_Visual
         itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition {Width=GridLength.Parse("1*")});
         itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Parse("1*")});
 
-        var tmp1 = CreateTextBlock("5,0,0,0", 30, ((FormPropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty(Property).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[index], 0);
+        var tmp1 = CreateTextBlock("5,0,0,0", 30, ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty(Property).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[index], 0);
         tmp1.SetValue(Grid.ColumnProperty,0);
         var tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[{index}].{Property}", 400, scp);
         tmp2.SetValue(Grid.ColumnProperty, 1);
@@ -192,7 +192,7 @@ public class Form2_Visual
 
         headerStackPanel.Children.Add(headerOrganUprav);
         var tmp1 = CreateTextBlock("5,0,0,0", 30,
-            ((FormPropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("OrganUprav")
+            ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty("OrganUprav")
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0]
             , 0);
         tmp1.SetValue(Grid.ColumnProperty, 0);
@@ -209,7 +209,7 @@ public class Form2_Visual
         headerStackPanel.Children.Add(headerRegNo);
 
         tmp1 = CreateTextBlock("5,0,0,0", 30,
-            ((FormPropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("RegNo")
+            ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty("RegNo")
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0]
             , 0);
         tmp1.SetValue(Grid.ColumnProperty, 0);

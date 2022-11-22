@@ -4,6 +4,8 @@ using System;
 using System.Threading.Tasks;
 using Models.Collections;
 using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 
 namespace Models.DBRealization;
 

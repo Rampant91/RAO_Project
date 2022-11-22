@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Text.RegularExpressions;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
-using Spravochniki;
 using System.Linq;
-using System.ComponentModel;
-using Models.Abstracts;
+using System.Text.RegularExpressions;
 using Models.Attributes;
-using OfficeOpenXml;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.DataAccess;
-using Models.Forms.Form1;
+using OfficeOpenXml;
+using Spravochniki;
 
-namespace Models;
+namespace Models.Forms.Form1;
 
 [Form_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
 public class Form19 : Form1

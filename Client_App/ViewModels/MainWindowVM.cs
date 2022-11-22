@@ -6,7 +6,6 @@ using FirebirdSql.Data.FirebirdClient;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using Models.Abstracts;
 using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
@@ -28,6 +27,8 @@ using System.Threading.Tasks;
 using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.DTO;
 using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 using Models.Interfaces;
 
 namespace Client_App.ViewModels
