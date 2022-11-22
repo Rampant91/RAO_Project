@@ -1333,49 +1333,51 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                                         worksheet.Cells[2, 30].Value = repForm.PackType_DB;
                                         worksheet.Cells[2, 31].Value = repForm.PackNumber_DB;
                                         #endregion
+                                        lastRow++;
+                                        continue;
                                     }
-                                    for (var currentRow = lastRow; currentRow >= 2; currentRow--)
+                                    for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
                                     {
-                                        if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) >= 0)
+                                        if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
                                         {
-                                            worksheet.InsertRow(currentRow + 1, 1);
+                                            worksheet.InsertRow(currentRow, 1);
                                             #region BindingCells
-                                            worksheet.Cells[currentRow + 1, 1].Value = reps.Master.RegNoRep.Value;
-                                            worksheet.Cells[currentRow + 1, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                                            worksheet.Cells[currentRow + 1, 3].Value = reps.Master.OkpoRep.Value;
-                                            worksheet.Cells[currentRow + 1, 4].Value = rep.FormNum_DB;
-                                            worksheet.Cells[currentRow + 1, 5].Value = rep.StartPeriod_DB;
-                                            worksheet.Cells[currentRow + 1, 6].Value = rep.EndPeriod_DB;
-                                            worksheet.Cells[currentRow + 1, 7].Value = rep.CorrectionNumber_DB;
-                                            worksheet.Cells[currentRow + 1, 8].Value = rep.Rows.Count;
-                                            worksheet.Cells[currentRow + 1, 9].Value = repForm.NumberInOrder_DB;
-                                            worksheet.Cells[currentRow + 1, 10].Value = repForm.OperationCode_DB;
-                                            worksheet.Cells[currentRow + 1, 11].Value = repForm.OperationDate_DB;
-                                            worksheet.Cells[currentRow + 1, 12].Value = repForm.PassportNumber_DB;
-                                            worksheet.Cells[currentRow + 1, 13].Value = repForm.Type_DB;
-                                            worksheet.Cells[currentRow + 1, 14].Value = repForm.Radionuclids_DB;
-                                            worksheet.Cells[currentRow + 1, 15].Value = repForm.FactoryNumber_DB;
-                                            worksheet.Cells[currentRow + 1, 16].Value = repForm.Quantity_DB;
-                                            worksheet.Cells[currentRow + 1, 17].Value = repForm.Activity_DB;
-                                            worksheet.Cells[currentRow + 1, 18].Value = repForm.CreatorOKPO_DB;
-                                            worksheet.Cells[currentRow + 1, 19].Value = repForm.CreationDate_DB;
-                                            worksheet.Cells[currentRow + 1, 20].Value = repForm.Category_DB;
-                                            worksheet.Cells[currentRow + 1, 21].Value = repForm.SignedServicePeriod_DB;
-                                            worksheet.Cells[currentRow + 1, 22].Value = repForm.PropertyCode_DB;
-                                            worksheet.Cells[currentRow + 1, 23].Value = repForm.Owner_DB;
-                                            worksheet.Cells[currentRow + 1, 24].Value = repForm.DocumentVid_DB;
-                                            worksheet.Cells[currentRow + 1, 25].Value = repForm.DocumentNumber_DB;
-                                            worksheet.Cells[currentRow + 1, 26].Value = repForm.DocumentDate_DB;
-                                            worksheet.Cells[currentRow + 1, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                                            worksheet.Cells[currentRow + 1, 28].Value = repForm.TransporterOKPO_DB;
-                                            worksheet.Cells[currentRow + 1, 29].Value = repForm.PackName_DB;
-                                            worksheet.Cells[currentRow + 1, 30].Value = repForm.PackType_DB;
-                                            worksheet.Cells[currentRow + 1, 31].Value = repForm.PackNumber_DB;
+                                            worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
+                                            worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+                                            worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
+                                            worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
+                                            worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+                                            worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+                                            worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
+                                            worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
+                                            worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
+                                            worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
+                                            worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
+                                            worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
+                                            worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
+                                            worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
+                                            worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
+                                            worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
+                                            worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
+                                            worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
+                                            worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
+                                            worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
+                                            worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
+                                            worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
+                                            worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
+                                            worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
+                                            worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
+                                            worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
+                                            worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+                                            worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
+                                            worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
+                                            worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
+                                            worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+                                            lastRow++;
                                             #endregion
                                             break;
                                         }
                                     }
-                                    lastRow++;
                                 }
                             }
                         }
