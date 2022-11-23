@@ -5191,130 +5191,131 @@ namespace Client_App.ViewModels
                 List<short?> categories = new() { 1, 2, 3, 4, 5 };
                 try
                 {
-                    if (result.Button is null || result.Button.Equals("Отмена")) return;
+                    if (result.Button is null or "Отмена") return;
                     categories = Regex.Replace(result.Message, "[^\\d,]", "").Split(',').Select(short.Parse).Cast<short?>().ToList();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow("Уведомление",
-                            $"Номера категорий не были введены, либо были введены некорректно{Environment.NewLine}Выгрузка будет осуществленна по всем категориям").ShowDialog(desktop.MainWindow);
+                            $"Номера категорий не были введены, либо были введены некорректно{Environment.NewLine}Выгрузка будет осуществлена по всем категориям").ShowDialog(desktop.MainWindow);
                 }
                 var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
-                if (res != null)
+                if (!string.IsNullOrEmpty(res))
                 {
-                    if (res.Length != 0)
+                    var path = res;
+                    if (!path.Contains(".xlsx"))
                     {
-                        var path = res;
-                        if (!path.Contains(".xlsx"))
+                        path += ".xlsx";
+                    }
+                    if (File.Exists(path))
+                    {
+                        try
                         {
-                            path += ".xlsx";
+                            File.Delete(path);
                         }
-                        if (File.Exists(path))
+                        catch (Exception e)
                         {
-                            try
+                            await ShowMessage.Handle(new List<string>
                             {
-                                File.Delete(path);
-                            }
-                            catch (Exception e)
-                            {
-                                await ShowMessage.Handle(new List<string>
-                                {
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
-                                return;
-                            }
+                                $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                            return;
                         }
-                        if (path != null)
+                    }
+                    using ExcelPackage excelPackage = new(new FileInfo(path));
+                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                    excelPackage.Workbook.Properties.Title = "Report";
+                    excelPackage.Workbook.Properties.Created = DateTime.Now;
+                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчётов");
+
+                    worksheet.Cells[1, 1].Value = "Полное имя файла";
+                    worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
+                    worksheet.Cells[1, 3].Value = "Тип";
+                    worksheet.Cells[1, 4].Value = "Год выпуска";
+                    worksheet.Cells[1, 5].Value = "Номер паспорта";
+                    worksheet.Cells[1, 6].Value = "Номер";
+
+                    List<string> pasNames = new();
+                    List<string[]> pasUniqParam = new();
+                    DirectoryInfo directory = new(@"C:\Test");
+                    FileInfo[] Files;
+                    try
+                    {
+                        Files = directory.GetFiles("*#*#*#*#*.pdf");
+                    }
+                    catch (Exception)
+                    {
+                        await ShowMessage.Handle(new List<string>
                         {
-                            using ExcelPackage excelPackage = new(new FileInfo(path));
-                            excelPackage.Workbook.Properties.Author = "RAO_APP";
-                            excelPackage.Workbook.Properties.Title = "Report";
-                            excelPackage.Workbook.Properties.Created = DateTime.Now;
-                            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчётов");
+                            $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}",
+                            "Ошибка", "Ок"
+                        });
+                        return;
+                    }
 
-                            worksheet.Cells[1, 1].Value = "Полное имя файла";
-                            worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
-                            worksheet.Cells[1, 3].Value = "Тип";
-                            worksheet.Cells[1, 4].Value = "Год выпуска";
-                            worksheet.Cells[1, 5].Value = "Номер паспорта";
-                            worksheet.Cells[1, 6].Value = "Номер";
+                    pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+                    pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
-                            List<string> pasNames = new();
-                            List<string[]> pasUniqParam = new();
-                            DirectoryInfo directory = new(@"C:\Test");
-                            FileInfo[] Files;
-                            try
+                    foreach (var key in Local_Reports.Reports_Collection10)
+                    {
+                        var reps = (Reports)key;
+                        var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                        foreach (var rep in form11)
+                        {
+                            List<Form11> repPas = rep.Rows11
+                                .Where(x => x.OperationCode_DB == "11" && categories.Contains(x.Category_DB))
+                                .ToList();
+                            foreach (var repForm in repPas)
                             {
-                                Files = directory.GetFiles("*#*#*#*#*.pdf");
-                            }
-                            catch (Exception e)
-                            {
-                                await ShowMessage.Handle(new List<string>
+                                foreach (var pasParam in pasUniqParam.Where(pasParam => ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
+                                             && ComparePasParam(repForm.Type_DB, pasParam[1])
+                                             && ComparePasParam(ConvertDBDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                             && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB),
+                                                 pasParam[3])
+                                             && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB),
+                                                 pasParam[4])))
                                 {
-                                    $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}", "Ошибка", "Ок" });
-                                return;
-                            }
-                            pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
-                            pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-
-                            foreach (Reports reps in Local_Reports.Reports_Collection10)
-                            {
-                                var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-                                foreach (Report rep in form11)
-                                {
-                                    List<Form11> repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11" && categories.Contains(x.Category_DB)).ToList();
-                                    foreach (Form11 repForm in repPas)
-                                    {
-                                        foreach (string[] pasParam in pasUniqParam)
-                                        {
-                                            if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
-                                                && ComparePasParam(repForm.Type_DB, pasParam[1])
-                                                && ComparePasParam(ConvertDBDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
-                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
-                                            {
-                                                pasNames.Remove(
-                                                    $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
-                                                break;
-                                            }
-                                        }
-                                    }
+                                    pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                                    break;
                                 }
                             }
-                            int currentRow = 2;
-                            foreach (string pasName in pasNames)
-                            {
-                                worksheet.Cells[currentRow, 1].Value = pasName;
-                                worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
-                                worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
-                                worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
-                                worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
-                                worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
-                                currentRow++;
-                            }
-                            worksheet.Cells.AutoFitColumns();
-                            try
-                            {
-                                excelPackage.Save();
-                                res = await ShowMessage.Handle(new List<string>
-                                {
-                                    "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3," +
-                                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}" +
-                                    $"{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}", "", "Ок", "Открыть выгрузку" });
-                                if (res is null or "Ок")
-                                    return;
-                                if (res.Equals("Открыть выгрузку"))
-                                {
-                                    ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
-                                    Process.Start(procInfo);
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                await ShowMessage.Handle(new List<string> { $"Не удалось сохранить файл по указанному пути", "Ок" });
-                                return;
-                            }
                         }
+                    }
+
+                    var currentRow = 2;
+                    foreach (var pasName in pasNames)
+                    {
+                        worksheet.Cells[currentRow, 1].Value = pasName;
+                        worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
+                        worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
+                        worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
+                        worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
+                        worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
+                        currentRow++;
+                    }
+                    worksheet.Cells.AutoFitColumns();
+                    try
+                    {
+                        excelPackage.Save();
+                        res = await ShowMessage.Handle(new List<string>
+                        {
+                            "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3," +
+                            $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}" +
+                            $"{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}",
+                            "", "Ок", "Открыть выгрузку"
+                        });
+                        if (res is null or "Ок")
+                            return;
+                        if (res.Equals("Открыть выгрузку"))
+                        {
+                            ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                            Process.Start(procInfo);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await ShowMessage.Handle(new List<string>
+                            { $"Не удалось сохранить файл по указанному пути", "Ок" });
                     }
                 }
             }
