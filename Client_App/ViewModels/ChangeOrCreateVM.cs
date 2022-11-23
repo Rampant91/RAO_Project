@@ -1292,11 +1292,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                             foreach (var rep in form11)
                             {
                                 var repPas = rep.Rows11.Where(x =>
-                                    MainWindowVM.ComparePasParam(x.CreatorOKPO_DB, okpo)
-                                    && MainWindowVM.ComparePasParam(x.Type_DB, type)
-                                    && MainWindowVM.ComparePasParam(x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)), year.Substring(Math.Max(0, year.Length - 4)))
-                                    && MainWindowVM.ComparePasParam(x.PassportNumber_DB, pasNum)
-                                    && MainWindowVM.ComparePasParam(x.FactoryNumber_DB, factoryNum));
+                                    //ComparePasParam(x.CreatorOKPO_DB, okpo)
+                                    //&& ComparePasParam(x.Type_DB, type)
+                                    //&& ComparePasParam(x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)), year.Substring(Math.Max(0, year.Length - 4)))
+                                    ComparePasParam(x.PassportNumber_DB, pasNum)
+                                    && ComparePasParam(x.FactoryNumber_DB, factoryNum));
                                 foreach (var repForm in repPas)
                                 {
                                     if (lastRow == 1)
@@ -1625,6 +1625,18 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
     }
     #endregion
+
+    private static bool ComparePasParam(string nameDB, string namePas)
+    {
+        nameDB ??= "";
+        nameDB = Regex.Replace(nameDB, "[\\\\/:*?\"<>|]", "");
+        nameDB = Regex.Replace(nameDB, "\\s+", "");
+        namePas = Regex.Replace(namePas, "[\\\\/:*?\"<>|]", "");
+        namePas = Regex.Replace(namePas, "\\s+", "");
+        return nameDB.Equals(namePas, StringComparison.OrdinalIgnoreCase)
+            || TranslateToEng(nameDB).Equals(TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
+            || TranslateToRus(nameDB).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
+    }
     #endregion
 
     #region CustomStringDateComparer

@@ -5310,7 +5310,7 @@ namespace Client_App.ViewModels
         }
         #endregion
 
-        public static bool ComparePasParam(string nameDB, string namePas)
+        private static bool ComparePasParam(string nameDB, string namePas)
         {
             nameDB ??= "";
             nameDB = Regex.Replace(nameDB, "[\\\\/:*?\"<>|]", "_");

@@ -174,7 +174,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("ReportsCollection_DbSet");
                 });
 
-            modelBuilder.Entity("Models.Form10", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form10", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1276,7 +1276,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_19");
                 });
 
-            modelBuilder.Entity("Models.Form20", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form20", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2202,7 +2202,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Master_DB");
                 });
 
-            modelBuilder.Entity("Models.Form10", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form10", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows10")
@@ -2272,7 +2272,7 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form20", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form20", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows20")

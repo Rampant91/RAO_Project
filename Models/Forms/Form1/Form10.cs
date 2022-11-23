@@ -1093,11 +1093,11 @@ public class Form10 : Form
 
         if (ID.Equals(""))
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
+            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(Okpo))
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(ShortJurLico))
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(nameof(RegNo))
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(RegNo))
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
 
             return 3;
@@ -1105,11 +1105,11 @@ public class Form10 : Form
         else
         {
             worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ID;
-            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
+            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(Okpo))
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
+            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(ShortJurLico))
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(nameof(RegNo))
+            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(RegNo))
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
 
             return 4;
