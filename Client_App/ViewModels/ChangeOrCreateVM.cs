@@ -1169,7 +1169,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteNote { get; protected set; }
     private async Task _DeleteNote(object _param)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
             var param = (IEnumerable)_param;
             var answer = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
@@ -1228,16 +1228,19 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                         catch (Exception)
                         {
+                            #region MessageFailedToSaveFile
                             await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                                {
-                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                    ContentTitle = "Выгрузка в Excel",
-                                    ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(desktop.MainWindow.OwnedWindows.First());
+                                                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                                    {
+                                                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                                        ContentTitle = "Выгрузка в Excel",
+                                                        ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
+                                                            $"Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                                        MinWidth = 400,
+                                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                                    })
+                                                    .ShowDialog(desktop.MainWindow); 
+                            #endregion
                             return;
                         }
                     }
@@ -1248,7 +1251,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         excelPackage.Workbook.Properties.Title = "Report";
                         excelPackage.Workbook.Properties.Created = DateTime.Now;
                         var worksheet = excelPackage.Workbook.Worksheets.Add($"Операции с паспортом {pasNum}");
-
                         #region ColumnHeaders
                         worksheet.Cells[1, 1].Value = "Рег. №";
                         worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1282,7 +1284,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         worksheet.Cells[1, 30].Value = "тип";
                         worksheet.Cells[1, 31].Value = "номер";
                         #endregion
-
                         var lastRow = 1;
                         foreach (var key in LocalReports.Reports_Collection10)
                         {
@@ -1384,20 +1385,22 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         try
                         {
                             excelPackage.Save();
+                            #region MessageExcelExportSaved
                             res = await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions = new []
-                                    {
-                                        new ButtonDefinition {Name = "Ок"},
-                                        new ButtonDefinition {Name = "Открыть выгрузку"}
-                                    },
-                                    ContentTitle = "Выгрузка в Excel",
-                                    ContentMessage = $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(desktop.MainWindow.OwnedWindows.First());
+                                                   .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                                   {
+                                                       ButtonDefinitions = new[]
+                                                       {
+                                                            new ButtonDefinition {Name = "Ок"},
+                                                            new ButtonDefinition {Name = "Открыть выгрузку"}
+                                                       },
+                                                       ContentTitle = "Выгрузка в Excel",
+                                                       ContentMessage = $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
+                                                       MinWidth = 400,
+                                                       WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                                   })
+                                                   .ShowDialog(desktop.MainWindow); 
+                            #endregion
                             if (res.Equals("Открыть выгрузку"))
                             {
                                 ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
@@ -1406,16 +1409,18 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                         catch (Exception)
                         {
+                            #region MessageFailedToSaveFile
                             await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                                {
-                                    ButtonDefinitions = ButtonEnum.Ok,
-                                    ContentTitle = "Выгрузка в Excel",
-                                    ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(desktop.MainWindow.OwnedWindows.First());
+                                                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                                    {
+                                                        ButtonDefinitions = ButtonEnum.Ok,
+                                                        ContentTitle = "Выгрузка в Excel",
+                                                        ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                                        MinWidth = 400,
+                                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                                    })
+                                                    .ShowDialog(desktop.MainWindow); 
+                            #endregion
                         }
                     }
                 }
@@ -1436,14 +1441,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             || factoryNum is null or "" or "-")
         {
             var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            #region MessageUnableToOpenPassport
             await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление", "Паспорт не может быть открыт, поскольку не заполнены все требуемые поля:"
-                                                            + Environment.NewLine + "- номер паспорта (сертификата)"
-                                                            + Environment.NewLine + "- тип"
-                                                            + Environment.NewLine + "- номер"
-                                                            + Environment.NewLine + "- код ОКПО изготовителя"
-                                                            + Environment.NewLine + "- дата выпуска")
-                .ShowDialog(desktop!.MainWindow.OwnedWindows.First());
+                    .GetMessageBoxStandardWindow("Уведомление", "Паспорт не может быть открыт, поскольку не заполнены все требуемые поля:"
+                                                                + Environment.NewLine + "- номер паспорта (сертификата)"
+                                                                + Environment.NewLine + "- тип"
+                                                                + Environment.NewLine + "- номер"
+                                                                + Environment.NewLine + "- код ОКПО изготовителя"
+                                                                + Environment.NewLine + "- дата выпуска")
+                    .ShowDialog(desktop!.MainWindow); 
+            #endregion
             return;
         }
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
@@ -1469,9 +1476,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление",
-                    $"Паспорт {uniqPasName}{Environment.NewLine}отсутствует в сетевом хранилище {PasFolderPath}")
-                .ShowDialog(desktop!.MainWindow.OwnedWindows.First());
+                .GetMessageBoxStandardWindow("Уведомление", $"Паспорт {uniqPasName}{Environment.NewLine}отсутствует в сетевом хранилище {PasFolderPath}")
+                .ShowDialog(desktop!.MainWindow);
         }
     }
 
@@ -1556,14 +1562,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             || factoryNum is null or "" or "-")
         {
             var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            #region MessageFailedToCopyPasName
             await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление", "Имя паспорта не было скопировано, не заполнены все требуемые поля:"
-                                                            + Environment.NewLine + "- номер паспорта (сертификата)"
-                                                            + Environment.NewLine + "- тип"
-                                                            + Environment.NewLine + "- номер"
-                                                            + Environment.NewLine + "- код ОКПО изготовителя"
-                                                            + Environment.NewLine + "- дата выпуска")
-                .ShowDialog(desktop!.MainWindow.OwnedWindows.First());
+                    .GetMessageBoxStandardWindow("Уведомление", "Имя паспорта не было скопировано, не заполнены все требуемые поля:"
+                                                                + Environment.NewLine + "- номер паспорта (сертификата)"
+                                                                + Environment.NewLine + "- тип"
+                                                                + Environment.NewLine + "- номер"
+                                                                + Environment.NewLine + "- код ОКПО изготовителя"
+                                                                + Environment.NewLine + "- дата выпуска")
+                    .ShowDialog(desktop!.MainWindow); 
+            #endregion
             return;
         }
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
@@ -1580,7 +1588,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var collection = par?[0] as IKeyCollection;
         var item = collection?.GetEnumerable().MinBy(x => x.Order);
         var props = item?.GetType().GetProperties();
-
         okpo = "";
         type = "";
         year = "";
@@ -1686,9 +1693,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[1].JurLico_DB) && Storages.Master_DB.Rows10[1].JurLico_DB != "-")
                     orgName = Storages.Master_DB.Rows10[1].JurLico_DB;
                 else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[0].ShortJurLico_DB) && Storages.Master_DB.Rows10[0].ShortJurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows10[1].ShortJurLico_DB;
+                    orgName = Storages.Master_DB.Rows10[0].ShortJurLico_DB;
                 else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[0].JurLico_DB) && Storages.Master_DB.Rows10[0].JurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows10[1].JurLico_DB;
+                    orgName = Storages.Master_DB.Rows10[0].JurLico_DB;
             }
             if (FormType.ToCharArray()[0] == '2')
             {
@@ -1697,9 +1704,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[1].JurLico_DB) && Storages.Master_DB.Rows20[1].JurLico_DB != "-")
                     orgName = Storages.Master_DB.Rows20[1].JurLico_DB;
                 else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[0].ShortJurLico_DB) && Storages.Master_DB.Rows20[0].ShortJurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows20[1].ShortJurLico_DB;
+                    orgName = Storages.Master_DB.Rows20[0].ShortJurLico_DB;
                 else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[0].JurLico_DB) && Storages.Master_DB.Rows20[0].JurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows20[1].JurLico_DB;
+                    orgName = Storages.Master_DB.Rows20[0].JurLico_DB;
             }
             var msg = lastReport is null
                 ? $"У {orgName}" + Environment.NewLine + $"отсутствуют другие формы {FormType}"
@@ -1707,8 +1714,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Уведомление", msg)
-                    .ShowDialog(desktop.MainWindow.OwnedWindows.First());
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentHeader = "Уведомление",
+                        ContentMessage = msg
+                    })
+                    .ShowDialog(desktop.MainWindow);
             }
             #endregion
             return;

@@ -5180,8 +5180,7 @@ namespace Client_App.ViewModels
                 List<short?> categories = new() { 1, 2, 3, 4, 5 };
                 try
                 {
-                    if (!result.Button.Equals("Ок"))
-                        throw new Exception();
+                    if (result.Button is null || result.Button.Equals("Отмена")) return;
                     categories = Regex.Replace(result.Message, "[^\\d,]", "").Split(',').Select(short.Parse).Cast<short?>().ToList();
                 }
                 catch (Exception e)
