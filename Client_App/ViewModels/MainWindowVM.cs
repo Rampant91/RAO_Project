@@ -2496,7 +2496,27 @@ namespace Client_App.ViewModels
                             }
                             if (File.Exists(path))
                             {
-                                File.Delete(path);
+                                try
+                                {
+                                    File.Delete(path);
+                                }
+                                catch (Exception)
+                                {
+                                    #region MessageFailedToSaveFile
+                                    await MessageBox.Avalonia.MessageBoxManager
+                                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                        {
+                                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                            ContentTitle = "Выгрузка в Excel",
+                                            ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
+                                                             $"Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                            MinWidth = 400,
+                                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                        })
+                                        .ShowDialog(desktop.MainWindow); 
+                                    #endregion
+                                    return;
+                                }
                             }
                             using ExcelPackage excelPackage = new(new FileInfo(path));
                             excelPackage.Workbook.Properties.Author = "RAO_APP";
