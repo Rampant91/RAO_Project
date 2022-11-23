@@ -5169,11 +5169,11 @@ namespace Client_App.ViewModels
         public ReactiveCommand<object, Unit> ExcelPasWithoutRep { get; protected set; }
         private async Task _ExcelPasWithoutRep(object param)
         {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 SaveFileDialog saveFileDialog = new();
                 FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
-                saveFileDialog.Filters.Add(filter);
+                saveFileDialog.Filters?.Add(filter);
                 var messageBoxWindow = MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxInputWindow(new MessageBoxInputParams
                     {
@@ -5198,7 +5198,9 @@ namespace Client_App.ViewModels
                 {
                     await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow("Уведомление",
-                            $"Номера категорий не были введены, либо были введены некорректно{Environment.NewLine}Выгрузка будет осуществлена по всем категориям").ShowDialog(desktop.MainWindow);
+                            "Номера категорий не были введены, либо были введены некорректно" +
+                            $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям")
+                        .ShowDialog(desktop.MainWindow);
                 }
                 var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
                 if (!string.IsNullOrEmpty(res))
@@ -5226,7 +5228,7 @@ namespace Client_App.ViewModels
                     excelPackage.Workbook.Properties.Author = "RAO_APP";
                     excelPackage.Workbook.Properties.Title = "Report";
                     excelPackage.Workbook.Properties.Created = DateTime.Now;
-                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчётов");
+                    worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчетов");
 
                     worksheet.Cells[1, 1].Value = "Полное имя файла";
                     worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
@@ -5237,11 +5239,11 @@ namespace Client_App.ViewModels
 
                     List<string> pasNames = new();
                     List<string[]> pasUniqParam = new();
-                    DirectoryInfo directory = new(@"C:\Test");
-                    FileInfo[] Files;
+                    DirectoryInfo directory = new(PasFolderPath);
+                    FileInfo[] files;
                     try
                     {
-                        Files = directory.GetFiles("*#*#*#*#*.pdf");
+                        files = directory.GetFiles("*#*#*#*#*.pdf");
                     }
                     catch (Exception)
                     {
@@ -5253,9 +5255,8 @@ namespace Client_App.ViewModels
                         return;
                     }
 
-                    pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+                    pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
                     pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-
                     foreach (var key in Local_Reports.Reports_Collection10)
                     {
                         var reps = (Reports)key;
@@ -5270,10 +5271,8 @@ namespace Client_App.ViewModels
                                 foreach (var pasParam in pasUniqParam.Where(pasParam => ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
                                              && ComparePasParam(repForm.Type_DB, pasParam[1])
                                              && ComparePasParam(ConvertDBDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                             && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB),
-                                                 pasParam[3])
-                                             && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB),
-                                                 pasParam[4])))
+                                             && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
+                                             && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4])))
                                 {
                                     pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                                     break;
@@ -5281,7 +5280,6 @@ namespace Client_App.ViewModels
                             }
                         }
                     }
-
                     var currentRow = 2;
                     foreach (var pasName in pasNames)
                     {
@@ -5315,7 +5313,7 @@ namespace Client_App.ViewModels
                     catch (Exception)
                     {
                         await ShowMessage.Handle(new List<string>
-                            { $"Не удалось сохранить файл по указанному пути", "Ок" });
+                            { "Не удалось сохранить файл по указанному пути", "Ок" });
                     }
                 }
             }

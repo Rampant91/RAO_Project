@@ -132,6 +132,10 @@ public class Form2_Visual
         var tmp1 = CreateTextBlock("5,0,0,0", 30, ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty(Property).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[index], 0);
         tmp1.SetValue(Grid.ColumnProperty,0);
         var tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[{index}].{Property}", 400, scp);
+        if (BindingPrefix == "DataContext.Storage.Rows20")
+        {
+            ((TextBox)tmp2.Control).HorizontalContentAlignment = HorizontalAlignment.Right;
+        }
         tmp2.SetValue(Grid.ColumnProperty, 1);
         itemStackPanel.Children.Add(tmp1);
         itemStackPanel.Children.Add(tmp2);
@@ -193,12 +197,12 @@ public class Form2_Visual
         headerStackPanel.Children.Add(headerOrganUprav);
         var tmp1 = CreateTextBlock("5,0,0,0", 30,
             ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty("OrganUprav")
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0]
-            , 0);
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0], 0);
         tmp1.SetValue(Grid.ColumnProperty, 0);
         headerOrganUprav.Children.Add(tmp1);
 
         var tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[0].OrganUprav", 400, scp);
+        ((TextBox)tmp2.Control).HorizontalContentAlignment = HorizontalAlignment.Right;
         tmp2.SetValue(Grid.ColumnProperty, 1);
         headerOrganUprav.Children.Add(tmp2);
 
@@ -210,12 +214,11 @@ public class Form2_Visual
 
         tmp1 = CreateTextBlock("5,0,0,0", 30,
             ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty("RegNo")
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0]
-            , 0);
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0], 0);
         tmp1.SetValue(Grid.ColumnProperty, 0);
         headerRegNo.Children.Add(tmp1);
-
         tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[0].RegNo", 400, scp);
+        ((TextBox)tmp2.Control).HorizontalContentAlignment = HorizontalAlignment.Right;
         tmp2.SetValue(Grid.ColumnProperty, 1);
         headerRegNo.Children.Add(tmp2);
 
