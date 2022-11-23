@@ -251,7 +251,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_10");
                 });
 
-            modelBuilder.Entity("Models.Form11", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form11", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -357,7 +357,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_11");
                 });
 
-            modelBuilder.Entity("Models.Form12", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form12", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -454,7 +454,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_12");
                 });
 
-            modelBuilder.Entity("Models.Form13", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form13", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -554,7 +554,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_13");
                 });
 
-            modelBuilder.Entity("Models.Form14", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form14", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -657,7 +657,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_14");
                 });
 
-            modelBuilder.Entity("Models.Form15", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form15", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -766,7 +766,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_15");
                 });
 
-            modelBuilder.Entity("Models.Form16", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form16", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -884,7 +884,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_16");
                 });
 
-            modelBuilder.Entity("Models.Form17", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form17", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1056,7 +1056,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_17");
                 });
 
-            modelBuilder.Entity("Models.Form18", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form18", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1207,7 +1207,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_18");
                 });
 
-            modelBuilder.Entity("Models.Form19", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form19", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1353,7 +1353,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_20");
                 });
 
-            modelBuilder.Entity("Models.Form21", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form21", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1495,7 +1495,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_21");
                 });
 
-            modelBuilder.Entity("Models.Form210", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form210", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1553,7 +1553,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_210");
                 });
 
-            modelBuilder.Entity("Models.Form211", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form211", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1605,7 +1605,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_211");
                 });
 
-            modelBuilder.Entity("Models.Form212", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form212", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1648,7 +1648,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_212");
                 });
 
-            modelBuilder.Entity("Models.Form22", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form22", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1796,7 +1796,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_22");
                 });
 
-            modelBuilder.Entity("Models.Form23", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form23", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1860,7 +1860,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_23");
                 });
 
-            modelBuilder.Entity("Models.Form24", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form24", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1936,7 +1936,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_24");
                 });
 
-            modelBuilder.Entity("Models.Form25", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form25", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1991,7 +1991,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_25");
                 });
 
-            modelBuilder.Entity("Models.Form26", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form26", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2040,7 +2040,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_26");
                 });
 
-            modelBuilder.Entity("Models.Form27", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form27", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2083,7 +2083,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_27");
                 });
 
-            modelBuilder.Entity("Models.Form28", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form28", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2129,7 +2129,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_28");
                 });
 
-            modelBuilder.Entity("Models.Form29", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form29", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2169,7 +2169,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_29");
                 });
 
-            modelBuilder.Entity("Models.Note", b =>
+            modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2224,63 +2224,63 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form11", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form11", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows11")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form12", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form12", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows12")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form13", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form13", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows13")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form14", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form14", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows14")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form15", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form15", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows15")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form16", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form16", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows16")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form17", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form17", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows17")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form18", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form18", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows18")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form19", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form19", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows19")
@@ -2294,91 +2294,91 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form21", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form21", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows21")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form210", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form210", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows210")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form211", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form211", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows211")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form212", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form212", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows212")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form22", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form22", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows22")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form23", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form23", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows23")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form24", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form24", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows24")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form25", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form25", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows25")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form26", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form26", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows26")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form27", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form27", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows27")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form28", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form28", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows28")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form29", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form29", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows29")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Note", b =>
+            modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Notes")

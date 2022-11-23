@@ -197,15 +197,14 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
         worksheet.Cells[row + 0, column + 0].Value = RowNumber_DB;
         worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = GraphNumber_DB;
         worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = Comment_DB;
-
         return 3;
     }
 
     public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
     {
-        worksheet.Cells[row + 0, column + 0].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[row + 0, column + 0].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
         return 3;
     }
     #endregion
