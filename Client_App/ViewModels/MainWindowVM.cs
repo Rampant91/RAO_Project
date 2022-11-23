@@ -2654,18 +2654,24 @@ namespace Client_App.ViewModels
             {
                 var mainWindow = desktop.MainWindow as MainWindow;
                 var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
-                if (selectedReports is null)
+                if (selectedReports is null || !selectedReports.Report_Collection.Any())
                 {
                     #region MessageExcelExportFail
+                    var msg = "Выгрузка не выполнена. ";
+                    msg += selectedReports is null
+                        ? "Не выбрана организация."
+                        : "У выбранной организации отсутствуют формы отчетности.";
                     await MessageBox.Avalonia.MessageBoxManager
                                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                                     {
                                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                                         ContentTitle = "Выгрузка в Excel",
-                                        ContentMessage = "Выгрузка не выполнена. Не выбрана организация",
+                                        ContentMessage = msg,
+                                        MinHeight = 125,
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    }).ShowDialog(mainWindow);
+                                    })
+                                    .ShowDialog(mainWindow);
                     #endregion
                     return;
                 }
