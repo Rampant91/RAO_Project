@@ -2,12 +2,17 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Views;
+using Client_App.VisualRealization.Long_Visual;
 using FirebirdSql.Data.FirebirdClient;
+using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Interfaces;
 using OfficeOpenXml;
 using ReactiveUI;
 using Spravochniki;
@@ -24,12 +29,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Client_App.VisualRealization.Long_Visual;
-using MessageBox.Avalonia.DTO;
-using Models.Forms;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Models.Interfaces;
 
 namespace Client_App.ViewModels
 {
@@ -2442,36 +2441,40 @@ namespace Client_App.ViewModels
             bool forSelectedOrg = false;
             forSelectedOrg = par.ToString().Contains("Org");
             var param = Regex.Replace(par.ToString(), "[^\\d.]", "");
-
-            var find_rep = 0;
-            foreach (Reports reps in Local_Reports.Reports_Collection)
+            var findRep = 0;
+            foreach (var key in Local_Reports.Reports_Collection)
             {
-                foreach (Report rep in reps.Report_Collection)
+                var reps = (Reports)key;
+                foreach (var key1 in reps.Report_Collection)
                 {
+                    var rep = (Report)key1;
                     if (rep.FormNum_DB.StartsWith(param))
                     {
-                        find_rep += 1;
+                        findRep++;
                     }
                 }
             }
-            if (find_rep == 0) return;
+            if (findRep == 0) return;
             try
             {
-                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
                     var mainWindow = desktop.MainWindow as MainWindow;
-                    Reports selectedReports = (Reports)mainWindow.SelectedReports.FirstOrDefault();
+                    var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
                     if (selectedReports is null && forSelectedOrg)
                     {
+                        #region MessageExcelExportFail
                         await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentMessage = "Выгрузка не выполнена. Не выбрана организация",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            }).ShowDialog(mainWindow);
+                                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                            {
+                                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                                ContentTitle = "Выгрузка в Excel",
+                                                ContentMessage = "Выгрузка не выполнена. Не выбрана организация",
+                                                MinWidth = 400,
+                                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                            })
+                                            .ShowDialog(mainWindow);
+                        #endregion
                         return;
                     }
                     SaveFileDialog dial = new();
@@ -2480,173 +2483,143 @@ namespace Client_App.ViewModels
                         Name = "Excel",
                         Extensions = { "xlsx" }
                     };
-                    dial.Filters.Add(filter);
+                    dial.Filters!.Add(filter);
                     if (param != "")
                     {
                         var res = await dial.ShowAsync(desktop.MainWindow);
-                        if (res != null)
+                        if (!string.IsNullOrEmpty(res))
                         {
-                            if (res.Count() != 0)
+                            var path = res;
+                            if (!path.Contains(".xlsx"))
                             {
-                                var path = res;
-                                if (!path.Contains(".xlsx"))
+                                path += ".xlsx";
+                            }
+                            if (File.Exists(path))
+                            {
+                                File.Delete(path);
+                            }
+                            using ExcelPackage excelPackage = new(new FileInfo(path));
+                            excelPackage.Workbook.Properties.Author = "RAO_APP";
+                            excelPackage.Workbook.Properties.Title = "Report";
+                            excelPackage.Workbook.Properties.Created = DateTime.Now;
+                            if (Local_Reports.Reports_Collection.Count > 0)
+                            {
+                                var worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
+                                var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
+                                int masterHeaderLength;
+                                if (param.Split('.')[0] == "1")
                                 {
-                                    path += ".xlsx";
+                                    masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
+                                    masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
                                 }
-                                if (File.Exists(path))
+                                else
                                 {
-                                    File.Delete(path);
+                                    masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
+                                    masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
                                 }
-                                if (path != null)
+                                var t = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength);
+                                Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength);
+                                masterHeaderLength += t;
+                                masterHeaderLength--;
+                                switch (param)
                                 {
-                                    using ExcelPackage excelPackage = new(new FileInfo(path));
-                                    excelPackage.Workbook.Properties.Author = "RAO_APP";
-                                    excelPackage.Workbook.Properties.Title = "Report";
-                                    excelPackage.Workbook.Properties.Created = DateTime.Now;
-
-                                    if (Local_Reports.Reports_Collection.Count > 0)
+                                    case "1.1":
+                                        Form11.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.2":
+                                        Form12.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.3":
+                                        Form13.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.4":
+                                        Form14.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.5":
+                                        Form15.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.6":
+                                        Form16.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.7":
+                                        Form17.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.8":
+                                        Form18.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "1.9":
+                                        Form19.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.1":
+                                        Form21.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.2":
+                                        Form22.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.3":
+                                        Form23.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.4":
+                                        Form24.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.5":
+                                        Form25.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.6":
+                                        Form26.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.7":
+                                        Form27.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.8":
+                                        Form28.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.9":
+                                        Form29.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.10":
+                                        Form210.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.11":
+                                        Form211.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                    case "2.12":
+                                        Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                                        break;
+                                }
+                                Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
+                                var tyu = 2;
+                                var lst = new List<Report>();
+                                if (forSelectedOrg)
+                                {
+                                    var newItem = selectedReports.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
+                                    lst.AddRange(newItem);
+                                }
+                                else
+                                {
+                                    foreach (var key in Local_Reports.Reports_Collection)
                                     {
-                                        ExcelWorksheet worksheet =
-                                            excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
-                                        ExcelWorksheet worksheetPrim =
-                                            excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
-
-                                        var masterheaderlength = 0;
-                                        if (param.Split('.')[0] == "1")
-                                        {
-                                            masterheaderlength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
-                                            masterheaderlength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
-                                        }
-                                        else
-                                        {
-                                            masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
-                                            masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
-                                        }
-                                        var t = Report.ExcelHeader(worksheet, param, 1, masterheaderlength);
-                                        Report.ExcelHeader(worksheetPrim, param, 1, masterheaderlength);
-                                        masterheaderlength += t;
-                                        masterheaderlength--;
-                                        if (param == "1.1")
-                                        {
-                                            Form11.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.2")
-                                        {
-                                            Form12.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.3")
-                                        {
-                                            Form13.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.4")
-                                        {
-                                            Form14.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.5")
-                                        {
-                                            Form15.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.6")
-                                        {
-                                            Form16.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.7")
-                                        {
-                                            Form17.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.8")
-                                        {
-                                            Form18.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "1.9")
-                                        {
-                                            Form19.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-
-                                        if (param == "2.1")
-                                        {
-                                            Form21.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.2")
-                                        {
-                                            Form22.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.3")
-                                        {
-                                            Form23.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.4")
-                                        {
-                                            Form24.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.5")
-                                        {
-                                            Form25.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.6")
-                                        {
-                                            Form26.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.7")
-                                        {
-                                            Form27.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.8")
-                                        {
-                                            Form28.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.9")
-                                        {
-                                            Form29.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.10")
-                                        {
-                                            Form210.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.11")
-                                        {
-                                            Form211.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        if (param == "2.12")
-                                        {
-                                            Form212.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                        }
-                                        Note.ExcelHeader(worksheetPrim, 1, masterheaderlength + 1);
-
-                                        var tyu = 2;
-                                        var lst = new List<Report>();
-
-                                        if (forSelectedOrg)
-                                        {
-                                            var newItem = selectedReports.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
-                                            lst.AddRange(newItem);
-                                        }
-                                        else
-                                        {
-                                            foreach (Reports item in Local_Reports.Reports_Collection)
-                                            {
-                                                var newItem = item.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
-                                                lst.AddRange(newItem);
-                                            }
-                                        }
-
-                                        //foreach (Reports item in Local_Reports.Reports_Collection)
-                                        //{
-                                        //    lst.AddRange(item.Report_Collection);
-                                        //}
-
-                                        _Excel_Export_Rows(param, tyu, masterheaderlength, worksheet, lst, true);
-                                        _Excel_Export_Notes(param, tyu, masterheaderlength, worksheetPrim, lst, true);
-
-                                        excelPackage.Save();
+                                        var item = (Reports)key;
+                                        var newItem = item.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
+                                        lst.AddRange(newItem);
                                     }
                                 }
+
+                                //foreach (Reports item in Local_Reports.Reports_Collection)
+                                //{
+                                //    lst.AddRange(item.Report_Collection);
+                                //}
+
+                                _Excel_Export_Rows(param, tyu, masterHeaderLength, worksheet, lst, true);
+                                _Excel_Export_Notes(param, tyu, masterHeaderLength, worksheetPrim, lst, true);
+
+                                excelPackage.Save();
                             }
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 int l = 10;
             }
@@ -2657,21 +2630,23 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> SelectOrgExcelExport { get; private set; }
         private async Task _SelectOrgExcelExport()
         {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var mainWindow = desktop.MainWindow as MainWindow;
-                Reports selectedReports = (Reports)mainWindow.SelectedReports.FirstOrDefault();
+                var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
                 if (selectedReports is null)
                 {
+                    #region MessageExcelExportFail
                     await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentMessage = "Выгрузка не выполнена. Не выбрана организация",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        }).ShowDialog(mainWindow);
+                                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                    {
+                                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                        ContentTitle = "Выгрузка в Excel",
+                                        ContentMessage = "Выгрузка не выполнена. Не выбрана организация",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    }).ShowDialog(mainWindow);
+                    #endregion
                     return;
                 }
                 SaveFileDialog dial = new();
@@ -2680,161 +2655,156 @@ namespace Client_App.ViewModels
                     Name = "Excel",
                     Extensions = { "xlsx" }
                 };
-                dial.Filters.Add(filter);
+                dial.Filters!.Add(filter);
                 var res = await dial.ShowAsync(desktop.MainWindow);
-                if (res != null)
+                if (!string.IsNullOrEmpty(res))
                 {
-                    if (res.Count() != 0)
+                    var path = res;
+                    if (!path.Contains(".xlsx"))
                     {
-                        var path = res;
-                        if (!path.Contains(".xlsx"))
-                        {
-                            path += ".xlsx";
-                        }
-                        if (File.Exists(path))
-                        {
-                            File.Delete(path);
-                        }
-                        if (path != null)
-                        {
-                            using ExcelPackage excelPackage = new(new FileInfo(path));
-                            excelPackage.Workbook.Properties.Author = "RAO_APP";
-                            excelPackage.Workbook.Properties.Title = "Report";
-                            excelPackage.Workbook.Properties.Created = DateTime.Now;
-                            HashSet<string> formnums = new();
-                            foreach (Report rep in selectedReports.Report_Collection)
-                            {
-                                formnums.Add(rep.FormNum_DB);
-                            }
-                            if (formnums.Contains("1.1"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.1");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.1");
-                                ExportForm11Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.2"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.2");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.2");
-                                ExportForm12Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.3"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.3");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.3");
-                                ExportForm13Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.4"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.4");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.4");
-                                ExportForm14Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.5"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.5");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.5");
-                                ExportForm15Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.6"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.6");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.6");
-                                ExportForm16Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.7"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.7");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.7");
-                                ExportForm17Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.8"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.8");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.8");
-                                ExportForm18Data(selectedReports);
-                            }
-                            if (formnums.Contains("1.9"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.9");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.9");
-                                ExportForm19Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.1"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.1");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.1");
-                                ExportForm21Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.2"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.2");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.2");
-                                ExportForm22Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.3"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.3");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.3");
-                                ExportForm23Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.4"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.4");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.4");
-                                ExportForm24Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.5"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.5");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.5");
-                                ExportForm25Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.6"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.6");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.6");
-                                ExportForm26Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.7"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.7");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.7");
-                                ExportForm27Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.8"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.8");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.8");
-                                ExportForm28Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.9"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.9");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.9");
-                                ExportForm29Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.10"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.10");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.10");
-                                ExportForm210Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.11"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.11");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.11");
-                                ExportForm211Data(selectedReports);
-                            }
-                            if (formnums.Contains("2.12"))
-                            {
-                                worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.12");
-                                worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.12");
-                                ExportForm212Data(selectedReports);
-                            }
-                            excelPackage.Save();
-                        }
+                        path += ".xlsx";
                     }
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                    using ExcelPackage excelPackage = new(new FileInfo(path));
+                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                    excelPackage.Workbook.Properties.Title = "Report";
+                    excelPackage.Workbook.Properties.Created = DateTime.Now;
+                    HashSet<string> formNums = new();
+                    foreach (var key in selectedReports.Report_Collection)
+                    {
+                        var rep = (Report)key;
+                        formNums.Add(rep.FormNum_DB);
+                    }
+                    if (formNums.Contains("1.1"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.1");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.1");
+                        ExportForm11Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.2"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.2");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.2");
+                        ExportForm12Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.3"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.3");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.3");
+                        ExportForm13Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.4"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.4");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.4");
+                        ExportForm14Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.5"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.5");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.5");
+                        ExportForm15Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.6"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.6");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.6");
+                        ExportForm16Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.7"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.7");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.7");
+                        ExportForm17Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.8"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.8");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.8");
+                        ExportForm18Data(selectedReports);
+                    }
+                    if (formNums.Contains("1.9"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 1.9");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 1.9");
+                        ExportForm19Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.1"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.1");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.1");
+                        ExportForm21Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.2"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.2");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.2");
+                        ExportForm22Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.3"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.3");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.3");
+                        ExportForm23Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.4"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.4");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.4");
+                        ExportForm24Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.5"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.5");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.5");
+                        ExportForm25Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.6"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.6");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.6");
+                        ExportForm26Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.7"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.7");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.7");
+                        ExportForm27Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.8"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.8");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.8");
+                        ExportForm28Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.9"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.9");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.9");
+                        ExportForm29Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.10"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.10");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.10");
+                        ExportForm210Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.11"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.11");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.11");
+                        ExportForm211Data(selectedReports);
+                    }
+                    if (formNums.Contains("2.12"))
+                    {
+                        worksheet = excelPackage.Workbook.Worksheets.Add($"Форма 2.12");
+                        worksheetComment = excelPackage.Workbook.Worksheets.Add($"Примечания 2.12");
+                        ExportForm212Data(selectedReports);
+                    }
+                    excelPackage.Save();
                 }
             }
         }
@@ -2876,17 +2846,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 31].Value = "номер";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form11 repForm in rep.Rows11)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows11)
                     {
+                        var repForm = (Form11)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -2922,8 +2892,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -2974,17 +2945,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 28].Value = "номер";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form12 repForm in rep.Rows12)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows12)
                     {
+                        var repForm = (Form12)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3017,8 +2988,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3069,17 +3041,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 29].Value = "номер";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form13 repForm in rep.Rows13)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows13)
                     {
+                        var repForm = (Form13)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3113,8 +3085,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3166,17 +3139,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 30].Value = "номер";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form14 repForm in rep.Rows14)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows14)
                     {
+                        var repForm = (Form14)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3211,8 +3184,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3266,17 +3240,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form15 repForm in rep.Rows15)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows15)
                     {
+                        var repForm = (Form15)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3313,8 +3287,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3354,7 +3329,7 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 18].Value = "тритий";
             worksheet.Cells[1, 19].Value = "бета-, гамма-излучающие радионуклиды (исключая";
             worksheet.Cells[1, 20].Value = "альфа-излучающие радионуклиды (исключая";
-            worksheet.Cells[1, 21].Value = "траансурановые радионуклиды";
+            worksheet.Cells[1, 21].Value = "трансурановые радионуклиды";
             worksheet.Cells[1, 22].Value = "Дата измерения активности";
             worksheet.Cells[1, 23].Value = "вид";
             worksheet.Cells[1, 24].Value = "номер";
@@ -3371,17 +3346,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 35].Value = "Номер мероприятия ФЦП";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form16 repForm in rep.Rows16)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows16)
                     {
+                        var repForm = (Form16)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3421,8 +3396,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3484,17 +3460,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 40].Value = "Номер мероприятия ФЦП";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form17 repForm in rep.Rows17)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows17)
                     {
+                        var repForm = (Form17)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3539,8 +3515,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3598,17 +3575,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 36].Value = "Номер мероприятия ФЦП";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form18 repForm in rep.Rows18)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows18)
                     {
+                        var repForm = (Form18)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3649,8 +3626,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3689,17 +3667,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 17].Value = "активность, Бк";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form19 repForm in rep.Rows19)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows19)
                     {
+                        var repForm = (Form19)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3721,8 +3699,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3772,17 +3751,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 28].Value = "трансурановые радионуклиды";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1") && x.Rows21 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form21 repForm in rep.Rows21)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows21)
                     {
+                        var repForm = (Form21)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3815,8 +3794,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3862,17 +3842,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 25].Value = "Номер мероприятия ФЦП";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2") && x.Rows22 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form22 repForm in rep.Rows22)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows22)
                     {
+                        var repForm = (Form22)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3902,8 +3882,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -3942,17 +3923,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 18].Value = "наименование документа";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3") && x.Rows23 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form23 repForm in rep.Rows23)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows23)
                     {
+                        var repForm = (Form23)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -3975,8 +3956,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4019,17 +4001,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 22].Value = "количество снятых с учета, шт";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4") && x.Rows24 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form24 repForm in rep.Rows24)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows24)
                     {
+                        var repForm = (Form24)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4056,8 +4038,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4093,17 +4076,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 15].Value = "бета-, гамма-излучающих нуклидов";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5") && x.Rows25 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form25 repForm in rep.Rows25)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows25)
                     {
+                        var repForm = (Form25)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4123,8 +4106,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4158,17 +4142,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 13].Value = "Среднегодовое содержание радионуклида, Бк/кг";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6") && x.Rows26 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form26 repForm in rep.Rows26)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows26)
                     {
+                        var repForm = (Form26)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4186,8 +4170,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4219,17 +4204,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 11].Value = "фактический";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7") && x.Rows27 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form27 repForm in rep.Rows27)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows27)
                     {
+                        var repForm = (Form27)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4245,8 +4230,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4279,17 +4265,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 12].Value = "Отведено за отчетный период, тыс.куб.м";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8") && x.Rows28 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form28 repForm in rep.Rows28)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows28)
                     {
+                        var repForm = (Form28)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4306,8 +4292,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4333,22 +4320,22 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 5].Value = "отчетный год";
             worksheet.Cells[1, 6].Value = "№ п/п";
             worksheet.Cells[1, 7].Value = "Наименование, номер выпуска сточных вод";
-            worksheet.Cells[1, 8].Value = "Наименование радионуклада";
+            worksheet.Cells[1, 8].Value = "Наименование радионуклида";
             worksheet.Cells[1, 9].Value = "допустимая";
             worksheet.Cells[1, 10].Value = "фактическая";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9") && x.Rows29 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form29 repForm in rep.Rows29)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows29)
                     {
+                        var repForm = (Form29)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4363,8 +4350,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4393,25 +4381,25 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 8].Value = "Наименование участка";
             worksheet.Cells[1, 9].Value = "Кадастровый номер участка";
             worksheet.Cells[1, 10].Value = "Код участка";
-            worksheet.Cells[1, 11].Value = "Площадь загряжненной территории, кв.м";
+            worksheet.Cells[1, 11].Value = "Площадь загрязненной территории, кв.м";
             worksheet.Cells[1, 12].Value = "средняя";
             worksheet.Cells[1, 13].Value = "максимальная";
-            worksheet.Cells[1, 14].Value = "альфа-узлучающие радионуклиды";
-            worksheet.Cells[1, 15].Value = "бета-узлучающие радионуклиды";
+            worksheet.Cells[1, 14].Value = "альфа-излучающие радионуклиды";
+            worksheet.Cells[1, 15].Value = "бета-излучающие радионуклиды";
             worksheet.Cells[1, 16].Value = "Номер мероприятия ФЦП";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10") && x.Rows210 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form210 repForm in rep.Rows210)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows210)
                     {
+                        var repForm = (Form210)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4432,8 +4420,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4468,17 +4457,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 14].Value = "донные отложения";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11") && x.Rows211 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form211 repForm in rep.Rows211)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows211)
                     {
+                        var repForm = (Form211)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4497,8 +4486,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4530,17 +4520,17 @@ namespace Client_App.ViewModels
             worksheet.Cells[1, 11].Value = "ОКПО поставщика/получателя";
             NotesHeaders();
 
-            int currentRow = 2;
-            int tmp = 2;
+            var tmp = 2;
             List<Reports> repList = new() { selectedReports };
-            foreach (Reports reps in repList)
+            foreach (var reps in repList)
             {
                 var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12") && x.Rows212 != null);
-                foreach (Report rep in form)
+                foreach (var rep in form)
                 {
-                    currentRow = tmp;
-                    foreach (Form212 repForm in rep.Rows212)
+                    var currentRow = tmp;
+                    foreach (var key in rep.Rows212)
                     {
+                        var repForm = (Form212)key;
                         worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
                         worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -4556,8 +4546,9 @@ namespace Client_App.ViewModels
                     }
                     tmp = currentRow;
                     currentRow = 2;
-                    foreach (Note comment in rep.Notes)
+                    foreach (var key in rep.Notes)
                     {
+                        var comment = (Note)key;
                         worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                         worksheetComment.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                         worksheetComment.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -4585,7 +4576,7 @@ namespace Client_App.ViewModels
             worksheetComment.Cells[1, 7].Value = "№ строки";
             worksheetComment.Cells[1, 8].Value = "№ графы";
             worksheetComment.Cells[1, 9].Value = "Пояснение";
-        }        
+        }
         #endregion
         #endregion
         #endregion
@@ -5467,7 +5458,7 @@ namespace Client_App.ViewModels
                     {
                         t = item[param].ToList<IKey>();
                     }
-                    var lst = t.Any() 
+                    var lst = t.Any()
                         ? item[param].ToList<IKey>().ToList()
                         : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                     if (lst.Count > 0)
