@@ -1336,7 +1336,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                                         lastRow++;
                                         continue;
                                     }
-                                    for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
+                                    for (var currentRow = 2; currentRow <= lastRow; currentRow++)
                                     {
                                         if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
                                         {
