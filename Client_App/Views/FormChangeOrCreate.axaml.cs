@@ -239,6 +239,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
             Rgrd.CommandsList.Add(new KeyCommand
             {
                 Key = Avalonia.Input.Key.P,
+                KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "Copy",
@@ -248,6 +249,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
             Rgrd.CommandsList.Add(new KeyCommand
             {
                 Key = Avalonia.Input.Key.E,
+                KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "Copy",
@@ -257,6 +259,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
             Rgrd.CommandsList.Add(new KeyCommand
             {
                 Key = Avalonia.Input.Key.K,
+                KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "Copy",
