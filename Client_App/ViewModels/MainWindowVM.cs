@@ -1977,7 +1977,7 @@ namespace Client_App.ViewModels
         private ExcelWorksheet worksheetComment { get; set; }
         private static string StringReverse(string _string)
         {
-            var charArray = _string.Replace("_", "0").Split(".");
+            var charArray = _string.Replace("_", "0").Replace("/", ".").Split(".");
             Array.Reverse(charArray);
             return string.Join("", charArray);
         }
@@ -2053,13 +2053,14 @@ namespace Client_App.ViewModels
                                     var rep = (Report)key1;
                                     var start = StringReverse(rep.StartPeriod_DB);
                                     var end = StringReverse(rep.EndPeriod_DB);
+                                    if (!long.TryParse(start, out var startL) || !long.TryParse(end, out var endL)) continue;
                                     listSortRep.Add(new ReportForSort
                                     {
                                         RegNoRep = item.Master_DB.RegNoRep.Value ?? "",
                                         OkpoRep = item.Master_DB.OkpoRep.Value ?? "",
                                         FormNum = rep.FormNum_DB,
-                                        StartPeriod = Convert.ToInt64(start),
-                                        EndPeriod = Convert.ToInt64(end),
+                                        StartPeriod = startL,
+                                        EndPeriod = endL,
                                         ShortYr = item.Master_DB.ShortJurLicoRep.Value
                                     });
                                 }
