@@ -368,7 +368,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(IsReadableProperty, ref _IsReadable, value);
-
             Init();
         }
     }
