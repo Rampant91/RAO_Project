@@ -2117,8 +2117,7 @@ namespace Client_App.ViewModels
                                                         : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
                                                 worksheet.Cells[row, 7].Value = $"{stPer[6..8]}.{stPer[4..6]}.{stPer[..4]}";
                                                 worksheet.Cells[row, 8].Value = $"{endPer[6..8]}.{endPer[4..6]}.{endPer[..4]}";
-                                                worksheet.Cells[row, 9].Value = 
-                                                    $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
+                                                worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
                                                 worksheet.Cells[row, 10].Value = "пересечение";
                                                 row++;
                                             }
@@ -2149,14 +2148,12 @@ namespace Client_App.ViewModels
                                                 worksheet.Cells[row, 5].Value = prevStartN.Equals("нет даты начала периода")
                                                         ? prevStartN
                                                         : $"{prevStartN[6..8]}.{prevStartN[4..6]}.{prevStartN[..4]}";
-                                                worksheet.Cells[row, 6].Value =
-                                                    prevEndN.Equals("нет даты конца периода")
+                                                worksheet.Cells[row, 6].Value = prevEndN.Equals("нет даты конца периода")
                                                         ? prevEndN
                                                         : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
                                                 worksheet.Cells[row, 7].Value = $"{st_per[6..8]}.{st_per[4..6]}.{st_per[..4]}";
                                                 worksheet.Cells[row, 8].Value = $"{end_per[6..8]}.{end_per[4..6]}.{end_per[..4]}";
-                                                worksheet.Cells[row, 9].Value =
-                                                    $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
+                                                worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
                                                 worksheet.Cells[row, 10].Value = "разрыв";
                                                 row++;
                                             }
@@ -2197,9 +2194,7 @@ namespace Client_App.ViewModels
                     var filter = new FileDialogFilter
                     {
                         Name = "Excel",
-                        Extensions = {
-                        "xlsx"
-                    }
+                        Extensions = { "xlsx" }
                     };
                     var param = "";
                     if (forms != null)
