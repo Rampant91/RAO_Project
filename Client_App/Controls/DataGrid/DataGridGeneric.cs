@@ -505,7 +505,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (Items != null)
             {
                 var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                var val = searchText == "" ? Items.Count : _itemsWithSearch != null ? _itemsWithSearch.Count : 0;
+                var val = searchText == "" 
+                    ? Items.Count 
+                    : _itemsWithSearch != null 
+                        ? _itemsWithSearch.Count 
+                        : 0;
                 SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
             }
         }
