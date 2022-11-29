@@ -1986,7 +1986,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             ScrollViewer CenterScrollViewer = new()
             {
-                VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 Content = CenterPanel,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch

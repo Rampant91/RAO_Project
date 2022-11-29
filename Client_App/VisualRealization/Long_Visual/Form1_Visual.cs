@@ -126,7 +126,7 @@ public class Form1_Visual
 
         ScrollViewer vw = new()
         {
-            VerticalScrollBarVisibility = ScrollBarVisibility.Visible
+            VerticalScrollBarVisibility = ScrollBarVisibility.Hidden
         };
 
         #region Main
