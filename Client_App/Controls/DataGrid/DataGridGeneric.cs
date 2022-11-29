@@ -525,17 +525,23 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _PageCount;
         set
         {
-            var pageCount = _itemsWithSearch != null
-                ? _itemsWithSearch.Count == 0
-                    ? 0
-                    : _itemsWithSearch.Count <= PageSize
-                        ? 1
-                        : _itemsWithSearch.Count % PageSize == 0
-                            ? _itemsWithSearch.Count / PageSize
-                            : _itemsWithSearch.Count / PageSize + 1
-                : Items != null
-                    ? Items.Count / PageSize + 1
-                    : 0;
+            var pageCount = Items != null
+                ? SearchText == ""
+                    ? Items.Count % PageSize == 0
+                        ? Items.Count / PageSize
+                        : Items.Count / PageSize + 1
+                    : _itemsWithSearch != null
+                        ? _itemsWithSearch.Count == 0
+                            ? 0
+                            : _itemsWithSearch.Count <= PageSize
+                                ? 1
+                                : _itemsWithSearch.Count % PageSize == 0
+                                    ? _itemsWithSearch.Count / PageSize
+                                    : _itemsWithSearch.Count / PageSize + 1
+                        : Items.Count % PageSize == 0
+                            ? Items.Count / PageSize
+                            : Items.Count / PageSize + 1
+                : 0;
             SetAndRaise(PageCountProperty, ref _PageCount, pageCount.ToString());
         }
     }
