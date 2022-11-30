@@ -1172,9 +1172,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     ContextMenu.Close();
                     var tmp1 = (Cell)Rows
                         .SelectMany(x => x.Children)
-                        .Where(item => ((Cell)item).Row == paramRowColumn[0]
-                                       && ((Cell)item).Column == paramRowColumn[1])
-                        .FirstOrDefault();
+                        .FirstOrDefault(item => ((Cell)item).Row == paramRowColumn[0]
+                                                && ((Cell)item).Column == paramRowColumn[1])!;
                     ContextMenu.PlacementTarget = tmp1;
                     ContextMenu.Open();
                 }
@@ -1197,20 +1196,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 if (paramKey == PointerUpdateKind.LeftButtonPressed)
                 {
                     var item = (Cell)SelectedCells.FirstOrDefault();
-                    if (item != null)
+                    if (item?.Control is TextBox ctrl)
                     {
-                        if (item.Control is TextBox)
+                        ctrl.Focus();
+                        ctrl.SelectAll();
+                        var num = 0;
+                        if (ctrl.Text != null)
                         {
-                            var ctrl = (TextBox)item.Control;
-                            ctrl.Focus();
-                            ctrl.SelectAll();
-                            var num = 0;
-                            if (ctrl.Text != null)
-                            {
-                                num = ctrl.Text.Length;
-                            }
-                            ctrl.CaretIndex = num - 1;
+                            num = ctrl.Text.Length;
                         }
+                        ctrl.CaretIndex = num - 1;
                     }
                 }
 
@@ -1267,8 +1262,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 SetSelectedControls();
             }
         }
-        else
-        {
+        //else
+        //{
             //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
             //if (paramPos.X > 100)
             //{
@@ -1278,7 +1273,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             //{
             //    FixedContentN -= 20;
             //}
-        }
+        //}
     }
     #endregion
 
@@ -1364,18 +1359,21 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     catch { }
                 }
             }
-            var t = typeof(T).FindInterfaces((x, y) => x.ToString() == y.ToString(), typeof(IBaseColor).FullName);
+            var t = typeof(T)
+                .FindInterfaces((x, y) => x.ToString() == y.ToString(), typeof(IBaseColor).FullName);
             if (t.Length != 0)
             {
                 for (var i = 0; i < PageSize; i++)
                 {
-                    if (Rows[i].DataContext is IBaseColor)
+                    if (Rows[i].DataContext is IBaseColor baseColor)
                     {
-                        var _t = (IBaseColor)Rows[i].DataContext;
+                        var _t = baseColor;
                         if (_t != null)
                         {
 
-                            var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == i);
+                            var tmp2 = Rows
+                                .SelectMany(x => x.Children)
+                                .Where(item => ((Cell)item).Row == i);
                             var index = (int)_t.BaseColor;
                             var color = IBaseColor.ColorTypeList[index];
 
@@ -1413,20 +1411,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             SetSelectedControls();
             var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item != null)
+            if (item is { Control: TextBox ctrl })
             {
-                if (item.Control is TextBox)
+                ctrl.Focus();
+                ctrl.SelectAll();
+                var num = 0;
+                if (ctrl.Text != null)
                 {
-                    var ctrl = (TextBox)item.Control;
-                    ctrl.Focus();
-                    ctrl.SelectAll();
-                    var num = 0;
-                    if (ctrl.Text != null)
-                    {
-                        num = ctrl.Text.Length;
-                    }
-                    ctrl.CaretIndex = num - 1;
+                    num = ctrl.Text.Length;
                 }
+                ctrl.CaretIndex = num - 1;
             }
         }
         if (args.Key == Key.Right)
@@ -1439,20 +1433,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             SetSelectedControls();
             var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item != null)
+            if (item is { Control: TextBox ctrl })
             {
-                if (item.Control is TextBox)
+                ctrl.Focus();
+                ctrl.SelectAll();
+                var num = 0;
+                if (ctrl.Text != null)
                 {
-                    var ctrl = (TextBox)item.Control;
-                    ctrl.Focus();
-                    ctrl.SelectAll();
-                    var num = 0;
-                    if (ctrl.Text != null)
-                    {
-                        num = ctrl.Text.Length;
-                    }
-                    ctrl.CaretIndex = num - 1;
+                    num = ctrl.Text.Length;
                 }
+                ctrl.CaretIndex = num - 1;
             }
         }
         if (args.Key == Key.Down)
@@ -1465,20 +1455,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             SetSelectedControls();
             var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item != null)
+            if (item is { Control: TextBox ctrl })
             {
-                if (item.Control is TextBox)
+                ctrl.Focus();
+                ctrl.SelectAll();
+                var num = 0;
+                if (ctrl.Text != null)
                 {
-                    var ctrl = (TextBox)item.Control;
-                    ctrl.Focus();
-                    ctrl.SelectAll();
-                    var num = 0;
-                    if (ctrl.Text != null)
-                    {
-                        num = ctrl.Text.Length;
-                    }
-                    ctrl.CaretIndex = num - 1;
+                    num = ctrl.Text.Length;
                 }
+                ctrl.CaretIndex = num - 1;
             }
         }
         if (args.Key == Key.Up)
@@ -1491,20 +1477,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             SetSelectedControls();
             var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item != null)
+            if (item is { Control: TextBox ctrl })
             {
-                if (item.Control is TextBox)
+                ctrl.Focus();
+                ctrl.SelectAll();
+                var num = 0;
+                if (ctrl.Text != null)
                 {
-                    var ctrl = (TextBox)item.Control;
-                    ctrl.Focus();
-                    ctrl.SelectAll();
-                    var num = 0;
-                    if (ctrl.Text != null)
-                    {
-                        num = ctrl.Text.Length;
-                    }
-                    ctrl.CaretIndex = num - 1;
+                    num = ctrl.Text.Length;
                 }
+                ctrl.CaretIndex = num - 1;
             }
         }
 
@@ -1524,14 +1506,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     #region Init
 
-    public void ChooseAllRow(object sender, RoutedEventArgs args)
+    private void ChooseAllRow(object sender, RoutedEventArgs args)
     {
         FirstPressedItem[1] = 0;
         LastPressedItem[1] = Rows[0].Children.Count;
         SetSelectedControls();
     }
 
-    public void Init()
+    protected void Init()
     {
         MakeAll();
         MakeHeaderRows();
