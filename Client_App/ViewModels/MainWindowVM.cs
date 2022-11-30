@@ -1156,14 +1156,18 @@ namespace Client_App.ViewModels
                 var tb1 = item.Report_Collection.Where(x => x.FormNum_DB[0].ToString().Equals("1"));
                 if (tb1.Count() != 0)
                 {
-                    var tb11 = from Reports t in Local_Reports.Reports_Collection10
-                               where (item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB &&
-                                      item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB &&
-                                      item.Master.Rows10[1].Okpo_DB == "") ||
-                                     (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB &&
-                                      item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB &&
-                                      item.Master.Rows10[1].Okpo_DB != "")
-                               select t;
+                    IEnumerable<Reports> enumerable()
+                    {
+                        return Local_Reports.Reports_Collection10.Where(t => 
+                            (item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB 
+                            && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB 
+                            && item.Master.Rows10[1].Okpo_DB == "" || t.Master.Rows10[1].Okpo_DB == "" && item.Master.Rows10[0].Okpo_DB == "") 
+                            || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB 
+                            && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB 
+                            && item.Master.Rows10[1].Okpo_DB != ""));
+                    }
+
+                    var tb11 = enumerable();
                     return tb11.FirstOrDefault();
                 }
                 return null;
