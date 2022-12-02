@@ -5110,7 +5110,7 @@ namespace Client_App.ViewModels
                                         {
                                             if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
                                                 && ComparePasParam(repForm.Type_DB, pasParam[1])
-                                                && ComparePasParam(ConvertDBDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                                && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
                                                 && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
                                                 && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
                                             {
@@ -5164,18 +5164,21 @@ namespace Client_App.ViewModels
                                 res = await ShowMessage.Handle(new List<string>
                                 {
                                     $"Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}", "", "Ок", "Открыть выгрузку" });
-                                if (res is null or "Ок")
-                                    return;
-                                if (res.Equals("Открыть выгрузку"))
+                                switch (res)
                                 {
-                                    ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
-                                    Process.Start(procInfo);
+                                    case null or "Ок":
+                                        return;
+                                    case "Открыть выгрузку":
+                                    {
+                                        ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                                        Process.Start(procInfo);
+                                        break;
+                                    }
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
-                                await ShowMessage.Handle(new List<string> { $"Не удалось сохранить файл по указанному пути", "Ок" });
-                                return;
+                                await ShowMessage.Handle(new List<string> { "Не удалось сохранить файл по указанному пути", "Ок" });
                             }
                         }
                     }
@@ -5289,7 +5292,7 @@ namespace Client_App.ViewModels
                             {
                                 foreach (var pasParam in pasUniqParam.Where(pasParam => ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
                                              && ComparePasParam(repForm.Type_DB, pasParam[1])
-                                             && ComparePasParam(ConvertDBDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                             && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
                                              && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
                                              && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4])))
                                 {
@@ -5339,25 +5342,25 @@ namespace Client_App.ViewModels
         }
         #endregion
 
-        private static bool ComparePasParam(string nameDB, string namePas)
+        private static bool ComparePasParam(string nameDb, string namePas)
         {
-            nameDB ??= "";
-            nameDB = Regex.Replace(nameDB, "[\\\\/:*?\"<>|]", "_");
-            nameDB = Regex.Replace(nameDB, "\\s+", "");
+            nameDb ??= "";
+            nameDb = Regex.Replace(nameDb, "[\\\\/:*?\"<>|]", "_");
+            nameDb = Regex.Replace(nameDb, "\\s+", "");
             namePas = Regex.Replace(namePas, "[\\\\/:*?\"<>|]", "_");
             namePas = Regex.Replace(namePas, "\\s+", "");
-            return nameDB.Equals(namePas, StringComparison.OrdinalIgnoreCase)
-                || ChangeOrCreateVM.TranslateToEng(nameDB).Equals(ChangeOrCreateVM.TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
-                || ChangeOrCreateVM.TranslateToRus(nameDB).Equals(ChangeOrCreateVM.TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
+            return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase)
+                || ChangeOrCreateVM.TranslateToEng(nameDb).Equals(ChangeOrCreateVM.TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
+                || ChangeOrCreateVM.TranslateToRus(nameDb).Equals(ChangeOrCreateVM.TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
         }
 
-        private static string ConvertDBDateToYear(string DBDate)
+        public static string ConvertDateToYear(string? date)
         {
             Regex r = new(@"(\d{1,2}[.\/]){1,2}\d{4}");
-            if (!r.IsMatch(DBDate))
+            if (date is null || !r.IsMatch(date))
                 return "0000";
-            var matches = r.Matches(DBDate);
-            return matches.FirstOrDefault()!.Value.Substring(matches.FirstOrDefault()!.Value.Length - 4);
+            var matches = r.Matches(date);
+            return matches.FirstOrDefault()!.Value[^4..];
         }
 
         private static string ConvertPasNumAndFactNum(string num)
@@ -5379,7 +5382,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<object, Unit> ChangePasDir { get; protected set; }
         private async Task _ChangePasDir(object param)
         {
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 OpenFolderDialog openFolderDialog = new() { Directory = PasFolderPath };
                 PasFolderPath = await openFolderDialog.ShowAsync(desktop.MainWindow) ?? PasFolderPath;

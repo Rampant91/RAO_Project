@@ -2,5 +2,5 @@
 
 public class BaseVM
 {
-    private protected string PasFolderPath = @"C:\Test";
+    private protected static string PasFolderPath = @"Y:\Исайчева\Паспорта";
 }

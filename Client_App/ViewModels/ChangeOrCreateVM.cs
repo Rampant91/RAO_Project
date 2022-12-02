@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Metadata;
 using DynamicData;
-using Models;
 using Models.Attributes;
 using Models.Classes;
 using Models.Collections;
@@ -36,7 +35,7 @@ namespace Client_App.ViewModels;
 
 public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 {
-    public string WindowHeader { get; set; } = "default";
+    private string WindowHeader { get; set; } = "default";
     public event PropertyChangedEventHandler PropertyChanged;
     private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {
@@ -1206,10 +1205,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            PassportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+            PassportUniqParam(param, out _, out _, out _, out var pasNum, out var factoryNum);
             SaveFileDialog saveFileDialog = new();
             FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
-            saveFileDialog.Filters?.Add(filter);
+            saveFileDialog.Filters.Add(filter);
             var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
             if (!string.IsNullOrEmpty(res))
             {
@@ -1295,7 +1294,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         var repPas = rep.Rows11.Where(x =>
                             //ComparePasParam(x.CreatorOKPO_DB, okpo)
                             //&& ComparePasParam(x.Type_DB, type)
-                            //&& ComparePasParam(x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)), year.Substring(Math.Max(0, year.Length - 4)))
+                            //&& ComparePasParam(x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)), date.Substring(Math.Max(0, date.Length - 4)))
                             ComparePasParam(x.PassportNumber_DB, pasNum)
                             && ComparePasParam(x.FactoryNumber_DB, factoryNum));
                         foreach (var repForm in repPas)
@@ -1396,32 +1395,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 try
                 {
                     excelPackage.Save();
-
-                    #region MessageExcelExportSaved
-
-                    res = await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions = new[]
-                            {
-                                new ButtonDefinition { Name = "Ок" },
-                                new ButtonDefinition { Name = "Открыть выгрузку" }
-                            },
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentMessage =
-                                $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    if (res.Equals("Открыть выгрузку"))
-                    {
-                        ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
-                        Process.Start(procInfo);
-                    }
                 }
                 catch (Exception)
                 {
@@ -1433,13 +1406,39 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                             ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Выгрузка в Excel",
                             ContentMessage =
-                                $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
+                                "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
 
                     #endregion
+                }
+
+                #region MessageExcelExportSaved
+
+                res = await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions = new[]
+                        {
+                            new ButtonDefinition { Name = "Ок" },
+                            new ButtonDefinition { Name = "Открыть выгрузку" }
+                        },
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentMessage =
+                            $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
+
+                #endregion
+
+                if (res is "Открыть выгрузку")
+                {
+                    Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
                 }
             }
         }
@@ -1450,50 +1449,55 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> OpenPassport { get; protected set; }
     private async Task _OpenPassport(object param)
     {
-        PassportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+        PassportUniqParam(param, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
+        var year = MainWindowVM.ConvertDateToYear(date);
         if (okpo is null or "" or "-"
             || type is null or "" or "-"
-            || year is null or "" or "-"
+            || year is null or "" or "-" or "0000"
             || pasNum is null or "" or "-"
             || factoryNum is null or "" or "-")
         {
-            var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             #region MessageUnableToOpenPassport
             await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Уведомление", "Паспорт не может быть открыт, поскольку не заполнены все требуемые поля:"
-                                                                + Environment.NewLine + "- номер паспорта (сертификата)"
-                                                                + Environment.NewLine + "- тип"
-                                                                + Environment.NewLine + "- номер"
-                                                                + Environment.NewLine + "- код ОКПО изготовителя"
-                                                                + Environment.NewLine + "- дата выпуска")
-                    .ShowDialog(desktop!.MainWindow); 
+                    .GetMessageBoxStandardWindow("Уведомление",
+                        "Паспорт не может быть открыт, поскольку не заполнены или заполнены некорректно все требуемые поля:"
+                        + Environment.NewLine + "- номер паспорта (сертификата)"
+                        + Environment.NewLine + "- тип"
+                        + Environment.NewLine + "- номер"
+                        + Environment.NewLine + "- код ОКПО изготовителя"
+                        + Environment.NewLine + "- дата выпуска")
+                    .ShowDialog(desktop!.MainWindow);
             #endregion
             return;
         }
+        
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
 
-        ProcessStartInfo procInfo = new() { FileName = PasFolderPath + uniqPasName, UseShellExecute = true };
-        if (File.Exists(PasFolderPath + uniqPasName))
+        if (Directory.EnumerateFiles(PasFolderPath, uniqPasName).FirstOrDefault() != null)
         {
-            Process.Start(procInfo);
+            Process.Start(new ProcessStartInfo
+                { FileName = Path.Combine(PasFolderPath, uniqPasName), UseShellExecute = true });
         }
-        else if (File.Exists(PasFolderPath + TranslateToEng(uniqPasName)))
+        else if (Directory.EnumerateFiles(PasFolderPath, TranslateToEng(uniqPasName)).FirstOrDefault() != null)
         {
-            procInfo.FileName = PasFolderPath + TranslateToEng(uniqPasName);
-            Process.Start(procInfo);
+            Process.Start(new ProcessStartInfo
+                { FileName = Path.Combine(PasFolderPath, TranslateToEng(uniqPasName)), UseShellExecute = true });
         }
-        else if (File.Exists(PasFolderPath + TranslateToRus(uniqPasName)))
+        else if (Directory.EnumerateFiles(PasFolderPath, TranslateToRus(uniqPasName)).FirstOrDefault() != null)
         {
-            procInfo.FileName = PasFolderPath + TranslateToRus(uniqPasName);
-            Process.Start(procInfo);
+            Process.Start(new ProcessStartInfo
+                { FileName = Path.Combine(PasFolderPath, TranslateToRus(uniqPasName)), UseShellExecute = true });
         }
         else
         {
-            var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление", $"Паспорт {uniqPasName}{Environment.NewLine}отсутствует в сетевом хранилище {PasFolderPath}")
+                .GetMessageBoxStandardWindow("Уведомление", 
+                    $"Паспорт {uniqPasName}{Environment.NewLine}" +
+                    $"отсутствует в сетевом хранилище {PasFolderPath}")
                 .ShowDialog(desktop!.MainWindow);
         }
     }
@@ -1571,14 +1575,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> CopyPasName { get; protected set; }
     private async Task _CopyPasName(object param)
     {
-        PassportUniqParam(param, out var okpo, out var type, out var year, out var pasNum, out var factoryNum);
+        PassportUniqParam(param, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
+        var year = MainWindowVM.ConvertDateToYear(date);
         if (okpo is null or "" or "-"
             || type is null or "" or "-"
-            || year is null or "" or "-"
+            || year is null or "" or "-" or "0000"
             || pasNum is null or "" or "-"
             || factoryNum is null or "" or "-")
         {
-            var desktop = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             #region MessageFailedToCopyPasName
             await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow("Уведомление", "Имя паспорта не было скопировано, не заполнены все требуемые поля:"
@@ -1594,12 +1599,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, "\\s+", "");
-        await Application.Current!.Clipboard!.SetTextAsync(uniqPasName);
+        await Application.Current.Clipboard.SetTextAsync(uniqPasName);
     }
     #endregion
 
     #region PassportUniqParam
-    private static void PassportUniqParam(object param, out string? okpo, out string? type, out string? year, out string? pasNum, out string? factoryNum)
+    private static void PassportUniqParam(object param, out string? okpo, out string? type, out string? date, out string? pasNum, out string? factoryNum)
     {
         var par = param as object[];
         var collection = par?[0] as IKeyCollection;
@@ -1607,7 +1612,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var props = item?.GetType().GetProperties();
         okpo = "";
         type = "";
-        year = "";
+        date = "";
         pasNum = "";
         factoryNum = "";
         foreach (var prop in props!)
@@ -1629,7 +1634,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         type = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
                         break;
                     case "дата выпуска":
-                        year = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                        date = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
                         break;
                     case "номер паспорта (сертификата)":
                         pasNum = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
@@ -1643,16 +1648,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    private static bool ComparePasParam(string nameDB, string namePas)
+    private static bool ComparePasParam(string nameDb, string namePas)
     {
-        nameDB ??= "";
-        nameDB = Regex.Replace(nameDB, "[\\\\/:*?\"<>|]", "");
-        nameDB = Regex.Replace(nameDB, "\\s+", "");
+        nameDb ??= "";
+        nameDb = Regex.Replace(nameDb, "[\\\\/:*?\"<>|]", "");
+        nameDb = Regex.Replace(nameDb, "\\s+", "");
         namePas = Regex.Replace(namePas, "[\\\\/:*?\"<>|]", "");
         namePas = Regex.Replace(namePas, "\\s+", "");
-        return nameDB.Equals(namePas, StringComparison.OrdinalIgnoreCase)
-            || TranslateToEng(nameDB).Equals(TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
-            || TranslateToRus(nameDB).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
+        return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase)
+            || TranslateToEng(nameDb).Equals(TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
+            || TranslateToRus(nameDb).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
     }
     #endregion
 
@@ -1882,11 +1887,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
         {
             WindowHeader =
-                $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
+                $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
         }
         if (FormType is "1.0" or "2.0")
         {
-            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            WindowHeader = 
+                ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
         AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
         AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
