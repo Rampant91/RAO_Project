@@ -1046,7 +1046,7 @@ namespace Client_App.ViewModels
                                         newRepsFromExcel.Report_Collection.Add(repFromEx);
                                     }
                                     var dbm = StaticConfiguration.DBModel;
-                                    dbm.SaveChanges();
+                                    await dbm.SaveChangesAsync();
                                 }
                                 else
                                 {
@@ -1681,7 +1681,7 @@ namespace Client_App.ViewModels
                             await Local_Reports.Reports_Collection.QuickSortAsync();
                         }
                     }
-                    StaticConfiguration.DBModel.SaveChanges();
+                    await StaticConfiguration.DBModel.SaveChangesAsync();
                 }
             }
             catch { }
