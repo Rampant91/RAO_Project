@@ -2200,207 +2200,207 @@ public class Form17 : Form1
         if (_DataGridColumns == null)
         {
             #region NumberInOrder (1)
-            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
-            NumberInOrderR.Binding = nameof(NumberInOrder);
-            NumberInOrderR.Blocked = true;
-            NumberInOrderR.ChooseLine = true;
+            var numberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD();
+            numberInOrderR.SetSizeColToAllLevels(50);
+            numberInOrderR.Binding = nameof(NumberInOrder);
+            numberInOrderR.Blocked = true;
+            numberInOrderR.ChooseLine = true;
             #endregion
 
             #region OperationCode (2)
-            var OperationCodeR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            OperationCodeR.SetSizeColToAllLevels(88);
-            OperationCodeR.Binding = nameof(OperationCode);
-            NumberInOrderR += OperationCodeR;
+            var operationCodeR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            operationCodeR.SetSizeColToAllLevels(88);
+            operationCodeR.Binding = nameof(OperationCode);
+            numberInOrderR += operationCodeR;
             #endregion
             #region OperationDate (3)
-            var OperationDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            OperationDateR.SetSizeColToAllLevels(88);
-            OperationDateR.Binding = nameof(OperationDate);
-            NumberInOrderR += OperationDateR;
+            var operationDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            operationDateR.SetSizeColToAllLevels(88);
+            operationDateR.Binding = nameof(OperationDate);
+            numberInOrderR += operationDateR;
             #endregion
 
             #region PackName (4)
-            var PackNameR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            PackNameR.SetSizeColToAllLevels(163);
-            PackNameR.Binding = nameof(PackName);
-            NumberInOrderR += PackNameR;
+            var packNameR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackName))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            packNameR.SetSizeColToAllLevels(163);
+            packNameR.Binding = nameof(PackName);
+            numberInOrderR += packNameR;
             #endregion
             #region PackType (5)
-            var PackTypeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackType)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            PackTypeR.SetSizeColToAllLevels(88);
-            PackTypeR.Binding = nameof(PackType);
-            NumberInOrderR += PackTypeR;
+            var packTypeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackType))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            packTypeR.SetSizeColToAllLevels(88);
+            packTypeR.Binding = nameof(PackType);
+            numberInOrderR += packTypeR;
             #endregion
             #region PackFactoryNumber (6)
-            var PackFactoryNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackFactoryNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            PackFactoryNumberR.SetSizeColToAllLevels(170);
-            PackFactoryNumberR.Binding = nameof(PackFactoryNumber);
-            NumberInOrderR += PackFactoryNumberR;
+            var packFactoryNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackFactoryNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            packFactoryNumberR.SetSizeColToAllLevels(170);
+            packFactoryNumberR.Binding = nameof(PackFactoryNumber);
+            numberInOrderR += packFactoryNumberR;
             #endregion
             #region PackNumber (7)
-            var PackNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            PackNumberR.SetSizeColToAllLevels(260);
-            PackNumberR.Binding = nameof(PackNumber);
-            NumberInOrderR += PackNumberR;
+            var packNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            packNumberR.SetSizeColToAllLevels(260);
+            packNumberR.Binding = nameof(PackNumber);
+            numberInOrderR += packNumberR;
             #endregion
             #region FormingDate (8)
-            var FormingDateR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(FormingDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            FormingDateR.SetSizeColToAllLevels(133);
-            FormingDateR.Binding = nameof(FormingDate);
-            NumberInOrderR += FormingDateR;
+            var formingDateR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(FormingDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            formingDateR.SetSizeColToAllLevels(133);
+            formingDateR.Binding = nameof(FormingDate);
+            numberInOrderR += formingDateR;
             #endregion
             #region PassportNumber (9)
-            var PassportNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PassportNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            PassportNumberR.SetSizeColToAllLevels(143);
-            PassportNumberR.Binding = nameof(PassportNumber);
-            NumberInOrderR += PassportNumberR;
+            var passportNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PassportNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            passportNumberR.SetSizeColToAllLevels(143);
+            passportNumberR.Binding = nameof(PassportNumber);
+            numberInOrderR += passportNumberR;
             #endregion
             #region Volume (10)
-            var VolumeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Volume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            VolumeR.SetSizeColToAllLevels(88);
-            VolumeR.Binding = nameof(Volume);
-            NumberInOrderR += VolumeR;
+            var volumeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Volume))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            volumeR.SetSizeColToAllLevels(88);
+            volumeR.Binding = nameof(Volume);
+            numberInOrderR += volumeR;
             #endregion
             #region Mass (11)
-            var MassR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Mass)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            MassR.SetSizeColToAllLevels(95);
-            MassR.Binding = nameof(Mass);
-            NumberInOrderR += MassR;
+            var massR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Mass))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            massR.SetSizeColToAllLevels(95);
+            massR.Binding = nameof(Mass);
+            numberInOrderR += massR;
             #endregion
             #region Radionuclids (12)
-            var RadionuclidsR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RadionuclidsR.SetSizeColToAllLevels(170);
-            RadionuclidsR.Binding = nameof(Radionuclids);
-            NumberInOrderR += RadionuclidsR;
+            var radionuclidsR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Radionuclids))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
+            radionuclidsR.SetSizeColToAllLevels(170);
+            radionuclidsR.Binding = nameof(Radionuclids);
+            numberInOrderR += radionuclidsR;
             #endregion
             #region SpecificActivity (13)
-            var SpecificActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(SpecificActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            SpecificActivityR.SetSizeColToAllLevels(163);
-            SpecificActivityR.Binding = nameof(SpecificActivity);
-            NumberInOrderR += SpecificActivityR;
+            var specificActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(SpecificActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            specificActivityR.SetSizeColToAllLevels(163);
+            specificActivityR.Binding = nameof(SpecificActivity);
+            numberInOrderR += specificActivityR;
             #endregion
 
             #region DocumentVid (14)
-            var DocumentVidR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentVidR.SetSizeColToAllLevels(88);
-            DocumentVidR.Binding = nameof(DocumentVid);
-            NumberInOrderR += DocumentVidR;
+            var documentVidR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            documentVidR.SetSizeColToAllLevels(88);
+            documentVidR.Binding = nameof(DocumentVid);
+            numberInOrderR += documentVidR;
             #endregion
             #region DocumentNumber (15)
-            var DocumentNumberR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentNumberR.SetSizeColToAllLevels(103);
-            DocumentNumberR.Binding = nameof(DocumentNumber);
-            NumberInOrderR += DocumentNumberR;
+            var documentNumberR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            documentNumberR.SetSizeColToAllLevels(103);
+            documentNumberR.Binding = nameof(DocumentNumber);
+            numberInOrderR += documentNumberR;
             #endregion
             #region DocumentDate (16)
-            var DocumentDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentDateR.SetSizeColToAllLevels(88);
-            DocumentDateR.Binding = nameof(DocumentDate);
-            NumberInOrderR += DocumentDateR;
+            var documentDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            documentDateR.SetSizeColToAllLevels(88);
+            documentDateR.Binding = nameof(DocumentDate);
+            numberInOrderR += documentDateR;
             #endregion
 
             #region ProviderOrRecieverOKPO (17)
-            var ProviderOrRecieverOKPOR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ProviderOrRecieverOKPOR.SetSizeColToAllLevels(100);
-            ProviderOrRecieverOKPOR.Binding = nameof(ProviderOrRecieverOKPO);
-            NumberInOrderR += ProviderOrRecieverOKPOR;
+            var providerOrRecieverOkpor = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(ProviderOrRecieverOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            providerOrRecieverOkpor.SetSizeColToAllLevels(100);
+            providerOrRecieverOkpor.Binding = nameof(ProviderOrRecieverOKPO);
+            numberInOrderR += providerOrRecieverOkpor;
             #endregion
             #region TransporterOKPO (18)
-            var TransporterOKPOR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TransporterOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            TransporterOKPOR.SetSizeColToAllLevels(163);
-            TransporterOKPOR.Binding = nameof(TransporterOKPO);
-            NumberInOrderR += TransporterOKPOR;
+            var transporterOkpor = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TransporterOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            transporterOkpor.SetSizeColToAllLevels(163);
+            transporterOkpor.Binding = nameof(TransporterOKPO);
+            numberInOrderR += transporterOkpor;
             #endregion
 
             #region StoragePlaceName (19)
-            var StoragePlaceNameR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            StoragePlaceNameR.SetSizeColToAllLevels(103);
-            StoragePlaceNameR.Binding = nameof(StoragePlaceName);
-            NumberInOrderR += StoragePlaceNameR;
+            var storagePlaceNameR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StoragePlaceName))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            storagePlaceNameR.SetSizeColToAllLevels(103);
+            storagePlaceNameR.Binding = nameof(StoragePlaceName);
+            numberInOrderR += storagePlaceNameR;
             #endregion
             #region StoragePlaceCode (20)
-            var StoragePlaceCodeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            StoragePlaceCodeR.SetSizeColToAllLevels(88);
-            StoragePlaceCodeR.Binding = nameof(StoragePlaceCode);
-            NumberInOrderR += StoragePlaceCodeR;
+            var storagePlaceCodeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StoragePlaceCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            storagePlaceCodeR.SetSizeColToAllLevels(88);
+            storagePlaceCodeR.Binding = nameof(StoragePlaceCode);
+            numberInOrderR += storagePlaceCodeR;
             #endregion
 
             #region CodeRAO (21)
-            var CodeRAOR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            CodeRAOR.SetSizeColToAllLevels(88);
-            CodeRAOR.Binding = nameof(CodeRAO);
-            NumberInOrderR += CodeRAOR;
+            var codeRaor = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(CodeRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            codeRaor.SetSizeColToAllLevels(88);
+            codeRaor.Binding = nameof(CodeRAO);
+            numberInOrderR += codeRaor;
             #endregion
             #region StatusRAO (22)
-            var StatusRAOR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StatusRAO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            StatusRAOR.SetSizeColToAllLevels(88);
-            StatusRAOR.Binding = nameof(StatusRAO);
-            NumberInOrderR += StatusRAOR;
+            var statusRaor = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StatusRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            statusRaor.SetSizeColToAllLevels(88);
+            statusRaor.Binding = nameof(StatusRAO);
+            numberInOrderR += statusRaor;
             #endregion
             #region VolumeOutOfPack (23)
-            var VolumeOutOfPackR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(VolumeOutOfPack)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            VolumeOutOfPackR.SetSizeColToAllLevels(163);
-            VolumeOutOfPackR.Binding = nameof(VolumeOutOfPack);
-            NumberInOrderR += VolumeOutOfPackR;
+            var volumeOutOfPackR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(VolumeOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            volumeOutOfPackR.SetSizeColToAllLevels(163);
+            volumeOutOfPackR.Binding = nameof(VolumeOutOfPack);
+            numberInOrderR += volumeOutOfPackR;
             #endregion
             #region MassOutOfPack (24)
-            var MassOutOfPackR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(MassOutOfPack)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            MassOutOfPackR.SetSizeColToAllLevels(170);
-            MassOutOfPackR.Binding = nameof(MassOutOfPack);
-            NumberInOrderR += MassOutOfPackR;
+            var massOutOfPackR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(MassOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            massOutOfPackR.SetSizeColToAllLevels(170);
+            massOutOfPackR.Binding = nameof(MassOutOfPack);
+            numberInOrderR += massOutOfPackR;
             #endregion
             #region Quantity (25)
-            var QuantityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Quantity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            QuantityR.SetSizeColToAllLevels(140);
-            QuantityR.Binding = nameof(Quantity);
-            NumberInOrderR += QuantityR;
+            var quantityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Quantity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            quantityR.SetSizeColToAllLevels(140);
+            quantityR.Binding = nameof(Quantity);
+            numberInOrderR += quantityR;
             #endregion
 
             #region TritiumActivity (26)
-            var TritiumActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TritiumActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            TritiumActivityR.SetSizeColToAllLevels(163);
-            TritiumActivityR.Binding = nameof(TritiumActivity);
-            NumberInOrderR += TritiumActivityR;
+            var tritiumActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TritiumActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            tritiumActivityR.SetSizeColToAllLevels(163);
+            tritiumActivityR.Binding = nameof(TritiumActivity);
+            numberInOrderR += tritiumActivityR;
             #endregion
             #region BetaGammaActivity (27)
-            var BetaGammaActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(BetaGammaActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            BetaGammaActivityR.SetSizeColToAllLevels(180);
-            BetaGammaActivityR.Binding = nameof(BetaGammaActivity);
-            NumberInOrderR += BetaGammaActivityR;
+            var betaGammaActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(BetaGammaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            betaGammaActivityR.SetSizeColToAllLevels(180);
+            betaGammaActivityR.Binding = nameof(BetaGammaActivity);
+            numberInOrderR += betaGammaActivityR;
             #endregion
             #region AlphaActivity (28)
-            var AlphaActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(AlphaActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            AlphaActivityR.SetSizeColToAllLevels(185);
-            AlphaActivityR.Binding = nameof(AlphaActivity);
-            NumberInOrderR += AlphaActivityR;
+            var alphaActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(AlphaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            alphaActivityR.SetSizeColToAllLevels(185);
+            alphaActivityR.Binding = nameof(AlphaActivity);
+            numberInOrderR += alphaActivityR;
             #endregion
             #region TransuraniumActivity (29)
-            var TransuraniumActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TransuraniumActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            TransuraniumActivityR.SetSizeColToAllLevels(200);
-            TransuraniumActivityR.Binding = nameof(TransuraniumActivity);
-            NumberInOrderR += TransuraniumActivityR;
+            var transuraniumActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TransuraniumActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            transuraniumActivityR.SetSizeColToAllLevels(200);
+            transuraniumActivityR.Binding = nameof(TransuraniumActivity);
+            numberInOrderR += transuraniumActivityR;
             #endregion
             #region RefineOrSortRAOCode (30)
-            var RefineOrSortRAOCodeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(RefineOrSortRAOCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RefineOrSortRAOCodeR.SetSizeColToAllLevels(120);
-            RefineOrSortRAOCodeR.Binding = nameof(RefineOrSortRAOCode);
-            NumberInOrderR += RefineOrSortRAOCodeR;
+            var refineOrSortRaoCodeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(RefineOrSortRAOCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            refineOrSortRaoCodeR.SetSizeColToAllLevels(120);
+            refineOrSortRaoCodeR.Binding = nameof(RefineOrSortRAOCode);
+            numberInOrderR += refineOrSortRaoCodeR;
             #endregion
 
             #region Subsidy (31)
-            var SubsidyR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Subsidy)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            SubsidyR.SetSizeColToAllLevels(88);
-            SubsidyR.Binding = nameof(Subsidy);
-            NumberInOrderR += SubsidyR;
+            var subsidyR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Subsidy))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            subsidyR.SetSizeColToAllLevels(88);
+            subsidyR.Binding = nameof(Subsidy);
+            numberInOrderR += subsidyR;
             #endregion
             #region FcpNumber (32)
-            var FcpNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            FcpNumberR.SetSizeColToAllLevels(163);
-            FcpNumberR.Binding = nameof(FcpNumber);
-            NumberInOrderR += FcpNumberR;
+            var fcpNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(FcpNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+            fcpNumberR.SetSizeColToAllLevels(163);
+            fcpNumberR.Binding = nameof(FcpNumber);
+            numberInOrderR += fcpNumberR;
             #endregion
-            _DataGridColumns = NumberInOrderR;
+            _DataGridColumns = numberInOrderR;
         }
         return _DataGridColumns;
     }
