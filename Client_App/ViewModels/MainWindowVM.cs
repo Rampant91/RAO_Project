@@ -1681,8 +1681,8 @@ namespace Client_App.ViewModels
                             await Local_Reports.Reports_Collection.QuickSortAsync();
                         }
                     }
+                    StaticConfiguration.DBModel.SaveChanges();
                 }
-                StaticConfiguration.DBModel.SaveChanges();
             }
             catch { }
         }
