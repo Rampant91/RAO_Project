@@ -2105,18 +2105,18 @@ public class Form17 : Form1
         StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
         CodeRAO_DB = Convert.ToString(worksheet.Cells[Row, 21].Value);
         StatusRAO_DB = Convert.ToString(worksheet.Cells[Row, 22].Value);
-        VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 23].Value);
-        MassOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 24].Value);
+        VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 23].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 23].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 23].Value);
+        MassOutOfPack_DB = Convert.ToString(worksheet.Cells[Row, 24].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 24].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 24].Value);
         Quantity_DB = Convert.ToString(worksheet.Cells[Row, 25].Value);
         TritiumActivity_DB = Convert.ToString(worksheet.Cells[Row, 26].Value);
-        BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[Row, 27].Value);
-        AlphaActivity_DB = Convert.ToString(worksheet.Cells[Row, 28].Value);
-        TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[Row, 29].Value);
+        BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[Row, 27].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 27].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 27].Value);
+        AlphaActivity_DB = Convert.ToString(worksheet.Cells[Row, 28].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 28].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 28].Value);
+        TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[Row, 29].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 29].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 29].Value);
         RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[Row, 30].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[Row, 31].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[Row, 32].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string SumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpon);
         column += transpon ? cnt : 0;
@@ -2141,13 +2141,13 @@ public class Form17 : Form1
         worksheet.Cells[row + (!transpon ? 16 : 0), column + (transpon ? 16 : 0)].Value = StoragePlaceCode_DB;
         worksheet.Cells[row + (!transpon ? 17 : 0), column + (transpon ? 17 : 0)].Value = CodeRAO_DB;
         worksheet.Cells[row + (!transpon ? 18 : 0), column + (transpon ? 18 : 0)].Value = StatusRAO_DB;
-        worksheet.Cells[row + (!transpon ? 19 : 0), column + (transpon ? 19 : 0)].Value = VolumeOutOfPack_DB;
-        worksheet.Cells[row + (!transpon ? 20 : 0), column + (transpon ? 20 : 0)].Value = MassOutOfPack_DB;
+        worksheet.Cells[row + (!transpon ? 19 : 0), column + (transpon ? 19 : 0)].Value = string.IsNullOrEmpty(VolumeOutOfPack_DB) || VolumeOutOfPack_DB == "-" ? 0 : double.TryParse(VolumeOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOutOfPack_DB;
+        worksheet.Cells[row + (!transpon ? 20 : 0), column + (transpon ? 20 : 0)].Value = string.IsNullOrEmpty(MassOutOfPack_DB) || MassOutOfPack_DB == "-" ? 0 : double.TryParse(MassOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOutOfPack_DB;
         worksheet.Cells[row + (!transpon ? 21 : 0), column + (transpon ? 21 : 0)].Value = Quantity_DB;
         worksheet.Cells[row + (!transpon ? 22 : 0), column + (transpon ? 22 : 0)].Value = TritiumActivity_DB;
-        worksheet.Cells[row + (!transpon ? 23 : 0), column + (transpon ? 23 : 0)].Value = BetaGammaActivity_DB;
-        worksheet.Cells[row + (!transpon ? 24 : 0), column + (transpon ? 24 : 0)].Value = AlphaActivity_DB;
-        worksheet.Cells[row + (!transpon ? 25 : 0), column + (transpon ? 25 : 0)].Value = TransuraniumActivity_DB;
+        worksheet.Cells[row + (!transpon ? 23 : 0), column + (transpon ? 23 : 0)].Value = string.IsNullOrEmpty(BetaGammaActivity_DB) || BetaGammaActivity_DB == "-" ? 0 : double.TryParse(BetaGammaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivity_DB;
+        worksheet.Cells[row + (!transpon ? 24 : 0), column + (transpon ? 24 : 0)].Value = string.IsNullOrEmpty(AlphaActivity_DB) || AlphaActivity_DB == "-" ? 0 : double.TryParse(AlphaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivity_DB;
+        worksheet.Cells[row + (!transpon ? 25 : 0), column + (transpon ? 25 : 0)].Value = string.IsNullOrEmpty(TransuraniumActivity_DB) || TransuraniumActivity_DB == "-" ? 0 : double.TryParse(TransuraniumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivity_DB;
         worksheet.Cells[row + (!transpon ? 26 : 0), column + (transpon ? 26 : 0)].Value = RefineOrSortRAOCode_DB;
         worksheet.Cells[row + (!transpon ? 27 : 0), column + (transpon ? 27 : 0)].Value = Subsidy_DB;
         worksheet.Cells[row + (!transpon ? 28 : 0), column + (transpon ? 28 : 0)].Value = FcpNumber_DB;
