@@ -1897,7 +1897,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
         HeaderStackPanel = new StackPanel
         {
-            Margin = Thickness.Parse(!Sum ? "2,2,20,2" : "20,2,20,2"),
+            Margin = Thickness.Parse(!Sum ? "2,2,2,2" : "20,2,20,2"),
             Orientation = Orientation.Vertical
         };
 
