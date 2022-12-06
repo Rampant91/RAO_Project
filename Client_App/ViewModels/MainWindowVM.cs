@@ -133,15 +133,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task ProcessDataBaseCreate(string tempDirectory)
     {
         var i = 0;
-        bool flag = false;
+        var flag = false;
         DBModel dbm = null;
         foreach (var file in Directory.GetFiles(tempDirectory))
         {
             try
             {
-                string[] names = file.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
-                Current_Db =
-                    $"Интерактивное пособие по вводу данных ver.1.2.2.2 Текущая база данных - {names[names.Length - 1]}";
+                var names = file.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.3 Текущая база данных - {names[^1]}";
                 StaticConfiguration.DBPath = file;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -149,13 +148,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 flag = true;
                 break;
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }
         if (!flag)
         {
-            Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.2 Текущая база данных - Local_{i}.raodb";
+            Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.3 Текущая база данных - Local_{i}.raodb";
             StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"Local_{i}.raodb");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
