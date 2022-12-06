@@ -1427,6 +1427,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                             new ButtonDefinition { Name = "Открыть выгрузку" }
                         },
                         ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
                         ContentMessage =
                             $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
                         MinWidth = 400,
