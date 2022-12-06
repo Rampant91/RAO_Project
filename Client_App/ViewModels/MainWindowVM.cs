@@ -1158,12 +1158,12 @@ namespace Client_App.ViewModels
                 {
                     IEnumerable<Reports> enumerable()
                     {
-                        return Local_Reports.Reports_Collection10.Where(t => 
-                            (item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB 
-                            && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB 
-                            && item.Master.Rows10[1].Okpo_DB == "" || t.Master.Rows10[1].Okpo_DB == "" && item.Master.Rows10[0].Okpo_DB == "") 
-                            || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB 
-                            && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB 
+                        return Local_Reports.Reports_Collection10.Where(t =>
+                            (item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                            && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                            && item.Master.Rows10[1].Okpo_DB == "" || t.Master.Rows10[1].Okpo_DB == "" && item.Master.Rows10[0].Okpo_DB == "")
+                            || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                            && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
                             && item.Master.Rows10[1].Okpo_DB != ""));
                     }
 
@@ -2526,7 +2526,7 @@ namespace Client_App.ViewModels
                                             MinWidth = 400,
                                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                                         })
-                                        .ShowDialog(desktop.MainWindow); 
+                                        .ShowDialog(desktop.MainWindow);
                                     #endregion
                                     return;
                                 }
@@ -4842,150 +4842,168 @@ namespace Client_App.ViewModels
                     var filter = new FileDialogFilter
                     {
                         Name = "Excel",
-                        Extensions = {
-                        "xlsx"
-                        }
+                        Extensions = { "xlsx" }
                     };
                     dial.Filters.Add(filter);
                     var res = await dial.ShowAsync(desktop.MainWindow);
-                    if (res != null)
+                    if (!string.IsNullOrEmpty(res))
                     {
-                        if (res.Count() != 0)
+                        var path = res;
+                        if (!path.Contains(".xlsx"))
                         {
-                            var path = res;
-                            if (!path.Contains(".xlsx"))
-                            {
-                                path += ".xlsx";
-                            }
-                            if (File.Exists(path))
+                            path += ".xlsx";
+                        }
+                        if (File.Exists(path))
+                        {
+                            try
                             {
                                 File.Delete(path);
                             }
-                            if (path != null)
+                            catch (Exception)
                             {
-                                using (ExcelPackage excelPackage = new(new FileInfo(path)))
-                                {
-
-                                    excelPackage.Workbook.Properties.Author = "RAO_APP";
-                                    excelPackage.Workbook.Properties.Title = "Report";
-                                    excelPackage.Workbook.Properties.Created = DateTime.Now;
-
-                                    if (Local_Reports.Reports_Collection.Count > 0)
+                                #region MessageFailedToSaveFile
+                                await MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                                     {
-                                        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
-                                        worksheet.Cells[1, 1].Value = "Рег.№";
-                                        worksheet.Cells[1, 2].Value = "Регион";
-                                        worksheet.Cells[1, 3].Value = "ОКПО";
-                                        worksheet.Cells[1, 4].Value = "Сокращенное наименование";
-                                        worksheet.Cells[1, 5].Value = "Адрес";
-                                        worksheet.Cells[1, 6].Value = "ИНН";
-                                        worksheet.Cells[1, 7].Value = "Форма 1.1";
-                                        worksheet.Cells[1, 8].Value = "Форма 1.2";
-                                        worksheet.Cells[1, 9].Value = "Форма 1.3";
-                                        worksheet.Cells[1, 10].Value = "Форма 1.4";
-                                        worksheet.Cells[1, 11].Value = "Форма 1.5";
-                                        worksheet.Cells[1, 12].Value = "Форма 1.6";
-                                        worksheet.Cells[1, 13].Value = "Форма 1.7";
-                                        worksheet.Cells[1, 14].Value = "Форма 1.8";
-                                        worksheet.Cells[1, 15].Value = "Форма 1.9";
-                                        worksheet.Cells[1, 16].Value = "Форма 2.1";
-                                        worksheet.Cells[1, 17].Value = "Форма 2.2";
-                                        worksheet.Cells[1, 18].Value = "Форма 2.3";
-                                        worksheet.Cells[1, 19].Value = "Форма 2.4";
-                                        worksheet.Cells[1, 20].Value = "Форма 2.5";
-                                        worksheet.Cells[1, 21].Value = "Форма 2.6";
-                                        worksheet.Cells[1, 22].Value = "Форма 2.7";
-                                        worksheet.Cells[1, 23].Value = "Форма 2.8";
-                                        worksheet.Cells[1, 24].Value = "Форма 2.9";
-                                        worksheet.Cells[1, 25].Value = "Форма 2.10";
-                                        worksheet.Cells[1, 26].Value = "Форма 2.11";
-                                        worksheet.Cells[1, 27].Value = "Форма 2.12";
+                                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                        ContentTitle = "Выгрузка в Excel",
+                                        ContentHeader = "Ошибка",
+                                        ContentMessage =
+                                            $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
+                                            "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                        MinWidth = 400,
+                                        MinHeight = 150,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(desktop.MainWindow);
+                                #endregion
+                                return;
+                            }
+                        }
+                        if (path != null)
+                        {
+                            using (ExcelPackage excelPackage = new(new FileInfo(path)))
+                            {
 
-                                        var lst = new List<Reports>();
-                                        var chekedLst = new List<Reports>();
+                                excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                excelPackage.Workbook.Properties.Title = "Report";
+                                excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-                                        foreach (Reports item in Local_Reports.Reports_Collection)
-                                        {
-                                            lst.Add(item);
-                                        }
-                                        var row = 2;
-                                        foreach (Reports reps in lst)
-                                        {
-                                            if (chekedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
-                                            {
-                                                row--;
-                                                worksheet.Cells[row, 7].Value = (int)worksheet.Cells[row, 7].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
-                                                worksheet.Cells[row, 8].Value = (int)worksheet.Cells[row, 8].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
-                                                worksheet.Cells[row, 9].Value = (int)worksheet.Cells[row, 9].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
-                                                worksheet.Cells[row, 10].Value = (int)worksheet.Cells[row, 10].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
-                                                worksheet.Cells[row, 11].Value = (int)worksheet.Cells[row, 11].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
-                                                worksheet.Cells[row, 12].Value = (int)worksheet.Cells[row, 12].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
-                                                worksheet.Cells[row, 13].Value = (int)worksheet.Cells[row, 13].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
-                                                worksheet.Cells[row, 14].Value = (int)worksheet.Cells[row, 14].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
-                                                worksheet.Cells[row, 15].Value = (int)worksheet.Cells[row, 15].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
-                                                worksheet.Cells[row, 16].Value = (int)worksheet.Cells[row, 16].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
-                                                worksheet.Cells[row, 17].Value = (int)worksheet.Cells[row, 17].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
-                                                worksheet.Cells[row, 18].Value = (int)worksheet.Cells[row, 18].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
-                                                worksheet.Cells[row, 19].Value = (int)worksheet.Cells[row, 19].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
-                                                worksheet.Cells[row, 20].Value = (int)worksheet.Cells[row, 20].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
-                                                worksheet.Cells[row, 21].Value = (int)worksheet.Cells[row, 21].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
-                                                worksheet.Cells[row, 22].Value = (int)worksheet.Cells[row, 22].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
-                                                worksheet.Cells[row, 23].Value = (int)worksheet.Cells[row, 23].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
-                                                worksheet.Cells[row, 24].Value = (int)worksheet.Cells[row, 24].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
-                                                worksheet.Cells[row, 25].Value = (int)worksheet.Cells[row, 25].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
-                                                worksheet.Cells[row, 26].Value = (int)worksheet.Cells[row, 26].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
-                                                worksheet.Cells[row, 27].Value = (int)worksheet.Cells[row, 27].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
-                                                row++;
-                                            }
-                                            else
-                                            {
-                                                var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
-                                                          !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
-                                                          !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
-                                                          reps.Master.Rows20[1].Inn_DB;
+                                if (Local_Reports.Reports_Collection.Count > 0)
+                                {
+                                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
+                                    worksheet.Cells[1, 1].Value = "Рег.№";
+                                    worksheet.Cells[1, 2].Value = "Регион";
+                                    worksheet.Cells[1, 3].Value = "ОКПО";
+                                    worksheet.Cells[1, 4].Value = "Сокращенное наименование";
+                                    worksheet.Cells[1, 5].Value = "Адрес";
+                                    worksheet.Cells[1, 6].Value = "ИНН";
+                                    worksheet.Cells[1, 7].Value = "Форма 1.1";
+                                    worksheet.Cells[1, 8].Value = "Форма 1.2";
+                                    worksheet.Cells[1, 9].Value = "Форма 1.3";
+                                    worksheet.Cells[1, 10].Value = "Форма 1.4";
+                                    worksheet.Cells[1, 11].Value = "Форма 1.5";
+                                    worksheet.Cells[1, 12].Value = "Форма 1.6";
+                                    worksheet.Cells[1, 13].Value = "Форма 1.7";
+                                    worksheet.Cells[1, 14].Value = "Форма 1.8";
+                                    worksheet.Cells[1, 15].Value = "Форма 1.9";
+                                    worksheet.Cells[1, 16].Value = "Форма 2.1";
+                                    worksheet.Cells[1, 17].Value = "Форма 2.2";
+                                    worksheet.Cells[1, 18].Value = "Форма 2.3";
+                                    worksheet.Cells[1, 19].Value = "Форма 2.4";
+                                    worksheet.Cells[1, 20].Value = "Форма 2.5";
+                                    worksheet.Cells[1, 21].Value = "Форма 2.6";
+                                    worksheet.Cells[1, 22].Value = "Форма 2.7";
+                                    worksheet.Cells[1, 23].Value = "Форма 2.8";
+                                    worksheet.Cells[1, 24].Value = "Форма 2.9";
+                                    worksheet.Cells[1, 25].Value = "Форма 2.10";
+                                    worksheet.Cells[1, 26].Value = "Форма 2.11";
+                                    worksheet.Cells[1, 27].Value = "Форма 2.12";
 
-                                                var address = !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoFactAddress_DB :
-                                                         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
-                                                         !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
-                                                         !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) && !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoAddress_DB :
-                                                         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
-                                                         !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
-                                                         !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
-                                                         reps.Master.Rows20[0].JurLicoAddress_DB;
+                                    var lst = new List<Reports>();
+                                    var chekedLst = new List<Reports>();
 
-                                                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                                                worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
-                                                worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
-                                                worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
-                                                worksheet.Cells[row, 5].Value = address;
-                                                worksheet.Cells[row, 6].Value = inn;
-                                                worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
-                                                worksheet.Cells[row, 8].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
-                                                worksheet.Cells[row, 9].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
-                                                worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
-                                                worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
-                                                worksheet.Cells[row, 12].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
-                                                worksheet.Cells[row, 13].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
-                                                worksheet.Cells[row, 14].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
-                                                worksheet.Cells[row, 15].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
-                                                worksheet.Cells[row, 16].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
-                                                worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
-                                                worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
-                                                worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
-                                                worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
-                                                worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
-                                                worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
-                                                worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
-                                                worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
-                                                worksheet.Cells[row, 25].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
-                                                worksheet.Cells[row, 26].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
-                                                worksheet.Cells[row, 27].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
-                                                row++;
-                                                chekedLst.Add(reps);
-                                            }
-                                        }
-                                        excelPackage.Save();
+                                    foreach (Reports item in Local_Reports.Reports_Collection)
+                                    {
+                                        lst.Add(item);
                                     }
+                                    var row = 2;
+                                    foreach (Reports reps in lst)
+                                    {
+                                        if (chekedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
+                                        {
+                                            row--;
+                                            worksheet.Cells[row, 7].Value = (int)worksheet.Cells[row, 7].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
+                                            worksheet.Cells[row, 8].Value = (int)worksheet.Cells[row, 8].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
+                                            worksheet.Cells[row, 9].Value = (int)worksheet.Cells[row, 9].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
+                                            worksheet.Cells[row, 10].Value = (int)worksheet.Cells[row, 10].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
+                                            worksheet.Cells[row, 11].Value = (int)worksheet.Cells[row, 11].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
+                                            worksheet.Cells[row, 12].Value = (int)worksheet.Cells[row, 12].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
+                                            worksheet.Cells[row, 13].Value = (int)worksheet.Cells[row, 13].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
+                                            worksheet.Cells[row, 14].Value = (int)worksheet.Cells[row, 14].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
+                                            worksheet.Cells[row, 15].Value = (int)worksheet.Cells[row, 15].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
+                                            worksheet.Cells[row, 16].Value = (int)worksheet.Cells[row, 16].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
+                                            worksheet.Cells[row, 17].Value = (int)worksheet.Cells[row, 17].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
+                                            worksheet.Cells[row, 18].Value = (int)worksheet.Cells[row, 18].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
+                                            worksheet.Cells[row, 19].Value = (int)worksheet.Cells[row, 19].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
+                                            worksheet.Cells[row, 20].Value = (int)worksheet.Cells[row, 20].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
+                                            worksheet.Cells[row, 21].Value = (int)worksheet.Cells[row, 21].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
+                                            worksheet.Cells[row, 22].Value = (int)worksheet.Cells[row, 22].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
+                                            worksheet.Cells[row, 23].Value = (int)worksheet.Cells[row, 23].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
+                                            worksheet.Cells[row, 24].Value = (int)worksheet.Cells[row, 24].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
+                                            worksheet.Cells[row, 25].Value = (int)worksheet.Cells[row, 25].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
+                                            worksheet.Cells[row, 26].Value = (int)worksheet.Cells[row, 26].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
+                                            worksheet.Cells[row, 27].Value = (int)worksheet.Cells[row, 27].Value + reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
+                                            row++;
+                                        }
+                                        else
+                                        {
+                                            var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB) ? reps.Master.Rows10[0].Inn_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB) ? reps.Master.Rows10[1].Inn_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB) ? reps.Master.Rows20[0].Inn_DB :
+                                                reps.Master.Rows20[1].Inn_DB;
+
+                                            var address = !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) && !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoFactAddress_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) && !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoFactAddress_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) && !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[1].JurLicoAddress_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) && !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows20[1].JurLicoAddress_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) && !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoFactAddress_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) && !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-") ? reps.Master.Rows20[0].JurLicoFactAddress_DB :
+                                                !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) && !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-") ? reps.Master.Rows10[0].JurLicoAddress_DB :
+                                                reps.Master.Rows20[0].JurLicoAddress_DB;
+
+                                            worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                                            worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2 ? reps.Master.RegNoRep.Value.Substring(0, 2) : reps.Master.RegNoRep.Value;
+                                            worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
+                                            worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
+                                            worksheet.Cells[row, 5].Value = address;
+                                            worksheet.Cells[row, 6].Value = inn;
+                                            worksheet.Cells[row, 7].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1")).Count();
+                                            worksheet.Cells[row, 8].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2")).Count();
+                                            worksheet.Cells[row, 9].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3")).Count();
+                                            worksheet.Cells[row, 10].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4")).Count();
+                                            worksheet.Cells[row, 11].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5")).Count();
+                                            worksheet.Cells[row, 12].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6")).Count();
+                                            worksheet.Cells[row, 13].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7")).Count();
+                                            worksheet.Cells[row, 14].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8")).Count();
+                                            worksheet.Cells[row, 15].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9")).Count();
+                                            worksheet.Cells[row, 16].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1")).Count();
+                                            worksheet.Cells[row, 17].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2")).Count();
+                                            worksheet.Cells[row, 18].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3")).Count();
+                                            worksheet.Cells[row, 19].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4")).Count();
+                                            worksheet.Cells[row, 20].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5")).Count();
+                                            worksheet.Cells[row, 21].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6")).Count();
+                                            worksheet.Cells[row, 22].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7")).Count();
+                                            worksheet.Cells[row, 23].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8")).Count();
+                                            worksheet.Cells[row, 24].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9")).Count();
+                                            worksheet.Cells[row, 25].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10")).Count();
+                                            worksheet.Cells[row, 26].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11")).Count();
+                                            worksheet.Cells[row, 27].Value = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12")).Count();
+                                            row++;
+                                            chekedLst.Add(reps);
+                                        }
+                                    }
+                                    excelPackage.Save();
                                 }
                             }
                         }
@@ -5010,177 +5028,234 @@ namespace Client_App.ViewModels
                 FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
                 saveFileDialog.Filters.Add(filter);
                 var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
-                if (res != null)
+                if (!string.IsNullOrEmpty(res))
                 {
-                    if (res.Length != 0)
+                    var path = res;
+                    if (!path.Contains(".xlsx"))
                     {
-                        var path = res;
-                        if (!path.Contains(".xlsx"))
+                        path += ".xlsx";
+                    }
+                    if (File.Exists(path))
+                    {
+                        try
                         {
-                            path += ".xlsx";
+                            File.Delete(path);
                         }
-                        if (File.Exists(path))
+                        catch (Exception)
                         {
-                            try
-                            {
-                                File.Delete(path);
-                            }
-                            catch (Exception e)
-                            {
-                                await ShowMessage.Handle(new List<string>
+                            #region MessageFailedToSaveFile
+                            await MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                                 {
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
-                                return;
-                            }
-                        }
-                        if (path != null)
-                        {
-                            using ExcelPackage excelPackage = new(new FileInfo(path));
-                            excelPackage.Workbook.Properties.Author = "RAO_APP";
-                            excelPackage.Workbook.Properties.Title = "Report";
-                            excelPackage.Workbook.Properties.Created = DateTime.Now;
-                            var worksheet = excelPackage.Workbook.Worksheets.Add($"Список отчётов без файла паспорта");
-
-                            #region ColumnHeaders
-                            worksheet.Cells[1, 1].Value = "Рег. №";
-                            worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                            worksheet.Cells[1, 3].Value = "ОКПО";
-                            worksheet.Cells[1, 4].Value = "Форма";
-                            worksheet.Cells[1, 5].Value = "Дата начала периода";
-                            worksheet.Cells[1, 6].Value = "Дата конца периода";
-                            worksheet.Cells[1, 7].Value = "Номер корректировки";
-                            worksheet.Cells[1, 8].Value = "Количество строк";
-                            worksheet.Cells[1, 9].Value = "№ п/п";
-                            worksheet.Cells[1, 10].Value = "код";
-                            worksheet.Cells[1, 11].Value = "дата";
-                            worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
-                            worksheet.Cells[1, 13].Value = "тип";
-                            worksheet.Cells[1, 14].Value = "радионуклиды";
-                            worksheet.Cells[1, 15].Value = "номер";
-                            worksheet.Cells[1, 16].Value = "количество, шт";
-                            worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
-                            worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
-                            worksheet.Cells[1, 19].Value = "дата выпуска";
-                            worksheet.Cells[1, 20].Value = "категория";
-                            worksheet.Cells[1, 21].Value = "НСС, мес";
-                            worksheet.Cells[1, 22].Value = "код формы собственности";
-                            worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
-                            worksheet.Cells[1, 24].Value = "вид";
-                            worksheet.Cells[1, 25].Value = "номер";
-                            worksheet.Cells[1, 26].Value = "дата";
-                            worksheet.Cells[1, 27].Value = "поставщика или получателя";
-                            worksheet.Cells[1, 28].Value = "перевозчика";
-                            worksheet.Cells[1, 29].Value = "наименование";
-                            worksheet.Cells[1, 30].Value = "тип";
-                            worksheet.Cells[1, 31].Value = "номер";
+                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                    ContentTitle = "Выгрузка в Excel",
+                                    ContentHeader = "Ошибка",
+                                    ContentMessage =
+                                        $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
+                                        "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                    MinWidth = 400,
+                                    MinHeight = 150,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(desktop.MainWindow);
                             #endregion
+                            return;
+                        }
+                    }
+                    using ExcelPackage excelPackage = new(new FileInfo(path));
+                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                    excelPackage.Workbook.Properties.Title = "Report";
+                    excelPackage.Workbook.Properties.Created = DateTime.Now;
+                    worksheet = excelPackage.Workbook.Worksheets.Add($"Список отчётов без файла паспорта");
 
-                            List<string> pasNames = new();
-                            List<string[]> pasUniqParam = new();
-                            DirectoryInfo directory = new(@"C:\Test");
-                            FileInfo[] Files;
-                            try
+                    #region ColumnHeaders
+
+                    worksheet.Cells[1, 1].Value = "Рег. №";
+                    worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                    worksheet.Cells[1, 3].Value = "ОКПО";
+                    worksheet.Cells[1, 4].Value = "Форма";
+                    worksheet.Cells[1, 5].Value = "Дата начала периода";
+                    worksheet.Cells[1, 6].Value = "Дата конца периода";
+                    worksheet.Cells[1, 7].Value = "Номер корректировки";
+                    worksheet.Cells[1, 8].Value = "Количество строк";
+                    worksheet.Cells[1, 9].Value = "№ п/п";
+                    worksheet.Cells[1, 10].Value = "код";
+                    worksheet.Cells[1, 11].Value = "дата";
+                    worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
+                    worksheet.Cells[1, 13].Value = "тип";
+                    worksheet.Cells[1, 14].Value = "радионуклиды";
+                    worksheet.Cells[1, 15].Value = "номер";
+                    worksheet.Cells[1, 16].Value = "количество, шт";
+                    worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+                    worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
+                    worksheet.Cells[1, 19].Value = "дата выпуска";
+                    worksheet.Cells[1, 20].Value = "категория";
+                    worksheet.Cells[1, 21].Value = "НСС, мес";
+                    worksheet.Cells[1, 22].Value = "код формы собственности";
+                    worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
+                    worksheet.Cells[1, 24].Value = "вид";
+                    worksheet.Cells[1, 25].Value = "номер";
+                    worksheet.Cells[1, 26].Value = "дата";
+                    worksheet.Cells[1, 27].Value = "поставщика или получателя";
+                    worksheet.Cells[1, 28].Value = "перевозчика";
+                    worksheet.Cells[1, 29].Value = "наименование";
+                    worksheet.Cells[1, 30].Value = "тип";
+                    worksheet.Cells[1, 31].Value = "номер";
+
+                    #endregion
+
+                    List<string> pasNames = new();
+                    List<string[]> pasUniqParam = new();
+                    DirectoryInfo directory = new(PasFolderPath);
+                    FileInfo[] files;
+                    try
+                    {
+                        files = directory.GetFiles("*#*#*#*#*.pdf");
+                    }
+                    catch (Exception)
+                    {
+                        #region MessageFailedToOpenPassportDirectory
+                        await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
-                                Files = directory.GetFiles("*#*#*#*#*.pdf");
-                            }
-                            catch (Exception e)
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка в Excel",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+                        #endregion
+                        return;
+                    }
+                    pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+                    pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
+
+                    var currentRow = 2;
+                    foreach (var key in Local_Reports.Reports_Collection10)
+                    {
+                        var reps = (Reports)key;
+                        var form11 = reps.Report_Collection
+                            .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                        foreach (var rep in form11)
+                        {
+                            List<Form11> repPas = rep.Rows11
+                                .Where(x => x.OperationCode_DB == "11" && x.Category_DB is 1 or 2 or 3)
+                                .ToList();
+                            foreach (var repForm in repPas)
                             {
-                                await ShowMessage.Handle(new List<string>
+                                var findPasFile = false;
+                                foreach (var pasParam in pasUniqParam)
                                 {
-                                    $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}", "Ошибка", "Ок" });
-                                return;
-                            }
-                            pasNames.AddRange(Files.Select(file => file.Name.Remove(file.Name.Length - 4)));
-                            pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-
-                            var currentRow = 2;
-                            var findPasFile = false;
-                            foreach (Reports reps in Local_Reports.Reports_Collection10)
-                            {
-                                var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-                                foreach (var rep in form11)
-                                {
-                                    List<Form11> repPas = rep.Rows11.Where(x => x.OperationCode_DB == "11"
-                                    && x.Category_DB is 1 or 2 or 3).ToList();
-
-                                    foreach (var repForm in repPas)
+                                    if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
+                                        && ComparePasParam(repForm.Type_DB, pasParam[1])
+                                        && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                        && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
+                                        && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
                                     {
-                                        findPasFile = false;
-                                        foreach (var pasParam in pasUniqParam)
-                                        {
-                                            if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
-                                                && ComparePasParam(repForm.Type_DB, pasParam[1])
-                                                && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
-                                                && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
-                                            {
-                                                findPasFile = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!findPasFile)
-                                        {
-                                            #region BindingCells
-                                            worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                                            worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                                            worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                                            worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                                            worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                                            worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                                            worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                                            worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                                            worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                                            worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                                            worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                                            worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                                            worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                                            worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                                            worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                                            worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                                            worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
-                                            worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
-                                            worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
-                                            worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
-                                            worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
-                                            worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
-                                            worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
-                                            worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
-                                            worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
-                                            worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
-                                            worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                                            worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
-                                            worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
-                                            worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
-                                            worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
-                                            #endregion
-                                            currentRow++;
-                                        }
-                                    }
-                                }
-                            }
-                            try
-                            {
-                                excelPackage.Save();
-                                res = await ShowMessage.Handle(new List<string>
-                                {
-                                    $"Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3,{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}", "", "Ок", "Открыть выгрузку" });
-                                switch (res)
-                                {
-                                    case null or "Ок":
-                                        return;
-                                    case "Открыть выгрузку":
-                                    {
-                                        ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
-                                        Process.Start(procInfo);
+                                        findPasFile = true;
                                         break;
                                     }
                                 }
-                            }
-                            catch (Exception)
-                            {
-                                await ShowMessage.Handle(new List<string> { "Не удалось сохранить файл по указанному пути", "Ок" });
+
+                                if (!findPasFile)
+                                {
+                                    #region BindingCells
+                                    worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
+                                    worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+                                    worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
+                                    worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
+                                    worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+                                    worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+                                    worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
+                                    worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
+                                    worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
+                                    worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
+                                    worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
+                                    worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
+                                    worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
+                                    worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
+                                    worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
+                                    worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
+                                    worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
+                                    worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
+                                    worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
+                                    worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
+                                    worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
+                                    worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
+                                    worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
+                                    worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
+                                    worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
+                                    worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
+                                    worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+                                    worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
+                                    worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
+                                    worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
+                                    worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+                                    #endregion
+                                    currentRow++;
+                                }
                             }
                         }
+                    }
+                    try
+                    {
+                        excelPackage.Save();
+                        #region MessageExcelExportComplete
+                        res = await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions = new[]
+                                {
+                                            new ButtonDefinition { Name = "Ок" },
+                                            new ButtonDefinition { Name = "Открыть выгрузку" }
+                                },
+                                ContentTitle = "Выгрузка в Excel",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3," +
+                                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}" +
+                                    $"{Environment.NewLine}сохранена по пути:" +
+                                    $"{Environment.NewLine}{path}",
+                                MinWidth = 400,
+                                MinHeight = 200,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+                        #endregion
+                        switch (res)
+                        {
+                            case null or "Ок":
+                                return;
+                            case "Открыть выгрузку":
+                                {
+                                    ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                                    Process.Start(procInfo);
+                                    break;
+                                }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        #region MessageFailedToSaveFile
+                        await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка в Excel",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    "Не удалось сохранить файл по указанному пути:" +
+                                    $"{Environment.NewLine}{directory.FullName}",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+                        #endregion
                     }
                 }
             }
@@ -5211,18 +5286,30 @@ namespace Client_App.ViewModels
                     });
                 var result = await messageBoxWindow.ShowDialog(desktop.MainWindow);
                 List<short?> categories = new() { 1, 2, 3, 4, 5 };
+                if (result.Button is null or "Отмена") return;
                 try
                 {
-                    if (result.Button is null or "Отмена") return;
-                    categories = Regex.Replace(result.Message, "[^\\d,]", "").Split(',').Select(short.Parse).Cast<short?>().ToList();
+                    categories = Regex.Replace(result.Message, "[^\\d,]", "")
+                        .Split(',').Select(short.Parse).Cast<short?>().ToList();
                 }
                 catch (Exception)
                 {
+                    #region MessageInvalidCategoryNums
                     await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow("Уведомление",
-                            "Номера категорий не были введены, либо были введены некорректно" +
-                            $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям")
-                        .ShowDialog(desktop.MainWindow);
+                                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                    {
+                                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                        ContentTitle = "Выгрузка в Excel",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            "Номера категорий не были введены, либо были введены некорректно" +
+                                            $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям (1-5)",
+                                        MinWidth = 400,
+                                        MinHeight = 150,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(desktop.MainWindow);
+                    #endregion
                 }
                 var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
                 if (!string.IsNullOrEmpty(res))
@@ -5238,11 +5325,24 @@ namespace Client_App.ViewModels
                         {
                             File.Delete(path);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            await ShowMessage.Handle(new List<string>
-                            {
-                                $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}Файл с таким именем уже существует в этом расположении и используется другим процессом.", "Ок" });
+                            #region MessageFailedToSaveFile
+                            await MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                {
+                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                    ContentTitle = "Выгрузка в Excel",
+                                    ContentHeader = "Ошибка",
+                                    ContentMessage =
+                                        $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
+                                        "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                    MinWidth = 400,
+                                    MinHeight = 150,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(desktop.MainWindow);
+                            #endregion
                             return;
                         }
                     }
@@ -5269,20 +5369,30 @@ namespace Client_App.ViewModels
                     }
                     catch (Exception)
                     {
-                        await ShowMessage.Handle(new List<string>
-                        {
-                            $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}",
-                            "Ошибка", "Ок"
-                        });
+                        #region MessageFailedToOpenPassportDirectory
+                        await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка в Excel",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+                        #endregion
                         return;
                     }
-
                     pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
                     pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
                     foreach (var key in Local_Reports.Reports_Collection10)
                     {
                         var reps = (Reports)key;
-                        var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                        var form11 = reps.Report_Collection
+                            .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
                         foreach (var rep in form11)
                         {
                             List<Form11> repPas = rep.Rows11
@@ -5290,7 +5400,8 @@ namespace Client_App.ViewModels
                                 .ToList();
                             foreach (var repForm in repPas)
                             {
-                                foreach (var pasParam in pasUniqParam.Where(pasParam => ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
+                                foreach (var pasParam in pasUniqParam.Where(pasParam =>
+                                             ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
                                              && ComparePasParam(repForm.Type_DB, pasParam[1])
                                              && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
                                              && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
@@ -5317,25 +5428,59 @@ namespace Client_App.ViewModels
                     try
                     {
                         excelPackage.Save();
-                        res = await ShowMessage.Handle(new List<string>
-                        {
-                            "Выгрузка всех записей паспортов с кодом 11 категорий 1, 2, 3," +
-                            $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути: {directory.FullName}" +
-                            $"{Environment.NewLine}сохранена по пути:{Environment.NewLine}{path}",
-                            "", "Ок", "Открыть выгрузку"
-                        });
-                        if (res is null or "Ок")
-                            return;
-                        if (res.Equals("Открыть выгрузку"))
-                        {
-                            ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
-                            Process.Start(procInfo);
-                        }
                     }
                     catch (Exception)
                     {
-                        await ShowMessage.Handle(new List<string>
-                            { "Не удалось сохранить файл по указанному пути", "Ок" });
+                        #region MessageFailedToSaveFile
+                        await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка в Excel",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    "Не удалось сохранить файл по указанному пути:" +
+                                    $"{Environment.NewLine}{directory.FullName}",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+                        #endregion
+                        return;
+                    }
+                    #region MessageExcelExportComplete
+                    res = await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions = new[]
+                            {
+                                new ButtonDefinition { Name = "Ок" }, 
+                                new ButtonDefinition { Name = "Открыть выгрузку" }
+                            },
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Выгрузка всех имён файлов паспортов в директории" +
+                                $"{Environment.NewLine}{directory.FullName}" +
+                                $"{Environment.NewLine}для которых отсутствуют соответствующие записи паспортов " +
+                                $"с кодом 11 категорий: {string.Join(", ", categories)}" +
+                                $"{Environment.NewLine}сохранена по пути:" +
+                                $"{Environment.NewLine}{path}",
+                            MinWidth = 400,
+                            MinHeight = 200,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+                    #endregion
+                    switch (res)
+                    {
+                        case null or "Ок":
+                            return;
+                        case "Открыть выгрузку":
+                            ProcessStartInfo procInfo = new() { FileName = path, UseShellExecute = true };
+                            Process.Start(procInfo);
+                            break;
                     }
                 }
             }
@@ -5392,107 +5537,113 @@ namespace Client_App.ViewModels
         #endregion
 
         #region ExcelExportNotes
-        private int _Excel_Export_Notes(string param, int StartRow, int StartColumn, ExcelWorksheet worksheetPrim, List<Report> forms, bool printID = false)
+        private int _Excel_Export_Notes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim, List<Report> forms, bool printId = false)
         {
             foreach (var item in forms)
             {
-
-                var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(item));
+                var findReports = Local_Reports.Reports_Collection
+                    .Where(t => t.Report_Collection.Contains(item));
                 var reps = findReports.FirstOrDefault();
-                if (reps != null)
+                if (reps == null) continue;
+                var cnty = startRow;
+                foreach (var i in item.Notes)
                 {
-                    var cnty = StartRow;
-                    foreach (var i in item.Notes)
+                    var mstrep = reps.Master_DB;
+                    i.ExcelRow(worksheetPrim, cnty, startColumn + 1);
+                    int yu;
+                    if (printId)
                     {
-                        var mstrep = reps.Master_DB;
-                        i.ExcelRow(worksheetPrim, cnty, StartColumn + 1);
-                        int yu;
-                        if (printID)
+                        if (param.Split('.')[0] == "1")
                         {
-                            if (param.Split('.')[0] == "1")
+                            if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                             {
-                                if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                {
-                                    yu = reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
-                                }
-                                else
-                                {
-                                    yu = reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
-                                }
+                                yu = reps.Master_DB.Rows10[1]
+                                    .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
                             }
                             else
                             {
-                                if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                {
-                                    yu = reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
-                                }
-                                else
-                                {
-                                    yu = reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
-                                }
+                                yu = reps.Master_DB.Rows10[0]
+                                    .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
                             }
                         }
                         else
                         {
-                            if (param.Split('.')[0] == "1")
+                            if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
                             {
-                                if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                {
-                                    yu = reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                                }
-                                else
-                                {
-                                    yu = reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                                }
+                                yu = reps.Master_DB.Rows20[1]
+                                    .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
                             }
                             else
                             {
-                                if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                {
-                                    yu = reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                                }
-                                else
-                                {
-                                    yu = reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                                }
+                                yu = reps.Master_DB.Rows20[0]
+                                    .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
                             }
                         }
-
-                        item.ExcelRow(worksheetPrim, cnty, yu);
-                        cnty++;
                     }
-                    StartRow = cnty;
+                    else
+                    {
+                        if (param.Split('.')[0] == "1")
+                        {
+                            if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                            {
+                                yu = reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1) + 1;
+                            }
+                            else
+                            {
+                                yu = reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, cnty, 1) + 1;
+                            }
+                        }
+                        else
+                        {
+                            if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                            {
+                                yu = reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, cnty, 1) + 1;
+                            }
+                            else
+                            {
+                                yu = reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, cnty, 1) + 1;
+                            }
+                        }
+                    }
+                    item.ExcelRow(worksheetPrim, cnty, yu);
+                    cnty++;
                 }
+                startRow = cnty;
             }
-            return StartRow;
+            return startRow;
         }
         #endregion
 
         #region ExcelExportRows
         private int _Excel_Export_Rows(string param, int startRow, int startColumn, ExcelWorksheet worksheet, List<Report> forms, bool id = false)
         {
-            foreach (Report item in forms)
+            foreach (var item in forms)
             {
-
-                var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(item));
+                var findReports = Local_Reports.Reports_Collection
+                    .Where(t => t.Report_Collection.Contains(item));
                 var reps = findReports.FirstOrDefault();
                 if (reps != null)
                 {
                     IEnumerable<IKey> t = null;
-                    if (param == "2.1")
+                    switch (param)
                     {
-                        t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
-                        if (item[param].ToList<IKey>().Any() && !t.Any())
+                        case "2.1":
                         {
-                            t = item[param].ToList<IKey>();
+                            t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
+                            if (item[param].ToList<IKey>().Any() && !t.Any())
+                            {
+                                t = item[param].ToList<IKey>();
+                            }
+                            break;
                         }
-                    }
-                    if (param == "2.2")
-                    {
-                        t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
-                        if (item[param].ToList<IKey>().Any() && !t.Any())
+                        case "2.2":
                         {
-                            t = item[param].ToList<IKey>();
+                            t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
+                            if (item[param].ToList<IKey>().Any() && !t.Any())
+                            {
+                                t = item[param].ToList<IKey>();
+                            }
+                            break;
                         }
                     }
                     if (param != "2.1" && param != "2.2")
@@ -5502,146 +5653,148 @@ namespace Client_App.ViewModels
                     var lst = t.Any()
                         ? item[param].ToList<IKey>().ToList()
                         : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
-                    if (lst.Count > 0)
+                    if (lst.Count <= 0) continue;
+                    var count = startRow;
+                    startRow--;
+                    foreach (var it in lst.Where(it => it != null))
                     {
-                        var count = startRow;
-                        startRow--;
-                        foreach (var it in lst.Where(it => it != null))
+                        switch (it)
                         {
-                            switch (it)
-                            {
-                                case Form11 form11:
-                                    form11.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form12 form12:
-                                    form12.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form13 form13:
-                                    form13.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form14 form14:
-                                    form14.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form15 form15:
-                                    form15.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form16 form16:
-                                    form16.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form17 form17:
-                                    form17.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form18 form18:
-                                    form18.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form19 form19:
-                                    form19.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form21 form21:
-                                    form21.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form21.NumberInOrderSum_DB);
-                                    break;
-                                case Form22 form22:
-                                    form22.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form22.NumberInOrderSum_DB);
-                                    break;
-                                case Form23 form23:
-                                    form23.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form24 form24:
-                                    form24.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form25 form25:
-                                    form25.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form26 form26:
-                                    form26.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form27 form27:
-                                    form27.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form28 form28:
-                                    form28.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form29 form29:
-                                    form29.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form210 form210:
-                                    form210.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form211 form211:
-                                    form211.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                                case Form212 form212:
-                                    form212.ExcelRow(worksheet, count, startColumn + 1);
-                                    break;
-                            }
+                            case Form11 form11:
+                                form11.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form12 form12:
+                                form12.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form13 form13:
+                                form13.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form14 form14:
+                                form14.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form15 form15:
+                                form15.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form16 form16:
+                                form16.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form17 form17:
+                                form17.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form18 form18:
+                                form18.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form19 form19:
+                                form19.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form21 form21:
+                                form21.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form21.NumberInOrderSum_DB);
+                                break;
+                            case Form22 form22:
+                                form22.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form22.NumberInOrderSum_DB);
+                                break;
+                            case Form23 form23:
+                                form23.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form24 form24:
+                                form24.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form25 form25:
+                                form25.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form26 form26:
+                                form26.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form27 form27:
+                                form27.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form28 form28:
+                                form28.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form29 form29:
+                                form29.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form210 form210:
+                                form210.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form211 form211:
+                                form211.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                            case Form212 form212:
+                                form212.ExcelRow(worksheet, count, startColumn + 1);
+                                break;
+                        }
 
-                            var mstrep = reps.Master_DB;
-                            var yu = 0;
-                            if (id)
+                        var mstrep = reps.Master_DB;
+                        int yu;
+                        if (id)
+                        {
+                            if (param.Split('.')[0] == "1")
                             {
-                                if (param.Split('.')[0] == "1")
+                                if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                                 {
-                                    if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                    {
-                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1;
-                                    }
-                                    else
-                                    {
-                                        yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1;
-                                    }
+                                    yu = reps.Master_DB.Rows10[1]
+                                        .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1;
                                 }
                                 else
                                 {
-                                    if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                    {
-                                        yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
-                                    }
-                                    else
-                                    {
-                                        yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1;
-                                    }
+                                    yu = reps.Master_DB.Rows10[0]
+                                        .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1;
                                 }
                             }
                             else
                             {
-                                if (param.Split('.')[0] == "1")
+                                if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
                                 {
-                                    if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                    {
-                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1;
-                                    }
-                                    else
-                                    {
-                                        yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1;
-                                    }
+                                    yu = reps.Master_DB.Rows20[1]
+                                        .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
                                 }
                                 else
                                 {
-                                    if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                    {
-                                        yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1;
-                                    }
-                                    else
-                                    {
-                                        yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
-                                    }
+                                    yu = reps.Master_DB.Rows20[0]
+                                        .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1;
                                 }
                             }
-
-                            item.ExcelRow(worksheet, count, yu);
-                            count++;
                         }
-                        //if (param.Split('.')[0] == "2")
-                        //{
-                        //    var new_number = 2;
-                        //    while (worksheet.Cells[new_number, 6].Value != null)
-                        //    {
-                        //        worksheet.Cells[new_number, 6].Value = new_number - 1;
-                        //        new_number++;
-                        //    }
-                        //}
-                        startRow = count;
+                        else
+                        {
+                            if (param.Split('.')[0] == "1")
+                            {
+                                if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                                {
+                                    yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1;
+                                }
+                                else
+                                {
+                                    yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1;
+                                }
+                            }
+                            else
+                            {
+                                if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                                {
+                                    yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1;
+                                }
+                                else
+                                {
+                                    yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
+                                }
+                            }
+                        }
+
+                        item.ExcelRow(worksheet, count, yu);
+                        count++;
                     }
+                    //if (param.Split('.')[0] == "2")
+                    //{
+                    //    var new_number = 2;
+                    //    while (worksheet.Cells[new_number, 6].Value != null)
+                    //    {
+                    //        worksheet.Cells[new_number, 6].Value = new_number - 1;
+                    //        new_number++;
+                    //    }
+                    //}
+                    startRow = count;
                 }
             }
             return startRow;
@@ -5651,10 +5804,10 @@ namespace Client_App.ViewModels
         #region ExcelPrintTitulExport
         private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(form));
+            var findReports = Local_Reports.Reports_Collection
+                .Where(t => t.Report_Collection.Contains(form));
             var reps = findReports.FirstOrDefault();
             var master = reps.Master_DB;
-
             if (param.Split('.')[0] == "2")
             {
                 var frmYur = master.Rows20[0];
@@ -5750,7 +5903,8 @@ namespace Client_App.ViewModels
         #region ExcelPrintSubMainExport
         private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = Local_Reports.Reports_Collection.Where(t => t.Report_Collection.Contains(form));
+            var findReports = Local_Reports.Reports_Collection
+                .Where(t => t.Report_Collection.Contains(form));
             var reps = findReports.FirstOrDefault();
             var master = reps.Master_DB;
 
@@ -5814,23 +5968,21 @@ namespace Client_App.ViewModels
             worksheet.Cells["F18"].Value = form.FIOexecutor_DB;
             worksheet.Cells["I18"].Value = form.ExecPhone_DB;
             worksheet.Cells["K18"].Value = form.ExecEmail_DB;
-
         }
         #endregion
 
         #region ExcelPrintNotesExport
         private void _Excel_Print_Notes_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            int Start = 15;
+            var start = 15;
             if (param == "2.8")
             {
-                Start = 18;
+                start = 18;
             }
-
             for (var i = 0; i < form.Notes.Count - 1; i++)
             {
-                worksheet.InsertRow(Start + 1, 1, Start);
-                var cells = worksheet.Cells[$"A{Start + 1}:B{Start + 1}"];
+                worksheet.InsertRow(start + 1, 1, start);
+                var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
                 foreach (var cell in cells)
                 {
                     var btm = cell.Style.Border.Bottom;
@@ -5846,7 +5998,7 @@ namespace Client_App.ViewModels
                     top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
                     top.Color.SetColor(255, 0, 0, 0);
                 }
-                var cellCL = worksheet.Cells[$"C{Start + 1}:L{Start + 1}"];
+                var cellCL = worksheet.Cells[$"C{start + 1}:L{start + 1}"];
                 cellCL.Merge = true;
                 var btmCL = cellCL.Style.Border.Bottom;
                 var lftCL = cellCL.Style.Border.Left;
@@ -5861,12 +6013,11 @@ namespace Client_App.ViewModels
                 topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
                 topCL.Color.SetColor(255, 0, 0, 0);
             }
-
-            int Count = Start;
+            var count = start;
             foreach (var note in form.Notes)
             {
-                note.ExcelRow(worksheet, Count, 1);
-                Count++;
+                note.ExcelRow(worksheet, count, 1);
+                count++;
             }
         }
         #endregion
@@ -5874,15 +6025,15 @@ namespace Client_App.ViewModels
         #region ExcelPrintRowsExport
         private void _Excel_Print_Rows_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var Start = 11;
+            var start = 11;
             if (param == "2.8")
             {
-                Start = 14;
+                start = 14;
             }
             for (var i = 0; i < form[param].Count - 1; i++)
             {
-                worksheet.InsertRow(Start + 1, 1, Start);
-                var cells = worksheet.Cells[$"A{Start + 1}:B{Start + 1}"];
+                worksheet.InsertRow(start + 1, 1, start);
+                var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
                 foreach (var cell in cells)
                 {
                     var btm = cell.Style.Border.Bottom;
@@ -5899,7 +6050,7 @@ namespace Client_App.ViewModels
                     top.Color.SetColor(255, 0, 0, 0);
                 }
             }
-            var count = Start;
+            var count = start;
             foreach (var it in form[param])
             {
                 switch (it)
