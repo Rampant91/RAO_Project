@@ -1887,13 +1887,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var a = FormType.Replace(".", "");
         if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
         {
-            WindowHeader =
-                $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
+            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
         }
         if (FormType is "1.0" or "2.0")
         {
-            WindowHeader = 
-                ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
         AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
         AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
@@ -1912,7 +1910,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ExcelPassport = ReactiveCommand.CreateFromTask<object>(_ExcelPassport);
         CopyPasName = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
         CopyExecutorData = ReactiveCommand.CreateFromTask<object>(_CopyExecutorData);
-
 
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
