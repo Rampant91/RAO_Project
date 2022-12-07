@@ -2015,7 +2015,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             "Не удалось совершить выгрузку списка разрывов и пересечений дат," +
-                            $"{Environment.NewLine}поскольку в текущей базе отсутствуют формы оперативной отчетности",
+                            $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 1",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -4926,8 +4926,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
                         ContentMessage =
-                            "Не удалось совершить выгрузку списка всех форм оперативной отчетности с указанием количества строк," +
-                            $"{Environment.NewLine}поскольку в текущей базе отсутствуют формы оперативной отчетности",
+                            "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
+                            $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам 1",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -5052,7 +5052,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             },
                             ContentTitle = "Выгрузка в Excel",
                             ContentHeader = "Уведомление",
-                            ContentMessage = "Выгрузка списка всех форм оперативной отчетности " +
+                            ContentMessage = "Выгрузка списка всех отчетов по форме 1 " +
                                              "с указанием количества строк сохранена по пути:" +
                                              $"{Environment.NewLine}{path}",
                             MinWidth = 400,
@@ -5100,8 +5100,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
                         ContentMessage =
-                            "Не удалось совершить выгрузку списка всех форм годовой отчетности с указанием количества строк," +
-                            $"{Environment.NewLine}поскольку в текущей базе отсутствуют формы годовой отчетности",
+                            "Не удалось совершить выгрузку списка всех отчетов по форме 2 с указанием количества строк," +
+                            $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 2",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -5227,7 +5227,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             ContentTitle = "Выгрузка в Excel",
                             ContentHeader = "Уведомление",
                             ContentMessage =
-                                "Выгрузка списка всех форм годовой отчетности с указанием количества строк сохранена по пути:" +
+                                "Выгрузка списка всех отчетов по форме 2 с указанием количества строк сохранена по пути:" +
                                 $"{Environment.NewLine}{path}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner

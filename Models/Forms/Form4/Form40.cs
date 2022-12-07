@@ -1,7 +1,7 @@
 ﻿namespace Models;
 
 //[Serializable]
-//[Attributes.Form_Class("Форма 4.0: Титульный лист годового отчета СГУК РВ и РАО")]
+//[Attributes.Form_Class("Форма 4.0: Титульный лист орого отчета СГУК РВ и РАО")]
 //public class Form40 : Abstracts.Form
 //{
 //    public Form40() : base()
