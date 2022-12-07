@@ -5691,7 +5691,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     foreach (var rep in form11)
                     {
                         List<Form11> repPas = rep.Rows11
-                            .Where(x => x.OperationCode_DB == "11" && x.Category_DB is 1 or 2 or 3)
+                            .Where(x => x.OperationCode_DB is "11" or "85" && x.Category_DB is 1 or 2 or 3)
                             .ToList();
                         foreach (var repForm in repPas)
                         {
