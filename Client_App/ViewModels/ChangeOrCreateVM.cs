@@ -1203,7 +1203,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> ExcelPassport { get; protected set; }
     private async Task _ExcelPassport(object param)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             PassportUniqParam(param, out _, out _, out _, out var pasNum, out var factoryNum);
             SaveFileDialog saveFileDialog = new();
@@ -1288,15 +1288,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 foreach (var key in LocalReports.Reports_Collection10)
                 {
                     var reps = (Reports)key;
-                    var form11 = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                    var form11 = reps.Report_Collection
+                        .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
                     foreach (var rep in form11)
                     {
-                        var repPas = rep.Rows11.Where(x =>
-                            //ComparePasParam(x.CreatorOKPO_DB, okpo)
-                            //&& ComparePasParam(x.Type_DB, type)
-                            //&& ComparePasParam(x.CreationDate_DB.Substring(Math.Max(0, x.CreationDate_DB.Length - 4)), date.Substring(Math.Max(0, date.Length - 4)))
-                            ComparePasParam(x.PassportNumber_DB, pasNum)
-                            && ComparePasParam(x.FactoryNumber_DB, factoryNum));
+                        var repPas = rep.Rows11
+                            .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum) 
+                                        && ComparePasParam(x.FactoryNumber_DB, factoryNum));
                         foreach (var repForm in repPas)
                         {
                             if (lastRow == 1)
@@ -1503,73 +1501,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    #region Translate
-    public static string TranslateToEng(string pasName)
-    {
-        Dictionary<string, string> dictRusToEng = new()
-        {
-            {"а", "a"},
-            {"А", "A"},
-            {"е", "e"},
-            {"Е", "E"},
-            {"к", "k"},
-            {"К", "K"},
-            {"м", "m"},
-            {"М", "M"},
-            {"о", "o"},
-            {"О", "O"},
-            {"р", "p"},
-            {"Р", "P"},
-            {"с", "c"},
-            {"С", "C"},
-            {"Т", "T"},
-            {"у", "y"},
-            {"У", "Y"},
-            {"х", "x"},
-            {"Х", "X"},
-        };
-        var newPasName = "";
-        foreach (var ch in pasName)
-        {
-            if (dictRusToEng.TryGetValue(ch.ToString(), out var ss)) newPasName += ss;
-            else newPasName += ch;
-        }
-        return newPasName;
-    }
-
-    public static string TranslateToRus(string pasName)
-    {
-        Dictionary<string, string> dictEngToRus = new()
-        {
-            {"a", "а"},
-            {"A", "А"},
-            {"e", "е"},
-            {"E", "Е"},
-            {"k", "к"},
-            {"K", "К"},
-            {"m", "м"},
-            {"M", "М"},
-            {"o", "о"},
-            {"O", "О"},
-            {"p", "р"},
-            {"P", "Р"},
-            {"c", "с"},
-            {"C", "С"},
-            {"T", "Т"},
-            {"y", "у"},
-            {"Y", "У"},
-            {"x", "х"},
-            {"X", "Х"},
-        };
-        var newPasName = "";
-        foreach (var ch in pasName)
-        {
-            if (dictEngToRus.TryGetValue(ch.ToString(), out var ss)) newPasName += ss;
-            else newPasName += ch;
-        }
-        return newPasName;
-    }
-    #endregion
+    
     #endregion
 
     #region CopyPasName
@@ -1618,18 +1550,26 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         factoryNum = "";
         foreach (var prop in props!)
         {
-            var attr = (FormPropertyAttribute?)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
+            var attr = (FormPropertyAttribute?)prop
+                .GetCustomAttributes(typeof(FormPropertyAttribute), false)
+                .FirstOrDefault();
             if (attr is null
                 || attr.Names.Length <= 1
-                || attr.Names[0] != "Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
-                || attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска" or "номер паспорта (сертификата)" or "номер")) continue;
+                || attr.Names[0] is not ("Сведения из паспорта (сертификата) на закрытый радионуклидный источник"
+                    or "Сведения об отработавших закрытых источниках ионизирующего излучения")
+                || attr.Names[1] is not ("код ОКПО изготовителя" or "тип" or "дата выпуска"
+                    or "номер паспорта (сертификата)"
+                    or "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ" or "номер"))
+            {
+                continue;
+            }
             var midValue = prop.GetMethod?.Invoke(item, null);
             if (midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null) is not (null or "" or "-"))
             {
                 switch (attr.Names[1])
                 {
                     case "код ОКПО изготовителя":
-                        okpo = midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                        okpo = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
                         break;
                     case "тип":
                         type = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
@@ -1637,7 +1577,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     case "дата выпуска":
                         date = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
                         break;
-                    case "номер паспорта (сертификата)":
+                    case "номер паспорта (сертификата)" or "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ":
                         pasNum = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
                         break;
                     case "номер":
@@ -1649,17 +1589,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    private static bool ComparePasParam(string nameDb, string namePas)
-    {
-        nameDb ??= "";
-        nameDb = Regex.Replace(nameDb, "[\\\\/:*?\"<>|]", "");
-        nameDb = Regex.Replace(nameDb, "\\s+", "");
-        namePas = Regex.Replace(namePas, "[\\\\/:*?\"<>|]", "");
-        namePas = Regex.Replace(namePas, "\\s+", "");
-        return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase)
-            || TranslateToEng(nameDb).Equals(TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
-            || TranslateToRus(nameDb).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
-    }
     #endregion
 
     #region CustomStringDateComparer
