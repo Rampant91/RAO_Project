@@ -284,10 +284,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             }
                         }
                     }
-                    catch
-                    {
-
-                    }
+                    catch { }
                 }
             }
         }
@@ -630,10 +627,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     }
                 }
             }
-            catch
-            {
-
-            }
+            catch { }
         }
     }
 
@@ -1041,22 +1035,22 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     public bool DownFlag { get; set; }
     private int[] FirstPressedItem { get; set; } = new int[2];
     private int[] LastPressedItem { get; set; } = new int[2];
-    private bool SetFirstPressed(int[] First)
+    private bool SetFirstPressed(int[] first)
     {
-        if (FirstPressedItem[0] != First[0] || FirstPressedItem[1] != First[1])
+        if (FirstPressedItem[0] != first[0] || FirstPressedItem[1] != first[1])
         {
-            FirstPressedItem[0] = First[0];
-            FirstPressedItem[1] = First[1];
+            FirstPressedItem[0] = first[0];
+            FirstPressedItem[1] = first[1];
             return true;
         }
         return false;
     }
-    private bool SetLastPressed(int[] Last)
+    private bool SetLastPressed(int[] last)
     {
-        if (LastPressedItem[0] != Last[0] || LastPressedItem[1] != Last[1])
+        if (LastPressedItem[0] != last[0] || LastPressedItem[1] != last[1])
         {
-            LastPressedItem[0] = Last[0];
-            LastPressedItem[1] = Last[1];
+            LastPressedItem[0] = last[0];
+            LastPressedItem[1] = last[1];
             return true;
         }
         return false;
@@ -1076,9 +1070,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 if (mouse[0] >= 0)
                 {
                     var sumx = 0.0;
-                    foreach (var control in item.Children)
+                    foreach (var it in item.Children.Cast<Cell?>())
                     {
-                        var it = (Cell)control;
                         sumx += it.Bounds.Width;
                         if (mouse[1] <= sumx)
                         {
@@ -1090,20 +1083,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 doFlag = true;
                                 break;
                             }
-                            else
-                            {
-                                flag = true;
-                                break;
-                            }
+                            flag = true;
+                            break;
                         }
                     }
-                    if (flag)
-                        break;
+                    if (flag) break;
                 }
-                else
-                {
-                    break;
-                }
+                else break;
             }
         }
         if (!doFlag)
@@ -1115,13 +1101,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     private void MousePressed(object sender, PointerPressedEventArgs args)
     {
-        var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
+        var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
         var doSetItemFlag = false;
 
         if (paramKey is PointerUpdateKind.LeftButtonPressed or PointerUpdateKind.RightButtonPressed)
         {
-            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+            var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
             if (paramKey == PointerUpdateKind.RightButtonPressed)
             {
                 var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
@@ -1208,10 +1194,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         ctrl.CaretIndex = num - 1;
                     }
                 }
-
             }
         }
     }
+
     private void MouseDoublePressed(object sender, EventArgs args)
     {
         if (FirstPressedItem[0] != -1)
@@ -1223,14 +1209,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     private void MouseReleased(object sender, PointerReleasedEventArgs args)
     {
-        var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
+        var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
         if (paramKey == PointerUpdateKind.LeftButtonReleased)
         {
-            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+            var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
             if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
             {
                 LastPressedItem = paramRowColumn;
@@ -1241,12 +1228,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     private void MouseMoved(object sender, PointerEventArgs args)
     {
-        var paramKey = args.GetPointerPoint(this).Properties;
+        var paramKey = args.GetCurrentPoint(this).Properties;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
         if (paramKey.IsLeftButtonPressed)
         {
-            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+            var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
             if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
             {
                 var pr = ((Panel)Content).Bounds.Width;
@@ -1403,7 +1390,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     {
         if (args.Key == Key.Left)
         {
-            LastPressedItem[1] = LastPressedItem[1] == 1 ? LastPressedItem[1] : LastPressedItem[1] - 1;
+            LastPressedItem[1] = LastPressedItem[1] == 1 
+                ? LastPressedItem[1] 
+                : LastPressedItem[1] - 1;
             if (args.KeyModifiers != KeyModifiers.Shift)
             {
                 FirstPressedItem[0] = LastPressedItem[0];
@@ -1425,7 +1414,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
         if (args.Key == Key.Right)
         {
-            LastPressedItem[1] = LastPressedItem[1] == Rows[0].Children.Count - 1 ? LastPressedItem[1] : LastPressedItem[1] + 1;
+            if (LastPressedItem[1] != Rows[0].Children.Count - 1)
+                LastPressedItem[1]++;
             if (args.KeyModifiers != KeyModifiers.Shift)
             {
                 FirstPressedItem[0] = LastPressedItem[0];
@@ -1518,15 +1508,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         MakeAll();
         MakeHeaderRows();
         MakeCenterRows();
-
         UpdateCells();
         MakeContextMenu();
     }
 
     private void MakeContextMenu()
     {
-        IEnumerable<IGrouping<string, KeyCommand>>? lst = null;
-        lst = CommandsList
+        var lst = CommandsList
             .Where(item => item.IsContextMenuCommand)
             .GroupBy(item => item.ContextMenuText[0]);
         if (IsReadableSum)
@@ -1535,22 +1523,27 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         List<MenuItem> lr = new();
         foreach (var item in lst)
         {
-            if (item.Count() == 1)
+            switch (item.Count())
             {
-                var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
-                tmp.Tapped += ComandTapped;
-                lr.Add(tmp);
-            }
-            if (item.Count() == 2)
-            {
-                List<MenuItem> inlr = new();
-                foreach (var it in item)
+                case 1:
                 {
-                    var tmp = new MenuItem { Header = it.ContextMenuText[1] };
+                    var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
                     tmp.Tapped += ComandTapped;
-                    inlr.Add(tmp);
+                    lr.Add(tmp);
+                    break;
                 }
-                lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                case 2:
+                {
+                    List<MenuItem> inlr = new();
+                    foreach (var it in item)
+                    {
+                        var tmp = new MenuItem { Header = it.ContextMenuText[1] };
+                        tmp.Tapped += ComandTapped;
+                        inlr.Add(tmp);
+                    }
+                    lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                    break;
+                }
             }
         }
         menu.Items = lr;
@@ -1577,7 +1570,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             var tre = ls.GetLevel(level - 1);
             for (var i = level - 1; i >= 1; i--)
             {
-                Grid HeaderRow = new();
+                Grid headerRow = new();
                 var count = 0;
                 foreach (var item in tre)
                 {
@@ -1592,7 +1585,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     {
                         [!ColumnDefinition.WidthProperty] = b
                     };
-                    HeaderRow.ColumnDefinitions.Add(column);
+                    headerRow.ColumnDefinitions.Add(column);
 
                     Cell cell = new()
                     {
@@ -1615,13 +1608,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
                     cell.Control = textBlock;
 
-                    HeaderRow.Children.Add(cell);
+                    headerRow.Children.Add(cell);
                     if (count + 1 < tre.Count * 2 - 1)
                     {
-                        HeaderRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse(GridSplitterSize.ToString()) });
+                        headerRow.ColumnDefinitions.Add(new ColumnDefinition
+                        {
+                            Width = GridLength.Parse(GridSplitterSize.ToString())
+                        });
                         if (i == 1 && IsColumnResize)
                         {
-                            HeaderRow.Children.Add(new GridSplitter()
+                            headerRow.Children.Add(new GridSplitter()
                             {
                                 [Grid.ColumnProperty] = count + 1,
                                 ResizeDirection = GridResizeDirection.Columns,
@@ -1647,7 +1643,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         HeadersColumns.Add(column);
                     }
                 }
-                HeaderStackPanel.Children.Add(HeaderRow);
+                HeaderStackPanel.Children.Add(headerRow);
                 if (i - 1 >= 1)
                 {
                     tre = ls.GetLevel(i - 1);
@@ -1675,7 +1671,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             {
                 var column = 0;
                 var count = 0;
-                DataGridRow RowStackPanel = new() { Row = i };
+                DataGridRow rowStackPanel = new() { Row = i };
 
                 foreach (var item in lst)
                 {
@@ -1684,11 +1680,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         Source = HeadersColumns[column],
                         Path = nameof(ColumnDefinition.Width)
                     };
-                    var columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty] = b };
-                    RowStackPanel.ColumnDefinitions.Add(columnq);
+                    var columnq = new ColumnDefinition { [!ColumnDefinition.WidthProperty] = b };
+                    rowStackPanel.ColumnDefinitions.Add(columnq);
 
-                    Control textBox = null;
-
+                    Control textBox;
                     Cell cell = new()
                     {
                         [Grid.ColumnProperty] = count,
@@ -1788,10 +1783,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
                     cell.Control = textBox;
 
-                    RowStackPanel.Children.Add(cell);
+                    rowStackPanel.Children.Add(cell);
                     if (count + 1 < lst.Count * 2 - 1)
                     {
-                        RowStackPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse(GridSplitterSize.ToString()) });
+                        rowStackPanel.ColumnDefinitions.Add(new ColumnDefinition
+                        {
+                            Width = GridLength.Parse(GridSplitterSize.ToString())
+                        });
                         count += 2;
                     }
                     else
@@ -1800,24 +1798,23 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     }
                     column++;
                 }
-
-                RowStackPanel.IsVisible = false;
-                CenterStackPanel.Children.Add(RowStackPanel);
-                Rows.Add(RowStackPanel);
+                rowStackPanel.IsVisible = false;
+                CenterStackPanel.Children.Add(rowStackPanel);
+                Rows.Add(rowStackPanel);
             }
         }
     }
 
     private void MakeHeaderRows()
     {
-        var Columns = this.Columns;
-        MakeHeaderInner(Columns);
+        var columns = Columns;
+        MakeHeaderInner(columns);
     }
 
     private void MakeCenterRows()
     {
-        var Columns = this.Columns;
-        MakeCenterInner(Columns);
+        var columns = Columns;
+        MakeCenterInner(columns);
     }
 
     private void MakeAll()
@@ -1870,7 +1867,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 [!TextBox.TextProperty] = this[!SearchTextProperty]
             };
             headerSearchStackPanel.Children.Add(searchTextBox);
-
         }
         #endregion
 
@@ -1910,7 +1906,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 [!MarginProperty] = this[!FixedContentProperty],
                 Orientation = Orientation.Horizontal
             };
-            headerStackPanel2.Children.Add(new TextBlock() { Text = Comment, Margin = Thickness.Parse("5,5,0,5") });
+            headerStackPanel2.Children.Add(new TextBlock { Text = Comment, Margin = Thickness.Parse("5,5,0,5") });
             HeaderStackPanel.Children.Add(headerStackPanel2);
         }
         headerPanel.Children.Add(HeaderStackPanel);
@@ -1993,7 +1989,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 centerPanel.Width = w;
             }
         }
-
         CenterStackPanel = new StackPanel
         {
             Orientation = Orientation.Vertical,
@@ -2059,9 +2054,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             [!MarginProperty] = this[!FixedContentProperty],
             Orientation = Orientation.Horizontal
         };
-        middleFooterStackPanel2.Children.Add(new TextBlock()
+        middleFooterStackPanel2.Children.Add(new TextBlock 
             { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
-        middleFooterStackPanel2.Children.Add(new TextBlock()
+        middleFooterStackPanel2.Children.Add(new TextBlock
         {
             [!TextBox.TextProperty] = this[!ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
         });
@@ -2074,9 +2069,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 [!MarginProperty] = this[!FixedContentProperty],
                 Orientation = Orientation.Horizontal
             };
-            middleFooterStackPanelR.Children.Add(new TextBlock()
+            middleFooterStackPanelR.Children.Add(new TextBlock
                 { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
-            middleFooterStackPanelR.Children.Add(new TextBlock()
+            middleFooterStackPanelR.Children.Add(new TextBlock
             {
                 [!TextBox.TextProperty] = this[!ReportCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
             });

@@ -30,7 +30,6 @@ using Models.Forms;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Avalonia.Controls.Shapes;
 using Path = System.IO.Path;
 
 namespace Client_App.ViewModels;
@@ -544,7 +543,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    double StringToNumber(string num)
+    private static double StringToNumber(string num)
     {
         if (num != null)
         {
@@ -581,7 +580,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         return 0;
     }
 
-    int StringToNumberInt(string num)
+    private static int StringToNumberInt(string num)
     {
         if (num != null)
         {
