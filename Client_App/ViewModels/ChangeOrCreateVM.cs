@@ -30,6 +30,8 @@ using Models.Forms;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Avalonia.Controls.Shapes;
+using Path = System.IO.Path;
 
 namespace Client_App.ViewModels;
 
@@ -1236,6 +1238,24 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             PassportUniqParam(param, out _, out _, out _, out var pasNum, out var factoryNum);
+            if (pasNum is null or "" or "-" || factoryNum is null or "" or "-")
+            {
+                #region MessageFailedToLoadPassportUniqParam
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentMessage = /*$"Не удалось выполнить выгрузку в эксель истории движения источника ЗРИ файл по пути: {path}{Environment.NewLine}" +*/
+                                         "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                        MinHeight = 150,
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
+                #endregion
+                return;
+            }
             SaveFileDialog saveFileDialog = new();
             FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
             saveFileDialog.Filters.Add(filter);
@@ -1276,7 +1296,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
                 excelPackage.Workbook.Properties.Created = DateTime.Now;
-
+                #region FillForm_1.1
                 var worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.1");
                 #region ColumnHeaders
                 worksheet.Cells[1, 1].Value = "Рег. №";
@@ -1320,7 +1340,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     foreach (var rep in form11)
                     {
                         var repPas = rep.Rows11
-                            .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum) 
+                            .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum)
                                         && ComparePasParam(x.FactoryNumber_DB, factoryNum));
                         foreach (var repForm in repPas)
                         {
@@ -1359,18 +1379,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                                 worksheet.Cells[2, 30].Value = repForm.PackType_DB;
                                 worksheet.Cells[2, 31].Value = repForm.PackNumber_DB;
                                 #endregion
-
                                 lastRow++;
                                 continue;
                             }
-
                             for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
                             {
                                 if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(
                                         repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
                                 {
                                     worksheet.InsertRow(currentRow, 1);
-
                                     #region BindingCells
                                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                                     worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
@@ -1411,6 +1428,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
+                worksheet.Cells.AutoFitColumns();
+                var headersCellsString = "A1:A" + worksheet.Dimension.End.Column;
+                worksheet.Cells[headersCellsString].Style.WrapText = true;
+                worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                worksheet.Cells[headersCellsString].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                #endregion
+                #region FillForm_1.5
                 worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.5");
                 #region ColumnHeaders
                 worksheet.Cells[1, 1].Value = "Рег. №";
@@ -1424,7 +1448,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 worksheet.Cells[1, 9].Value = "№ п/п";
                 worksheet.Cells[1, 10].Value = "код";
                 worksheet.Cells[1, 11].Value = "дата";
-                worksheet.Cells[1, 12].Value = "номер паспорта (сертификата) Эри, акта определения характеристик ОЗИИ";
+                worksheet.Cells[1, 12].Value = $"номер паспорта (сертификата) Эри,{Environment.NewLine}акта определения характеристик ОЗИИ";
                 worksheet.Cells[1, 13].Value = "тип";
                 worksheet.Cells[1, 14].Value = "радионуклиды";
                 worksheet.Cells[1, 15].Value = "номер";
@@ -1455,7 +1479,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     foreach (var rep in form15)
                     {
                         var repPas = rep.Rows15
-                            .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum) 
+                            .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum)
                                         && ComparePasParam(x.FactoryNumber_DB, factoryNum));
                         foreach (var repForm in repPas)
                         {
@@ -1546,6 +1570,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
+                worksheet.Cells.AutoFitColumns();
+                headersCellsString = "A1:A" + worksheet.Dimension.End.Column;
+                worksheet.Cells[headersCellsString].Style.WrapText = true;
+                worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                worksheet.Cells[headersCellsString].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center; 
+                #endregion
                 try
                 {
                     excelPackage.Save();
@@ -1569,7 +1599,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
                     #endregion
                 }
-
                 #region MessageExcelExportSaved
 
                 res = await MessageBox.Avalonia.MessageBoxManager
@@ -1590,7 +1619,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     .ShowDialog(desktop.MainWindow);
 
                 #endregion
-
                 if (res is "Открыть выгрузку")
                 {
                     Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
