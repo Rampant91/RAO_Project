@@ -1246,9 +1246,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
-                        ContentMessage = /*$"Не удалось выполнить выгрузку в эксель истории движения источника ЗРИ файл по пути: {path}{Environment.NewLine}" +*/
-                                         "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                        MinHeight = 150,
+                        ContentMessage = "Не удалось выполнить выгрузку в Excel истории движения источника,"
+                        + $"{Environment.NewLine}поскольку не заполнено одно из следующих полей:" +
+                        $"{Environment.NewLine}- номер паспорта (сертификата);" +
+                        $"{Environment.NewLine}- номер источника.",
+                        MinHeight = 100,
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
@@ -1296,6 +1298,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
                 excelPackage.Workbook.Properties.Created = DateTime.Now;
+
                 #region FillForm_1.1
                 var worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.1");
                 #region ColumnHeaders
@@ -1434,6 +1437,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                 worksheet.Cells[headersCellsString].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                 #endregion
+
                 #region FillForm_1.5
                 worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.5");
                 #region ColumnHeaders
@@ -1522,7 +1526,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                                 lastRow++;
                                 continue;
                             }
-
                             for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
                             {
                                 if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(
@@ -1583,7 +1586,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 catch (Exception)
                 {
                     #region MessageFailedToSaveFile
-
                     await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
@@ -1596,11 +1598,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
-
                     #endregion
                 }
                 #region MessageExcelExportSaved
-
                 res = await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
@@ -1617,7 +1617,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
-
                 #endregion
                 if (res is "Открыть выгрузку")
                 {
@@ -1645,11 +1644,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow("Уведомление",
                         "Паспорт не может быть открыт, поскольку не заполнены или заполнены некорректно все требуемые поля:"
-                        + Environment.NewLine + "- номер паспорта (сертификата)"
-                        + Environment.NewLine + "- тип"
-                        + Environment.NewLine + "- номер"
-                        + Environment.NewLine + "- код ОКПО изготовителя"
-                        + Environment.NewLine + "- дата выпуска")
+                        + Environment.NewLine + "- номер паспорта (сертификата);"
+                        + Environment.NewLine + "- тип;"
+                        + Environment.NewLine + "- номер;"
+                        + Environment.NewLine + "- код ОКПО изготовителя;"
+                        + Environment.NewLine + "- дата выпуска;")
                     .ShowDialog(desktop!.MainWindow);
             #endregion
             return;
