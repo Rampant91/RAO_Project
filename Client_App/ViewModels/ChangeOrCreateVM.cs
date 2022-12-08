@@ -748,7 +748,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 var numberCell = item.NumberInOrder_DB;
                 var t2 = await ShowDialogIn.Handle(numberCell);
-
                 if (t2 > 0)
                 {
                     foreach (var key in Storage[item.FormNum_DB])
@@ -779,15 +778,31 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteRow { get; protected set; }
     private async Task _DeleteRow(object _param)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var param = (IEnumerable<IKey>)_param;
-            var answer = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
+            #region MessageDeleteLine
+            var answer = await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions = new[]
+                        {
+                        new ButtonDefinition { Name = "Да" },
+                        new ButtonDefinition { Name = "Нет" }
+                        },
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "Вы действительно хотите удалить строчку?",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow); 
+            #endregion
             if (answer == "Да")
             {
                 //var lst = new List<IKey>(Storage.Rows.GetEnumerable());
                 var minItem = param.Min(x => x.Order);
-                var maxItem = param.Max(x => x.Order);
+                //var maxItem = param.Max(x => x.Order);
                 foreach (var item in param)
                 {
                     if (item != null)
@@ -816,8 +831,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 else if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.2"))
                 {
                     var count = 1;
-                    foreach (Form22 row in rows)
+                    foreach (var key in rows)
                     {
+                        var row = (Form22)key;
                         row.SetOrder(count);
                         count++;
                         row.NumberInOrderSum = new RamAccess<string>(null, "");
@@ -849,7 +865,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DuplicateRowsx1 { get; protected set; }
     private async Task _DuplicateRowsx1(object param)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var t = await ShowDialog.Handle(desktop.MainWindow);
             if (t > 0)
@@ -871,7 +887,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DuplicateNotes { get; protected set; }
     private async Task _DuplicateNotes(object param)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var t = await ShowDialog.Handle(desktop.MainWindow);
             if (t > 0)
@@ -902,15 +918,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             minColumn++;
         }
 
-        if (Application.Current?.Clipboard is Avalonia.Input.Platform.IClipboard)
+        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard)
         {
             foreach (var item in collectionEn.OrderBy(x => x.Order))
             {
                 var props = item.GetType().GetProperties();
                 var dStructure = (IDataGridColumn)item;
                 var findStructure = dStructure.GetColumnStructure();
-                var Level = findStructure.Level;
-                var tre = findStructure.GetLevel(Level - 1);
+                var level = findStructure.Level;
+                var tre = findStructure.GetLevel(level - 1);
 
                 foreach (var prop in props)
                 {
@@ -919,9 +935,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     try
                     {
                         int columnNum;
-                        if (attr.Names.Count() > 1 && attr.Names[0] != "null-1-1")
+                        if (attr.Names.Length > 1 && attr.Names[0] != "null-1-1")
                         {
-                            columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                            columnNum = Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name);
                         }
                         else
                         {
@@ -929,31 +945,36 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                         if (columnNum >= minColumn && columnNum <= maxColumn)
                         {
-                            var midvalue = prop.GetMethod.Invoke(item, null);
-                            if (midvalue is RamAccess<int?>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
-                            else if (midvalue is RamAccess<float?>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { float.Parse("") });
-                            else if (midvalue is RamAccess<short>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
-                            else if (midvalue is RamAccess<short?>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse("") });
-                            else if (midvalue is RamAccess<int>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse("") });
-                            else if (midvalue is RamAccess<string>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
-                            else if (midvalue is RamAccess<byte?>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
-                            else if (midvalue is RamAccess<bool>)
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
-                            else
-                                midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { "" });
+                            var midValue = prop.GetMethod?.Invoke(item, null);
+                            switch (midValue)
+                            {
+                                case RamAccess<int?>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse("") });
+                                    break;
+                                case RamAccess<float?>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { float.Parse("") });
+                                    break;
+                                case RamAccess<short>:
+                                case RamAccess<short?>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { short.Parse("") });
+                                    break;
+                                case RamAccess<int>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse("") });
+                                    break;
+                                case RamAccess<string>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { "" });
+                                    break;
+                                case RamAccess<byte?>:
+                                case RamAccess<bool>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { null });
+                                    break;
+                                default:
+                                    midValue?.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { "" });
+                                    break;
+                            }
                         }
                     }
-                    catch (Exception)
-                    {
-                        var k = 8;
-                    }
+                    catch (Exception) { }
                 }
             }
         }
@@ -973,9 +994,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             minColumn++;
         }
         var txt = "";
-
         Dictionary<long, Dictionary<int, string>> dic = new();
-
         foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
         {
             dic.Add(item.Order, new Dictionary<int, string>());
@@ -988,22 +1007,17 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
                 if (attr == null) continue;
-                int newNum;
-                if (attr.Names.Length > 1 && attr.Names[0] != "null-1-1")
-                {
-                    newNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
-                }
-                else
-                {
-                    newNum = Convert.ToInt32(attr.Number);
-                }
+                var newNum = attr.Names.Length > 1 && attr.Names[0] != "null-1-1"
+                    ? Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol
+                        .FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name)
+                    : Convert.ToInt32(attr.Number);
                 //var numAttr = Convert.ToInt32(attr.Number);
                 try
                 {
                     if (newNum >= minColumn && newNum <= maxColumn)
                     {
-                        var midvalue = prop.GetMethod.Invoke(item, null);
-                        var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
+                        var midValue = prop.GetMethod?.Invoke(item, null);
+                        var value = midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null);
                         if (value != null)
                         {
                             try
@@ -1024,13 +1038,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
-                catch
-                {
-
-                }
+                catch { }
             }
         }
-
         foreach (var item in dic.OrderBy(x => x.Key))
         {
             foreach (var it in item.Value.OrderBy(x => x.Key))
@@ -1049,7 +1059,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         }
         txt = txt.Remove(txt.Length - 1, 1);
 
-        if (Application.Current?.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current.Clipboard is { } clip)
         {
             await clip.ClearAsync();
             await clip.SetTextAsync(txt);
@@ -1071,7 +1081,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             minColumn++;
         }
 
-        if (Application.Current?.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+        if (Application.Current.Clipboard is { } clip)
         {
             var text = await clip.GetTextAsync();
             var rowsText = ParseInnerTextRows(text);
@@ -1111,20 +1121,19 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     if (attr == null) continue;
                     try
                     {
-                        var columnNum = 0;
-                        if (attr.Names.Count() > 1 && attr.Names.Count() != 4 && attr.Names[0] != "null-1-1" && attr.Names[0] != "Документ" && attr.Names[0] != "Сведения об операции")
+                        int columnNum;
+                        if (attr.Names.Length > 1 && attr.Names.Length != 4 && attr.Names[0] is not("null-1-1" or "Документ" or "Сведения об операции"))
                         {
-                            columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                            columnNum = Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name);
                         }
                         else if (attr.Names[0] == "Документ")
                         {
                             var findDock = tre.Where(x => x.name == "null-n");
-                            if (findDock.Any())
-                            {
-                                columnNum = Convert.ToInt32(findDock.FirstOrDefault().innertCol.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
-                            }
-                            else
-                                columnNum = Convert.ToInt32(tre.Where(x => x.name == attr.Names[0]).FirstOrDefault().innertCol.Where(x => x.name == attr.Names[1]).FirstOrDefault().innertCol[0].name);
+                            columnNum = Convert.ToInt32(findDock.Any() 
+                                ? findDock.FirstOrDefault()?.innertCol.FirstOrDefault(x => x.name == attr.Names[0])
+                                    ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name 
+                                : tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol
+                                    .FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name);
                         }
                         else
                         {
@@ -1133,31 +1142,38 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         //var columnNum = Convert.ToInt32(attr.Number);
                         if (columnNum >= minColumn && columnNum <= maxColumn)
                         {
-                            var midValue = prop.GetMethod.Invoke(item, null);
-                            if (midValue is RamAccess<int?>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
-                            else if (midValue is RamAccess<float?>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { float.Parse(columnsText[columnNum - minColumn]) });
-                            else if (midValue is RamAccess<short>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
-                            else if (midValue is RamAccess<short?>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
-                            else if (midValue is RamAccess<int>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
-                            else if (midValue is RamAccess<string>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
-                            else if (midValue is RamAccess<byte?>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
-                            else if (midValue is RamAccess<bool>)
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
-                            else
-                                midValue.GetType().GetProperty("Value").SetMethod.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
+                            var midValue = prop.GetMethod?.Invoke(item, null);
+                            switch (midValue)
+                            {
+                                case RamAccess<int?>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
+                                    break;
+                                case RamAccess<float?>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { float.Parse(columnsText[columnNum - minColumn]) });
+                                    break;
+                                case RamAccess<short>:
+                                case RamAccess<short?>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
+                                    break;
+                                case RamAccess<int>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
+                                    break;
+                                case RamAccess<string>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
+                                    break;
+                                case RamAccess<byte?>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
+                                    break;
+                                case RamAccess<bool>:
+                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
+                                    break;
+                                default:
+                                    midValue?.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
+                                    break;
+                            }
                         }
                     }
-                    catch (Exception)
-                    {
-                        var k = 8;
-                    }
+                    catch (Exception) { }
                 }
             }
         }
@@ -1168,28 +1184,42 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteNote { get; protected set; }
     private async Task _DeleteNote(object _param)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var param = (IEnumerable)_param;
-            var answer = await ShowMessageT.Handle(new List<string> { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
+            #region MessageDeleteNote
+            var answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Да" },
+                        new ButtonDefinition { Name = "Нет" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Вы действительно хотите удалить комментарий?",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow); 
+            #endregion
             if (answer == "Да")
             {
                 foreach (Note item in param)
                 {
-                    if (item != null)
+                    if (item == null) continue;
+                    foreach (var key in Storage.Notes)
                     {
-                        foreach (var key in Storage.Notes)
+                        var it = (Note)key;
+                        if (it.Order > item.Order)
                         {
-                            var it = (Note)key;
-                            if (it.Order > item.Order)
-                            {
-                                it.Order -= 1;
-                            }
+                            it.Order -= 1;
                         }
-                        foreach (Note nt in param)
-                        {
-                            Storage.Notes.Remove(nt);
-                        }
+                    }
+                    foreach (Note nt in param)
+                    {
+                        Storage.Notes.Remove(nt);
                     }
                 }
                 await Storage.SortAsync();
@@ -1852,10 +1882,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     FormType = param;
                     Storage.StartPeriod.Value = ty;
                 }
-                catch
-                {
-
-                }
+                catch { }
             }
         }
         else
@@ -1875,30 +1902,31 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         Storage.Year.Value = (Convert.ToInt32(ty) + 1).ToString();
                     }
                 }
-                catch
-                {
-
-                }
+                catch { }
             }
         }
-
-        if (param == "1.0")
+        switch (param)
         {
-            var ty1 = (Form10)FormCreator.Create(param);
-            ty1.NumberInOrder_DB = 1;
-            var ty2 = (Form10)FormCreator.Create(param);
-            ty2.NumberInOrder_DB = 2;
-            Storage.Rows10.Add(ty1);
-            Storage.Rows10.Add(ty2);
-        }
-        if (param == "2.0")
-        {
-            var ty1 = (Form20)FormCreator.Create(param);
-            ty1.NumberInOrder_DB = 1;
-            var ty2 = (Form20)FormCreator.Create(param);
-            ty2.NumberInOrder_DB = 2;
-            Storage.Rows20.Add(ty1);
-            Storage.Rows20.Add(ty2);
+            case "1.0":
+            {
+                var ty1 = (Form10)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form10)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows10.Add(ty1);
+                Storage.Rows10.Add(ty2);
+                break;
+            }
+            case "2.0":
+            {
+                var ty1 = (Form20)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form20)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows20.Add(ty1);
+                Storage.Rows20.Add(ty2);
+                break;
+            }
         }
         Storages = reps;
         FormType = param;
@@ -1907,23 +1935,28 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ChangeOrCreateVM(string param, in DBObservable reps)
     {
         Storage = new Report { FormNum_DB = param };
-        if (param == "1.0")
+        switch (param)
         {
-            var ty1 = (Form10)FormCreator.Create(param);
-            ty1.NumberInOrder_DB = 1;
-            var ty2 = (Form10)FormCreator.Create(param);
-            ty2.NumberInOrder_DB = 2;
-            Storage.Rows10.Add(ty1);
-            Storage.Rows10.Add(ty2);
-        }
-        if (param == "2.0")
-        {
-            var ty1 = (Form20)FormCreator.Create(param);
-            ty1.NumberInOrder_DB = 1;
-            var ty2 = (Form20)FormCreator.Create(param);
-            ty2.NumberInOrder_DB = 2;
-            Storage.Rows20.Add(ty1);
-            Storage.Rows20.Add(ty2);
+            case "1.0":
+            {
+                var ty1 = (Form10)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form10)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows10.Add(ty1);
+                Storage.Rows10.Add(ty2);
+                break;
+            }
+            case "2.0":
+            {
+                var ty1 = (Form20)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form20)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows20.Add(ty1);
+                Storage.Rows20.Add(ty2);
+                break;
+            }
         }
         FormType = param;
         DBO = reps;
@@ -1940,7 +1973,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private void Init()
     {
         var a = FormType.Replace(".", "");
-        if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
+        if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") 
+            || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
         {
             WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
         }
@@ -1965,7 +1999,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ExcelPassport = ReactiveCommand.CreateFromTask<object>(_ExcelPassport);
         CopyPasName = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
         CopyExecutorData = ReactiveCommand.CreateFromTask<object>(_CopyExecutorData);
-
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();
@@ -1987,20 +2020,18 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 return;
             }
-
             _isCanSaveReportEnabled = value;
-            PropertyChanged?
-                .Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
         }
     }
 
     [DependsOn(nameof(IsCanSaveReportEnabled))]
     #endregion
 
-    private bool CanSaveReport(object parameter)
-    {
-        return _isCanSaveReportEnabled;
-    }
+    //private bool CanSaveReport(object parameter)
+    //{
+    //    return _isCanSaveReportEnabled;
+    //}
 
     public void SaveReport()
     {
@@ -2027,7 +2058,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 if (Storages != null)
                 {
-                    if (FormType != "1.0" && FormType != "2.0")
+                    if (FormType is not ("1.0" or "2.0"))
                     {
                         if (!Storages.Report_Collection.Contains(Storage))
                         {
@@ -2054,7 +2085,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             //Storages.Report_Collection.Sorted = false;
             //Storages.Report_Collection.QuickSort();
         }
-
         var dbm = StaticConfiguration.DBModel;
         dbm.SaveChanges();
         IsCanSaveReportEnabled = false;
@@ -2131,28 +2161,21 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var txt = "";
         foreach (var item in text)
         {
-            if (item == '\"')
+            switch (item)
             {
-                comaFlag = true;
-            }
-            else
-            {
-                if (item == '\t')
-                {
-                    if (!comaFlag)
-                    {
-                        lst.Add(txt);
-                        txt = "";
-                    }
-                    else
-                    {
-                        txt += item;
-                    }
-                }
-                else
-                {
+                case '\"':
+                    comaFlag = true;
+                    break;
+                case '\t' when !comaFlag:
+                    lst.Add(txt);
+                    txt = "";
+                    break;
+                case '\t':
                     txt += item;
-                }
+                    break;
+                default:
+                    txt += item;
+                    break;
             }
         }
         if (txt != "")
