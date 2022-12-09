@@ -917,7 +917,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                             if (!skipInter)
                                             {
                                                 var str =
-                                                    $"Пересечение даты в {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB} \n{newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}\nКоличество строк - {repFromEx.Rows.Count}";
+                                                    $"Пересечение даты в {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB}" 
+                                                    + $"{Environment.NewLine}{newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}"
+                                                    + $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
                                                 an = await ShowMessage.Handle(new List<string>
                                                 {str,"Отчет",
                                                     "Сохранить оба",
@@ -5696,7 +5698,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
                 pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-
                 var currentRow = 2;
                 foreach (var key in Local_Reports.Reports_Collection10)
                 {
@@ -5713,8 +5714,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             var findPasFile = false;
                             foreach (var pasParam in pasUniqParam)
                             {
-                                if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
-                                    && ComparePasParam(repForm.Type_DB, pasParam[1])
+                                if (ComparePasParam(ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
+                                    && ComparePasParam(ConvertPrimToDash(repForm.Type_DB), pasParam[1])
                                     && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
                                     && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
                                     && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4]))
@@ -5950,16 +5951,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     foreach (var rep in form11)
                     {
                         List<Form11> repPas = rep.Rows11
-                            .Where(x => x.OperationCode_DB == "11" && categories.Contains(x.Category_DB))
+                            .Where(x => x.OperationCode_DB is "11" or "85" && categories.Contains(x.Category_DB))
                             .ToList();
                         foreach (var repForm in repPas)
                         {
                             foreach (var pasParam in pasUniqParam.Where(pasParam =>
-                                         ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
-                                         && ComparePasParam(repForm.Type_DB, pasParam[1])
+                                         ComparePasParam(ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
+                                         && ComparePasParam(ConvertPrimToDash(repForm.Type_DB), pasParam[1])
                                          && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                         && ComparePasParam(repForm.PassportNumber_DB, pasParam[3])
-                                         && ComparePasParam(repForm.FactoryNumber_DB, pasParam[4])))
+                                         && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
+                                         && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
                             {
                                 pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                                 break;
