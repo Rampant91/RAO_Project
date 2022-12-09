@@ -917,10 +917,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                             if (!skipInter)
                                             {
                                                 var str =
-                                                    $"Пересечение даты в {rep.FormNum_DB} импортируемого отчета из Excel ({rep.StartPeriod_DB}-{rep.EndPeriod_DB})"
-                                                    + $"{Environment.NewLine}с имеющимся в базе отчетом ({repFromEx.StartPeriod_DB}-{repFromEx.EndPeriod_DB})"
-                                                    + $"{Environment.NewLine}{newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}"
-                                                    + $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
+                                                    $"Пересечение даты в форме {rep.FormNum_DB} импортируемого отчета ({repFromEx.StartPeriod_DB}-{repFromEx.EndPeriod_DB})"
+                                                    + $"{Environment.NewLine}с имеющимся в базе отчетом ({rep.StartPeriod_DB}-{rep.EndPeriod_DB})"
+                                                    + $"{Environment.NewLine}у организации рег. номер {newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} ОКПО {newRepsFromExcel.Master.OkpoRep.Value}"
+                                                    + $"{Environment.NewLine}Количество строк в импортируемом отчете - {repFromEx.Rows.Count}";
                                                 an = await ShowMessage.Handle(new List<string>
                                                 {str,"Отчет",
                                                     "Сохранить оба",
@@ -1352,28 +1352,34 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 foreach (Report elem in first11.Report_Collection)
                 {
-                    DateTime st_elem = DateTime.Parse(DateTime.Now.ToShortDateString());
-                    DateTime en_elem = DateTime.Parse(DateTime.Now.ToShortDateString());
+                    var stElem = DateTime.Parse(DateTime.Now.ToShortDateString());
+                    var enElem = DateTime.Parse(DateTime.Now.ToShortDateString());
                     try
                     {
-                        st_elem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.EndPeriod_DB) : DateTime.Parse(elem.StartPeriod_DB);
-                        en_elem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.EndPeriod_DB) : DateTime.Parse(elem.StartPeriod_DB);
+                        stElem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) 
+                            ? DateTime.Parse(elem.EndPeriod_DB) 
+                            : DateTime.Parse(elem.StartPeriod_DB);
+                        enElem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) 
+                            ? DateTime.Parse(elem.EndPeriod_DB) 
+                            : DateTime.Parse(elem.StartPeriod_DB);
                     }
                     catch (Exception ex)
                     { }
 
-                    DateTime st_it = DateTime.Parse(DateTime.Now.ToShortDateString());
-                    DateTime en_it = DateTime.Parse(DateTime.Now.ToShortDateString());
+                    var stIt = DateTime.Parse(DateTime.Now.ToShortDateString());
+                    var enIt = DateTime.Parse(DateTime.Now.ToShortDateString());
                     try
                     {
-                        st_it = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.EndPeriod_DB) : DateTime.Parse(it.StartPeriod_DB);
-                        en_it = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.EndPeriod_DB) : DateTime.Parse(it.StartPeriod_DB);
+                        stIt = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) 
+                            ? DateTime.Parse(it.EndPeriod_DB) 
+                            : DateTime.Parse(it.StartPeriod_DB);
+                        enIt = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) 
+                            ? DateTime.Parse(it.EndPeriod_DB) 
+                            : DateTime.Parse(it.StartPeriod_DB);
                     }
-                    catch (Exception ex)
-                    {
-                    }
+                    catch (Exception) { }
 
-                    if (st_elem == st_it && en_elem == en_it && it.FormNum_DB == elem.FormNum_DB)
+                    if (stElem == stIt && enElem == enIt && it.FormNum_DB == elem.FormNum_DB)
                     {
                         not_in = true;
                         if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
@@ -1381,7 +1387,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             if (!skipLess)
                             {
                                 var str =
-                                    $" Вы пытаетесь загрузить форму с наименьщим номером корректировки - {it.CorrectionNumber_DB},\nпри текущем значении корректировки - {elem.CorrectionNumber_DB}.\nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                    $" Вы пытаетесь загрузить форму с наименьшим номером корректировки - {it.CorrectionNumber_DB},\nпри текущем значении корректировки - {elem.CorrectionNumber_DB}.\nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
                                 var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                 if (an == "Пропустить для всех")
                                 {
@@ -1441,16 +1447,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                     else
                     {
-                        if ((st_elem > st_it && st_elem < en_it || en_elem > st_it && en_elem < en_it) && it.FormNum.Value == elem.FormNum.Value)
+                        if ((stElem > stIt && stElem < enIt || enElem > stIt && enElem < enIt) && it.FormNum.Value == elem.FormNum.Value)
                         {
                             not_in = true;
                             var an = "Отменить";
                             if (!skipInter)
                             {
                                 var str =
-                                    $"Пересечение даты в {elem.FormNum_DB} {elem.StartPeriod_DB}-{elem.EndPeriod_DB} \n{first11.Master.RegNoRep.Value} {first11.Master.ShortJurLicoRep.Value} {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                    $"Пересечение даты в форме {elem.FormNum_DB} импортируемого отчета ({elem.StartPeriod_DB}-{elem.EndPeriod_DB})"
+                                    + $"{Environment.NewLine}с имеющимся в базе отчетом ({it.StartPeriod_DB}-{it.EndPeriod_DB})"
+                                    + $"{Environment.NewLine}у организации рег. номер {item.Master.RegNoRep.Value} {item.Master.ShortJurLicoRep.Value} ОКПО {item.Master.OkpoRep.Value}"
+                                    + $"{Environment.NewLine}Количество строк в импортируемом отчете - {elem.Rows.Count}";
                                 an = await ShowMessage.Handle(new List<string>
-                                {str,"Отчет",
+                                {
+                                    str, "Отчет",
                                     "Сохранить оба",
                                     "Отменить"
                                 });
