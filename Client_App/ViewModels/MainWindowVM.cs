@@ -1338,7 +1338,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     }
     private async Task ProcessIfHasReports11(Reports first11, Reports item)
     {
-        var not_in = false;
+        var notIn = false;
 
         var skipLess = false;
         var doSomething = false;
@@ -1381,7 +1381,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     if (stElem == stIt && enElem == enIt && it.FormNum_DB == elem.FormNum_DB)
                     {
-                        not_in = true;
+                        notIn = true;
                         if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
                         {
                             if (!skipLess)
@@ -1415,7 +1415,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             var an = "Загрузить новую";
                             if (!skipNew)
                             {
-                                if (item.Report_Collection.Count() > 1)
+                                if (item.Report_Collection.Count > 1)
                                 {
                                     var str =
                                         $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
@@ -1449,7 +1449,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     {
                         if ((stElem > stIt && stElem < enIt || enElem > stIt && enElem < enIt) && it.FormNum.Value == elem.FormNum.Value)
                         {
-                            not_in = true;
+                            notIn = true;
                             var an = "Отменить";
                             if (!skipInter)
                             {
@@ -1471,7 +1471,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
-                if (!not_in)
+                if (!notIn)
                 {
                     var an = "Да";
                     if (!_skipNew)
