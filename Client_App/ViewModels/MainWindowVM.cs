@@ -917,7 +917,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                             if (!skipInter)
                                             {
                                                 var str =
-                                                    $"Пересечение даты в {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB}" 
+                                                    $"Пересечение даты в {rep.FormNum_DB} импортируемого отчета из Excel ({rep.StartPeriod_DB}-{rep.EndPeriod_DB})"
+                                                    + $"{Environment.NewLine}с имеющимся в базе отчетом ({repFromEx.StartPeriod_DB}-{repFromEx.EndPeriod_DB})"
                                                     + $"{Environment.NewLine}{newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}"
                                                     + $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
                                                 an = await ShowMessage.Handle(new List<string>
