@@ -1237,7 +1237,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             PassportUniqParam(param, out _, out _, out _, out var pasNum, out var factoryNum);
-            if (pasNum is null or "" or "-" || factoryNum is null or "" or "-")
+            if (pasNum is null or "" || factoryNum is null or "" || pasNum is "-" && factoryNum is "-")
             {
                 #region MessageFailedToLoadPassportUniqParam
                 await MessageBox.Avalonia.MessageBoxManager
@@ -1631,12 +1631,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private async Task _OpenPassport(object param)
     {
         PassportUniqParam(param, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
-        var year = MainWindowVM.ConvertDateToYear(date);
-        if (okpo is null or "" or "-"
-            || type is null or "" or "-"
-            || year is null or "" or "-" or "0000"
-            || pasNum is null or "" or "-"
-            || factoryNum is null or "" or "-")
+        var year = ConvertDateToYear(date);
+        if (okpo is null or ""
+            || type is null or ""
+            || year is null or ""
+            || pasNum is null or ""
+            || factoryNum is null or "")
         {
             var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             #region MessageUnableToOpenPassport
@@ -1691,12 +1691,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private async Task _CopyPasName(object param)
     {
         PassportUniqParam(param, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
-        var year = MainWindowVM.ConvertDateToYear(date);
-        if (okpo is null or "" or "-"
-            || type is null or "" or "-"
-            || year is null or "" or "-" or "0000"
-            || pasNum is null or "" or "-"
-            || factoryNum is null or "" or "-")
+        var year = ConvertDateToYear(date);
+        if (okpo is null or ""
+            || type is null or ""
+            || year is null or ""
+            || pasNum is null or ""
+            || factoryNum is null or "")
         {
             var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             #region MessageFailedToCopyPasName
@@ -1746,24 +1746,28 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 continue;
             }
             var midValue = prop.GetMethod?.Invoke(item, null);
-            if (midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null) is not (null or "" or "-"))
+            if (midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null) is not (null or ""))
             {
                 switch (attr.Names[1])
                 {
                     case "код ОКПО изготовителя":
                         okpo = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                        okpo = ConvertPrimToDash(okpo);
                         break;
                     case "тип":
                         type = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                        type = ConvertPrimToDash(type);
                         break;
                     case "дата выпуска":
                         date = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
                         break;
                     case "номер паспорта (сертификата)" or "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ":
                         pasNum = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                        pasNum = ConvertPrimToDash(pasNum);
                         break;
                     case "номер":
                         factoryNum = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                        factoryNum = ConvertPrimToDash(factoryNum);
                         break;
                 }
             }

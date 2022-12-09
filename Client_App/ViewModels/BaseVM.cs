@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Client_App.ViewModels;
 
@@ -21,6 +22,33 @@ public class BaseVM
         return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase)
                || TranslateToEng(nameDb).Equals(TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
                || TranslateToRus(nameDb).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private protected static string ConvertPrimToDash(string? num)
+    {
+        if (num == null)
+        {
+            return "";
+        }
+        if (num.Contains("прим", StringComparison.OrdinalIgnoreCase)
+            || num.Equals("бн", StringComparison.OrdinalIgnoreCase)
+            || num.Equals("бп", StringComparison.OrdinalIgnoreCase)
+            || num.Contains("без", StringComparison.OrdinalIgnoreCase)
+            || num.Contains("нет", StringComparison.OrdinalIgnoreCase)
+            || num.Contains("отсут", StringComparison.OrdinalIgnoreCase))
+        {
+            return "-";
+        }
+        return num;
+    }
+
+    private protected static string ConvertDateToYear(string? date)
+    {
+        Regex r = new(@"(\d{1,2}[.\/]){1,2}\d{4}");
+        if (date is null || !r.IsMatch(date))
+            return "0000";
+        var matches = r.Matches(date);
+        return matches.FirstOrDefault()!.Value[^4..];
     }
 
     private protected static string TranslateToEng(string pasName)

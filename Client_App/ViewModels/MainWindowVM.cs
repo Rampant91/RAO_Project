@@ -5716,14 +5716,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 if (ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
                                     && ComparePasParam(repForm.Type_DB, pasParam[1])
                                     && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                    && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
-                                    && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4]))
+                                    && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
+                                    && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4]))
                                 {
                                     findPasFile = true;
                                     break;
                                 }
                             }
-
                             if (!findPasFile)
                             {
                                 #region BindingCells
@@ -5959,8 +5958,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                          ComparePasParam(repForm.CreatorOKPO_DB, pasParam[0])
                                          && ComparePasParam(repForm.Type_DB, pasParam[1])
                                          && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                         && ComparePasParam(ConvertPasNumAndFactNum(repForm.PassportNumber_DB), pasParam[3])
-                                         && ComparePasParam(ConvertPasNumAndFactNum(repForm.FactoryNumber_DB), pasParam[4])))
+                                         && ComparePasParam(repForm.PassportNumber_DB, pasParam[3])
+                                         && ComparePasParam(repForm.FactoryNumber_DB, pasParam[4])))
                             {
                                 pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                                 break;
@@ -6048,29 +6047,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    public static string ConvertDateToYear(string? date)
-    {
-        Regex r = new(@"(\d{1,2}[.\/]){1,2}\d{4}");
-        if (date is null || !r.IsMatch(date))
-            return "0000";
-        var matches = r.Matches(date);
-        return matches.FirstOrDefault()!.Value[^4..];
-    }
-
-    private static string ConvertPasNumAndFactNum(string num)
-    {
-        if (string.IsNullOrEmpty(num)
-            || num.Contains("прим", StringComparison.OrdinalIgnoreCase)
-            || num.Equals("бн", StringComparison.OrdinalIgnoreCase)
-            || num.Equals("бп", StringComparison.OrdinalIgnoreCase)
-            || num.Contains("без", StringComparison.OrdinalIgnoreCase)
-            || num.Contains("нет", StringComparison.OrdinalIgnoreCase)
-            || num.Contains("отсут", StringComparison.OrdinalIgnoreCase))
-        {
-            return "-";
-        }
-        return num;
-    }
+    
     #endregion
 
     #region ExcelExportCommonImplementation
