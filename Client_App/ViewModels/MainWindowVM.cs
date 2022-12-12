@@ -343,27 +343,45 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var t = desktop.MainWindow as MainWindow;
-                if (t.SelectedReports.Count() != 0)
+                if (t?.SelectedReports is null 
+                    || !t.SelectedReports.Any() 
+                    || ((Reports)t.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
                 {
-                    var y = t.SelectedReports.First() as Reports;
-                    if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
+                    #region MessageFailedToOpenForm
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = $"Создание формы {param}",
+                            ContentHeader = "Ошибка",
+                            ContentMessage = $"Не удалось создать форму {param}, поскольку не выбрана организация. Перед созданием формы убедитесь," 
+                                             + $"{Environment.NewLine}что в списке организаций имеется выбранная организация (подсвечивается голубым цветом).",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+                    #endregion
+                    return;
+                }
+                var y = t.SelectedReports.First() as Reports;
+                if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
+                {
+                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+
+                    ChangeOrCreateVM frm = new(param, y);
+                    if ((string)param == "2.1")
                     {
-                        var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-
-                        ChangeOrCreateVM frm = new(param, y);
-                        if ((string)param == "2.1")
-                        {
-                            Form2_Visual.tmpVM = frm;
-                        }
-                        if ((string)param == "2.2")
-                        {
-                            Form2_Visual.tmpVM = frm;
-                        }
-                        await ShowDialog.Handle(frm);
-
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        Form2_Visual.tmpVM = frm;
                     }
+
+                    if ((string)param == "2.2")
+                    {
+                        Form2_Visual.tmpVM = frm;
+                    }
+                    await ShowDialog.Handle(frm);
+                    t.SelectedReports = tmp;
+                    await y.Report_Collection.QuickSortAsync();
                 }
             }
         }

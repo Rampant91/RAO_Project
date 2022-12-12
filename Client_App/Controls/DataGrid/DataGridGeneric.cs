@@ -76,7 +76,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _selecteditems;
         set
         {
-            if (value != null && value.Count != 0)
+            //if (value != null && value.Count != 0)    Убирает сброс выбранной организации при перелистывании страниц и поиске
             {
                 SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
                 if (Sum) SumColumn = "0";
