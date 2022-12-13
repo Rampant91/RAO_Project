@@ -212,15 +212,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #region SumRow
     public async void _SumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
     {
-        if (Storage.FormNum_DB == "2.1")
+        switch (Storage.FormNum_DB)
         {
-            await Sum21();
-            isSum = true;
-        }
-        if (Storage.FormNum_DB == "2.2")
-        {
-            await Sum22();
-            isSum = true;
+            case "2.1":
+                await Sum21();
+                isSum = true;
+                break;
+            case "2.2":
+                await Sum22();
+                isSum = true;
+                break;
         }
     }
 
@@ -375,13 +376,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
-
         });
-
         Storage.Rows21.Clear();
         var yu = ito.OrderBy(x => x.Value.Count);
         var count = new LetterAlgebra("A");
-
         foreach (var item in yu)
         {
             if (item.Value.Count != 0 && item.Value.Count != 1)
@@ -406,9 +404,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                           + x.PackType_DB)
             .ToList();
         var y = tItems.ToList();
-
         var ito = y.ToDictionary(item => item.Key, _ => new List<Form22>());
-
         foreach (var item in y.Where(item => item.Key == ""))
         {
             foreach (var t in item)
@@ -417,11 +413,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
             tItems.Remove(item);
         }
-
         Parallel.ForEach(tItems, itemT =>
         {
             var sums = itemT.FirstOrDefault(x => x.Sum_DB);
-
             var sumRow = sums;
             if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
             {
@@ -502,7 +496,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
             else
             {
-
                 foreach (var t in itemT)
                 {
                     if (!t.Sum_DB)
@@ -520,10 +513,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         ito[itemT.Key].Add(t);
                     }
                 }
-
             }
         });
-
         Storage.Rows22.Clear();
         var yu = ito.OrderBy(x => x.Value.Count);
         var count = new LetterAlgebra("A");
@@ -1610,8 +1601,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         },
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
-                        ContentMessage =
-                            $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
+                        ContentMessage = $"Выгрузка всех записей паспорта №{pasNum} сохранена по пути:{Environment.NewLine}{path}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })

@@ -1357,174 +1357,196 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task ProcessIfHasReports11(Reports first11, Reports item)
     {
         var notIn = false;
-
         var skipLess = false;
         var doSomething = false;
         var skipNew = false;
         var _skipNew = false;
         var skipInter = false;
-
-        foreach (Report it in item.Report_Collection)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (first11.Report_Collection.Count != 0)
+            foreach (var key in item.Report_Collection)
             {
-                foreach (Report elem in first11.Report_Collection)
+                var it = (Report)key;
+                if (first11.Report_Collection.Count != 0)
                 {
-                    var stElem = DateTime.Parse(DateTime.Now.ToShortDateString());
-                    var enElem = DateTime.Parse(DateTime.Now.ToShortDateString());
-                    try
+                    foreach (var key1 in first11.Report_Collection)
                     {
-                        stElem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) 
-                            ? DateTime.Parse(elem.EndPeriod_DB) 
-                            : DateTime.Parse(elem.StartPeriod_DB);
-                        enElem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) 
-                            ? DateTime.Parse(elem.EndPeriod_DB) 
-                            : DateTime.Parse(elem.StartPeriod_DB);
-                    }
-                    catch (Exception ex)
-                    { }
-
-                    var stIt = DateTime.Parse(DateTime.Now.ToShortDateString());
-                    var enIt = DateTime.Parse(DateTime.Now.ToShortDateString());
-                    try
-                    {
-                        stIt = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) 
-                            ? DateTime.Parse(it.EndPeriod_DB) 
-                            : DateTime.Parse(it.StartPeriod_DB);
-                        enIt = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) 
-                            ? DateTime.Parse(it.EndPeriod_DB) 
-                            : DateTime.Parse(it.StartPeriod_DB);
-                    }
-                    catch (Exception) { }
-
-                    if (stElem == stIt && enElem == enIt && it.FormNum_DB == elem.FormNum_DB)
-                    {
-                        notIn = true;
-                        if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
+                        var elem = (Report)key1;
+                        var stElem = DateTime.Parse(DateTime.Now.ToShortDateString());
+                        var enElem = DateTime.Parse(DateTime.Now.ToShortDateString());
+                        try
                         {
-                            if (!skipLess)
+                            stElem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) 
+                                ? DateTime.Parse(elem.EndPeriod_DB) 
+                                : DateTime.Parse(elem.StartPeriod_DB);
+                            enElem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) 
+                                ? DateTime.Parse(elem.EndPeriod_DB) 
+                                : DateTime.Parse(elem.StartPeriod_DB);
+                        }
+                        catch (Exception) { }
+
+                        var stIt = DateTime.Parse(DateTime.Now.ToShortDateString());
+                        var enIt = DateTime.Parse(DateTime.Now.ToShortDateString());
+                        try
+                        {
+                            stIt = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) 
+                                ? DateTime.Parse(it.EndPeriod_DB) 
+                                : DateTime.Parse(it.StartPeriod_DB);
+                            enIt = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) 
+                                ? DateTime.Parse(it.EndPeriod_DB) 
+                                : DateTime.Parse(it.StartPeriod_DB);
+                        }
+                        catch (Exception) { }
+
+                        if (stElem == stIt && enElem == enIt && it.FormNum_DB == elem.FormNum_DB)
+                        {
+                            notIn = true;
+                            if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
                             {
-                                var str =
-                                    $" Вы пытаетесь загрузить форму с наименьшим номером корректировки - {it.CorrectionNumber_DB},\nпри текущем значении корректировки - {elem.CorrectionNumber_DB}.\nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
-                                var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
-                                if (an == "Пропустить для всех")
+                                if (skipLess) continue;
+                                #region MessageImportReportHasLowerCorrectionNumber
+                                var res = await MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions = new[]
+                                        {
+                                            new ButtonDefinition { Name = "Ок" },
+                                            new ButtonDefinition { Name = "Пропустить для всех" }
+                                        },
+                                        ContentTitle = "Импорт из .raodb",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage = $"Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму с меньшим номером корректировки - {it.CorrectionNumber_DB}" +
+                                                         $"{Environment.NewLine}при текущем значении корректировки у имеющегося отчета в базе - {elem.CorrectionNumber_DB}." +
+                                                         $"{Environment.NewLine}Номер формы - {it.FormNum_DB}" +
+                                                         $"{Environment.NewLine}Начало отчетного периода - {it.StartPeriod_DB}" +
+                                                         $"{Environment.NewLine}Конец отчетного периода - {it.EndPeriod_DB}" +
+                                                         $"{Environment.NewLine}Регистрационный номер - {first11.Master.RegNoRep.Value}" +
+                                                         $"{Environment.NewLine}Сокращенное наименование - {first11.Master.ShortJurLicoRep.Value}" +
+                                                         $"{Environment.NewLine}ОКПО - {first11.Master.OkpoRep.Value}" +
+                                                         $"{Environment.NewLine}Количество строк - {it.Rows.Count}",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(desktop.MainWindow);
+                                #endregion
+                                if (res is "Пропустить для всех")
                                 {
                                     skipLess = true;
                                 }
                             }
-                        }
-                        else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB && it.ExportDate_DB == elem.ExportDate_DB)
-                        {
-                            var str =
-                                $"Совпадение даты в {elem.FormNum_DB} {elem.StartPeriod_DB}-{elem.EndPeriod_DB} .\nНомер корректировки -{it.CorrectionNumber_DB}\n{first11.Master.RegNoRep.Value} {first11.Master.ShortJurLicoRep.Value} {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
-                            doSomething = true;
-                            var an = await ShowMessage.Handle(new List<string>
-                            {str, "Отчет",
-                                "Заменить",
-                                "Дополнить",
-                                "Сохранить оба",
-                                "Отменить"
-                            });
-                            await ChechAanswer(an, first11, elem, it, doSomething);
-                            doSomething = true;
-                        }
-                        else
-                        {
-                            var an = "Загрузить новую";
-                            if (!skipNew)
-                            {
-                                if (item.Report_Collection.Count > 1)
-                                {
-                                    var str =
-                                        $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
-                                    doSomething = true;
-                                    an = await ShowMessage.Handle(new List<string>
-                                    {str, "Отчет",
-                                        "Загрузить новую",
-                                        "Отмена",
-                                        "Загрузить для все"
-                                    });
-                                    if (an == "Загрузить для всех") skipNew = true;
-                                    an = "Загрузить новую";
-                                }
-                                else
-                                {
-                                    var str =
-                                        $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
-                                    doSomething = true;
-                                    an = await ShowMessage.Handle(new List<string>
-                                    {str, "Отчет",
-                                        "Загрузить новую",
-                                        "Отмена"
-                                    });
-                                }
-                            }
-                            await ChechAanswer(an, first11, elem, it, doSomething);
-                            doSomething = true;
-                        }
-                    }
-                    else
-                    {
-                        if ((stElem > stIt && stElem < enIt || enElem > stIt && enElem < enIt) && it.FormNum.Value == elem.FormNum.Value)
-                        {
-                            notIn = true;
-                            var an = "Отменить";
-                            if (!skipInter)
+                            else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB && it.ExportDate_DB == elem.ExportDate_DB)
                             {
                                 var str =
-                                    $"Пересечение даты в форме {elem.FormNum_DB} импортируемого отчета ({elem.StartPeriod_DB}-{elem.EndPeriod_DB})"
-                                    + $"{Environment.NewLine}с имеющимся в базе отчетом ({it.StartPeriod_DB}-{it.EndPeriod_DB})"
-                                    + $"{Environment.NewLine}у организации рег. номер {item.Master.RegNoRep.Value} {item.Master.ShortJurLicoRep.Value} ОКПО {item.Master.OkpoRep.Value}"
-                                    + $"{Environment.NewLine}Количество строк в импортируемом отчете - {elem.Rows.Count}";
-                                an = await ShowMessage.Handle(new List<string>
-                                {
-                                    str, "Отчет",
+                                    $"Совпадение даты в {elem.FormNum_DB} {elem.StartPeriod_DB}-{elem.EndPeriod_DB} .\nНомер корректировки -{it.CorrectionNumber_DB}\n{first11.Master.RegNoRep.Value} {first11.Master.ShortJurLicoRep.Value} {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                doSomething = true;
+                                var an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
+                                    "Заменить",
+                                    "Дополнить",
                                     "Сохранить оба",
                                     "Отменить"
                                 });
-                                skipInter = true;
+                                await ChechAanswer(an, first11, elem, it, doSomething);
+                                doSomething = true;
                             }
-                            await ChechAanswer(an, first11, null, it, doSomething);
-                            doSomething = true;
-                        }
-                    }
-                }
-                if (!notIn)
-                {
-                    var an = "Да";
-                    if (!_skipNew)
-                    {
-                        if (item.Report_Collection.Count() > 1)
-                        {
-                            var str =
-                                $"Загрузить новую форму?\nНомер формы - {it.FormNum_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
-                            an = await ShowMessage.Handle(new List<string>
-                            {str, "Отчет",
-                                "Да",
-                                "Нет",
-                                "Загрузить для всех"
-                            });
-                            an = "Да";
+                            else
+                            {
+                                var an = "Загрузить новую";
+                                if (!skipNew)
+                                {
+                                    if (item.Report_Collection.Count > 1)
+                                    {
+                                        var str =
+                                            $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
+                                        doSomething = true;
+                                        an = await ShowMessage.Handle(new List<string>
+                                        {str, "Отчет",
+                                            "Загрузить новую",
+                                            "Отмена",
+                                            "Загрузить для все"
+                                        });
+                                        if (an == "Загрузить для всех") skipNew = true;
+                                        an = "Загрузить новую";
+                                    }
+                                    else
+                                    {
+                                        var str =
+                                            $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
+                                        doSomething = true;
+                                        an = await ShowMessage.Handle(new List<string>
+                                        {str, "Отчет",
+                                            "Загрузить новую",
+                                            "Отмена"
+                                        });
+                                    }
+                                }
+                                await ChechAanswer(an, first11, elem, it, doSomething);
+                                doSomething = true;
+                            }
                         }
                         else
                         {
-                            var str =
-                                $"Загрузить новую форму?\nНомер формы - {it.FormNum_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
-                            an = await ShowMessage.Handle(new List<string>
-                            {str, "Отчет",
-                                "Да",
-                                "Нет"
-                            });
+                            if ((stElem > stIt && stElem < enIt || enElem > stIt && enElem < enIt) && it.FormNum.Value == elem.FormNum.Value)
+                            {
+                                notIn = true;
+                                var an = "Отменить";
+                                if (!skipInter)
+                                {
+                                    var str =
+                                        $"Пересечение даты в форме {elem.FormNum_DB} импортируемого отчета ({elem.StartPeriod_DB}-{elem.EndPeriod_DB})"
+                                        + $"{Environment.NewLine}с имеющимся в базе отчетом ({it.StartPeriod_DB}-{it.EndPeriod_DB})"
+                                        + $"{Environment.NewLine}у организации рег. номер {item.Master.RegNoRep.Value} {item.Master.ShortJurLicoRep.Value} ОКПО {item.Master.OkpoRep.Value}"
+                                        + $"{Environment.NewLine}Количество строк в импортируемом отчете - {elem.Rows.Count}";
+                                    an = await ShowMessage.Handle(new List<string>
+                                    {
+                                        str, "Отчет",
+                                        "Сохранить оба",
+                                        "Отменить"
+                                    });
+                                    skipInter = true;
+                                }
+                                await ChechAanswer(an, first11, null, it, doSomething);
+                                doSomething = true;
+                            }
                         }
                     }
-                    await ChechAanswer(an, first11, null, it);
+                    if (!notIn)
+                    {
+                        var an = "Да";
+                        if (!_skipNew)
+                        {
+                            if (item.Report_Collection.Count() > 1)
+                            {
+                                var str =
+                                    $"Загрузить новую форму?\nНомер формы - {it.FormNum_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
+                                    "Да",
+                                    "Нет",
+                                    "Загрузить для всех"
+                                });
+                                an = "Да";
+                            }
+                            else
+                            {
+                                var str =
+                                    $"Загрузить новую форму?\nНомер формы - {it.FormNum_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nНачало отчетного периода - {it.StartPeriod_DB}\nКонец отчетного периода - {it.EndPeriod_DB}\nРегистрационный номер - {first11.Master.RegNoRep.Value}\nСокращенное наименование - {first11.Master.ShortJurLicoRep.Value}\nОКПО - {first11.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                an = await ShowMessage.Handle(new List<string>
+                                {str, "Отчет",
+                                    "Да",
+                                    "Нет"
+                                });
+                            }
+                        }
+                        await ChechAanswer(an, first11, null, it);
+                    }
                 }
+                else
+                {
+                    first11.Report_Collection.Add(it);
+                }
+                await first11.SortAsync();
             }
-            else
-            {
-                first11.Report_Collection.Add(it);
-            }
-            await first11.SortAsync();
         }
     }
     private async Task ProcessIfHasReports21(Reports first21, Reports item)
