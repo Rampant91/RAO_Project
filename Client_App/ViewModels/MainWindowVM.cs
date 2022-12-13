@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MessageBox.Avalonia.Enums;
 
 namespace Client_App.ViewModels;
 
@@ -1410,20 +1411,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     {
                                         ButtonDefinitions = new[]
                                         {
-                                            new ButtonDefinition { Name = "Ок" },
+                                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
                                             new ButtonDefinition { Name = "Пропустить для всех" }
                                         },
                                         ContentTitle = "Импорт из .raodb",
                                         ContentHeader = "Уведомление",
-                                        ContentMessage = $"Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму с меньшим номером корректировки - {it.CorrectionNumber_DB}" +
-                                                         $"{Environment.NewLine}при текущем значении корректировки у имеющегося отчета в базе - {elem.CorrectionNumber_DB}." +
-                                                         $"{Environment.NewLine}Номер формы - {it.FormNum_DB}" +
-                                                         $"{Environment.NewLine}Начало отчетного периода - {it.StartPeriod_DB}" +
-                                                         $"{Environment.NewLine}Конец отчетного периода - {it.EndPeriod_DB}" +
-                                                         $"{Environment.NewLine}Регистрационный номер - {first11.Master.RegNoRep.Value}" +
-                                                         $"{Environment.NewLine}Сокращенное наименование - {first11.Master.ShortJurLicoRep.Value}" +
-                                                         $"{Environment.NewLine}ОКПО - {first11.Master.OkpoRep.Value}" +
-                                                         $"{Environment.NewLine}Количество строк - {it.Rows.Count}",
+                                        ContentMessage =
+                                            $"Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму с меньшим номером корректировки - {it.CorrectionNumber_DB}," +
+                                            $"{Environment.NewLine}при текущем номере корректировки у отчета в базе - {elem.CorrectionNumber_DB}." +
+                                            $"{Environment.NewLine}Номер формы - {it.FormNum_DB}" +
+                                            $"{Environment.NewLine}Начало отчетного периода - {it.StartPeriod_DB}" +
+                                            $"{Environment.NewLine}Конец отчетного периода - {it.EndPeriod_DB}" +
+                                            $"{Environment.NewLine}Регистрационный номер - {first11.Master.RegNoRep.Value}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {first11.Master.ShortJurLicoRep.Value}" +
+                                            $"{Environment.NewLine}ОКПО - {first11.Master.OkpoRep.Value}" +
+                                            $"{Environment.NewLine}Количество строк - {it.Rows.Count}" +
+                                            $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
+                                            $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
