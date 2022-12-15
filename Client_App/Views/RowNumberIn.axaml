@@ -14,23 +14,13 @@
         Icon="/Assets/logo.png"
         Title="{Binding WindowHeader}">
   <Panel x:Name="NumberPanel">
-	  <Grid>
-		  <Grid.RowDefinitions>
-			  <RowDefinition></RowDefinition>
-			  <RowDefinition></RowDefinition>
-			  <RowDefinition></RowDefinition>
-			  <RowDefinition></RowDefinition>
-		  </Grid.RowDefinitions>
-		  <Grid.ColumnDefinitions>
-			  <ColumnDefinition></ColumnDefinition>
-			  <ColumnDefinition></ColumnDefinition>
-		  </Grid.ColumnDefinitions>
-		  <TextBlock Grid.Column="0" Grid.Row="0" Text="Сколько добавить перед указанной строкой?"  Grid.ColumnSpan="2"/>
+	  <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*">
+          <TextBlock Grid.Column="0" Grid.Row="0" Text="Сколько добавить перед указанной строкой?"  Grid.ColumnSpan="2"/>
 		  <TextBlock Grid.Column="0" Grid.Row="1" Text="Выбранная строка:"/>
 		  <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding #RowNumberIn.Number1}"/>
 		  <TextBlock Grid.Column="0" Grid.Row="2" Text="Кол-во строк:"/>
 		  <TextBox x:Name ="MainTextBox" Text="{Binding #RowNumberIn.Number2, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
-		  <Button Grid.Column="0" Grid.Row="3" Content="Подтвердить" Click="OnButtonClick" Grid.ColumnSpan="2"/>
-	  </Grid>
+		  <Button Grid.Column="0" Grid.Row="3" Content="Подтвердить" Click="OnButtonClick" Grid.ColumnSpan="2" IsDefault="True"/>
+      </Grid>
   </Panel>
 </Window>

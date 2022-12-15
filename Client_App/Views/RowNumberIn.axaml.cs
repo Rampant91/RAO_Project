@@ -112,7 +112,7 @@ public class RowNumberIn : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyPr
         AvaloniaXamlLoader.Load(this);
         var item = this.Get<TextBox>("MainTextBox");
         item.SelectAll();
-        item.Focus();
+        item.AttachedToVisualTree += (s, e) => item.Focus();
     }
 
     private void OnButtonClick(object sender, RoutedEventArgs e)

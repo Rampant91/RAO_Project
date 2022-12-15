@@ -18,7 +18,7 @@
       <TextBlock Text="Какое кол-во строчек вы хотите добавить?"/>
       <TextBox x:Name="MainTextBox" Text="{Binding #RowNumber.Number, Mode=TwoWay}"/>
       <StackPanel Orientation="Horizontal">
-        <Button Content="Подтвердить" Click="OnButtonClick"/>
+        <Button Content="Подтвердить" Click="OnButtonClick" IsDefault="True"/>
         </StackPanel>
     </StackPanel>
   </Panel>

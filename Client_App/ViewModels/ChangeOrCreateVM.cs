@@ -914,7 +914,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             minColumn++;
         }
-
         if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard)
         {
             foreach (var item in collectionEn.OrderBy(x => x.Order))
@@ -924,22 +923,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 var findStructure = dStructure.GetColumnStructure();
                 var level = findStructure.Level;
                 var tre = findStructure.GetLevel(level - 1);
-
                 foreach (var prop in props)
                 {
                     var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
                     if (attr is null) continue;
                     try
                     {
-                        int columnNum;
-                        if (attr.Names.Length > 1 && attr.Names[0] != "null-1-1")
-                        {
-                            columnNum = Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name);
-                        }
-                        else
-                        {
-                            columnNum = Convert.ToInt32(attr.Number);
-                        }
+                        var columnNum = attr.Names.Length > 1 && attr.Names[0] != "null-1-1"
+                            ? Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol
+                                .FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name)
+                            : Convert.ToInt32(attr.Number);
                         if (columnNum >= minColumn && columnNum <= maxColumn)
                         {
                             var midValue = prop.GetMethod?.Invoke(item, null);

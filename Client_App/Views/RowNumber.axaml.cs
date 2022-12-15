@@ -26,15 +26,14 @@ public class RowNumber : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyProp
             try
             {
                 var t = System.Convert.ToInt32(value);
-                if (t > 0 &&t<=10000&& t.ToString() != Number)
+                if (t is > 0 and <= 10000 && t.ToString() != Number)
                 {
                     SetAndRaise(NumberProperty, ref _Number, value);
                 }
                 else
                 {
-                    OnPropertyChanged(nameof(Number));
+                    OnPropertyChanged();
                 }
-
             }
             catch
             {
@@ -67,7 +66,7 @@ public class RowNumber : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyProp
         AvaloniaXamlLoader.Load(this); 
         var item = this.Get<TextBox>("MainTextBox");
         item.SelectAll();
-        item.Focus();
+        item.AttachedToVisualTree += (s, e) => item.Focus();
     }
 
     private void OnButtonClick(object sender, RoutedEventArgs e)
