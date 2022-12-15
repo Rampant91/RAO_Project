@@ -1187,26 +1187,27 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
         return lst;
     }
-    private async Task<Reports> GetReports11FromLocalEqual(Reports item)
+    private async Task<Reports?> GetReports11FromLocalEqual(Reports item)
     {
         try
         {
-            var tb1 = item.Report_Collection.Where(x => x.FormNum_DB[0].ToString().Equals("1"));
-            if (tb1.Count() != 0)
+            if (item.Report_Collection.Where(x => x.FormNum_DB[0].Equals('1')).Any())
             {
-                IEnumerable<Reports> enumerable()
-                {
-                    return Local_Reports.Reports_Collection10.Where(t =>
-                        (item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                            && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                            && item.Master.Rows10[1].Okpo_DB == "" || t.Master.Rows10[1].Okpo_DB == "" && item.Master.Rows10[0].Okpo_DB == "")
-                        || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                            && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                            && item.Master.Rows10[1].Okpo_DB != ""));
-                }
-
-                var tb11 = enumerable();
-                return tb11.FirstOrDefault();
+                return Local_Reports.Reports_Collection10.FirstOrDefault(t => (
+                    item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                        && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                        && item.Master.Rows10[1].Okpo_DB == "")
+                    || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                        && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                        && item.Master.Rows10[1].Okpo_DB != "")
+                    || (item.Master.Rows10[1].Okpo_DB != ""
+                        && t.Master.Rows10[1].Okpo_DB == ""
+                        && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                        && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB)
+                    || (item.Master.Rows10[1].Okpo_DB == ""
+                        && t.Master.Rows10[1].Okpo_DB != ""
+                        && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                        && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB));
             }
             return null;
         }
@@ -1497,10 +1498,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 if (!skipInter)
                                 {
                                     var str =
-                                        $"Пересечение даты в форме {elem.FormNum_DB} импортируемого отчета ({elem.StartPeriod_DB}-{elem.EndPeriod_DB})"
-                                        + $"{Environment.NewLine}с имеющимся в базе отчетом ({it.StartPeriod_DB}-{it.EndPeriod_DB})"
-                                        + $"{Environment.NewLine}у организации рег. номер {item.Master.RegNoRep.Value} {item.Master.ShortJurLicoRep.Value} ОКПО {item.Master.OkpoRep.Value}"
-                                        + $"{Environment.NewLine}Количество строк в импортируемом отчете - {elem.Rows.Count}";
+                                        $"Пересечение даты в форме {elem.FormNum_DB} импортируемого отчета ({it.StartPeriod_DB}-{it.EndPeriod_DB})"
+                                        + $"{Environment.NewLine}с имеющимся в базе отчетом ({elem.StartPeriod_DB}-{elem.EndPeriod_DB})"
+                                        + $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}"
+                                        + $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}"
+                                        + $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}"
+                                        + $"{Environment.NewLine}Количество строк в импортируемом отчете - {it.Rows.Count}, в отчете из базы - {elem.Rows.Count}";
                                     an = await ShowMessage.Handle(new List<string>
                                     {
                                         str, "Отчет",
@@ -1712,8 +1715,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
                             else
                                 item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
-                            Reports first11 = await GetReports11FromLocalEqual(item);
-                            Reports first21 = await GetReports21FromLocalEqual(item);
+                            var first11 = await GetReports11FromLocalEqual(item);
+                            var first21 = await GetReports21FromLocalEqual(item);
                             await RestoreReportsOrders(item);
                             item.CleanIds();
 
@@ -2008,6 +2011,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                     t.SelectedReports = tmp;
+                    
                 }
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }

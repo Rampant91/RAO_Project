@@ -729,6 +729,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 foreach (var item in rt)
                 {
                     item.DoCommand(GetParamByParamName(item));
+                    if (item.ContextMenuText[0].Contains("Удалить форму"))
+                    {
+                        SelectedItems = null;
+                    }
                     if (item.IsUpdateCells)
                     {
                         UpdateCells();
