@@ -1228,7 +1228,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             PassportUniqParam(param, out _, out _, out _, out var pasNum, out var factoryNum);
-            if (pasNum is null or "" || factoryNum is null or "" || pasNum is "-" && factoryNum is "-")
+            if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
             {
                 #region MessageFailedToLoadPassportUniqParam
                 await MessageBox.Avalonia.MessageBoxManager

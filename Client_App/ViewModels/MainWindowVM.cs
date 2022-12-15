@@ -1163,35 +1163,26 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     }
     private async Task<List<Reports>> GetReportsFromDataBase(string file)
     {
-        var lst = new List<Reports>();
-        using (DBModel db = new(file))
-        {
-            #region Test Version
-            var t = db.Database.GetPendingMigrations();
-            var a = db.Database.GetMigrations();
-            var b = db.Database.GetAppliedMigrations();
-            #endregion
+        await using DBModel db = new(file);
 
-            await db.Database.MigrateAsync();
-            await db.LoadTablesAsync();
-            await ProcessDataBaseFillEmpty(db);
+        #region Test Version
+        var t = await db.Database.GetPendingMigrationsAsync();
+        var a = db.Database.GetMigrations();
+        var b = await db.Database.GetAppliedMigrationsAsync();
+        #endregion
 
-            if (db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0)
-            {
-                lst = db.DBObservableDbSet.Local.First().Reports_Collection.ToList();
-            }
-            else
-            {
-                lst = await db.ReportsCollectionDbSet.ToListAsync();
-            }
-        }
-        return lst;
+        await db.Database.MigrateAsync();
+        await db.LoadTablesAsync();
+        await ProcessDataBaseFillEmpty(db);
+        return db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0
+            ? db.DBObservableDbSet.Local.First().Reports_Collection.ToList()
+            : await db.ReportsCollectionDbSet.ToListAsync();
     }
     private async Task<Reports?> GetReports11FromLocalEqual(Reports item)
     {
         try
         {
-            if (item.Report_Collection.Where(x => x.FormNum_DB[0].Equals('1')).Any())
+            if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')))
             {
                 return Local_Reports.Reports_Collection10.FirstOrDefault(t => (
                     item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
