@@ -29,7 +29,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using MessageBox.Avalonia.Enums;
 
 namespace Client_App.ViewModels;
 
@@ -108,16 +107,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         try
         {
-            string system = "";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                system = Environment.GetFolderPath(Environment.SpecialFolder.System);
-            }
-            else
-            {
-                system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            }
-            return system;
+            return Environment.GetFolderPath(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? Environment.SpecialFolder.System
+                : Environment.SpecialFolder.MyDocuments);
         }
         catch (Exception e)
         {
@@ -126,11 +118,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             throw new Exception(ErrorMessages.Error1[0]);
         }
     }
-    private async Task ProcessSpravochniks()
+
+    private static Task ProcessSpravochniks()
     {
         var a = Spravochniks.SprRadionuclids;
         var b = Spravochniks.SprTypesToRadionuclids;
+        return Task.CompletedTask;
     }
+
     private async Task ProcessDataBaseCreate(string tempDirectory)
     {
         var i = 0;
@@ -141,7 +136,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             try
             {
                 var names = file.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
-                Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.4 Текущая база данных - {names[^1]}";
+                Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.5 Текущая база данных - {names[^1]}";
                 StaticConfiguration.DBPath = file;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -155,14 +150,15 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
         if (!flag)
         {
-            Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.4 Текущая база данных - Local_{i}.raodb";
+            Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.5 Текущая база данных - Local_{i}.raodb";
             StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"Local_{i}.raodb");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
             await dbm.Database.MigrateAsync();
         }
     }
-    private async Task ProcessDataBaseFillEmpty(DataContext dbm)
+
+    private static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
         foreach (var item in dbm.DBObservableDbSet)
@@ -170,45 +166,47 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             foreach (var key in item.Reports_Collection)
             {
                 var it = (Reports)key;
-                if (it.Master_DB.FormNum_DB != "")
+                if (it.Master_DB.FormNum_DB == "") continue;
+                if (it.Master_DB.Rows10.Count == 0)
                 {
-                    if (it.Master_DB.Rows10.Count == 0)
-                    {
-                        var ty1 = (Form10)FormCreator.Create("1.0");
-                        ty1.NumberInOrder_DB = 1;
-                        var ty2 = (Form10)FormCreator.Create("1.0");
-                        ty2.NumberInOrder_DB = 2;
-                        it.Master_DB.Rows10.Add(ty1);
-                        it.Master_DB.Rows10.Add(ty2);
-                    }
-                    if (it.Master_DB.Rows20.Count == 0)
-                    {
-                        var ty1 = (Form20)FormCreator.Create("2.0");
-                        ty1.NumberInOrder_DB = 1;
-                        var ty2 = (Form20)FormCreator.Create("2.0");
-                        ty2.NumberInOrder_DB = 2;
-                        it.Master_DB.Rows20.Add(ty1);
-                        it.Master_DB.Rows20.Add(ty2);
-                    }
-                    it.Master_DB.Rows10.Sorted = false;
-                    it.Master_DB.Rows20.Sorted = false;
-                    await it.Master_DB.Rows10.QuickSortAsync();
-                    await it.Master_DB.Rows20.QuickSortAsync();
+                    var ty1 = (Form10)FormCreator.Create("1.0");
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form10)FormCreator.Create("1.0");
+                    ty2.NumberInOrder_DB = 2;
+                    it.Master_DB.Rows10.Add(ty1);
+                    it.Master_DB.Rows10.Add(ty2);
                 }
+                if (it.Master_DB.Rows20.Count == 0)
+                {
+                    var ty1 = (Form20)FormCreator.Create("2.0");
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form20)FormCreator.Create("2.0");
+                    ty2.NumberInOrder_DB = 2;
+                    it.Master_DB.Rows20.Add(ty1);
+                    it.Master_DB.Rows20.Add(ty2);
+                }
+                it.Master_DB.Rows10.Sorted = false;
+                it.Master_DB.Rows20.Sorted = false;
+                await it.Master_DB.Rows10.QuickSortAsync();
+                await it.Master_DB.Rows20.QuickSortAsync();
             }
         }
     }
+
     private async Task ProcessDataBaseFillNullOrder()
     {
-        foreach (Reports item in Local_Reports.Reports_Collection)
+        foreach (var key in Local_Reports.Reports_Collection)
         {
-            foreach (Report it in item.Report_Collection)
+            var item = (Reports)key;
+            foreach (var key1 in item.Report_Collection)
             {
-                foreach (Note _i in it.Notes)
+                var it = (Report)key1;
+                foreach (var key2 in it.Notes)
                 {
-                    if (_i.Order == 0)
+                    var i = (Note)key2;
+                    if (i.Order == 0)
                     {
-                        _i.Order = GetNumberInOrder(it.Notes);
+                        i.Order = GetNumberInOrder(it.Notes);
                     }
                 }
             }
@@ -216,7 +214,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
         await Local_Reports.Reports_Collection.QuickSortAsync();
     }
-    private async Task PropertiesInit()
+
+    private Task PropertiesInit()
     {
         AddReport = ReactiveCommand.CreateFromTask<object>(_AddReport);
         AddForm = ReactiveCommand.CreateFromTask<object>(_AddForm);
@@ -241,8 +240,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangePasDir = ReactiveCommand.CreateFromTask<object>(_ChangePasDir);
         ShowDialog = new Interaction<ChangeOrCreateVM, object>();
         ShowMessage = new Interaction<List<string>, string>();
+        return Task.CompletedTask;
     }
-    private int GetNumberInOrder(IEnumerable lst)
+    private static int GetNumberInOrder(IEnumerable lst)
     {
         var maxNum = 0;
         foreach (var item in lst)
@@ -255,6 +255,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
         return maxNum + 1;
     }
+
     public async Task Init()
     {
         OnStartProgressBar = 1;
@@ -282,7 +283,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await ProcessDataBaseFillNullOrder();
 
         OnStartProgressBar = 75;
-        dbm.SaveChanges();
+        await dbm.SaveChangesAsync();
         Local_Reports.PropertyChanged += Local_ReportsChanged;
 
         OnStartProgressBar = 80;
@@ -290,9 +291,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         OnStartProgressBar = 100;
     }
+
     private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
     {
-        OnPropertyChanged("Local_Reports");
+        OnPropertyChanged(nameof(Local_Reports));
     }
     #endregion
 
@@ -301,13 +303,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public double OnStartProgressBar
     {
         get => _OnStartProgressBar;
-        set
+        private set
         {
-            if (_OnStartProgressBar != value)
-            {
-                _OnStartProgressBar = value;
-                OnPropertyChanged(nameof(OnStartProgressBar));
-            }
+            if (_OnStartProgressBar.Equals(value)) return;
+            _OnStartProgressBar = value;
+            OnPropertyChanged();
         }
     }
     #endregion
@@ -321,8 +321,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> AddReport { get; private set; }
     private async Task _AddReport(object par)
     {
-        var param = par as string;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && par is string param)
         {
             var t = desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
@@ -338,55 +337,47 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> AddForm { get; private set; }
     private async Task _AddForm(object par)
     {
-        var param = par as string;
-        try
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && par is string param)
         {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            var t = desktop.MainWindow as MainWindow;
+            if (t?.SelectedReports is null
+                || !t.SelectedReports.Any()
+                || ((Reports)t.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
             {
-                var t = desktop.MainWindow as MainWindow;
-                if (t?.SelectedReports is null 
-                    || !t.SelectedReports.Any() 
-                    || ((Reports)t.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
-                {
-                    #region MessageFailedToOpenForm
-                    await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = $"Создание формы {param}",
-                            ContentHeader = "Ошибка",
-                            ContentMessage = $"Не удалось создать форму {param}, поскольку не выбрана организация. Перед созданием формы убедитесь," 
-                                             + $"{Environment.NewLine}что в списке организаций имеется выбранная организация (подсвечивается голубым цветом).",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-                    #endregion
-                    return;
-                }
-                var y = t.SelectedReports.First() as Reports;
-                if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
-                {
-                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-
-                    ChangeOrCreateVM frm = new(param, y);
-                    if ((string)param == "2.1")
+                #region MessageFailedToOpenForm
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
-                        Form2_Visual.tmpVM = frm;
-                    }
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = $"Создание формы {param}",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось создать форму {param}, поскольку не выбрана организация. Перед созданием формы убедитесь,"
+                            + $"{Environment.NewLine}что в списке организаций имеется выбранная организация (подсвечивается голубым цветом).",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
+                #endregion
+                return;
+            }
+            var y = t.SelectedReports.First() as Reports;
+            if (y?.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
+            {
+                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
-                    if ((string)param == "2.2")
-                    {
-                        Form2_Visual.tmpVM = frm;
-                    }
-                    await ShowDialog.Handle(frm);
-                    t.SelectedReports = tmp;
-                    await y.Report_Collection.QuickSortAsync();
-                }
+                ChangeOrCreateVM frm = new(param, y);
+                Form2_Visual.tmpVM = param switch
+                {
+                    "2.1" or "2.2" => frm,
+                    _ => Form2_Visual.tmpVM
+                };
+                await ShowDialog.Handle(frm);
+                t.SelectedReports = tmp;
+                await y.Report_Collection.QuickSortAsync();
             }
         }
-        catch (Exception) { }
     }
     #endregion
 

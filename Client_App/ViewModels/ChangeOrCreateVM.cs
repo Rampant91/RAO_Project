@@ -23,6 +23,7 @@ using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Avalonia.Collections;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
@@ -31,6 +32,7 @@ using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Path = System.IO.Path;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 
 namespace Client_App.ViewModels;
 
@@ -854,7 +856,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region DuplicateRowsx1
-    public ReactiveCommand<object, Unit> DuplicateRowsx1 { get; protected set; }
+    public ReactiveCommand<object, Unit> DuplicateRowsx1 { get; private set; }
     private async Task _DuplicateRowsx1(object param)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -863,20 +865,22 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (t > 0)
             {
                 var number = GetNumberInOrder(Storage.Rows);
+                var lst = new List<Form?>();
                 for (var i = 0; i < t; i++)
                 {
                     var frm = FormCreator.Create(FormType);
                     frm.NumberInOrder_DB = number;
-                    Storage.Rows.Add(frm);
+                    lst.Add(frm);
                     number++;
                 }
+                Storage.Rows.AddRange(lst);
             }
         }
     }
     #endregion
 
     #region DuplicateNotes
-    public ReactiveCommand<object, Unit> DuplicateNotes { get; protected set; }
+    public ReactiveCommand<object, Unit> DuplicateNotes { get; private set; }
     private async Task _DuplicateNotes(object param)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -885,12 +889,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (t > 0)
             {
                 var r = GetNumberInOrder(Storage.Notes);
-                for (var i = 0; i < t; i++)
+                var lst = new List<Note?>();
+                for (var i = 0; i < t; i++, r++)
                 {
-                    var frm = new Note { Order = r };
-                    Storage.Notes.Add(frm);
-                    r++;
+                    var note = new Note { Order = r };
+                    lst.Add(note);
                 }
+                Storage.Notes.AddRange(lst);
             }
         }
     }
