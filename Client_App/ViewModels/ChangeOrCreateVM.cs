@@ -781,10 +781,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     {
                         ButtonDefinitions = new[]
                         {
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "Да", IsDefault = true },
+                        new ButtonDefinition { Name = "Нет", IsCancel = true }
                         },
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Удаление строки",
                         ContentHeader = "Уведомление",
                         ContentMessage = "Вы действительно хотите удалить строчку?",
                         MinWidth = 400,
@@ -792,7 +792,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     })
                     .ShowDialog(desktop.MainWindow); 
             #endregion
-            if (answer == "Да")
+            if (answer is "Да")
             {
                 //var lst = new List<IKey>(Storage.Rows.GetEnumerable());
                 var minItem = param.Min(x => x.Order);
@@ -1991,12 +1991,14 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private void Init()
     {
         var a = FormType.Replace(".", "");
-        if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1") 
-            || (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
+        if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] is "1" or "2")
         {
-            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} {Storages.Master_DB.RegNoRep.Value} {Storages.Master_DB.ShortJurLicoRep.Value} {Storages.Master_DB.OkpoRep.Value}";
+            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name}"
+                           + $"{Storages.Master_DB.RegNoRep.Value}"
+                           + $"{Storages.Master_DB.ShortJurLicoRep.Value}"
+                           + $"{Storages.Master_DB.OkpoRep.Value}";
         }
-        if (FormType is "1.0" or "2.0")
+        else if (FormType is "1.0" or "2.0")
         {
             WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
@@ -2053,7 +2055,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     public void SaveReport()
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
             if (DBO != null)
             {
@@ -2072,19 +2074,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 DBO.Reports_Collection.Add(tmp);
                 DBO = null;
             }
-            else
+            else if (Storages != null && FormType is not ("1.0" or "2.0") && !Storages.Report_Collection.Contains(Storage))
             {
-                if (Storages != null)
-                {
-                    if (FormType is not ("1.0" or "2.0"))
-                    {
-                        if (!Storages.Report_Collection.Contains(Storage))
-                        {
-                            Storages.Report_Collection.Add(Storage);
-                        }
-                    }
-                }
+                Storages.Report_Collection.Add(Storage);
             }
+
             if (Storages != null)
             {
                 if (Storages.Master.Rows10.Count != 0)
@@ -2140,29 +2134,23 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var txt = "";
         foreach (var item in text)
         {
-            if (item == '\"')
+            switch (item)
             {
-                txt += item;
-                comaFlag = !comaFlag;
-            }
-            else
-            {
-                if (item == '\n')//||(item=='\t'))
-                {
-                    if (!comaFlag)
-                    {
-                        lst.Add(txt);
-                        txt = "";
-                    }
-                    else
-                    {
-                        txt += item;
-                    }
-                }
-                else
-                {
+                case '\"':
                     txt += item;
-                }
+                    comaFlag = !comaFlag;
+                    break;
+                //||(item=='\t'))
+                case '\n' when !comaFlag:
+                    lst.Add(txt);
+                    txt = "";
+                    break;
+                case '\n':
+                    txt += item;
+                    break;
+                default:
+                    txt += item;
+                    break;
             }
         }
         if (txt != "")

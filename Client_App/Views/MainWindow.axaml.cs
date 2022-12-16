@@ -66,7 +66,6 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     #region ShowDialog
     private async Task DoShowDialogAsync(InteractionContext<ViewModels.ChangeOrCreateVM, object> interaction)
     {
-
         FormChangeOrCreate frm = new(interaction.Input);
 
         await frm.ShowDialog(this);

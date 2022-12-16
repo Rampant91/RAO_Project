@@ -1885,20 +1885,22 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> ChangeForm { get; private set; }
     private async Task _ChangeForm(object par)
     {
-        var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            if (param != null)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop 
+            && par is ObservableCollectionWithItemPropertyChanged<IKey> param)
+        {
+            var obj = param.First();
+            if (obj != null)
             {
-                var obj = param.First();
-                if (obj != null)
+                var t = desktop.MainWindow as MainWindow;
+                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+                var rep = (Report)obj;
+                var tre = Local_Reports.Reports_Collection
+                    .FirstOrDefault(i => i.Report_Collection.Contains(rep));
+                var numForm = rep.FormNum.Value;
+                var frm = new ChangeOrCreateVM(numForm, rep, tre, Local_Reports);
+                switch (numForm)
                 {
-                    var t = desktop.MainWindow as MainWindow;
-                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-                    var rep = (Report)obj;
-                    var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
-                    string numForm = rep.FormNum.Value;
-                    ChangeOrCreateVM frm = new(numForm, rep, tre, Local_Reports);
-                    if (numForm == "2.1")
+                    case "2.1":
                     {
                         Form2_Visual.tmpVM = frm;
                         if (frm.isSum)
@@ -1908,65 +1910,69 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             await frm.Sum21();
                             //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
                         }
+                        break;
                     }
-                    if (numForm == "2.2")
+                    case "2.2":
                     {
                         Form2_Visual.tmpVM = frm;
                         if (frm.isSum)
                         {
-                            var sumRow = frm.Storage.Rows22.Where(x => x.Sum_DB == true).ToList();
+                            var sumRow = frm.Storage.Rows22.Where(x => x.Sum_DB).ToList();
                             Dictionary<long, List<string>> dic = new();
                             foreach (var oldR in sumRow)
                             {
-                                dic[oldR.NumberInOrder_DB] = new List<string> { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
+                                dic[oldR.NumberInOrder_DB] = new List<string>
+                                    { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
                             }
-
                             await frm.UnSum22();
                             await frm.Sum22();
-                            var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB == true);
+                            var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB);
                             foreach (var newR in newSumRow)
                             {
-                                foreach (var oldR in dic)
+                                foreach (var oldR in dic
+                                             .Where(oldR => newR.NumberInOrder_DB == oldR.Key))
                                 {
-                                    if (newR.NumberInOrder_DB == oldR.Key)
-                                    {
-                                        newR.PackQuantity_DB = oldR.Value[0];
-                                        newR.VolumeInPack_DB = oldR.Value[1];
-                                        newR.MassInPack_DB = oldR.Value[2];
-                                    }
+                                    newR.PackQuantity_DB = oldR.Value[0];
+                                    newR.VolumeInPack_DB = oldR.Value[1];
+                                    newR.MassInPack_DB = oldR.Value[2];
                                 }
                             }
                         }
+                        break;
                     }
-                    await ShowDialog.Handle(frm);
-                    t.SelectedReports = tmp;
                 }
+                await ShowDialog.Handle(frm);
+                t.SelectedReports = tmp;
             }
+        }
     }
     #endregion
 
     #region ChangeReport
+
+    public int pageOnEdit;
+
     public ReactiveCommand<object, Unit> ChangeReport { get; private set; }
     private async Task _ChangeReport(object par)
     {
-        var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            if (param != null)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop 
+            && par is ObservableCollectionWithItemPropertyChanged<IKey> param)
+        {
+            var obj = param.First();
+            if (obj != null)
             {
-                var obj = param.First();
-                if (obj != null)
-                {
-                    var t = desktop.MainWindow as MainWindow;
-                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-                    var rep = (Reports)obj;
-                    ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master, rep, Local_Reports);
-                    await ShowDialog.Handle(frm);
+                var t = desktop.MainWindow as MainWindow;
+                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+                var rep = (Reports)obj;
+                ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master, rep, Local_Reports);
+                await ShowDialog.Handle(frm);
 
-                    //Local_Reports.Reports_Collection.Sorted = false;
-                    //await Local_Reports.Reports_Collection.QuickSortAsync();
-                    t.SelectedReports = tmp;
-                }
+                //Local_Reports.Reports_Collection.Sorted = false;
+                //await Local_Reports.Reports_Collection.QuickSortAsync();
+                t.SelectedReports = tmp;
+                //pageOnEdit = this. 
             }
+        }
     }
     #endregion
 
