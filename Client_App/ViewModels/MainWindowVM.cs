@@ -14,7 +14,6 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using ReactiveUI;
 using Spravochniki;
 using System;
@@ -30,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MessageBox.Avalonia.Enums;
 
 namespace Client_App.ViewModels;
 
@@ -1701,45 +1701,53 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                     else if (first21 == null && first11 == null)
                     {
-                        var rep = item.Report_Collection.FirstOrDefault();
-                        string? an = null;
-                        if (rep != null
-                            && !skipAll
-                            && Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                        {
-                            var inventory = "";
-                            var countCode10 = 0;
-                            foreach (var row in item.Report_Collection)
-                            {
-
-                            }
-                            var result = await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions = new[]
-                                    {
-                                        new ButtonDefinition { Name = "Ок" },
-                                        new ButtonDefinition { Name = "Открыть выгрузку" }
-                                    },
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление. Новая организация",
-                                    ContentMessage =
-                                        $"Был добавлен отчет по форме {rep.FormNum_DB} за период {rep.StartPeriod_DB}-{rep.EndPeriod_DB}," +
-                                        $"{Environment.NewLine}номер корректировки {rep.CorrectionNumber_DB}, количество строк {rep.Rows.Count}." +
-                                        $"{Environment.NewLine}Организация:" +
-                                        $"{Environment.NewLine}   1.Регистрационный номер - {item.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}   2.Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
-                                        $"{Environment.NewLine}   3.ОКПО - {item.Master.OkpoRep.Value}",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(desktop.MainWindow);
-                            if (result == "Пропустить для всех") skipAll = true;
-                        }
-                        if (rep is null || an is "Пропустить для всех" or "Ок" || skipAll)
+                        if (skipAll)
                         {
                             Local_Reports.Reports_Collection.Add(item);
+                            continue;
                         }
+                        var rep = item.Report_Collection.FirstOrDefault();
+                        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+                            || rep == null)
+                        {
+                            continue;
+                        }
+                        var countCode10 = 0;
+                        foreach (var key in rep.Rows)
+                        {
+                            if (key is Form1 { OperationCode_DB: "10" })
+                            {
+                                countCode10++;
+                            }
+                        }
+                        var inventory = countCode10 == rep.Rows.Count
+                            ? " (ИНВ)"
+                            : countCode10 > 0
+                                ? " (инв)"
+                                : "";
+                        var result = await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions = new[]
+                                {
+                                    new ButtonDefinition { Name = "Ок" },
+                                    new ButtonDefinition { Name = "Пропустить для всех" }
+                                },
+                                ContentTitle = "Импорт из .raodb",
+                                ContentHeader = "Уведомление. Новая организация",
+                                ContentMessage =
+                                    $"Был добавлен отчет по форме {rep.FormNum_DB} за период {rep.StartPeriod_DB}-{rep.EndPeriod_DB}," +
+                                    $"{Environment.NewLine}номер корректировки {rep.CorrectionNumber_DB}, количество строк {rep.Rows.Count}{inventory}." +
+                                    $"{Environment.NewLine}Организация:" +
+                                    $"{Environment.NewLine}   1.Регистрационный номер - {item.Master.RegNoRep.Value}" +
+                                    $"{Environment.NewLine}   2.Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
+                                    $"{Environment.NewLine}   3.ОКПО - {item.Master.OkpoRep.Value}",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+                        if (result == "Пропустить для всех") skipAll = true;
+                        Local_Reports.Reports_Collection.Add(item);
                     }
                 }
                 await Local_Reports.Reports_Collection.QuickSortAsync();
