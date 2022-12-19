@@ -1939,8 +1939,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB);
                         foreach (var newR in newSumRow)
                         {
-                            foreach (var oldR in dic
-                                         .Where(oldR => newR.NumberInOrder_DB == oldR.Key))
+                            foreach (var oldR in dic.Where(oldR => newR.NumberInOrder_DB == oldR.Key))
                             {
                                 newR.PackQuantity_DB = oldR.Value[0];
                                 newR.VolumeInPack_DB = oldR.Value[1];
