@@ -2482,6 +2482,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         var form = forms.FirstOrDefault() as Report;
                         lst.Add(form);
                         _Excel_Export_Rows(param, 2, masterHeaderLength, worksheet, lst);
+                        if (param is "2.2")
+                        {
+                            for (int col = worksheet.Dimension.Start.Column; col <= worksheet.Dimension.End.Column; col++)
+                            {
+                                if (worksheet.Cells[1, col].Text == "№ п/п")
+                                {
+                                    using ExcelRange excelRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column];
+                                    excelRange.Sort(col - 1);
+                                    break;
+                                }
+                            }
+                        }
                         _Excel_Export_Notes(param, 2, masterHeaderLength, worksheetPrim, lst);
                         try
                         {
