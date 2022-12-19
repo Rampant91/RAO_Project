@@ -14,6 +14,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using ReactiveUI;
 using Spravochniki;
 using System;
@@ -1101,25 +1102,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region ImportForm
     public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
-    private async Task<string[]> GetSelectedFilesFromDialog(string Name, params string[] Extensions)
+    private async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
     {
-        string[]? answ = null;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        string[]? answer = null;
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return null;
+        OpenFileDialog dial = new() { AllowMultiple = true };
+        var filter = new FileDialogFilter
         {
-            OpenFileDialog dial = new()
-            {
-                AllowMultiple = true
-            };
-            var filter = new FileDialogFilter
-            {
-                Name = Name,
-                Extensions = new List<string>(Extensions)
-            };
-            dial.Filters = new List<FileDialogFilter> { filter };
-
-            answ = await dial.ShowAsync(desktop.MainWindow);
-        }
-        return answ;
+            Name = name,
+            Extensions = new List<string>(extensions)
+        };
+        dial.Filters = new List<FileDialogFilter> { filter };
+        answer = await dial.ShowAsync(desktop.MainWindow);
+        return answer;
     }
     private async Task<string> GetTempDirectory(string systemDirectory)
     {
@@ -1141,7 +1136,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task<string> GetRaoFileName()
     {
         var tmp = await GetTempDirectory(await GetSystemDirectory());
-
         var file = "";
         var count = 0;
         do
@@ -1198,7 +1192,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return null;
         }
     }
-    private async Task<Reports> GetReports21FromLocalEqual(Reports item)
+    private async Task<Reports?> GetReports21FromLocalEqual(Reports item)
     {
         try
         {
@@ -1540,12 +1534,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     }
     private async Task ProcessIfHasReports21(Reports first21, Reports item)
     {
-        var not_in = false;
-
+        var notIn = false;
         var skipLess = false;
         var skipNew = false;
         var _skipNew = false;
-
         foreach (Report it in item.Report_Collection)
         {
             if (first21.Report_Collection.Count != 0)
@@ -1554,7 +1546,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     if (elem.Year_DB == it.Year_DB && it.FormNum_DB == elem.FormNum_DB)
                     {
-                        not_in = true;
+                        notIn = true;
                         if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
                         {
                             if (!skipLess)
@@ -1614,7 +1606,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
-                if (!not_in)
+                if (!notIn)
                 {
                     var an = "Да";
                     if (!_skipNew)
@@ -1644,7 +1636,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                     await ChechAanswer(an, first21, null, it);
-                    not_in = false;
+                    notIn = false;
                 }
             }
             else
@@ -1678,69 +1670,81 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         try
         {
-            var answ = await GetSelectedFilesFromDialog("RAODB", "raodb");
-            if (answ != null)
+            var answer = await GetSelectedFilesFromDialog("RAODB", "raodb");
+            if (answer is null) return;
+            foreach (var res in answer)
             {
-                foreach (var res in answ)
+                if (res == "") continue;
+                var file = await GetRaoFileName();
+                var sourceFile = new FileInfo(res);
+                sourceFile.CopyTo(file, true);
+                var reportsCollection = await GetReportsFromDataBase(file);
+                var skipAll = false;
+                foreach (var item in reportsCollection)
                 {
-                    if (res != "")
+                    if (item.Master.Rows10.Count != 0)
+                        item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
+                    else
+                        item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
+                    var first11 = await GetReports11FromLocalEqual(item);
+                    var first21 = await GetReports21FromLocalEqual(item);
+                    await RestoreReportsOrders(item);
+                    item.CleanIds();
+                    await ProcessIfNoteOrder0(item);
+                    if (first11 != null)
                     {
-                        var file = await GetRaoFileName();
-                        var sourceFile = new FileInfo(res);
-                        sourceFile.CopyTo(file, true);
-
-                        var reportsCollection = await GetReportsFromDataBase(file);
-                        var skipAll = false;
-                        foreach (var item in reportsCollection)
+                        await ProcessIfHasReports11(first11, item);
+                    }
+                    else if (first21 != null)
+                    {
+                        await ProcessIfHasReports21(first21, item);
+                    }
+                    else if (first21 == null && first11 == null)
+                    {
+                        var rep = item.Report_Collection.FirstOrDefault();
+                        string? an = null;
+                        if (rep != null
+                            && !skipAll
+                            && Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                         {
-                            if (item.Master.Rows10.Count != 0)
-                                item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
-                            else
-                                item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
-                            var first11 = await GetReports11FromLocalEqual(item);
-                            var first21 = await GetReports21FromLocalEqual(item);
-                            await RestoreReportsOrders(item);
-                            item.CleanIds();
+                            var inventory = "";
+                            var countCode10 = 0;
+                            foreach (var row in item.Report_Collection)
+                            {
 
-                            await ProcessIfNoteOrder0(item);
-
-                            if (first11 != null)
-                            {
-                                await ProcessIfHasReports11(first11, item);
                             }
-                            else if (first21 != null)
-                            {
-                                await ProcessIfHasReports21(first21, item);
-                            }
-                            else if (first21 == null && first11 == null)
-                            {
-                                var rep = item.Report_Collection.FirstOrDefault();
-                                string? an = null;
-                                if (rep != null)
+                            var result = await MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    if (!skipAll)
+                                    ButtonDefinitions = new[]
                                     {
-                                        var str =
-                                            $"Был добавлен отчет по форме {rep.FormNum_DB} за период {rep.StartPeriod_DB}-{rep.EndPeriod_DB},\nномер корректировки {rep.CorrectionNumber_DB}, количество строк {rep.Rows.Count}.\nОрганизации:\n   1.Регистрационный номер  {item.Master.RegNoRep.Value}\n   2.Сокращенное наименование  {item.Master.ShortJurLicoRep.Value}\n   3.ОКПО  {item.Master.OkpoRep.Value}\n"; ;
-                                        an = await ShowMessage.Handle(new List<string> { str, "Новая организация", "Ок", "Пропустить для всех" });
-                                        if (an == "Пропустить для всех") skipAll = true;
-                                    }
-                                }
-                                else
-                                {
-                                    Local_Reports.Reports_Collection.Add(item);
-                                }
-                                if (an is "Пропустить для всех" or "Ок" || skipAll)
-                                {
-                                    Local_Reports.Reports_Collection.Add(item);
-                                }
-                            }
+                                        new ButtonDefinition { Name = "Ок" },
+                                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                                    },
+                                    ContentTitle = "Импорт из .raodb",
+                                    ContentHeader = "Уведомление. Новая организация",
+                                    ContentMessage =
+                                        $"Был добавлен отчет по форме {rep.FormNum_DB} за период {rep.StartPeriod_DB}-{rep.EndPeriod_DB}," +
+                                        $"{Environment.NewLine}номер корректировки {rep.CorrectionNumber_DB}, количество строк {rep.Rows.Count}." +
+                                        $"{Environment.NewLine}Организация:" +
+                                        $"{Environment.NewLine}   1.Регистрационный номер - {item.Master.RegNoRep.Value}" +
+                                        $"{Environment.NewLine}   2.Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
+                                        $"{Environment.NewLine}   3.ОКПО - {item.Master.OkpoRep.Value}",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(desktop.MainWindow);
+                            if (result == "Пропустить для всех") skipAll = true;
                         }
-                        await Local_Reports.Reports_Collection.QuickSortAsync();
+                        if (rep is null || an is "Пропустить для всех" or "Ок" || skipAll)
+                        {
+                            Local_Reports.Reports_Collection.Add(item);
+                        }
                     }
                 }
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                await Local_Reports.Reports_Collection.QuickSortAsync();
             }
+            await StaticConfiguration.DBModel.SaveChangesAsync();
         }
         catch { }
     }
@@ -1886,92 +1890,82 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _ChangeForm(object par)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop 
-            && par is ObservableCollectionWithItemPropertyChanged<IKey> param)
+            && par is ObservableCollectionWithItemPropertyChanged<IKey> param
+            && param.First() is { } obj)
         {
-            var obj = param.First();
-            if (obj != null)
+            var t = desktop.MainWindow as MainWindow;
+            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+            var rep = (Report)obj;
+            var tre = Local_Reports.Reports_Collection
+                .FirstOrDefault(i => i.Report_Collection.Contains(rep));
+            var numForm = rep.FormNum.Value;
+            var frm = new ChangeOrCreateVM(numForm, rep, tre, Local_Reports);
+            switch (numForm)
             {
-                var t = desktop.MainWindow as MainWindow;
-                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-                var rep = (Report)obj;
-                var tre = Local_Reports.Reports_Collection
-                    .FirstOrDefault(i => i.Report_Collection.Contains(rep));
-                var numForm = rep.FormNum.Value;
-                var frm = new ChangeOrCreateVM(numForm, rep, tre, Local_Reports);
-                switch (numForm)
+                case "2.1":
                 {
-                    case "2.1":
+                    Form2_Visual.tmpVM = frm;
+                    if (frm.isSum)
                     {
-                        Form2_Visual.tmpVM = frm;
-                        if (frm.isSum)
-                        {
-                            //var sumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
-                            await frm.UnSum21();
-                            await frm.Sum21();
-                            //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
-                        }
-                        break;
+                        //var sumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
+                        await frm.UnSum21();
+                        await frm.Sum21();
+                        //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
                     }
-                    case "2.2":
-                    {
-                        Form2_Visual.tmpVM = frm;
-                        if (frm.isSum)
-                        {
-                            var sumRow = frm.Storage.Rows22.Where(x => x.Sum_DB).ToList();
-                            Dictionary<long, List<string>> dic = new();
-                            foreach (var oldR in sumRow)
-                            {
-                                dic[oldR.NumberInOrder_DB] = new List<string>
-                                    { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
-                            }
-                            await frm.UnSum22();
-                            await frm.Sum22();
-                            var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB);
-                            foreach (var newR in newSumRow)
-                            {
-                                foreach (var oldR in dic
-                                             .Where(oldR => newR.NumberInOrder_DB == oldR.Key))
-                                {
-                                    newR.PackQuantity_DB = oldR.Value[0];
-                                    newR.VolumeInPack_DB = oldR.Value[1];
-                                    newR.MassInPack_DB = oldR.Value[2];
-                                }
-                            }
-                        }
-                        break;
-                    }
+                    break;
                 }
-                await ShowDialog.Handle(frm);
-                t.SelectedReports = tmp;
+                case "2.2":
+                {
+                    Form2_Visual.tmpVM = frm;
+                    if (frm.isSum)
+                    {
+                        var sumRow = frm.Storage.Rows22.Where(x => x.Sum_DB).ToList();
+                        Dictionary<long, List<string>> dic = new();
+                        foreach (var oldR in sumRow)
+                        {
+                            dic[oldR.NumberInOrder_DB] = new List<string>
+                                { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
+                        }
+                        await frm.UnSum22();
+                        await frm.Sum22();
+                        var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB);
+                        foreach (var newR in newSumRow)
+                        {
+                            foreach (var oldR in dic
+                                         .Where(oldR => newR.NumberInOrder_DB == oldR.Key))
+                            {
+                                newR.PackQuantity_DB = oldR.Value[0];
+                                newR.VolumeInPack_DB = oldR.Value[1];
+                                newR.MassInPack_DB = oldR.Value[2];
+                            }
+                        }
+                    }
+                    break;
+                }
             }
+            await ShowDialog.Handle(frm);
+            t.SelectedReports = tmp;
         }
     }
     #endregion
 
     #region ChangeReport
-
-    public int pageOnEdit;
-
     public ReactiveCommand<object, Unit> ChangeReport { get; private set; }
     private async Task _ChangeReport(object par)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop 
-            && par is ObservableCollectionWithItemPropertyChanged<IKey> param)
+            && par is ObservableCollectionWithItemPropertyChanged<IKey> param
+            && param.First() is { } obj)
         {
-            var obj = param.First();
-            if (obj != null)
-            {
-                var t = desktop.MainWindow as MainWindow;
-                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-                var rep = (Reports)obj;
-                ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master, rep, Local_Reports);
-                await ShowDialog.Handle(frm);
+            var t = desktop.MainWindow as MainWindow;
+            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+            var rep = (Reports)obj;
+            var frm = new ChangeOrCreateVM(rep.Master.FormNum.Value, rep.Master, rep, Local_Reports);
+            await ShowDialog.Handle(frm);
 
-                //Local_Reports.Reports_Collection.Sorted = false;
-                //await Local_Reports.Reports_Collection.QuickSortAsync();
-                t.SelectedReports = tmp;
-                //pageOnEdit = this. 
-            }
+            //Local_Reports.Reports_Collection.Sorted = false;
+            //await Local_Reports.Reports_Collection.QuickSortAsync();
+            t.SelectedReports = tmp;
         }
     }
     #endregion
@@ -1983,8 +1977,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var param = par as IEnumerable;
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var answ = (string)await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
-            if (answ == "Да")
+            var answer = (string)await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
+            if (answer == "Да")
             {
                 var t = desktop.MainWindow as MainWindow;
                 if (t.SelectedReports.Count() != 0)
@@ -1999,7 +1993,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                     t.SelectedReports = tmp;
-                    
                 }
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }
@@ -2012,10 +2005,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _DeleteReport(object par)
     {
         var param = par as IEnumerable;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
-            var answ = (string)await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
-            if (answ == "Да")
+            var answer = await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
+            if (answer == "Да")
             {
                 if (param != null)
                     foreach (var item in param)
@@ -2032,8 +2025,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> SaveReport { get; private set; }
     private async Task _SaveReport(object par)
     {
-        var param = par as IEnumerable;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();
             await Local_Reports.Reports_Collection.QuickSortAsync();
