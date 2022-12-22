@@ -2062,10 +2062,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteForm { get; private set; }
     private async Task _DeleteForm(object par)
     {
-        var param = par as IEnumerable;
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var answer = (string)await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
+            var answer = await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
             if (answer == "Да")
             {
                 var t = desktop.MainWindow as MainWindow;
@@ -2073,7 +2072,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
                     var y = t.SelectedReports.First() as Reports;
-                    if (param != null)
+                    if (par is IEnumerable param)
                     {
                         foreach (var item in param)
                         {
@@ -2092,16 +2091,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteReport { get; private set; }
     private async Task _DeleteReport(object par)
     {
-        var param = par as IEnumerable;
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
             var answer = await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
             if (answer == "Да")
             {
-                if (param != null)
-                    foreach (var item in param)
-                        Local_Reports.Reports_Collection.Remove((Reports)item);
+                if (par is IEnumerable param)
+                {
+                    var t = desktop.MainWindow as MainWindow;
 
+                    foreach (var item in param)
+                    {
+                        Local_Reports.Reports_Collection.Remove((Reports)item);
+                    }
+                }
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }
             //await Local_Reports.Reports_Collection.QuickSortAsync();
