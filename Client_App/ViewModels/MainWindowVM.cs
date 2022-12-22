@@ -2091,14 +2091,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> DeleteReport { get; private set; }
     private async Task _DeleteReport(object par)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
+        //if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var answer = await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
             if (answer == "Да")
             {
                 if (par is IEnumerable param)
                 {
-                    var t = desktop.MainWindow as MainWindow;
+                    //var t = desktop.MainWindow as MainWindow;
 
                     foreach (var item in param)
                     {

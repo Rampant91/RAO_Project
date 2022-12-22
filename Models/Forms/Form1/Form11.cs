@@ -1172,16 +1172,16 @@ public class Form11 : Form1
     public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
     {
         base.ExcelGetRow(worksheet, Row);
-        PassportNumber_DB = Convert.ToString(worksheet.Cells[Row, 4 ].Value);
+        PassportNumber_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
         Type_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
-        Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 6 ].Value);
-        FactoryNumber_DB = Convert.ToString(worksheet.Cells[Row, 7 ].Value);
-        Quantity_DB = Convert.ToInt32(worksheet.Cells[Row, 8 ].Value);
+        Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+        FactoryNumber_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
+        Quantity_DB = Convert.ToInt32(worksheet.Cells[Row, 8].Value);
         Activity_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 9].Value), out var val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 9].Value);
-        CreatorOKPO_DB = Convert.ToString(worksheet.Cells[Row, 10 ].Value);
-        CreationDate_DB = Convert.ToString(worksheet.Cells[Row, 11 ].Value);
-        Category_DB = Convert.ToInt16(worksheet.Cells[Row, 12 ].Value);
-        SignedServicePeriod_DB = Convert.ToInt32(worksheet.Cells[Row, 13 ].Value);
+        CreatorOKPO_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
+        CreationDate_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
+        Category_DB = Convert.ToInt16(worksheet.Cells[Row, 12].Value);
+        SignedServicePeriod_DB = Convert.ToSingle(worksheet.Cells[Row, 13].Value);
         PropertyCode_DB = Convert.ToByte(worksheet.Cells[Row, 14].Value);
         Owner_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
         DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 16].Value);
