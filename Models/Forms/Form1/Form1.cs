@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using Spravochniki;
 
 namespace Models.Forms.Form1;
@@ -89,7 +90,6 @@ public abstract class Form1 : Form
     }
     protected virtual bool OperationCode_Validation(RamAccess<string> value)//Ready
     {
-
         value.ClearErrors();
         return true;
     }
@@ -415,30 +415,32 @@ public abstract class Form1 : Form
     #endregion
 
     #region IExcel
-    public override void ExcelGetRow(ExcelWorksheet worksheet, int Row) 
+    public override void ExcelGetRow(ExcelWorksheet worksheet, int row) 
     {
-        NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[Row, 1].Value);
-        OperationCode_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        OperationDate_DB = worksheet.Cells[Row, 3].Value is DateTime dateTime ? dateTime.ToShortDateString() : Convert.ToString(worksheet.Cells[Row, 3].Value);
+        NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[row, 1].Value);
+        OperationCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        OperationDate_DB = worksheet.Cells[row, 3].Value is null
+            ? "-"
+            : DateTime.TryParse(worksheet.Cells[row, 3].Value.ToString(), out var dateTime)
+                ? dateTime.ToShortDateString()
+                : worksheet.Cells[row, 3].Value.ToString();
     }
-    public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "")
     {
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = NumberInOrder_DB;
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = OperationCode_DB;
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = OperationDate_DB;
-
+        worksheet.Cells[row + (!transpon ? 0 : 0), column + (transpon ? 0 : 0)].Value = NumberInOrder_DB;
+        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = OperationCode_DB;
+        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = OperationDate_DB;
         return 3;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
     {
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))
+        worksheet.Cells[row + (!transpon ? 0 : 0), column + (transpon ? 0 : 0)].Value = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))
             .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[2];     
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode))
+        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode))
             .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];     
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate))
+        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate))
             .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-
         return 3;
     }
     #endregion
