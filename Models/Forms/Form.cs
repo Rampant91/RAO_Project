@@ -28,13 +28,11 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
                 ((RamAccess<string>)Dictionary[nameof(FormNum)]).Value = FormNum_DB;
                 return (RamAccess<string>)Dictionary[nameof(FormNum)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
-                rm.PropertyChanged += FormNumValueChanged;
-                Dictionary.Add(nameof(FormNum), rm);
-                return (RamAccess<string>)Dictionary[nameof(FormNum)];
-            }
+
+            var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
+            rm.PropertyChanged += FormNumValueChanged;
+            Dictionary.Add(nameof(FormNum), rm);
+            return (RamAccess<string>)Dictionary[nameof(FormNum)];
         }
         set
         {
@@ -42,11 +40,11 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             OnPropertyChanged(nameof(FormNum));
         }
     }
-    private void FormNumValueChanged(object Value, PropertyChangedEventArgs args)
+    private void FormNumValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            FormNum_DB = ((RamAccess<string>)Value).Value;
+            FormNum_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool FormNum_Validation(RamAccess<string> value)//Ready
@@ -57,13 +55,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     #endregion
 
     [NotMapped]
-    public long Order
-    {
-        get
-        {
-            return NumberInOrder_DB;
-        }
-    }
+    public long Order => NumberInOrder_DB;
 
     public void SetOrder(long index) 
     {
@@ -89,13 +81,10 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
                 ((RamAccess<int>)Dictionary[nameof(NumberInOrder)]).Value = NumberInOrder_DB;
                 return (RamAccess<int>)Dictionary[nameof(NumberInOrder)];
             }
-            else
-            {
-                var rm = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
-                rm.PropertyChanged += NumberInOrderValueChanged;
-                Dictionary.Add(nameof(NumberInOrder), rm);
-                return (RamAccess<int>)Dictionary[nameof(NumberInOrder)];
-            }
+            var rm = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
+            rm.PropertyChanged += NumberInOrderValueChanged;
+            Dictionary.Add(nameof(NumberInOrder), rm);
+            return (RamAccess<int>)Dictionary[nameof(NumberInOrder)];
         }
         set
         {
@@ -103,11 +92,11 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             OnPropertyChanged(nameof(NumberInOrder));
         }
     }
-    private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
+    private void NumberInOrderValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            NumberInOrder_DB = ((RamAccess<int>)Value).Value;
+            NumberInOrder_DB = ((RamAccess<int>)value).Value;
         }
     }
     private bool NumberInOrder_Validation(RamAccess<int> value)//Ready
@@ -130,13 +119,10 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
                 ((RamAccess<int>)Dictionary[nameof(NumberOfFields)]).Value = NumberOfFields_DB;
                 return (RamAccess<int>)Dictionary[nameof(NumberOfFields)];
             }
-            else
-            {
-                var rm = new RamAccess<int>(NumberOfFields_Validation, NumberOfFields_DB);
-                rm.PropertyChanged += NumberOfFieldsValueChanged;
-                Dictionary.Add(nameof(NumberOfFields), rm);
-                return (RamAccess<int>)Dictionary[nameof(NumberOfFields)];
-            }
+            var rm = new RamAccess<int>(NumberOfFields_Validation, NumberOfFields_DB);
+            rm.PropertyChanged += NumberOfFieldsValueChanged;
+            Dictionary.Add(nameof(NumberOfFields), rm);
+            return (RamAccess<int>)Dictionary[nameof(NumberOfFields)];
         }
         set
         {
@@ -144,11 +130,11 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             OnPropertyChanged(nameof(NumberOfFields));
         }
     }
-    private void NumberOfFieldsValueChanged(object Value, PropertyChangedEventArgs args)
+    private void NumberOfFieldsValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            NumberOfFields_DB = ((RamAccess<int>)Value).Value;
+            NumberOfFields_DB = ((RamAccess<int>)value).Value;
         }
     }
     private bool NumberOfFields_Validation(RamAccess<int> value)
@@ -166,18 +152,15 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     #region INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
-        if (PropertyChanged != null)
-        {
-            PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
     public event PropertyChangedEventHandler PropertyChanged;
     #endregion
 
     #region IExcel
-    public abstract void ExcelGetRow(ExcelWorksheet worksheet, int Row);
-    public abstract int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true, string SumNumber = "");
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+    public abstract void ExcelGetRow(ExcelWorksheet worksheet, int row);
+    public abstract int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "");
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
     {
         return 0;
     }

@@ -14,7 +14,7 @@ namespace Models.Forms.Form2;
 [Form_Class("Форма 2.0: Титульный лист годового отчета организации")]
 public class Form20 : Form
 {
-    public Form20() : base()
+    public Form20()
     {
         FormNum.Value = "2.0";
     }

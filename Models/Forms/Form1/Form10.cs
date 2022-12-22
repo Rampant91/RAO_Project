@@ -14,7 +14,7 @@ namespace Models.Forms.Form1;
 [Form_Class("Форма 1.0: Титульный лист оперативного отчета организации")]
 public class Form10 : Form
 {
-    public Form10() : base()
+    public Form10()
     {
         FormNum.Value = "1.0";
     }

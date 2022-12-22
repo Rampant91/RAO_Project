@@ -63,7 +63,6 @@ public class Form11 : Form1
                  Type.HasErrors);
     }
 
-
     #region PassportNumber
     public string PassportNumber_DB { get; set; } = "";
     [NotMapped]
@@ -148,13 +147,10 @@ public class Form11 : Form1
             return false;
         }
         var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
-        if (string.IsNullOrEmpty(Radionuclids.Value))
+        if (string.IsNullOrEmpty(Radionuclids.Value) && a.Count() == 1)
         {
-            if (a.Count() == 1)
-            {
-                _autoRN = true;
-                Radionuclids.Value = a.First();
-            }
+            _autoRN = true;
+            Radionuclids.Value = a.First();
         }
         return true;
     }
@@ -307,17 +303,17 @@ public class Form11 : Form1
     private bool Quantity_Validation(RamAccess<int?> value)//Ready
     {
         value.ClearErrors();
-        if (value.Value == null)
+        switch (value.Value)
         {
-            value.AddError("Поле не заполнено");
-            return false;
+            case null:
+                value.AddError("Поле не заполнено");
+                return false;
+            case <= 0:
+                value.AddError("Недопустимое значение");
+                return false;
+            default:
+                return true;
         }
-        if (value.Value <= 0)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
     }
     #endregion
 
@@ -347,31 +343,29 @@ public class Form11 : Form1
     }
     private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)Value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    Activity_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch(Exception ex)
-                { }
+                Activity_DB = value1;
+                return;
             }
-            Activity_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch(Exception)
+            { }
         }
+        Activity_DB = value1;
     }
 
     private bool Activity_Validation(RamAccess<string> value)//Ready
@@ -398,11 +392,14 @@ public class Form11 : Form1
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
+        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
         try
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) 
+            { 
+                value.AddError("Число должно быть больше нуля");
+                return false;
+            }
         }
         catch
         {
@@ -439,16 +436,14 @@ public class Form11 : Form1
     }
     private void CreationDateValueChanged(object Value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)Value).Value;
+        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+        if (b.IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            CreationDate_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        CreationDate_DB = tmp;
     }
     private bool CreationDate_Validation(RamAccess<string> value)//Ready
     {
@@ -538,14 +533,11 @@ public class Form11 : Form1
         {
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
-        {
-            value.AddError("Недопустимое значение"); return false;
-        }
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
+        if (value.Value.Length != 8 && value.Value.Length != 14 || !mask.IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение"); 
+            return false;
         }
         return true;
     }
@@ -612,7 +604,6 @@ public class Form11 : Form1
                 ((RamAccess<float?>)Dictionary[nameof(SignedServicePeriod)]).Value = SignedServicePeriod_DB;
                 return (RamAccess<float?>)Dictionary[nameof(SignedServicePeriod)];
             }
-
             var rm = new RamAccess<float?>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
             rm.PropertyChanged += SignedServicePeriodValueChanged;
             Dictionary.Add(nameof(SignedServicePeriod), rm);
@@ -662,7 +653,6 @@ public class Form11 : Form1
                 ((RamAccess<byte?>)Dictionary[nameof(PropertyCode)]).Value = PropertyCode_DB;
                 return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
             }
-
             var rm = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
             rm.PropertyChanged += PropertyCodeValueChanged;
             Dictionary.Add(nameof(PropertyCode), rm);
@@ -689,9 +679,10 @@ public class Form11 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!(value.Value >= 1 && value.Value <= 9))
+        if (value.Value is not (>= 1 and <= 9))
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение"); 
+            return false;
         }
         return true;
     }
@@ -710,7 +701,6 @@ public class Form11 : Form1
                 ((RamAccess<string>)Dictionary[nameof(Owner)]).Value = Owner_DB;
                 return (RamAccess<string>)Dictionary[nameof(Owner)];
             }
-
             var rm = new RamAccess<string>(Owner_Validation, Owner_DB);
             rm.PropertyChanged += OwnerValueChanged;
             Dictionary.Add(nameof(Owner), rm);
@@ -744,29 +734,23 @@ public class Form11 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("прим."))
+        switch (value.Value)
         {
-            //if ((OwnerNote == null) || OwnerNote.Equals(""))
-            //    value.AddError("Заполните примечание");
-            return true;
-        }
-        if (value.Value.Equals("Минобороны"))
-        {
-            return true;
+            case "прим.":
+            case "Минобороны":
+                //if ((OwnerNote == null) || OwnerNote.Equals(""))
+                //    value.AddError("Заполните примечание");
+                return true;
         }
         if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
         {
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
-        {
-            value.AddError("Недопустимое значение"); return false;
-
-        }
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
+        if (value.Value.Length is not (8 or 14) || !mask.IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение"); 
+            return false;
         }
         return true;
     }
@@ -785,7 +769,6 @@ public class Form11 : Form1
                 ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
                 return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
             }
-
             var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
             rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
             Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
@@ -819,27 +802,20 @@ public class Form11 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("Минобороны"))
+        switch (value.Value)
         {
-            return true;
-        }
-        if (value.Value.Equals("прим."))
-        {
+            case "Минобороны":
             //if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
             //    value.AddError("Заполните примечание");
-            return true;
+            case "прим.":
+                return true;
         }
         if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
         {
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
+        if (value.Value.Length is not(8 or 14) || !mask.IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -876,16 +852,13 @@ public class Form11 : Form1
 
     private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)Value).Value;
+        if (value1 != null && Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            TransporterOKPO_DB = value1;
+            value1 = value1.ToUpper();
         }
+        TransporterOKPO_DB = value1;
     }
     private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
     {
@@ -895,32 +868,24 @@ public class Form11 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-"))
+        switch (value.Value)
         {
-            return true;
-        }
-        if (value.Value.Equals("прим."))
-        {
+            case "-":
             //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
             //    value.AddError("Заполните примечание");
-            return true;
-        }
-        if (value.Value.Equals("Минобороны"))
-        {
-            return true;
+            case "прим.":
+            case "Минобороны":
+                return true;
         }
         if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
         {
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
-        {
-            value.AddError("Недопустимое значение"); return false;
-        }
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
+        if (value.Value.Length is not (8 or 14) || !mask.IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение"); 
+            return false;
         }
         return true;
     }
@@ -939,7 +904,6 @@ public class Form11 : Form1
                 ((RamAccess<string>)Dictionary[nameof(PackName)]).Value = PackName_DB;
                 return (RamAccess<string>)Dictionary[nameof(PackName)];
             }
-
             var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
             rm.PropertyChanged += PackNameValueChanged;
             Dictionary.Add(nameof(PackName), rm);
@@ -990,7 +954,6 @@ public class Form11 : Form1
                 ((RamAccess<string>)Dictionary[nameof(PackType)]).Value = PackType_DB;
                 return (RamAccess<string>)Dictionary[nameof(PackType)];
             }
-
             var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
             rm.PropertyChanged += PackTypeValueChanged;
             Dictionary.Add(nameof(PackType), rm);
@@ -1041,7 +1004,6 @@ public class Form11 : Form1
                 ((RamAccess<string>)Dictionary[nameof(PackNumber)]).Value = PackNumber_DB;
                 return (RamAccess<string>)Dictionary[nameof(PackNumber)];
             }
-
             var rm = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
             rm.PropertyChanged += PackNumberValueChanged;
             Dictionary.Add(nameof(PackNumber), rm);
@@ -1109,7 +1071,8 @@ public class Form11 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55" or "56" or "57" or "59" or "76")
+        if (value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55"
+            or "56" or "57" or "59" or "76")
         {
             value.AddError("Код операции не может быть использован для РВ");
             return false;
