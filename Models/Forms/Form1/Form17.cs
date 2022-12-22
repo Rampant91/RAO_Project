@@ -2090,7 +2090,7 @@ public class Form17 : Form1
         PackType_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         PackFactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         PackNumber_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
-        FormingDate_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
+        FormingDate_DB = worksheet.Cells[row, 8].Value is DateTime formDateTime ? formDateTime.ToLongDateString() : Convert.ToString(worksheet.Cells[row, 8].Value);
         PassportNumber_DB = Convert.ToString(worksheet.Cells[row, 9].Value);
         Volume_DB = Convert.ToString(worksheet.Cells[row, 10].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 10].Value), out var val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 10].Value);
         Mass_DB = Convert.ToString(worksheet.Cells[row, 11].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 11].Value);
@@ -2098,7 +2098,7 @@ public class Form17 : Form1
         SpecificActivity_DB = Convert.ToString(worksheet.Cells[row, 13].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 13].Value);
         DocumentVid_DB = worksheet.Cells[row, 14].Value == null ? null : Convert.ToByte(worksheet.Cells[row, 14].Value);
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
-        DocumentDate_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
+        DocumentDate_DB = worksheet.Cells[row, 16].Value is DateTime docDateTime ? docDateTime.ToLongDateString() : Convert.ToString(worksheet.Cells[row, 16].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
         StoragePlaceName_DB = Convert.ToString(worksheet.Cells[row, 19].Value);

@@ -419,7 +419,7 @@ public abstract class Form1 : Form
     {
         NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[Row, 1].Value);
         OperationCode_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        OperationDate_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
+        OperationDate_DB = worksheet.Cells[Row, 3].Value is DateTime dateTime ? dateTime.ToShortDateString() : Convert.ToString(worksheet.Cells[Row, 3].Value);
     }
     public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
     {
