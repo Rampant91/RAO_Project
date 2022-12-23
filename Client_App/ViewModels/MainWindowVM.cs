@@ -6380,7 +6380,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             form212.ExcelRow(worksheet, count, startColumn + 1);
                             break;
                     }
-
                     var mstrep = reps.Master_DB;
                     int yu;
                     if (id)
