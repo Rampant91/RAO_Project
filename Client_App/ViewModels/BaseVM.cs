@@ -44,11 +44,9 @@ public class BaseVM
 
     private protected static string ConvertDateToYear(string? date)
     {
-        Regex r = new(@"(\d{1,2}[.\/]){1,2}\d{4}");
-        if (date is null || !r.IsMatch(date))
-            return "0000";
-        var matches = r.Matches(date);
-        return matches.FirstOrDefault()!.Value[^4..];
+        return DateTime.TryParse(date, out var dateTime) 
+            ? dateTime.Year.ToString()
+            : "0000";
     }
 
     private protected static string TranslateToEng(string pasName)

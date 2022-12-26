@@ -1748,6 +1748,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         break;
                     case "дата выпуска":
                         date = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();
+                        date = DateTime.TryParse(date, out var dateTime)
+                            ? dateTime.ToShortDateString()
+                            : date;
                         break;
                     case "номер паспорта (сертификата)" or "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ":
                         pasNum = midValue.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null)?.ToString();

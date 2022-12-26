@@ -6187,8 +6187,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
     #endregion
-
-    
     #endregion
 
     #region ExcelExportCommonImplementation

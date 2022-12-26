@@ -434,16 +434,13 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(CreationDate));
         }
     }
-    private void CreationDateValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CreationDateValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)Value).Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        CreationDate_DB = tmp;
+        var date = ((RamAccess<string>)value).Value;
+        CreationDate_DB = DateTime.TryParse(date, out var dateTime)
+            ? dateTime.ToShortDateString()
+            : date;
     }
     private bool CreationDate_Validation(RamAccess<string> value)//Ready
     {
