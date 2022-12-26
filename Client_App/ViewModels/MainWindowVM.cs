@@ -6091,7 +6091,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     foreach (var rep in form11)
                     {
                         List<Form11> repPas = rep.Rows11
-                            .Where(x => x.OperationCode_DB is "11" or "85" && categories.Contains(x.Category_DB))
+                            .Where(x => x.OperationCode_DB is ("11" or "85"))   // && categories.Contains(x.Category_DB))
                             .ToList();
                         foreach (var repForm in repPas)
                         {
