@@ -4,10 +4,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Client_App.Views;
 using System.Threading;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using MessageBox.Avalonia.Enums;
 
 namespace Client_App;
 
@@ -18,37 +18,40 @@ public class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
+    private static Mutex? _instanceCheckMutex;
     public override async void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var instanceCheckMutex = new Mutex(true, "<Client_App>", out var isNew);
-            if (!isNew)
+            if (!InstanceCheck())
             {
-                instanceCheckMutex.Dispose();
                 #region MessageAppAlreadyOpen
-                var res = await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = new[]
-                        {
-                            new ButtonDefinition { Name = "Да" },
-                            new ButtonDefinition { Name = "Нет" }
-                        },
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Запуск программы",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = "Программа уже была запущена ранее." +
-                                         $"{Environment.NewLine}Вы уверены, что хотите открыть ещё одну копию программы?",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Программа уже запущена ранее и не может быть открыта повторно.",
+                        Icon = Icon.Error,
                         MinWidth = 400,
                         MinHeight = 120,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
                     })
-                    .ShowDialog(desktop.MainWindow); 
+                    .Show();
                 #endregion
-                if (res is "Нет") Environment.Exit(0);
+                Environment.Exit(0);
             }
             desktop.MainWindow = new OnStartProgressBar();
         }
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static bool InstanceCheck()
+    {
+        _instanceCheckMutex = new Mutex(true, "<Client_App>", out var isNew);
+        if (!isNew) 
+            _instanceCheckMutex.Dispose();
+        return isNew;
     }
 }
