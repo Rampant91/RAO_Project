@@ -1091,7 +1091,7 @@ public class Form11 : Form1
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
         CreationDate_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
         Category_DB = Convert.ToInt16(worksheet.Cells[Row, 12].Value);
-        SignedServicePeriod_DB = Convert.ToSingle(worksheet.Cells[Row, 13].Value);
+        SignedServicePeriod_DB = worksheet.Cells[Row, 13].Value is "" ? null : Convert.ToSingle(worksheet.Cells[Row, 13].Value);
         PropertyCode_DB = Convert.ToByte(worksheet.Cells[Row, 14].Value);
         Owner_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
         DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 16].Value);
