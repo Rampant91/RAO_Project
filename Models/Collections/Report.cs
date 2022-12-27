@@ -2945,19 +2945,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     {
         throw new NotImplementedException();
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool transpose = true, string SumNumber = "")
     {
         if (FormNum_DB.Split('.')[0] == "1")
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = CorrectionNumber_DB;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = StartPeriod_DB;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = EndPeriod_DB;
+            worksheet.Cells[Row + (transpose == false ? 0 : 0), Column + (transpose == true ? 0 : 0)].Value = CorrectionNumber_DB;
+            worksheet.Cells[Row + (transpose == false ? 1 : 0), Column + (transpose == true ? 1 : 0)].Value = StartPeriod_DB;
+            worksheet.Cells[Row + (transpose == false ? 2 : 0), Column + (transpose == true ? 2 : 0)].Value = EndPeriod_DB;
             return 3;
         }
         if (FormNum_DB.Split('.')[0] == "2")
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = CorrectionNumber_DB;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = Year_DB;
+            worksheet.Cells[Row + (transpose == false ? 0 : 0), Column + (transpose == true ? 0 : 0)].Value = CorrectionNumber_DB;
+            worksheet.Cells[Row + (transpose == false ? 1 : 0), Column + (transpose == true ? 1 : 0)].Value = Year_DB;
             return 2;
         }
         return 0;

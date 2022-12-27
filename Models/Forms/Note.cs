@@ -192,11 +192,11 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
         GraphNumber_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
         Comment_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         worksheet.Cells[row + 0, column + 0].Value = RowNumber_DB;
-        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = GraphNumber_DB;
-        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = Comment_DB;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = GraphNumber_DB;
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = Comment_DB;
         return 3;
     }
 

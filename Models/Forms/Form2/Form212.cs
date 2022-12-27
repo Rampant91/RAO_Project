@@ -417,6 +417,7 @@ public class Form212 : Form2
         return 5;
     }
     #endregion
+
     #region IDataGridColumn
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")

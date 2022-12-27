@@ -1873,9 +1873,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
 
                         rep.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
-                        var findReports = from Reports t in Local_Reports.Reports_Collection
-                                          where t.Report_Collection.Contains(rep)
-                                          select t;
+                        var findReports = Local_Reports.Reports_Collection
+                            .Where(t => t.Report_Collection.Contains(rep));
 
                         await StaticConfiguration.DBModel.SaveChangesAsync();
 

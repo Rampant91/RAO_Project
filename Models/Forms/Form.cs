@@ -159,8 +159,10 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
 
     #region IExcel
     public abstract void ExcelGetRow(ExcelWorksheet worksheet, int row);
-    public abstract int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "");
-    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
+
+    public abstract int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "");
+
+    protected static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
         return 0;
     }

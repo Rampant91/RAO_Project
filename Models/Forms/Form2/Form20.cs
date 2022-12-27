@@ -1092,23 +1092,23 @@ public class Form20 : Form
     {
         throw new NotImplementedException();
     }
-    public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
+    public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool transpose = true, string SumNumber = "")
     {
         Column = Column;
         Row = Row;
         if (SumNumber == "")
         {
-            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = Okpo_DB;
-            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ShortJurLico_DB;
-            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = RegNo_DB;
+            worksheet.Cells[Row + (!transpose ? 0 : 0), Column + (transpose ? 0 : 0)].Value = Okpo_DB;
+            worksheet.Cells[Row + (!transpose ? 1 : 0), Column + (transpose ? 1 : 0)].Value = ShortJurLico_DB;
+            worksheet.Cells[Row + (!transpose ? 2 : 0), Column + (transpose ? 2 : 0)].Value = RegNo_DB;
             return 3;
         }
         else
         {
-            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = SumNumber;
-            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = Okpo_DB;
-            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ShortJurLico_DB;
-            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = RegNo_DB;
+            worksheet.Cells[Row + (!transpose ? 0 : 0), Column + (transpose ? 0 : 0)].Value = SumNumber;
+            worksheet.Cells[Row + (!transpose ? 1 : 0), Column + (transpose ? 1 : 0)].Value = Okpo_DB;
+            worksheet.Cells[Row + (!transpose ? 2 : 0), Column + (transpose ? 2 : 0)].Value = ShortJurLico_DB;
+            worksheet.Cells[Row + (!transpose ? 3 : 0), Column + (transpose ? 3 : 0)].Value = RegNo_DB;
             return 4;
         }
 

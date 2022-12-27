@@ -73,7 +73,7 @@ public abstract class Form2 : Form
     {
         NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[Row, 1].Value);
     }
-    public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
+    public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool transpose = true, string SumNumber = "")
     {
         if (NumberInOrder_DB == 0)
         {

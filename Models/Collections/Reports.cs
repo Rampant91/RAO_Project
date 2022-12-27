@@ -129,7 +129,7 @@ public class Reports : IKey,INumberInOrder,IDataGridColumn
     //Property Changed
 
     #region IExcel
-    public int ExcelRow(ExcelWorksheet worksheet,int Row, int Column, bool Tanspon = true, string SumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet,int Row, int Column, bool transpose = true, string SumNumber = "")
     {
         throw new NotImplementedException();
     }
