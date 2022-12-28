@@ -156,14 +156,14 @@ public class Form13 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
-        if (string.IsNullOrEmpty(Radionuclids.Value))
+        var a = Spravochniks.SprTypesToRadionuclids
+            .Where(item => item.Item1 == value.Value)
+            .Select(item => item.Item2)
+            .ToList();
+        if (string.IsNullOrEmpty(Radionuclids.Value) && a.Count == 1)
         {
-            if (a.Count() == 1)
-            {
-                _autoRN = true;
-                Radionuclids.Value = a.First();
-            }
+            _autoRN = true;
+            Radionuclids.Value = a.First();
         }
         return true;
     }
@@ -1151,6 +1151,7 @@ public class Form13 : Form1
         return 18;
     }
     #endregion
+
     #region IDataGridColumn
     public override DataGridColumns GetColumnStructure(string param = "")
     {

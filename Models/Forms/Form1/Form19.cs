@@ -63,14 +63,14 @@ public class Form19 : Form1
         set
         {
             CodeTypeAccObject_DB = value.Value;
-            OnPropertyChanged(nameof(CodeTypeAccObject));
+            OnPropertyChanged();
         }
     }
-    private void CodeTypeAccObjectValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CodeTypeAccObjectValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            CodeTypeAccObject_DB = ((RamAccess<short?>)Value).Value;
+            CodeTypeAccObject_DB = ((RamAccess<short?>)value).Value;
         }
     }
     private bool CodeTypeAccObject_Validation(RamAccess<short?> value)//TODO
@@ -114,7 +114,7 @@ public class Form19 : Form1
         set
         {
             Radionuclids_DB = value.Value;
-            OnPropertyChanged(nameof(Radionuclids));
+            OnPropertyChanged();
         }
     }//If change this change validation
 
@@ -176,10 +176,10 @@ public class Form19 : Form1
             OnPropertyChanged();
         }
     }
-    private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ActivityValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
             value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
@@ -353,7 +353,7 @@ public class Form19 : Form1
                 : Convert.ToString(worksheet.Cells[row, 9].Value);
     }
 
-    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string SumNumber = "")
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpose);
         column += transpose ? cnt : 0;
@@ -392,65 +392,76 @@ public class Form19 : Form1
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
     {
-        if (_DataGridColumns == null)
+        if (_DataGridColumns != null)
         {
-            #region NumberInOrder (1)
-            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
-            NumberInOrderR.Binding = nameof(NumberInOrder);
-            NumberInOrderR.Blocked = true;
-            NumberInOrderR.ChooseLine = true;
-            #endregion
-            #region OperationCode (2)
-            var OperationCodeR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            OperationCodeR.SetSizeColToAllLevels(88);
-            OperationCodeR.Binding = nameof(OperationCode);
-            NumberInOrderR += OperationCodeR;
-            #endregion
-            #region OperationDate (3)
-            var OperationDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            OperationDateR.SetSizeColToAllLevels(88);
-            OperationDateR.Binding = nameof(OperationDate);
-            NumberInOrderR += OperationDateR;
-            #endregion
-            #region DocumentVid (4)
-            var DocumentVidR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentVidR.SetSizeColToAllLevels(88);
-            DocumentVidR.Binding = nameof(DocumentVid);
-            NumberInOrderR += DocumentVidR;
-            #endregion
-            #region DocumentNumber (5)
-            var DocumentNumberR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentNumberR.SetSizeColToAllLevels(103);
-            DocumentNumberR.Binding = nameof(DocumentNumber);
-            NumberInOrderR += DocumentNumberR;
-            #endregion
-            #region DocumentDate (6)
-            var DocumentDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentDateR.SetSizeColToAllLevels(88);
-            DocumentDateR.Binding = nameof(DocumentDate);
-            NumberInOrderR += DocumentDateR;
-            #endregion
-            #region CodeTypeAccObject (7)
-            var CodeTypeAccObjectR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(CodeTypeAccObject)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            CodeTypeAccObjectR.SetSizeColToAllLevels(163);
-            CodeTypeAccObjectR.Binding = nameof(CodeTypeAccObject);
-            NumberInOrderR += CodeTypeAccObjectR;
-            #endregion
-            #region Radionuclids (8)
-            var RadionuclidsR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RadionuclidsR.SetSizeColToAllLevels(125);
-            RadionuclidsR.Binding = nameof(Radionuclids);
-            NumberInOrderR += RadionuclidsR;
-            #endregion
-            #region Activity (9)
-            var ActivityR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ActivityR.SetSizeColToAllLevels(125);
-            ActivityR.Binding = nameof(Activity);
-            NumberInOrderR += ActivityR;
-            #endregion
-            _DataGridColumns = NumberInOrderR;
+            return _DataGridColumns;
         }
+
+        #region NumberInOrder (1)
+        var numberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        numberInOrderR.SetSizeColToAllLevels(50);
+        numberInOrderR.Binding = nameof(NumberInOrder);
+        numberInOrderR.Blocked = true;
+        numberInOrderR.ChooseLine = true;
+        #endregion
+
+        #region OperationCode (2)
+        var operationCodeR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        operationCodeR.SetSizeColToAllLevels(88);
+        operationCodeR.Binding = nameof(OperationCode);
+        numberInOrderR += operationCodeR;
+        #endregion
+
+        #region OperationDate (3)
+        var operationDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        operationDateR.SetSizeColToAllLevels(88);
+        operationDateR.Binding = nameof(OperationDate);
+        numberInOrderR += operationDateR;
+        #endregion
+
+        #region DocumentVid (4)
+        var documentVidR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        documentVidR.SetSizeColToAllLevels(88);
+        documentVidR.Binding = nameof(DocumentVid);
+        numberInOrderR += documentVidR;
+        #endregion
+
+        #region DocumentNumber (5)
+        var documentNumberR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        documentNumberR.SetSizeColToAllLevels(103);
+        documentNumberR.Binding = nameof(DocumentNumber);
+        numberInOrderR += documentNumberR;
+        #endregion
+
+        #region DocumentDate (6)
+        var documentDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        documentDateR.SetSizeColToAllLevels(88);
+        documentDateR.Binding = nameof(DocumentDate);
+        numberInOrderR += documentDateR;
+        #endregion
+
+        #region CodeTypeAccObject (7)
+        var codeTypeAccObjectR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(CodeTypeAccObject)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        codeTypeAccObjectR.SetSizeColToAllLevels(163);
+        codeTypeAccObjectR.Binding = nameof(CodeTypeAccObject);
+        numberInOrderR += codeTypeAccObjectR;
+        #endregion
+
+        #region Radionuclids (8)
+        var radionuclidsR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        radionuclidsR.SetSizeColToAllLevels(125);
+        radionuclidsR.Binding = nameof(Radionuclids);
+        numberInOrderR += radionuclidsR;
+        #endregion
+
+        #region Activity (9)
+        var activityR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
+        activityR.SetSizeColToAllLevels(125);
+        activityR.Binding = nameof(Activity);
+        numberInOrderR += activityR;
+        #endregion
+
+        _DataGridColumns = numberInOrderR;
         return _DataGridColumns;
     }
     #endregion
