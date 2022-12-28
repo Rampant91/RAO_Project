@@ -29,9 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
 using MessageBox.Avalonia.Enums;
-using BenchmarkDotNet.Running;
 
 namespace Client_App.ViewModels;
 
@@ -1875,9 +1873,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
 
                         rep.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
-
-                        BenchmarkRunner.Run<MainWindowVM>();
-
                         var findReports = Local_Reports.Reports_Collection
                             .Where(t => t.Report_Collection.Contains(rep));
 
@@ -1950,17 +1945,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             {
                                 try
                                 {
-                                    using var inputFile = new FileStream(
-                                        tmp,
-                                        FileMode.Open,
-                                        FileAccess.Read,
-                                        FileShare.ReadWrite);
-                                    using var outputFile = new FileStream(res, FileMode.Create);
-                                    var buffer = new byte[0x10000];
-                                    int bytes;
-                                    while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+                                    using (var inputFile = new FileStream(
+                                               tmp,
+                                               FileMode.Open,
+                                               FileAccess.Read,
+                                               FileShare.ReadWrite))
+                                    using (var outputFile = new FileStream(res, FileMode.Create))
                                     {
-                                        outputFile.Write(buffer, 0, bytes);
+                                        var buffer = new byte[0x10000];
+                                        int bytes;
+
+                                        while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+                                        {
+                                            outputFile.Write(buffer, 0, bytes);
+                                        }
                                     }
                                 }
                                 catch (Exception e)
@@ -1973,33 +1971,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
     }
-
-    [Benchmark]
-    private Reports? Origin(Report? rep)
-    {
-        var findReports = Local_Reports.Reports_Collection
-            .Where(t => t.Report_Collection.Contains(rep));
-
-        StaticConfiguration.DBModel.SaveChanges();
-
-        var rt = findReports.FirstOrDefault();
-        return rt;
-    }
-
-    [Benchmark]
-    private Reports? Modify(Report? rep)
-    {
-        var findReports = Local_Reports.Reports_Collection
-            .Where(t => t.Report_Collection.Contains(rep))
-            .ToList();
-
-        StaticConfiguration.DBModel.SaveChanges();
-
-        var rt = findReports.FirstOrDefault();
-        return rt;
-    }
-
-
     #endregion
 
     #region ChangeForm
