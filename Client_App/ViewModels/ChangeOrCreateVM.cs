@@ -774,7 +774,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var param = ((IEnumerable<IKey>)_param).ToList();
+            var param = (IEnumerable<IKey>)_param;
             #region MessageDeleteLine
             var answer = await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
@@ -810,49 +810,43 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 //    item.SetOrder(minItem);
                 //    minItem++;
                 //}
-                var rows = Storage[Storage.FormNum_DB].GetEnumerable().ToList();
-                switch ((rows.FirstOrDefault() as Form)?.FormNum_DB)
+                var rows = Storage[Storage.FormNum_DB].GetEnumerable();
+                if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.1"))
                 {
-                    case "2.1":
+                    var count = 1;
+                    foreach (var key in rows)
                     {
-                        var count = 1;
-                        foreach (var row in rows.Cast<Form21?>())
-                        {
-                            row.SetOrder(count);
-                            count++;
-                            row.NumberInOrderSum = new RamAccess<string>(null, "");
-                        }
-
-                        break;
+                        var row = (Form21)key;
+                        row.SetOrder(count);
+                        count++;
+                        row.NumberInOrderSum = new RamAccess<string>(null, "");
                     }
-                    case "2.2":
+                }
+                else if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.2"))
+                {
+                    var count = 1;
+                    foreach (var key in rows)
                     {
-                        var count = 1;
-                        foreach (var row in rows.Cast<Form22?>())
-                        {
-                            row.SetOrder(count);
-                            count++;
-                            row.NumberInOrderSum = new RamAccess<string>(null, "");
-                        }
-
-                        break;
+                        var row = (Form22)key;
+                        row.SetOrder(count);
+                        count++;
+                        row.NumberInOrderSum = new RamAccess<string>(null, "");
                     }
-                    default:
+                }
+                else
+                {
+                    //var count = 1;
+                    //foreach (var row in Storage[Storage.FormNum_DB])
+                    //{
+                    //    row.SetOrder(count);
+                    //    count++;
+                    //}
+                    await Storage.SortAsync();
+                    var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem);
+                    foreach (var item in itemQ)
                     {
-                        //var count = 1;
-                        //foreach (var row in Storage[Storage.FormNum_DB])
-                        //{
-                        //    row.SetOrder(count);
-                        //    count++;
-                        //}
-                        await Storage.SortAsync();
-                        var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem);
-                        foreach (var item in itemQ)
-                        {
-                            item.SetOrder(minItem);
-                            minItem++;
-                        }
-                        break;
+                        item.SetOrder(minItem);
+                        minItem++;
                     }
                 }
                 //await Storage.SortAsync();
@@ -915,7 +909,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var collection = param[0] as IKeyCollection;
         var minColumn = Convert.ToInt32(param[1]) + 1;
         var maxColumn = Convert.ToInt32(param[2]) + 1;
-        var collectionEn = collection.GetEnumerable().ToList();
+        var collectionEn = collection.GetEnumerable();
         if (minColumn == 1 && collectionEn.FirstOrDefault() is Form1 or Form2)
         {
             minColumn++;
@@ -1071,7 +1065,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var collection = param[0] as IKeyCollection;
         var minColumn = Convert.ToInt32(param[1]) + 1;
         var maxColumn = Convert.ToInt32(param[2]) + 1;
-        var collectionEn = collection.GetEnumerable().ToList();
+        var collectionEn = collection.GetEnumerable();
         if (minColumn == 1 && collectionEn.FirstOrDefault() is Form1 or Form2)
         {
             minColumn++;
@@ -1124,7 +1118,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                         else if (attr.Names[0] == "Документ")
                         {
-                            var findDock = tre.Where(x => x.name == "null-n").ToList();
+                            var findDock = tre.Where(x => x.name == "null-n");
                             columnNum = Convert.ToInt32(findDock.Any() 
                                 ? findDock.FirstOrDefault()?.innertCol.FirstOrDefault(x => x.name == attr.Names[0])
                                     ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name 
@@ -1178,11 +1172,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #region DeleteNote
     public ReactiveCommand<object, Unit> DeleteNote { get; protected set; }
-    private async Task _DeleteNote(object param)
+    private async Task _DeleteNote(object _param)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && param is List<Note?> notes)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            //var param = (IEnumerable)param;
+            var param = (IEnumerable)_param;
             #region MessageDeleteNote
             var answer = await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
@@ -1202,17 +1196,18 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             #endregion
             if (answer == "Да")
             {
-                foreach (var item in notes.Where(item => item != null))
+                foreach (Note item in param)
                 {
+                    if (item == null) continue;
                     foreach (var key in Storage.Notes)
                     {
                         var it = (Note)key;
-                        if (it.Order > item?.Order)
+                        if (it.Order > item.Order)
                         {
                             it.Order -= 1;
                         }
                     }
-                    foreach (var nt in notes)
+                    foreach (Note nt in param)
                     {
                         Storage.Notes.Remove(nt);
                     }
