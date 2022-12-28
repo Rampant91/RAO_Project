@@ -209,13 +209,12 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     public void AddRange(IEnumerable<T> items)
     {
-        var itemsList = items.ToList();
-        foreach (var item in itemsList)
+        foreach (var item in items)
         {
             Items.Add(item);
         }
         Sorted = false;
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,itemsList));
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,items.ToList()));
     }
     public void AddRangeNoChange(IEnumerable<T> items)
     {
@@ -256,26 +255,24 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     public void AddRange<T1>(int index, IEnumerable<T1> obj) where T1 : class, IKey
     {
         var count = index;
-        var objList = obj.ToList();
-        var countObj = objList.Count;
+        var countObj = obj.Count();
         long minOrder = 0;
+
         try
         {
-            minOrder = objList.Min(x => x.Order);
+            minOrder = obj.Min(x => x.Order);
         }
-        catch (Exception)
-        {
-            // ignored
-        }
+        catch (Exception ex)
+        { }
 
         var lst = new List<T>(Items);
-        foreach (var item in objList)
+        foreach (var item in obj)
         {
             item.PropertyChanged += ChildPropertyChanged;
             Items.Insert(count, item as T);
             count++;
         }
-        var itemq = lst.Where(x => x.Order >= minOrder).ToList();
+        var itemq = lst.Where(x => x.Order >= minOrder);
         foreach (var it in itemq)
         {
             it.SetOrder(it.Order + countObj);

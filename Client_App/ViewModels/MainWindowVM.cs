@@ -632,21 +632,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break;
         }
     }
-    private async Task<Reports?> CheckReps(ExcelWorksheet worksheet0)
+    private async Task<Reports> CheckReps(ExcelWorksheet worksheet0)
     {
-        var reps = worksheet0.Name switch
+        IEnumerable<Reports>? reps = worksheet0.Name switch
         {
             "1.0" => Local_Reports.Reports_Collection10
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
-                            Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB)
-                .ToList(),
-            "2.0" => Local_Reports.Reports_Collection20
+                            Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB),
+            "2.0" => Local_Reports.Reports_Collection20.Cast<Reports>()
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
-                            Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB)
-                .ToList(),
+                            Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB),
             _ => null
         };
-        if (reps != null && reps.Any())
+        if (reps.Count() != 0)
         {
             return reps.FirstOrDefault();
         }
@@ -6274,144 +6272,182 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         foreach (var item in forms)
         {
-            var reps = Local_Reports.Reports_Collection
-                .FirstOrDefault(t => t.Report_Collection.Contains(item));
-            if (reps == null) continue;
-            List<IKey> t;
-            switch (param)
+            var findReports = Local_Reports.Reports_Collection
+                .Where(t => t.Report_Collection.Contains(item));
+            var reps = findReports.FirstOrDefault();
+            if (reps != null)
             {
-                case "2.1":
+                IEnumerable<IKey> t = null;
+                switch (param)
                 {
-                    t = item[param].ToList<IKey>()
-                        .Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB)
-                        .ToList();
-                    if (item[param].ToList<IKey>().Any() && !t.Any())
-                    {
-                        t = item[param].ToList<IKey>();
-                    }
-                    break;
+                    case "2.1":
+                        {
+                            t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
+                            if (item[param].ToList<IKey>().Any() && !t.Any())
+                            {
+                                t = item[param].ToList<IKey>();
+                            }
+                            break;
+                        }
+                    case "2.2":
+                        {
+                            t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
+                            if (item[param].ToList<IKey>().Any() && !t.Any())
+                            {
+                                t = item[param].ToList<IKey>();
+                            }
+                            break;
+                        }
                 }
-                case "2.2":
+                if (param != "2.1" && param != "2.2")
                 {
-                    t = item[param].ToList<IKey>()
-                        .Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB)
-                        .ToList();
-                    if (item[param].ToList<IKey>().Any() && !t.Any())
-                    {
-                        t = item[param].ToList<IKey>();
-                    }
-                    break;
-                }
-                default:
                     t = item[param].ToList<IKey>();
-                    break;
-            }
-            var lst = t.Any()
-                ? item[param].ToList<IKey>().ToList()
-                : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
-            if (lst.Count <= 0) continue;
-            var count = startRow;
-            startRow--;
-            foreach (var it in lst.Where(it => it != null))
-            {
-                switch (it)
-                {
-                    case Form11 form11:
-                        form11.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form12 form12:
-                        form12.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form13 form13:
-                        form13.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form14 form14:
-                        form14.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form15 form15:
-                        form15.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form16 form16:
-                        form16.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form17 form17:
-                        form17.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form18 form18:
-                        form18.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form19 form19:
-                        form19.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form21 form21:
-                        form21.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form21.NumberInOrderSum_DB);
-                        break;
-                    case Form22 form22:
-                        form22.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form22.NumberInOrderSum_DB);
-                        break;
-                    case Form23 form23:
-                        form23.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form24 form24:
-                        form24.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form25 form25:
-                        form25.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form26 form26:
-                        form26.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form27 form27:
-                        form27.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form28 form28:
-                        form28.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form29 form29:
-                        form29.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form210 form210:
-                        form210.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form211 form211:
-                        form211.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form212 form212:
-                        form212.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
                 }
-                var yu = id
-                    ? param.Split('.')[0] == "1"
-                        ? reps.Master_DB.Rows10[1].RegNo_DB != "" && reps.Master_DB.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1,
-                                SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1,
-                                SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1
-                        : reps.Master_DB.Rows20[1].RegNo_DB != "" && reps.Master_DB.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1,
-                                SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1,
-                                SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1
-                    : param.Split('.')[0] == "1"
-                        ? reps.Master_DB.Rows10[1].RegNo_DB != "" && reps.Master_DB.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1
-                            : reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1
-                        : reps.Master_DB.Rows20[1].RegNo_DB != "" && reps.Master_DB.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1
-                            : reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
-                item.ExcelRow(worksheet, count, yu);
-                count++;
+                var lst = t.Any()
+                    ? item[param].ToList<IKey>().ToList()
+                    : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
+                if (lst.Count <= 0) continue;
+                var count = startRow;
+                startRow--;
+                foreach (var it in lst.Where(it => it != null))
+                {
+                    switch (it)
+                    {
+                        case Form11 form11:
+                            form11.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form12 form12:
+                            form12.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form13 form13:
+                            form13.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form14 form14:
+                            form14.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form15 form15:
+                            form15.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form16 form16:
+                            form16.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form17 form17:
+                            form17.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form18 form18:
+                            form18.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form19 form19:
+                            form19.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form21 form21:
+                            form21.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form21.NumberInOrderSum_DB);
+                            break;
+                        case Form22 form22:
+                            form22.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form22.NumberInOrderSum_DB);
+                            break;
+                        case Form23 form23:
+                            form23.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form24 form24:
+                            form24.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form25 form25:
+                            form25.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form26 form26:
+                            form26.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form27 form27:
+                            form27.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form28 form28:
+                            form28.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form29 form29:
+                            form29.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form210 form210:
+                            form210.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form211 form211:
+                            form211.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                        case Form212 form212:
+                            form212.ExcelRow(worksheet, count, startColumn + 1);
+                            break;
+                    }
+                    var mstrep = reps.Master_DB;
+                    int yu;
+                    if (id)
+                    {
+                        if (param.Split('.')[0] == "1")
+                        {
+                            if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                            {
+                                yu = reps.Master_DB.Rows10[1]
+                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1;
+                            }
+                            else
+                            {
+                                yu = reps.Master_DB.Rows10[0]
+                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1;
+                            }
+                        }
+                        else
+                        {
+                            if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                            {
+                                yu = reps.Master_DB.Rows20[1]
+                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
+                            }
+                            else
+                            {
+                                yu = reps.Master_DB.Rows20[0]
+                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (param.Split('.')[0] == "1")
+                        {
+                            if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
+                            {
+                                yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1;
+                            }
+                            else
+                            {
+                                yu = reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1;
+                            }
+                        }
+                        else
+                        {
+                            if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
+                            {
+                                yu = reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1;
+                            }
+                            else
+                            {
+                                yu = reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
+                            }
+                        }
+                    }
+
+                    item.ExcelRow(worksheet, count, yu);
+                    count++;
+                }
+                //if (param.Split('.')[0] == "2")
+                //{
+                //    var new_number = 2;
+                //    while (worksheet.Cells[new_number, 6].Value != null)
+                //    {
+                //        worksheet.Cells[new_number, 6].Value = new_number - 1;
+                //        new_number++;
+                //    }
+                //}
+                startRow = count;
             }
-            //if (param.Split('.')[0] == "2")
-            //{
-            //    var new_number = 2;
-            //    while (worksheet.Cells[new_number, 6].Value != null)
-            //    {
-            //        worksheet.Cells[new_number, 6].Value = new_number - 1;
-            //        new_number++;
-            //    }
-            //}
-            startRow = count;
         }
         return startRow;
     }
