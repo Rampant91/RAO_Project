@@ -1,6 +1,5 @@
 ﻿using Models.Collections;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Models.Attributes;
@@ -8,6 +7,7 @@ namespace Models.Attributes;
 public class FormPropertyAttribute : Attribute
 {
     public string[] Names { get; set; }
+
     public bool OneLevel { get; set; }
 
     public string Number { get; set; }
@@ -40,52 +40,54 @@ public class FormPropertyAttribute : Attribute
             {
                 if (Names[1] != Names[0])
                 {
-                    tmp.innertCol = new List<DataGridColumns> { };
+                    tmp.innertCol = new List<DataGridColumns>();
                 }
             }
             var _tmp = tmp;
             for (var i = 1; i < Names.Length; i++)
             {
-                if (_tmp.name != Names[i])
+                if (_tmp.name == Names[i]) continue;
+                DataGridColumns it = new()
                 {
-                    DataGridColumns it = new()
+                    name = Names[i],
+                    parent = _tmp
+                };
+                try
+                {
+                    if (Names[i] == Names[^1])
                     {
-                        name = Names[i],
-                        parent = _tmp
-                    };
-
-                    try
-                    {
-                        if (Names[i] == Names[^1])
+                        if (prevData != null)
                         {
-                            if (prevData != null)
+                            var inner = prevData.innertCol[^1];
+                            while (inner.innertCol != null)
                             {
-                                var inner = prevData.innertCol[^1];
-                                while (inner.innertCol != null)
-                                {
-                                    inner = inner.innertCol[^1];
-                                }
-                                var currentNum = Convert.ToInt32(inner.name);
-                                it.name = Convert.ToString(currentNum + 1);
+                                inner = inner.innertCol[^1];
                             }
+                            var currentNum = Convert.ToInt32(inner.name);
+                            it.name = Convert.ToString(currentNum + 1);
                         }
                     }
-                    catch (Exception) { }
-
-                    _tmp.innertCol.Add(it);
-                    try
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+                _tmp.innertCol.Add(it);
+                try
+                {
+                    if (Names[i + 1] != null)
                     {
-                        if (Names[i + 1] != null)
-                        {
-                            it.innertCol = new List<DataGridColumns>();
-                            _tmp = it;
-                        }
+                        it.innertCol = new List<DataGridColumns>();
+                        _tmp = it;
                     }
-                    catch(Exception){ }
+                }
+                catch (Exception)
+                {
+                    // ignored
                 }
             }
         }
-        if (prevData != null)
+        if (prevData == null) return tmp;
         {
             DataGridColumns _tmp = new();
             if (prevData.Level > tmp.Level)
@@ -113,6 +115,5 @@ public class FormPropertyAttribute : Attribute
             }
             return _tmp;
         }
-        return tmp;
     }
 }

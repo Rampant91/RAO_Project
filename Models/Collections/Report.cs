@@ -54,13 +54,13 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     [NotMapped]
     public Forms LastAddedForm
     {
-        get
-        {
-            return _lastAddedForm;
-        }
+        get => _lastAddedForm;
         set
         {
-            if (!(value == _lastAddedForm)) _lastAddedForm = value;
+            if (value != _lastAddedForm)
+            {
+                _lastAddedForm = value;
+            }
         }
     }
     public Report()
@@ -96,146 +96,137 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                     }
                     return Convert.ToInt64(frm);
                 }
-                else
+
+                var year = Convert.ToInt32(Year_DB);
+                if (Year_DB != null && year != 0)
                 {
-                    var year = Convert.ToInt32(Year_DB);
-                    if (Year_DB != null && year != 0)
-                    {
-                        frm += (int)(1.0 / year * 10000000);
-                        frm += cor;
-                    }
-                    return Convert.ToInt32(frm);
+                    frm += (int)(1.0 / year * 10000000);
+                    frm += cor;
                 }
+                return Convert.ToInt32(frm);
             }
             catch
             {
                 return 0;
             }
-
-
         }
     }
 
     #region OkpoRep
-    [NotMapped]
-    public string _OkpoRep { get; set; } = "";
+    [NotMapped] 
+    private string _OkpoRep { get; set; } = "";
     [NotMapped]
     public RamAccess<string> OkpoRep
     {
         get
         {
             RamAccess<string> tmp = null;
-            if (FormNum_DB == "1.0")
+            switch (FormNum_DB)
             {
-                if (Rows10[1].Okpo_DB is "" or "-")
-                {
+                case "1.0" when Rows10[1].Okpo_DB is "" or "-":
                     tmp = Rows10[0].Okpo;
                     tmp.PropertyChanged -= OkpoRepValueChanged;
                     tmp.PropertyChanged += OkpoRepValueChanged;
                     Rows10[1].Okpo.PropertyChanged -= OkpoRepValueChanged;
                     Rows10[1].Okpo.PropertyChanged += OkpoRepValueChanged;
-                }
-                else
-                {
+                    break;
+                case "1.0":
                     tmp = Rows10[1].Okpo;
                     tmp.PropertyChanged -= OkpoRepValueChanged;
                     tmp.PropertyChanged += OkpoRepValueChanged;
                     Rows10[0].Okpo.PropertyChanged -= OkpoRepValueChanged;
                     Rows10[0].Okpo.PropertyChanged += OkpoRepValueChanged;
-                }
-            }
-            if (FormNum_DB == "2.0")
-            {
-                if (Rows20[1].Okpo_DB is "" or "-")
-                {
+                    break;
+                case "2.0" when Rows20[1].Okpo_DB is "" or "-":
                     tmp = Rows20[0].Okpo;
                     tmp.PropertyChanged -= OkpoRepValueChanged;
                     tmp.PropertyChanged += OkpoRepValueChanged;
                     Rows20[1].Okpo.PropertyChanged -= OkpoRepValueChanged;
                     Rows20[1].Okpo.PropertyChanged += OkpoRepValueChanged;
-                }
-                else
-                {
+                    break;
+                case "2.0":
                     tmp = Rows20[1].Okpo;
                     tmp.PropertyChanged -= OkpoRepValueChanged;
                     tmp.PropertyChanged += OkpoRepValueChanged;
                     Rows20[0].Okpo.PropertyChanged -= OkpoRepValueChanged;
                     Rows20[0].Okpo.PropertyChanged += OkpoRepValueChanged;
-                }
+                    break;
             }
             return tmp;
         }
         set
         {
             _OkpoRep = value.Value;
-            OnPropertyChanged(nameof(OkpoRep));
+            OnPropertyChanged();
         }
     }
-    private void OkpoRepValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void OkpoRepValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            _OkpoRep = ((RamAccess<string>)Value).Value;
-            OnPropertyChanged(nameof(OkpoRep));
-            OnPropertyChanged(nameof(RegNoRep));
-            OnPropertyChanged(nameof(ShortJurLicoRep));
-        }
+        if (args.PropertyName != "Value") return;
+        _OkpoRep = ((RamAccess<string>)value).Value;
+        OnPropertyChanged(nameof(OkpoRep));
+        OnPropertyChanged(nameof(RegNoRep));
+        OnPropertyChanged(nameof(ShortJurLicoRep));
     }
     #endregion
 
     #region RegNoRep
-    [NotMapped]
-    public string _RegNoRep { get; set; } = "";
+    [NotMapped] 
+    private string _RegNoRep { get; set; } = "";
     [NotMapped]
     public RamAccess<string> RegNoRep
     {
         get
         {
-            if (FormNum_DB == "1.0")
+            switch (FormNum_DB)
             {
-                RamAccess<string> tmp = null;
-                if ((Rows10[1].RegNo.Value != "" || Rows10[1].Okpo_DB == "-") && Rows10[1].Okpo.Value != "")
+                case "1.0":
                 {
-                    tmp = Rows10[1].RegNo;
+                    RamAccess<string> tmp = null;
+                    if ((Rows10[1].RegNo.Value != "" || Rows10[1].Okpo_DB == "-") && Rows10[1].Okpo.Value != "")
+                    {
+                        tmp = Rows10[1].RegNo;
+                    }
+                    else
+                    {
+                        tmp = Rows10[0].RegNo;
+                    }
+                    tmp.PropertyChanged -= RegNoRepValueChanged;
+                    tmp.PropertyChanged += RegNoRepValueChanged;
+                    return tmp;
                 }
-                else
+                case "2.0":
                 {
-                    tmp = Rows10[0].RegNo;
+                    RamAccess<string> tmp;
+                    if ((Rows20[1].RegNo.Value != "" || Rows20[1].Okpo_DB == "-") && Rows20[1].Okpo.Value != "")
+                    {
+                        tmp = Rows20[1].RegNo;
+                    }
+                    else
+                    {
+                        tmp = Rows20[0].RegNo;
+                    }
+                    tmp.PropertyChanged -= RegNoRepValueChanged;
+                    tmp.PropertyChanged += RegNoRepValueChanged;
+                    return tmp;
                 }
-                tmp.PropertyChanged -= RegNoRepValueChanged;
-                tmp.PropertyChanged += RegNoRepValueChanged;
-                return tmp;
+                default:
+                    return null;
             }
-            if (FormNum_DB == "2.0")
-            {
-                RamAccess<string> tmp = null;
-                if ((Rows20[1].RegNo.Value != "" || Rows20[1].Okpo_DB == "-") && Rows20[1].Okpo.Value != "")
-                {
-                    tmp = Rows20[1].RegNo;
-                }
-                else
-                {
-                    tmp = Rows20[0].RegNo;
-                }
-                tmp.PropertyChanged -= RegNoRepValueChanged;
-                tmp.PropertyChanged += RegNoRepValueChanged;
-                return tmp;
-            }
-            return null;
         }
         set
         {
             _RegNoRep = value.Value;
-            OnPropertyChanged(nameof(RegNoRep));
+            OnPropertyChanged();
         }
     }
-    private void RegNoRepValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void RegNoRepValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            _RegNoRep = ((RamAccess<string>)Value).Value;
-            OnPropertyChanged(nameof(RegNoRep));
-        }
+        if (args.PropertyName != "Value") return;
+        _RegNoRep = ((RamAccess<string>)value).Value;
+        OnPropertyChanged(nameof(RegNoRep));
     }
     #endregion
 
@@ -248,43 +239,36 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         get
         {
             RamAccess<string> tmp = null;
-            if (FormNum_DB == "1.0")
+            switch (FormNum_DB)
             {
-                if (Rows10[1].Okpo_DB is "" or "-")
-                {
+                case "1.0" when Rows10[1].Okpo_DB is "" or "-":
                     tmp = Rows10[0].ShortJurLico;
                     tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
                     tmp.PropertyChanged += ShortJurLicoRepValueChanged;
                     Rows10[1].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
                     Rows10[1].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
-                }
-                else
-                {
+                    break;
+                case "1.0":
                     tmp = Rows10[1].ShortJurLico;
                     tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
                     tmp.PropertyChanged += ShortJurLicoRepValueChanged;
                     Rows10[0].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
                     Rows10[0].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
-                }
-            }
-            if (FormNum_DB == "2.0")
-            {
-                if (Rows20[1].Okpo_DB is "" or "-")
-                {
+                    break;
+                case "2.0" when Rows20[1].Okpo_DB is "" or "-":
                     tmp = Rows20[0].ShortJurLico;
                     tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
                     tmp.PropertyChanged += ShortJurLicoRepValueChanged;
                     Rows20[1].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
                     Rows20[1].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
-                }
-                else
-                {
+                    break;
+                case "2.0":
                     tmp = Rows20[1].ShortJurLico;
                     tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
                     tmp.PropertyChanged += ShortJurLicoRepValueChanged;
                     Rows20[0].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
                     Rows20[0].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
-                }
+                    break;
             }
             return tmp;
         }
@@ -294,13 +278,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             OnPropertyChanged(nameof(ShortJurLicoRep));
         }
     }
-    private void ShortJurLicoRepValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ShortJurLicoRepValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            _ShortJurLicoRep = ((RamAccess<string>)Value).Value;
-            OnPropertyChanged(nameof(ShortJurLicoRep));
-        }
+        if (args.PropertyName != "Value") return;
+        _ShortJurLicoRep = ((RamAccess<string>)value).Value;
+        OnPropertyChanged(nameof(ShortJurLicoRep));
     }
     #endregion
 
@@ -309,10 +291,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form10> Rows10
     {
-        get
-        {
-            return Rows10_DB;
-        }
+        get => Rows10_DB;
         set
         {
             Rows10_DB = value;
@@ -320,7 +299,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
     }
 
-    protected void CollectionChanged10(object sender, NotifyCollectionChangedEventArgs args)
+    private void CollectionChanged10(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(RegNoRep));
         OnPropertyChanged(nameof(OkpoRep));
@@ -333,18 +312,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form11> Rows11_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form11> Rows11
     {
-        get
-        {
-            return Rows11_DB;
-        }
+        get => Rows11_DB;
         set
         {
             Rows11_DB = value;
-            OnPropertyChanged(nameof(Rows11));
+            OnPropertyChanged();
         }
     }
 
-    protected void CollectionChanged11(object sender, NotifyCollectionChangedEventArgs args)
+    private void CollectionChanged11(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows11));
     }
@@ -354,17 +330,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form12> Rows12_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form12> Rows12
     {
-        get
-        {
-            return Rows12_DB;
-        }
+        get => Rows12_DB;
         set
         {
             Rows12_DB = value;
-            OnPropertyChanged(nameof(Rows12));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged12(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged12(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows12));
     }
@@ -374,17 +348,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form13> Rows13_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form13> Rows13
     {
-        get
-        {
-            return Rows13_DB;
-        }
+        get => Rows13_DB;
         set
         {
             Rows13_DB = value;
-            OnPropertyChanged(nameof(Rows13));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged13(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged13(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows13));
     }
@@ -394,17 +366,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form14> Rows14_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form14> Rows14
     {
-        get
-        {
-            return Rows14_DB;
-        }
+        get => Rows14_DB;
         set
         {
             Rows14_DB = value;
-            OnPropertyChanged(nameof(Rows14));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged14(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged14(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows14));
     }
@@ -414,17 +384,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form15> Rows15_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form15> Rows15
     {
-        get
-        {
-            return Rows15_DB;
-        }
+        get => Rows15_DB;
         set
         {
             Rows15_DB = value;
-            OnPropertyChanged(nameof(Rows15));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged15(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged15(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows15));
     }
@@ -434,17 +402,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form16> Rows16_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form16> Rows16
     {
-        get
-        {
-            return Rows16_DB;
-        }
+        get => Rows16_DB;
         set
         {
             Rows16_DB = value;
-            OnPropertyChanged(nameof(Rows16));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged16(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged16(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows16));
     }
@@ -454,17 +420,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form17> Rows17_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form17> Rows17
     {
-        get
-        {
-            return Rows17_DB;
-        }
+        get => Rows17_DB;
         set
         {
             Rows17_DB = value;
-            OnPropertyChanged(nameof(Rows17));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged17(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged17(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows17));
     }
@@ -474,17 +438,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form18> Rows18_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form18> Rows18
     {
-        get
-        {
-            return Rows18_DB;
-        }
+        get => Rows18_DB;
         set
         {
             Rows18_DB = value;
-            OnPropertyChanged(nameof(Rows18));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged18(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged18(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows18));
     }
@@ -494,17 +456,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form19> Rows19_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form19> Rows19
     {
-        get
-        {
-            return Rows19_DB;
-        }
+        get => Rows19_DB;
         set
         {
             Rows19_DB = value;
-            OnPropertyChanged(nameof(Rows19));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged19(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged19(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows19));
     }
@@ -514,17 +474,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form20> Rows20_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form20> Rows20
     {
-        get
-        {
-            return Rows20_DB;
-        }
+        get => Rows20_DB;
         set
         {
             Rows20_DB = value;
-            OnPropertyChanged(nameof(Rows20));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged20(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged20(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(RegNoRep));
         OnPropertyChanged(nameof(OkpoRep));
@@ -537,17 +495,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form21> Rows21_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form21> Rows21
     {
-        get
-        {
-            return Rows21_DB;
-        }
+        get => Rows21_DB;
         set
         {
             Rows21_DB = value;
-            OnPropertyChanged(nameof(Rows21));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged21(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged21(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows21));
     }
@@ -557,17 +513,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form22> Rows22_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form22> Rows22
     {
-        get
-        {
-            return Rows22_DB;
-        }
+        get => Rows22_DB;
         set
         {
             Rows22_DB = value;
-            OnPropertyChanged(nameof(Rows22));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged22(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged22(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows22));
     }
@@ -577,17 +531,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form23> Rows23_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form23> Rows23
     {
-        get
-        {
-            return Rows23_DB;
-        }
+        get => Rows23_DB;
         set
         {
             Rows23_DB = value;
-            OnPropertyChanged(nameof(Rows23));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged23(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged23(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows23));
     }
@@ -597,17 +549,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form24> Rows24_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form24> Rows24
     {
-        get
-        {
-            return Rows24_DB;
-        }
+        get => Rows24_DB;
         set
         {
             Rows24_DB = value;
-            OnPropertyChanged(nameof(Rows24));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged24(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged24(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows24));
     }
@@ -617,17 +567,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form25> Rows25_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form25> Rows25
     {
-        get
-        {
-            return Rows25_DB;
-        }
+        get => Rows25_DB;
         set
         {
             Rows25_DB = value;
-            OnPropertyChanged(nameof(Rows25));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged25(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged25(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows25));
     }
@@ -637,17 +585,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form26> Rows26_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form26> Rows26
     {
-        get
-        {
-            return Rows26_DB;
-        }
+        get => Rows26_DB;
         set
         {
             Rows26_DB = value;
-            OnPropertyChanged(nameof(Rows26));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged26(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged26(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows26));
     }
@@ -657,17 +603,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form27> Rows27_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form27> Rows27
     {
-        get
-        {
-            return Rows27_DB;
-        }
+        get => Rows27_DB;
         set
         {
             Rows27_DB = value;
-            OnPropertyChanged(nameof(Rows27));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged27(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged27(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows27));
     }
@@ -677,17 +621,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form28> Rows28_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form28> Rows28
     {
-        get
-        {
-            return Rows28_DB;
-        }
+        get => Rows28_DB;
         set
         {
             Rows28_DB = value;
-            OnPropertyChanged(nameof(Rows28));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged28(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged28(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows28));
     }
@@ -697,17 +639,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form29> Rows29_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form29> Rows29
     {
-        get
-        {
-            return Rows29_DB;
-        }
+        get => Rows29_DB;
         set
         {
             Rows29_DB = value;
-            OnPropertyChanged(nameof(Rows29));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged29(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged29(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows29));
     }
@@ -717,17 +657,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form210> Rows210_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form210> Rows210
     {
-        get
-        {
-            return Rows210_DB;
-        }
+        get => Rows210_DB;
         set
         {
             Rows210_DB = value;
-            OnPropertyChanged(nameof(Rows210));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged210(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged210(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows210));
     }
@@ -737,17 +675,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form211> Rows211_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form211> Rows211
     {
-        get
-        {
-            return Rows211_DB;
-        }
+        get => Rows211_DB;
         set
         {
             Rows211_DB = value;
-            OnPropertyChanged(nameof(Rows211));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged211(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged211(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows211));
     }
@@ -757,17 +693,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Form212> Rows212_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Form212> Rows212
     {
-        get
-        {
-            return Rows212_DB;
-        }
+        get => Rows212_DB;
         set
         {
             Rows212_DB = value;
-            OnPropertyChanged(nameof(Rows212));
+            OnPropertyChanged();
         }
     }
-    protected void CollectionChanged212(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged212(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Rows212));
     }
@@ -775,6 +709,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
 
     [NotMapped]
     Dictionary<string, RamAccess> Dictionary { get; set; } = new();
+
     #region FormNum
     public string FormNum_DB { get; set; } = "";
     [NotMapped]
@@ -788,25 +723,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(FormNum)]).Value = FormNum_DB;
                 return (RamAccess<string>)Dictionary[nameof(FormNum)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
-                rm.PropertyChanged += FormNumValueChanged;
-                Dictionary.Add(nameof(FormNum), rm);
-                return (RamAccess<string>)Dictionary[nameof(FormNum)];
-            }
+            var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
+            rm.PropertyChanged += FormNumValueChanged;
+            Dictionary.Add(nameof(FormNum), rm);
+            return (RamAccess<string>)Dictionary[nameof(FormNum)];
         }
         set
         {
             FormNum_DB = value.Value;
-            OnPropertyChanged(nameof(FormNum));
+            OnPropertyChanged();
         }
     }
-    private void FormNumValueChanged(object Value, PropertyChangedEventArgs args)
+    private void FormNumValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            FormNum_DB = ((RamAccess<string>)Value).Value;
+            FormNum_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool FormNum_Validation(RamAccess<string> value)
@@ -828,25 +760,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<bool>)Dictionary[nameof(IsCorrection)]).Value = IsCorrection_DB;
                 return (RamAccess<bool>)Dictionary[nameof(IsCorrection)];
             }
-            else
-            {
-                var rm = new RamAccess<bool>(IsCorrection_Validation, IsCorrection_DB);
-                rm.PropertyChanged += IsCorrectionValueChanged;
-                Dictionary.Add(nameof(IsCorrection), rm);
-                return (RamAccess<bool>)Dictionary[nameof(IsCorrection)];
-            }
+            var rm = new RamAccess<bool>(IsCorrection_Validation, IsCorrection_DB);
+            rm.PropertyChanged += IsCorrectionValueChanged;
+            Dictionary.Add(nameof(IsCorrection), rm);
+            return (RamAccess<bool>)Dictionary[nameof(IsCorrection)];
         }
         set
         {
             IsCorrection_DB = value.Value;
-            OnPropertyChanged(nameof(IsCorrection));
+            OnPropertyChanged();
         }
     }
-    private void IsCorrectionValueChanged(object Value, PropertyChangedEventArgs args)
+    private void IsCorrectionValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            IsCorrection_DB = ((RamAccess<bool>)Value).Value;
+            IsCorrection_DB = ((RamAccess<bool>)value).Value;
         }
     }
     private bool IsCorrection_Validation(RamAccess<bool> value)
@@ -868,25 +797,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<byte>)Dictionary[nameof(CorrectionNumber)]).Value = CorrectionNumber_DB;
                 return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
-                rm.PropertyChanged += CorrectionNumberValueChanged;
-                Dictionary.Add(nameof(CorrectionNumber), rm);
-                return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
-            }
+            var rm = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
+            rm.PropertyChanged += CorrectionNumberValueChanged;
+            Dictionary.Add(nameof(CorrectionNumber), rm);
+            return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
         }
         set
         {
             CorrectionNumber_DB = value.Value;
-            OnPropertyChanged(nameof(CorrectionNumber));
+            OnPropertyChanged();
         }
     }
-    private void CorrectionNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CorrectionNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            CorrectionNumber_DB = ((RamAccess<byte>)Value).Value;
+            CorrectionNumber_DB = ((RamAccess<byte>)value).Value;
         }
     }
     private bool CorrectionNumber_Validation(RamAccess<byte> value)
@@ -909,25 +835,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(FIOexecutor)]).Value = FIOexecutor_DB;
                 return (RamAccess<string>)Dictionary[nameof(FIOexecutor)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(FIOexecutor_Validation, FIOexecutor_DB);
-                rm.PropertyChanged += FIOexecutorValueChanged;
-                Dictionary.Add(nameof(FIOexecutor), rm);
-                return (RamAccess<string>)Dictionary[nameof(FIOexecutor)];
-            }
+            var rm = new RamAccess<string>(FIOexecutor_Validation, FIOexecutor_DB);
+            rm.PropertyChanged += FIOexecutorValueChanged;
+            Dictionary.Add(nameof(FIOexecutor), rm);
+            return (RamAccess<string>)Dictionary[nameof(FIOexecutor)];
         }
         set
         {
             FIOexecutor_DB = value.Value;
-            OnPropertyChanged(nameof(FIOexecutor));
+            OnPropertyChanged();
         }
     }
-    private void FIOexecutorValueChanged(object Value, PropertyChangedEventArgs args)
+    private void FIOexecutorValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            FIOexecutor_DB = ((RamAccess<string>)Value).Value;
+            FIOexecutor_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool FIOexecutor_Validation(RamAccess<string> value)
@@ -950,25 +873,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(GradeExecutor)]).Value = GradeExecutor_DB;
                 return (RamAccess<string>)Dictionary[nameof(GradeExecutor)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(GradeExecutor_Validation, GradeExecutor_DB);
-                rm.PropertyChanged += GradeExecutorValueChanged;
-                Dictionary.Add(nameof(GradeExecutor), rm);
-                return (RamAccess<string>)Dictionary[nameof(GradeExecutor)];
-            }
+            var rm = new RamAccess<string>(GradeExecutor_Validation, GradeExecutor_DB);
+            rm.PropertyChanged += GradeExecutorValueChanged;
+            Dictionary.Add(nameof(GradeExecutor), rm);
+            return (RamAccess<string>)Dictionary[nameof(GradeExecutor)];
         }
         set
         {
             GradeExecutor_DB = value.Value;
-            OnPropertyChanged(nameof(GradeExecutor));
+            OnPropertyChanged();
         }
     }
-    private void GradeExecutorValueChanged(object Value, PropertyChangedEventArgs args)
+    private void GradeExecutorValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            GradeExecutor_DB = ((RamAccess<string>)Value).Value;
+            GradeExecutor_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool GradeExecutor_Validation(RamAccess<string> value)
@@ -991,25 +911,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(ExecPhone)]).Value = ExecPhone_DB;
                 return (RamAccess<string>)Dictionary[nameof(ExecPhone)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ExecPhone_Validation, ExecPhone_DB);
-                rm.PropertyChanged += ExecPhoneValueChanged;
-                Dictionary.Add(nameof(ExecPhone), rm);
-                return (RamAccess<string>)Dictionary[nameof(ExecPhone)];
-            }
+            var rm = new RamAccess<string>(ExecPhone_Validation, ExecPhone_DB);
+            rm.PropertyChanged += ExecPhoneValueChanged;
+            Dictionary.Add(nameof(ExecPhone), rm);
+            return (RamAccess<string>)Dictionary[nameof(ExecPhone)];
         }
         set
         {
             ExecPhone_DB = value.Value;
-            OnPropertyChanged(nameof(ExecPhone));
+            OnPropertyChanged();
         }
     }
-    private void ExecPhoneValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ExecPhoneValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ExecPhone_DB = ((RamAccess<string>)Value).Value;
+            ExecPhone_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool ExecPhone_Validation(RamAccess<string> value)
@@ -1032,25 +949,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(ExecEmail)]).Value = ExecEmail_DB;
                 return (RamAccess<string>)Dictionary[nameof(ExecEmail)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ExecEmail_Validation, ExecEmail_DB);
-                rm.PropertyChanged += ExecEmailValueChanged;
-                Dictionary.Add(nameof(ExecEmail), rm);
-                return (RamAccess<string>)Dictionary[nameof(ExecEmail)];
-            }
+            var rm = new RamAccess<string>(ExecEmail_Validation, ExecEmail_DB);
+            rm.PropertyChanged += ExecEmailValueChanged;
+            Dictionary.Add(nameof(ExecEmail), rm);
+            return (RamAccess<string>)Dictionary[nameof(ExecEmail)];
         }
         set
         {
             ExecEmail_DB = value.Value;
-            OnPropertyChanged(nameof(ExecEmail));
+            OnPropertyChanged();
         }
     }
-    private void ExecEmailValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ExecEmailValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ExecEmail_DB = ((RamAccess<string>)Value).Value;
+            ExecEmail_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool ExecEmail_Validation(RamAccess<string> value)
@@ -1063,12 +977,9 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
         Regex regex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         var tmp = value.Value;
-        if (!regex.IsMatch(tmp)) 
-        {
-            value.AddError("Недопустимое значение");
-            return false;  
-        }
-        return true;
+        if (regex.IsMatch(tmp)) return true;
+        value.AddError("Недопустимое значение");
+        return false;
     }
     #endregion
 
@@ -1085,25 +996,22 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(NumberInOrder)]).Value = NumberInOrder_DB;
                 return (RamAccess<string>)Dictionary[nameof(NumberInOrder)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(NumberInOrder_Validation, NumberInOrder_DB);
-                rm.PropertyChanged += NumberInOrderValueChanged;
-                Dictionary.Add(nameof(NumberInOrder), rm);
-                return (RamAccess<string>)Dictionary[nameof(NumberInOrder)];
-            }
+            var rm = new RamAccess<string>(NumberInOrder_Validation, NumberInOrder_DB);
+            rm.PropertyChanged += NumberInOrderValueChanged;
+            Dictionary.Add(nameof(NumberInOrder), rm);
+            return (RamAccess<string>)Dictionary[nameof(NumberInOrder)];
         }
         set
         {
             NumberInOrder_DB = value.Value;
-            OnPropertyChanged(nameof(NumberInOrder));
+            OnPropertyChanged();
         }
     }
-    private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
+    private void NumberInOrderValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            NumberInOrder_DB = ((RamAccess<string>)Value).Value;
+            NumberInOrder_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool NumberInOrder_Validation(RamAccess<string> value)
@@ -1125,13 +1033,10 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(Comments)]).Value = Comments_DB;
                 return (RamAccess<string>)Dictionary[nameof(Comments)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Comments_Validation, Comments_DB);
-                rm.PropertyChanged += CommentsValueChanged;
-                Dictionary.Add(nameof(Comments), rm);
-                return (RamAccess<string>)Dictionary[nameof(Comments)];
-            }
+            var rm = new RamAccess<string>(Comments_Validation, Comments_DB);
+            rm.PropertyChanged += CommentsValueChanged;
+            Dictionary.Add(nameof(Comments), rm);
+            return (RamAccess<string>)Dictionary[nameof(Comments)];
         }
         set
         {
@@ -1139,11 +1044,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             OnPropertyChanged(nameof(Comments));
         }
     }
-    private void CommentsValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CommentsValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Comments_DB = ((RamAccess<string>)Value).Value;
+            Comments_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool Comments_Validation(RamAccess<string> value)
@@ -1158,14 +1063,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     ObservableCollectionWithItemPropertyChanged<Note> Notes_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Note> Notes
     {
-        get
-        {
-            return Notes_DB;
-        }
+        get => Notes_DB;
         set
         {
             Notes_DB = value;
-            OnPropertyChanged(nameof(Notes));
+            OnPropertyChanged();
         }
     }
     protected void CollectionChangedNotes(object sender, NotifyCollectionChangedEventArgs args)
@@ -1186,18 +1088,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(PermissionNumber_28)]).Value = PermissionNumber_28_DB;
                 return (RamAccess<string>)Dictionary[nameof(PermissionNumber_28)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PermissionNumber_28_Validation, PermissionNumber_28_DB);
-                rm.PropertyChanged += PermissionNumber_28ValueChanged;
-                Dictionary.Add(nameof(PermissionNumber_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionNumber_28)];
-            }
+
+            var rm = new RamAccess<string>(PermissionNumber_28_Validation, PermissionNumber_28_DB);
+            rm.PropertyChanged += PermissionNumber_28ValueChanged;
+            Dictionary.Add(nameof(PermissionNumber_28), rm);
+            return (RamAccess<string>)Dictionary[nameof(PermissionNumber_28)];
         }
         set
         {
             PermissionNumber_28_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionNumber_28));
+            OnPropertyChanged();
         }
     }
 
@@ -1227,33 +1127,28 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)]).Value = PermissionIssueDate_28_DB;
                 return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PermissionIssueDate_28_Validation, PermissionIssueDate_28_DB);
-                rm.PropertyChanged += PermissionIssueDate_28ValueChanged;
-                Dictionary.Add(nameof(PermissionIssueDate_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)];
-            }
+            var rm = new RamAccess<string>(PermissionIssueDate_28_Validation, PermissionIssueDate_28_DB);
+            rm.PropertyChanged += PermissionIssueDate_28ValueChanged;
+            Dictionary.Add(nameof(PermissionIssueDate_28), rm);
+            return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)];
         }
         set
         {
             PermissionIssueDate_28_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionIssueDate_28));
+            OnPropertyChanged();
         }
     }
 
-    private void PermissionIssueDate_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionIssueDate_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+        if (b.IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            PermissionIssueDate_28_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        PermissionIssueDate_28_DB = tmp;
     }
     private bool PermissionIssueDate_28_Validation(RamAccess<string> value)
     {
@@ -1296,31 +1191,29 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)]).Value = PermissionDocumentName_28_DB;
                 return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PermissionDocumentName_28_Validation, PermissionDocumentName_28_DB);
-                rm.PropertyChanged += PermissionDocumentName_28ValueChanged;
-                Dictionary.Add(nameof(PermissionDocumentName_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)];
-            }
+            var rm = new RamAccess<string>(PermissionDocumentName_28_Validation, PermissionDocumentName_28_DB);
+            rm.PropertyChanged += PermissionDocumentName_28ValueChanged;
+            Dictionary.Add(nameof(PermissionDocumentName_28), rm);
+            return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)];
         }
         set
         {
             PermissionDocumentName_28_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionDocumentName_28));
+            OnPropertyChanged();
         }
     }
-    private void PermissionDocumentName_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionDocumentName_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PermissionDocumentName_28_DB = ((RamAccess<string>)Value).Value;
+            PermissionDocumentName_28_DB = ((RamAccess<string>)value).Value;
         }
     }
 
     private bool PermissionDocumentName_28_Validation(RamAccess<string> value)
     {
-        value.ClearErrors(); return true;
+        value.ClearErrors(); 
+        return true;
     }
     #endregion
 
@@ -1336,26 +1229,23 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(ValidBegin_28)]).Value = ValidBegin_28_DB;
                 return (RamAccess<string>)Dictionary[nameof(ValidBegin_28)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ValidBegin_28_Validation, ValidBegin_28_DB);
-                rm.PropertyChanged += ValidBegin_28ValueChanged;
-                Dictionary.Add(nameof(ValidBegin_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin_28)];
-            }
+            var rm = new RamAccess<string>(ValidBegin_28_Validation, ValidBegin_28_DB);
+            rm.PropertyChanged += ValidBegin_28ValueChanged;
+            Dictionary.Add(nameof(ValidBegin_28), rm);
+            return (RamAccess<string>)Dictionary[nameof(ValidBegin_28)];
         }
         set
         {
             ValidBegin_28_DB = value.Value;
-            OnPropertyChanged(nameof(ValidBegin_28));
+            OnPropertyChanged();
         }
     }
 
-    private void ValidBegin_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ValidBegin_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            var tmp = ((RamAccess<string>)Value).Value;
+            var tmp = ((RamAccess<string>)value).Value;
             Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
@@ -1372,18 +1262,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
+        try
+        {
+            DateTimeOffset.Parse(tmp);
+        }
         catch (Exception)
         {
             value.AddError("Недопустимое значение");
@@ -1405,34 +1296,29 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(ValidThru_28)]).Value = ValidThru_28_DB;
                 return (RamAccess<string>)Dictionary[nameof(ValidThru_28)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ValidThru_28_Validation, ValidThru_28_DB);
-                rm.PropertyChanged += ValidThru_28ValueChanged;
-                Dictionary.Add(nameof(ValidThru_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidThru_28)];
-            }
+            var rm = new RamAccess<string>(ValidThru_28_Validation, ValidThru_28_DB);
+            rm.PropertyChanged += ValidThru_28ValueChanged;
+            Dictionary.Add(nameof(ValidThru_28), rm);
+            return (RamAccess<string>)Dictionary[nameof(ValidThru_28)];
         }
         set
         {
             ValidThru_28_DB = value.Value;
-            OnPropertyChanged(nameof(ValidThru_28));
+            OnPropertyChanged();
         }
     }
 
-    private void ValidThru_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ValidThru_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            ValidThru_28_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        ValidThru_28_DB = tmp;
     }
+
     private bool ValidThru_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -1441,18 +1327,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
+        try
+        {
+            DateTimeOffset.Parse(tmp);
+        }
         catch (Exception)
         {
             value.AddError("Недопустимое значение");
@@ -1474,13 +1361,10 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)]).Value = PermissionNumber1_28_DB;
                 return (RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PermissionNumber1_28_Validation, PermissionNumber1_28_DB);
-                rm.PropertyChanged += PermissionNumber1_28ValueChanged;
-                Dictionary.Add(nameof(PermissionNumber1_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)];
-            }
+            var rm = new RamAccess<string>(PermissionNumber1_28_Validation, PermissionNumber1_28_DB);
+            rm.PropertyChanged += PermissionNumber1_28ValueChanged;
+            Dictionary.Add(nameof(PermissionNumber1_28), rm);
+            return (RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)];
         }
         set
         {
@@ -1488,17 +1372,18 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             OnPropertyChanged(nameof(PermissionNumber1_28));
         }
     }
-    private void PermissionNumber1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionNumber1_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PermissionNumber1_28_DB = ((RamAccess<string>)Value).Value;
+            PermissionNumber1_28_DB = ((RamAccess<string>)value).Value;
         }
     }
 
     private bool PermissionNumber1_28_Validation(RamAccess<string> value)
     {
-        value.ClearErrors(); return true;
+        value.ClearErrors();
+        return true;
     }
     #endregion
 
@@ -1512,35 +1397,31 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(PermissionIssueDate1_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)]).Value = PermissionIssueDate1_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(PermissionIssueDate1_28_Validation, PermissionIssueDate1_28_DB);
                 rm.PropertyChanged += PermissionIssueDate1_28ValueChanged;
                 Dictionary.Add(nameof(PermissionIssueDate1_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)];
         }
         set
         {
             PermissionIssueDate1_28_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionIssueDate1_28));
+            OnPropertyChanged();
         }
     }
 
-    private void PermissionIssueDate1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionIssueDate1_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            PermissionIssueDate1_28_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        PermissionIssueDate1_28_DB = tmp;
     }
     private bool PermissionIssueDate1_28_Validation(RamAccess<string> value)
     {
@@ -1550,18 +1431,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
+        try
+        {
+            DateTimeOffset.Parse(tmp);
+        }
         catch (Exception)
         {
             value.AddError("Недопустимое значение");
@@ -1581,20 +1463,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(PermissionDocumentName1_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)]).Value = PermissionDocumentName1_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(PermissionDocumentName1_28_Validation, PermissionDocumentName1_28_DB);
                 rm.PropertyChanged += PermissionDocumentName1_28ValueChanged;
                 Dictionary.Add(nameof(PermissionDocumentName1_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)];
         }
         set
         {
             PermissionDocumentName1_28_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionDocumentName1_28));
+            OnPropertyChanged();
         }
     }
 
@@ -1607,7 +1488,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     }
     private bool PermissionDocumentName1_28_Validation(RamAccess<string> value)
     {
-        value.ClearErrors(); return true;
+        value.ClearErrors();
+        return true;
     }
     #endregion
 
@@ -1621,35 +1503,32 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(ValidBegin1_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(ValidBegin1_28)]).Value = ValidBegin1_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin1_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(ValidBegin1_28_Validation, ValidBegin1_28_DB);
                 rm.PropertyChanged += ValidBegin1_28ValueChanged;
                 Dictionary.Add(nameof(ValidBegin1_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin1_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(ValidBegin1_28)];
         }
         set
         {
             ValidBegin1_28_DB = value.Value;
-            OnPropertyChanged(nameof(ValidBegin1_28));
+            OnPropertyChanged();
         }
     }
 
-    private void ValidBegin1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ValidBegin1_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+        if (b.IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            ValidBegin1_28_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        ValidBegin1_28_DB = tmp;
     }
     private bool ValidBegin1_28_Validation(RamAccess<string> value)
     {
@@ -1659,18 +1538,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
+        try
+        {
+            DateTimeOffset.Parse(tmp);
+        }
         catch (Exception)
         {
             value.AddError("Недопустимое значение");
@@ -1690,35 +1570,31 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(ValidThru1_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(ValidThru1_28)]).Value = ValidThru1_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidThru1_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(ValidThru1_28_Validation, ValidThru1_28_DB);
                 rm.PropertyChanged += ValidThru1_28ValueChanged;
                 Dictionary.Add(nameof(ValidThru1_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidThru1_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(ValidThru1_28)];
         }
         set
         {
             ValidThru1_28_DB = value.Value;
-            OnPropertyChanged(nameof(ValidThru1_28));
+            OnPropertyChanged();
         }
     }
 
-    private void ValidThru1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ValidThru1_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            ValidThru1_28_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        ValidThru1_28_DB = tmp;
     }
     private bool ValidThru1_28_Validation(RamAccess<string> value)
     {
@@ -1728,18 +1604,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
+        try
+        {
+            DateTimeOffset.Parse(tmp);
+        }
         catch (Exception)
         {
             value.AddError("Недопустимое значение");
@@ -1759,33 +1636,33 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(ContractNumber_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(ContractNumber_28)]).Value = ContractNumber_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ContractNumber_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(ContractNumber_28_Validation, ContractNumber_28_DB);
                 rm.PropertyChanged += ContractNumber_28ValueChanged;
                 Dictionary.Add(nameof(ContractNumber_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ContractNumber_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(ContractNumber_28)];
         }
         set
         {
             ContractNumber_28_DB = value.Value;
-            OnPropertyChanged(nameof(ContractNumber_28));
+            OnPropertyChanged();
         }
     }
 
-    private void ContractNumber_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ContractNumber_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ContractNumber_28_DB = ((RamAccess<string>)Value).Value;
+            ContractNumber_28_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool ContractNumber_28_Validation(RamAccess<string> value)
     {
-        value.ClearErrors(); return true;
+        value.ClearErrors();
+        return true;
     }
     #endregion
 
@@ -1799,35 +1676,29 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(ContractIssueDate2_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)]).Value = ContractIssueDate2_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(ContractIssueDate2_28_Validation, ContractIssueDate2_28_DB);
                 rm.PropertyChanged += ContractIssueDate2_28ValueChanged;
                 Dictionary.Add(nameof(ContractIssueDate2_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)];
         }
-        set
-        {
-            ContractIssueDate2_28_DB = value.Value;
-        }
+        set => ContractIssueDate2_28_DB = value.Value;
     }
 
-    private void ContractIssueDate2_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ContractIssueDate2_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            ContractIssueDate2_28_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        ContractIssueDate2_28_DB = tmp;
     }
+
     private bool ContractIssueDate2_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -1836,18 +1707,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
+        try
+        {
+            DateTimeOffset.Parse(tmp);
+        }
         catch (Exception)
         {
             value.AddError("Недопустимое значение");
@@ -1867,33 +1739,34 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(OrganisationReciever_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)]).Value = OrganisationReciever_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(OrganisationReciever_28_Validation, OrganisationReciever_28_DB);
                 rm.PropertyChanged += OrganisationReciever_28ValueChanged;
                 Dictionary.Add(nameof(OrganisationReciever_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)];
         }
         set
         {
             OrganisationReciever_28_DB = value.Value;
-            OnPropertyChanged(nameof(OrganisationReciever_28));
+            OnPropertyChanged();
         }
     }
 
-    private void OrganisationReciever_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OrganisationReciever_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            OrganisationReciever_28_DB = ((RamAccess<string>)Value).Value;
+            OrganisationReciever_28_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool OrganisationReciever_28_Validation(RamAccess<string> value)
     {
-        value.ClearErrors(); return true;
+        value.ClearErrors();
+        return true;
     }
     #endregion
 
@@ -1907,35 +1780,31 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(ValidBegin2_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(ValidBegin2_28)]).Value = ValidBegin2_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin2_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(ValidBegin2_28_Validation, ValidBegin2_28_DB);
                 rm.PropertyChanged += ValidBegin2_28ValueChanged;
                 Dictionary.Add(nameof(ValidBegin2_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin2_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(ValidBegin2_28)];
         }
         set
         {
             ValidBegin2_28_DB = value.Value;
-            OnPropertyChanged(nameof(ValidBegin2_28));
+            OnPropertyChanged();
         }
     }
 
     private void ValidBegin2_28ValueChanged(object Value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)Value).Value;
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            ValidBegin2_28_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        ValidBegin2_28_DB = tmp;
     }
     private bool ValidBegin2_28_Validation(RamAccess<string> value)
     {
@@ -1945,18 +1814,19 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
+        try
+        {
+            DateTimeOffset.Parse(tmp);
+        }
         catch (Exception)
         {
             value.AddError("Недопустимое значение");
@@ -1976,28 +1846,27 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(ValidThru2_28)))
             {
                 ((RamAccess<string>)Dictionary[nameof(ValidThru2_28)]).Value = ValidThru2_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidThru2_28)];
             }
             else
             {
                 var rm = new RamAccess<string>(ValidThru2_28_Validation, ValidThru2_28_DB);
                 rm.PropertyChanged += ValidThru2_28ValueChanged;
                 Dictionary.Add(nameof(ValidThru2_28), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidThru2_28)];
             }
+            return (RamAccess<string>)Dictionary[nameof(ValidThru2_28)];
         }
         set
         {
             ValidThru2_28_DB = value.Value;
-            OnPropertyChanged(nameof(ValidThru2_28));
+            OnPropertyChanged();
         }
     }
 
-    private void ValidThru2_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ValidThru2_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            var tmp = ((RamAccess<string>)Value).Value;
+            var tmp = ((RamAccess<string>)value).Value;
             Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
@@ -2045,28 +1914,27 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(PermissionNumber27)))
             {
                 ((RamAccess<string>)Dictionary[nameof(PermissionNumber27)]).Value = PermissionNumber27_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionNumber27)];
             }
             else
             {
                 var rm = new RamAccess<string>(PermissionNumber27_Validation, PermissionNumber27_DB);
                 rm.PropertyChanged += PermissionNumber27ValueChanged;
                 Dictionary.Add(nameof(PermissionNumber27), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionNumber27)];
             }
+            return (RamAccess<string>)Dictionary[nameof(PermissionNumber27)];
         }
         set
         {
             PermissionNumber27_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionNumber27));
+            OnPropertyChanged();
         }
     }
 
-    private void PermissionNumber27ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionNumber27ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PermissionNumber27_DB = ((RamAccess<string>)Value).Value;
+            PermissionNumber27_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool PermissionNumber27_Validation(RamAccess<string> value)
@@ -2086,35 +1954,31 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             if (Dictionary.ContainsKey(nameof(PermissionIssueDate27)))
             {
                 ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)]).Value = PermissionIssueDate27_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)];
             }
             else
             {
                 var rm = new RamAccess<string>(PermissionIssueDate27_Validation, PermissionIssueDate27_DB);
                 rm.PropertyChanged += PermissionIssueDate27ValueChanged;
                 Dictionary.Add(nameof(PermissionIssueDate27), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)];
             }
+            return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)];
         }
         set
         {
             PermissionIssueDate27_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionIssueDate27));
+            OnPropertyChanged();
         }
     }
 
-    private void PermissionIssueDate27ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionIssueDate27ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            PermissionIssueDate27_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        PermissionIssueDate27_DB = tmp;
     }
     private bool PermissionIssueDate27_Validation(RamAccess<string> value)
     {
@@ -2124,13 +1988,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             return true;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -2157,13 +2019,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)]).Value = PermissionDocumentName27_DB;
                 return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
-                rm.PropertyChanged += PermissionDocumentName27ValueChanged;
-                Dictionary.Add(nameof(PermissionDocumentName27), rm);
-                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
-            }
+
+            var rm = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
+            rm.PropertyChanged += PermissionDocumentName27ValueChanged;
+            Dictionary.Add(nameof(PermissionDocumentName27), rm);
+            return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
         }
         set
         {
@@ -2198,13 +2058,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(ValidBegin27)]).Value = ValidBegin27_DB;
                 return (RamAccess<string>)Dictionary[nameof(ValidBegin27)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ValidBegin27_Validation, ValidBegin27_DB);
-                rm.PropertyChanged += ValidBegin27ValueChanged;
-                Dictionary.Add(nameof(ValidBegin27), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin27)];
-            }
+
+            var rm = new RamAccess<string>(ValidBegin27_Validation, ValidBegin27_DB);
+            rm.PropertyChanged += ValidBegin27ValueChanged;
+            Dictionary.Add(nameof(ValidBegin27), rm);
+            return (RamAccess<string>)Dictionary[nameof(ValidBegin27)];
         }
         set
         {
@@ -2268,13 +2126,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(ValidThru27)]).Value = ValidThru27_DB;
                 return (RamAccess<string>)Dictionary[nameof(ValidThru27)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ValidThru27_Validation, ValidThru27_DB);
-                rm.PropertyChanged += ValidThru27ValueChanged;
-                Dictionary.Add(nameof(ValidThru27), rm);
-                return (RamAccess<string>)Dictionary[nameof(ValidThru27)];
-            }
+
+            var rm = new RamAccess<string>(ValidThru27_Validation, ValidThru27_DB);
+            rm.PropertyChanged += ValidThru27ValueChanged;
+            Dictionary.Add(nameof(ValidThru27), rm);
+            return (RamAccess<string>)Dictionary[nameof(ValidThru27)];
         }
         set
         {
@@ -2339,13 +2195,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)]).Value = SourcesQuantity26_DB;
                 return (RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)];
             }
-            else
-            {
-                var rm = new RamAccess<int?>(SourcesQuantity26_Validation, SourcesQuantity26_DB);
-                rm.PropertyChanged += SourcesQuantity26ValueChanged;
-                Dictionary.Add(nameof(SourcesQuantity26), rm);
-                return (RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)];
-            }
+
+            var rm = new RamAccess<int?>(SourcesQuantity26_Validation, SourcesQuantity26_DB);
+            rm.PropertyChanged += SourcesQuantity26ValueChanged;
+            Dictionary.Add(nameof(SourcesQuantity26), rm);
+            return (RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)];
         }
         set
         {
@@ -2390,13 +2244,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(Year)]).Value = Year_DB;
                 return (RamAccess<string>)Dictionary[nameof(Year)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Year_Validation, Year_DB);
-                rm.PropertyChanged += YearValueChanged;
-                Dictionary.Add(nameof(Year), rm);
-                return (RamAccess<string>)Dictionary[nameof(Year)];
-            }
+
+            var rm = new RamAccess<string>(Year_Validation, Year_DB);
+            rm.PropertyChanged += YearValueChanged;
+            Dictionary.Add(nameof(Year), rm);
+            return (RamAccess<string>)Dictionary[nameof(Year)];
         }
         set
         {
@@ -2451,13 +2303,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(StartPeriod)]).Value = StartPeriod_DB;
                 return (RamAccess<string>)Dictionary[nameof(StartPeriod)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(StartPeriod_Validation, StartPeriod_DB);
-                rm.PropertyChanged += StartPeriodValueChanged;
-                Dictionary.Add(nameof(StartPeriod), rm);
-                return (RamAccess<string>)Dictionary[nameof(StartPeriod)];
-            }
+
+            var rm = new RamAccess<string>(StartPeriod_Validation, StartPeriod_DB);
+            rm.PropertyChanged += StartPeriodValueChanged;
+            Dictionary.Add(nameof(StartPeriod), rm);
+            return (RamAccess<string>)Dictionary[nameof(StartPeriod)];
         }
         set
         {
@@ -2521,13 +2371,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(EndPeriod)]).Value = EndPeriod_DB;
                 return (RamAccess<string>)Dictionary[nameof(EndPeriod)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(EndPeriod_Validation, EndPeriod_DB);
-                rm.PropertyChanged += EndPeriodValueChanged;
-                Dictionary.Add(nameof(EndPeriod), rm);
-                return (RamAccess<string>)Dictionary[nameof(EndPeriod)];
-            }
+
+            var rm = new RamAccess<string>(EndPeriod_Validation, EndPeriod_DB);
+            rm.PropertyChanged += EndPeriodValueChanged;
+            Dictionary.Add(nameof(EndPeriod), rm);
+            return (RamAccess<string>)Dictionary[nameof(EndPeriod)];
         }
         set
         {
@@ -2601,13 +2449,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
                 ((RamAccess<string>)Dictionary[nameof(ExportDate)]).Value = ExportDate_DB;
                 return (RamAccess<string>)Dictionary[nameof(ExportDate)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ExportDate_Validation, ExportDate_DB);
-                rm.PropertyChanged += ExportDateValueChanged;
-                Dictionary.Add(nameof(ExportDate), rm);
-                return (RamAccess<string>)Dictionary[nameof(ExportDate)];
-            }
+
+            var rm = new RamAccess<string>(ExportDate_Validation, ExportDate_DB);
+            rm.PropertyChanged += ExportDateValueChanged;
+            Dictionary.Add(nameof(ExportDate), rm);
+            return (RamAccess<string>)Dictionary[nameof(ExportDate)];
         }
         set
         {
@@ -2641,7 +2487,6 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         Rows17.CleanIds();
         Rows18.CleanIds();
         Rows19.CleanIds();
-
         Rows20.CleanIds();
         Rows21.CleanIds();
         Rows22.CleanIds();
@@ -2655,118 +2500,46 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         Rows210.CleanIds();
         Rows211.CleanIds();
         Rows212.CleanIds();
-
         Notes.CleanIds();
     }
 
     [NotMapped]
-    public IKeyCollection this[string FormNum]
+    public IKeyCollection this[string formNum]
     {
         get
         {
-            if (FormNum == "1.0")
+            return formNum switch
             {
-                return Rows10;
-            }
-            if (FormNum == "1.1")
-            {
-                return Rows11;
-            }
-            if (FormNum == "1.2")
-            {
-                return Rows12;
-            }
-            if (FormNum == "1.3")
-            {
-                return Rows13;
-            }
-            if (FormNum == "1.4")
-            {
-                return Rows14;
-            }
-            if (FormNum == "1.5")
-            {
-                return Rows15;
-            }
-            if (FormNum == "1.6")
-            {
-                return Rows16;
-            }
-            if (FormNum == "1.7")
-            {
-                return Rows17;
-            }
-            if (FormNum == "1.8")
-            {
-                return Rows18;
-            }
-            if (FormNum == "1.9")
-            {
-                return Rows19;
-            }
-
-            if (FormNum == "2.0")
-            {
-                return Rows20;
-            }
-            if (FormNum == "2.1")
-            {
-                return Rows21;
-            }
-            if (FormNum == "2.2")
-            {
-                return Rows22;
-            }
-            if (FormNum == "2.3")
-            {
-                return Rows23;
-            }
-            if (FormNum == "2.4")
-            {
-                return Rows24;
-            }
-            if (FormNum == "2.5")
-            {
-                return Rows25;
-            }
-            if (FormNum == "2.6")
-            {
-                return Rows26;
-            }
-            if (FormNum == "2.7")
-            {
-                return Rows27;
-            }
-            if (FormNum == "2.8")
-            {
-                return Rows28;
-            }
-            if (FormNum == "2.9")
-            {
-                return Rows29;
-            }
-            if (FormNum == "2.10")
-            {
-                return Rows210;
-            }
-            if (FormNum == "2.11")
-            {
-                return Rows211;
-            }
-            if (FormNum == "2.12")
-            {
-                return Rows212;
-            }
-            return null;
+                "1.0" => Rows10,
+                "1.1" => Rows11,
+                "1.2" => Rows12,
+                "1.3" => Rows13,
+                "1.4" => Rows14,
+                "1.5" => Rows15,
+                "1.6" => Rows16,
+                "1.7" => Rows17,
+                "1.8" => Rows18,
+                "1.9" => Rows19,
+                "2.0" => Rows20,
+                "2.1" => Rows21,
+                "2.2" => Rows22,
+                "2.3" => Rows23,
+                "2.4" => Rows24,
+                "2.5" => Rows25,
+                "2.6" => Rows26,
+                "2.7" => Rows27,
+                "2.8" => Rows28,
+                "2.9" => Rows29,
+                "2.10" => Rows210,
+                "2.11" => Rows211,
+                "2.12" => Rows212,
+                _ => null
+            };
         }
     }
 
     [NotMapped]
-    public IKeyCollection Rows
-    {
-        get => this[FormNum_DB];
-    }
-
+    public IKeyCollection Rows => this[FormNum_DB];
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -2886,7 +2659,6 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         Rows17.QuickSort();
         Rows18.QuickSort();
         Rows19.QuickSort();
-
         Rows21.QuickSort();
         Rows22.QuickSort();
         Rows23.QuickSort();
@@ -2899,9 +2671,9 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         Rows210.QuickSort();
         Rows211.QuickSort();
         Rows212.QuickSort();
-
         Notes.QuickSort();
     }
+
     public async Task SortAsync()
     {
         await Rows11.QuickSortAsync();
@@ -2925,68 +2697,88 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         await Rows210.QuickSortAsync();
         await Rows211.QuickSortAsync();
         await Rows212.QuickSortAsync();
-
         await Notes.QuickSortAsync();
     }
-    private void NotesValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void NotesValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Notes_DB = ((RamAccess<ObservableCollectionWithItemPropertyChanged<Note>>)Value).Value;
+            Notes_DB = ((RamAccess<ObservableCollectionWithItemPropertyChanged<Note>>)value).Value;
         }
     }
+
     private bool Notes_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Note>> value)
     {
         return true;
     }
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         throw new NotImplementedException();
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool transpose = true, string SumNumber = "")
+
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         if (FormNum_DB.Split('.')[0] == "1")
         {
-            worksheet.Cells[Row + (transpose == false ? 0 : 0), Column + (transpose == true ? 0 : 0)].Value = CorrectionNumber_DB;
-            worksheet.Cells[Row + (transpose == false ? 1 : 0), Column + (transpose == true ? 1 : 0)].Value = StartPeriod_DB;
-            worksheet.Cells[Row + (transpose == false ? 2 : 0), Column + (transpose == true ? 2 : 0)].Value = EndPeriod_DB;
+            worksheet.Cells[row, column].Value = CorrectionNumber_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = StartPeriod_DB;
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = EndPeriod_DB;
             return 3;
         }
         if (FormNum_DB.Split('.')[0] == "2")
         {
-            worksheet.Cells[Row + (transpose == false ? 0 : 0), Column + (transpose == true ? 0 : 0)].Value = CorrectionNumber_DB;
-            worksheet.Cells[Row + (transpose == false ? 1 : 0), Column + (transpose == true ? 1 : 0)].Value = Year_DB;
+            worksheet.Cells[row, column].Value = CorrectionNumber_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = Year_DB;
             return 2;
         }
         return 0;
     }
 
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, string FormNum, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, string formNum, int row, int column, bool transpose = true)
     {
-        if (FormNum.Split('.')[0] == "1")
+        if (formNum.Split('.')[0] == "1")
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(StartPeriod))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(EndPeriod))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[row, column].Value = 
+                ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models")
+                    ?.GetProperty(nameof(CorrectionNumber))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())
+                ?.Names[0];
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = 
+                ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models")
+                    ?.GetProperty(nameof(StartPeriod))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false)
+                    .First())
+                ?.Names[0];
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value =
+                ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models")
+                    ?.GetProperty(nameof(EndPeriod))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false)
+                    .First())
+                ?.Names[0];
             return 3;
         }
-        if (FormNum.Split('.')[0] == "2")
+        if (formNum.Split('.')[0] == "2")
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(Year))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[row, column].Value = 
+                ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models")
+                    ?.GetProperty(nameof(CorrectionNumber))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false)
+                    .First())
+                ?.Names[0];
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value =
+                ((FormPropertyAttribute)Type.GetType("Models.Collections.Report,Models")
+                    ?.GetProperty(nameof(Year))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false)
+                    .First())
+                ?.Names[0];
             return 2;
         }
         return 0;
     }
-
     #endregion
 
     #region Property Changed
@@ -2994,35 +2786,30 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     {
         if (prop != "All")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         else
         {
             var props = typeof(Report).GetProperties();
             foreach (var proper in props)
             {
-                if (proper.Name == nameof(EndPeriod))
-                {
+                //if (proper.Name == nameof(EndPeriod))
+                //{
 
+                //}
+                if (proper.Name.Contains("_DB")) continue;
+                try
+                {
+                    var obj = proper.GetValue(this);
+                    if (obj is RamAccess rm)
+                    {
+                        OnPropertyChanged(proper.Name);
+                        rm.OnPropertyChanged("Value");
+                    }
                 }
-                if (!proper.Name.Contains("_DB"))
+                catch
                 {
-                    try
-                    {
-                        var objec = proper.GetValue(this);
-                        if (objec is RamAccess)
-                        {
-                            var rm = objec as RamAccess;
-
-                            OnPropertyChanged(proper.Name);
-                            rm.OnPropertyChanged("Value");
-                        }
-                    }
-                    catch
-                    {
-
-                    }
+                    // ignored
                 }
             }
         }
@@ -3032,61 +2819,154 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #region IDataGridColumn
     public DataGridColumns GetColumnStructure(string param = "")
     {
-        var FormNumR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(FormNum)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        FormNumR.SizeCol = 100;
-        FormNumR.Binding = nameof(FormNum);
+        #region formNumR
+        var formNumR =
+            ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(FormNum))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD();
+        formNumR.SizeCol = 100;
+        formNumR.Binding = nameof(FormNum);
+        #endregion
 
-        if (param == "1.0") 
+        switch (param)
         {
+            case "1.0":
+            {
+                #region startPeriodR
+                var startPeriodR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(StartPeriod))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (startPeriodR != null)
+                {
+                    startPeriodR.SizeCol = 170;
+                    startPeriodR.Binding = nameof(StartPeriod);
+                    formNumR += startPeriodR;
+                }
+                #endregion
 
-            var StartPeriodR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(StartPeriod)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            StartPeriodR.SizeCol = 170;
-            StartPeriodR.Binding = nameof(StartPeriod);
-            FormNumR += StartPeriodR;
+                #region endPeriodR
+                var endPeriodR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(EndPeriod))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (endPeriodR != null)
+                {
+                    endPeriodR.SizeCol = 170;
+                    endPeriodR.Binding = nameof(EndPeriod);
+                    formNumR += endPeriodR;
+                }
+                #endregion
 
-            var EndPeriodR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(EndPeriod)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            EndPeriodR.SizeCol = 170;
-            EndPeriodR.Binding = nameof(EndPeriod);
-            FormNumR += EndPeriodR;
+                #region exportDateR
+                var exportDateR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (exportDateR != null)
+                {
+                    exportDateR.SizeCol = 170;
+                    exportDateR.Binding = nameof(ExportDate);
+                    formNumR += exportDateR;
+                } 
+                #endregion
 
-            var ExportDateR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            ExportDateR.SizeCol = 170;
-            ExportDateR.Binding = nameof(ExportDate);
-            FormNumR += ExportDateR;
+                #region correctionNumberR
+                var correctionNumberR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (correctionNumberR != null)
+                {
+                    correctionNumberR.SizeCol = 170;
+                    correctionNumberR.Binding = nameof(CorrectionNumber);
+                    formNumR += correctionNumberR;
+                }
+                #endregion
 
-            var CorrectionNumberR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CorrectionNumberR.SizeCol = 170;
-            CorrectionNumberR.Binding = nameof(CorrectionNumber);
-            FormNumR += CorrectionNumberR;
+                #region commentsR
+                var commentsR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Comments))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (commentsR != null)
+                {
+                    commentsR.SizeCol = 343;
+                    commentsR.Binding = nameof(Comments);
+                    formNumR += commentsR;
+                }
+                #endregion
 
-            var CommentsR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CommentsR.SizeCol = 343;
-            CommentsR.Binding = nameof(Comments);
-            FormNumR += CommentsR;
+                break;
+            }
+            case "2.0":
+            {
+                #region yearR
+                var yearR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Year))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (yearR != null)
+                {
+                    yearR.SizeCol = 170;
+                    yearR.Binding = nameof(Year);
+                    formNumR += yearR;
+                }
+                #endregion
+
+                #region exportDateR
+                var exportDateR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (exportDateR != null)
+                {
+                    exportDateR.SizeCol = 170;
+                    exportDateR.Binding = nameof(ExportDate);
+                    formNumR += exportDateR;
+                }
+                #endregion
+
+                #region correctionNumberR
+                var correctionNumberR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (correctionNumberR != null)
+                {
+                    correctionNumberR.SizeCol = 170;
+                    correctionNumberR.Binding = nameof(CorrectionNumber);
+                    formNumR += correctionNumberR;
+                }
+                #endregion
+
+                #region commentsR
+                var commentsR =
+                    ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Comments))
+                        ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                        .FirstOrDefault())
+                    ?.GetDataColumnStructureD();
+                if (commentsR != null)
+                {
+                    commentsR.SizeCol = 513;
+                    commentsR.Binding = nameof(Comments);
+                    formNumR += commentsR;
+                }
+                #endregion
+
+                break;
+            }
         }
-        if (param == "2.0")
-        {
-            var YearR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Year)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            YearR.SizeCol = 170;
-            YearR.Binding = nameof(Year);
-            FormNumR += YearR; 
-
-            var ExportDateR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(ExportDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            ExportDateR.SizeCol = 170;
-            ExportDateR.Binding = nameof(ExportDate);
-            FormNumR += ExportDateR;
-
-            var CorrectionNumberR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(CorrectionNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CorrectionNumberR.SizeCol = 170;
-            CorrectionNumberR.Binding = nameof(CorrectionNumber);
-            FormNumR += CorrectionNumberR;
-
-            var CommentsR = ((FormPropertyAttribute)typeof(Report).GetProperty(nameof(Comments)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CommentsR.SizeCol = 513;
-            CommentsR.Binding = nameof(Comments);
-            FormNumR += CommentsR;
-        }
-        return FormNumR;
+        return formNumR;
     }
     #endregion
 }

@@ -7,23 +7,19 @@ public class LetterAlgebra
 {
     private List<char> _innerNumberRng  = new();
 
-    public LetterAlgebra(IEnumerable<char> Obj)
+    public LetterAlgebra(IEnumerable<char> obj)
     {
-        _innerNumberRng = new List<char>(Obj);
+        _innerNumberRng = new List<char>(obj);
     }
 
-    public LetterAlgebra(string Obj)
+    public LetterAlgebra(string obj)
     {
-        _innerNumberRng = new List<char>(Obj);
+        _innerNumberRng = new List<char>(obj);
     }
 
-    public LetterAlgebra(char Obj)
+    public LetterAlgebra(char obj)
     {
-        _innerNumberRng.Add(Obj);
-    }
-    private LetterAlgebra()
-    {
-
+        _innerNumberRng.Add(obj);
     }
 
     public static LetterAlgebra operator++(LetterAlgebra obj)

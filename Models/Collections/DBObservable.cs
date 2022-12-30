@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Models.Collections;
 
-public class DBObservable:INotifyPropertyChanged
+public class DBObservable : INotifyPropertyChanged
 {
     [NotMapped] private bool _isChanged = true;
 
@@ -23,17 +23,15 @@ public class DBObservable:INotifyPropertyChanged
     ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
     public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
     {
-        get
-        {
-            return Reports_Collection_DB;
-        }
+        get => Reports_Collection_DB;
         set
         {
             Reports_Collection_DB = value;
-            OnPropertyChanged(nameof(Reports_Collection));
+            OnPropertyChanged();
         }
     }
-    public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+
+    private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(Reports_Collection));
         OnPropertyChanged(nameof(Reports_Collection10));
@@ -47,7 +45,7 @@ public class DBObservable:INotifyPropertyChanged
     {
         get
         {
-            var sm = from Reports t in Reports_Collection_DB where t.Master.FormNum.Value == "1.0" select t;
+            var sm = Reports_Collection_DB.Where(t => t.Master.FormNum.Value == "1.0");
             var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
             return obj;
         }
@@ -60,8 +58,7 @@ public class DBObservable:INotifyPropertyChanged
     {
         get
         {
-            var sm = from Reports t in Reports_Collection_DB where t.Master.FormNum.Value == "2.0" select t;
-
+            var sm = Reports_Collection_DB.Where(t => t.Master.FormNum.Value == "2.0");
             var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
             return obj;
         }
@@ -74,9 +71,9 @@ public class DBObservable:INotifyPropertyChanged
     }
 
     //Property Changed
-    public void OnPropertyChanged([CallerMemberName] string prop = "")
+    private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
-        if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

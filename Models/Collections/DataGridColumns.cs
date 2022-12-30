@@ -104,10 +104,7 @@ public class DataGridColumns:INotifyPropertyChanged
 
     public string GridLength
     {
-        get
-        {
-            return $"{SizeCol}*";
-        }
+        get => $"{SizeCol}*";
         set
         {
             if (value != "")
@@ -119,7 +116,7 @@ public class DataGridColumns:INotifyPropertyChanged
                 }
                 catch
                 {
-
+                    // ignored
                 }
             }
         }
@@ -129,7 +126,7 @@ public class DataGridColumns:INotifyPropertyChanged
     bool textW;
     public bool IsTextWrapping
     {
-        get { return textW; }
+        get => textW;
         set 
         {
             if (textW != value) textW = value;
@@ -140,31 +137,12 @@ public class DataGridColumns:INotifyPropertyChanged
     double sizeCol;
     public double SizeCol
     {
-        get 
-        {
-            if (innertCol == null)
-            {
-                return sizeCol;
-            }
-            else
-            {
-                var t = 0.0;
-                foreach (var elem in innertCol) 
-                {
-                    t += elem.SizeCol;
-                }
-                return t;
-            }
-            
-        }
+        get => innertCol?.Sum(elem => elem.SizeCol) ?? sizeCol;
         set 
         {
-            if (innertCol == null)
+            if (innertCol == null && Math.Abs(sizeCol - value) > 0.001)
             {
-                if (sizeCol != value)
-                {
-                    sizeCol = value;
-                }
+                sizeCol = value;
             }
             if (parent != null)
             {
@@ -182,90 +160,65 @@ public class DataGridColumns:INotifyPropertyChanged
     {
         get
         {
-            if(innertCol==null)
+            var tmp = innertCol?.FirstOrDefault();
+            if(tmp == null)
             {
                 return 1;
             }
-            var tmp = innertCol.FirstOrDefault();
-            if(tmp==null)
-            {
-                return 1;
-            }
-            else
-            {
-                return tmp.Level + 1;
-            }
+            return tmp.Level + 1;
         }
     }
 
     public void SetSizeColToAllLevels(int SizeCol)
     {
-        if (innertCol != null)
+        if (innertCol == null) return;
+        foreach (var item in innertCol)
         {
-            foreach (var item in innertCol)
-            {
-                item.sizeCol = SizeCol;
-                item.SetSizeColToAllLevels(SizeCol);
-            }
+            item.sizeCol = SizeCol;
+            item.SetSizeColToAllLevels(SizeCol);
         }
     }
-    public List<DataGridColumns> GetLevel(int Level)
+    public List<DataGridColumns> GetLevel(int level)
     {
         var lstar = new List<DataGridColumns>();
-        if (this.Level == 1)
+        if (Level == 1)
         {
             lstar.Add(this);
             return lstar;
         }
-        else
+
+        if (Level <= level)
         {
-            if (this.Level > Level)
+            return Level == level
+                ? innertCol
+                : lstar;
+        }
+        var allLevel = Level-1;
+        List<DataGridColumns> lst = new(innertCol);
+        while (allLevel != level)
+        {
+            List<DataGridColumns> lst2 = new();
+            foreach (var item in lst)
             {
-                var allLevel = this.Level-1;
-                List<DataGridColumns> lst = new(innertCol);
-                while (allLevel != Level)
-                {
-                    List<DataGridColumns> lst2 = new();
-                    foreach (var item in lst)
-                    {
-                        lst2.AddRange(item.innertCol);
-
-                    }
-                    lst = lst2;
-
-                    var flag = true;
-                    foreach (var item in lst)
-                    {
-                        if (item.Level != Level)
-                        {
-                            flag = false;
-                        }
-                    }
-                    if (flag)
-                    {
-                        allLevel = Level;
-                    }
-                }
-
-                return lst;
+                lst2.AddRange(item.innertCol);
             }
-            else
+            lst = lst2;
+            var flag = true;
+            foreach (var item in lst.Where(item => item.Level != level))
             {
-                if (this.Level == Level)
-                {
-                    return innertCol;
-                }
-                else
-                {
-                    return lstar;
-                }
+                flag = false;
+            }
+            if (flag)
+            {
+                allLevel = level;
             }
         }
+        return lst;
     }
 
-    public static DataGridColumns operator+(DataGridColumns col1,DataGridColumns col2)
+    public static DataGridColumns operator+(DataGridColumns col1, DataGridColumns col2)
     {
-        if(col1.innertCol==null)
+        if(col1.innertCol == null)
         {
             if (col1.name == col2.name)
             {
@@ -275,14 +228,12 @@ public class DataGridColumns:INotifyPropertyChanged
                     binding = col1.binding,
                     sizeCol = col1.sizeCol
                 };
-                if (col2.innertCol != null)
+                if (col2.innertCol == null) return ret;
+                ret.innertCol = new List<DataGridColumns>();
+                foreach (var item in col2.innertCol)
                 {
-                    ret.innertCol = new List<DataGridColumns>();
-                    foreach (var item in col2.innertCol)
-                    {
-                        item.parent = ret;
-                        ret.innertCol.Add(item);
-                    }
+                    item.parent = ret;
+                    ret.innertCol.Add(item);
                 }
                 return ret;
             }
@@ -294,7 +245,7 @@ public class DataGridColumns:INotifyPropertyChanged
                     binding = "",
                     innertCol = new List<DataGridColumns>()
                 };
-                if (ret.name == col1.name)
+                if (ret.name == col1.name && col1.innertCol != null)
                 {
                     foreach (var item in col1.innertCol)
                     {
@@ -312,91 +263,76 @@ public class DataGridColumns:INotifyPropertyChanged
                 return ret;
             }
         }
+        if (col1.name==col2.name)
+        {
+            var tmp = col1.innertCol.ToList();
+            tmp.AddRange(col2.innertCol);
+            var group = tmp.GroupBy(x => x.name);
+            DataGridColumns ret = new()
+            {
+                name = col1.name,
+                innertCol = new List<DataGridColumns>()
+            };
+            foreach(var item in group)
+            {
+                var tr = item.FirstOrDefault();
+                for(var i=1;i<item.Count();i++)
+                {
+                    tr += item.ElementAt(i);
+                }
+                tr.parent = ret;
+                ret.innertCol.Add(tr) ;
+            }
+            return ret;
+        }
         else
         {
-            if(col1.name==col2.name)
+            DataGridColumns ret = new()
             {
-                var tmp = new List<DataGridColumns>();
+                name = "",
+                binding = "",
+                innertCol = new List<DataGridColumns>()
+            };
+            if (ret.name == col1.name)
+            {
                 foreach (var item in col1.innertCol)
                 {
-                    tmp.Add(item);
+                    item.parent = ret;
+                    ret.innertCol.Add(item);
                 }
-                foreach (var item in col2.innertCol)
-                {
-                    tmp.Add(item);
-                }
-
-                var group = tmp.GroupBy(x => x.name);
-                DataGridColumns ret = new()
-                {
-                    name = col1.name,
-                    innertCol = new List<DataGridColumns>()
-                };
-                foreach(var item in group)
-                {
-                    var tr = item.FirstOrDefault();
-                    for(var i=1;i<item.Count();i++)
-                    {
-                        tr += item.ElementAt(i);
-                    }
-                    tr.parent = ret;
-                    ret.innertCol.Add(tr) ;
-                }
-                return ret;
             }
             else
             {
-                DataGridColumns ret = new()
-                {
-                    name = "",
-                    binding = "",
-                    innertCol = new List<DataGridColumns>()
-                };
-                if (ret.name == col1.name)
-                {
-                    foreach (var item in col1.innertCol)
-                    {
-                        item.parent = ret;
-                        ret.innertCol.Add(item);
-                    }
-                }
-                else
-                {
-                    col1.parent = ret;
-                    ret.innertCol.Add(col1);
-                }
-
-                col2.parent = ret;
-                ret.innertCol.Add(col2);
-
-                var group = ret.innertCol.GroupBy(x => x.name);
-                DataGridColumns _ret = new()
-                {
-                    name = ret.name,
-                    innertCol = new List<DataGridColumns>()
-                };
-                foreach (var item in group)
-                {
-                    var tr = item.FirstOrDefault();
-                    for (var i = 1; i < item.Count(); i++)
-                    {
-                        tr += item.ElementAt(i);
-                    }
-                    tr.parent = _ret;
-                    _ret.innertCol.Add(tr);
-                }
-                return _ret;
+                col1.parent = ret;
+                ret.innertCol.Add(col1);
             }
+            col2.parent = ret;
+            ret.innertCol.Add(col2);
+            var group = ret.innertCol.GroupBy(x => x.name);
+            DataGridColumns _ret = new()
+            {
+                name = ret.name,
+                innertCol = new List<DataGridColumns>()
+            };
+            foreach (var item in group)
+            {
+                var tr = item.FirstOrDefault();
+                for (var i = 1; i < item.Count(); i++)
+                {
+                    tr += item.ElementAt(i);
+                }
+                if (tr == null) continue;
+                tr.parent = _ret;
+                _ret.innertCol.Add(tr);
+            }
+            return _ret;
         }
     }
 
     #region INotifyPropertyChanged
-    protected void OnPropertyChanged([CallerMemberName] string prop = "")
+    private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
-        if (PropertyChanged != null)
-        {
-            PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
     public event PropertyChangedEventHandler PropertyChanged;
     #endregion

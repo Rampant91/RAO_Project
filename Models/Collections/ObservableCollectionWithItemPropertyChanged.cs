@@ -20,20 +20,13 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     public event EventHandler<ItemPropertyChangedEventArgs> ItemPropertyChanged;
 
     [NotMapped]
-    public long Order
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public long Order => throw new NotImplementedException();
 
     public int Id { get; set; }
-    public void SetOrder(long index) { }
-    public ObservableCollectionWithItemPropertyChanged() : base()
-    {
 
-    }
+    public void SetOrder(long index) { }
+
+    public ObservableCollectionWithItemPropertyChanged() { }
 
     public void CleanIds()
     {
@@ -56,86 +49,76 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     public bool Sorted { get; set; }
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace)
+        if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace && e.OldItems != null)
         {
             foreach (T item in e.OldItems)
             {
                 item.PropertyChanged -= ChildPropertyChanged;
                 Sorted = false;
             }
-
         }
 
-        if (e.Action is NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Replace)
+        if (e.Action is NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Replace && e.NewItems != null)
         {
             foreach (T item in e.NewItems)
             {
-                if (item != null)
-                {
-                    item.PropertyChanged += ChildPropertyChanged;
-                    Sorted = false;
-                }
+                if (item == null) continue;
+                item.PropertyChanged += ChildPropertyChanged;
+                Sorted = false;
             }
         }
-
         base.OnCollectionChanged(e);
     }
 
     //метод для обмена элементов массива
-    void Swap(int index1,int index2)
+    private void Swap(int index1, int index2)
     {
-        var t = Items[index1];
-        Items[index1] = Items[index2];
-        Items[index2] = t;
+        (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
     }
-    int Partition(int minIndex, int maxIndex)
+    private int Partition(int minIndex, int maxIndex)
     {
         var pivot = minIndex - 1;
         for (var i = minIndex; i < maxIndex; i++)
         {
-
-            if (Items[i].Order < Items[maxIndex].Order)
-            {
-                pivot++;
-                Swap(pivot, i);
-            }
+            if (Items[i].Order >= Items[maxIndex].Order) continue;
+            pivot++;
+            Swap(pivot, i);
         }
-
         pivot++;
         Swap(pivot, maxIndex);
         return pivot;
     }
-    void QuickSort(int minIndex, int maxIndex)
-    {
-        if (minIndex >= maxIndex)
-        {
-            return;
-        }
 
-        var pivotIndex = Partition( minIndex, maxIndex);
-        QuickSort(minIndex, pivotIndex - 1);
-        QuickSort(pivotIndex + 1, maxIndex);
+    private void QuickSort(int minIndex, int maxIndex)
+    {
+        while (true)
+        {
+            if (minIndex >= maxIndex)
+            {
+                return;
+            }
+            var pivotIndex = Partition(minIndex, maxIndex);
+            QuickSort(minIndex, pivotIndex - 1);
+            minIndex = pivotIndex + 1;
+        }
     }
 
     public void QuickSort()
     {
-        if (!Sorted)
+        if (Sorted) return;
+        try
         {
-            try
-            {
-                if (!CheckForSort())
-                {
-                    QuickSort(0, Items.Count - 1);
-                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                    Sorted = true;
-                }
-            }
-            catch
-            {
-
-            }
+            if (CheckForSort()) return;
+            QuickSort(0, Items.Count - 1);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            Sorted = true;
+        }
+        catch
+        {
+            // ignored
         }
     }
+
     public async Task QuickSortAsync()
     {
         if (!Sorted)
@@ -151,12 +134,12 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
             }
             catch
             {
-
+                // ignored
             }
         }
     }
 
-    public bool CheckForSort()
+    private bool CheckForSort()
     {
         var count = 1;
         var flag = true;
@@ -169,17 +152,16 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
             }
             count++;
         }
-
         return flag;
     }
 
-    protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
+    private void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
     {
         ItemPropertyChanged?.Invoke(this, e);
         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
 
-    protected void OnItemPropertyChanged(int index, PropertyChangedEventArgs e)
+    private void OnItemPropertyChanged(int index, PropertyChangedEventArgs e)
     {
         OnItemPropertyChanged(new ItemPropertyChangedEventArgs(index, e));
     }
@@ -187,8 +169,9 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     protected override void ClearItems()
     {
         foreach (var item in Items)
+        {
             item.PropertyChanged -= ChildPropertyChanged;
-
+        }
         base.ClearItems();
     }
 
@@ -198,41 +181,44 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         base.RemoveItem(index);
     }
 
-    protected void ObserveAll()
+    private void ObserveAll()
     {
         foreach (var item in Items)
+        {
             item.PropertyChanged += ChildPropertyChanged;
-
+        }
         // QuickSort();
-
     }
 
     public void AddRange(IEnumerable<T> items)
     {
-        foreach (var item in items)
+        var itemsList = items.ToList();
+        foreach (var item in itemsList)
         {
             Items.Add(item);
         }
         Sorted = false;
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,items.ToList()));
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, itemsList));
     }
+
     public void AddRangeNoChange(IEnumerable<T> items)
     {
-        foreach (var item in items)
+        var itemsList = items.ToList();
+        foreach (var item in itemsList)
         {
             item.PropertyChanged += ChildPropertyChanged;
             Items.Add(item);
         }
     }
 
-    protected void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         var typedSender = (T) sender;
         var i = Items.IndexOf(typedSender);
-
         if (i < 0)
+        {
             throw new ArgumentException("Received property notification from item not in collection");
-
+        }
         OnItemPropertyChanged(i, e);
     }
 
@@ -240,47 +226,52 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     {
         base.Add(obj as T);
     }
+
     public void Remove<T1>(T1 obj) where T1 : class, IKey
     {
         base.Remove(obj as T);
     }
+
     public void RemoveAt<T1>(int obj) where T1 : class, IKey
     {
         RemoveAt(obj);
     }
+
     public void AddRange<T1>(IEnumerable<T1> obj) where T1 : class, IKey
     {
         AddRange(obj.Cast<T>());
     }
+
     public void AddRange<T1>(int index, IEnumerable<T1> obj) where T1 : class, IKey
     {
         var count = index;
-        var countObj = obj.Count();
+        var objList = obj.ToList();
+        var countObj = objList.Count;
         long minOrder = 0;
-
         try
         {
-            minOrder = obj.Min(x => x.Order);
+            minOrder = objList.Min(x => x.Order);
         }
-        catch (Exception ex)
-        { }
-
+        catch (Exception)
+        {
+            // ignored
+        }
         var lst = new List<T>(Items);
-        foreach (var item in obj)
+        foreach (var item in objList)
         {
             item.PropertyChanged += ChildPropertyChanged;
             Items.Insert(count, item as T);
             count++;
         }
-        var itemq = lst.Where(x => x.Order >= minOrder);
-        foreach (var it in itemq)
+        var itemQ = lst.Where(x => x.Order >= minOrder);
+        foreach (var it in itemQ)
         {
             it.SetOrder(it.Order + countObj);
         }
-
         Sorted = false;
         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
+
     public T1 Get<T1>(int index) where T1 : class, IKey
     {
         return this[index] as T1;
@@ -290,19 +281,17 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     {
         Clear();
     }
-    public List<T1> ToList<T1>()where T1:class,IKey
+
+    public List<T1> ToList<T1>() where T1 : class, IKey
     {
-        var lst = new List<T1>();
-        foreach(var item in Items)
-        {
-            lst.Add(item as T1);
-        }
-        return lst;
+        return Items.Select(item => item as T1).ToList();
     }
+
     public IEnumerable<IKey> GetEnumerable()
     {
         return this;
     }
+
     public IEnumerator<IKey> GetEnumerator()
     {
         var lst = Items.ToList();
@@ -311,25 +300,19 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
             yield return item;
         }
     }
-    public int Count 
-    {
-        get
-        {
-            return base.Count;
-        }
-    }
+    public int Count => base.Count;
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         throw new NotImplementedException();
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column,bool transpose=true, string SumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose=true, string sumNumber = "")
     {
         throw new NotImplementedException();
     }
 
-    public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+    public int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
         throw new NotImplementedException();
     }
