@@ -2588,7 +2588,7 @@ public class Form21 : Form2, IBaseColor
         TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 11].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 11].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 11].Value);
         BetaGammaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 12].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 12].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 12].Value);
         AlphaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 13].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 13].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 13].Value);
-        TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 14].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 14].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 14].Value);
+        TransuraniumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 14].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 14].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 14].Value);
         CodeRAOout_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
         StatusRAOout_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
         VolumeOut_DB = Convert.ToString(worksheet.Cells[Row, 17].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 18].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 17].Value);
@@ -2617,7 +2617,7 @@ public class Form21 : Form2, IBaseColor
         worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = string.IsNullOrEmpty(TritiumActivityIn_DB) || TritiumActivityIn_DB == "-" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
         worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = string.IsNullOrEmpty(BetaGammaActivityIn_DB) || BetaGammaActivityIn_DB == "-" ? 0 : double.TryParse(BetaGammaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val)  ?  val : BetaGammaActivityIn_DB;
         worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = string.IsNullOrEmpty(AlphaActivityIn_DB) || AlphaActivityIn_DB == "-" ? 0 : double.TryParse(AlphaActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ?  val : AlphaActivityIn_DB;
-        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = string.IsNullOrEmpty(TritiumActivityIn_DB) || TritiumActivityIn_DB == "-" ? 0 : double.TryParse(TritiumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TritiumActivityIn_DB;
+        worksheet.Cells[Row + (!Transpon ? 12 : 0), Column + (Transpon ? 12 : 0)].Value = string.IsNullOrEmpty(TransuraniumActivityIn_DB) || TransuraniumActivityIn_DB == "-" ? 0 : double.TryParse(TransuraniumActivityIn_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivityIn_DB;
         worksheet.Cells[Row + (!Transpon ? 13 : 0), Column + (Transpon ? 13 : 0)].Value = CodeRAOout_DB;
         worksheet.Cells[Row + (!Transpon ? 14 : 0), Column + (Transpon ? 14 : 0)].Value = StatusRAOout_DB;
         worksheet.Cells[Row + (!Transpon ? 15 : 0), Column + (Transpon ? 15 : 0)].Value = string.IsNullOrEmpty(VolumeOut_DB) || VolumeOut_DB == "-" ? 0 : double.TryParse(VolumeOut_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOut_DB;
@@ -2663,6 +2663,7 @@ public class Form21 : Form2, IBaseColor
         return 22;
     }
     #endregion
+
     #region IDataGridColumn
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
