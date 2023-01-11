@@ -1815,52 +1815,54 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
         await baseReps.SortAsync();        
     }
-    private async Task ProcessIfHasReports21(Reports first21, Reports item)
+    private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps)
     {
         var notIn = false;
         var skipLess = false;
         var skipNew = false;
         var _skipNew = false;
-        foreach (Report it in item.Report_Collection)
+        foreach (var key in impReps.Report_Collection)
         {
-            if (first21.Report_Collection.Count != 0)
+            var impRep = (Report)key;
+            if (baseReps.Report_Collection.Count != 0)
             {
-                foreach (Report elem in first21.Report_Collection)
+                foreach (var key1 in baseReps.Report_Collection)
                 {
-                    if (elem.Year_DB == it.Year_DB && it.FormNum_DB == elem.FormNum_DB)
+                    var baseRep = (Report)key1;
+                    if (baseRep.Year_DB == impRep.Year_DB && impRep.FormNum_DB == baseRep.FormNum_DB)
                     {
                         notIn = true;
-                        if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
+                        if (impRep.CorrectionNumber_DB < baseRep.CorrectionNumber_DB)
                         {
                             if (!skipLess)
                             {
                                 var str =
-                                    $" Вы пытаетесь загрузить форму с наименьщим номером корректировки - {it.CorrectionNumber_DB},\nпри текущем значении корректировки - {elem.CorrectionNumber_DB}.\nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                    $" Вы пытаетесь загрузить форму с наименьщим номером корректировки - {impRep.CorrectionNumber_DB},\nпри текущем значении корректировки - {baseRep.CorrectionNumber_DB}.\nНомер формы - {impRep.FormNum_DB}\nОтчетный год - {impRep.Year_DB}\nРегистрационный номер - {baseReps.Master.RegNoRep.Value}\nСокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}\nОКПО - {baseReps.Master.OkpoRep.Value}\nКоличество строк - {impRep.Rows.Count}";
                                 var an = await ShowMessage.Handle(new List<string> { str, "Отчет", "OK", "Пропустить для всех" });
                                 if (an == "Пропустить для всех") skipLess = true;
                             }
                         }
-                        else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB && it.ExportDate_DB == elem.ExportDate_DB)
+                        else if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB && impRep.ExportDate_DB == baseRep.ExportDate_DB)
                         {
                             var str =
-                                $"Совпадение даты в {elem.FormNum_DB} {elem.Year_DB} .\nНомер корректировки -{it.CorrectionNumber_DB}\n{first21.Master.RegNoRep.Value} \n{first21.Master.ShortJurLicoRep.Value} {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                $"Совпадение даты в {baseRep.FormNum_DB} {baseRep.Year_DB} .\nНомер корректировки -{impRep.CorrectionNumber_DB}\n{baseReps.Master.RegNoRep.Value} \n{baseReps.Master.ShortJurLicoRep.Value} {baseReps.Master.OkpoRep.Value}\nКоличество строк - {impRep.Rows.Count}";
                             var an = await ShowMessage.Handle(new List<string>
                             {str, "Отчет",
                                 "Заменить",
                                 "Сохранить оба",
                                 "Отменить"
                             });
-                            await ChechAanswer(an, first21, elem, it);
+                            await ChechAanswer(an, baseReps, baseRep, impRep);
                         }
                         else
                         {
                             var an = "Загрузить новую";
                             if (!skipNew)
                             {
-                                if (item.Report_Collection.Count() > 1)
+                                if (impReps.Report_Collection.Count() > 1)
                                 {
                                     var str =
-                                        $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
+                                        $"Загрузить новую форму? \nНомер формы - {impRep.FormNum_DB}\nОтчетный год - {impRep.Year_DB}\nНомер корректировки -{impRep.CorrectionNumber_DB}\nРегистрационный номер - {baseReps.Master.RegNoRep.Value}\nСокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}\nОКПО - {baseReps.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{baseRep.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {impRep.Rows.Count}";
                                     an = await ShowMessage.Handle(new List<string>
                                     {
                                         str,
@@ -1875,7 +1877,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 else
                                 {
                                     var str =
-                                        $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{elem.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {it.Rows.Count}";
+                                        $"Загрузить новую форму? \nНомер формы - {impRep.FormNum_DB}\nОтчетный год - {impRep.Year_DB}\nНомер корректировки -{impRep.CorrectionNumber_DB}\nРегистрационный номер - {baseReps.Master.RegNoRep.Value}\nСокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}\nОКПО - {baseReps.Master.OkpoRep.Value}\nФорма с предыдущим номером корректировки №{baseRep.CorrectionNumber_DB} будет безвозвратно удалена.\nСделайте резервную копию.\nКоличество строк - {impRep.Rows.Count}";
                                     an = await ShowMessage.Handle(new List<string>
                                     {
                                         str,
@@ -1885,7 +1887,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     });
                                 }
                             }
-                            await ChechAanswer(an, first21, elem, it);
+                            await ChechAanswer(an, baseReps, baseRep, impRep);
                         }
                     }
                 }
@@ -1894,10 +1896,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     var an = "Да";
                     if (!_skipNew)
                     {
-                        if (item.Report_Collection.Count() > 1)
+                        if (impReps.Report_Collection.Count() > 1)
                         {
                             var str =
-                                $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                $"Загрузить новую форму? \nНомер формы - {impRep.FormNum_DB}\nОтчетный год - {impRep.Year_DB}\nНомер корректировки -{impRep.CorrectionNumber_DB}\nРегистрационный номер - {baseReps.Master.RegNoRep.Value}\nСокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}\nОКПО - {baseReps.Master.OkpoRep.Value}\nКоличество строк - {impRep.Rows.Count}";
                             an = await ShowMessage.Handle(new List<string>
                             {str, "Отчет",
                                 "Да",
@@ -1910,7 +1912,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         else
                         {
                             var str =
-                                $"Загрузить новую форму? \nНомер формы - {it.FormNum_DB}\nОтчетный год - {it.Year_DB}\nНомер корректировки -{it.CorrectionNumber_DB}\nРегистрационный номер - {first21.Master.RegNoRep.Value}\nСокращенное наименование - {first21.Master.ShortJurLicoRep.Value}\nОКПО - {first21.Master.OkpoRep.Value}\nКоличество строк - {it.Rows.Count}";
+                                $"Загрузить новую форму? \nНомер формы - {impRep.FormNum_DB}\nОтчетный год - {impRep.Year_DB}\nНомер корректировки -{impRep.CorrectionNumber_DB}\nРегистрационный номер - {baseReps.Master.RegNoRep.Value}\nСокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}\nОКПО - {baseReps.Master.OkpoRep.Value}\nКоличество строк - {impRep.Rows.Count}";
                             an = await ShowMessage.Handle(new List<string>
                             {str, "Отчет",
                                 "Да",
@@ -1918,15 +1920,15 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             });
                         }
                     }
-                    await ChechAanswer(an, first21, null, it);
+                    await ChechAanswer(an, baseReps, null, impRep);
                     notIn = false;
                 }
             }
             else
             {
-                first21.Report_Collection.Add(it);
+                baseReps.Report_Collection.Add(impRep);
             }
-            await first21.SortAsync();
+            await baseReps.SortAsync();
         }
     }
     private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
