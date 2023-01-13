@@ -1254,7 +1254,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         try
         {
-            if (item.Master_DB.FormNum_DB is "1.0")
+            if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is "1.0")
             {
                 return Local_Reports.Reports_Collection10.FirstOrDefault(t => (
                     item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
@@ -1284,7 +1284,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         try
         {
-            if (item.Master_DB.FormNum_DB is "2.0")
+            if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is "2.0")
             {
                 return Local_Reports.Reports_Collection20.FirstOrDefault(t => (
                         item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
@@ -1322,17 +1322,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 if (item.Master_DB.Rows10[1].NumberInOrder_DB == 0)
                 {
-                    if (item.Master_DB.Rows10[1].NumberInOrder_DB == 2)
-                    {
-                        item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
-                    }
-                    else
-                    {
-                        item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
-                    }
+                    item.Master_DB.Rows10[1].NumberInOrder_DB = item.Master_DB.Rows10[1].NumberInOrder_DB == 2
+                        ? 1
+                        : 2;
                 }
                 item.Master_DB.Rows10.Sorted = false;
-                item.Master_DB.Rows10.QuickSort();
+                await item.Master_DB.Rows10.QuickSortAsync();
             }
             else
             {
@@ -1342,17 +1337,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 if (item.Master_DB.Rows10[1].NumberInOrder_DB == 0)
                 {
-                    if (item.Master_DB.Rows10[1].NumberInOrder_DB == 2)
-                    {
-                        item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
-                    }
-                    else
-                    {
-                        item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
-                    }
+                    item.Master_DB.Rows10[1].NumberInOrder_DB = item.Master_DB.Rows10[1].NumberInOrder_DB == 2
+                        ? 1
+                        : 2;
                 }
                 item.Master_DB.Rows10.Sorted = false;
-                item.Master_DB.Rows10.QuickSort();
+                await item.Master_DB.Rows10.QuickSortAsync();
             }
         }
         if (item.Master_DB.FormNum_DB == "2.0")
@@ -1365,17 +1355,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 if (item.Master_DB.Rows20[1].NumberInOrder_DB == 0)
                 {
-                    if (item.Master_DB.Rows20[1].NumberInOrder_DB == 2)
-                    {
-                        item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
-                    }
-                    else
-                    {
-                        item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
-                    }
+                    item.Master_DB.Rows20[1].NumberInOrder_DB = item.Master_DB.Rows20[1].NumberInOrder_DB == 2
+                        ? 1
+                        : 2;
                 }
                 item.Master_DB.Rows20.Sorted = false;
-                item.Master_DB.Rows20.QuickSort();
+                await item.Master_DB.Rows20.QuickSortAsync();
             }
             else
             {
@@ -1385,17 +1370,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 if (item.Master_DB.Rows20[1].NumberInOrder_DB == 0)
                 {
-                    if (item.Master_DB.Rows20[1].NumberInOrder_DB == 2)
-                    {
-                        item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
-                    }
-                    else
-                    {
-                        item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
-                    }
+                    item.Master_DB.Rows20[1].NumberInOrder_DB = item.Master_DB.Rows20[1].NumberInOrder_DB == 2
+                        ? 1
+                        : 2;
                 }
                 item.Master_DB.Rows20.Sorted = false;
-                item.Master_DB.Rows20.QuickSort();
+                await item.Master_DB.Rows20.QuickSortAsync();
             }
         }
     }
@@ -2060,6 +2040,36 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break; 
                 #endregion
             }
+
+            #region AddEmptyOrgThatAlreadyExist
+            if (impReps.Report_Collection.Count == 0)
+            {
+                impInBase = true;
+
+                #region MessageNewReport
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions = new[]
+                        {
+                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                        },
+                        ContentTitle = "Импорт из .raodb",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
+                #endregion
+            } 
+            #endregion
+
             if (impInBase) continue;
 
             #region AddNewForm
@@ -2171,10 +2181,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
             var answer = await GetSelectedFilesFromDialog("RAODB", "raodb");
             if (answer is null) return;            
-            foreach (var res in answer)     //Для каждого импортируемого файла
+            foreach (var res in answer)               //Для каждого импортируемого файла
             {
                 if (res == "") continue;
-                var skip = false;              //Пропустить уведомления о добавлении новой организации
+                var skip = false;                           //Пропустить уведомления о добавлении новой организации
                 var file = await GetRaoFileName();
                 var sourceFile = new FileInfo(res);
                 sourceFile.CopyTo(file, true);
@@ -2204,14 +2214,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                     else if (first11 == null && first21 == null)
                     {
-                        #region AddNewOrgAndReport
+                        #region AddNewOrg
                         var an = "Добавить";
                         if (!skip)
                         {
-                            var rep = item.Report_Collection.FirstOrDefault();
-                            var msg = rep is null
-                                ? "У импортируемой организации отсутствуют формы отчетности."
-                                : "Добавлена новая организация и форма отчетности.";
                             if (reportsCollection.Count > 1)
                             {
                                 #region MessageNewOrg
@@ -2227,14 +2233,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         ContentTitle = "Импорт из .raodb",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"{msg}" +
+                                            $"Будет добавлена новая организация содержащая {reportsCollection.Count} форм отчетности." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
                                             $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}" +
                                             $"{Environment.NewLine}" +
-                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
-                                            $"{Environment.NewLine}все новые организации, у которых отсутствуют формы отчетности.",
+                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                            $"{Environment.NewLine}импортировать все новые организации.",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
@@ -2257,7 +2263,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         ContentTitle = "Импорт из .raodb",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"{msg}" +
+                                            $"Будет добавлена новая организация содержащая {reportsCollection.Count} форм отчетности." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
@@ -2276,8 +2282,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         #endregion
                     }
                 }
-                await Local_Reports.Reports_Collection.QuickSortAsync();
             }
+            await Local_Reports.Reports_Collection.QuickSortAsync();
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
         catch
