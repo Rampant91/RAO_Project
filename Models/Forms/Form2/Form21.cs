@@ -2572,32 +2572,33 @@ public class Form21 : Form2, IBaseColor
     #endregion
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        double val;
-        base.ExcelGetRow(worksheet, Row);
-        RefineMachineName.Value = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        MachineCode.Value = Convert.ToByte(worksheet.Cells[Row, 3].Value);
-        MachinePower.Value = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
-        NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 5].Value);
-        CodeRAOIn_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
-        StatusRAOIn_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
-        VolumeIn_DB = Convert.ToString(worksheet.Cells[Row, 8].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 8].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 8].Value);
-        MassIn_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 9].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 9].Value);
-        QuantityIn_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
-        TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 11].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 11].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 11].Value);
-        BetaGammaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 12].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 12].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 12].Value);
-        AlphaActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 13].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 13].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 13].Value);
-        TransuraniumActivityIn_DB = Convert.ToString(worksheet.Cells[Row, 14].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 14].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 14].Value);
-        CodeRAOout_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
-        StatusRAOout_DB = Convert.ToString(worksheet.Cells[Row, 16].Value);
-        VolumeOut_DB = Convert.ToString(worksheet.Cells[Row, 17].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 18].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 17].Value);
-        MassOut_DB = Convert.ToString(worksheet.Cells[Row, 18].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 18].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 18].Value);
-        QuantityOZIIIout_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
-        TritiumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 20].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 20].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 20].Value);
-        BetaGammaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 21].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 21].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 21].Value);
-        AlphaActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 22].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 22].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 22].Value);
-        TransuraniumActivityOut_DB = Convert.ToString(worksheet.Cells[Row, 23].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 23].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 23].Value);
+        base.ExcelGetRow(worksheet, row);
+        RefineMachineName.Value = Convert.ToString(worksheet.Cells[row, 2].Value);
+        MachineCode.Value = byte.TryParse(worksheet.Cells[row, 3].Value.ToString(), out var byteVal)
+            ? byteVal
+            : null;
+        MachinePower.Value = Convert.ToString(worksheet.Cells[row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out var val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 4].Value);
+        NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[row, 5].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[row, 5].Value);
+        CodeRAOIn_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
+        StatusRAOIn_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
+        VolumeIn_DB = Convert.ToString(worksheet.Cells[row, 8].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 8].Value);
+        MassIn_DB = Convert.ToString(worksheet.Cells[row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 9].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 9].Value);
+        QuantityIn_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
+        TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[row, 11].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 11].Value);
+        BetaGammaActivityIn_DB = Convert.ToString(worksheet.Cells[row, 12].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 12].Value);
+        AlphaActivityIn_DB = Convert.ToString(worksheet.Cells[row, 13].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 13].Value);
+        TransuraniumActivityIn_DB = Convert.ToString(worksheet.Cells[row, 14].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 14].Value);
+        CodeRAOout_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
+        StatusRAOout_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
+        VolumeOut_DB = Convert.ToString(worksheet.Cells[row, 17].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 18].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 17].Value);
+        MassOut_DB = Convert.ToString(worksheet.Cells[row, 18].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 18].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 18].Value);
+        QuantityOZIIIout_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
+        TritiumActivityOut_DB = Convert.ToString(worksheet.Cells[row, 20].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 20].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 20].Value);
+        BetaGammaActivityOut_DB = Convert.ToString(worksheet.Cells[row, 21].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 21].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 21].Value);
+        AlphaActivityOut_DB = Convert.ToString(worksheet.Cells[row, 22].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 22].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 22].Value);
+        TransuraniumActivityOut_DB = Convert.ToString(worksheet.Cells[row, 23].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 23].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 23].Value);
     }
     public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string SumNumber = "")
     {
