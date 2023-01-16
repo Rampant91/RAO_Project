@@ -162,6 +162,12 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
 
     public abstract int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "");
 
+    private protected static string ReplaceE(string numberE)
+    {
+        return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
+            .Replace("(", "").Replace(")", "").Replace(".", ",");
+    }
+
     protected static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
         return 0;

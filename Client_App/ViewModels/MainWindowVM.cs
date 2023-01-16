@@ -29,7 +29,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using MessageBox.Avalonia.Enums;
 
 namespace Client_App.ViewModels;
 
@@ -66,8 +65,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
     #endregion
-
-    public MainWindowVM() { }
 
     #region Init
     private async Task<string> ProcessRaoDirectory(string systemDirectory)
@@ -6826,7 +6823,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             form19.ExcelRow(worksheet, count, startColumn + 1);
                             break;
                         case Form21 form21:
-                            form21.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form21.NumberInOrderSum_DB);
+                            form21.ExcelRow(worksheet, count, startColumn + 1, sumNumber: form21.NumberInOrderSum_DB);
                             break;
                         case Form22 form22:
                             form22.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form22.NumberInOrderSum_DB);
@@ -7272,7 +7269,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region INotifyPropertyChanged
-
     private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
