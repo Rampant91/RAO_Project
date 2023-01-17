@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Models.Collections;
 using Models.Forms.DataAccess;
@@ -147,6 +148,9 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
 
     #region For_Validation
     public abstract bool Object_Validation();
+
+    private protected const NumberStyles StyleDecimalThousandExp = 
+        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
     #endregion
 
     #region INotifyPropertyChanged

@@ -81,16 +81,14 @@ public class Form21 : Form2, IBaseColor
         get => _BaseColor;
         set
         {
-            if (_BaseColor != value)
-            {
-                _BaseColor = value;
-                OnPropertyChanged(nameof(BaseColor));
-            }
+            if (_BaseColor == value) return;
+            _BaseColor = value;
+            OnPropertyChanged();
         }
     }
     #endregion
 
-    #region  Sum
+    #region Sum
     public bool Sum_DB { get; set; }
 
     [NotMapped]
@@ -105,15 +103,15 @@ public class Form21 : Form2, IBaseColor
         set
         {
             Sum_DB = value.Value;
-            OnPropertyChanged(nameof(Sum));
+            OnPropertyChanged();
         }
     }
 
-    private void SumValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SumValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Sum_DB = ((RamAccess<bool>)Value).Value;
+            Sum_DB = ((RamAccess<bool>)value).Value;
         }
     }
 
@@ -124,7 +122,7 @@ public class Form21 : Form2, IBaseColor
     }
     #endregion
 
-    #region  SumGroup
+    #region SumGroup
     public bool SumGroup_DB { get; set; }
 
     [NotMapped]
@@ -139,15 +137,15 @@ public class Form21 : Form2, IBaseColor
         set
         {
             SumGroup_DB = value.Value;
-            OnPropertyChanged(nameof(SumGroup));
+            OnPropertyChanged();
         }
     }
 
-    private void SumGroupValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SumGroupValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            SumGroup_DB = ((RamAccess<bool>)Value).Value;
+            SumGroup_DB = ((RamAccess<bool>)value).Value;
         }
     }
 
@@ -169,36 +167,22 @@ public class Form21 : Form2, IBaseColor
         {
             if (Dictionary.ContainsKey(nameof(NumberInOrderSum)))
             {
-                if (NumberInOrderSum_DB != "" && NumberInOrderSum_DB != null)
-                {
-                    ((RamAccess<string>)Dictionary[nameof(NumberInOrderSum)]).Value = NumberInOrderSum_DB;
-                }
-                else
-                {
-                    ((RamAccess<string>)Dictionary[nameof(NumberInOrderSum)]).Value = NumberInOrder_DB.ToString();
-                }
+                ((RamAccess<string>)Dictionary[nameof(NumberInOrderSum)]).Value = !string.IsNullOrEmpty(NumberInOrderSum_DB)
+                    ? NumberInOrderSum_DB
+                    : NumberInOrder_DB.ToString();
                 return (RamAccess<string>)Dictionary[nameof(NumberInOrderSum)];
             }
-            else
-            {
-                RamAccess<string> rm = null;
-                if (NumberInOrderSum_DB != "" && NumberInOrderSum_DB != null)
-                {
-                    rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrderSum_DB);
-                }
-                else
-                {
-                    rm = new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
-                }
-                rm.PropertyChanged += NumberInOrderSumValueChanged;
-                Dictionary.Add(nameof(NumberInOrderSum), rm);
-                return (RamAccess<string>)Dictionary[nameof(NumberInOrderSum)];
-            }
+            var rm = !string.IsNullOrEmpty(NumberInOrderSum_DB)
+                ? new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrderSum_DB)
+                : new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
+            rm.PropertyChanged += NumberInOrderSumValueChanged;
+            Dictionary.Add(nameof(NumberInOrderSum), rm);
+            return (RamAccess<string>)Dictionary[nameof(NumberInOrderSum)];
         }
         set
         {
             NumberInOrderSum_DB = value.Value;
-            OnPropertyChanged(nameof(NumberInOrderSum));
+            OnPropertyChanged();
         }
     }
     private void NumberInOrderSumValueChanged(object Value, PropertyChangedEventArgs args)
@@ -230,21 +214,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(RefineMachineName_Hidden_Get)];
 
             }
-            else
-            {
-                var rm = new RefBool(_RefineMachineName_Hidden_Get);
-                Dictionary.Add(nameof(RefineMachineName_Hidden_Get), rm);
-                return rm;
-            }
+            var rm = new RefBool(_RefineMachineName_Hidden_Get);
+            Dictionary.Add(nameof(RefineMachineName_Hidden_Get), rm);
+            return rm;
         }
         set
         {
-            if (_RefineMachineName_Hidden_Get != value.Get())
-            {
-                _RefineMachineName_Hidden_Get = value.Get();
-                var tmp = RefineMachineName;
-                OnPropertyChanged(nameof(RefineMachineName_Hidden_Get));
-            }
+            if (_RefineMachineName_Hidden_Get == value.Get()) return;
+            _RefineMachineName_Hidden_Get = value.Get();
+            OnPropertyChanged();
         }
     }
     public bool _RefineMachineName_Hidden_Set { get; set; } = true;
@@ -259,21 +237,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(RefineMachineName_Hidden_Set)];
 
             }
-            else
-            {
-                var rm = new RefBool(_RefineMachineName_Hidden_Set);
-                Dictionary.Add(nameof(RefineMachineName_Hidden_Set), rm);
-                return rm;
-            }
+            var rm = new RefBool(_RefineMachineName_Hidden_Set);
+            Dictionary.Add(nameof(RefineMachineName_Hidden_Set), rm);
+            return rm;
         }
         set
         {
-            if (_RefineMachineName_Hidden_Set != value.Get())
-            {
-                _RefineMachineName_Hidden_Set = value.Get();
-                var tmp = RefineMachineName;
-                OnPropertyChanged(nameof(RefineMachineName_Hidden_Set));
-            }
+            if (_RefineMachineName_Hidden_Set == value.Get()) return;
+            _RefineMachineName_Hidden_Set = value.Get();
+            OnPropertyChanged();
         }
     }
 
@@ -288,33 +260,25 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(RefineMachineName)]).Value = RefineMachineName_DB;
                 return (RamAccess<string>)Dictionary[nameof(RefineMachineName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB, RefineMachineName_Hidden_Get, RefineMachineName_Hidden_Set);
-                rm.PropertyChanged += RefineMachineNameValueChanged;
-                Dictionary.Add(nameof(RefineMachineName), rm);
-                return (RamAccess<string>)Dictionary[nameof(RefineMachineName)];
-            }
+            var rm = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB, RefineMachineName_Hidden_Get, RefineMachineName_Hidden_Set);
+            rm.PropertyChanged += RefineMachineNameValueChanged;
+            Dictionary.Add(nameof(RefineMachineName), rm);
+            return (RamAccess<string>)Dictionary[nameof(RefineMachineName)];
         }
         set
         {
-            if (RefineMachineName.Value != value.Value)
-            {
-                RefineMachineName_DB = value.Value;
-                OnPropertyChanged(nameof(RefineMachineName));
-            }
+            if (RefineMachineName.Value == value.Value) return;
+            RefineMachineName_DB = value.Value;
+            OnPropertyChanged();
         }
 
     }
 
-    private void RefineMachineNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void RefineMachineNameValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName == "Value" && _RefineMachineName_Hidden_Set)
         {
-            if (_RefineMachineName_Hidden_Set)
-            {
-                RefineMachineName_DB = ((RamAccess<string>)Value).Value;
-            }
+            RefineMachineName_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -342,21 +306,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(MachineCode_Hidden_Get)];
 
             }
-            else
-            {
-                var rm = new RefBool(_MachineCode_Hidden_Get);
-                Dictionary.Add(nameof(MachineCode_Hidden_Get), rm);
-                return rm;
-            }
+            var rm = new RefBool(_MachineCode_Hidden_Get);
+            Dictionary.Add(nameof(MachineCode_Hidden_Get), rm);
+            return rm;
         }
         set
         {
-            if (_MachineCode_Hidden_Get != value.Get())
-            {
-                _MachineCode_Hidden_Get = value.Get();
-                var tmp = MachineCode;
-                OnPropertyChanged(nameof(MachineCode_Hidden_Get));
-            }
+            if (_MachineCode_Hidden_Get == value.Get()) return;
+            _MachineCode_Hidden_Get = value.Get();
+            OnPropertyChanged();
         }
     }
     public bool _MachineCode_Hidden_Set { get; set; } = true;
@@ -371,21 +329,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(MachineCode_Hidden_Set)];
 
             }
-            else
-            {
-                var rm = new RefBool(_MachineCode_Hidden_Set);
-                Dictionary.Add(nameof(MachineCode_Hidden_Set), rm);
-                return rm;
-            }
+            var rm = new RefBool(_MachineCode_Hidden_Set);
+            Dictionary.Add(nameof(MachineCode_Hidden_Set), rm);
+            return rm;
         }
         set
         {
-            if (_MachineCode_Hidden_Set != value.Get())
-            {
-                _MachineCode_Hidden_Set = value.Get();
-                var tmp = MachineCode;
-                OnPropertyChanged(nameof(MachineCode_Hidden_Set));
-            }
+            if (_MachineCode_Hidden_Set == value.Get()) return;
+            _MachineCode_Hidden_Set = value.Get();
+            OnPropertyChanged();
         }
     }
 
@@ -400,32 +352,25 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<byte?>)Dictionary[nameof(MachineCode)]).Value = MachineCode_DB;
                 return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
             }
-            else
-            {
-                var rm = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB, MachineCode_Hidden_Get, MachineCode_Hidden_Set);
-                rm.PropertyChanged += MachineCodeValueChanged;
-                Dictionary.Add(nameof(MachineCode), rm);
-                return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
-            }
+            var rm = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB, MachineCode_Hidden_Get, MachineCode_Hidden_Set);
+            rm.PropertyChanged += MachineCodeValueChanged;
+            Dictionary.Add(nameof(MachineCode), rm);
+            return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
         }
         set
         {
-            if (MachineCode.Value != value.Value)
-            {
-                MachineCode_DB = value.Value;
-                OnPropertyChanged(nameof(MachineCode));
-            }
+            if (MachineCode.Value == value.Value) return;
+            MachineCode_DB = value.Value;
+            OnPropertyChanged();
         }
     }
 
-    private void MachineCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void MachineCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        if (_MachineCode_Hidden_Set)
         {
-            if (_MachineCode_Hidden_Set)
-            {
-                MachineCode_DB = ((RamAccess<byte?>)Value).Value;
-            }
+            MachineCode_DB = ((RamAccess<byte?>)value).Value;
         }
     }
 
@@ -437,24 +382,21 @@ public class Form21 : Form2, IBaseColor
             value.AddError("Поле не заполнено");
             return false;
         }
-
-        var a = value.Value >= 11 && value.Value <= 17;
-        var b = value.Value >= 21 && value.Value <= 24;
-        var c = value.Value >= 31 && value.Value <= 32;
-        var d = value.Value >= 41 && value.Value <= 43;
-        var e = value.Value >= 51 && value.Value <= 56;
-        var f = value.Value >= 61 && value.Value <= 63;
-        var g = value.Value >= 71 && value.Value <= 73;
-        var h = value.Value is 19 or 29 or 39 or 49 or 99 or 79;
+        var a = value.Value is >= 11 and <= 17;
+        var b = value.Value is >= 21 and <= 24;
+        var c = value.Value is >= 31 and <= 32;
+        var d = value.Value is >= 41 and <= 43;
+        var e = value.Value is >= 51 and <= 56;
+        var f = value.Value is >= 61 and <= 63;
+        var g = value.Value is >= 71 and <= 73;
+        var h = value.Value is 19 or 29 or 39 or 49 or 79 or 99;
         if (!(a || b || c || d || e || f || g || h))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
-
     //MachineCode property
     #endregion
 
@@ -472,21 +414,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(MachinePower_Hidden_Get)];
 
             }
-            else
-            {
-                var rm = new RefBool(_MachinePower_Hidden_Get);
-                Dictionary.Add(nameof(MachinePower_Hidden_Get), rm);
-                return rm;
-            }
+            var rm = new RefBool(_MachinePower_Hidden_Get);
+            Dictionary.Add(nameof(MachinePower_Hidden_Get), rm);
+            return rm;
         }
         set
         {
-            if (_MachinePower_Hidden_Get != value.Get())
-            {
-                _MachinePower_Hidden_Get = value.Get();
-                var tmp = MachinePower;
-                OnPropertyChanged(nameof(MachinePower_Hidden_Get));
-            }
+            if (_MachinePower_Hidden_Get == value.Get()) return;
+            _MachinePower_Hidden_Get = value.Get();
+            OnPropertyChanged();
         }
     }
     public bool _MachinePower_Hidden_Set { get; set; } = true;
@@ -501,21 +437,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(MachinePower_Hidden_Set)];
 
             }
-            else
-            {
-                var rm = new RefBool(_MachinePower_Hidden_Set);
-                Dictionary.Add(nameof(MachinePower_Hidden_Set), rm);
-                return rm;
-            }
+            var rm = new RefBool(_MachinePower_Hidden_Set);
+            Dictionary.Add(nameof(MachinePower_Hidden_Set), rm);
+            return rm;
         }
         set
         {
-            if (_MachinePower_Hidden_Set != value.Get())
-            {
-                _MachinePower_Hidden_Set = value.Get();
-                var tmp = MachinePower;
-                OnPropertyChanged(nameof(MachinePower_Hidden_Set));
-            }
+            if (_MachinePower_Hidden_Set == value.Get()) return;
+            _MachinePower_Hidden_Set = value.Get();
+            OnPropertyChanged();
         }
     }
 
@@ -532,54 +462,47 @@ public class Form21 : Form2, IBaseColor
                 return (RamAccess<string>)Dictionary[nameof(MachinePower)];
 
             }
-            else
-            {
-                var rm = new RamAccess<string>(MachinePower_Validation, MachinePower_DB, MachinePower_Hidden_Get, MachinePower_Hidden_Set);
-                rm.PropertyChanged += MachinePowerValueChanged;
-                Dictionary.Add(nameof(MachinePower), rm);
-                return rm;
-            }
+            var rm = new RamAccess<string>(MachinePower_Validation, MachinePower_DB, MachinePower_Hidden_Get, MachinePower_Hidden_Set);
+            rm.PropertyChanged += MachinePowerValueChanged;
+            Dictionary.Add(nameof(MachinePower), rm);
+            return rm;
         }
         set
         {
-            if (MachinePower.Value != value.Value)
-            {
-                MachinePower_DB = value.Value;
-                OnPropertyChanged(nameof(MachinePower));
-            }
+            if (MachinePower.Value == value.Value) return;
+            MachinePower_DB = value.Value;
+            OnPropertyChanged();
         }
     }
 
-    private void MachinePowerValueChanged(object Value, PropertyChangedEventArgs args)
+    private void MachinePowerValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value" || !_MachinePower_Hidden_Set) return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            if (_MachinePower_Hidden_Set)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                if (value1 != null)
-                {
-                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                    if (value1.Equals("-"))
-                    {
-                        MachinePower_DB = value1;
-                        return;
-                    }
-                    if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                    {
-                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                    }
-                    try
-                    {
-                        var value2 = Convert.ToDouble(value1);
-                        value1 = $"{value2:0.######################################################e+00}";
-                    }
-                    catch (Exception ex)
-                    { }
-                }
                 MachinePower_DB = value1;
+                return;
+            }
+
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
             }
         }
+        MachinePower_DB = value1;
     }
 
     private bool MachinePower_Validation(RamAccess<string> value) //TODO
@@ -602,29 +525,20 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
-        }
-        catch
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
+        if (tmpDouble <= 0)
+        {
+            value.AddError("Число должно быть больше нуля");
+            return false;
+        }
         return true;
     }
-
     //MachinePower property
     #endregion
 
@@ -643,21 +557,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(NumberOfHoursPerYear_Hidden_Get)];
 
             }
-            else
-            {
-                var rm = new RefBool(_NumberOfHoursPerYear_Hidden_Get);
-                Dictionary.Add(nameof(NumberOfHoursPerYear_Hidden_Get), rm);
-                return rm;
-            }
+            var rm = new RefBool(_NumberOfHoursPerYear_Hidden_Get);
+            Dictionary.Add(nameof(NumberOfHoursPerYear_Hidden_Get), rm);
+            return rm;
         }
         set
         {
-            if (_NumberOfHoursPerYear_Hidden_Get != value.Get())
-            {
-                _NumberOfHoursPerYear_Hidden_Get = value.Get();
-                var tmp = NumberOfHoursPerYear;
-                OnPropertyChanged(nameof(NumberOfHoursPerYear_Hidden_Get));
-            }
+            if (_NumberOfHoursPerYear_Hidden_Get == value.Get()) return;
+            _NumberOfHoursPerYear_Hidden_Get = value.Get();
+            OnPropertyChanged();
         }
     }
     public bool _NumberOfHoursPerYear_Hidden_Set { get; set; } = true;
@@ -672,21 +580,15 @@ public class Form21 : Form2, IBaseColor
                 return (RefBool)Dictionary[nameof(NumberOfHoursPerYear_Hidden_Set)];
 
             }
-            else
-            {
-                var rm = new RefBool(_NumberOfHoursPerYear_Hidden_Set);
-                Dictionary.Add(nameof(NumberOfHoursPerYear_Hidden_Set), rm);
-                return rm;
-            }
+            var rm = new RefBool(_NumberOfHoursPerYear_Hidden_Set);
+            Dictionary.Add(nameof(NumberOfHoursPerYear_Hidden_Set), rm);
+            return rm;
         }
         set
         {
-            if (_NumberOfHoursPerYear_Hidden_Set != value.Get())
-            {
-                _NumberOfHoursPerYear_Hidden_Set = value.Get();
-                var tmp = NumberOfHoursPerYear;
-                OnPropertyChanged(nameof(NumberOfHoursPerYear_Hidden_Set));
-            }
+            if (_NumberOfHoursPerYear_Hidden_Set == value.Get()) return;
+            _NumberOfHoursPerYear_Hidden_Set = value.Get();
+            OnPropertyChanged();
         }
     }
 
@@ -701,54 +603,46 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).Value = NumberOfHoursPerYear_DB;
                 return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB, NumberOfHoursPerYear_Hidden_Get, NumberOfHoursPerYear_Hidden_Set);
-                rm.PropertyChanged += NumberOfHoursPerYearValueChanged;
-                Dictionary.Add(nameof(NumberOfHoursPerYear), rm);
-                return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
-            }
+            var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB, NumberOfHoursPerYear_Hidden_Get, NumberOfHoursPerYear_Hidden_Set);
+            rm.PropertyChanged += NumberOfHoursPerYearValueChanged;
+            Dictionary.Add(nameof(NumberOfHoursPerYear), rm);
+            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
         }
         set
         {
-            if (NumberOfHoursPerYear.Value != value.Value)
-            {
-                NumberOfHoursPerYear_DB = value.Value;
-                OnPropertyChanged(nameof(NumberOfHoursPerYear));
-            }
+            if (NumberOfHoursPerYear.Value == value.Value) return;
+            NumberOfHoursPerYear_DB = value.Value;
+            OnPropertyChanged();
         }
     }
 
-    private void NumberOfHoursPerYearValueChanged(object Value, PropertyChangedEventArgs args)
+    private void NumberOfHoursPerYearValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value" || !_NumberOfHoursPerYear_Hidden_Set) return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            if (_NumberOfHoursPerYear_Hidden_Set)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                if (value1 != null)
-                {
-                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                    if (value1.Equals("-"))
-                    {
-                        NumberOfHoursPerYear_DB = value1;
-                        return;
-                    }
-                    if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                    {
-                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                    }
-                    try
-                    {
-                        var value2 = Convert.ToDouble(value1);
-                        value1 = $"{value2:0.######################################################e+00}";
-                    }
-                    catch (Exception ex)
-                    { }
-                }
                 NumberOfHoursPerYear_DB = value1;
+                return;
+            }
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
             }
         }
+        NumberOfHoursPerYear_DB = value1;
     }
 
     private bool NumberOfHoursPerYear_Validation(RamAccess<string> value) //TODO
@@ -772,24 +666,18 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
-        }
-        catch
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
+        if (tmpDouble <= 0)
+        {
+            value.AddError("Число должно быть больше нуля");
+            return false;
+        }
         return true;
     }
 
@@ -804,10 +692,7 @@ public class Form21 : Form2, IBaseColor
     public bool CodeRAOIn_Hidden
     {
         get => CodeRAOIn_Hidden_Priv;
-        set
-        {
-            CodeRAOIn_Hidden_Priv = value;
-        }
+        set => CodeRAOIn_Hidden_Priv = value;
     }
 
     [NotMapped]
@@ -816,46 +701,31 @@ public class Form21 : Form2, IBaseColor
     {
         get
         {
-            if (!CodeRAOIn_Hidden)
+            if (CodeRAOIn_Hidden) return new RamAccess<string>(null, null);
+            if (Dictionary.ContainsKey(nameof(CodeRAOIn)))
             {
-                if (Dictionary.ContainsKey(nameof(CodeRAOIn)))
-                {
-                    ((RamAccess<string>)Dictionary[nameof(CodeRAOIn)]).Value = CodeRAOIn_DB;
-                    return (RamAccess<string>)Dictionary[nameof(CodeRAOIn)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(CodeRAOIn_Validation, CodeRAOIn_DB);
-                    rm.PropertyChanged += CodeRAOInValueChanged;
-                    Dictionary.Add(nameof(CodeRAOIn), rm);
-                    return (RamAccess<string>)Dictionary[nameof(CodeRAOIn)];
-                }
+                ((RamAccess<string>)Dictionary[nameof(CodeRAOIn)]).Value = CodeRAOIn_DB;
+                return (RamAccess<string>)Dictionary[nameof(CodeRAOIn)];
             }
-            else
-            {
-                var tmp = new RamAccess<string>(null, null);
-                return tmp;
-            }
+            var rm = new RamAccess<string>(CodeRAOIn_Validation, CodeRAOIn_DB);
+            rm.PropertyChanged += CodeRAOInValueChanged;
+            Dictionary.Add(nameof(CodeRAOIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(CodeRAOIn)];
         }
         set
         {
-            if (!CodeRAOIn_Hidden)
-            {
-                CodeRAOIn_DB = value.Value;
-                OnPropertyChanged(nameof(CodeRAOIn));
-            }
+            if (CodeRAOIn_Hidden) return;
+            CodeRAOIn_DB = value.Value;
+            OnPropertyChanged();
         }
     }
 
-    private void CodeRAOInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CodeRAOInValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var tmp = ((RamAccess<string>)Value).Value.ToLower();
-            tmp = tmp.Replace("х", "x");
-            CodeRAOIn_DB = tmp;
-        }
+        if (args.PropertyName != "Value") return;
+        CodeRAOIn_DB = ((RamAccess<string>)value).Value.ToLower().Replace("х", "x");
     }
+
     private bool CodeRAOIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -865,61 +735,51 @@ public class Form21 : Form2, IBaseColor
         }
         var tmp = value.Value.ToLower();
         tmp = tmp.Replace("х", "x");
-        Regex a = new("^[0-9x+]{11}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9x+]{11}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         if (tmp.Length == 11)
         {
-            Regex a0 = new("^[1-3x+]");
-            if (!a0.IsMatch(tmp.Substring(0, 1)))
+            if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
             {
-                value.AddError($"Недопустимое агрегатное состояние - {tmp.Substring(0, 1)}");
+                value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
             }
-            Regex a1 = new("^[0-49x+]");
-            if (!a1.IsMatch(tmp.Substring(1, 1)))
+            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
             {
                 value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
             }
-            Regex a2 = new("^[0-6x+]");
-            if (!a2.IsMatch(tmp.Substring(2, 1)))
+            if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
             {
                 value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
             }
-            Regex a3 = new("^[12x+]");
-            if (!a3.IsMatch(tmp.Substring(3, 1)))
+            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
             {
                 value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
             }
-            Regex a4 = new("^[12x+]");
-            if (!a4.IsMatch(tmp.Substring(4, 1)))
+            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
             {
-                value.AddError($"Недопустимоый период полураспада - {tmp.Substring(4, 1)}");
+                value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
             }
-            Regex a5 = new("^[0-3x+]");
-            if (!a5.IsMatch(tmp.Substring(5, 1)))
+            if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
             {
-                value.AddError($"Недопустимоый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
+                value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
             }
-            Regex a6 = new("^[0-49x+]");
-            if (!a6.IsMatch(tmp.Substring(6, 1)))
+            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
             {
-                value.AddError($"Недопустимоый способ переработки - {tmp.Substring(6, 1)}");
+                value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
             }
-            Regex a7 = new("^[0-79x+]");
-            if (!a7.IsMatch(tmp.Substring(7, 1)))
+            if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
             {
-                value.AddError($"Недопустимоый класс РАО - {tmp.Substring(7, 1)}");
+                value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
             }
             Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
             if (!a89.IsMatch(tmp.Substring(8, 2)))
             {
-                value.AddError($"Недопустимоый код типа РАО - {tmp.Substring(8, 2)}");
+                value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
             }
-            Regex a10 = new("^[12x+]");
-            if (!a7.IsMatch(tmp.Substring(10, 1)))
+            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
             {
                 value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
             }
@@ -941,10 +801,7 @@ public class Form21 : Form2, IBaseColor
     public bool StatusRAOIn_Hidden
     {
         get => StatusRAOIn_Hidden_Priv;
-        set
-        {
-            StatusRAOIn_Hidden_Priv = value;
-        }
+        set => StatusRAOIn_Hidden_Priv = value;
     }
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "статус РАО", "7")]
@@ -952,44 +809,33 @@ public class Form21 : Form2, IBaseColor
     {
         get
         {
-            if (!StatusRAOIn_Hidden)
+            if (StatusRAOIn_Hidden) return new RamAccess<string>(null, null);
+            if (Dictionary.ContainsKey(nameof(StatusRAOIn)))
             {
-                if (Dictionary.ContainsKey(nameof(StatusRAOIn)))
-                {
-                    ((RamAccess<string>)Dictionary[nameof(StatusRAOIn)]).Value = StatusRAOIn_DB;
-                    return (RamAccess<string>)Dictionary[nameof(StatusRAOIn)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(StatusRAOIn_Validation, StatusRAOIn_DB);
-                    rm.PropertyChanged += StatusRAOInValueChanged;
-                    Dictionary.Add(nameof(StatusRAOIn), rm);
-                    return (RamAccess<string>)Dictionary[nameof(StatusRAOIn)];
-                }
+                ((RamAccess<string>)Dictionary[nameof(StatusRAOIn)]).Value = StatusRAOIn_DB;
+                return (RamAccess<string>)Dictionary[nameof(StatusRAOIn)];
             }
-            else
-            {
-                var tmp = new RamAccess<string>(null, null);
-                return tmp;
-            }
+            var rm = new RamAccess<string>(StatusRAOIn_Validation, StatusRAOIn_DB);
+            rm.PropertyChanged += StatusRAOInValueChanged;
+            Dictionary.Add(nameof(StatusRAOIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(StatusRAOIn)];
         }
         set
         {
-            if (!StatusRAOIn_Hidden)
-            {
-                StatusRAOIn_DB = value.Value;
-                OnPropertyChanged(nameof(StatusRAOIn));
-            }
+            if (StatusRAOIn_Hidden) return;
+            StatusRAOIn_DB = value.Value;
+            OnPropertyChanged();
         }
     }
 
-    private void StatusRAOInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void StatusRAOInValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            StatusRAOIn_DB = ((RamAccess<string>)Value).Value;
+            StatusRAOIn_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool StatusRAOIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1004,31 +850,18 @@ public class Form21 : Form2, IBaseColor
         }
         if (value.Value.Length == 1)
         {
-            int tmp;
-            try
-            {
-                tmp = int.Parse(value.Value);
-                if (tmp < 1 || (tmp > 4 && tmp != 6 && tmp != 9))
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch (Exception)
+            if (!int.TryParse(value.Value, out var tmpInt) || tmpInt < 1 || (tmpInt > 4 && tmpInt != 6 && tmpInt != 9))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
+        if (value.Value.Length != 8 && value.Value.Length != 14
+            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); return false;
-        }
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
-        {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение");
+            return false;
         }
         return true;
     }
@@ -1037,7 +870,8 @@ public class Form21 : Form2, IBaseColor
 
     //VolumeIn property
     #region  VolumeIn
-    public string VolumeIn_DB { get; set; } = "";[NotMapped]
+    public string VolumeIn_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "куб. м", "8")]
     public RamAccess<string> VolumeIn//SUMMARIZABLE
     {
@@ -1048,48 +882,45 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(VolumeIn)]).Value = VolumeIn_DB;
                 return (RamAccess<string>)Dictionary[nameof(VolumeIn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(VolumeIn_Validation, VolumeIn_DB);
-                rm.PropertyChanged += VolumeInValueChanged;
-                Dictionary.Add(nameof(VolumeIn), rm);
-                return (RamAccess<string>)Dictionary[nameof(VolumeIn)];
-            }
+            var rm = new RamAccess<string>(VolumeIn_Validation, VolumeIn_DB);
+            rm.PropertyChanged += VolumeInValueChanged;
+            Dictionary.Add(nameof(VolumeIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(VolumeIn)];
         }
         set
         {
             VolumeIn_DB = value.Value;
-            OnPropertyChanged(nameof(VolumeIn));
+            OnPropertyChanged();
         }
     }
 
-    private void VolumeInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void VolumeInValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    VolumeIn_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                VolumeIn_DB = value1;
+                return;
             }
-            VolumeIn_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        VolumeIn_DB = value1;
     }
 
     private bool VolumeIn_Validation(RamAccess<string> value) //TODO
@@ -1113,34 +944,27 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
-        }
-        catch
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
+        if (tmpDouble <= 0)
+        {
+            value.AddError("Число должно быть больше нуля");
+            return false;
+        }
         return true;
     }
-
     //VolumeIn property
     #endregion
 
     //MassIn Property
     #region  MassIn
-    public string MassIn_DB { get; set; } = "";[NotMapped]
+    public string MassIn_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "т", "9")]
     public RamAccess<string> MassIn//SUMMARIZABLE
     {
@@ -1151,48 +975,45 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(MassIn)]).Value = MassIn_DB;
                 return (RamAccess<string>)Dictionary[nameof(MassIn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(MassIn_Validation, MassIn_DB);
-                rm.PropertyChanged += MassInValueChanged;
-                Dictionary.Add(nameof(MassIn), rm);
-                return (RamAccess<string>)Dictionary[nameof(MassIn)];
-            }
+            var rm = new RamAccess<string>(MassIn_Validation, MassIn_DB);
+            rm.PropertyChanged += MassInValueChanged;
+            Dictionary.Add(nameof(MassIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(MassIn)];
         }
         set
         {
             MassIn_DB = value.Value;
-            OnPropertyChanged(nameof(MassIn));
+            OnPropertyChanged();
         }
     }
 
-    private void MassInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void MassInValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    MassIn_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                MassIn_DB = value1;
+                return;
             }
-            MassIn_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        MassIn_DB = value1;
     }
     private bool MassIn_Validation(RamAccess<string> value)//TODO
     {
@@ -1215,17 +1036,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -1245,36 +1066,29 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(QuantityIn)]).Value = QuantityIn_DB;
                 return (RamAccess<string>)Dictionary[nameof(QuantityIn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(QuantityIn_Validation, QuantityIn_DB);
-                rm.PropertyChanged += QuantityInValueChanged;
-                Dictionary.Add(nameof(QuantityIn), rm);
-                return (RamAccess<string>)Dictionary[nameof(QuantityIn)];
-            }
+            var rm = new RamAccess<string>(QuantityIn_Validation, QuantityIn_DB);
+            rm.PropertyChanged += QuantityInValueChanged;
+            Dictionary.Add(nameof(QuantityIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(QuantityIn)];
         }
         set
         {
             QuantityIn_DB = value.Value;
-            OnPropertyChanged(nameof(QuantityIn));
+            OnPropertyChanged();
         }
     }
     // positive int.
-    private void QuantityInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void QuantityInValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            QuantityIn_DB = ((RamAccess<string>)Value).Value;
+            QuantityIn_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool QuantityIn_Validation(RamAccess<string> value1)//Ready
     {
         value1.ClearErrors();
-        if (string.IsNullOrEmpty(value1.Value))
-        {
-            return true;
-        }
-        if (value1.Value.Equals("прим.") || value1.Value.Equals("-"))
+        if (value1.Value is null or "" or "-" or "прим.")
         {
             return true;
         }
@@ -1282,21 +1096,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        int value;
-        try
+        if (!int.TryParse(tmp, out var tmpInt))
         {
-            value = int.Parse(tmp);
-            if (value <= 0)
-            {
-                value1.AddError("Число должно быть больше нуля"); return false;
-            }
+            value1.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpInt <= 0)
         {
-            value1.AddError("Недопустимое значение"); return false;
+            value1.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -1305,7 +1115,8 @@ public class Form21 : Form2, IBaseColor
 
     //TritiumActivityIn property
     #region  TritiumActivityIn
-    public string TritiumActivityIn_DB { get; set; } = "";[NotMapped]
+    public string TritiumActivityIn_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "тритий", "11")]
     public RamAccess<string> TritiumActivityIn//SUMMARIZABLE
     {
@@ -1316,57 +1127,50 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(TritiumActivityIn)]).Value = TritiumActivityIn_DB;
                 return (RamAccess<string>)Dictionary[nameof(TritiumActivityIn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(TritiumActivityIn_Validation, TritiumActivityIn_DB);
-                rm.PropertyChanged += TritiumActivityInValueChanged;
-                Dictionary.Add(nameof(TritiumActivityIn), rm);
-                return (RamAccess<string>)Dictionary[nameof(TritiumActivityIn)];
-            }
+            var rm = new RamAccess<string>(TritiumActivityIn_Validation, TritiumActivityIn_DB);
+            rm.PropertyChanged += TritiumActivityInValueChanged;
+            Dictionary.Add(nameof(TritiumActivityIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(TritiumActivityIn)];
         }
         set
         {
             TritiumActivityIn_DB = value.Value;
-            OnPropertyChanged(nameof(TritiumActivityIn));
+            OnPropertyChanged();
         }
     }
 
-    private void TritiumActivityInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void TritiumActivityInValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    TritiumActivityIn_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                TritiumActivityIn_DB = value1;
+                return;
             }
-            TritiumActivityIn_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        TritiumActivityIn_DB = value1;
     }
     private bool TritiumActivityIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            return true;
-        }
-        if (value.Value == "-")
+        if (value.Value is null or "" or "-")
         {
             return true;
         }
@@ -1379,18 +1183,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -1399,7 +1202,8 @@ public class Form21 : Form2, IBaseColor
 
     //BetaGammaActivityIn property
     #region  BetaGammaActivityIn
-    public string BetaGammaActivityIn_DB { get; set; } = "";[NotMapped]
+    public string BetaGammaActivityIn_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "12")]
     public RamAccess<string> BetaGammaActivityIn//SUMMARIZABLE
     {
@@ -1410,57 +1214,50 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(BetaGammaActivityIn)]).Value = BetaGammaActivityIn_DB;
                 return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityIn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(BetaGammaActivityIn_Validation, BetaGammaActivityIn_DB);
-                rm.PropertyChanged += BetaGammaActivityInValueChanged;
-                Dictionary.Add(nameof(BetaGammaActivityIn), rm);
-                return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityIn)];
-            }
+            var rm = new RamAccess<string>(BetaGammaActivityIn_Validation, BetaGammaActivityIn_DB);
+            rm.PropertyChanged += BetaGammaActivityInValueChanged;
+            Dictionary.Add(nameof(BetaGammaActivityIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityIn)];
         }
         set
         {
             BetaGammaActivityIn_DB = value.Value;
-            OnPropertyChanged(nameof(BetaGammaActivityIn));
+            OnPropertyChanged();
         }
     }
 
-    private void BetaGammaActivityInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void BetaGammaActivityInValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    BetaGammaActivityIn_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                BetaGammaActivityIn_DB = value1;
+                return;
             }
-            BetaGammaActivityIn_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        BetaGammaActivityIn_DB = value1;
     }
     private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            return true;
-        }
-        if (value.Value == "-")
+        if (value.Value is null or "" or "-")
         {
             return true;
         }
@@ -1473,18 +1270,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -1492,8 +1288,9 @@ public class Form21 : Form2, IBaseColor
     #endregion
 
     //AlphaActivityIn property
-    #region  AlphaActivityIn
-    public string AlphaActivityIn_DB { get; set; } = "";[NotMapped]
+    #region AlphaActivityIn
+    public string AlphaActivityIn_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)", "13")]
     public RamAccess<string> AlphaActivityIn//SUMMARIZABLE
     {
@@ -1504,53 +1301,51 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(AlphaActivityIn)]).Value = AlphaActivityIn_DB;
                 return (RamAccess<string>)Dictionary[nameof(AlphaActivityIn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(AlphaActivityIn_Validation, AlphaActivityIn_DB);
-                rm.PropertyChanged += AlphaActivityInValueChanged;
-                Dictionary.Add(nameof(AlphaActivityIn), rm);
-                return (RamAccess<string>)Dictionary[nameof(AlphaActivityIn)];
-            }
+            var rm = new RamAccess<string>(AlphaActivityIn_Validation, AlphaActivityIn_DB);
+            rm.PropertyChanged += AlphaActivityInValueChanged;
+            Dictionary.Add(nameof(AlphaActivityIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(AlphaActivityIn)];
         }
         set
         {
             AlphaActivityIn_DB = value.Value;
-            OnPropertyChanged(nameof(AlphaActivityIn));
+            OnPropertyChanged();
         }
     }
 
-    private void AlphaActivityInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void AlphaActivityInValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    AlphaActivityIn_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                AlphaActivityIn_DB = value1;
+                return;
             }
-            AlphaActivityIn_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        AlphaActivityIn_DB = value1;
     }
+
     private bool AlphaActivityIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        if (value.Value is null or "" or "-")
         {
             return true;
         }
@@ -1559,26 +1354,21 @@ public class Form21 : Form2, IBaseColor
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        if (value.Value == "-")
-        {
-            return true;
-        }
         var tmp = value1;
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -1587,7 +1377,8 @@ public class Form21 : Form2, IBaseColor
 
     //TransuraniumActivityIn property
     #region  TransuraniumActivityIn
-    public string TransuraniumActivityIn_DB { get; set; } = "";[NotMapped]
+    public string TransuraniumActivityIn_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды", "14")]
     public RamAccess<string> TransuraniumActivityIn//SUMMARIZABLE
     {
@@ -1598,57 +1389,51 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(TransuraniumActivityIn)]).Value = TransuraniumActivityIn_DB;
                 return (RamAccess<string>)Dictionary[nameof(TransuraniumActivityIn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(TransuraniumActivityIn_Validation, TransuraniumActivityIn_DB);
-                rm.PropertyChanged += TransuraniumActivityInValueChanged;
-                Dictionary.Add(nameof(TransuraniumActivityIn), rm);
-                return (RamAccess<string>)Dictionary[nameof(TransuraniumActivityIn)];
-            }
+            var rm = new RamAccess<string>(TransuraniumActivityIn_Validation, TransuraniumActivityIn_DB);
+            rm.PropertyChanged += TransuraniumActivityInValueChanged;
+            Dictionary.Add(nameof(TransuraniumActivityIn), rm);
+            return (RamAccess<string>)Dictionary[nameof(TransuraniumActivityIn)];
         }
         set
         {
             TransuraniumActivityIn_DB = value.Value;
-            OnPropertyChanged(nameof(TransuraniumActivityIn));
+            OnPropertyChanged();
         }
     }
 
-    private void TransuraniumActivityInValueChanged(object Value, PropertyChangedEventArgs args)
+    private void TransuraniumActivityInValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    TransuraniumActivityIn_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                TransuraniumActivityIn_DB = value1;
+                return;
             }
-            TransuraniumActivityIn_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        TransuraniumActivityIn_DB = value1;
     }
+
     private bool TransuraniumActivityIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            return true;
-        }
-        if (value.Value == "-")
+        if (value.Value is null or "" or "-")
         {
             return true;
         }
@@ -1661,18 +1446,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -1687,10 +1471,7 @@ public class Form21 : Form2, IBaseColor
     public bool CodeRAOout_Hidden
     {
         get => CodeRAOout_Hidden_Priv;
-        set
-        {
-            CodeRAOout_Hidden_Priv = value;
-        }
+        set => CodeRAOout_Hidden_Priv = value;
     }
 
     [NotMapped]
@@ -1699,46 +1480,31 @@ public class Form21 : Form2, IBaseColor
     {
         get
         {
-            if (!CodeRAOout_Hidden)
+            if (CodeRAOout_Hidden) return new RamAccess<string>(null, null);
+            if (Dictionary.ContainsKey(nameof(CodeRAOout)))
             {
-                if (Dictionary.ContainsKey(nameof(CodeRAOout)))
-                {
-                    ((RamAccess<string>)Dictionary[nameof(CodeRAOout)]).Value = CodeRAOout_DB;
-                    return (RamAccess<string>)Dictionary[nameof(CodeRAOout)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(CodeRAOout_Validation, CodeRAOout_DB);
-                    rm.PropertyChanged += CodeRAOoutValueChanged;
-                    Dictionary.Add(nameof(CodeRAOout), rm);
-                    return (RamAccess<string>)Dictionary[nameof(CodeRAOout)];
-                }
+                ((RamAccess<string>)Dictionary[nameof(CodeRAOout)]).Value = CodeRAOout_DB;
+                return (RamAccess<string>)Dictionary[nameof(CodeRAOout)];
             }
-            else
-            {
-                var tmp = new RamAccess<string>(null, null);
-                return tmp;
-            }
+            var rm = new RamAccess<string>(CodeRAOout_Validation, CodeRAOout_DB);
+            rm.PropertyChanged += CodeRAOoutValueChanged;
+            Dictionary.Add(nameof(CodeRAOout), rm);
+            return (RamAccess<string>)Dictionary[nameof(CodeRAOout)];
         }
         set
         {
-            if (!CodeRAOout_Hidden)
-            {
-                CodeRAOout_DB = value.Value;
-                OnPropertyChanged(nameof(CodeRAOout));
-            }
+            if (CodeRAOout_Hidden) return;
+            CodeRAOout_DB = value.Value;
+            OnPropertyChanged();
         }
     }
 
-    private void CodeRAOoutValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CodeRAOoutValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var tmp = ((RamAccess<string>)Value).Value.ToLower();
-            tmp = tmp.Replace("х", "x");
-            CodeRAOout_DB = tmp;
-        }
+        if (args.PropertyName != "Value") return;
+        CodeRAOout_DB = ((RamAccess<string>)value).Value.ToLower().Replace("х", "x");
     }
+
     private bool CodeRAOout_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1748,61 +1514,51 @@ public class Form21 : Form2, IBaseColor
         }
         var tmp = value.Value.ToLower();
         tmp = tmp.Replace("х", "x");
-        Regex a = new("^[0-9x+]{11}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9x+]{11}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         if (tmp.Length == 11)
         {
-            Regex a0 = new("^[1-3x+]");
-            if (!a0.IsMatch(tmp.Substring(0, 1)))
+            if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
             {
-                value.AddError($"Недопустимое агрегатное состояние - {tmp.Substring(0, 1)}");
+                value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
             }
-            Regex a1 = new("^[0-49x+]");
-            if (!a1.IsMatch(tmp.Substring(1, 1)))
+            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
             {
                 value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
             }
-            Regex a2 = new("^[0-6x+]");
-            if (!a2.IsMatch(tmp.Substring(2, 1)))
+            if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
             {
                 value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
             }
-            Regex a3 = new("^[12x+]");
-            if (!a3.IsMatch(tmp.Substring(3, 1)))
+            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
             {
                 value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
             }
-            Regex a4 = new("^[12x+]");
-            if (!a4.IsMatch(tmp.Substring(4, 1)))
+            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
             {
-                value.AddError($"Недопустимоый период полураспада - {tmp.Substring(4, 1)}");
+                value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
             }
-            Regex a5 = new("^[0-3x+]");
-            if (!a5.IsMatch(tmp.Substring(5, 1)))
+            if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
             {
-                value.AddError($"Недопустимоый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
+                value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
             }
-            Regex a6 = new("^[0-49x+]");
-            if (!a6.IsMatch(tmp.Substring(6, 1)))
+            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
             {
-                value.AddError($"Недопустимоый способ переработки - {tmp.Substring(6, 1)}");
+                value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
             }
-            Regex a7 = new("^[0-79x+]");
-            if (!a7.IsMatch(tmp.Substring(7, 1)))
+            if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
             {
-                value.AddError($"Недопустимоый класс РАО - {tmp.Substring(7, 1)}");
+                value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
             }
             Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
             if (!a89.IsMatch(tmp.Substring(8, 2)))
             {
-                value.AddError($"Недопустимоый код типа РАО - {tmp.Substring(8, 2)}");
+                value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
             }
-            Regex a10 = new("^[12x+]");
-            if (!a7.IsMatch(tmp.Substring(10, 1)))
+            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
             {
                 value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
             }
@@ -1824,10 +1580,7 @@ public class Form21 : Form2, IBaseColor
     public bool StatusRAOout_Hidden
     {
         get => StatusRAOout_Hidden_Priv;
-        set
-        {
-            StatusRAOout_Hidden_Priv = value;
-        }
+        set => StatusRAOout_Hidden_Priv = value;
     }
 
     [NotMapped]
@@ -1843,35 +1596,27 @@ public class Form21 : Form2, IBaseColor
                     ((RamAccess<string>)Dictionary[nameof(StatusRAOout)]).Value = StatusRAOout_DB;
                     return (RamAccess<string>)Dictionary[nameof(StatusRAOout)];
                 }
-                else
-                {
-                    var rm = new RamAccess<string>(StatusRAOout_Validation, StatusRAOout_DB);
-                    rm.PropertyChanged += StatusRAOoutValueChanged;
-                    Dictionary.Add(nameof(StatusRAOout), rm);
-                    return (RamAccess<string>)Dictionary[nameof(StatusRAOout)];
-                }
+                var rm = new RamAccess<string>(StatusRAOout_Validation, StatusRAOout_DB);
+                rm.PropertyChanged += StatusRAOoutValueChanged;
+                Dictionary.Add(nameof(StatusRAOout), rm);
+                return (RamAccess<string>)Dictionary[nameof(StatusRAOout)];
             }
-            else
-            {
-                var tmp = new RamAccess<string>(null, null);
-                return tmp;
-            }
+            var tmp = new RamAccess<string>(null, null);
+            return tmp;
         }
         set
         {
-            if (!StatusRAOout_Hidden)
-            {
-                StatusRAOout_DB = value.Value;
-                OnPropertyChanged(nameof(StatusRAOout));
-            }
+            if (StatusRAOout_Hidden) return;
+            StatusRAOout_DB = value.Value;
+            OnPropertyChanged();
         }
     }
 
-    private void StatusRAOoutValueChanged(object Value, PropertyChangedEventArgs args)
+    private void StatusRAOoutValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            StatusRAOout_DB = ((RamAccess<string>)Value).Value;
+            StatusRAOout_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
@@ -1883,31 +1628,18 @@ public class Form21 : Form2, IBaseColor
         }
         if (value.Value.Length == 1)
         {
-            int tmp;
-            try
-            {
-                tmp = int.Parse(value.Value);
-                if (tmp < 1 || (tmp > 4 && tmp != 6 && tmp != 9))
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch (Exception)
+            if (!int.TryParse(value.Value, out var tmpInt) || tmpInt > 4 && tmpInt != 6 && tmpInt != 9)
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
+        if (value.Value.Length != 8 && value.Value.Length != 14
+            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); return false;
-        }
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
-        {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение");
+            return false;
         }
         return true;
     }
@@ -1916,7 +1648,8 @@ public class Form21 : Form2, IBaseColor
 
     //VolumeOut property
     #region  VolumeOut
-    public string VolumeOut_DB { get; set; } = "";[NotMapped]
+    public string VolumeOut_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "куб. м", "17")]
     public RamAccess<string> VolumeOut//SUMMARIZABLE
     {
@@ -1927,48 +1660,45 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(VolumeOut)]).Value = VolumeOut_DB;
                 return (RamAccess<string>)Dictionary[nameof(VolumeOut)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(VolumeOut_Validation, VolumeOut_DB);
-                rm.PropertyChanged += VolumeOutValueChanged;
-                Dictionary.Add(nameof(VolumeOut), rm);
-                return (RamAccess<string>)Dictionary[nameof(VolumeOut)];
-            }
+            var rm = new RamAccess<string>(VolumeOut_Validation, VolumeOut_DB);
+            rm.PropertyChanged += VolumeOutValueChanged;
+            Dictionary.Add(nameof(VolumeOut), rm);
+            return (RamAccess<string>)Dictionary[nameof(VolumeOut)];
         }
         set
         {
             VolumeOut_DB = value.Value;
-            OnPropertyChanged(nameof(VolumeOut));
+            OnPropertyChanged();
         }
     }
 
-    private void VolumeOutValueChanged(object Value, PropertyChangedEventArgs args)
+    private void VolumeOutValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    VolumeOut_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                VolumeOut_DB = value1;
+                return;
             }
-            VolumeOut_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        VolumeOut_DB = value1;
     }
     private bool VolumeOut_Validation(RamAccess<string> value)//TODO
     {
@@ -1991,18 +1721,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -2023,48 +1752,45 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(MassOut)]).Value = MassOut_DB;
                 return (RamAccess<string>)Dictionary[nameof(MassOut)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(MassOut_Validation, MassOut_DB);
-                rm.PropertyChanged += MassOutValueChanged;
-                Dictionary.Add(nameof(MassOut), rm);
-                return (RamAccess<string>)Dictionary[nameof(MassOut)];
-            }
+            var rm = new RamAccess<string>(MassOut_Validation, MassOut_DB);
+            rm.PropertyChanged += MassOutValueChanged;
+            Dictionary.Add(nameof(MassOut), rm);
+            return (RamAccess<string>)Dictionary[nameof(MassOut)];
         }
         set
         {
             MassOut_DB = value.Value;
-            OnPropertyChanged(nameof(MassOut));
+            OnPropertyChanged();
         }
     }
 
-    private void MassOutValueChanged(object Value, PropertyChangedEventArgs args)
+    private void MassOutValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    MassOut_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                MassOut_DB = value1;
+                return;
             }
-            MassOut_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        MassOut_DB = value1;
     }
     private bool MassOut_Validation(RamAccess<string> value)//TODO
     {
@@ -2087,18 +1813,16 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (tmpDouble <= 0)
+        {
+            value.AddError("Число должно быть больше нуля");
             return false;
         }
         return true;
@@ -2120,26 +1844,23 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(QuantityOZIIIout)]).Value = QuantityOZIIIout_DB;
                 return (RamAccess<string>)Dictionary[nameof(QuantityOZIIIout)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(QuantityOZIIIout_Validation, QuantityOZIIIout_DB);
-                rm.PropertyChanged += QuantityOZIIIoutValueChanged;
-                Dictionary.Add(nameof(QuantityOZIIIout), rm);
-                return (RamAccess<string>)Dictionary[nameof(QuantityOZIIIout)];
-            }
+            var rm = new RamAccess<string>(QuantityOZIIIout_Validation, QuantityOZIIIout_DB);
+            rm.PropertyChanged += QuantityOZIIIoutValueChanged;
+            Dictionary.Add(nameof(QuantityOZIIIout), rm);
+            return (RamAccess<string>)Dictionary[nameof(QuantityOZIIIout)];
         }
         set
         {
             QuantityOZIIIout_DB = value.Value;
-            OnPropertyChanged(nameof(QuantityOZIIIout));
+            OnPropertyChanged();
         }
     }
     // positive int.
-    private void QuantityOZIIIoutValueChanged(object Value, PropertyChangedEventArgs args)
+    private void QuantityOZIIIoutValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIIIout_DB = ((RamAccess<string>)Value).Value;
+            QuantityOZIIIout_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
@@ -2150,11 +1871,7 @@ public class Form21 : Form2, IBaseColor
             value1.AddError("Поле не заполнено");
             return false;
         }
-        if (value1.Value == "-")
-        {
-            return true;
-        }
-        if (value1.Equals("прим."))
+        if (value1.Value is "-" or "прим.")
         {
             return true;
         }
@@ -2162,21 +1879,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        int value;
-        try
+        if (!int.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpInt))
         {
-            value = int.Parse(tmp);
-            if (value <= 0)
-            {
-                value1.AddError("Число должно быть больше нуля"); return false;
-            }
+            value1.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpInt <= 0)
         {
-            value1.AddError("Недопустимое значение"); return false;
+            value1.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -2185,7 +1898,8 @@ public class Form21 : Form2, IBaseColor
 
     //TritiumActivityOut property
     #region  TritiumActivityOut
-    public string TritiumActivityOut_DB { get; set; } = "";[NotMapped]
+    public string TritiumActivityOut_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "тритий", "20")]
     public RamAccess<string> TritiumActivityOut//SUMMARIZABLE
     {
@@ -2196,48 +1910,45 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(TritiumActivityOut)]).Value = TritiumActivityOut_DB;
                 return (RamAccess<string>)Dictionary[nameof(TritiumActivityOut)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(TritiumActivityOut_Validation, TritiumActivityOut_DB);
-                rm.PropertyChanged += TritiumActivityOutValueChanged;
-                Dictionary.Add(nameof(TritiumActivityOut), rm);
-                return (RamAccess<string>)Dictionary[nameof(TritiumActivityOut)];
-            }
+            var rm = new RamAccess<string>(TritiumActivityOut_Validation, TritiumActivityOut_DB);
+            rm.PropertyChanged += TritiumActivityOutValueChanged;
+            Dictionary.Add(nameof(TritiumActivityOut), rm);
+            return (RamAccess<string>)Dictionary[nameof(TritiumActivityOut)];
         }
         set
         {
             TritiumActivityOut_DB = value.Value;
-            OnPropertyChanged(nameof(TritiumActivityOut));
+            OnPropertyChanged();
         }
     }
 
-    private void TritiumActivityOutValueChanged(object Value, PropertyChangedEventArgs args)
+    private void TritiumActivityOutValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    TritiumActivityOut_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                TritiumActivityOut_DB = value1;
+                return;
             }
-            TritiumActivityOut_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        TritiumActivityOut_DB = value1;
     }
     private bool TritiumActivityOut_Validation(RamAccess<string> value)//TODO
     {
@@ -2260,18 +1971,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -2280,7 +1990,8 @@ public class Form21 : Form2, IBaseColor
 
     //BetaGammaActivityOut property
     #region  BetaGammaActivityOut
-    public string BetaGammaActivityOut_DB { get; set; } = "";[NotMapped]
+    public string BetaGammaActivityOut_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "21")]
     public RamAccess<string> BetaGammaActivityOut//SUMMARIZABLE
     {
@@ -2291,47 +2002,44 @@ public class Form21 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(BetaGammaActivityOut)]).Value = BetaGammaActivityOut_DB;
                 return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityOut)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(BetaGammaActivityOut_Validation, BetaGammaActivityOut_DB);
-                rm.PropertyChanged += BetaGammaActivityOutValueChanged;
-                Dictionary.Add(nameof(BetaGammaActivityOut), rm);
-                return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityOut)];
-            }
+            var rm = new RamAccess<string>(BetaGammaActivityOut_Validation, BetaGammaActivityOut_DB);
+            rm.PropertyChanged += BetaGammaActivityOutValueChanged;
+            Dictionary.Add(nameof(BetaGammaActivityOut), rm);
+            return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityOut)];
         }
         set
         {
             BetaGammaActivityOut_DB = value.Value;
-            OnPropertyChanged(nameof(BetaGammaActivityOut));
+            OnPropertyChanged();
         }
     }
-    private void BetaGammaActivityOutValueChanged(object Value, PropertyChangedEventArgs args)
+    private void BetaGammaActivityOutValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    BetaGammaActivityOut_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                BetaGammaActivityOut_DB = value1;
+                return;
             }
-            BetaGammaActivityOut_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            try
+            {
+                var value2 = Convert.ToDouble(value1);
+                value1 = $"{value2:0.######################################################e+00}";
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
+        BetaGammaActivityOut_DB = value1;
     }
     private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
     {
@@ -2354,18 +2062,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -2447,21 +2154,17 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) 
-            { 
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (tmpDouble <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля");
+            return false;
         }
         return true;
     }
@@ -2547,21 +2250,16 @@ public class Form21 : Form2, IBaseColor
         var len = tmp.Length;
         if (tmp[0] == '(' && tmp[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) 
-            { 
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
-        }
-        catch
+        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (tmpDouble <= 0)
+        {
+            value.AddError("Число должно быть больше нуля");
             return false;
         }
         return true;
@@ -2570,7 +2268,7 @@ public class Form21 : Form2, IBaseColor
     #endregion
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
+    public new void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
         RefineMachineName.Value = Convert.ToString(worksheet.Cells[row, 2].Value);
@@ -2652,7 +2350,8 @@ public class Form21 : Form2, IBaseColor
                 ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
                 : Convert.ToString(worksheet.Cells[row, 23].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+
+    public new int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpose, sumNumber);
         column += transpose ? cnt : 0;
@@ -2740,7 +2439,7 @@ public class Form21 : Form2, IBaseColor
         return 22;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
+    public new static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
         var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
         column += transpose ? cnt : 0;
