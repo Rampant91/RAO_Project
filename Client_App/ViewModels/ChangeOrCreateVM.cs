@@ -306,7 +306,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 byte? machinecode = 0;
 
                 List<Form21> lst = new();
-                var u = itemT.OrderBy(x => x.NumberInOrder_DB);
+                var u = itemT.OrderBy(x => x.NumberInOrder_DB).ToArray();
                 foreach (var form in u)
                 {
                     form.SumGroup_DB = true;
@@ -380,21 +380,23 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
         });
         Storage.Rows21.Clear();
-        var yu = ito.OrderBy(x => x.Value.Count);
+        var yu = ito.OrderBy(x => x.Value.Count).ToArray();
         var count = new LetterAlgebra("A");
+        var lst = new List<Form21>();
         foreach (var item in yu)
         {
             if (item.Value.Count != 0 && item.Value.Count != 1)
             {
-                item.Value.FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
-                Storage.Rows21.AddRange(item.Value);
+                item.Value.First().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
+                lst.AddRange(item.Value);
                 count++;
             }
             else
             {
-                Storage.Rows21.AddRange(item.Value);
+                lst.AddRange(item.Value);
             }
         }
+        Storage.Rows21.AddRange(lst);
     }
 
     public async Task Sum22()
