@@ -522,20 +522,23 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         Storage.Rows22.Clear();
         var yu = ito.OrderBy(x => x.Value.Count);
         var count = new LetterAlgebra("A");
-
+        var lst = new List<Form22>();
         foreach (var item in yu)
         {
             if (item.Value.Count != 0 && item.Value.Count != 1)
             {
                 var o = item.Value.FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
-                Storage.Rows22.AddRange(item.Value);
+                lst.AddRange(item.Value);
+                //Storage.Rows22.AddRange(item.Value);
                 count++;
             }
             else
             {
-                Storage.Rows22.AddRange(item.Value);
+                lst.AddRange(item.Value);
+                //Storage.Rows22.AddRange(item.Value);
             }
         }
+        Storage.Rows22.AddRange(lst);
     }
 
     private static double StringToNumber(string num)
