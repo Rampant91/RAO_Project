@@ -10,6 +10,7 @@ using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Long_Visual;
@@ -46,73 +47,71 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     }
 
     System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; }
-    bool flag;
-    protected void OnStandartClosing(object sender, CancelEventArgs args)
+
+    private void OnStandartClosing(object sender, CancelEventArgs args)
     {
+        bool flag;
         if (Answ == null)
         {
             flag = false;
             var tmp = DataContext as ViewModels.ChangeOrCreateVM;
             Answ = tmp.ShowMessageT.Handle(new List<string> { "Сохранить?", "Да", "Нет" }).GetAwaiter();
-            Answ.Subscribe(x =>
+            Answ.Subscribe(async x =>
             {
-                if (x == "Да")
+                switch (x)
                 {
-                    flag = true;
-                    tmp.SaveReport();
-                    return;
-                }
-                if (x == "Нет")
-                {
-                    flag = true;
-                    var dbm = StaticConfiguration.DBModel;
-                    dbm.Restore();
-                    dbm.LoadTables();
-                    dbm.SaveChanges();
-
-                    var lst = tmp.Storage[tmp.FormType];
-
-                    //tmp.Storage.Rows11.GetEnumerator();
-                    foreach (Form item in lst)
+                    case "Да":
+                        flag = true;
+                        await tmp.SaveReport();
+                        return;
+                    case "Нет":
                     {
-                        if (item.Id == 0)
+                        flag = true;
+                        var dbm = StaticConfiguration.DBModel;
+                        dbm.Restore();
+                        await dbm.LoadTablesAsync();
+                        await dbm.SaveChangesAsync();
+
+                        var lst = tmp.Storage[tmp.FormType];
+
+                        //tmp.Storage.Rows11.GetEnumerator();
+                        foreach (var key in lst)
                         {
-                            tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
-
+                            var item = (Form)key;
+                            if (item.Id == 0)
+                            {
+                                tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
+                            }
                         }
-                    }
-                    var lstnote = tmp.Storage.Notes.ToList<Note>();
-                    foreach (var item in lstnote)
-                    {
-                        if (item.Id == 0)
+
+                        var lstNote = tmp.Storage.Notes.ToList<Note>();
+                        foreach (var item in lstNote.Where(item => item.Id == 0))
                         {
                             tmp.Storage.Notes.Remove(item);
                         }
-                    }
-                    if (tmp.FormType != "1.0" && tmp.FormType != "2.0")
-                    {
-                        if (tmp.FormType.Split('.')[0] == "1")
+
+                        if (tmp.FormType is not "1.0" and not "2.0")
                         {
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            if (tmp.FormType.Split('.')[0] == "1")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
+                            if (tmp.FormType.Split('.')[0] == "2")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
                         }
-                        if (tmp.FormType.Split('.')[0] == "2")
-                        {
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
-                        }
-                    }
-                    else
-                    {
-                        if (tmp.FormType is "1.0" or "2.0")
+                        else
                         {
                             tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
                             tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
                             tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
                         }
+                        break;
                     }
-                    return;
                 }
             });
             Answ.OnCompleted(() =>
@@ -127,7 +126,6 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     Answ = null;
                 }
             });
-
             args.Cancel = true;
         }
     }

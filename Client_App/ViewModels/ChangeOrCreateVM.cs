@@ -2061,7 +2061,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     //    return _isCanSaveReportEnabled;
     //}
 
-    public void SaveReport()
+    public async Task SaveReport()
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
@@ -2100,13 +2100,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
                 }
                 Storages.Report_Collection.Sorted = false;
-                Storages.Report_Collection.QuickSort();
+                await Storages.Report_Collection.QuickSortAsync();
             }
             //Storages.Report_Collection.Sorted = false;
             //Storages.Report_Collection.QuickSort();
         }
         var dbm = StaticConfiguration.DBModel;
-        dbm.SaveChanges();
+        await dbm.SaveChangesAsync();
         IsCanSaveReportEnabled = false;
     }
 
