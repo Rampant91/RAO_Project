@@ -3807,7 +3807,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderByDescending(x => StringReverse(x.StartPeriod_DB)))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows11.OrderBy(x => x.NumberInOrder_DB))
