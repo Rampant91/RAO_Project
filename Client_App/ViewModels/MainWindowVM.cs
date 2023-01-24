@@ -3807,10 +3807,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows11)
+                foreach (var key in rep.Rows11.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form11)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -3848,7 +3848,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -3906,10 +3906,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows12)
+                foreach (var key in rep.Rows12.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form12)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -3944,7 +3944,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4002,10 +4002,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows13)
+                foreach (var key in rep.Rows13.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form13)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4041,7 +4041,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4100,10 +4100,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows14)
+                foreach (var key in rep.Rows14.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form14)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4140,7 +4140,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4201,10 +4201,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows15)
+                foreach (var key in rep.Rows15.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form15)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4243,7 +4243,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4307,10 +4307,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows16)
+                foreach (var key in rep.Rows16.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form16)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4352,7 +4352,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4421,10 +4421,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows17)
+                foreach (var key in rep.Rows17.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form17)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4471,7 +4471,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4536,10 +4536,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows18)
+                foreach (var key in rep.Rows18.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form18)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4582,7 +4582,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4628,10 +4628,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => StringReverse(x.StartPeriod_DB)))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows19)
+                foreach (var key in rep.Rows19.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form19)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4655,7 +4655,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4712,10 +4712,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1") && x.Rows21 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows21)
+                foreach (var key in rep.Rows21.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form21)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4750,7 +4750,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4803,10 +4803,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2") && x.Rows22 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows22)
+                foreach (var key in rep.Rows22.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form22)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4838,7 +4838,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4884,10 +4884,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3") && x.Rows23 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows23)
+                foreach (var key in rep.Rows23.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form23)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4912,7 +4912,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -4962,10 +4962,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4") && x.Rows24 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows24)
+                foreach (var key in rep.Rows24.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form24)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -4994,7 +4994,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5037,10 +5037,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5") && x.Rows25 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows25)
+                foreach (var key in rep.Rows25.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form25)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5062,7 +5062,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5103,10 +5103,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6") && x.Rows26 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows26)
+                foreach (var key in rep.Rows26.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form26)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5126,7 +5126,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5155,9 +5155,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         worksheet.Cells[1, 6].Value = "№ п/п";
         worksheet.Cells[1, 7].Value = "Наименование, номер источника выбросов";
         worksheet.Cells[1, 8].Value = "Наименование радионуклида";
-        worksheet.Cells[1, 9].Value = "разрешенный";
-        worksheet.Cells[1, 10].Value = "фактический";
-        worksheet.Cells[1, 11].Value = "фактический";
+        worksheet.Cells[1, 9].Value = "разрешенный выброс за отчетный год";
+        worksheet.Cells[1, 10].Value = "фактический выброс за отчетный год";
+        worksheet.Cells[1, 11].Value = "фактический выброс за предыдущий год";
         NotesHeaders();
 
         var tmp = 2;
@@ -5165,10 +5165,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7") && x.Rows27 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows27)
+                foreach (var key in rep.Rows27.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form27)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5186,7 +5186,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5226,10 +5226,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8") && x.Rows28 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows28)
+                foreach (var key in rep.Rows28.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form28)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5248,7 +5248,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5286,10 +5286,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9") && x.Rows29 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows29)
+                foreach (var key in rep.Rows29.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form29)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5306,7 +5306,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5350,10 +5350,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10") && x.Rows210 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows210)
+                foreach (var key in rep.Rows210.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form210)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5376,7 +5376,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5418,10 +5418,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11") && x.Rows211 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows211)
+                foreach (var key in rep.Rows211.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form211)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5442,7 +5442,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -5481,10 +5481,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12") && x.Rows212 != null);
-            foreach (var rep in form)
+            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows212)
+                foreach (var key in rep.Rows212.OrderBy(x => x.NumberInOrder_DB))
                 {
                     var repForm = (Form212)key;
                     worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
@@ -5502,7 +5502,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes)
+                foreach (var key in rep.Notes.OrderBy(x => x.Order))
                 {
                     var comment = (Note)key;
                     worksheetComment.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
@@ -6791,7 +6791,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 if (lst.Count <= 0) continue;
                 var count = startRow;
                 startRow--;
-                foreach (var it in lst.Where(it => it != null))
+                foreach (var it in lst.Where(it => it != null).OrderBy(x => x.Order))
                 {
                     switch (it)
                     {
@@ -7266,6 +7266,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     }
     #endregion 
     #endregion
+
     #endregion
 
     #region INotifyPropertyChanged
