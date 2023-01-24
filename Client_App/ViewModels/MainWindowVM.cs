@@ -6826,7 +6826,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             form21.ExcelRow(worksheet, count, startColumn + 1, sumNumber: form21.NumberInOrderSum_DB);
                             break;
                         case Form22 form22:
-                            form22.ExcelRow(worksheet, count, startColumn + 1, SumNumber: form22.NumberInOrderSum_DB);
+                            form22.ExcelRow(worksheet, count, startColumn + 1, sumNumber: form22.NumberInOrderSum_DB);
                             break;
                         case Form23 form23:
                             form23.ExcelRow(worksheet, count, startColumn + 1);

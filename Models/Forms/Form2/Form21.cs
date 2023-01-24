@@ -16,12 +16,16 @@ namespace Models.Forms.Form2;
 [Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
 public class Form21 : Form2, IBaseColor
 {
+    #region Constructor
     public Form21()
     {
         FormNum.Value = "2.1";
         //NumberOfFields.Value = 24;
         Validate_all();
     }
+    #endregion
+
+    #region Validation
     private void Validate_all()
     {
         MachinePower_Validation(MachinePower);
@@ -71,7 +75,8 @@ public class Form21 : Form2, IBaseColor
                  QuantityOZIIIout.HasErrors ||
                  CodeRAOout.HasErrors ||
                  StatusRAOout.HasErrors);
-    }
+    } 
+    #endregion
 
     #region BaseColor
     public ColorType _BaseColor { get; set; } = ColorType.None;
@@ -156,7 +161,9 @@ public class Form21 : Form2, IBaseColor
     }
     #endregion
 
-    #region NumberInOrder
+    #region Columns
+
+    #region NumberInOrder_1
     public string NumberInOrderSum_DB { get; set; } = "";
 
     [NotMapped]
@@ -199,8 +206,7 @@ public class Form21 : Form2, IBaseColor
     }
     #endregion
 
-    //RefineMachineName property
-    #region  RefineMachineName
+    #region RefineMachineName_2
     public string RefineMachineName_DB { get; set; } = "";
     public bool _RefineMachineName_Hidden_Get { get; set; } = true;
     [NotMapped]
@@ -287,12 +293,9 @@ public class Form21 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
-
-    //RefineMachineName property
     #endregion
 
-    //MachineCode property
-    #region MachineCode 
+    #region MachineCode_3
     public byte? MachineCode_DB { get; set; }
     public bool _MachineCode_Hidden_Get { get; set; } = true;
     [NotMapped]
@@ -397,11 +400,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //MachineCode property
     #endregion
 
-    //MachinePower property
-    #region  MachinePower
+    #region MachinePower_4
     public bool _MachinePower_Hidden_Get { get; set; } = true;
     [NotMapped]
     public RefBool MachinePower_Hidden_Get
@@ -522,10 +523,9 @@ public class Form21 : Form2, IBaseColor
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         var tmp = value1;
-        var len = tmp.Length;
-        if (tmp[0] == '(' && tmp[len - 1] == ')')
+        if (tmp[0] == '(' && tmp[^1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
+            tmp = tmp.Remove(tmp.Length - 1, 1).Remove(0, 1);
         }
         if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
         {
@@ -539,11 +539,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //MachinePower property
     #endregion
 
-    //NumberOfHoursPerYear property
-    #region  NumberOfHoursPerYear
+    #region NumberOfHoursPerYear_5
     public string NumberOfHoursPerYear_DB { get; set; } = "";
     public bool _NumberOfHoursPerYear_Hidden_Get { get; set; } = true;
     [NotMapped]
@@ -632,14 +630,9 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         NumberOfHoursPerYear_DB = value1;
@@ -680,12 +673,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-
-    //NumberOfHoursPerYear property
     #endregion
 
-    //CodeRAOIn property
-    #region  CodeRAOIn
+    #region CodeRAOIn_6
     public string CodeRAOIn_DB { get; set; } = "";
     public bool CodeRAOIn_Hidden_Priv { get; set; }
     [NotMapped]
@@ -790,11 +780,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //CodeRAOIn property
     #endregion
 
-    //StatusRAOIn property
-    #region  StatusRAOIn
+    #region  StatusRAOIn_7
     public string StatusRAOIn_DB { get; set; } = "";
     public bool StatusRAOIn_Hidden_Priv { get; set; }
     [NotMapped]
@@ -865,11 +853,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //StatusRAOIn property
     #endregion
 
-    //VolumeIn property
-    #region  VolumeIn
+    #region VolumeIn_8
     public string VolumeIn_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "куб. м", "8")]
@@ -910,14 +896,9 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         VolumeIn_DB = value1;
@@ -958,11 +939,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //VolumeIn property
     #endregion
 
-    //MassIn Property
-    #region  MassIn
+    #region MassIn_9
     public string MassIn_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "т", "9")]
@@ -1003,14 +982,9 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         MassIn_DB = value1;
@@ -1050,12 +1024,10 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //MassIn property
     #endregion
 
-    //QuantityIn property
-    #region  QuantityIn
-    public string QuantityIn_DB { get; set; } = "";[NotMapped]
+    #region QuantityIn_10
+    public string QuantityIn_DB { get; set; } = ""; [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт", "10")]
     public RamAccess<string> QuantityIn//SUMMARIZABLE
     {
@@ -1078,6 +1050,7 @@ public class Form21 : Form2, IBaseColor
         }
     }
     // positive int.
+
     private void QuantityInValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -1085,6 +1058,7 @@ public class Form21 : Form2, IBaseColor
             QuantityIn_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool QuantityIn_Validation(RamAccess<string> value1)//Ready
     {
         value1.ClearErrors();
@@ -1110,11 +1084,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //QuantityIn property
     #endregion
 
-    //TritiumActivityIn property
-    #region  TritiumActivityIn
+    #region TritiumActivityIn_11
     public string TritiumActivityIn_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "тритий", "11")]
@@ -1155,18 +1127,14 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         TritiumActivityIn_DB = value1;
     }
+
     private bool TritiumActivityIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1197,11 +1165,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //TritiumActivityIn property
     #endregion
 
-    //BetaGammaActivityIn property
-    #region  BetaGammaActivityIn
+    #region BetaGammaActivityIn_12
     public string BetaGammaActivityIn_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "12")]
@@ -1242,14 +1208,9 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         BetaGammaActivityIn_DB = value1;
@@ -1284,11 +1245,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //BetaGammaActivity property
     #endregion
 
-    //AlphaActivityIn property
-    #region AlphaActivityIn
+    #region AlphaActivityIn_13
     public string AlphaActivityIn_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)", "13")]
@@ -1329,14 +1288,9 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         AlphaActivityIn_DB = value1;
@@ -1372,11 +1326,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //AlphaActivityIn property
     #endregion
 
-    //TransuraniumActivityIn property
-    #region  TransuraniumActivityIn
+    #region TransuraniumActivityIn_14
     public string TransuraniumActivityIn_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды", "14")]
@@ -1417,14 +1369,9 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         TransuraniumActivityIn_DB = value1;
@@ -1460,11 +1407,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //TransuraniumActivityIn property
     #endregion
 
-    //CodeRAOout property
-    #region  CodeRAOout
+    #region CodeRAOout_15
     public string CodeRAOout_DB { get; set; } = "";
     public bool CodeRAOout_Hidden_Priv { get; set; }
     [NotMapped]
@@ -1569,11 +1514,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //CodeRAOout property
     #endregion
 
-    //StatusRAOout property
-    #region  StatusRAOout
+    #region StatusRAOout_16
     public string StatusRAOout_DB { get; set; } = "";
     public bool StatusRAOout_Hidden_Priv { get; set; }
     [NotMapped]
@@ -1643,11 +1586,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //StatusRAOout property
     #endregion
 
-    //VolumeOut property
-    #region  VolumeOut
+    #region VolumeOut_17
     public string VolumeOut_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "куб. м", "17")]
@@ -1688,18 +1629,14 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         VolumeOut_DB = value1;
     }
+
     private bool VolumeOut_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1735,11 +1672,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //VolumeOut property
     #endregion
 
-    //MassOut Property
-    #region  MassOut
+    #region MassOut_18
     public string MassOut_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "т", "18")]
@@ -1780,18 +1715,14 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         MassOut_DB = value1;
     }
+
     private bool MassOut_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1827,11 +1758,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //MassOut Property
     #endregion
 
-    //QuantityOZIIIout property
-    #region  QuantityOZIIIout
+    #region QuantityOZIIIout_19
     public string QuantityOZIIIout_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт", "19")]
@@ -1856,6 +1785,7 @@ public class Form21 : Form2, IBaseColor
         }
     }
     // positive int.
+
     private void QuantityOZIIIoutValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -1863,6 +1793,7 @@ public class Form21 : Form2, IBaseColor
             QuantityOZIIIout_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
     {
         value1.ClearErrors();
@@ -1893,11 +1824,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //QuantityOZIIIout property
     #endregion
 
-    //TritiumActivityOut property
-    #region  TritiumActivityOut
+    #region TritiumActivityOut_20
     public string TritiumActivityOut_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "тритий", "20")]
@@ -1938,18 +1867,14 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         TritiumActivityOut_DB = value1;
     }
+
     private bool TritiumActivityOut_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1985,11 +1910,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //TritiumActivityOut property
     #endregion
 
-    //BetaGammaActivityOut property
-    #region  BetaGammaActivityOut
+    #region BetaGammaActivityOut_21
     public string BetaGammaActivityOut_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "21")]
@@ -2013,6 +1936,7 @@ public class Form21 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     private void BetaGammaActivityOutValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
@@ -2029,18 +1953,14 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         BetaGammaActivityOut_DB = value1;
     }
+
     private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -2076,11 +1996,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //BetaGammaActivityOut property
     #endregion
 
-    //AlphaActivityOut property
-    #region  AlphaActivityOut
+    #region AlphaActivityOut_22
     public string AlphaActivityOut_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "альфа-излучающие радионуклиды (исключая трансурановые)", "22")]
@@ -2121,18 +2039,14 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         AlphaActivityOut_DB = value1;
     }
+
     private bool AlphaActivityOut_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -2168,11 +2082,9 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //AlphaActivityOut property
     #endregion
 
-    //TransuraniumActivityOut property
-    #region  TransuraniumActivityOut
+    #region TransuraniumActivityOut_23
     public string TransuraniumActivityOut_DB { get; set; } = "";
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "трансурановые радионуклиды", "23")]
@@ -2215,18 +2127,14 @@ public class Form21 : Form2, IBaseColor
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            try
+            if (double.TryParse(value1, out var valueDbl))
             {
-                var value2 = Convert.ToDouble(value1);
-                value1 = $"{value2:0.######################################################e+00}";
-            }
-            catch (Exception)
-            {
-                // ignored
+                value1 = $"{valueDbl:0.######################################################e+00}";
             }
         }
         TransuraniumActivityOut_DB = value1;
     }
+
     private bool TransuraniumActivityOut_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -2264,7 +2172,8 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
-    //TransuraniumActivityOut property
+    #endregion 
+
     #endregion
 
     #region IExcel
@@ -2573,9 +2482,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeIn))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
-        volumeInR.SetSizeColToAllLevels(88);
-        volumeInR.Binding = nameof(VolumeIn);
-        numberInOrderR += volumeInR;
+        if (volumeInR != null)
+        {
+            volumeInR.SetSizeColToAllLevels(88);
+            volumeInR.Binding = nameof(VolumeIn);
+            numberInOrderR += volumeInR;
+        }
         #endregion
 
         #region MassIn (9)
@@ -2583,9 +2495,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MassIn))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
-        massInR.SetSizeColToAllLevels(88);
-        massInR.Binding = nameof(MassIn);
-        numberInOrderR += massInR;
+        if (massInR != null)
+        {
+            massInR.SetSizeColToAllLevels(88);
+            massInR.Binding = nameof(MassIn);
+            numberInOrderR += massInR;
+        }
         #endregion
 
         #region QuantityIn (10)
@@ -2593,9 +2508,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityIn))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
-        quantityInR.SetSizeColToAllLevels(88);
-        quantityInR.Binding = nameof(QuantityIn);
-        numberInOrderR += quantityInR;
+        if (quantityInR != null)
+        {
+            quantityInR.SetSizeColToAllLevels(88);
+            quantityInR.Binding = nameof(QuantityIn);
+            numberInOrderR += quantityInR;
+        }
         #endregion
 
         #region TritiumActivityIn (11)
@@ -2603,9 +2521,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityIn))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
-        tritiumActivityInR.SetSizeColToAllLevels(163);
-        tritiumActivityInR.Binding = nameof(TritiumActivityIn);
-        numberInOrderR += tritiumActivityInR;
+        if (tritiumActivityInR != null)
+        {
+            tritiumActivityInR.SetSizeColToAllLevels(163);
+            tritiumActivityInR.Binding = nameof(TritiumActivityIn);
+            numberInOrderR += tritiumActivityInR;
+        }
         #endregion
 
         #region BetaGammaActivityIn (12)
@@ -2613,9 +2534,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityIn))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
-        betaGammaActivityInR.SetSizeColToAllLevels(160);
-        betaGammaActivityInR.Binding = nameof(BetaGammaActivityIn);
-        numberInOrderR += betaGammaActivityInR;
+        if (betaGammaActivityInR != null)
+        {
+            betaGammaActivityInR.SetSizeColToAllLevels(160);
+            betaGammaActivityInR.Binding = nameof(BetaGammaActivityIn);
+            numberInOrderR += betaGammaActivityInR;
+        }
         #endregion
 
         #region AlphaActivity (13)
@@ -2623,9 +2547,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityIn))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
-        alphaActivityR.SetSizeColToAllLevels(170);
-        alphaActivityR.Binding = nameof(AlphaActivityIn);
-        numberInOrderR += alphaActivityR;
+        if (alphaActivityR != null)
+        {
+            alphaActivityR.SetSizeColToAllLevels(170);
+            alphaActivityR.Binding = nameof(AlphaActivityIn);
+            numberInOrderR += alphaActivityR;
+        }
         #endregion
 
         #region TransuraniumActivity (14)
@@ -2633,9 +2560,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityIn))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
-        transuraniumActivityR.SetSizeColToAllLevels(200);
-        transuraniumActivityR.Binding = nameof(TransuraniumActivityIn);
-        numberInOrderR += transuraniumActivityR;
+        if (transuraniumActivityR != null)
+        {
+            transuraniumActivityR.SetSizeColToAllLevels(200);
+            transuraniumActivityR.Binding = nameof(TransuraniumActivityIn);
+            numberInOrderR += transuraniumActivityR;
+        }
         #endregion
 
         #region CodeRAOout (15)
@@ -2643,9 +2573,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOout))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        codeRaoOutR.SetSizeColToAllLevels(88);
-        codeRaoOutR.Binding = nameof(CodeRAOout);
-        numberInOrderR += codeRaoOutR;
+        if (codeRaoOutR != null)
+        {
+            codeRaoOutR.SetSizeColToAllLevels(88);
+            codeRaoOutR.Binding = nameof(CodeRAOout);
+            numberInOrderR += codeRaoOutR;
+        }
         #endregion
 
         #region StatusRAOout (16)
@@ -2653,9 +2586,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOout))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        statusRaoOutR.SetSizeColToAllLevels(88);
-        statusRaoOutR.Binding = nameof(StatusRAOout);
-        numberInOrderR += statusRaoOutR;
+        if (statusRaoOutR != null)
+        {
+            statusRaoOutR.SetSizeColToAllLevels(88);
+            statusRaoOutR.Binding = nameof(StatusRAOout);
+            numberInOrderR += statusRaoOutR;
+        }
         #endregion
 
         #region VolumeOut (17)
@@ -2663,9 +2599,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeOut))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        volumeOutR.SetSizeColToAllLevels(88);
-        volumeOutR.Binding = nameof(VolumeOut);
-        numberInOrderR += volumeOutR;
+        if (volumeOutR != null)
+        {
+            volumeOutR.SetSizeColToAllLevels(88);
+            volumeOutR.Binding = nameof(VolumeOut);
+            numberInOrderR += volumeOutR;
+        }
         #endregion
 
         #region MassOut (18)
@@ -2673,9 +2612,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MassOut))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        massOutR.SetSizeColToAllLevels(88);
-        massOutR.Binding = nameof(MassOut);
-        numberInOrderR += massOutR;
+        if (massOutR != null)
+        {
+            massOutR.SetSizeColToAllLevels(88);
+            massOutR.Binding = nameof(MassOut);
+            numberInOrderR += massOutR;
+        }
         #endregion
 
         #region QuantityOZIIIout (19)
@@ -2683,9 +2625,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityOZIIIout))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        quantityOziiiOutR.SetSizeColToAllLevels(88);
-        quantityOziiiOutR.Binding = nameof(QuantityOZIIIout);
-        numberInOrderR += quantityOziiiOutR;
+        if (quantityOziiiOutR != null)
+        {
+            quantityOziiiOutR.SetSizeColToAllLevels(88);
+            quantityOziiiOutR.Binding = nameof(QuantityOZIIIout);
+            numberInOrderR += quantityOziiiOutR;
+        }
         #endregion
 
         #region TritiumActivityOut (20)
@@ -2693,9 +2638,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityOut))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        tritiumActivityOutR.SetSizeColToAllLevels(163);
-        tritiumActivityOutR.Binding = nameof(TritiumActivityOut);
-        numberInOrderR += tritiumActivityOutR;
+        if (tritiumActivityOutR != null)
+        {
+            tritiumActivityOutR.SetSizeColToAllLevels(163);
+            tritiumActivityOutR.Binding = nameof(TritiumActivityOut);
+            numberInOrderR += tritiumActivityOutR;
+        }
         #endregion
 
         #region BetaGammaActivityOut (21)
@@ -2703,9 +2651,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityOut))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        betaGammaActivityOutR.SetSizeColToAllLevels(170);
-        betaGammaActivityOutR.Binding = nameof(BetaGammaActivityOut);
-        numberInOrderR += betaGammaActivityOutR;
+        if (betaGammaActivityOutR != null)
+        {
+            betaGammaActivityOutR.SetSizeColToAllLevels(170);
+            betaGammaActivityOutR.Binding = nameof(BetaGammaActivityOut);
+            numberInOrderR += betaGammaActivityOutR;
+        }
         #endregion
 
         #region AlphaActivityOut (22)
@@ -2713,9 +2664,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityOut))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        alphaActivityOutR.SetSizeColToAllLevels(170);
-        alphaActivityOutR.Binding = nameof(AlphaActivityOut);
-        numberInOrderR += alphaActivityOutR;
+        if (alphaActivityOutR != null)
+        {
+            alphaActivityOutR.SetSizeColToAllLevels(170);
+            alphaActivityOutR.Binding = nameof(AlphaActivityOut);
+            numberInOrderR += alphaActivityOutR;
+        }
         #endregion
 
         #region TransuraniumActivityOut (23)
@@ -2723,9 +2677,12 @@ public class Form21 : Form2, IBaseColor
             ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityOut))
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
-        transuraniumActivityOutR.SetSizeColToAllLevels(163);
-        transuraniumActivityOutR.Binding = nameof(TransuraniumActivityOut);
-        numberInOrderR += transuraniumActivityOutR;
+        if (transuraniumActivityOutR != null)
+        {
+            transuraniumActivityOutR.SetSizeColToAllLevels(163);
+            transuraniumActivityOutR.Binding = nameof(TransuraniumActivityOut);
+            numberInOrderR += transuraniumActivityOutR;
+        }
         #endregion
 
         _DataGridColumns = numberInOrderR;
