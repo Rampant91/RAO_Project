@@ -6040,7 +6040,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
 
         var row = 2;
-        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep))
+        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep.Value))
         {
             foreach (var rep in reps.Report_Collection
                          .OrderBy(x => x.FormNum_DB)
@@ -6232,11 +6232,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
 
         var row = 2;
-        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep))
+        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep.Value))
         {
             foreach (var rep in reps.Report_Collection
                          .OrderBy(x => x.FormNum_DB)
-                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
+                         .ThenByDescending(x => x.Year_DB))
             {
                 worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
@@ -6248,6 +6248,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
 
+        worksheet.Cells.AutoFitColumns();
         try
         {
             excelPackage.Save();
@@ -6312,7 +6313,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _AllOrganization_Excel_Export()
     {
         var findReps = Local_Reports.Reports_Collection.Count;
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || findReps == 0) return;
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+            findReps == 0) return;
         SaveFileDialog dial = new();
         var filter = new FileDialogFilter
         {
@@ -6580,6 +6582,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 checkedLst.Add(reps);
             }
         }
+
         worksheet.Cells.AutoFitColumns();
         try
         {
@@ -6837,6 +6840,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
+
                 worksheet.Cells.AutoFitColumns();
                 try
                 {
@@ -6924,7 +6928,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(desktop.MainWindow); 
+            .ShowDialog(desktop.MainWindow);
 
         #endregion
 
