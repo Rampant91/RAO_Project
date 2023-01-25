@@ -3494,7 +3494,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region All_Excel_Export //Excel-Формы1,2 и Excel-Выбранная организация-Формы1,2
+    #region All_Excel_Export //Excel-Формы 1.x,2.x и Excel-Выбранная организация-Формы 1.x,2.x
 
     public ReactiveCommand<object, Unit> All_Excel_Export { get; private set; }
 
@@ -5929,35 +5929,80 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _AllForms1_Excel_Export()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var findRep = 0;
+        foreach (var key in Local_Reports.Reports_Collection)
         {
-            var findRep = 0;
-            foreach (var key in Local_Reports.Reports_Collection)
+            var reps = (Reports)key;
+            foreach (var key1 in reps.Report_Collection)
             {
-                var reps = (Reports)key;
-                foreach (var key1 in reps.Report_Collection)
+                var rep = (Report)key1;
+                if (rep.FormNum_DB.Split('.')[0] == "1")
                 {
-                    var rep = (Report)key1;
-                    if (rep.FormNum_DB.Split('.')[0] == "1")
-                    {
-                        findRep += 1;
-                    }
+                    findRep += 1;
                 }
             }
+        }
 
-            if (findRep == 0)
+        if (findRep == 0)
+        {
+            #region MessageRepsNotFound
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
+                        $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам 1",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        SaveFileDialog dial = new();
+        var filter = new FileDialogFilter
+        {
+            Name = "Excel",
+            Extensions = { "xlsx" }
+        };
+        dial.Filters.Add(filter);
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
+        {
+            path += ".xlsx";
+        }
+
+        if (File.Exists(path))
+        {
+            try
             {
-                #region MessageRepsNotFound
+                File.Delete(path);
+            }
+            catch (Exception)
+            {
+                #region MessageFailedToSaveFile
 
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Уведомление",
+                        ContentHeader = "Ошибка",
                         ContentMessage =
-                            "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
-                            $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам 1",
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -5968,151 +6013,103 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 return;
             }
+        }
 
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        if (Local_Reports.Reports_Collection.Count == 0) return;
+        worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
+        worksheet.Cells[1, 1].Value = "Рег.№";
+        worksheet.Cells[1, 2].Value = "ОКПО";
+        worksheet.Cells[1, 3].Value = "Форма";
+        worksheet.Cells[1, 4].Value = "Дата начала";
+        worksheet.Cells[1, 5].Value = "Дата конца";
+        worksheet.Cells[1, 6].Value = "Номер кор.";
+        worksheet.Cells[1, 7].Value = "Количество строк";
+
+        var lst = new List<Reports>();
+        foreach (var key in Local_Reports.Reports_Collection)
+        {
+            var item = (Reports)key;
+            if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")
             {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            dial.Filters.Add(filter);
-            var res = await dial.ShowAsync(desktop.MainWindow);
-            if (!string.IsNullOrEmpty(res))
-            {
-                var path = res;
-                if (!path.Contains(".xlsx"))
-                {
-                    path += ".xlsx";
-                }
-
-                if (File.Exists(path))
-                {
-                    try
-                    {
-                        File.Delete(path);
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                    "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        return;
-                    }
-                }
-
-                using ExcelPackage excelPackage = new(new FileInfo(path));
-                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                excelPackage.Workbook.Properties.Title = "Report";
-                excelPackage.Workbook.Properties.Created = DateTime.Now;
-                if (Local_Reports.Reports_Collection.Count > 0)
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм");
-                    worksheet.Cells[1, 1].Value = "Рег.№";
-                    worksheet.Cells[1, 2].Value = "ОКПО";
-                    worksheet.Cells[1, 3].Value = "Форма";
-                    worksheet.Cells[1, 4].Value = "Дата начала";
-                    worksheet.Cells[1, 5].Value = "Дата конца";
-                    worksheet.Cells[1, 6].Value = "Номер кор.";
-                    worksheet.Cells[1, 7].Value = "Количество строк";
-
-                    var lst = new List<Reports>();
-                    foreach (var key in Local_Reports.Reports_Collection)
-                    {
-                        var item = (Reports)key;
-                        if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")
-                        {
-                            lst.Add(item);
-                        }
-                    }
-
-                    var row = 2;
-                    foreach (var reps in lst)
-                    {
-                        foreach (var key in reps.Report_Collection)
-                        {
-                            var rep = (Report)key;
-                            worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                            worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
-                            worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-                            worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
-                            worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
-                            worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-                            worksheet.Cells[row, 7].Value = rep.Rows.Count;
-                            row++;
-                        }
-                    }
-
-                    try
-                    {
-                        excelPackage.Save();
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                                 $"{Environment.NewLine}{path}",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        return;
-                    }
-
-                    #region MessageExcelExportComplete
-
-                    res = await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions = new[]
-                            {
-                                new ButtonDefinition { Name = "Ок" },
-                                new ButtonDefinition { Name = "Открыть выгрузку" }
-                            },
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = "Выгрузка списка всех отчетов по форме 1 " +
-                                             "с указанием количества строк сохранена по пути:" +
-                                             $"{Environment.NewLine}{path}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    if (res is "Открыть выгрузку")
-                    {
-                        Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                    }
-                }
+                lst.Add(item);
             }
+        }
+
+        var row = 2;
+        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep))
+        {
+            foreach (var rep in reps.Report_Collection
+                         .OrderBy(x => x.FormNum_DB)
+                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
+            {
+                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
+                worksheet.Cells[row, 3].Value = rep.FormNum_DB;
+                worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
+                worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
+                worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
+                worksheet.Cells[row, 7].Value = rep.Rows.Count;
+                row++;
+            }
+        }
+
+        worksheet.Cells.AutoFitColumns();
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        #region MessageExcelExportComplete
+
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка списка всех отчетов по форме 1 " +
+                                 "с указанием количества строк сохранена по пути:" +
+                                 $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
         }
     }
 
@@ -6124,35 +6121,80 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _AllForms2_Excel_Export()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var findRep = 0;
+        foreach (var key in Local_Reports.Reports_Collection)
         {
-            var findRep = 0;
-            foreach (var key in Local_Reports.Reports_Collection)
+            var reps = (Reports)key;
+            foreach (var key1 in reps.Report_Collection)
             {
-                var reps = (Reports)key;
-                foreach (var key1 in reps.Report_Collection)
+                var rep = (Report)key1;
+                if (rep.FormNum_DB.Split('.')[0] == "2")
                 {
-                    var rep = (Report)key1;
-                    if (rep.FormNum_DB.Split('.')[0] == "2")
-                    {
-                        findRep += 1;
-                    }
+                    findRep += 1;
                 }
             }
+        }
 
-            if (findRep == 0)
+        if (findRep == 0)
+        {
+            #region MessageRepsNotFound
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Не удалось совершить выгрузку списка всех отчетов по форме 2 с указанием количества строк," +
+                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 2",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        SaveFileDialog dial = new();
+        var filter = new FileDialogFilter
+        {
+            Name = "Excel",
+            Extensions = { "xlsx" }
+        };
+        dial.Filters.Add(filter);
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
+        {
+            path += ".xlsx";
+        }
+
+        if (File.Exists(path))
+        {
+            try
             {
-                #region MessageRepsNotFound
+                File.Delete(path);
+            }
+            catch (Exception)
+            {
+                #region MessageFailedToSaveFile
 
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Уведомление",
+                        ContentHeader = "Ошибка",
                         ContentMessage =
-                            "Не удалось совершить выгрузку списка всех отчетов по форме 2 с указанием количества строк," +
-                            $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 2",
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -6163,151 +6205,101 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 return;
             }
+        }
 
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        if (Local_Reports.Reports_Collection.Count == 0) return;
+
+        worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 2");
+        worksheet.Cells[1, 1].Value = "Рег.№";
+        worksheet.Cells[1, 2].Value = "ОКПО";
+        worksheet.Cells[1, 3].Value = "Форма";
+        worksheet.Cells[1, 4].Value = "Отчетный год";
+        worksheet.Cells[1, 5].Value = "Номер кор.";
+        worksheet.Cells[1, 6].Value = "Количество строк";
+
+        var lst = new List<Reports>();
+        foreach (var key in Local_Reports.Reports_Collection)
+        {
+            var item = (Reports)key;
+            if (item.Master_DB.FormNum_DB.Split('.')[0] == "2")
             {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            dial.Filters.Add(filter);
-            var res = await dial.ShowAsync(desktop.MainWindow);
-            if (!string.IsNullOrEmpty(res))
-            {
-                var path = res;
-                if (!path.Contains(".xlsx"))
-                {
-                    path += ".xlsx";
-                }
-
-                if (File.Exists(path))
-                {
-                    try
-                    {
-                        File.Delete(path);
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                    "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        return;
-                    }
-                }
-
-                using ExcelPackage excelPackage = new(new FileInfo(path));
-                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                excelPackage.Workbook.Properties.Title = "Report";
-                excelPackage.Workbook.Properties.Created = DateTime.Now;
-                if (Local_Reports.Reports_Collection.Count > 0)
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм");
-                    worksheet.Cells[1, 1].Value = "Рег.№";
-                    worksheet.Cells[1, 2].Value = "ОКПО";
-                    worksheet.Cells[1, 3].Value = "Форма";
-                    worksheet.Cells[1, 4].Value = "Отчетный год";
-                    worksheet.Cells[1, 5].Value = "Номер кор.";
-                    worksheet.Cells[1, 6].Value = "Количество строк";
-
-                    var lst = new List<Reports>();
-                    foreach (var key in Local_Reports.Reports_Collection)
-                    {
-                        var item = (Reports)key;
-                        if (item.Master_DB.FormNum_DB.Split('.')[0] == "2")
-                        {
-                            lst.Add(item);
-                        }
-
-                        var gr = item.Report_Collection.GroupBy(x => x.FormNum_DB);
-                    }
-
-                    var row = 2;
-                    foreach (var reps in lst)
-                    {
-                        foreach (var key in reps.Report_Collection)
-                        {
-                            var rep = (Report)key;
-                            worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                            worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
-                            worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-                            worksheet.Cells[row, 4].Value = rep.Year_DB;
-                            worksheet.Cells[row, 5].Value = rep.CorrectionNumber_DB;
-                            worksheet.Cells[row, 6].Value = rep.Rows.Count;
-                            row++;
-                        }
-                    }
-
-                    try
-                    {
-                        excelPackage.Save();
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                                 $"{Environment.NewLine}{path}",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        return;
-                    }
-
-                    #region MessageExcelExportComplete
-
-                    res = await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions = new[]
-                            {
-                                new ButtonDefinition { Name = "Ок" },
-                                new ButtonDefinition { Name = "Открыть выгрузку" }
-                            },
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Выгрузка списка всех отчетов по форме 2 с указанием количества строк сохранена по пути:" +
-                                $"{Environment.NewLine}{path}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    if (res is "Открыть выгрузку")
-                    {
-                        Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                    }
-                }
+                lst.Add(item);
             }
+        }
+
+        var row = 2;
+        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep))
+        {
+            foreach (var rep in reps.Report_Collection
+                         .OrderBy(x => x.FormNum_DB)
+                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
+            {
+                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
+                worksheet.Cells[row, 3].Value = rep.FormNum_DB;
+                worksheet.Cells[row, 4].Value = rep.Year_DB;
+                worksheet.Cells[row, 5].Value = rep.CorrectionNumber_DB;
+                worksheet.Cells[row, 6].Value = rep.Rows.Count;
+                row++;
+            }
+        }
+
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        #region MessageExcelExportComplete
+
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage =
+                    "Выгрузка списка всех отчетов по форме 2 с указанием количества строк сохранена по пути:" +
+                    $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
         }
     }
 
@@ -6912,183 +6904,73 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _ExcelPasWithoutRep(object param)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        SaveFileDialog saveFileDialog = new();
+        FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
+        saveFileDialog.Filters?.Add(filter);
+
+        #region MessageInputCategoryNums
+
+        var result = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                },
+                ContentTitle = "Выбор категории",
+                ContentMessage = "Введите через запятую номера категорий (допускается несколько значений)",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow); 
+
+        #endregion
+
+        List<short?> categories = new() { 1, 2, 3, 4, 5 };
+        if (result.Button is null or "Отмена") return;
+        try
         {
-            SaveFileDialog saveFileDialog = new();
-            FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
-            saveFileDialog.Filters?.Add(filter);
-            var messageBoxWindow = MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxInputWindow(new MessageBoxInputParams
+            categories = Regex.Replace(result.Message, "[^\\d,]", "")
+                .Split(',').Select(short.Parse).Cast<short?>().ToList();
+        }
+        catch (Exception)
+        {
+            #region MessageInvalidCategoryNums
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = new[]
-                    {
-                        new ButtonDefinition { Name = "Ок", IsDefault = true },
-                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                    },
-                    ContentTitle = "Выбор категории",
-                    ContentMessage = "Введите через запятую номера категорий (допускается несколько значений)",
-                    MinWidth = 600,
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Номера категорий не были введены, либо были введены некорректно" +
+                        $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям (1-5)",
+                    MinWidth = 400,
+                    MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                });
-            var result = await messageBoxWindow.ShowDialog(desktop.MainWindow);
-            List<short?> categories = new() { 1, 2, 3, 4, 5 };
-            if (result.Button is null or "Отмена") return;
-            try
-            {
-                categories = Regex.Replace(result.Message, "[^\\d,]", "")
-                    .Split(',').Select(short.Parse).Cast<short?>().ToList();
-            }
-            catch (Exception)
-            {
-                #region MessageInvalidCategoryNums
+                })
+                .ShowDialog(desktop.MainWindow);
 
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Уведомление",
-                        ContentMessage =
-                            "Номера категорий не были введены, либо были введены некорректно" +
-                            $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям (1-5)",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
+            #endregion
+        }
 
-                #endregion
+        var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
+        if (!string.IsNullOrEmpty(res))
+        {
+            var path = res;
+            if (!path.Contains(".xlsx"))
+            {
+                path += ".xlsx";
             }
 
-            var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
-            if (!string.IsNullOrEmpty(res))
+            if (File.Exists(path))
             {
-                var path = res;
-                if (!path.Contains(".xlsx"))
-                {
-                    path += ".xlsx";
-                }
-
-                if (File.Exists(path))
-                {
-                    try
-                    {
-                        File.Delete(path);
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                    "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        return;
-                    }
-                }
-
-                using ExcelPackage excelPackage = new(new FileInfo(path));
-                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                excelPackage.Workbook.Properties.Title = "Report";
-                excelPackage.Workbook.Properties.Created = DateTime.Now;
-                worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчетов");
-
-                worksheet.Cells[1, 1].Value = "Полное имя файла";
-                worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
-                worksheet.Cells[1, 3].Value = "Тип";
-                worksheet.Cells[1, 4].Value = "Год выпуска";
-                worksheet.Cells[1, 5].Value = "Номер паспорта";
-                worksheet.Cells[1, 6].Value = "Номер";
-
-                List<string> pasNames = new();
-                List<string[]> pasUniqParam = new();
-                DirectoryInfo directory = new(PasFolderPath);
-                FileInfo[] files;
                 try
                 {
-                    files = directory.GetFiles("*#*#*#*#*.pdf");
-                }
-                catch (Exception)
-                {
-                    #region MessageFailedToOpenPassportDirectory
-
-                    await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Ошибка",
-                            ContentMessage =
-                                $"Не удалось открыть сетевое хранилище паспортов:{Environment.NewLine}{directory.FullName}",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    return;
-                }
-
-                pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
-                pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-                foreach (var key in Local_Reports.Reports_Collection10)
-                {
-                    var reps = (Reports)key;
-                    var form11 = reps.Report_Collection
-                        .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-                    foreach (var rep in form11)
-                    {
-                        List<Form11> repPas = rep.Rows11
-                            .Where(x => x.OperationCode_DB is ("11" or "85")) // && categories.Contains(x.Category_DB))
-                            .ToList();
-                        foreach (var repForm in repPas)
-                        {
-                            foreach (var pasParam in pasUniqParam.Where(pasParam =>
-                                         ComparePasParam(ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
-                                         && ComparePasParam(ConvertPrimToDash(repForm.Type_DB), pasParam[1])
-                                         && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                         && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
-                                         && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
-                            {
-                                pasNames.Remove(
-                                    $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                var currentRow = 2;
-                foreach (var pasName in pasNames)
-                {
-                    worksheet.Cells[currentRow, 1].Value = pasName;
-                    worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
-                    worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
-                    worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
-                    worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
-                    worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
-                    currentRow++;
-                }
-
-                worksheet.Cells.AutoFitColumns();
-                try
-                {
-                    excelPackage.Save();
+                    File.Delete(path);
                 }
                 catch (Exception)
                 {
@@ -7100,8 +6982,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                             ContentTitle = "Выгрузка в Excel",
                             ContentHeader = "Ошибка",
-                            ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                             $"{Environment.NewLine}{path}",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {path}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
                             MinWidth = 400,
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -7112,38 +6996,152 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     return;
                 }
+            }
 
-                #region MessageExcelExportComplete
+            using ExcelPackage excelPackage = new(new FileInfo(path));
+            excelPackage.Workbook.Properties.Author = "RAO_APP";
+            excelPackage.Workbook.Properties.Title = "Report";
+            excelPackage.Workbook.Properties.Created = DateTime.Now;
+            worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчетов");
 
-                res = await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            worksheet.Cells[1, 1].Value = "Полное имя файла";
+            worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
+            worksheet.Cells[1, 3].Value = "Тип";
+            worksheet.Cells[1, 4].Value = "Год выпуска";
+            worksheet.Cells[1, 5].Value = "Номер паспорта";
+            worksheet.Cells[1, 6].Value = "Номер";
+
+            List<string> pasNames = new();
+            List<string[]> pasUniqParam = new();
+            DirectoryInfo directory = new(PasFolderPath);
+            FileInfo[] files;
+            try
+            {
+                files = directory.GetFiles("*#*#*#*#*.pdf");
+            }
+            catch (Exception)
+            {
+                #region MessageFailedToOpenPassportDirectory
+
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = new[]
-                        {
-                            new ButtonDefinition { Name = "Ок" },
-                            new ButtonDefinition { Name = "Открыть выгрузку" }
-                        },
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Уведомление",
+                        ContentHeader = "Ошибка",
                         ContentMessage =
-                            "Выгрузка всех имён файлов паспортов в директории" +
-                            $"{Environment.NewLine}{directory.FullName}" +
-                            $"{Environment.NewLine}для которых отсутствуют соответствующие записи паспортов " +
-                            $"с кодом 11 категорий: {string.Join(", ", categories)}" +
-                            $"{Environment.NewLine}сохранена по пути:" +
-                            $"{Environment.NewLine}{path}",
+                            $"Не удалось открыть сетевое хранилище паспортов:" +
+                            $"{Environment.NewLine}{directory.FullName}",
                         MinWidth = 400,
-                        MinHeight = 200,
+                        MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
 
                 #endregion
 
-                if (res is "Открыть выгрузку")
+                return;
+            }
+
+            pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+            pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
+            foreach (var key in Local_Reports.Reports_Collection10)
+            {
+                var reps = (Reports)key;
+                var form11 = reps.Report_Collection
+                    .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                foreach (var rep in form11)
                 {
-                    Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+                    List<Form11> repPas = rep.Rows11
+                        .Where(x => x.OperationCode_DB is ("11" or "85")) // && categories.Contains(x.Category_DB))
+                        .ToList();
+                    foreach (var repForm in repPas)
+                    {
+                        foreach (var pasParam in pasUniqParam.Where(pasParam =>
+                                     ComparePasParam(ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
+                                     && ComparePasParam(ConvertPrimToDash(repForm.Type_DB), pasParam[1])
+                                     && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                     && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
+                                     && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
+                        {
+                            pasNames.Remove(
+                                $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                            break;
+                        }
+                    }
                 }
+            }
+
+            var currentRow = 2;
+            foreach (var pasName in pasNames)
+            {
+                worksheet.Cells[currentRow, 1].Value = pasName;
+                worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
+                worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
+                worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
+                worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
+                worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
+                currentRow++;
+            }
+
+            worksheet.Cells.AutoFitColumns();
+            try
+            {
+                excelPackage.Save();
+            }
+            catch (Exception)
+            {
+                #region MessageFailedToSaveFile
+
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                         $"{Environment.NewLine}{path}",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
+
+                #endregion
+
+                return;
+            }
+
+            #region MessageExcelExportComplete
+
+            res = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Выгрузка всех имён файлов паспортов в директории" +
+                        $"{Environment.NewLine}{directory.FullName}" +
+                        $"{Environment.NewLine}для которых отсутствуют соответствующие записи паспортов " +
+                        $"с кодом 11 категорий: {string.Join(", ", categories)}" +
+                        $"{Environment.NewLine}сохранена по пути:" +
+                        $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 200,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (res is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
             }
         }
     }
