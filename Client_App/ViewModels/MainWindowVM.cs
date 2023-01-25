@@ -35,7 +35,9 @@ namespace Client_App.ViewModels;
 public class MainWindowVM : BaseVM, INotifyPropertyChanged
 {
     #region Local_Reports
+
     private DBObservable _local_Reports = new();
+
     public DBObservable Local_Reports
     {
         get => _local_Reports;
@@ -48,10 +50,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region Current_Db
+
     private string _current_Db = "";
+
     public string Current_Db
     {
         get => _current_Db;
@@ -64,9 +69,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region Init
+
     private async Task<string> ProcessRaoDirectory(string systemDirectory)
     {
         var tmp = "";
@@ -85,6 +92,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await ShowMessage.Handle(ErrorMessages.Error2);
             throw new Exception(ErrorMessages.Error2[0]);
         }
+
         try
         {
             var fl = Directory.GetFiles(tmp);
@@ -92,6 +100,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 File.Delete(file);
             }
+
             return pty;
         }
         catch (Exception e)
@@ -101,6 +110,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             throw new Exception(ErrorMessages.Error3[0]);
         }
     }
+
     private async Task<string> GetSystemDirectory()
     {
         try
@@ -146,6 +156,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
             }
         }
+
         if (!flag)
         {
             Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.5 Текущая база данных - Local_{i}.raodb";
@@ -174,6 +185,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     it.Master_DB.Rows10.Add(ty1);
                     it.Master_DB.Rows10.Add(ty2);
                 }
+
                 if (it.Master_DB.Rows20.Count == 0)
                 {
                     var ty1 = (Form20)FormCreator.Create("2.0");
@@ -183,6 +195,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     it.Master_DB.Rows20.Add(ty1);
                     it.Master_DB.Rows20.Add(ty2);
                 }
+
                 it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
                 await it.Master_DB.Rows10.QuickSortAsync();
@@ -208,8 +221,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
+
             await item.SortAsync();
         }
+
         await Local_Reports.Reports_Collection.QuickSortAsync();
     }
 
@@ -240,6 +255,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ShowMessage = new Interaction<List<string>, string>();
         return Task.CompletedTask;
     }
+
     private static int GetNumberInOrder(IEnumerable lst)
     {
         var maxNum = 0;
@@ -251,6 +267,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 maxNum++;
             }
         }
+
         return maxNum + 1;
     }
 
@@ -294,10 +311,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         OnPropertyChanged(nameof(Local_Reports));
     }
+
     #endregion
 
     #region OnStartProgressBar
+
     private double _OnStartProgressBar;
+
     public double OnStartProgressBar
     {
         get => _OnStartProgressBar;
@@ -308,18 +328,24 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     #endregion
 
     #region Interactions
+
     public Interaction<ChangeOrCreateVM, object> ShowDialog { get; private set; }
     public Interaction<List<string>, string> ShowMessage { get; private set; }
+
     #endregion
 
     #region AddReport
+
     public ReactiveCommand<object, Unit> AddReport { get; private set; }
+
     private async Task _AddReport(object par)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && par is string param)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
+            par is string param)
         {
             var t = desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
@@ -329,13 +355,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await Local_Reports.Reports_Collection.QuickSortAsync();
         }
     }
+
     #endregion
 
     #region AddForm
+
     public ReactiveCommand<object, Unit> AddForm { get; private set; }
+
     private async Task _AddForm(object par)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && par is string param)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
+            par is string param)
         {
             var t = desktop.MainWindow as MainWindow;
             if (t?.SelectedReports is null
@@ -343,6 +373,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 || ((Reports)t.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
             {
                 #region MessageFailedToOpenForm
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -357,9 +388,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
+
                 return;
             }
+
             var y = t.SelectedReports.First() as Reports;
             if (y?.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
             {
@@ -377,10 +411,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ImportFromEx
+
     public ReactiveCommand<Unit, Unit> ImportFrom { get; private set; }
+
     private async Task GetDataFromRow(string param1, ExcelWorksheet worksheet1, int start, Report repFromEx)
     {
         switch (param1)
@@ -544,11 +581,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[0].OrganUprav_DB = Convert.ToString(worksheet0.Cells["F15"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null 
-                    ? "" 
+                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null
+                    ? ""
                     : Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -556,17 +595,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 newRepsFromExcel.Master_DB.Rows10[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null 
-                    ? "" 
+                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null
+                    ? ""
                     : Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Email_DB = Convert.ToString(worksheet0.Cells["F32"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = worksheet0.Cells["B36"].Value == null 
-                    ? "" 
+                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = worksheet0.Cells["B36"].Value == null
+                    ? ""
                     : Convert.ToString(worksheet0.Cells["B36"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Okved_DB = Convert.ToString(worksheet0.Cells["C36"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Okogu_DB = Convert.ToString(worksheet0.Cells["D36"].Value);
@@ -576,8 +616,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[0].Okopf_DB = Convert.ToString(worksheet0.Cells["H36"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Okfs_DB = Convert.ToString(worksheet0.Cells["I36"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = worksheet0.Cells["B37"].Value == null 
-                    ? "" 
+                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = worksheet0.Cells["B37"].Value == null
+                    ? ""
                     : Convert.ToString(worksheet0.Cells["B37"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Okved_DB = Convert.ToString(worksheet0.Cells["C37"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Okogu_DB = Convert.ToString(worksheet0.Cells["D37"].Value);
@@ -593,8 +633,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -603,7 +645,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
@@ -629,6 +672,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break;
         }
     }
+
     private async Task<Reports> CheckReps(ExcelWorksheet worksheet0)
     {
         IEnumerable<Reports>? reps = worksheet0.Name switch
@@ -645,6 +689,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             return reps.FirstOrDefault();
         }
+
         var newRepsFromExcel = new Reports();
         var param0 = worksheet0.Name;
         newRepsFromExcel.Master_DB = new Report
@@ -674,10 +719,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break;
             }
         }
+
         await GetDataTitleReps(newRepsFromExcel, worksheet0);
         Local_Reports.Reports_Collection.Add(newRepsFromExcel);
         return newRepsFromExcel;
     }
+
     private async Task _ImportFrom()
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
@@ -841,7 +888,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     ? DateTime.Parse(rep.EndPeriod_DB)
                                     : DateTime.Parse(rep.StartPeriod_DB);
                             }
-                            catch (Exception) { }
+                            catch (Exception)
+                            {
+                            }
 
                             var stIt = DateTimeOffset.Now;
                             var enIt = DateTimeOffset.Now;
@@ -856,7 +905,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     ? DateTime.Parse(repFromEx.EndPeriod_DB)
                                     : DateTime.Parse(repFromEx.StartPeriod_DB);
                             }
-                            catch (Exception) { }
+                            catch (Exception)
+                            {
+                            }
 
                             if (stElem == stIt && enElem == enIt && repFromEx.FormNum_DB == rep.FormNum_DB)
                             {
@@ -1186,9 +1237,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await dbm.SaveChangesAsync();
         }
     }
+
     #endregion
 
     #region ImportForm
+
     public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
 
     private async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
@@ -1197,6 +1250,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             return null;
         }
+
         OpenFileDialog dial = new() { AllowMultiple = true };
         var filter = new FileDialogFilter
         {
@@ -1233,8 +1287,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         do
         {
             file = Path.Combine(tmp, $"file_imp_{count++}.raodb");
-        }
-        while (File.Exists(file));
+        } while (File.Exists(file));
 
         return file;
     }
@@ -1244,9 +1297,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await using DBModel db = new(file);
 
         #region Test Version
+
         var t = await db.Database.GetPendingMigrationsAsync();
         var a = db.Database.GetMigrations();
         var b = await db.Database.GetAppliedMigrationsAsync();
+
         #endregion
 
         await db.Database.MigrateAsync();
@@ -1264,21 +1319,32 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is "1.0")
             {
                 return Local_Reports.Reports_Collection10.FirstOrDefault(t => (
-                    item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                        && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                        && item.Master.Rows10[1].Okpo_DB == "")
-                    || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                        && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                        && item.Master.Rows10[1].Okpo_DB != "")
-                    || (item.Master.Rows10[1].Okpo_DB != ""
-                        && t.Master.Rows10[1].Okpo_DB == ""
-                        && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                        && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB)
-                    || (item.Master.Rows10[1].Okpo_DB == ""
-                        && t.Master.Rows10[1].Okpo_DB != ""
-                        && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                        && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB));
+                                                                                  item.Master.Rows10[0].Okpo_DB ==
+                                                                                  t.Master.Rows10[0].Okpo_DB
+                                                                                  && item.Master.Rows10[0].RegNo_DB ==
+                                                                                  t.Master.Rows10[0].RegNo_DB
+                                                                                  && item.Master.Rows10[1].Okpo_DB ==
+                                                                                  "")
+                                                                              || (item.Master.Rows10[1].Okpo_DB ==
+                                                                                  t.Master.Rows10[1].Okpo_DB
+                                                                                  && item.Master.Rows10[1].RegNo_DB ==
+                                                                                  t.Master.Rows10[1].RegNo_DB
+                                                                                  && item.Master.Rows10[1].Okpo_DB !=
+                                                                                  "")
+                                                                              || (item.Master.Rows10[1].Okpo_DB != ""
+                                                                                  && t.Master.Rows10[1].Okpo_DB == ""
+                                                                                  && item.Master.Rows10[1].Okpo_DB ==
+                                                                                  t.Master.Rows10[0].Okpo_DB
+                                                                                  && item.Master.Rows10[1].RegNo_DB ==
+                                                                                  t.Master.Rows10[1].RegNo_DB)
+                                                                              || (item.Master.Rows10[1].Okpo_DB == ""
+                                                                                  && t.Master.Rows10[1].Okpo_DB != ""
+                                                                                  && item.Master.Rows10[0].Okpo_DB ==
+                                                                                  t.Master.Rows10[1].Okpo_DB
+                                                                                  && item.Master.Rows10[1].RegNo_DB ==
+                                                                                  t.Master.Rows10[1].RegNo_DB));
             }
+
             return null;
         }
         catch
@@ -1294,21 +1360,32 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is "2.0")
             {
                 return Local_Reports.Reports_Collection20.FirstOrDefault(t => (
-                        item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                        && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                        && item.Master.Rows20[1].Okpo_DB == "")
-                    || (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                        && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                        && item.Master.Rows20[1].Okpo_DB != "")
-                    || (item.Master.Rows20[1].Okpo_DB != ""
-                        && t.Master.Rows20[1].Okpo_DB == ""
-                        && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                        && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB)
-                    || (item.Master.Rows20[1].Okpo_DB == ""
-                        && t.Master.Rows20[1].Okpo_DB != ""
-                        && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                        && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));
+                                                                                  item.Master.Rows20[0].Okpo_DB ==
+                                                                                  t.Master.Rows20[0].Okpo_DB
+                                                                                  && item.Master.Rows20[0].RegNo_DB ==
+                                                                                  t.Master.Rows20[0].RegNo_DB
+                                                                                  && item.Master.Rows20[1].Okpo_DB ==
+                                                                                  "")
+                                                                              || (item.Master.Rows20[1].Okpo_DB ==
+                                                                                  t.Master.Rows20[1].Okpo_DB
+                                                                                  && item.Master.Rows20[1].RegNo_DB ==
+                                                                                  t.Master.Rows20[1].RegNo_DB
+                                                                                  && item.Master.Rows20[1].Okpo_DB !=
+                                                                                  "")
+                                                                              || (item.Master.Rows20[1].Okpo_DB != ""
+                                                                                  && t.Master.Rows20[1].Okpo_DB == ""
+                                                                                  && item.Master.Rows20[1].Okpo_DB ==
+                                                                                  t.Master.Rows20[0].Okpo_DB
+                                                                                  && item.Master.Rows20[1].RegNo_DB ==
+                                                                                  t.Master.Rows20[1].RegNo_DB)
+                                                                              || (item.Master.Rows20[1].Okpo_DB == ""
+                                                                                  && t.Master.Rows20[1].Okpo_DB != ""
+                                                                                  && item.Master.Rows20[0].Okpo_DB ==
+                                                                                  t.Master.Rows20[1].Okpo_DB
+                                                                                  && item.Master.Rows20[1].RegNo_DB ==
+                                                                                  t.Master.Rows20[1].RegNo_DB));
             }
+
             return null;
         }
         catch
@@ -1327,12 +1404,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     item.Master_DB.Rows10[0].NumberInOrder_DB = 2;
                 }
+
                 if (item.Master_DB.Rows10[1].NumberInOrder_DB == 0)
                 {
                     item.Master_DB.Rows10[1].NumberInOrder_DB = item.Master_DB.Rows10[1].NumberInOrder_DB == 2
                         ? 1
                         : 2;
                 }
+
                 item.Master_DB.Rows10.Sorted = false;
                 await item.Master_DB.Rows10.QuickSortAsync();
             }
@@ -1342,16 +1421,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     item.Master_DB.Rows10[0].NumberInOrder_DB = 1;
                 }
+
                 if (item.Master_DB.Rows10[1].NumberInOrder_DB == 0)
                 {
                     item.Master_DB.Rows10[1].NumberInOrder_DB = item.Master_DB.Rows10[1].NumberInOrder_DB == 2
                         ? 1
                         : 2;
                 }
+
                 item.Master_DB.Rows10.Sorted = false;
                 await item.Master_DB.Rows10.QuickSortAsync();
             }
         }
+
         if (item.Master_DB.FormNum_DB == "2.0")
         {
             if (item.Master_DB.Rows20[0].Id > item.Master_DB.Rows20[1].Id)
@@ -1360,12 +1442,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     item.Master_DB.Rows20[0].NumberInOrder_DB = 2;
                 }
+
                 if (item.Master_DB.Rows20[1].NumberInOrder_DB == 0)
                 {
                     item.Master_DB.Rows20[1].NumberInOrder_DB = item.Master_DB.Rows20[1].NumberInOrder_DB == 2
                         ? 1
                         : 2;
                 }
+
                 item.Master_DB.Rows20.Sorted = false;
                 await item.Master_DB.Rows20.QuickSortAsync();
             }
@@ -1375,12 +1459,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     item.Master_DB.Rows20[0].NumberInOrder_DB = 1;
                 }
+
                 if (item.Master_DB.Rows20[1].NumberInOrder_DB == 0)
                 {
                     item.Master_DB.Rows20[1].NumberInOrder_DB = item.Master_DB.Rows20[1].NumberInOrder_DB == 2
                         ? 1
                         : 2;
                 }
+
                 item.Master_DB.Rows20.Sorted = false;
                 await item.Master_DB.Rows20.QuickSortAsync();
             }
@@ -1403,24 +1489,26 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task ProcessIfHasReports11(Reports baseReps, Reports impReps)
     {
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return; 
-        var doSomething = false;    //Удалить после рефакторинга
-        var skipInter = false;      //Пропускать уведомления и отменять импорт при пересечении дат
-        var skipLess = false;       //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
-        var skipNew = false;        //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
-        var skipReplace = false;    //Пропускать уведомления о замене форм
-        foreach (var key in impReps.Report_Collection)          //Для каждой импортируемой формы
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var doSomething = false; //Удалить после рефакторинга
+        var skipInter = false; //Пропускать уведомления и отменять импорт при пересечении дат
+        var skipLess = false; //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
+        var skipNew = false; //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
+        var skipReplace = false; //Пропускать уведомления о замене форм
+        foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
         {
             var impRep = (Report)key;
-            var impInBase = false;                              //Импортируемая форма заменяет/пересекает имеющуюся в базе
+            var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection)    //Для каждой формы соответствующей организации в базе ищем совпадение
+            foreach (var key1 in
+                     baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
             {
                 var baseRep = (Report)key1;
 
                 #region Periods
-                var stBase = DateTime.Parse(DateTime.Now.ToShortDateString());   //Начало периода у отчета в базе
-                var endBase = DateTime.Parse(DateTime.Now.ToShortDateString());  //Конец периода у отчета в базе
+
+                var stBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Начало периода у отчета в базе
+                var endBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у отчета в базе
                 try
                 {
                     stBase = DateTime.Parse(baseRep.StartPeriod_DB) > DateTime.Parse(baseRep.EndPeriod_DB)
@@ -1434,8 +1522,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     // ignored
                 }
-                var stImp = DateTime.Parse(DateTime.Now.ToShortDateString());   //Начало периода у импортируемого отчета
-                var endImp = DateTime.Parse(DateTime.Now.ToShortDateString());  //Конец периода у импортируемого отчета
+
+                var stImp = DateTime.Parse(DateTime.Now.ToShortDateString()); //Начало периода у импортируемого отчета
+                var endImp = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у импортируемого отчета
                 try
                 {
                     stImp = DateTime.Parse(impRep.StartPeriod_DB) > DateTime.Parse(impRep.EndPeriod_DB)
@@ -1449,19 +1538,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     // ignored
                 }
+
                 #endregion
 
                 #region SamePeriod
+
                 if (stBase == stImp && endBase == endImp && impRep.FormNum_DB == baseRep.FormNum_DB)
                 {
                     impInBase = true;
 
                     #region LessCorrectionNumber
+
                     if (impRep.CorrectionNumber_DB < baseRep.CorrectionNumber_DB)
                     {
                         if (skipLess) break;
 
                         #region MessageImportReportHasLowerCorrectionNumber
+
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
@@ -1496,19 +1589,24 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
 
                         if (res is "Пропустить для всех") skipLess = true;
                         break;
                     }
+
                     #endregion
 
                     #region SameCorrectionNumber
-                    if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB && impRep.ExportDate_DB == baseRep.ExportDate_DB)
+
+                    if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB &&
+                        impRep.ExportDate_DB == baseRep.ExportDate_DB)
                     {
                         //doSomething = true;
 
                         #region MessageImportReportHasSamePeriodCorrectionNumberAndExportDate
+
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
@@ -1540,14 +1638,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
 
                         await ChechAanswer(res, baseReps, baseRep, impRep, doSomething);
                         break;
                     }
+
                     #endregion
 
                     #region HigherCorrectionNumber
+
                     res = "Заменить";
                     if (!skipReplace)
                     {
@@ -1555,6 +1656,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (impReps.Report_Collection.Count > 1)
                         {
                             #region MessageImportReportHasHigherCorrectionNumber
+
                             res = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
@@ -1591,6 +1693,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
                                 .ShowDialog(desktop.MainWindow);
+
                             #endregion
 
                             if (res is "Заменять все формы") skipReplace = true;
@@ -1598,6 +1701,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         else
                         {
                             #region MessageImportReportHasHigherCorrectionNumber
+
                             res = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
@@ -1630,17 +1734,22 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
                                 .ShowDialog(desktop.MainWindow);
+
                             #endregion
                         }
                     }
+
                     await ChechAanswer(res, baseReps, baseRep, impRep, doSomething);
                     //doSomething = true;
-                    break; 
+                    break;
+
                     #endregion
                 }
+
                 #endregion
 
                 #region Intersect
+
                 if (stBase < endImp && endBase > stImp && impRep.FormNum_DB == baseRep.FormNum_DB)
                 {
                     impInBase = true;
@@ -1649,6 +1758,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (skipLess || skipInter) break;
 
                         #region MessageImportReportHasLowerCorrectionNumber
+
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
@@ -1685,6 +1795,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
 
                         if (res is "Пропустить для всех") skipLess = true;
@@ -1694,6 +1805,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (skipInter) break;
 
                         #region MessagePeriodsIntersect
+
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
@@ -1727,6 +1839,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
 
                         if (res is "Отменить для всех пересечений")
@@ -1734,21 +1847,26 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             skipInter = true;
                             break;
                         }
+
                         if (res is "Отменить импорт формы") break;
                     }
+
                     await ChechAanswer(res, baseReps, null, impRep, doSomething);
                     //doSomething = true;
                     break;
-                } 
+                }
+
                 #endregion
             }
 
             #region TryAddEmptyOrg
+
             if (impReps.Report_Collection.Count == 0)
             {
                 impInBase = true;
 
                 #region MessageNewReport
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
@@ -1768,19 +1886,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
-            } 
+            }
+
             #endregion
 
             if (impInBase) continue;
 
             #region AddNewForm
+
             res = "Да";
             if (!skipNew)
             {
                 if (impReps.Report_Collection.Count > 1)
                 {
                     #region MessageNewReport
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -1812,6 +1934,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
 
                     if (res is "Да для всех") skipNew = true;
@@ -1819,6 +1942,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 else
                 {
                     #region MessageNewReport
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -1846,38 +1970,44 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
                 }
             }
-            await ChechAanswer(res, baseReps, null, impRep); 
+
+            await ChechAanswer(res, baseReps, null, impRep);
+
             #endregion
         }
-        await baseReps.SortAsync();        
+
+        await baseReps.SortAsync();
     }
 
     private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps)
     {
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return; 
-        var skipLess = false;       //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
-        var skipNew = false;        //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
-        var skipReplace = false;    //Пропускать уведомления о замене форм
-        foreach (var key in impReps.Report_Collection)          //Для каждой импортируемой формы
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var skipLess = false; //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
+        var skipNew = false; //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
+        var skipReplace = false; //Пропускать уведомления о замене форм
+        foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
         {
             var impRep = (Report)key;
-            var impInBase = false;                              //Импортируемая форма заменяет/пересекает имеющуюся в базе
+            var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection)    //Для каждой формы соответствующей организации в базе
+            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе
             {
                 var baseRep = (Report)key1;
                 if (baseRep.Year_DB != impRep.Year_DB || impRep.FormNum_DB != baseRep.FormNum_DB) continue;
                 impInBase = true;
 
                 #region LessCorrectionNumber
+
                 if (impRep.CorrectionNumber_DB < baseRep.CorrectionNumber_DB)
                 {
                     if (skipLess) break;
 
                     #region MessageImportReportHasLowerCorrectionNumber
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -1911,17 +2041,22 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
 
                     if (res == "Пропустить для всех") skipLess = true;
                     break;
                 }
+
                 #endregion
 
                 #region SameCorrectionNumber
-                if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB && impRep.ExportDate_DB == baseRep.ExportDate_DB)
+
+                if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB &&
+                    impRep.ExportDate_DB == baseRep.ExportDate_DB)
                 {
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -1951,20 +2086,24 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
 
                     await ChechAanswer(res, baseReps, baseRep, impRep);
                     break;
                 }
+
                 #endregion
 
                 #region HigherCorrectionNumber
+
                 res = "Заменить";
                 if (!skipReplace)
                 {
                     if (impReps.Report_Collection.Count > 1)
                     {
                         #region MessageImportReportHasHigherCorrectionNumber
+
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
@@ -2000,6 +2139,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
 
                         if (res is "Заменять все формы") skipReplace = true;
@@ -2007,6 +2147,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     else
                     {
                         #region MessageImportReportHasHigherCorrectionNumber
+
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
@@ -2038,22 +2179,27 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
                     }
 
                     if (res is "Отменить импорт формы") break;
                 }
+
                 await ChechAanswer(res, baseReps, baseRep, impRep);
-                break; 
+                break;
+
                 #endregion
             }
 
             #region AddEmptyOrgThatAlreadyExist
+
             if (impReps.Report_Collection.Count == 0)
             {
                 impInBase = true;
 
                 #region MessageNewReport
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
@@ -2073,19 +2219,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
-            } 
+            }
+
             #endregion
 
             if (impInBase) continue;
 
             #region AddNewForm
+
             res = "Да";
             if (!skipNew)
             {
                 if (impReps.Report_Collection.Count > 1)
                 {
                     #region MessageNewReport
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -2116,6 +2266,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
 
                     if (res == "Да для всех") skipNew = true;
@@ -2123,6 +2274,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 else
                 {
                     #region MessageNewReport
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -2149,16 +2301,21 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
                 }
             }
-            await ChechAanswer(res, baseReps, null, impRep); 
+
+            await ChechAanswer(res, baseReps, null, impRep);
+
             #endregion
         }
+
         await baseReps.SortAsync();
     }
 
-    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
+    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null,
+        bool doSomething = false)
     {
         switch (an)
         {
@@ -2187,16 +2344,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
             var answer = await GetSelectedFilesFromDialog("RAODB", "raodb");
-            if (answer is null) return;            
-            foreach (var res in answer)               //Для каждого импортируемого файла
+            if (answer is null) return;
+            foreach (var res in answer) //Для каждого импортируемого файла
             {
                 if (res == "") continue;
-                var skip = false;                           //Пропустить уведомления о добавлении новой организации
+                var skip = false; //Пропустить уведомления о добавлении новой организации
                 var file = await GetRaoFileName();
                 var sourceFile = new FileInfo(res);
                 sourceFile.CopyTo(file, true);
                 var reportsCollection = await GetReportsFromDataBase(file);
-                foreach (var item in reportsCollection)     //Для каждой импортируемой организации
+                foreach (var item in reportsCollection) //Для каждой импортируемой организации
                 {
                     if (item.Master.Rows10.Count != 0)
                     {
@@ -2206,6 +2363,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     {
                         item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
                     }
+
                     var first11 = await GetReports11FromLocalEqual(item);
                     var first21 = await GetReports21FromLocalEqual(item);
                     await RestoreReportsOrders(item);
@@ -2222,12 +2380,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     else if (first11 == null && first21 == null)
                     {
                         #region AddNewOrg
+
                         var an = "Добавить";
                         if (!skip)
                         {
                             if (reportsCollection.Count > 1)
                             {
                                 #region MessageNewOrg
+
                                 an = await MessageBox.Avalonia.MessageBoxManager
                                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                     {
@@ -2252,6 +2412,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
                                     .ShowDialog(desktop.MainWindow);
+
                                 #endregion
 
                                 if (an is "Да для всех") skip = true;
@@ -2259,6 +2420,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             else
                             {
                                 #region MessageNewOrg
+
                                 an = await MessageBox.Avalonia.MessageBoxManager
                                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                     {
@@ -2279,17 +2441,21 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
                                     .ShowDialog(desktop.MainWindow);
+
                                 #endregion
                             }
                         }
+
                         if (an is "Добавить" or "Да для всех")
                         {
                             Local_Reports.Reports_Collection.Add(item);
                         }
+
                         #endregion
                     }
                 }
             }
+
             await Local_Reports.Reports_Collection.QuickSortAsync();
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
@@ -2299,12 +2465,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private static string InventoryCheck (Report? rep)
+    private static string InventoryCheck(Report? rep)
     {
         if (rep is null)
         {
             return "";
         }
+
         var countCode10 = 0;
         foreach (var key in rep.Rows)
         {
@@ -2313,16 +2480,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 countCode10++;
             }
         }
+
         return countCode10 == rep.Rows.Count
             ? " (ИНВ)"
             : countCode10 > 0
                 ? " (инв)"
                 : "";
     }
+
     #endregion
 
     #region ExportForm
+
     public ReactiveCommand<object, Unit> ExportForm { get; private set; }
+
     private async Task _ExportForm(object par)
     {
         var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
@@ -2343,6 +2514,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (aMonth.Length < 2) aMonth = $"0{aMonth}";
                         ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
                     }
+
                     if (res != "")
                     {
                         var dt = DateTime.Now;
@@ -2414,7 +2586,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                                     db.Database.CloseConnectionAsync();
                                     db.DisposeAsync();
-
                                 }
                                 catch (Exception e)
                                 {
@@ -2453,13 +2624,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
     }
+
     #endregion
 
     #region ChangeForm
+
     public ReactiveCommand<object, Unit> ChangeForm { get; private set; }
+
     private async Task _ChangeForm(object par)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop 
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
             && par is ObservableCollectionWithItemPropertyChanged<IKey> param
             && param.First() is { } obj)
         {
@@ -2482,6 +2656,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         await frm.Sum21();
                         //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
                     }
+
                     break;
                 }
                 case "2.2":
@@ -2496,6 +2671,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             dic[oldR.NumberInOrder_DB] = new List<string>
                                 { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
                         }
+
                         await frm.UnSum22();
                         await frm.Sum22();
                         var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB);
@@ -2509,20 +2685,25 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             }
                         }
                     }
+
                     break;
                 }
             }
+
             await ShowDialog.Handle(frm);
             t.SelectedReports = tmp;
         }
     }
+
     #endregion
 
     #region ChangeReport
+
     public ReactiveCommand<object, Unit> ChangeReport { get; private set; }
+
     private async Task _ChangeReport(object par)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop 
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
             && par is ObservableCollectionWithItemPropertyChanged<IKey> param
             && param.First() is { } obj)
         {
@@ -2537,15 +2718,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             t.SelectedReports = tmp;
         }
     }
+
     #endregion
 
     #region DeleteForm
+
     public ReactiveCommand<object, Unit> DeleteForm { get; private set; }
+
     private async Task _DeleteForm(object par)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var answer = await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
+            var answer = await ShowMessage.Handle(new List<string>
+                { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
             if (answer == "Да")
             {
                 var t = desktop.MainWindow as MainWindow;
@@ -2560,21 +2745,27 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             y.Report_Collection.Remove((Report)item);
                         }
                     }
+
                     t.SelectedReports = tmp;
                 }
+
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }
         }
     }
+
     #endregion
 
     #region DeleteReport
+
     public ReactiveCommand<object, Unit> DeleteReport { get; private set; }
+
     private async Task _DeleteReport(object par)
     {
         //if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var answer = await ShowMessage.Handle(new List<string> { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
+            var answer = await ShowMessage.Handle(new List<string>
+                { "Вы действительно хотите удалить организацию?", "Уведомление", "Да", "Нет" });
             if (answer == "Да")
             {
                 if (par is IEnumerable param)
@@ -2586,15 +2777,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         Local_Reports.Reports_Collection.Remove((Reports)item);
                     }
                 }
+
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }
             //await Local_Reports.Reports_Collection.QuickSortAsync();
         }
     }
+
     #endregion
 
     #region SaveReport
+
     public ReactiveCommand<object, Unit> SaveReport { get; private set; }
+
     private async Task _SaveReport(object par)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
@@ -2603,20 +2798,25 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await Local_Reports.Reports_Collection.QuickSortAsync();
         }
     }
+
     #endregion
 
     #region Excel
+
     private ExcelWorksheet worksheet { get; set; }
     private ExcelWorksheet worksheetComment { get; set; }
-    private static string StringReverse(string _string)
+
+    private static string StringReverse(string str)
     {
-        var charArray = _string.Replace("_", "0").Replace("/", ".").Split(".");
+        var charArray = str.Replace("_", "0").Replace("/", ".").Split(".");
         Array.Reverse(charArray);
         return string.Join("", charArray);
     }
 
-    #region StatisticExcelExport            //Excel-Разрывы и пересечения
+    #region StatisticExcelExport //Excel-Разрывы и пересечения
+
     public ReactiveCommand<Unit, Unit> Statistic_Excel_Export { get; private set; }
+
     private async Task _Statistic_Excel_Export()
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -2634,9 +2834,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
+
             if (findRep == 0)
             {
                 #region MessageRepsNotFound
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -2651,7 +2853,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
+
                 return;
             }
 
@@ -2680,6 +2884,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -2694,10 +2899,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
                 }
+
                 using ExcelPackage excelPackage = new(new FileInfo(path));
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
@@ -2739,6 +2947,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             });
                         }
                     }
+
                     var newGen = listSortRep
                         .GroupBy(x => x.RegNoRep)
                         .ToDictionary(gr => gr.Key, gr => gr
@@ -2831,11 +3040,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         row++;
                                     }
                                 }
+
                                 prevEnd = g.EndPeriod;
                                 prevStart = g.StartPeriod;
                             }
                         }
                     }
+
                     worksheet.Column(1).AutoFit();
                     worksheet.Column(2).AutoFit();
                     worksheet.Column(4).AutoFit();
@@ -2852,6 +3063,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -2865,10 +3077,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
+
                     #region MessageExcelExportComplete
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -2885,7 +3101,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     if (res is "Открыть выгрузку")
                     {
                         Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -2894,10 +3112,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region Excel_Export                    //SelectedForm-Выгрузка Excel-Для анализа
+    #region Excel_Export //SelectedForm-Выгрузка Excel-Для анализа
+
     public ReactiveCommand<object, Unit> Excel_Export { get; private set; }
+
     private async Task _Excel_Export(object par)
     {
         var forms = par as ObservableCollectionWithItemPropertyChanged<IKey>;
@@ -2915,6 +3136,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 var t = (Report)forms.First();
                 param = t.FormNum_DB;
             }
+
             dial.Filters.Add(filter);
             if (param != "")
             {
@@ -2926,6 +3148,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     {
                         path += ".xlsx";
                     }
+
                     if (File.Exists(path))
                     {
                         try
@@ -2935,6 +3158,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         catch (Exception)
                         {
                             #region MessageFailedToSaveFile
+
                             await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                                 {
@@ -2949,10 +3173,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
                                 .ShowDialog(desktop.MainWindow);
+
                             #endregion
+
                             return;
                         }
                     }
+
                     using ExcelPackage excelPackage = new(new FileInfo(path));
                     excelPackage.Workbook.Properties.Author = "RAO_APP";
                     excelPackage.Workbook.Properties.Title = "Report";
@@ -2972,6 +3199,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1);
                             masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1);
                         }
+
                         var t = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength + 1);
                         Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength + 1);
                         masterHeaderLength += t;
@@ -3041,6 +3269,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
                                 break;
                         }
+
                         Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
                         var lst = new List<Report>();
                         var form = forms.FirstOrDefault() as Report;
@@ -3048,14 +3277,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         _Excel_Export_Rows(param, 2, masterHeaderLength, worksheet, lst);
                         if (param is "2.2")
                         {
-                            for (var col = worksheet.Dimension.Start.Column; col <= worksheet.Dimension.End.Column; col++)
+                            for (var col = worksheet.Dimension.Start.Column;
+                                 col <= worksheet.Dimension.End.Column;
+                                 col++)
                             {
                                 if (worksheet.Cells[1, col].Text != "№ п/п") continue;
-                                using var excelRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column];
+                                using var excelRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row,
+                                    worksheet.Dimension.End.Column];
                                 excelRange.Sort(col - 1);
                                 break;
                             }
                         }
+
                         _Excel_Export_Notes(param, 2, masterHeaderLength, worksheetPrim, lst);
                         try
                         {
@@ -3064,6 +3297,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         catch (Exception)
                         {
                             #region MessageFailedToSaveFile
+
                             await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                                 {
@@ -3077,10 +3311,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
                                 .ShowDialog(desktop.MainWindow);
+
                             #endregion
+
                             return;
                         }
+
                         #region MessageExcelExportComplete
+
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
@@ -3097,7 +3335,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         if (res is "Открыть выгрузку")
                         {
                             Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -3107,10 +3347,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region Print_Excel_export              //SelectedForm-Выгрузка Excel-Для печати
+    #region Print_Excel_export //SelectedForm-Выгрузка Excel-Для печати
+
     public ReactiveCommand<object, Unit> Print_Excel_Export { get; private set; }
+
     private async Task _Print_Excel_Export(object par)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -3128,6 +3371,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 var t = (Report)forms.First();
                 param = t.FormNum_DB;
             }
+
             dial.Filters.Add(filter);
             if (param != "")
             {
@@ -3139,6 +3383,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     {
                         path += ".xlsx";
                     }
+
                     if (File.Exists(path))
                     {
                         try
@@ -3148,6 +3393,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         catch (Exception)
                         {
                             #region MessageFailedToSaveFile
+
                             await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                                 {
@@ -3162,12 +3408,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
                                 .ShowDialog(desktop.MainWindow);
+
                             #endregion
+
                             return;
                         }
                     }
 #if DEBUG
-                    var pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "Excel"), $"{param}.xlsx");
+                    var pth = Path.Combine(
+                        Path.Combine(
+                            Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")),
+                                "data"), "Excel"), $"{param}.xlsx");
 #else
                                 string pth =
  Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"), "Excel"), param+".xlsx");
@@ -3210,7 +3461,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                         return;
                     }
+
                     #region MessageExcelExportComplete
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -3227,7 +3480,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     if (res is "Открыть выгрузку")
                     {
                         Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -3236,10 +3491,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region All_Excel_Export                //Excel-Формы1,2 и Excel-Выбранная организация-Формы1,2
+    #region All_Excel_Export //Excel-Формы1,2 и Excel-Выбранная организация-Формы1,2
+
     public ReactiveCommand<object, Unit> All_Excel_Export { get; private set; }
+
     private async Task _All_Excel_Export(object par)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -3259,9 +3517,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
+
             if (findRep == 0)
             {
                 #region MessageRepsNotFound
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -3276,14 +3536,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
+
                 return;
             }
+
             var mainWindow = desktop.MainWindow as MainWindow;
             var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
             if (selectedReports is null && forSelectedOrg)
             {
                 #region MessageExcelExportFail
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -3294,9 +3558,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(mainWindow);
+
                 #endregion
+
                 return;
             }
+
             SaveFileDialog dial = new();
             var filter = new FileDialogFilter
             {
@@ -3323,6 +3590,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -3334,10 +3602,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
                 }
+
                 using ExcelPackage excelPackage = new(new FileInfo(path));
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
@@ -3357,6 +3628,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
                         masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
                     }
+
                     var t = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength);
                     Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength);
                     masterHeaderLength += t;
@@ -3427,6 +3699,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
                             break;
                     }
+
                     Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
                     var tyu = 2;
                     var lst = new List<Report>();
@@ -3461,6 +3734,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -3474,10 +3748,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
+
                     #region MessageExcelExportComplete
+
                     var msg = $"Выгрузка форм {param} ";
                     msg += forSelectedOrg
                         ? "для выбранной организации "
@@ -3498,7 +3776,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     if (res is "Открыть выгрузку")
                     {
                         Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -3507,266 +3787,306 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region SelectOrgExcelExport            //Excel-Выбранная организация-Все формы
+    #region SelectOrgExcelExport //Excel-Выбранная организация-Все формы
+
     public ReactiveCommand<Unit, Unit> SelectOrgExcelExport { get; private set; }
+
     private async Task _SelectOrgExcelExport()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var mainWindow = desktop.MainWindow as MainWindow;
+        var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
+        if (selectedReports is null || !selectedReports.Report_Collection.Any())
         {
-            var mainWindow = desktop.MainWindow as MainWindow;
-            var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
-            if (selectedReports is null || !selectedReports.Report_Collection.Any())
+            #region MessageExcelExportFail
+
+            var msg = "Выгрузка не выполнена, поскольку ";
+            msg += selectedReports is null
+                ? "не выбрана организация."
+                : "у выбранной организации отсутствуют формы отчетности.";
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = msg,
+                    MinHeight = 125,
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(mainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        SaveFileDialog dial = new();
+        var filter = new FileDialogFilter
+        {
+            Name = "Excel",
+            Extensions = { "xlsx" }
+        };
+        dial.Filters?.Add(filter);
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
+        {
+            path += ".xlsx";
+        }
+
+        if (File.Exists(path))
+        {
+            try
             {
-                #region MessageExcelExportFail
-                var msg = "Выгрузка не выполнена, поскольку ";
-                msg += selectedReports is null
-                    ? "не выбрана организация."
-                    : "у выбранной организации отсутствуют формы отчетности.";
+                File.Delete(path);
+            }
+            catch (Exception)
+            {
+                #region MessageFailedToSaveFile
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = msg,
-                        MinHeight = 125,
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
+                            "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(mainWindow);
-                #endregion
-                return;
-            }
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
-            {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            dial.Filters.Add(filter);
-            var res = await dial.ShowAsync(desktop.MainWindow);
-            if (!string.IsNullOrEmpty(res))
-            {
-                var path = res;
-                if (!path.Contains(".xlsx"))
-                {
-                    path += ".xlsx";
-                }
-                if (File.Exists(path))
-                {
-                    try
-                    {
-                        File.Delete(path);
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                    "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-                        #endregion
-                        return;
-                    }
-                }
-                using ExcelPackage excelPackage = new(new FileInfo(path));
-                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                excelPackage.Workbook.Properties.Title = "Report";
-                excelPackage.Workbook.Properties.Created = DateTime.Now;
-                HashSet<string> formNums = new();
-                foreach (var key in selectedReports.Report_Collection)
-                {
-                    var rep = (Report)key;
-                    formNums.Add(rep.FormNum_DB);
-                }
-                if (formNums.Contains("1.1"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.1");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.1");
-                    ExportForm11Data(selectedReports);
-                }
-                if (formNums.Contains("1.2"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.2");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.2");
-                    ExportForm12Data(selectedReports);
-                }
-                if (formNums.Contains("1.3"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.3");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.3");
-                    ExportForm13Data(selectedReports);
-                }
-                if (formNums.Contains("1.4"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.4");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.4");
-                    ExportForm14Data(selectedReports);
-                }
-                if (formNums.Contains("1.5"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.5");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.5");
-                    ExportForm15Data(selectedReports);
-                }
-                if (formNums.Contains("1.6"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.6");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.6");
-                    ExportForm16Data(selectedReports);
-                }
-                if (formNums.Contains("1.7"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.7");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.7");
-                    ExportForm17Data(selectedReports);
-                }
-                if (formNums.Contains("1.8"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.8");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.8");
-                    ExportForm18Data(selectedReports);
-                }
-                if (formNums.Contains("1.9"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.9");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.9");
-                    ExportForm19Data(selectedReports);
-                }
-                if (formNums.Contains("2.1"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.1");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.1");
-                    ExportForm21Data(selectedReports);
-                }
-                if (formNums.Contains("2.2"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.2");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.2");
-                    ExportForm22Data(selectedReports);
-                }
-                if (formNums.Contains("2.3"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.3");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.3");
-                    ExportForm23Data(selectedReports);
-                }
-                if (formNums.Contains("2.4"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.4");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.4");
-                    ExportForm24Data(selectedReports);
-                }
-                if (formNums.Contains("2.5"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.5");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.5");
-                    ExportForm25Data(selectedReports);
-                }
-                if (formNums.Contains("2.6"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.6");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.6");
-                    ExportForm26Data(selectedReports);
-                }
-                if (formNums.Contains("2.7"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.7");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.7");
-                    ExportForm27Data(selectedReports);
-                }
-                if (formNums.Contains("2.8"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.8");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.8");
-                    ExportForm28Data(selectedReports);
-                }
-                if (formNums.Contains("2.9"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.9");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.9");
-                    ExportForm29Data(selectedReports);
-                }
-                if (formNums.Contains("2.10"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.10");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.10");
-                    ExportForm210Data(selectedReports);
-                }
-                if (formNums.Contains("2.11"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.11");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.11");
-                    ExportForm211Data(selectedReports);
-                }
-                if (formNums.Contains("2.12"))
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.12");
-                    worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.12");
-                    ExportForm212Data(selectedReports);
-                }
-                try
-                {
-                    excelPackage.Save();
-                }
-                catch (Exception)
-                {
-                    #region MessageFailedToSaveFile
-                    await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Ошибка",
-                            ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                             $"{Environment.NewLine}{path}",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-                    #endregion
-                    return;
-                }
-                #region MessageExcelExportComplete
-                res = await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        ButtonDefinitions = new[]
-                        {
-                            new ButtonDefinition { Name = "Ок" },
-                            new ButtonDefinition { Name = "Открыть выгрузку" }
-                        },
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = "Выгрузка всех форм выбранной организации сохранена по пути:" +
-                                         $"{Environment.NewLine}{path}",
-                        MinWidth = 400,
+                        MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
-                if (res is "Открыть выгрузку")
-                {
-                    Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                }
+
+                return;
             }
         }
+
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        HashSet<string> formNums = new();
+        foreach (var key in selectedReports.Report_Collection)
+        {
+            var rep = (Report)key;
+            formNums.Add(rep.FormNum_DB);
+        }
+
+        if (formNums.Contains("1.1"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.1");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.1");
+            ExportForm11Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.2"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.2");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.2");
+            ExportForm12Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.3"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.3");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.3");
+            ExportForm13Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.4"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.4");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.4");
+            ExportForm14Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.5"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.5");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.5");
+            ExportForm15Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.6"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.6");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.6");
+            ExportForm16Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.7"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.7");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.7");
+            ExportForm17Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.8"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.8");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.8");
+            ExportForm18Data(selectedReports);
+        }
+
+        if (formNums.Contains("1.9"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.9");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 1.9");
+            ExportForm19Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.1"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.1");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.1");
+            ExportForm21Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.2"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.2");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.2");
+            ExportForm22Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.3"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.3");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.3");
+            ExportForm23Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.4"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.4");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.4");
+            ExportForm24Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.5"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.5");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.5");
+            ExportForm25Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.6"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.6");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.6");
+            ExportForm26Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.7"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.7");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.7");
+            ExportForm27Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.8"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.8");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.8");
+            ExportForm28Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.9"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.9");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.9");
+            ExportForm29Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.10"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.10");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.10");
+            ExportForm210Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.11"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.11");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.11");
+            ExportForm211Data(selectedReports);
+        }
+
+        if (formNums.Contains("2.12"))
+        {
+            worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.12");
+            worksheetComment = excelPackage.Workbook.Worksheets.Add("Примечания 2.12");
+            ExportForm212Data(selectedReports);
+        }
+
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        #region MessageExcelExportComplete
+
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка всех форм выбранной организации сохранена по пути:" +
+                                 $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+        }
     }
+
     #region ExportForms
+
     #region ExportForm_11
+
     private void ExportForm11Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -3846,6 +4166,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -3862,13 +4183,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheetComment.Cells[currentRow, 9].Value = comment.Comment_DB;
                     currentRow++;
                 }
-
             }
         }
     }
+
     #endregion
 
     #region ExportForm_12
+
     private void ExportForm12Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -3942,6 +4264,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 28].Value = repForm.PackNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -3961,9 +4284,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_13
+
     private void ExportForm13Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4039,6 +4364,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 29].Value = repForm.PackNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4058,9 +4384,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_14
+
     private void ExportForm14Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4138,6 +4466,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 30].Value = repForm.PackNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4157,9 +4486,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_15
+
     private void ExportForm15Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4241,6 +4572,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 32].Value = repForm.FcpNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4260,9 +4592,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_16
+
     private void ExportForm16Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4350,6 +4684,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 35].Value = repForm.FcpNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4369,9 +4704,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_17
+
     private void ExportForm17Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4469,6 +4806,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 40].Value = repForm.FcpNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4488,9 +4826,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_18
+
     private void ExportForm18Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4580,6 +4920,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 36].Value = repForm.FcpNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4599,9 +4940,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_19
+
     private void ExportForm19Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4653,6 +4996,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4672,9 +5016,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_21
+
     private void ExportForm21Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4748,6 +5094,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 28].Value = repForm.TransuraniumActivityOut_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4766,9 +5113,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_22
+
     private void ExportForm22Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4836,6 +5185,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 25].Value = repForm.FcpNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4854,9 +5204,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_23
+
     private void ExportForm23Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4910,6 +5262,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 18].Value = repForm.DocumentName_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -4928,9 +5281,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_24
+
     private void ExportForm24Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -4992,6 +5347,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 22].Value = repForm.QuantityRemovedFromAccount_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5010,9 +5366,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_25
+
     private void ExportForm25Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5060,6 +5418,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 15].Value = repForm.BetaGammaActivity_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5078,9 +5437,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_26
+
     private void ExportForm26Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5092,7 +5453,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         worksheet.Cells[1, 7].Value = "Номер наблюдательной скважины";
         worksheet.Cells[1, 8].Value = "Наименование зоны контроля";
         worksheet.Cells[1, 9].Value = "Предполагаемый источник поступления радиоактивных веществ";
-        worksheet.Cells[1, 10].Value = "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м";
+        worksheet.Cells[1, 10].Value =
+            "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м";
         worksheet.Cells[1, 11].Value = "Глубина отбора проб, м";
         worksheet.Cells[1, 12].Value = "Наименование радионуклида";
         worksheet.Cells[1, 13].Value = "Среднегодовое содержание радионуклида, Бк/кг";
@@ -5124,6 +5486,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 13].Value = repForm.AverageYearConcentration_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5142,9 +5505,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_27
+
     private void ExportForm27Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5184,6 +5549,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 11].Value = repForm.WasteOutbreakPreviousYear_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5202,9 +5568,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_28
+
     private void ExportForm28Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5246,6 +5614,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 12].Value = repForm.RemovedWasteVolume_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5264,9 +5633,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_29
+
     private void ExportForm29Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5304,6 +5675,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 10].Value = repForm.FactedActivity_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5322,9 +5694,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_210
+
     private void ExportForm210Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5374,6 +5748,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 16].Value = repForm.FcpNumber_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5392,9 +5767,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_211
+
     private void ExportForm211Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5440,6 +5817,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 14].Value = repForm.SpecificActivityOfDensePart_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5458,9 +5836,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region ExportForm_212
+
     private void ExportForm212Data(Reports selectedReports)
     {
         worksheet.Cells[1, 1].Value = "Рег. №";
@@ -5500,6 +5880,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 11].Value = repForm.ProviderOrRecieverOKPO_DB;
                     currentRow++;
                 }
+
                 tmp = currentRow;
                 currentRow = 2;
                 foreach (var key in rep.Notes.OrderBy(x => x.Order))
@@ -5518,9 +5899,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region NotesHeader
+
     private void NotesHeaders()
     {
         worksheetComment.Cells[1, 1].Value = "ОКПО";
@@ -5533,12 +5916,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         worksheetComment.Cells[1, 8].Value = "№ графы";
         worksheetComment.Cells[1, 9].Value = "Пояснение";
     }
-    #endregion
-    #endregion
+
     #endregion
 
-    #region AllForms1_Excel_Export          //Excel-Список форм 1
+    #endregion
+
+    #endregion
+
+    #region AllForms1_Excel_Export //Excel-Список форм 1
+
     public ReactiveCommand<Unit, Unit> AllForms1_Excel_Export { get; private set; }
+
     private async Task _AllForms1_Excel_Export()
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -5556,9 +5944,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
+
             if (findRep == 0)
             {
                 #region MessageRepsNotFound
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -5573,9 +5963,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
+
                 return;
             }
+
             SaveFileDialog dial = new();
             var filter = new FileDialogFilter
             {
@@ -5591,6 +5984,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     path += ".xlsx";
                 }
+
                 if (File.Exists(path))
                 {
                     try
@@ -5600,6 +5994,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -5614,10 +6009,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
                 }
+
                 using ExcelPackage excelPackage = new(new FileInfo(path));
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
@@ -5642,6 +6040,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             lst.Add(item);
                         }
                     }
+
                     var row = 2;
                     foreach (var reps in lst)
                     {
@@ -5658,6 +6057,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             row++;
                         }
                     }
+
                     try
                     {
                         excelPackage.Save();
@@ -5665,6 +6065,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -5678,10 +6079,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
+
                     #region MessageExcelExportComplete
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -5699,7 +6104,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     if (res is "Открыть выгрузку")
                     {
                         Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -5708,10 +6115,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region AllForms2_Excel_Export          //Excel-Список форм 2
+    #region AllForms2_Excel_Export //Excel-Список форм 2
+
     public ReactiveCommand<Unit, Unit> AllForms2_Excel_Export { get; private set; }
+
     private async Task _AllForms2_Excel_Export()
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -5729,9 +6139,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
+
             if (findRep == 0)
             {
                 #region MessageRepsNotFound
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -5746,9 +6158,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
+
                 return;
             }
+
             SaveFileDialog dial = new();
             var filter = new FileDialogFilter
             {
@@ -5764,6 +6179,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     path += ".xlsx";
                 }
+
                 if (File.Exists(path))
                 {
                     try
@@ -5773,6 +6189,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -5787,10 +6204,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
                 }
+
                 using ExcelPackage excelPackage = new(new FileInfo(path));
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
@@ -5813,8 +6233,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         {
                             lst.Add(item);
                         }
+
                         var gr = item.Report_Collection.GroupBy(x => x.FormNum_DB);
                     }
+
                     var row = 2;
                     foreach (var reps in lst)
                     {
@@ -5830,6 +6252,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             row++;
                         }
                     }
+
                     try
                     {
                         excelPackage.Save();
@@ -5837,6 +6260,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -5850,10 +6274,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
+
                     #region MessageExcelExportComplete
+
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
@@ -5871,7 +6299,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     if (res is "Открыть выгрузку")
                     {
                         Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -5880,332 +6310,348 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region AllOrganization_Excel_Export    //Excel-Список организаций
+    #region AllOrganization_Excel_Export //Excel-Список организаций
+
     public ReactiveCommand<Unit, Unit> AllOrganization_Excel_Export { get; private set; }
+
     private async Task _AllOrganization_Excel_Export()
     {
         var findReps = Local_Reports.Reports_Collection.Count;
-        if (findReps == 0) return;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || findReps == 0) return;
+        SaveFileDialog dial = new();
+        var filter = new FileDialogFilter
         {
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
+            Name = "Excel",
+            Extensions = { "xlsx" }
+        };
+        dial.Filters.Add(filter);
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
+        {
+            path += ".xlsx";
+        }
+
+        if (File.Exists(path))
+        {
+            try
             {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            dial.Filters.Add(filter);
-            var res = await dial.ShowAsync(desktop.MainWindow);
-            if (!string.IsNullOrEmpty(res))
+                File.Delete(path);
+            }
+            catch (Exception)
             {
-                var path = res;
-                if (!path.Contains(".xlsx"))
-                {
-                    path += ".xlsx";
-                }
-                if (File.Exists(path))
-                {
-                    try
+                #region MessageFailedToSaveFile
+
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
-                        File.Delete(path);
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
 
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                    "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
+                #endregion
 
-                        #endregion
-                        return;
-                    }
-                }
-                using ExcelPackage excelPackage = new(new FileInfo(path));
-                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                excelPackage.Workbook.Properties.Title = "Report";
-                excelPackage.Workbook.Properties.Created = DateTime.Now;
-
-                if (Local_Reports.Reports_Collection.Count > 0)
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
-
-                    #region ColumnHeaders
-
-                    worksheet.Cells[1, 1].Value = "Рег.№";
-                    worksheet.Cells[1, 2].Value = "Регион";
-                    worksheet.Cells[1, 3].Value = "ОКПО";
-                    worksheet.Cells[1, 4].Value = "Сокращенное наименование";
-                    worksheet.Cells[1, 5].Value = "Адрес";
-                    worksheet.Cells[1, 6].Value = "ИНН";
-                    worksheet.Cells[1, 7].Value = "Форма 1.1";
-                    worksheet.Cells[1, 8].Value = "Форма 1.2";
-                    worksheet.Cells[1, 9].Value = "Форма 1.3";
-                    worksheet.Cells[1, 10].Value = "Форма 1.4";
-                    worksheet.Cells[1, 11].Value = "Форма 1.5";
-                    worksheet.Cells[1, 12].Value = "Форма 1.6";
-                    worksheet.Cells[1, 13].Value = "Форма 1.7";
-                    worksheet.Cells[1, 14].Value = "Форма 1.8";
-                    worksheet.Cells[1, 15].Value = "Форма 1.9";
-                    worksheet.Cells[1, 16].Value = "Форма 2.1";
-                    worksheet.Cells[1, 17].Value = "Форма 2.2";
-                    worksheet.Cells[1, 18].Value = "Форма 2.3";
-                    worksheet.Cells[1, 19].Value = "Форма 2.4";
-                    worksheet.Cells[1, 20].Value = "Форма 2.5";
-                    worksheet.Cells[1, 21].Value = "Форма 2.6";
-                    worksheet.Cells[1, 22].Value = "Форма 2.7";
-                    worksheet.Cells[1, 23].Value = "Форма 2.8";
-                    worksheet.Cells[1, 24].Value = "Форма 2.9";
-                    worksheet.Cells[1, 25].Value = "Форма 2.10";
-                    worksheet.Cells[1, 26].Value = "Форма 2.11";
-                    worksheet.Cells[1, 27].Value = "Форма 2.12";
-
-                    #endregion
-
-                    var lst = new List<Reports>();
-                    var checkedLst = new List<Reports>();
-                    foreach (var key in Local_Reports.Reports_Collection)
-                    {
-                        var item = (Reports)key;
-                        lst.Add(item);
-                    }
-
-                    var row = 2;
-                    foreach (var reps in lst)
-                    {
-                        if (checkedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
-                        {
-                            row--;
-                            #region BindingCells
-
-                            worksheet.Cells[row, 7].Value =
-                                (int)worksheet.Cells[row, 7].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
-                            worksheet.Cells[row, 8].Value =
-                                (int)worksheet.Cells[row, 8].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
-                            worksheet.Cells[row, 9].Value =
-                                (int)worksheet.Cells[row, 9].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
-                            worksheet.Cells[row, 10].Value =
-                                (int)worksheet.Cells[row, 10].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
-                            worksheet.Cells[row, 11].Value =
-                                (int)worksheet.Cells[row, 11].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
-                            worksheet.Cells[row, 12].Value =
-                                (int)worksheet.Cells[row, 12].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
-                            worksheet.Cells[row, 13].Value =
-                                (int)worksheet.Cells[row, 13].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
-                            worksheet.Cells[row, 14].Value =
-                                (int)worksheet.Cells[row, 14].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
-                            worksheet.Cells[row, 15].Value =
-                                (int)worksheet.Cells[row, 15].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
-                            worksheet.Cells[row, 16].Value =
-                                (int)worksheet.Cells[row, 16].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
-                            worksheet.Cells[row, 17].Value =
-                                (int)worksheet.Cells[row, 17].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
-                            worksheet.Cells[row, 18].Value =
-                                (int)worksheet.Cells[row, 18].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
-                            worksheet.Cells[row, 19].Value =
-                                (int)worksheet.Cells[row, 19].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
-                            worksheet.Cells[row, 20].Value =
-                                (int)worksheet.Cells[row, 20].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
-                            worksheet.Cells[row, 21].Value =
-                                (int)worksheet.Cells[row, 21].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
-                            worksheet.Cells[row, 22].Value =
-                                (int)worksheet.Cells[row, 22].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
-                            worksheet.Cells[row, 23].Value =
-                                (int)worksheet.Cells[row, 23].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
-                            worksheet.Cells[row, 24].Value =
-                                (int)worksheet.Cells[row, 24].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
-                            worksheet.Cells[row, 25].Value =
-                                (int)worksheet.Cells[row, 25].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
-                            worksheet.Cells[row, 26].Value =
-                                (int)worksheet.Cells[row, 26].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
-                            worksheet.Cells[row, 27].Value =
-                                (int)worksheet.Cells[row, 27].Value
-                                + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.12"));
-
-                            #endregion
-                            row++;
-                        }
-                        else
-                        {
-                            var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB)
-                                ? reps.Master.Rows10[0].Inn_DB
-                                : !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB)
-                                    ? reps.Master.Rows10[1].Inn_DB
-                                    : !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB)
-                                        ? reps.Master.Rows20[0].Inn_DB
-                                        : reps.Master.Rows20[1].Inn_DB;
-                            var address =
-                                !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) &&
-                                !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-")
-                                    ? reps.Master.Rows10[1].JurLicoFactAddress_DB
-                                    : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) &&
-                                      !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-")
-                                        ? reps.Master.Rows20[1].JurLicoFactAddress_DB
-                                        : !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) &&
-                                          !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-")
-                                            ? reps.Master.Rows10[1].JurLicoAddress_DB
-                                            : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) &&
-                                              !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-")
-                                                ? reps.Master.Rows20[1].JurLicoAddress_DB
-                                                : !string.IsNullOrEmpty(reps.Master.Rows10[0]
-                                                      .JurLicoFactAddress_DB) &&
-                                                  !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-")
-                                                    ? reps.Master.Rows10[0].JurLicoFactAddress_DB
-                                                    : !string.IsNullOrEmpty(reps.Master.Rows20[0]
-                                                          .JurLicoFactAddress_DB) &&
-                                                      !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-")
-                                                        ? reps.Master.Rows20[0].JurLicoFactAddress_DB
-                                                        : !string.IsNullOrEmpty(reps.Master.Rows10[0]
-                                                              .JurLicoAddress_DB) &&
-                                                          !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-")
-                                                            ? reps.Master.Rows10[0].JurLicoAddress_DB
-                                                            : reps.Master.Rows20[0].JurLicoAddress_DB;
-                            #region BindingCells
-
-                            worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                            worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2
-                                ? reps.Master.RegNoRep.Value[..2]
-                                : reps.Master.RegNoRep.Value;
-                            worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
-                            worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
-                            worksheet.Cells[row, 5].Value = address;
-                            worksheet.Cells[row, 6].Value = inn;
-                            worksheet.Cells[row, 7].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.1"));
-                            worksheet.Cells[row, 8].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.2"));
-                            worksheet.Cells[row, 9].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.3"));
-                            worksheet.Cells[row, 10].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.4"));
-                            worksheet.Cells[row, 11].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.5"));
-                            worksheet.Cells[row, 12].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.6"));
-                            worksheet.Cells[row, 13].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.7"));
-                            worksheet.Cells[row, 14].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.8"));
-                            worksheet.Cells[row, 15].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("1.9"));
-                            worksheet.Cells[row, 16].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.1"));
-                            worksheet.Cells[row, 17].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.2"));
-                            worksheet.Cells[row, 18].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.3"));
-                            worksheet.Cells[row, 19].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.4"));
-                            worksheet.Cells[row, 20].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.5"));
-                            worksheet.Cells[row, 21].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.6"));
-                            worksheet.Cells[row, 22].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.7"));
-                            worksheet.Cells[row, 23].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.8"));
-                            worksheet.Cells[row, 24].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.9"));
-                            worksheet.Cells[row, 25].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.10"));
-                            worksheet.Cells[row, 26].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.11"));
-                            worksheet.Cells[row, 27].Value = reps.Report_Collection
-                                .Count(x => x.FormNum_DB.Equals("2.12"));
-
-                            #endregion
-                            row++;
-                            checkedLst.Add(reps);
-                        }
-                    }
-                    try
-                    {
-                        excelPackage.Save();
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                                 $"{Environment.NewLine}{path}",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-                        #endregion
-                        return;
-                    }
-                    #region MessageExcelExportComplete
-                    res = await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions = new[]
-                            {
-                                new ButtonDefinition { Name = "Ок" },
-                                new ButtonDefinition { Name = "Открыть выгрузку" }
-                            },
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Выгрузка списка всех организаций с указанием количества форм сохранена по пути:" +
-                                $"{Environment.NewLine}{path}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-                    #endregion
-                    if (res is "Открыть выгрузку")
-                    {
-                        Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                    }
-                }
+                return;
             }
         }
+
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+        if (Local_Reports.Reports_Collection.Count == 0) return;
+        worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
+
+        #region ColumnHeaders
+
+        worksheet.Cells[1, 1].Value = "Рег.№";
+        worksheet.Cells[1, 2].Value = "Регион";
+        worksheet.Cells[1, 3].Value = "ОКПО";
+        worksheet.Cells[1, 4].Value = "Сокращенное наименование";
+        worksheet.Cells[1, 5].Value = "Адрес";
+        worksheet.Cells[1, 6].Value = "ИНН";
+        worksheet.Cells[1, 7].Value = "Форма 1.1";
+        worksheet.Cells[1, 8].Value = "Форма 1.2";
+        worksheet.Cells[1, 9].Value = "Форма 1.3";
+        worksheet.Cells[1, 10].Value = "Форма 1.4";
+        worksheet.Cells[1, 11].Value = "Форма 1.5";
+        worksheet.Cells[1, 12].Value = "Форма 1.6";
+        worksheet.Cells[1, 13].Value = "Форма 1.7";
+        worksheet.Cells[1, 14].Value = "Форма 1.8";
+        worksheet.Cells[1, 15].Value = "Форма 1.9";
+        worksheet.Cells[1, 16].Value = "Форма 2.1";
+        worksheet.Cells[1, 17].Value = "Форма 2.2";
+        worksheet.Cells[1, 18].Value = "Форма 2.3";
+        worksheet.Cells[1, 19].Value = "Форма 2.4";
+        worksheet.Cells[1, 20].Value = "Форма 2.5";
+        worksheet.Cells[1, 21].Value = "Форма 2.6";
+        worksheet.Cells[1, 22].Value = "Форма 2.7";
+        worksheet.Cells[1, 23].Value = "Форма 2.8";
+        worksheet.Cells[1, 24].Value = "Форма 2.9";
+        worksheet.Cells[1, 25].Value = "Форма 2.10";
+        worksheet.Cells[1, 26].Value = "Форма 2.11";
+        worksheet.Cells[1, 27].Value = "Форма 2.12";
+
+        #endregion
+
+        var lst = new List<Reports>();
+        var checkedLst = new List<Reports>();
+        foreach (var key in Local_Reports.Reports_Collection)
+        {
+            var item = (Reports)key;
+            lst.Add(item);
+        }
+
+        var row = 2;
+        foreach (var reps in lst)
+        {
+            if (checkedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
+            {
+                row--;
+
+                #region BindingCells
+
+                worksheet.Cells[row, 7].Value =
+                    (int)worksheet.Cells[row, 7].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
+                worksheet.Cells[row, 8].Value =
+                    (int)worksheet.Cells[row, 8].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
+                worksheet.Cells[row, 9].Value =
+                    (int)worksheet.Cells[row, 9].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
+                worksheet.Cells[row, 10].Value =
+                    (int)worksheet.Cells[row, 10].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
+                worksheet.Cells[row, 11].Value =
+                    (int)worksheet.Cells[row, 11].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
+                worksheet.Cells[row, 12].Value =
+                    (int)worksheet.Cells[row, 12].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
+                worksheet.Cells[row, 13].Value =
+                    (int)worksheet.Cells[row, 13].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
+                worksheet.Cells[row, 14].Value =
+                    (int)worksheet.Cells[row, 14].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
+                worksheet.Cells[row, 15].Value =
+                    (int)worksheet.Cells[row, 15].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
+                worksheet.Cells[row, 16].Value =
+                    (int)worksheet.Cells[row, 16].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
+                worksheet.Cells[row, 17].Value =
+                    (int)worksheet.Cells[row, 17].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
+                worksheet.Cells[row, 18].Value =
+                    (int)worksheet.Cells[row, 18].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
+                worksheet.Cells[row, 19].Value =
+                    (int)worksheet.Cells[row, 19].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
+                worksheet.Cells[row, 20].Value =
+                    (int)worksheet.Cells[row, 20].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
+                worksheet.Cells[row, 21].Value =
+                    (int)worksheet.Cells[row, 21].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
+                worksheet.Cells[row, 22].Value =
+                    (int)worksheet.Cells[row, 22].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
+                worksheet.Cells[row, 23].Value =
+                    (int)worksheet.Cells[row, 23].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
+                worksheet.Cells[row, 24].Value =
+                    (int)worksheet.Cells[row, 24].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
+                worksheet.Cells[row, 25].Value =
+                    (int)worksheet.Cells[row, 25].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
+                worksheet.Cells[row, 26].Value =
+                    (int)worksheet.Cells[row, 26].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
+                worksheet.Cells[row, 27].Value =
+                    (int)worksheet.Cells[row, 27].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.12"));
+
+                #endregion
+
+                row++;
+            }
+            else
+            {
+                var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB)
+                    ? reps.Master.Rows10[0].Inn_DB
+                    : !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB)
+                        ? reps.Master.Rows10[1].Inn_DB
+                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB)
+                            ? reps.Master.Rows20[0].Inn_DB
+                            : reps.Master.Rows20[1].Inn_DB;
+                var address =
+                    !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) &&
+                    !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-")
+                        ? reps.Master.Rows10[1].JurLicoFactAddress_DB
+                        : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) &&
+                          !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-")
+                            ? reps.Master.Rows20[1].JurLicoFactAddress_DB
+                            : !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) &&
+                              !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-")
+                                ? reps.Master.Rows10[1].JurLicoAddress_DB
+                                : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) &&
+                                  !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-")
+                                    ? reps.Master.Rows20[1].JurLicoAddress_DB
+                                    : !string.IsNullOrEmpty(reps.Master.Rows10[0]
+                                          .JurLicoFactAddress_DB) &&
+                                      !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-")
+                                        ? reps.Master.Rows10[0].JurLicoFactAddress_DB
+                                        : !string.IsNullOrEmpty(reps.Master.Rows20[0]
+                                              .JurLicoFactAddress_DB) &&
+                                          !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-")
+                                            ? reps.Master.Rows20[0].JurLicoFactAddress_DB
+                                            : !string.IsNullOrEmpty(reps.Master.Rows10[0]
+                                                  .JurLicoAddress_DB) &&
+                                              !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-")
+                                                ? reps.Master.Rows10[0].JurLicoAddress_DB
+                                                : reps.Master.Rows20[0].JurLicoAddress_DB;
+
+                #region BindingCells
+
+                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2
+                    ? reps.Master.RegNoRep.Value[..2]
+                    : reps.Master.RegNoRep.Value;
+                worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
+                worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
+                worksheet.Cells[row, 5].Value = address;
+                worksheet.Cells[row, 6].Value = inn;
+                worksheet.Cells[row, 7].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.1"));
+                worksheet.Cells[row, 8].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.2"));
+                worksheet.Cells[row, 9].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.3"));
+                worksheet.Cells[row, 10].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.4"));
+                worksheet.Cells[row, 11].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.5"));
+                worksheet.Cells[row, 12].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.6"));
+                worksheet.Cells[row, 13].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.7"));
+                worksheet.Cells[row, 14].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.8"));
+                worksheet.Cells[row, 15].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("1.9"));
+                worksheet.Cells[row, 16].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.1"));
+                worksheet.Cells[row, 17].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.2"));
+                worksheet.Cells[row, 18].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.3"));
+                worksheet.Cells[row, 19].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.4"));
+                worksheet.Cells[row, 20].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.5"));
+                worksheet.Cells[row, 21].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.6"));
+                worksheet.Cells[row, 22].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.7"));
+                worksheet.Cells[row, 23].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.8"));
+                worksheet.Cells[row, 24].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.9"));
+                worksheet.Cells[row, 25].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.10"));
+                worksheet.Cells[row, 26].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.11"));
+                worksheet.Cells[row, 27].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.12"));
+
+                #endregion
+
+                row++;
+                checkedLst.Add(reps);
+            }
+        }
+        worksheet.Cells.AutoFitColumns();
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        #region MessageExcelExportComplete
+
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage =
+                    "Выгрузка списка всех организаций с указанием количества форм сохранена по пути:" +
+                    $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+        }
     }
+
     #endregion
 
-    #region Passports                       //Excel-Паспорта   
-    #region ExcelMissingPas                 //Excel-Паспорта-Отчеты без паспортов
+    #region Passports //Excel-Паспорта   
+
+    #region ExcelMissingPas //Excel-Паспорта-Отчеты без паспортов
+
     public ReactiveCommand<object, Unit> ExcelMissingPas { get; protected set; }
+
     private async Task _ExcelMissingPas(object param)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -6221,6 +6667,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     path += ".xlsx";
                 }
+
                 if (File.Exists(path))
                 {
                     try
@@ -6230,6 +6677,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -6237,17 +6685,21 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 ContentTitle = "Выгрузка в Excel",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                    "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                                    $"Не удалось сохранить файл по пути: {path}" +
+                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                    $"{Environment.NewLine}и используется другим процессом.",
                                 MinWidth = 400,
-                                MinHeight = 150,
+                                MinHeight = 200,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
                 }
+
                 using ExcelPackage excelPackage = new(new FileInfo(path));
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
@@ -6301,6 +6753,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 catch (Exception)
                 {
                     #region MessageFailedToOpenPassportDirectory
+
                     await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
@@ -6314,9 +6767,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     return;
                 }
+
                 pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
                 pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
                 var currentRow = 2;
@@ -6345,9 +6801,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     break;
                                 }
                             }
+
                             if (!findPasFile)
                             {
                                 #region BindingCells
+
                                 worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                                 worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                                 worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -6379,12 +6837,15 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
                                 worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
                                 worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+
                                 #endregion
+
                                 currentRow++;
                             }
                         }
                     }
                 }
+                worksheet.Cells.AutoFitColumns();
                 try
                 {
                     excelPackage.Save();
@@ -6392,6 +6853,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 catch (Exception)
                 {
                     #region MessageFailedToSaveFile
+
                     await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
@@ -6405,9 +6867,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
                 }
+
                 #region MessageExcelExportComplete
+
                 res = await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
@@ -6428,7 +6893,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
+
                 if (res is "Открыть выгрузку")
                 {
                     Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -6436,10 +6903,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region ExcelPasWithoutRep              //Excel-Паспорта-Паспорта без отчетов
+    #region ExcelPasWithoutRep //Excel-Паспорта-Паспорта без отчетов
+
     public ReactiveCommand<object, Unit> ExcelPasWithoutRep { get; protected set; }
+
     private async Task _ExcelPasWithoutRep(object param)
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -6452,8 +6922,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     ButtonDefinitions = new[]
                     {
-                        new ButtonDefinition {Name = "Ок", IsDefault = true},
-                        new ButtonDefinition {Name = "Отмена", IsCancel = true}
+                        new ButtonDefinition { Name = "Ок", IsDefault = true },
+                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
                     },
                     ContentTitle = "Выбор категории",
                     ContentMessage = "Введите через запятую номера категорий (допускается несколько значений)",
@@ -6471,6 +6941,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             catch (Exception)
             {
                 #region MessageInvalidCategoryNums
+
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -6485,8 +6956,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
             }
+
             var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
             if (!string.IsNullOrEmpty(res))
             {
@@ -6495,6 +6968,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     path += ".xlsx";
                 }
+
                 if (File.Exists(path))
                 {
                     try
@@ -6504,6 +6978,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     catch (Exception)
                     {
                         #region MessageFailedToSaveFile
+
                         await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
@@ -6518,10 +6993,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(desktop.MainWindow);
+
                         #endregion
+
                         return;
                     }
                 }
+
                 using ExcelPackage excelPackage = new(new FileInfo(path));
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
@@ -6546,6 +7024,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 catch (Exception)
                 {
                     #region MessageFailedToOpenPassportDirectory
+
                     await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
@@ -6559,9 +7038,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     return;
                 }
+
                 pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
                 pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
                 foreach (var key in Local_Reports.Reports_Collection10)
@@ -6572,7 +7054,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     foreach (var rep in form11)
                     {
                         List<Form11> repPas = rep.Rows11
-                            .Where(x => x.OperationCode_DB is ("11" or "85"))   // && categories.Contains(x.Category_DB))
+                            .Where(x => x.OperationCode_DB is ("11" or "85")) // && categories.Contains(x.Category_DB))
                             .ToList();
                         foreach (var repForm in repPas)
                         {
@@ -6583,12 +7065,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                          && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
                                          && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
                             {
-                                pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                                pasNames.Remove(
+                                    $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                                 break;
                             }
                         }
                     }
                 }
+
                 var currentRow = 2;
                 foreach (var pasName in pasNames)
                 {
@@ -6600,6 +7084,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
                     currentRow++;
                 }
+
                 worksheet.Cells.AutoFitColumns();
                 try
                 {
@@ -6608,6 +7093,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 catch (Exception)
                 {
                     #region MessageFailedToSaveFile
+
                     await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
@@ -6621,10 +7107,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(desktop.MainWindow);
+
                     #endregion
+
                     return;
                 }
+
                 #region MessageExcelExportComplete
+
                 res = await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
@@ -6647,7 +7137,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(desktop.MainWindow);
+
                 #endregion
+
                 if (res is "Открыть выгрузку")
                 {
                     Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
@@ -6655,10 +7147,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
-    #region ChangePasDir                    //Excel-Паспорта-Изменить расположение
+    #region ChangePasDir //Excel-Паспорта-Изменить расположение
+
     public ReactiveCommand<object, Unit> ChangePasDir { get; protected set; }
+
     private async Task _ChangePasDir(object param)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -6667,12 +7162,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             PasFolderPath = await openFolderDialog.ShowAsync(desktop.MainWindow) ?? PasFolderPath;
         }
     }
+
     #endregion
+
     #endregion
 
     #region ExcelExportCommonImplementation
+
     #region ExcelExportNotes
-    private int _Excel_Export_Notes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim, List<Report> forms, bool printId = false)
+
+    private int _Excel_Export_Notes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
+        List<Report> forms, bool printId = false)
     {
         foreach (var item in forms)
         {
@@ -6693,12 +7193,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                         {
                             yu = reps.Master_DB.Rows10[1]
-                                .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
+                                     .ExcelRow(worksheetPrim, cnty, 1,
+                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                 1;
                         }
                         else
                         {
                             yu = reps.Master_DB.Rows10[0]
-                                .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
+                                     .ExcelRow(worksheetPrim, cnty, 1,
+                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                 1;
                         }
                     }
                     else
@@ -6706,12 +7210,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
                         {
                             yu = reps.Master_DB.Rows20[1]
-                                .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
+                                     .ExcelRow(worksheetPrim, cnty, 1,
+                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                 1;
                         }
                         else
                         {
                             yu = reps.Master_DB.Rows20[0]
-                                .ExcelRow(worksheetPrim, cnty, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
+                                     .ExcelRow(worksheetPrim, cnty, 1,
+                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                 1;
                         }
                     }
                 }
@@ -6740,17 +7248,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
+
                 item.ExcelRow(worksheetPrim, cnty, yu);
                 cnty++;
             }
+
             startRow = cnty;
         }
+
         return startRow;
     }
+
     #endregion
 
     #region ExcelExportRows
-    private int _Excel_Export_Rows(string param, int startRow, int startColumn, ExcelWorksheet worksheet, List<Report> forms, bool id = false)
+
+    private int _Excel_Export_Rows(string param, int startRow, int startColumn, ExcelWorksheet worksheet,
+        List<Report> forms, bool id = false)
     {
         foreach (var item in forms)
         {
@@ -6763,28 +7277,32 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 switch (param)
                 {
                     case "2.1":
+                    {
+                        t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
+                        if (item[param].ToList<IKey>().Any() && !t.Any())
                         {
-                            t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
-                            if (item[param].ToList<IKey>().Any() && !t.Any())
-                            {
-                                t = item[param].ToList<IKey>();
-                            }
-                            break;
+                            t = item[param].ToList<IKey>();
                         }
+
+                        break;
+                    }
                     case "2.2":
+                    {
+                        t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
+                        if (item[param].ToList<IKey>().Any() && !t.Any())
                         {
-                            t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
-                            if (item[param].ToList<IKey>().Any() && !t.Any())
-                            {
-                                t = item[param].ToList<IKey>();
-                            }
-                            break;
+                            t = item[param].ToList<IKey>();
                         }
+
+                        break;
+                    }
                 }
+
                 if (param != "2.1" && param != "2.2")
                 {
                     t = item[param].ToList<IKey>();
                 }
+
                 var lst = t.Any()
                     ? item[param].ToList<IKey>().ToList()
                     : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
@@ -6859,6 +7377,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             form212.ExcelRow(worksheet, count, startColumn + 1);
                             break;
                     }
+
                     var mstrep = reps.Master_DB;
                     int yu;
                     if (id)
@@ -6868,12 +7387,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                             {
                                 yu = reps.Master_DB.Rows10[1]
-                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1;
+                                         .ExcelRow(worksheet, count, 1,
+                                             SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) +
+                                     1;
                             }
                             else
                             {
                                 yu = reps.Master_DB.Rows10[0]
-                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1;
+                                         .ExcelRow(worksheet, count, 1,
+                                             SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) +
+                                     1;
                             }
                         }
                         else
@@ -6881,12 +7404,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
                             {
                                 yu = reps.Master_DB.Rows20[1]
-                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1;
+                                         .ExcelRow(worksheet, count, 1,
+                                             SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                     1;
                             }
                             else
                             {
                                 yu = reps.Master_DB.Rows20[0]
-                                    .ExcelRow(worksheet, count, 1, SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1;
+                                         .ExcelRow(worksheet, count, 1,
+                                             SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) +
+                                     1;
                             }
                         }
                     }
@@ -6919,6 +7446,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     item.ExcelRow(worksheet, count, yu);
                     count++;
                 }
+
                 //if (param.Split('.')[0] == "2")
                 //{
                 //    var new_number = 2;
@@ -6931,11 +7459,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 startRow = count;
             }
         }
+
         return startRow;
     }
+
     #endregion
 
     #region ExcelPrintTitulExport
+
     private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
     {
         var findReports = Local_Reports.Reports_Collection
@@ -7032,9 +7563,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
         }
     }
+
     #endregion
 
     #region ExcelPrintSubMainExport
+
     private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
     {
         var findReports = Local_Reports.Reports_Collection
@@ -7053,59 +7586,62 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             switch (param)
             {
                 case "2.6":
-                    {
-                        worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
-                        worksheet.Cells["G5"].Value = form.SourcesQuantity26_DB;
-                        break;
-                    }
+                {
+                    worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
+                    worksheet.Cells["G5"].Value = form.SourcesQuantity26_DB;
+                    break;
+                }
                 case "2.7":
-                    {
-                        worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
-                        worksheet.Cells["G4"].Value = form.PermissionNumber27_DB;
-                        worksheet.Cells["G5"].Value = form.ValidBegin27_DB;
-                        worksheet.Cells["J5"].Value = form.ValidThru27_DB;
-                        worksheet.Cells["G6"].Value = form.PermissionDocumentName27_DB;
-                        break;
-                    }
+                {
+                    worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = form.PermissionNumber27_DB;
+                    worksheet.Cells["G5"].Value = form.ValidBegin27_DB;
+                    worksheet.Cells["J5"].Value = form.ValidThru27_DB;
+                    worksheet.Cells["G6"].Value = form.PermissionDocumentName27_DB;
+                    break;
+                }
                 case "2.8":
-                    {
-                        worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
-                        worksheet.Cells["G4"].Value = form.PermissionNumber_28_DB;
-                        worksheet.Cells["K4"].Value = form.ValidBegin_28_DB;
-                        worksheet.Cells["N4"].Value = form.ValidThru_28_DB;
-                        worksheet.Cells["G5"].Value = form.PermissionDocumentName_28_DB;
+                {
+                    worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = form.PermissionNumber_28_DB;
+                    worksheet.Cells["K4"].Value = form.ValidBegin_28_DB;
+                    worksheet.Cells["N4"].Value = form.ValidThru_28_DB;
+                    worksheet.Cells["G5"].Value = form.PermissionDocumentName_28_DB;
 
-                        worksheet.Cells["G6"].Value = form.PermissionNumber1_28_DB;
-                        worksheet.Cells["K6"].Value = form.ValidBegin1_28_DB;
-                        worksheet.Cells["N6"].Value = form.ValidThru1_28_DB;
-                        worksheet.Cells["G7"].Value = form.PermissionDocumentName1_28_DB;
+                    worksheet.Cells["G6"].Value = form.PermissionNumber1_28_DB;
+                    worksheet.Cells["K6"].Value = form.ValidBegin1_28_DB;
+                    worksheet.Cells["N6"].Value = form.ValidThru1_28_DB;
+                    worksheet.Cells["G7"].Value = form.PermissionDocumentName1_28_DB;
 
-                        worksheet.Cells["G8"].Value = form.ContractNumber_28_DB;
-                        worksheet.Cells["K8"].Value = form.ValidBegin2_28_DB;
-                        worksheet.Cells["N8"].Value = form.ValidThru2_28_DB;
-                        worksheet.Cells["G9"].Value = form.OrganisationReciever_28_DB;
+                    worksheet.Cells["G8"].Value = form.ContractNumber_28_DB;
+                    worksheet.Cells["K8"].Value = form.ValidBegin2_28_DB;
+                    worksheet.Cells["N8"].Value = form.ValidThru2_28_DB;
+                    worksheet.Cells["G9"].Value = form.OrganisationReciever_28_DB;
 
-                        worksheet.Cells["D21"].Value = form.GradeExecutor_DB;
-                        worksheet.Cells["F21"].Value = form.FIOexecutor_DB;
-                        worksheet.Cells["I21"].Value = form.ExecPhone_DB;
-                        worksheet.Cells["K21"].Value = form.ExecEmail_DB;
-                        return;
-                    }
+                    worksheet.Cells["D21"].Value = form.GradeExecutor_DB;
+                    worksheet.Cells["F21"].Value = form.FIOexecutor_DB;
+                    worksheet.Cells["I21"].Value = form.ExecPhone_DB;
+                    worksheet.Cells["K21"].Value = form.ExecEmail_DB;
+                    return;
+                }
                 default:
-                    {
-                        worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
-                        break;
-                    }
+                {
+                    worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
+                    break;
+                }
             }
         }
+
         worksheet.Cells["D18"].Value = form.GradeExecutor_DB;
         worksheet.Cells["F18"].Value = form.FIOexecutor_DB;
         worksheet.Cells["I18"].Value = form.ExecPhone_DB;
         worksheet.Cells["K18"].Value = form.ExecEmail_DB;
     }
+
     #endregion
 
     #region ExcelPrintNotesExport
+
     private void _Excel_Print_Notes_Export(string param, ExcelWorksheet worksheet, Report form)
     {
         var start = 15;
@@ -7113,6 +7649,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             start = 18;
         }
+
         for (var i = 0; i < form.Notes.Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
@@ -7132,6 +7669,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
                 top.Color.SetColor(255, 0, 0, 0);
             }
+
             var cellCL = worksheet.Cells[$"C{start + 1}:L{start + 1}"];
             cellCL.Merge = true;
             var btmCL = cellCL.Style.Border.Bottom;
@@ -7147,6 +7685,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
             topCL.Color.SetColor(255, 0, 0, 0);
         }
+
         var count = start;
         foreach (var note in form.Notes)
         {
@@ -7154,9 +7693,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             count++;
         }
     }
+
     #endregion
 
     #region ExcelPrintRowsExport
+
     private void _Excel_Print_Rows_Export(string param, ExcelWorksheet worksheet, Report form)
     {
         var start = 11;
@@ -7164,6 +7705,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             start = 14;
         }
+
         for (var i = 0; i < form[param].Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
@@ -7184,6 +7726,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 top.Color.SetColor(255, 0, 0, 0);
             }
         }
+
         var count = start;
         foreach (var it in form[param])
         {
@@ -7253,6 +7796,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     form212.ExcelRow(worksheet, count, 1);
                     break;
             }
+
             count++;
         }
         //var new_number = 1;
@@ -7264,16 +7808,21 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         //    row++;
         //}
     }
-    #endregion 
+
+    #endregion
+
     #endregion
 
     #endregion
 
     #region INotifyPropertyChanged
+
     private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
+
     public event PropertyChangedEventHandler PropertyChanged;
+
     #endregion
 }
