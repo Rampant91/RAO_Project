@@ -3482,37 +3482,105 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _All_Excel_Export(object par)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var forSelectedOrg = par.ToString()!.Contains("Org");
+        var param = Regex.Replace(par.ToString()!, "[^\\d.]", "");
+        var findRep = 0;
+        foreach (var key in Local_Reports.Reports_Collection)
         {
-            var forSelectedOrg = par.ToString()!.Contains("Org");
-            var param = Regex.Replace(par.ToString()!, "[^\\d.]", "");
-            var findRep = 0;
-            foreach (var key in Local_Reports.Reports_Collection)
+            var reps = (Reports)key;
+            foreach (var key1 in reps.Report_Collection)
             {
-                var reps = (Reports)key;
-                foreach (var key1 in reps.Report_Collection)
+                var rep = (Report)key1;
+                if (rep.FormNum_DB.StartsWith(param))
                 {
-                    var rep = (Report)key1;
-                    if (rep.FormNum_DB.StartsWith(param))
-                    {
-                        findRep++;
-                    }
+                    findRep++;
                 }
             }
+        }
 
-            if (findRep == 0)
+        if (findRep == 0)
+        {
+            #region MessageRepsNotFound
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Не удалось совершить выгрузку форм {param}," +
+                        $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей базе.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        var mainWindow = desktop.MainWindow as MainWindow;
+        var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
+        if (selectedReports is null && forSelectedOrg)
+        {
+            #region MessageExcelExportFail
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(mainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        SaveFileDialog dial = new();
+        var filter = new FileDialogFilter
+        {
+            Name = "Excel",
+            Extensions = { "xlsx" }
+        };
+        dial.Filters!.Add(filter);
+        if (param == "") return;
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
+        {
+            path += ".xlsx";
+        }
+
+        if (File.Exists(path))
+        {
+            try
             {
-                #region MessageRepsNotFound
+                File.Delete(path);
+            }
+            catch (Exception)
+            {
+                #region MessageFailedToSaveFile
 
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Уведомление",
+                        ContentHeader = "Ошибка",
                         ContentMessage =
-                            $"Не удалось совершить выгрузку форм {param}," +
-                            $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей базе.",
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -3523,252 +3591,183 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 return;
             }
+        }
 
-            var mainWindow = desktop.MainWindow as MainWindow;
-            var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
-            if (selectedReports is null && forSelectedOrg)
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        if (Local_Reports.Reports_Collection.Count == 0) return;
+        worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
+        var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
+        int masterHeaderLength;
+        if (param.Split('.')[0] == "1")
+        {
+            masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
+            masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
+        }
+        else
+        {
+            masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
+            masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
+        }
+
+        var t = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength);
+        Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength);
+        masterHeaderLength += t;
+        masterHeaderLength--;
+        switch (param)
+        {
+            case "1.1":
+                Form11.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.2":
+                Form12.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.3":
+                Form13.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.4":
+                Form14.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.5":
+                Form15.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.6":
+                Form16.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.7":
+                Form17.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.8":
+                Form18.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.9":
+                Form19.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.1":
+                Form21.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.2":
+                Form22.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.3":
+                Form23.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.4":
+                Form24.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.5":
+                Form25.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.6":
+                Form26.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.7":
+                Form27.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.8":
+                Form28.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.9":
+                Form29.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.10":
+                Form210.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.11":
+                Form211.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.12":
+                Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+        }
+        worksheet.Cells.AutoFitColumns();
+        Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
+        worksheetPrim.Cells.AutoFitColumns();
+
+        var tyu = 2;
+        var lst = new List<Report>();
+        if (forSelectedOrg)
+        {
+            var newItem = selectedReports!.Report_Collection
+                .Where(x => x.FormNum_DB.Equals(param));
+            lst.AddRange(newItem);
+        }
+        else
+        {
+            foreach (var key in Local_Reports.Reports_Collection)
             {
-                #region MessageExcelExportFail
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(mainWindow);
-
-                #endregion
-
-                return;
+                var item = (Reports)key;
+                var newItem = item.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
+                lst.AddRange(newItem);
             }
+        }
 
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
+        //foreach (Reports item in Local_Reports.Reports_Collection)
+        //{
+        //    lst.AddRange(item.Report_Collection);
+        //}
+
+        _Excel_Export_Rows(param, tyu, masterHeaderLength, worksheet, lst, true);
+        _Excel_Export_Notes(param, tyu, masterHeaderLength, worksheetPrim, lst, true);
+
+        worksheet.View.FreezePanes(2, 1);
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        #region MessageExcelExportComplete
+
+        var msg = $"Выгрузка форм {param} ";
+        msg += forSelectedOrg
+            ? "для выбранной организации "
+            : "для всех организаций ";
+        msg += $"сохранена по пути {Environment.NewLine}{path}";
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            dial.Filters!.Add(filter);
-            if (param == "") return;
-            var res = await dial.ShowAsync(desktop.MainWindow);
-            if (!string.IsNullOrEmpty(res))
-            {
-                var path = res;
-                if (!path.Contains(".xlsx"))
+                ButtonDefinitions = new[]
                 {
-                    path += ".xlsx";
-                }
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = msg,
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
 
-                if (File.Exists(path))
-                {
-                    try
-                    {
-                        File.Delete(path);
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
+        #endregion
 
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentMessage = $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                                 $"Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        return;
-                    }
-                }
-
-                using ExcelPackage excelPackage = new(new FileInfo(path));
-                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                excelPackage.Workbook.Properties.Title = "Report";
-                excelPackage.Workbook.Properties.Created = DateTime.Now;
-                if (Local_Reports.Reports_Collection.Count > 0)
-                {
-                    worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
-                    var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
-                    int masterHeaderLength;
-                    if (param.Split('.')[0] == "1")
-                    {
-                        masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
-                        masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
-                    }
-                    else
-                    {
-                        masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
-                        masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
-                    }
-
-                    var t = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength);
-                    Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength);
-                    masterHeaderLength += t;
-                    masterHeaderLength--;
-                    switch (param)
-                    {
-                        case "1.1":
-                            Form11.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.2":
-                            Form12.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.3":
-                            Form13.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.4":
-                            Form14.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.5":
-                            Form15.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.6":
-                            Form16.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.7":
-                            Form17.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.8":
-                            Form18.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "1.9":
-                            Form19.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.1":
-                            Form21.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.2":
-                            Form22.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.3":
-                            Form23.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.4":
-                            Form24.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.5":
-                            Form25.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.6":
-                            Form26.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.7":
-                            Form27.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.8":
-                            Form28.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.9":
-                            Form29.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.10":
-                            Form210.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.11":
-                            Form211.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                        case "2.12":
-                            Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                            break;
-                    }
-                    worksheet.Cells.AutoFitColumns();
-                    Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
-                    worksheetPrim.Cells.AutoFitColumns();
-                    var tyu = 2;
-                    var lst = new List<Report>();
-                    if (forSelectedOrg)
-                    {
-                        var newItem = selectedReports!.Report_Collection
-                            .Where(x => x.FormNum_DB.Equals(param));
-                        lst.AddRange(newItem);
-                    }
-                    else
-                    {
-                        foreach (var key in Local_Reports.Reports_Collection)
-                        {
-                            var item = (Reports)key;
-                            var newItem = item.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
-                            lst.AddRange(newItem);
-                        }
-                    }
-
-                    //foreach (Reports item in Local_Reports.Reports_Collection)
-                    //{
-                    //    lst.AddRange(item.Report_Collection);
-                    //}
-
-                    _Excel_Export_Rows(param, tyu, masterHeaderLength, worksheet, lst, true);
-                    _Excel_Export_Notes(param, tyu, masterHeaderLength, worksheetPrim, lst, true);
-
-                    worksheet.View.FreezePanes(2, 1);
-                    try
-                    {
-                        excelPackage.Save();
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
-
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                                 $"{Environment.NewLine}{path}",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        return;
-                    }
-
-                    #region MessageExcelExportComplete
-
-                    var msg = $"Выгрузка форм {param} ";
-                    msg += forSelectedOrg
-                        ? "для выбранной организации "
-                        : "для всех организаций ";
-                    msg += $"сохранена по пути {Environment.NewLine}{path}";
-                    res = await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions = new[]
-                            {
-                                new ButtonDefinition { Name = "Ок" },
-                                new ButtonDefinition { Name = "Открыть выгрузку" }
-                            },
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = msg,
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    if (res is "Открыть выгрузку")
-                    {
-                        Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                    }
-                }
-            }
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
         }
     }
 
