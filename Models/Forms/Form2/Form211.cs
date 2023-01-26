@@ -620,56 +620,86 @@ public class Form211 : Form2
     #endregion
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        double val;
-        base.ExcelGetRow(worksheet, Row);
-        PlotName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        PlotKadastrNumber_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
-        PlotCode_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
-        InfectedArea_DB = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 5].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 5].Value);
-        Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
-        SpecificActivityOfPlot_DB = Convert.ToString(worksheet.Cells[Row, 7].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 7].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 7].Value);
-        SpecificActivityOfLiquidPart_DB = Convert.ToString(worksheet.Cells[Row, 8].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 8].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 8].Value);
-        SpecificActivityOfDensePart_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 9].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 9].Value);
+        base.ExcelGetRow(worksheet, row);
+        PlotName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        PlotKadastrNumber_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        PlotCode_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
+        InfectedArea_DB = Convert.ToString(worksheet.Cells[row, 5].Value) is "0"
+            ? "-"
+            : double.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out var val)
+                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+                : Convert.ToString(worksheet.Cells[row, 5].Value);
+        Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
+        SpecificActivityOfPlot_DB = Convert.ToString(worksheet.Cells[row, 7].Value) is "0"
+            ? "-"
+            : double.TryParse(Convert.ToString(worksheet.Cells[row, 7].Value), out val)
+                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+                : Convert.ToString(worksheet.Cells[row, 7].Value);
+        SpecificActivityOfLiquidPart_DB = Convert.ToString(worksheet.Cells[row, 8].Value) is "0"
+            ? "-"
+            : double.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out val)
+                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+                : Convert.ToString(worksheet.Cells[row, 8].Value);
+        SpecificActivityOfDensePart_DB = Convert.ToString(worksheet.Cells[row, 9].Value) is "0"
+            ? "-"
+            : double.TryParse(Convert.ToString(worksheet.Cells[row, 9].Value), out val)
+                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+                : Convert.ToString(worksheet.Cells[row, 9].Value);
 
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
-        double val = 0;
+        var cnt = base.ExcelRow(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = PlotName_DB;
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = PlotKadastrNumber_DB;
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = PlotCode_DB;
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(InfectedArea_DB) || InfectedArea_DB == null ? 0 : double.TryParse(InfectedArea_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : InfectedArea_DB;
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = Radionuclids_DB;
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = string.IsNullOrEmpty(SpecificActivityOfPlot_DB) || SpecificActivityOfPlot_DB == null ? 0 : double.TryParse(SpecificActivityOfPlot_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfPlot_DB;
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = string.IsNullOrEmpty(SpecificActivityOfLiquidPart_DB) || SpecificActivityOfLiquidPart_DB == null ? 0 : double.TryParse(SpecificActivityOfLiquidPart_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfLiquidPart_DB;
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = string.IsNullOrEmpty(SpecificActivityOfDensePart_DB) || SpecificActivityOfDensePart_DB == null ? 0 : double.TryParse(SpecificActivityOfDensePart_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivityOfDensePart_DB;
+        worksheet.Cells[row, column].Value = PlotName_DB;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = PlotKadastrNumber_DB;
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = PlotCode_DB;
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = InfectedArea_DB is null or "" or "-"
+                ? 0
+                : double.TryParse(ReplaceE(InfectedArea_DB), out var val)
+                    ? val
+                    : InfectedArea_DB;
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = Radionuclids_DB;
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = SpecificActivityOfPlot_DB is null or "" or "-"
+            ? 0
+            : double.TryParse(ReplaceE(SpecificActivityOfPlot_DB), out val)
+                ? val
+                : SpecificActivityOfPlot_DB;
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = SpecificActivityOfLiquidPart_DB is null or "" or "-"
+            ? 0
+            : double.TryParse(ReplaceE(SpecificActivityOfLiquidPart_DB), out val)
+                ? val
+                : SpecificActivityOfLiquidPart_DB;
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = SpecificActivityOfDensePart_DB is null or "" or "-"
+            ? 0
+            : double.TryParse(ReplaceE(SpecificActivityOfDensePart_DB), out val)
+                ? val
+                : SpecificActivityOfDensePart_DB;
         return 8;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
-
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(SpecificActivityOfPlot)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(SpecificActivityOfLiquidPart)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models").GetProperty(nameof(SpecificActivityOfDensePart)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
+        worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(PlotName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(PlotKadastrNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(PlotCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(InfectedArea))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(Radionuclids))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(SpecificActivityOfPlot))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(SpecificActivityOfLiquidPart))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form211,Models")?.GetProperty(nameof(SpecificActivityOfDensePart))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
 
         return 8;
     }
     #endregion
+
     #region IDataGridColumn
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
@@ -683,54 +713,63 @@ public class Form211 : Form2
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
+
             #region PlotName (2)
             var PlotNameR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotNameR.SetSizeColToAllLevels(163);
             PlotNameR.Binding = nameof(PlotName);
             NumberInOrderR += PlotNameR;
             #endregion
+
             #region PlotKadastrNumber (3)
             var PlotKadastrNumberR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotKadastrNumberR.SetSizeColToAllLevels(173);
             PlotKadastrNumberR.Binding = nameof(PlotKadastrNumber);
             NumberInOrderR += PlotKadastrNumberR;
             #endregion
+
             #region PlotCode (4)
             var PlotCodeR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             PlotCodeR.SetSizeColToAllLevels(88);
             PlotCodeR.Binding = nameof(PlotCode);
             NumberInOrderR += PlotCodeR;
             #endregion
+
             #region InfectedArea (5)
             var InfectedAreaR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             InfectedAreaR.SetSizeColToAllLevels(248);
             InfectedAreaR.Binding = nameof(InfectedArea);
             NumberInOrderR += InfectedAreaR;
             #endregion
+
             #region Radionuclids (6)
             var RadionuclidsR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidsR.SetSizeColToAllLevels(188);
             RadionuclidsR.Binding = nameof(Radionuclids);
             NumberInOrderR += RadionuclidsR;
             #endregion
+
             #region SpecificActivityOfPlot (7)
             var SpecificActivityOfPlotR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(SpecificActivityOfPlot)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SpecificActivityOfPlotR.SetSizeColToAllLevels(155);
             SpecificActivityOfPlotR.Binding = nameof(SpecificActivityOfPlot);
             NumberInOrderR += SpecificActivityOfPlotR;
             #endregion
+
             #region SpecificActivityOfLiquidPart (8)
             var SpecificActivityOfLiquidPartR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(SpecificActivityOfLiquidPart)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SpecificActivityOfLiquidPartR.SetSizeColToAllLevels(176);
             SpecificActivityOfLiquidPartR.Binding = nameof(SpecificActivityOfLiquidPart);
             NumberInOrderR += SpecificActivityOfLiquidPartR;
             #endregion
+
             #region SpecificActivityOfDensePart (9)
             var SpecificActivityOfDensePartR = ((FormPropertyAttribute)typeof(Form211).GetProperty(nameof(SpecificActivityOfDensePart)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             SpecificActivityOfDensePartR.SetSizeColToAllLevels(176);
             SpecificActivityOfDensePartR.Binding = nameof(SpecificActivityOfDensePart);
             NumberInOrderR += SpecificActivityOfDensePartR;
             #endregion
+
             _DataGridColumns = NumberInOrderR;
         }
         return _DataGridColumns;

@@ -2314,8 +2314,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
-    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null,
-        bool doSomething = false)
+    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
     {
         switch (an)
         {
@@ -2866,196 +2865,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         };
         dial.Filters?.Add(filter);
         var res = await dial.ShowAsync(desktop.MainWindow);
-        if (!string.IsNullOrEmpty(res))
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
         {
-            var path = res;
-            if (!path.Contains(".xlsx"))
-            {
-                path += ".xlsx";
-            }
+            path += ".xlsx";
+        }
 
-            if (File.Exists(path))
-            {
-                try
-                {
-                    File.Delete(path);
-                }
-                catch (Exception)
-                {
-                    #region MessageFailedToSaveFile
-
-                    await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Ошибка",
-                            ContentMessage =
-                                $"Не удалось сохранить файл по пути: {path}" +
-                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                $"{Environment.NewLine}и используется другим процессом.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    return;
-                }
-            }
-
-            using ExcelPackage excelPackage = new(new FileInfo(path));
-            excelPackage.Workbook.Properties.Author = "RAO_APP";
-            excelPackage.Workbook.Properties.Title = "Report";
-            excelPackage.Workbook.Properties.Created = DateTime.Now;
-            if (Local_Reports.Reports_Collection.Count == 0) return;
-
-            worksheet = excelPackage.Workbook.Worksheets.Add("Разрывы и пересечения");
-            worksheet.Cells[1, 1].Value = "Рег.№";
-            worksheet.Cells[1, 2].Value = "ОКПО";
-            worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-            worksheet.Cells[1, 4].Value = "Форма";
-            worksheet.Cells[1, 5].Value = "Начало предыдущего периода";
-            worksheet.Cells[1, 6].Value = "Конец предыдущего периода";
-            worksheet.Cells[1, 7].Value = "Начало периода";
-            worksheet.Cells[1, 8].Value = "Конец периода";
-            worksheet.Cells[1, 9].Value = "Зона разрыва";
-            worksheet.Cells[1, 10].Value = "Вид несоответствия";
-            worksheet.Column(3).AutoFit();
-
-            var listSortRep = new List<ReportForSort>();
-            foreach (var key in Local_Reports.Reports_Collection)
-            {
-                var item = (Reports)key;
-                if (item.Master_DB.FormNum_DB.Split('.')[0] != "1") continue;
-                foreach (var key1 in item.Report_Collection)
-                {
-                    var rep = (Report)key1;
-                    var start = StringReverse(rep.StartPeriod_DB);
-                    var end = StringReverse(rep.EndPeriod_DB);
-                    if (!long.TryParse(start, out var startL) || !long.TryParse(end, out var endL)) continue;
-                    listSortRep.Add(new ReportForSort
-                    {
-                        RegNoRep = item.Master_DB.RegNoRep.Value ?? "",
-                        OkpoRep = item.Master_DB.OkpoRep.Value ?? "",
-                        FormNum = rep.FormNum_DB,
-                        StartPeriod = startL,
-                        EndPeriod = endL,
-                        ShortYr = item.Master_DB.ShortJurLicoRep.Value
-                    });
-                }
-            }
-
-            var newGen = listSortRep
-                .GroupBy(x => x.RegNoRep)
-                .ToDictionary(gr => gr.Key, gr => gr
-                    .ToList()
-                    .GroupBy(x => x.FormNum)
-                    .ToDictionary(gr => gr.Key, gr => gr
-                        .ToList()
-                        .OrderBy(elem => elem.EndPeriod)));
-            var row = 2;
-            foreach (var grp in newGen)
-            {
-                foreach (var gr in grp.Value)
-                {
-                    var prevEnd = gr.Value.FirstOrDefault()?.EndPeriod;
-                    var prevStart = gr.Value.FirstOrDefault()?.StartPeriod;
-                    var newGr = gr.Value.Skip(1).ToList();
-                    foreach (var g in newGr)
-                    {
-                        if (g.StartPeriod != prevEnd && g.StartPeriod != prevStart && g.EndPeriod != prevEnd)
-                        {
-                            if (g.StartPeriod < prevEnd)
-                            {
-                                var prevEndN = prevEnd.ToString()?.Length == 8
-                                    ? prevEnd.ToString()
-                                    : prevEnd == 0
-                                        ? "нет даты конца периода"
-                                        : prevEnd.ToString()?.Insert(6, "0");
-                                var prevStartN = prevStart.ToString()?.Length == 8
-                                    ? prevStart.ToString()
-                                    : prevStart == 0
-                                        ? "нет даты начала периода"
-                                        : prevStart.ToString()?.Insert(6, "0");
-                                var stPer = g.StartPeriod.ToString().Length == 8
-                                    ? g.StartPeriod.ToString()
-                                    : g.StartPeriod.ToString().Insert(6, "0");
-                                var endPer = g.EndPeriod.ToString().Length == 8
-                                    ? g.EndPeriod.ToString()
-                                    : g.EndPeriod.ToString().Insert(6, "0");
-                                worksheet.Cells[row, 1].Value = g.RegNoRep;
-                                worksheet.Cells[row, 2].Value = g.OkpoRep;
-                                worksheet.Cells[row, 3].Value = g.ShortYr;
-                                worksheet.Cells[row, 4].Value = g.FormNum;
-                                worksheet.Cells[row, 5].Value = prevStartN.Equals("нет даты начала периода")
-                                    ? prevStartN
-                                    : $"{prevStartN[6..8]}.{prevStartN[4..6]}.{prevStartN[..4]}";
-                                worksheet.Cells[row, 6].Value = prevEndN.Equals("нет даты конца периода")
-                                    ? prevEndN
-                                    : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
-                                worksheet.Cells[row, 7].Value = $"{stPer[6..8]}.{stPer[4..6]}.{stPer[..4]}";
-                                worksheet.Cells[row, 8].Value = $"{endPer[6..8]}.{endPer[4..6]}.{endPer[..4]}";
-                                worksheet.Cells[row, 9].Value =
-                                    $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
-                                worksheet.Cells[row, 10].Value = "пересечение";
-                                row++;
-                            }
-                            else
-                            {
-                                var prevEndN = prevEnd?.ToString().Length == 8
-                                    ? prevEnd.ToString()
-                                    : prevEnd == 0
-                                        ? "нет даты конца периода"
-                                        : prevEnd?.ToString().Insert(6, "0");
-                                var prevStartN = prevStart?.ToString().Length == 8
-                                    ? prevStart.ToString()
-                                    : prevStart == 0
-                                        ? "нет даты начала периода"
-                                        : prevStart?.ToString().Insert(6, "0");
-                                var st_per = g.StartPeriod.ToString().Length == 8
-                                    ? g.StartPeriod.ToString()
-                                    : g.StartPeriod.ToString().Insert(6, "0");
-                                var end_per = g.EndPeriod.ToString().Length == 8
-                                    ? g.EndPeriod.ToString()
-                                    : g.EndPeriod.ToString().Insert(6, "0");
-                                worksheet.Cells[row, 1].Value = g.RegNoRep;
-                                worksheet.Cells[row, 2].Value = g.OkpoRep;
-                                worksheet.Cells[row, 3].Value = g.ShortYr;
-                                worksheet.Cells[row, 4].Value = g.FormNum;
-                                worksheet.Cells[row, 5].Value = prevStartN.Equals("нет даты начала периода")
-                                    ? prevStartN
-                                    : $"{prevStartN[6..8]}.{prevStartN[4..6]}.{prevStartN[..4]}";
-                                worksheet.Cells[row, 6].Value = prevEndN.Equals("нет даты конца периода")
-                                    ? prevEndN
-                                    : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
-                                worksheet.Cells[row, 7].Value = $"{st_per[6..8]}.{st_per[4..6]}.{st_per[..4]}";
-                                worksheet.Cells[row, 8].Value =
-                                    $"{end_per[6..8]}.{end_per[4..6]}.{end_per[..4]}";
-                                worksheet.Cells[row, 9].Value =
-                                    $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
-                                worksheet.Cells[row, 10].Value = "разрыв";
-                                row++;
-                            }
-                        }
-
-                        prevEnd = g.EndPeriod;
-                        prevStart = g.StartPeriod;
-                    }
-                }
-            }
-
-            for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
-            {
-                if (worksheet.Cells[1, col].Value is "Сокращенное наименование") continue;
-                worksheet.Column(col).AutoFit();
-            }
-
+        if (File.Exists(path))
+        {
             try
             {
-                excelPackage.Save();
+                File.Delete(path);
             }
             catch (Exception)
             {
@@ -3067,8 +2888,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Ошибка",
-                        ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                         $"{Environment.NewLine}{path}",
+                        ContentMessage =
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -3079,32 +2902,206 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 return;
             }
+        }
 
-            #region MessageExcelExportComplete
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        if (Local_Reports.Reports_Collection.Count == 0) return;
 
-            res = await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        worksheet = excelPackage.Workbook.Worksheets.Add("Разрывы и пересечения");
+        worksheet.Cells[1, 1].Value = "Рег.№";
+        worksheet.Cells[1, 2].Value = "ОКПО";
+        worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+        worksheet.Cells[1, 4].Value = "Форма";
+        worksheet.Cells[1, 5].Value = "Начало прошлого периода";
+        worksheet.Cells[1, 6].Value = "Конец прошлого периода";
+        worksheet.Cells[1, 7].Value = "Начало периода";
+        worksheet.Cells[1, 8].Value = "Конец периода";
+        worksheet.Cells[1, 9].Value = "Зона разрыва";
+        worksheet.Cells[1, 10].Value = "Вид несоответствия";
+        worksheet.Column(3).AutoFit();
+
+        var listSortRep = new List<ReportForSort>();
+        foreach (var key in Local_Reports.Reports_Collection)
+        {
+            var item = (Reports)key;
+            if (item.Master_DB.FormNum_DB.Split('.')[0] != "1") continue;
+            foreach (var key1 in item.Report_Collection)
+            {
+                var rep = (Report)key1;
+                var start = StringReverse(rep.StartPeriod_DB);
+                var end = StringReverse(rep.EndPeriod_DB);
+                if (!long.TryParse(start, out var startL) || !long.TryParse(end, out var endL)) continue;
+                listSortRep.Add(new ReportForSort
                 {
-                    ButtonDefinitions = new[]
+                    RegNoRep = item.Master_DB.RegNoRep.Value ?? "",
+                    OkpoRep = item.Master_DB.OkpoRep.Value ?? "",
+                    FormNum = rep.FormNum_DB,
+                    StartPeriod = startL,
+                    EndPeriod = endL,
+                    ShortYr = item.Master_DB.ShortJurLicoRep.Value
+                });
+            }
+        }
+
+        var newGen = listSortRep
+            .GroupBy(x => x.RegNoRep)
+            .ToDictionary(gr => gr.Key, gr => gr
+                .ToList()
+                .GroupBy(x => x.FormNum)
+                .ToDictionary(gr => gr.Key, gr => gr
+                    .ToList()
+                    .OrderBy(elem => elem.EndPeriod)));
+        var row = 2;
+        foreach (var grp in newGen)
+        {
+            foreach (var gr in grp.Value)
+            {
+                var prevEnd = gr.Value.FirstOrDefault()?.EndPeriod;
+                var prevStart = gr.Value.FirstOrDefault()?.StartPeriod;
+                var newGr = gr.Value.Skip(1).ToList();
+                foreach (var g in newGr)
+                {
+                    if (g.StartPeriod != prevEnd && g.StartPeriod != prevStart && g.EndPeriod != prevEnd)
                     {
-                        new ButtonDefinition { Name = "Ок" },
-                        new ButtonDefinition { Name = "Открыть выгрузку" }
-                    },
+                        if (g.StartPeriod < prevEnd)
+                        {
+                            var prevEndN = prevEnd.ToString()?.Length == 8
+                                ? prevEnd.ToString()
+                                : prevEnd == 0
+                                    ? "нет даты конца периода"
+                                    : prevEnd.ToString()?.Insert(6, "0");
+                            var prevStartN = prevStart.ToString()?.Length == 8
+                                ? prevStart.ToString()
+                                : prevStart == 0
+                                    ? "нет даты начала периода"
+                                    : prevStart.ToString()?.Insert(6, "0");
+                            var stPer = g.StartPeriod.ToString().Length == 8
+                                ? g.StartPeriod.ToString()
+                                : g.StartPeriod.ToString().Insert(6, "0");
+                            var endPer = g.EndPeriod.ToString().Length == 8
+                                ? g.EndPeriod.ToString()
+                                : g.EndPeriod.ToString().Insert(6, "0");
+                            worksheet.Cells[row, 1].Value = g.RegNoRep;
+                            worksheet.Cells[row, 2].Value = g.OkpoRep;
+                            worksheet.Cells[row, 3].Value = g.ShortYr;
+                            worksheet.Cells[row, 4].Value = g.FormNum;
+                            worksheet.Cells[row, 5].Value = prevStartN.Equals("нет даты начала периода")
+                                ? prevStartN
+                                : $"{prevStartN[6..8]}.{prevStartN[4..6]}.{prevStartN[..4]}";
+                            worksheet.Cells[row, 6].Value = prevEndN.Equals("нет даты конца периода")
+                                ? prevEndN
+                                : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
+                            worksheet.Cells[row, 7].Value = $"{stPer[6..8]}.{stPer[4..6]}.{stPer[..4]}";
+                            worksheet.Cells[row, 8].Value = $"{endPer[6..8]}.{endPer[4..6]}.{endPer[..4]}";
+                            worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 7].Value}-{worksheet.Cells[row, 6].Value}";
+                            worksheet.Cells[row, 10].Value = "пересечение";
+                            row++;
+                        }
+                        else
+                        {
+                            var prevEndN = prevEnd?.ToString().Length == 8
+                                ? prevEnd.ToString()
+                                : prevEnd == 0
+                                    ? "нет даты конца периода"
+                                    : prevEnd?.ToString().Insert(6, "0");
+                            var prevStartN = prevStart?.ToString().Length == 8
+                                ? prevStart.ToString()
+                                : prevStart == 0
+                                    ? "нет даты начала периода"
+                                    : prevStart?.ToString().Insert(6, "0");
+                            var stPer = g.StartPeriod.ToString().Length == 8
+                                ? g.StartPeriod.ToString()
+                                : g.StartPeriod.ToString().Insert(6, "0");
+                            var endPer = g.EndPeriod.ToString().Length == 8
+                                ? g.EndPeriod.ToString()
+                                : g.EndPeriod.ToString().Insert(6, "0");
+                            worksheet.Cells[row, 1].Value = g.RegNoRep;
+                            worksheet.Cells[row, 2].Value = g.OkpoRep;
+                            worksheet.Cells[row, 3].Value = g.ShortYr;
+                            worksheet.Cells[row, 4].Value = g.FormNum;
+                            worksheet.Cells[row, 5].Value = prevStartN.Equals("нет даты начала периода")
+                                ? prevStartN
+                                : $"{prevStartN[6..8]}.{prevStartN[4..6]}.{prevStartN[..4]}";
+                            worksheet.Cells[row, 6].Value = prevEndN.Equals("нет даты конца периода")
+                                ? prevEndN
+                                : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
+                            worksheet.Cells[row, 7].Value = $"{stPer[6..8]}.{stPer[4..6]}.{stPer[..4]}";
+                            worksheet.Cells[row, 8].Value =
+                                $"{endPer[6..8]}.{endPer[4..6]}.{endPer[..4]}";
+                            worksheet.Cells[row, 9].Value =
+                                $"{worksheet.Cells[row, 6].Value}-{worksheet.Cells[row, 7].Value}";
+                            worksheet.Cells[row, 10].Value = "разрыв";
+                            row++;
+                        }
+                    }
+
+                    prevEnd = g.EndPeriod;
+                    prevStart = g.StartPeriod;
+                }
+            }
+        }
+
+        for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
+        {
+            if (worksheet.Cells[1, col].Value is "Сокращенное наименование") continue;
+            worksheet.Column(col).AutoFit();
+        }
+
+        worksheet.View.FreezePanes(2, 1);
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = "Выгрузка списка разрывов и пересечений дат сохранена по пути:" +
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
                                      $"{Environment.NewLine}{path}",
                     MinWidth = 400,
+                    MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(desktop.MainWindow);
 
             #endregion
 
-            if (res is "Открыть выгрузку")
+            return;
+        }
+
+        #region MessageExcelExportComplete
+
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-            }
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка списка разрывов и пересечений дат сохранена по пути:" +
+                                 $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
         }
     }
 
@@ -3117,229 +3114,223 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _Excel_Export(object par)
     {
         var forms = par as ObservableCollectionWithItemPropertyChanged<IKey>;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        SaveFileDialog dial = new();
+        var filter = new FileDialogFilter
         {
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
-            {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            var param = "";
-            if (forms is { Count: > 0 })
-            {
-                var t = (Report)forms.First();
-                param = t.FormNum_DB;
-            }
+            Name = "Excel",
+            Extensions = { "xlsx" }
+        };
+        var param = "";
+        if (forms is { Count: > 0 })
+        {
+            var t = (Report)forms.First();
+            param = t.FormNum_DB;
+        }
 
-            dial.Filters.Add(filter);
-            if (param != "")
+        dial.Filters.Add(filter);
+        if (param is "") return;
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
+        {
+            path += ".xlsx";
+        }
+
+        if (File.Exists(path))
+        {
+            try
             {
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                if (!string.IsNullOrEmpty(res))
+                File.Delete(path);
+            }
+            catch (Exception)
+            {
+                #region MessageFailedToSaveFile
+
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
+
+                #endregion
+
+                return;
+            }
+        }
+
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        if (forms?.Count == 0) return;
+        worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
+        var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
+        int masterHeaderLength;
+        if (param.Split('.')[0] == "1")
+        {
+            masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1);
+            masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1);
+        }
+        else
+        {
+            masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1);
+            masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1);
+        }
+
+        var tmpLength = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength + 1);
+        Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength + 1);
+        masterHeaderLength += tmpLength;
+        switch (param)
+        {
+            case "1.1":
+                Form11.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.2":
+                Form12.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.3":
+                Form13.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.4":
+                Form14.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.5":
+                Form15.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.6":
+                Form16.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.7":
+                Form17.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.8":
+                Form18.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "1.9":
+                Form19.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.1":
+                Form21.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.2":
+                Form22.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.3":
+                Form23.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.4":
+                Form24.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.5":
+                Form25.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.6":
+                Form26.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.7":
+                Form27.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.8":
+                Form28.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.9":
+                Form29.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.10":
+                Form210.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.11":
+                Form211.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+            case "2.12":
+                Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
+                break;
+        }
+        worksheet.Cells.AutoFitColumns();
+        Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
+        worksheetPrim.Cells.AutoFitColumns();
+
+        var lst = new List<Report>();
+        var form = forms.FirstOrDefault() as Report;
+        lst.Add(form);
+        _Excel_Export_Rows(param, 2, masterHeaderLength, worksheet, lst);
+        if (param is "2.2")
+        {
+            for (var col = worksheet.Dimension.Start.Column; col <= worksheet.Dimension.End.Column; col++)
+            {
+                if (worksheet.Cells[1, col].Text != "№ п/п") continue;
+                using var excelRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column];
+                excelRange.Sort(col - 1);
+                break;
+            }
+        }
+        _Excel_Export_Notes(param, 2, masterHeaderLength, worksheetPrim, lst);
+
+        worksheet.View.FreezePanes(2, 1);
+        worksheetPrim.View.FreezePanes(2, 1);
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
-                    var path = res;
-                    if (!path.Contains(".xlsx"))
-                    {
-                        path += ".xlsx";
-                    }
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
 
-                    if (File.Exists(path))
-                    {
-                        try
-                        {
-                            File.Delete(path);
-                        }
-                        catch (Exception)
-                        {
-                            #region MessageFailedToSaveFile
+            #endregion
 
-                            await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                                {
-                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                    ContentTitle = "Выгрузка в Excel",
-                                    ContentHeader = "Ошибка",
-                                    ContentMessage =
-                                        $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                        "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                    MinWidth = 400,
-                                    MinHeight = 150,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(desktop.MainWindow);
+            return;
+        }
 
-                            #endregion
+        #region MessageExcelExportComplete
 
-                            return;
-                        }
-                    }
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка формы для анализа сохранена по пути:" +
+                                 $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
 
-                    using ExcelPackage excelPackage = new(new FileInfo(path));
-                    excelPackage.Workbook.Properties.Author = "RAO_APP";
-                    excelPackage.Workbook.Properties.Title = "Report";
-                    excelPackage.Workbook.Properties.Created = DateTime.Now;
-                    if (forms.Count > 0)
-                    {
-                        var worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
-                        var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
-                        int masterHeaderLength;
-                        if (param.Split('.')[0] == "1")
-                        {
-                            masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1);
-                            masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1);
-                        }
-                        else
-                        {
-                            masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1);
-                            masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1);
-                        }
+        #endregion
 
-                        var t = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength + 1);
-                        Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength + 1);
-                        masterHeaderLength += t;
-                        switch (param)
-                        {
-                            case "1.1":
-                                Form11.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.2":
-                                Form12.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.3":
-                                Form13.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.4":
-                                Form14.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.5":
-                                Form15.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.6":
-                                Form16.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.7":
-                                Form17.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.8":
-                                Form18.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "1.9":
-                                Form19.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.1":
-                                Form21.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.2":
-                                Form22.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.3":
-                                Form23.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.4":
-                                Form24.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.5":
-                                Form25.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.6":
-                                Form26.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.7":
-                                Form27.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.8":
-                                Form28.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.9":
-                                Form29.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.10":
-                                Form210.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.11":
-                                Form211.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                            case "2.12":
-                                Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
-                                break;
-                        }
-
-                        Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
-                        var lst = new List<Report>();
-                        var form = forms.FirstOrDefault() as Report;
-                        lst.Add(form);
-                        _Excel_Export_Rows(param, 2, masterHeaderLength, worksheet, lst);
-                        if (param is "2.2")
-                        {
-                            for (var col = worksheet.Dimension.Start.Column;
-                                 col <= worksheet.Dimension.End.Column;
-                                 col++)
-                            {
-                                if (worksheet.Cells[1, col].Text != "№ п/п") continue;
-                                using var excelRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row,
-                                    worksheet.Dimension.End.Column];
-                                excelRange.Sort(col - 1);
-                                break;
-                            }
-                        }
-
-                        _Excel_Export_Notes(param, 2, masterHeaderLength, worksheetPrim, lst);
-                        try
-                        {
-                            excelPackage.Save();
-                        }
-                        catch (Exception)
-                        {
-                            #region MessageFailedToSaveFile
-
-                            await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                                {
-                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                    ContentTitle = "Выгрузка в Excel",
-                                    ContentHeader = "Ошибка",
-                                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                                     $"{Environment.NewLine}{path}",
-                                    MinWidth = 400,
-                                    MinHeight = 150,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(desktop.MainWindow);
-
-                            #endregion
-
-                            return;
-                        }
-
-                        #region MessageExcelExportComplete
-
-                        res = await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                ButtonDefinitions = new[]
-                                {
-                                    new ButtonDefinition { Name = "Ок" },
-                                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                                },
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Уведомление",
-                                ContentMessage = "Выгрузка формы для анализа сохранена по пути:" +
-                                                 $"{Environment.NewLine}{path}",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        if (res is "Открыть выгрузку")
-                        {
-                            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                        }
-                    }
-                }
-            }
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
         }
     }
 
@@ -3351,139 +3342,135 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _Print_Excel_Export(object par)
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var forms = par as ObservableCollectionWithItemPropertyChanged<IKey>;
+        SaveFileDialog dial = new();
+        var filter = new FileDialogFilter
         {
-            var forms = par as ObservableCollectionWithItemPropertyChanged<IKey>;
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
+            Name = "Excel",
+            Extensions = { "xlsx" }
+        };
+        var param = "";
+        if (forms is { Count: > 0 })
+        {
+            var t = (Report)forms.First();
+            param = t.FormNum_DB;
+        }
+
+        dial.Filters.Add(filter);
+        if (param is "") return;
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
+        {
+            path += ".xlsx";
+        }
+
+        if (File.Exists(path))
+        {
+            try
             {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            var param = "";
-            if (forms is { Count: > 0 })
-            {
-                var t = (Report)forms.First();
-                param = t.FormNum_DB;
+                File.Delete(path);
             }
-
-            dial.Filters.Add(filter);
-            if (param != "")
+            catch (Exception)
             {
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                if (!string.IsNullOrEmpty(res))
-                {
-                    var path = res;
-                    if (!path.Contains(".xlsx"))
+                #region MessageFailedToSaveFile
+
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
-                        path += ".xlsx";
-                    }
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
 
-                    if (File.Exists(path))
-                    {
-                        try
-                        {
-                            File.Delete(path);
-                        }
-                        catch (Exception)
-                        {
-                            #region MessageFailedToSaveFile
+                #endregion
 
-                            await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                                {
-                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                    ContentTitle = "Выгрузка в Excel",
-                                    ContentHeader = "Ошибка",
-                                    ContentMessage =
-                                        $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                                        "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
-                                    MinWidth = 400,
-                                    MinHeight = 150,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(desktop.MainWindow);
-
-                            #endregion
-
-                            return;
-                        }
-                    }
+                return;
+            }
+        }
 #if DEBUG
-                    var pth = Path.Combine(
-                        Path.Combine(
-                            Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")),
-                                "data"), "Excel"), $"{param}.xlsx");
+        var pth = Path.Combine(
+            Path.Combine(
+                Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")),
+                    "data"), "Excel"), $"{param}.xlsx");
 #else
                                 string pth =
  Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"), "Excel"), param+".xlsx");
 #endif
-                    using ExcelPackage excelPackage = new(new FileInfo(path), new FileInfo(pth));
-                    var form = (Report)forms.FirstOrDefault();
-                    await form!.SortAsync();
-                    var worksheetTitle = excelPackage.Workbook.Worksheets[$"{param.Split('.')[0]}.0"];
-                    var worksheetMain = excelPackage.Workbook.Worksheets[param];
-                    worksheetTitle.Cells.Style.ShrinkToFit = true;
-                    worksheetMain.Cells.Style.ShrinkToFit = true;
+        using ExcelPackage excelPackage = new(new FileInfo(path), new FileInfo(pth));
+        var form = (Report)forms.FirstOrDefault();
+        await form!.SortAsync();
+        var worksheetTitle = excelPackage.Workbook.Worksheets[$"{param.Split('.')[0]}.0"];
+        var worksheetMain = excelPackage.Workbook.Worksheets[param];
+        worksheetTitle.Cells.Style.ShrinkToFit = true;
+        worksheetMain.Cells.Style.ShrinkToFit = true;
 
-                    _Excel_Print_Titul_Export(param, worksheetTitle, form);
-                    _Excel_Print_SubMain_Export(param, worksheetMain, form);
-                    _Excel_Print_Notes_Export(param, worksheetMain, form);
-                    _Excel_Print_Rows_Export(param, worksheetMain, form);
-                    try
-                    {
-                        excelPackage.Save();
-                    }
-                    catch (Exception)
-                    {
-                        #region MessageFailedToSaveFile
+        _Excel_Print_Titul_Export(param, worksheetTitle, form);
+        _Excel_Print_SubMain_Export(param, worksheetMain, form);
+        _Excel_Print_Notes_Export(param, worksheetMain, form);
+        _Excel_Print_Rows_Export(param, worksheetMain, form);
 
-                        await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
-                                ContentHeader = "Ошибка",
-                                ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                                 $"{Environment.NewLine}{path}",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
 
-                        #endregion
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
 
-                        return;
-                    }
+            #endregion
 
-                    #region MessageExcelExportComplete
+            return;
+        }
 
-                    res = await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions = new[]
-                            {
-                                new ButtonDefinition { Name = "Ок" },
-                                new ButtonDefinition { Name = "Открыть выгрузку" }
-                            },
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = "Выгрузка формы для печати сохранена по пути:" +
-                                             $"{Environment.NewLine}{path}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
+        #region MessageExcelExportComplete
 
-                    #endregion
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка формы для печати сохранена по пути:" +
+                                 $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
 
-                    if (res is "Открыть выгрузку")
-                    {
-                        Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                    }
-                }
-            }
+        #endregion
+
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
         }
     }
 
@@ -7650,11 +7637,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private void _Excel_Print_Notes_Export(string param, ExcelWorksheet worksheet, Report form)
     {
-        var start = 15;
-        if (param == "2.8")
-        {
-            start = 18;
-        }
+        var start = param is "2.8"
+            ? 18
+            : 15;
 
         for (var i = 0; i < form.Notes.Count - 1; i++)
         {
@@ -7706,11 +7691,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private void _Excel_Print_Rows_Export(string param, ExcelWorksheet worksheet, Report form)
     {
-        var start = 11;
-        if (param == "2.8")
-        {
-            start = 14;
-        }
+        var start = param is "2.8"
+            ? 14
+            : 11;
 
         for (var i = 0; i < form[param].Count - 1; i++)
         {
