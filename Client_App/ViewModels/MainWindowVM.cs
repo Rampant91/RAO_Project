@@ -584,10 +584,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null
                     ? ""
                     : Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -598,8 +596,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null
                     ? ""
                     : Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
@@ -633,10 +630,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -645,8 +640,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
@@ -680,7 +674,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             "1.0" => Local_Reports.Reports_Collection10
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB),
-            "2.0" => Local_Reports.Reports_Collection20.Cast<Reports>()
+            "2.0" => Local_Reports.Reports_Collection20
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB),
             _ => null
@@ -1500,8 +1494,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var impRep = (Report)key;
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in
-                     baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
+            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
             {
                 var baseRep = (Report)key1;
 
@@ -1600,8 +1593,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     #region SameCorrectionNumber
 
-                    if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB &&
-                        impRep.ExportDate_DB == baseRep.ExportDate_DB)
+                    if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB)
                     {
                         //doSomething = true;
 
@@ -1620,8 +1612,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
-                                    "Импортируемый отчет имеет тот же период, номер корректировки" +
-                                    $"{Environment.NewLine}и дату выгрузки, что и имеющийся в базе." +
+                                    "Импортируемый отчет имеет тот же период, номер корректировки, что и имеющийся в базе." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
                                     $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
@@ -1630,7 +1621,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                     $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
                                     $"{Environment.NewLine}Конец отчетного периода - {impRep.EndPeriod_DB}" +
-                                    $"{Environment.NewLine}Дата выгрузки - {impRep.ExportDate_DB}" +
+                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
+                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
                                     $"{Environment.NewLine}Номер корректировки - {impRep.CorrectionNumber_DB}" +
                                     $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
                                     $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}",
@@ -1669,8 +1661,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        "Импортируемый отчет имеет больший номер корректировки" +
-                                        $"{Environment.NewLine}или другую дату выгрузки чем имеющийся в базе." +
+                                        "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
                                         $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
@@ -1713,8 +1704,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        "Импортируемый отчет имеет больший номер корректировки" +
-                                        $"{Environment.NewLine}или другую дату выгрузки чем имеющийся в базе." +
+                                        "Импортируемый отчет имеет больший номер корректировки чем имеющийся в базе." +
                                         $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
@@ -2052,8 +2042,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 #region SameCorrectionNumber
 
-                if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB &&
-                    impRep.ExportDate_DB == baseRep.ExportDate_DB)
+                if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB)
                 {
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
@@ -2069,8 +2058,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             ContentTitle = "Импорт из .raodb",
                             ContentHeader = "Уведомление",
                             ContentMessage =
-                                "Импортируемый отчет имеет тот же год, номер корректировки" +
-                                $"{Environment.NewLine}и дату выгрузки, что и имеющийся в базе." +
+                                "Импортируемый отчет имеет тот же год и номер корректировки, что и имеющийся в базе." +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
                                 $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
@@ -2078,7 +2066,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Отчетный год - {impRep.Year_DB}" +
-                                $"{Environment.NewLine}Дата выгрузки - {impRep.ExportDate_DB}" +
+                                $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
+                                $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
                                 $"{Environment.NewLine}Номер корректировки - {impRep.CorrectionNumber_DB}" +
                                 $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}",
@@ -2116,8 +2105,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
-                                    "Импортируемый отчет имеет больший номер корректировки" +
-                                    $"{Environment.NewLine}или другую дату выгрузки чем имеющийся в базе." +
+                                    "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
                                     $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
@@ -2159,8 +2147,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
-                                    "Импортируемый отчет имеет больший номер корректировки" +
-                                    $"{Environment.NewLine}или другую дату выгрузки чем имеющийся в базе." +
+                                    "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
                                     $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
