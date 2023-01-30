@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -6755,7 +6756,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
                 .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-            foreach (var rep in form11)
+            foreach (var rep in form11.OrderBy(x => StringReverse(x.StartPeriod_DB)))
             {
                 List<Form11> repPas = rep.Rows11
                     .Where(x => x.OperationCode_DB is "11" or "85" && x.Category_DB is 1 or 2 or 3)
@@ -6796,7 +6797,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
                         worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
                         worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                        worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
+                        worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB is null or "" or "-"
+                            ? "-"
+                            : double.TryParse(repForm.Activity_DB.Replace("е", "E")
+                                .Replace("Е", "E").Replace("e", "E")
+                                .Replace("(", "").Replace(")", "")
+                                .Replace(".", ","), out var doubleValue)
+                                ? doubleValue
+                                : repForm.Activity_DB;
                         worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
                         worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
                         worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
@@ -6859,7 +6867,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 ContentHeader = "Уведомление",
                 ContentMessage =
                     "Выгрузка всех записей паспортов с кодом 11 или 85, категорий 1, 2, 3," +
-                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути:Э" + 
+                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути:" + 
                     $"{Environment.NewLine}{directory.FullName}" +
                     $"{Environment.NewLine}сохранена по пути:" +
                     $"{Environment.NewLine}{path}",

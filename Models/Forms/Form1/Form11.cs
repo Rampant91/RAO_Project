@@ -1079,29 +1079,37 @@ public class Form11 : Form1
 
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        base.ExcelGetRow(worksheet, Row);
-        PassportNumber_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
-        Type_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
-        Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
-        FactoryNumber_DB = Convert.ToString(worksheet.Cells[Row, 7].Value);
-        Quantity_DB = Convert.ToInt32(worksheet.Cells[Row, 8].Value);
-        Activity_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 9].Value), out var val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 9].Value);
-        CreatorOKPO_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
-        CreationDate_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
-        Category_DB = Convert.ToInt16(worksheet.Cells[Row, 12].Value);
-        SignedServicePeriod_DB = worksheet.Cells[Row, 13].Value is "" ? null : Convert.ToSingle(worksheet.Cells[Row, 13].Value);
-        PropertyCode_DB = Convert.ToByte(worksheet.Cells[Row, 14].Value);
-        Owner_DB = Convert.ToString(worksheet.Cells[Row, 15].Value);
-        DocumentVid_DB = Convert.ToByte(worksheet.Cells[Row, 16].Value);
-        DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 17].Value);
-        DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 18].Value);
-        ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[Row, 19].Value);
-        TransporterOKPO_DB = Convert.ToString(worksheet.Cells[Row, 20].Value);
-        PackName_DB = Convert.ToString(worksheet.Cells[Row, 21].Value);
-        PackType_DB = Convert.ToString(worksheet.Cells[Row, 22].Value);
-        PackNumber_DB = Convert.ToString(worksheet.Cells[Row, 23].Value);
+        base.ExcelGetRow(worksheet, row);
+        PassportNumber_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
+        Type_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
+        Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
+        FactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
+        Quantity_DB = int.TryParse(worksheet.Cells[row, 8].Value.ToString(), out var intValue)
+            ? intValue
+            : null;
+        Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
+        CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
+        CreationDate_DB = Convert.ToString(worksheet.Cells[row, 11].Value);
+        Category_DB = Convert.ToInt16(worksheet.Cells[row, 12].Value);
+        SignedServicePeriod_DB = float.TryParse(worksheet.Cells[row, 13].Value.ToString(), out var floatValue)
+            ? floatValue
+            : null;
+        PropertyCode_DB = byte.TryParse(worksheet.Cells[row, 14].Value.ToString(), out var byteValue)
+            ? byteValue
+            : null;
+        Owner_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
+        DocumentVid_DB = byte.TryParse(worksheet.Cells[row, 16].Value.ToString(), out byteValue)
+            ? byteValue
+            : null;
+        DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
+        DocumentDate_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
+        ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
+        TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 20].Value);
+        PackName_DB = Convert.ToString(worksheet.Cells[row, 21].Value);
+        PackType_DB = Convert.ToString(worksheet.Cells[row, 22].Value);
+        PackNumber_DB = Convert.ToString(worksheet.Cells[row, 23].Value);
     }
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "")
     {
@@ -1114,14 +1122,14 @@ public class Form11 : Form1
         worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = Radionuclids_DB;
         worksheet.Cells[row + (!transpon ? 3 : 0), column + (transpon ? 3 : 0)].Value = FactoryNumber_DB;
         worksheet.Cells[row + (!transpon ? 4 : 0), column + (transpon ? 4 : 0)].Value = Quantity_DB;
-        worksheet.Cells[row + (!transpon ? 5 : 0), column + (transpon ? 5 : 0)].Value = string.IsNullOrEmpty(Activity_DB) || Activity_DB == "-" ? 0  : double.TryParse(Activity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out var val) ? val : Activity_DB;
+        worksheet.Cells[row + (!transpon ? 5 : 0), column + (transpon ? 5 : 0)].Value = ConvertToExcelDouble(Activity_DB);
         worksheet.Cells[row + (!transpon ? 6 : 0), column + (transpon ? 6 : 0)].Value = CreatorOKPO_DB;
         worksheet.Cells[row + (!transpon ? 7 : 0), column + (transpon ? 7 : 0)].Value = CreationDate_DB;
         worksheet.Cells[row + (!transpon ? 8 : 0), column + (transpon ? 8 : 0)].Value = Category_DB;
-        worksheet.Cells[row + (!transpon ? 9 : 0), column + (transpon ? 9 : 0)].Value = SignedServicePeriod_DB.ToString();
+        worksheet.Cells[row + (!transpon ? 9 : 0), column + (transpon ? 9 : 0)].Value = SignedServicePeriod_DB ?? 0;
         worksheet.Cells[row + (!transpon ? 10 : 0), column + (transpon ? 10 : 0)].Value = PropertyCode_DB;
         worksheet.Cells[row + (!transpon ? 11 : 0), column + (transpon ? 11 : 0)].Value = Owner_DB;
-        worksheet.Cells[row + (!transpon ? 12 : 0), column + (transpon ? 12 : 0)].Value = DocumentVid_DB;
+        worksheet.Cells[row + (!transpon ? 12 : 0), column + (transpon ? 12 : 0)].Value = DocumentVid_DB ?? 0;
         worksheet.Cells[row + (!transpon ? 13 : 0), column + (transpon ? 13 : 0)].Value = DocumentNumber_DB;
         worksheet.Cells[row + (!transpon ? 14 : 0), column + (transpon ? 14 : 0)].Value = DocumentDate_DB;
         worksheet.Cells[row + (!transpon ? 15 : 0), column + (transpon ? 15 : 0)].Value = ProviderOrRecieverOKPO_DB;

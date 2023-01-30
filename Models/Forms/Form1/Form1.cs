@@ -415,9 +415,11 @@ public abstract class Form1 : Form
     #endregion
 
     #region IExcel
-    public override void ExcelGetRow(ExcelWorksheet worksheet, int row) 
+    public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[row, 1].Value);
+        NumberInOrder_DB = int.TryParse(worksheet.Cells[row, 1].Value.ToString(), out var intValue)
+            ? intValue
+            : 0;
         OperationCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
         OperationDate_DB = worksheet.Cells[row, 3].Value is null
             ? "-"
