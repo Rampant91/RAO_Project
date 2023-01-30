@@ -3679,7 +3679,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         if (forSelectedOrg)
         {
             var newItem = selectedReports!.Report_Collection
-                .Where(x => x.FormNum_DB.Equals(param));
+                .Where(x => x.FormNum_DB.Equals(param))
+                .OrderBy(x => param[0] is '1' ? StringReverse(x.StartPeriod_DB) : x.Year_DB);
             lst.AddRange(newItem);
         }
         else
@@ -3687,7 +3688,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             foreach (var key in Local_Reports.Reports_Collection)
             {
                 var item = (Reports)key;
-                var newItem = item.Report_Collection.Where(x => x.FormNum_DB.Equals(param));
+                var newItem = item.Report_Collection
+                    .Where(x => x.FormNum_DB.Equals(param))
+                    .OrderBy(x => param[0] is '1' ? StringReverse(x.StartPeriod_DB) : x.Year_DB);
                 lst.AddRange(newItem);
             }
         }
@@ -3828,8 +3831,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Ошибка",
                         ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}{Environment.NewLine}" +
-                            "Файл с таким именем уже существует в этом расположении и используется другим процессом.",
+                            "Не удалось сохранить файл по пути:" +
+                            $"{Environment.NewLine}{path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -4098,7 +4103,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-            foreach (var rep in form.OrderByDescending(x => StringReverse(x.StartPeriod_DB)))
+            foreach (var rep in form.OrderBy(x => StringReverse(x.StartPeriod_DB)))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows11.OrderBy(x => x.NumberInOrder_DB))
@@ -4156,6 +4161,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4199,7 +4205,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderBy(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows12.OrderBy(x => x.NumberInOrder_DB))
@@ -4254,6 +4260,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4298,7 +4305,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderBy(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -4354,6 +4361,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4399,7 +4407,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderBy(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows14.OrderBy(x => x.NumberInOrder_DB))
@@ -4456,6 +4464,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4503,7 +4512,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderBy(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows15.OrderBy(x => x.NumberInOrder_DB))
@@ -4562,6 +4571,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4612,7 +4622,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderBy(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows16.OrderBy(x => x.NumberInOrder_DB))
@@ -4674,6 +4684,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4729,7 +4740,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderBy(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows17.OrderBy(x => x.NumberInOrder_DB))
@@ -4796,6 +4807,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4847,7 +4859,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null);
-            foreach (var rep in form.OrderByDescending(x => x.StartPeriod_DB))
+            foreach (var rep in form.OrderBy(x => x.StartPeriod_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows18.OrderBy(x => x.NumberInOrder_DB))
@@ -4910,6 +4922,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -4942,7 +4955,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null);
-            foreach (var rep in form.OrderByDescending(x => StringReverse(x.StartPeriod_DB)))
+            foreach (var rep in form.OrderBy(x => StringReverse(x.StartPeriod_DB)))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows19.OrderBy(x => x.NumberInOrder_DB))
@@ -4986,6 +4999,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5029,7 +5043,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1") && x.Rows21 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows21.OrderBy(x => x.NumberInOrder_DB))
@@ -5083,6 +5097,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5123,7 +5138,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2") && x.Rows22 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows22.OrderBy(x => x.NumberInOrder_DB))
@@ -5174,6 +5189,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5207,7 +5223,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3") && x.Rows23 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows23.OrderBy(x => x.NumberInOrder_DB))
@@ -5251,6 +5267,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5288,7 +5305,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4") && x.Rows24 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows24.OrderBy(x => x.NumberInOrder_DB))
@@ -5336,6 +5353,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5366,7 +5384,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5") && x.Rows25 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows25.OrderBy(x => x.NumberInOrder_DB))
@@ -5407,6 +5425,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5436,7 +5455,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6") && x.Rows26 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows26.OrderBy(x => x.NumberInOrder_DB))
@@ -5475,6 +5494,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5501,7 +5521,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7") && x.Rows27 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows27.OrderBy(x => x.NumberInOrder_DB))
@@ -5538,6 +5558,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5565,7 +5586,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8") && x.Rows28 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows28.OrderBy(x => x.NumberInOrder_DB))
@@ -5603,6 +5624,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5628,7 +5650,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9") && x.Rows29 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows29.OrderBy(x => x.NumberInOrder_DB))
@@ -5664,6 +5686,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5695,7 +5718,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10") && x.Rows210 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows210.OrderBy(x => x.NumberInOrder_DB))
@@ -5737,6 +5760,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5766,7 +5790,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11") && x.Rows211 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows211.OrderBy(x => x.NumberInOrder_DB))
@@ -5806,6 +5830,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5832,7 +5857,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12") && x.Rows212 != null);
-            foreach (var rep in form.OrderByDescending(x => x.Year_DB))
+            foreach (var rep in form.OrderBy(x => x.Year_DB))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows212.OrderBy(x => x.NumberInOrder_DB))
@@ -5869,6 +5894,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -5886,6 +5912,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         worksheetComment.Cells[1, 7].Value = "№ строки";
         worksheetComment.Cells[1, 8].Value = "№ графы";
         worksheetComment.Cells[1, 9].Value = "Пояснение";
+        worksheetComment.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -6015,7 +6042,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             foreach (var rep in reps.Report_Collection
                          .OrderBy(x => x.FormNum_DB)
-                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
+                         .ThenBy(x => StringReverse(x.StartPeriod_DB)))
             {
                 worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
@@ -6029,6 +6056,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
 
         worksheet.Cells.AutoFitColumns();
+        worksheet.View.FreezePanes(2, 1);
         try
         {
             excelPackage.Save();
@@ -6207,7 +6235,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             foreach (var rep in reps.Report_Collection
                          .OrderBy(x => x.FormNum_DB)
-                         .ThenByDescending(x => x.Year_DB))
+                         .ThenBy(x => x.Year_DB))
             {
                 worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
@@ -6220,6 +6248,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
 
         worksheet.Cells.AutoFitColumns();
+        worksheet.View.FreezePanes(2, 1);
         try
         {
             excelPackage.Save();
@@ -6563,6 +6592,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             worksheet.Column(col).AutoFit();
         }
 
+        worksheet.View.FreezePanes(2, 1);
         try
         {
             excelPackage.Save();
@@ -6755,8 +6785,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-            foreach (var rep in form11.OrderBy(x => StringReverse(x.StartPeriod_DB)))
+                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
+                .OrderBy(x => StringReverse(x.StartPeriod_DB))
+                .ThenBy(x => x.NumberInOrder_DB);
+            foreach (var rep in form11)
             {
                 List<Form11> repPas = rep.Rows11
                     .Where(x => x.OperationCode_DB is "11" or "85" && x.Category_DB is 1 or 2 or 3)
@@ -6947,136 +6979,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
 
         var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
-        if (!string.IsNullOrEmpty(res))
+        if (string.IsNullOrEmpty(res)) return;
+        var path = res;
+        if (!path.Contains(".xlsx"))
         {
-            var path = res;
-            if (!path.Contains(".xlsx"))
-            {
-                path += ".xlsx";
-            }
+            path += ".xlsx";
+        }
 
-            if (File.Exists(path))
-            {
-                try
-                {
-                    File.Delete(path);
-                }
-                catch (Exception)
-                {
-                    #region MessageFailedToSaveFile
-
-                    await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Ошибка",
-                            ContentMessage =
-                                $"Не удалось сохранить файл по пути: {path}" +
-                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                $"{Environment.NewLine}и используется другим процессом.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    return;
-                }
-            }
-
-            using ExcelPackage excelPackage = new(new FileInfo(path));
-            excelPackage.Workbook.Properties.Author = "RAO_APP";
-            excelPackage.Workbook.Properties.Title = "Report";
-            excelPackage.Workbook.Properties.Created = DateTime.Now;
-            worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчетов");
-
-            worksheet.Cells[1, 1].Value = "Полное имя файла";
-            worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
-            worksheet.Cells[1, 3].Value = "Тип";
-            worksheet.Cells[1, 4].Value = "Год выпуска";
-            worksheet.Cells[1, 5].Value = "Номер паспорта";
-            worksheet.Cells[1, 6].Value = "Номер";
-
-            List<string> pasNames = new();
-            List<string[]> pasUniqParam = new();
-            DirectoryInfo directory = new(PasFolderPath);
-            FileInfo[] files;
+        if (File.Exists(path))
+        {
             try
             {
-                files = directory.GetFiles("*#*#*#*#*.pdf");
-            }
-            catch (Exception)
-            {
-                #region MessageFailedToOpenPassportDirectory
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось открыть сетевое хранилище паспортов:" +
-                            $"{Environment.NewLine}{directory.FullName}",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-
-                return;
-            }
-
-            pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
-            pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-            foreach (var key in Local_Reports.Reports_Collection10)
-            {
-                var reps = (Reports)key;
-                var form11 = reps.Report_Collection
-                    .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-                foreach (var rep in form11)
-                {
-                    List<Form11> repPas = rep.Rows11
-                        .Where(x => x.OperationCode_DB is ("11" or "85")) // && categories.Contains(x.Category_DB))
-                        .ToList();
-                    foreach (var repForm in repPas)
-                    {
-                        foreach (var pasParam in pasUniqParam.Where(pasParam =>
-                                     ComparePasParam(ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
-                                     && ComparePasParam(ConvertPrimToDash(repForm.Type_DB), pasParam[1])
-                                     && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                     && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
-                                     && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
-                        {
-                            pasNames.Remove(
-                                $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
-                            break;
-                        }
-                    }
-                }
-            }
-
-            var currentRow = 2;
-            foreach (var pasName in pasNames)
-            {
-                worksheet.Cells[currentRow, 1].Value = pasName;
-                worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
-                worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
-                worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
-                worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
-                worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
-                currentRow++;
-            }
-
-            worksheet.Cells.AutoFitColumns();
-            try
-            {
-                excelPackage.Save();
+                File.Delete(path);
             }
             catch (Exception)
             {
@@ -7088,8 +7002,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Ошибка",
-                        ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                         $"{Environment.NewLine}{path}",
+                        ContentMessage =
+                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -7100,38 +7016,151 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 return;
             }
+        }
 
-            #region MessageExcelExportComplete
+        using ExcelPackage excelPackage = new(new FileInfo(path));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчетов");
 
-            res = await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        worksheet.Cells[1, 1].Value = "Полное имя файла";
+        worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
+        worksheet.Cells[1, 3].Value = "Тип";
+        worksheet.Cells[1, 4].Value = "Год выпуска";
+        worksheet.Cells[1, 5].Value = "Номер паспорта";
+        worksheet.Cells[1, 6].Value = "Номер";
+
+        List<string> pasNames = new();
+        List<string[]> pasUniqParam = new();
+        DirectoryInfo directory = new(PasFolderPath);
+        FileInfo[] files;
+        try
+        {
+            files = directory.GetFiles("*#*#*#*#*.pdf");
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToOpenPassportDirectory
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = new[]
-                    {
-                        new ButtonDefinition { Name = "Ок" },
-                        new ButtonDefinition { Name = "Открыть выгрузку" }
-                    },
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
+                    ContentHeader = "Ошибка",
                     ContentMessage =
-                        "Выгрузка всех имён файлов паспортов в директории" +
-                        $"{Environment.NewLine}{directory.FullName}" +
-                        $"{Environment.NewLine}для которых отсутствуют соответствующие записи паспортов " +
-                        $"с кодом 11 категорий: {string.Join(", ", categories)}" +
-                        $"{Environment.NewLine}сохранена по пути:" +
-                        $"{Environment.NewLine}{path}",
+                        $"Не удалось открыть сетевое хранилище паспортов:" +
+                        $"{Environment.NewLine}{directory.FullName}",
                     MinWidth = 400,
-                    MinHeight = 200,
+                    MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(desktop.MainWindow);
 
             #endregion
 
-            if (res is "Открыть выгрузку")
+            return;
+        }
+
+        pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+        pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
+        foreach (var key in Local_Reports.Reports_Collection10)
+        {
+            var reps = (Reports)key;
+            var form11 = reps.Report_Collection
+                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+            foreach (var rep in form11)
             {
-                Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+                List<Form11> repPas = rep.Rows11
+                    .Where(x => x.OperationCode_DB is ("11" or "85") && categories.Contains(x.Category_DB))
+                    .ToList();
+                foreach (var repForm in repPas)
+                {
+                    foreach (var pasParam in pasUniqParam.Where(pasParam =>
+                                 ComparePasParam(ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
+                                 && ComparePasParam(ConvertPrimToDash(repForm.Type_DB), pasParam[1])
+                                 && ComparePasParam(ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                 && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
+                                 && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
+                    {
+                        pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                        break;
+                    }
+                }
             }
+        }
+
+        var currentRow = 2;
+        foreach (var pasName in pasNames)
+        {
+            worksheet.Cells[currentRow, 1].Value = pasName;
+            worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
+            worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
+            worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
+            worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
+            worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
+            currentRow++;
+        }
+
+        worksheet.Cells.AutoFitColumns();
+        try
+        {
+            excelPackage.Save();
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToSaveFile
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{path}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        #region MessageExcelExportComplete
+
+        res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage =
+                    "Выгрузка всех имён файлов паспортов в директории" +
+                    $"{Environment.NewLine}{directory.FullName}" +
+                    $"{Environment.NewLine}для которых отсутствуют соответствующие записи паспортов " +
+                    $"с кодами 11 и 85 категорий: {string.Join(", ", categories)}" +
+                    $"{Environment.NewLine}сохранена по пути:" +
+                    $"{Environment.NewLine}{path}",
+                MinWidth = 400,
+                MinHeight = 200,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        if (res is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
         }
     }
 
@@ -7167,80 +7196,36 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 .Where(t => t.Report_Collection.Contains(item));
             var reps = findReports.FirstOrDefault();
             if (reps == null) continue;
-            var cnty = startRow;
+            var curRow = startRow;
             foreach (var i in item.Notes)
             {
                 var mstrep = reps.Master_DB;
-                i.ExcelRow(worksheetPrim, cnty, startColumn + 1);
-                int yu;
-                if (printId)
-                {
-                    if (param.Split('.')[0] == "1")
-                    {
-                        if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                        {
-                            yu = reps.Master_DB.Rows10[1]
-                                     .ExcelRow(worksheetPrim, cnty, 1,
-                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
-                                 1;
-                        }
-                        else
-                        {
-                            yu = reps.Master_DB.Rows10[0]
-                                     .ExcelRow(worksheetPrim, cnty, 1,
-                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
-                                 1;
-                        }
-                    }
-                    else
-                    {
-                        if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                        {
-                            yu = reps.Master_DB.Rows20[1]
-                                     .ExcelRow(worksheetPrim, cnty, 1,
-                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
-                                 1;
-                        }
-                        else
-                        {
-                            yu = reps.Master_DB.Rows20[0]
-                                     .ExcelRow(worksheetPrim, cnty, 1,
-                                         SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
-                                 1;
-                        }
-                    }
-                }
-                else
-                {
-                    if (param.Split('.')[0] == "1")
-                    {
-                        if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                        {
-                            yu = reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                        }
-                        else
-                        {
-                            yu = reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                        }
-                    }
-                    else
-                    {
-                        if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                        {
-                            yu = reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                        }
-                        else
-                        {
-                            yu = reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, cnty, 1) + 1;
-                        }
-                    }
-                }
+                i.ExcelRow(worksheetPrim, curRow, startColumn + 1);
+                var yu = printId
+                    ? param.Split('.')[0] == "1"
+                        ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
+                            ? reps.Master_DB.Rows10[1]
+                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                            : reps.Master_DB.Rows10[0]
+                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                        : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
+                            ? reps.Master_DB.Rows20[1]
+                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                            : reps.Master_DB.Rows20[0]
+                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                    : param.Split('.')[0] == "1"
+                        ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
+                            ? reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, curRow, 1) + 1
+                            : reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, curRow, 1) + 1
+                        : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
+                            ? reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, curRow, 1) + 1
+                            : reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, curRow, 1) + 1;
 
-                item.ExcelRow(worksheetPrim, cnty, yu);
-                cnty++;
+                item.ExcelRow(worksheetPrim, curRow, yu);
+                curRow++;
             }
 
-            startRow = cnty;
+            startRow = curRow;
         }
 
         return startRow;

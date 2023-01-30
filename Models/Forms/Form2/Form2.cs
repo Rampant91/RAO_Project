@@ -5,6 +5,7 @@ using System.Linq;
 using Models.Attributes;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
 namespace Models.Forms.Form2;
 
@@ -69,27 +70,29 @@ public abstract class Form2 : Form
     #endregion
 
     #region IExcel
-    public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        NumberInOrder_DB = Convert.ToInt32(worksheet.Cells[Row, 1].Value);
+        NumberInOrder_DB = int.TryParse(worksheet.Cells[row, 1].Value.ToString(), out var intValue)
+            ? intValue
+            : 0;
     }
-    public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool transpose = true, string SumNumber = "")
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         if (NumberInOrder_DB == 0)
         {
-            worksheet.Cells[Row, Column].Value = SumNumber;
+            worksheet.Cells[row, column].Value = sumNumber;
         }
         else
         {
-            worksheet.Cells[Row, Column].Value = NumberInOrder_DB;
+            worksheet.Cells[row, column].Value = NumberInOrder_DB;
         }
 
         return 1;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column,bool Transpon=true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool Transpon = true)
     {
-        worksheet.Cells[Row, Column].Value = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))
+        worksheet.Cells[row, column].Value = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))
             .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[2];
 
         return 1;

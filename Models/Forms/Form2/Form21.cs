@@ -2185,9 +2185,7 @@ public class Form21 : Form2, IBaseColor
             ? byteVal
             : null;
         MachinePower.Value = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
-        NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[row, 5].Value) is "0"
-            ? "-"
-            : Convert.ToString(worksheet.Cells[row, 5].Value);
+        NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[row, 5].Value);
         CodeRAOIn_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         StatusRAOIn_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
         VolumeIn_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
@@ -2214,8 +2212,8 @@ public class Form21 : Form2, IBaseColor
         column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
         worksheet.Cells[row, column].Value = RefineMachineName.Value ?? "";
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = MachineCode.Value == null
-            ? ""
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = MachineCode.Value is null
+            ? "-"
             : MachineCode.Value;
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDouble(MachinePower.Value);
         worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelInt(NumberOfHoursPerYear.Value);

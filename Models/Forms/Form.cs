@@ -174,17 +174,15 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
 
     private protected static string ConvertFromExcelDouble(object value)
     {
-        return Convert.ToString(value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(value), out var doubleValue)
-                ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(value);
+        return double.TryParse(Convert.ToString(value), out var doubleValue)
+            ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+            : Convert.ToString(value);
     }
 
     private protected static object ConvertToExcelDouble(string value)
     {
         return value is null or "" or "-"
-            ? 0
+            ? "-"
             : double.TryParse(ReplaceE(value), out var doubleValue)
                 ? doubleValue
                 : value;
@@ -193,7 +191,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     private protected static object ConvertToExcelInt(string value)
     {
         return value is null or "" or "-"
-            ? 0
+            ? "-"
             : int.TryParse(ReplaceE(value), out var intValue)
                 ? intValue
                 : value;

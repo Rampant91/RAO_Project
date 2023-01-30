@@ -2002,9 +2002,7 @@ public class Form22 : Form2, IBaseColor
         StoragePlaceCode.Value = Convert.ToString(worksheet.Cells[row, 3].Value);
         PackName.Value = Convert.ToString(worksheet.Cells[row, 4].Value);
         PackType.Value = Convert.ToString(worksheet.Cells[row, 5].Value);
-        PackQuantity_DB = Convert.ToString(worksheet.Cells[row, 6].Value) is "0"
-            ? "-"
-            : Convert.ToString(worksheet.Cells[row, 6].Value);
+        PackQuantity_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         CodeRAO_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
         StatusRAO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
         VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[row, 9].Value) is "0"
