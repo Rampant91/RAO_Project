@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
 namespace Models.Forms;
 
@@ -195,6 +197,22 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             : int.TryParse(ReplaceE(value), out var intValue)
                 ? intValue
                 : value;
+    }
+
+    private protected static object ConvertToExcelDate(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : DateTime.TryParse(value, out var dateTime)
+                ? dateTime.ToShortDateString()
+                : value;
+    }
+
+    private protected static object ConvertToExcelString(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : value;
     }
 
     private protected static string ReplaceE(string numberE)
