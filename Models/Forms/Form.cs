@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -166,15 +167,42 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
 
     public abstract int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "");
 
+    protected static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
+    {
+        return 0;
+    }
+
+    private protected static string ConvertFromExcelDouble(object value)
+    {
+        return Convert.ToString(value) is "0"
+            ? "-"
+            : double.TryParse(Convert.ToString(value), out var doubleValue)
+                ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+                : Convert.ToString(value);
+    }
+
+    private protected static object ConvertToExcelDouble(string value)
+    {
+        return value is null or "" or "-"
+            ? 0
+            : double.TryParse(ReplaceE(value), out var doubleValue)
+                ? doubleValue
+                : value;
+    }
+
+    private protected static object ConvertToExcelInt(string value)
+    {
+        return value is null or "" or "-"
+            ? 0
+            : int.TryParse(ReplaceE(value), out var intValue)
+                ? intValue
+                : value;
+    }
+
     private protected static string ReplaceE(string numberE)
     {
         return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
             .Replace("(", "").Replace(")", "").Replace(".", ",");
-    }
-
-    protected static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
-    {
-        return 0;
     }
     #endregion
 

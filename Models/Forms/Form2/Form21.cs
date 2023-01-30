@@ -2184,80 +2184,28 @@ public class Form21 : Form2, IBaseColor
         MachineCode.Value = byte.TryParse(worksheet.Cells[row, 3].Value.ToString(), out var byteVal)
             ? byteVal
             : null;
-        MachinePower.Value = Convert.ToString(worksheet.Cells[row, 4].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out var val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 4].Value);
+        MachinePower.Value = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
         NumberOfHoursPerYear.Value = Convert.ToString(worksheet.Cells[row, 5].Value) is "0"
             ? "-"
             : Convert.ToString(worksheet.Cells[row, 5].Value);
         CodeRAOIn_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         StatusRAOIn_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
-        VolumeIn_DB = Convert.ToString(worksheet.Cells[row, 8].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 8].Value);
-        MassIn_DB = Convert.ToString(worksheet.Cells[row, 9].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 9].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 9].Value);
+        VolumeIn_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
+        MassIn_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         QuantityIn_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
-        TritiumActivityIn_DB = Convert.ToString(worksheet.Cells[row, 11].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 11].Value);
-        BetaGammaActivityIn_DB = Convert.ToString(worksheet.Cells[row, 12].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 12].Value);
-        AlphaActivityIn_DB = Convert.ToString(worksheet.Cells[row, 13].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 13].Value);
-        TransuraniumActivityIn_DB = Convert.ToString(worksheet.Cells[row, 14].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 14].Value);
+        TritiumActivityIn_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
+        BetaGammaActivityIn_DB = ConvertFromExcelDouble(worksheet.Cells[row, 12].Value);
+        AlphaActivityIn_DB = ConvertFromExcelDouble(worksheet.Cells[row, 13].Value);
+        TransuraniumActivityIn_DB = ConvertFromExcelDouble(worksheet.Cells[row, 14].Value);
         CodeRAOout_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
         StatusRAOout_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
-        VolumeOut_DB = Convert.ToString(worksheet.Cells[row, 17].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 18].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 17].Value);
-        MassOut_DB = Convert.ToString(worksheet.Cells[row, 18].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 18].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 18].Value);
+        VolumeOut_DB = ConvertFromExcelDouble(worksheet.Cells[row, 17].Value);
+        MassOut_DB = ConvertFromExcelDouble(worksheet.Cells[row, 18].Value);
         QuantityOZIIIout_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
-        TritiumActivityOut_DB = Convert.ToString(worksheet.Cells[row, 20].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 20].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 20].Value);
-        BetaGammaActivityOut_DB = Convert.ToString(worksheet.Cells[row, 21].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 21].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 21].Value);
-        AlphaActivityOut_DB = Convert.ToString(worksheet.Cells[row, 22].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 22].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 22].Value);
-        TransuraniumActivityOut_DB = Convert.ToString(worksheet.Cells[row, 23].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 23].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 23].Value);
+        TritiumActivityOut_DB = ConvertFromExcelDouble(worksheet.Cells[row, 20].Value);
+        BetaGammaActivityOut_DB = ConvertFromExcelDouble(worksheet.Cells[row, 21].Value);
+        AlphaActivityOut_DB = ConvertFromExcelDouble(worksheet.Cells[row, 22].Value);
+        TransuraniumActivityOut_DB = ConvertFromExcelDouble(worksheet.Cells[row, 23].Value);
     }
 
     public new int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -2269,82 +2217,26 @@ public class Form21 : Form2, IBaseColor
         worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = MachineCode.Value == null
             ? ""
             : MachineCode.Value;
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = MachinePower.Value is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(MachinePower.Value), out var val)
-                ? val
-                : MachinePower.Value;
-        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = NumberOfHoursPerYear.Value is null or "" or "-"
-            ? 0
-            : int.TryParse(ReplaceE(NumberOfHoursPerYear.Value), out var valInt)
-                ? valInt
-                : NumberOfHoursPerYear.Value;
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDouble(MachinePower.Value);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelInt(NumberOfHoursPerYear.Value);
         worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = CodeRAOIn_DB;
         worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = StatusRAOIn_DB;
-        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = VolumeIn_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(VolumeIn_DB), out val)
-                ? val
-                : VolumeIn_DB;
-        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = MassIn_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(MassIn_DB), out val)
-                ? val
-                : MassIn_DB;
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelDouble(VolumeIn_DB);
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDouble(MassIn_DB);
         worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = QuantityIn_DB;
-        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = TritiumActivityIn_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(TritiumActivityIn_DB), out val)
-                ? val
-                : TritiumActivityIn_DB;
-        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = BetaGammaActivityIn_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(BetaGammaActivityIn_DB), out val)
-                ? val
-                : BetaGammaActivityIn_DB;
-        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = AlphaActivityIn_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(AlphaActivityIn_DB), out val)
-                ? val
-                : AlphaActivityIn_DB;
-        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = TransuraniumActivityIn_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(TransuraniumActivityIn_DB), out val)
-                ? val
-                : TransuraniumActivityIn_DB;
+        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelDouble(TritiumActivityIn_DB);
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ConvertToExcelDouble(BetaGammaActivityIn_DB);
+        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ConvertToExcelDouble(AlphaActivityIn_DB);
+        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelDouble(TransuraniumActivityIn_DB);
         worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = CodeRAOout_DB;
         worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = StatusRAOout_DB;
-        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = VolumeOut_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(VolumeOut_DB), out val)
-                ? val
-                : VolumeOut_DB;
-        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = MassOut_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(MassOut_DB), out val)
-                ? val
-                : MassOut_DB;
+        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ConvertToExcelDouble(VolumeOut_DB);
+        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = ConvertToExcelDouble(MassOut_DB);
         worksheet.Cells[row + (!transpose ? 17 : 0), column + (transpose ? 17 : 0)].Value = QuantityOZIIIout_DB;
-        worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = TritiumActivityOut_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(TritiumActivityOut_DB), out val)
-                ? val
-                : TritiumActivityOut_DB;
-        worksheet.Cells[row + (!transpose ? 19 : 0), column + (transpose ? 19 : 0)].Value = BetaGammaActivityOut_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(BetaGammaActivityOut_DB), out val)
-                ? val
-                : BetaGammaActivityOut_DB;
-        worksheet.Cells[row + (!transpose ? 20 : 0), column + (transpose ? 20 : 0)].Value = AlphaActivityOut_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(AlphaActivityOut_DB), out val)
-                ? val
-                : AlphaActivityOut_DB;
-        worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = TransuraniumActivityOut_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(TransuraniumActivityOut_DB), out val)
-                ? val
-                : TransuraniumActivityOut_DB;
+        worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = ConvertToExcelDouble(TritiumActivityOut_DB);
+        worksheet.Cells[row + (!transpose ? 19 : 0), column + (transpose ? 19 : 0)].Value = ConvertToExcelDouble(BetaGammaActivityOut_DB);
+        worksheet.Cells[row + (!transpose ? 20 : 0), column + (transpose ? 20 : 0)].Value = ConvertToExcelDouble(AlphaActivityOut_DB);
+        worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = ConvertToExcelDouble(TransuraniumActivityOut_DB);
         return 22;
     }
 
