@@ -585,8 +585,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null
                     ? ""
                     : Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -597,7 +599,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null
                     ? ""
                     : Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
@@ -631,8 +634,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -641,7 +646,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB =
+                    Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
@@ -1313,31 +1319,22 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is "1.0")
             {
-                return Local_Reports.Reports_Collection10.FirstOrDefault(t => (
-                                                                                  item.Master.Rows10[0].Okpo_DB ==
-                                                                                  t.Master.Rows10[0].Okpo_DB
-                                                                                  && item.Master.Rows10[0].RegNo_DB ==
-                                                                                  t.Master.Rows10[0].RegNo_DB
-                                                                                  && item.Master.Rows10[1].Okpo_DB ==
-                                                                                  "")
-                                                                              || (item.Master.Rows10[1].Okpo_DB ==
-                                                                                  t.Master.Rows10[1].Okpo_DB
-                                                                                  && item.Master.Rows10[1].RegNo_DB ==
-                                                                                  t.Master.Rows10[1].RegNo_DB
-                                                                                  && item.Master.Rows10[1].Okpo_DB !=
-                                                                                  "")
-                                                                              || (item.Master.Rows10[1].Okpo_DB != ""
-                                                                                  && t.Master.Rows10[1].Okpo_DB == ""
-                                                                                  && item.Master.Rows10[1].Okpo_DB ==
-                                                                                  t.Master.Rows10[0].Okpo_DB
-                                                                                  && item.Master.Rows10[1].RegNo_DB ==
-                                                                                  t.Master.Rows10[1].RegNo_DB)
-                                                                              || (item.Master.Rows10[1].Okpo_DB == ""
-                                                                                  && t.Master.Rows10[1].Okpo_DB != ""
-                                                                                  && item.Master.Rows10[0].Okpo_DB ==
-                                                                                  t.Master.Rows10[1].Okpo_DB
-                                                                                  && item.Master.Rows10[1].RegNo_DB ==
-                                                                                  t.Master.Rows10[1].RegNo_DB));
+                return Local_Reports.Reports_Collection10
+                    .FirstOrDefault(t => (
+                                             item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                                             && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                                             && item.Master.Rows10[1].Okpo_DB == "")
+                                         || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                                             && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                                             && item.Master.Rows10[1].Okpo_DB != "")
+                                         || (item.Master.Rows10[1].Okpo_DB != ""
+                                             && t.Master.Rows10[1].Okpo_DB == ""
+                                             && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                                             && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB)
+                                         || (item.Master.Rows10[1].Okpo_DB == ""
+                                             && t.Master.Rows10[1].Okpo_DB != ""
+                                             && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                                             && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB));
             }
 
             return null;
@@ -1354,31 +1351,22 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is "2.0")
             {
-                return Local_Reports.Reports_Collection20.FirstOrDefault(t => (
-                                                                                  item.Master.Rows20[0].Okpo_DB ==
-                                                                                  t.Master.Rows20[0].Okpo_DB
-                                                                                  && item.Master.Rows20[0].RegNo_DB ==
-                                                                                  t.Master.Rows20[0].RegNo_DB
-                                                                                  && item.Master.Rows20[1].Okpo_DB ==
-                                                                                  "")
-                                                                              || (item.Master.Rows20[1].Okpo_DB ==
-                                                                                  t.Master.Rows20[1].Okpo_DB
-                                                                                  && item.Master.Rows20[1].RegNo_DB ==
-                                                                                  t.Master.Rows20[1].RegNo_DB
-                                                                                  && item.Master.Rows20[1].Okpo_DB !=
-                                                                                  "")
-                                                                              || (item.Master.Rows20[1].Okpo_DB != ""
-                                                                                  && t.Master.Rows20[1].Okpo_DB == ""
-                                                                                  && item.Master.Rows20[1].Okpo_DB ==
-                                                                                  t.Master.Rows20[0].Okpo_DB
-                                                                                  && item.Master.Rows20[1].RegNo_DB ==
-                                                                                  t.Master.Rows20[1].RegNo_DB)
-                                                                              || (item.Master.Rows20[1].Okpo_DB == ""
-                                                                                  && t.Master.Rows20[1].Okpo_DB != ""
-                                                                                  && item.Master.Rows20[0].Okpo_DB ==
-                                                                                  t.Master.Rows20[1].Okpo_DB
-                                                                                  && item.Master.Rows20[1].RegNo_DB ==
-                                                                                  t.Master.Rows20[1].RegNo_DB));
+                return Local_Reports.Reports_Collection20
+                    .FirstOrDefault(t => (
+                                             item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                                             && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                                             && item.Master.Rows20[1].Okpo_DB == "")
+                                         || (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                                             && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                                             && item.Master.Rows20[1].Okpo_DB != "")
+                                         || (item.Master.Rows20[1].Okpo_DB != ""
+                                             && t.Master.Rows20[1].Okpo_DB == ""
+                                             && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                                             && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB)
+                                         || (item.Master.Rows20[1].Okpo_DB == ""
+                                             && t.Master.Rows20[1].Okpo_DB != ""
+                                             && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                                             && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));
             }
 
             return null;
@@ -1495,7 +1483,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var impRep = (Report)key;
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
+            foreach (var key1 in
+                     baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
             {
                 var baseRep = (Report)key1;
 
@@ -2302,7 +2291,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
-    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
+    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null,
+        bool doSomething = false)
     {
         switch (an)
         {
@@ -2984,7 +2974,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
                             worksheet.Cells[row, 7].Value = $"{stPer[6..8]}.{stPer[4..6]}.{stPer[..4]}";
                             worksheet.Cells[row, 8].Value = $"{endPer[6..8]}.{endPer[4..6]}.{endPer[..4]}";
-                            worksheet.Cells[row, 9].Value = $"{worksheet.Cells[row, 7].Value}-{worksheet.Cells[row, 6].Value}";
+                            worksheet.Cells[row, 9].Value =
+                                $"{worksheet.Cells[row, 7].Value}-{worksheet.Cells[row, 6].Value}";
                             worksheet.Cells[row, 10].Value = "пересечение";
                             row++;
                         }
@@ -3246,6 +3237,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
                 break;
         }
+
         worksheet.Cells.AutoFitColumns();
         Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
         worksheetPrim.Cells.AutoFitColumns();
@@ -3259,11 +3251,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             for (var col = worksheet.Dimension.Start.Column; col <= worksheet.Dimension.End.Column; col++)
             {
                 if (worksheet.Cells[1, col].Text != "№ п/п") continue;
-                using var excelRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column];
+                using var excelRange =
+                    worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column];
                 excelRange.Sort(col - 1);
                 break;
             }
         }
+
         _Excel_Export_Notes(param, 2, masterHeaderLength, worksheetPrim, lst);
 
         worksheet.View.FreezePanes(2, 1);
@@ -3670,6 +3664,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 Form212.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
                 break;
         }
+
         worksheet.Cells.AutoFitColumns();
         Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
         worksheetPrim.Cells.AutoFitColumns();
@@ -4161,6 +4156,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4260,6 +4256,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4361,6 +4358,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4464,6 +4462,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4571,6 +4570,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4684,6 +4684,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4807,6 +4808,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4922,6 +4924,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -4999,6 +5002,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5097,6 +5101,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5189,6 +5194,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5267,6 +5273,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5353,6 +5360,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5425,6 +5433,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5494,6 +5503,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5558,6 +5568,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5624,6 +5635,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5686,6 +5698,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5760,6 +5773,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5830,6 +5844,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -5894,6 +5909,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+
         worksheet.View.FreezePanes(2, 1);
     }
 
@@ -6899,7 +6915,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 ContentHeader = "Уведомление",
                 ContentMessage =
                     "Выгрузка всех записей паспортов с кодом 11 или 85, категорий 1, 2, 3," +
-                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути:" + 
+                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути:" +
                     $"{Environment.NewLine}{directory.FullName}" +
                     $"{Environment.NewLine}сохранена по пути:" +
                     $"{Environment.NewLine}{path}",
@@ -7205,14 +7221,22 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ? param.Split('.')[0] == "1"
                         ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1]
-                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                                  .ExcelRow(worksheetPrim, curRow, 1,
+                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                              1
                             : reps.Master_DB.Rows10[0]
-                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                                  .ExcelRow(worksheetPrim, curRow, 1,
+                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                              1
                         : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows20[1]
-                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                                  .ExcelRow(worksheetPrim, curRow, 1,
+                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                              1
                             : reps.Master_DB.Rows20[0]
-                                .ExcelRow(worksheetPrim, curRow, 1, SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
+                                  .ExcelRow(worksheetPrim, curRow, 1,
+                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                              1
                     : param.Split('.')[0] == "1"
                         ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, curRow, 1) + 1
