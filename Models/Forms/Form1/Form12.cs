@@ -988,15 +988,19 @@ public class Form12 : Form1
         PassportNumber_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
         NameIOU_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         FactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
-        Mass_DB = Convert.ToString(worksheet.Cells[row, 7].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[row, 7].Value), out var val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[row, 7].Value);
+        Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
-        CreationDate_DB = Convert.ToString(worksheet.Cells[row, 9].Value);
-        SignedServicePeriod_DB = Convert.ToString(worksheet.Cells[row, 10].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[row, 10].Value);
-        PropertyCode_DB = Convert.ToByte(worksheet.Cells[row, 11].Value);
+        CreationDate_DB = ConvertToExcelDate(Convert.ToString(worksheet.Cells[row, 9].Value)) as string;
+        SignedServicePeriod_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
+        PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue)
+            ? byteValue
+            : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
-        DocumentVid_DB = Convert.ToByte(worksheet.Cells[row, 13].Value);
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out byteValue)
+            ? byteValue
+            : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 14].Value);
-        DocumentDate_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
+        DocumentDate_DB = ConvertToExcelDate(Convert.ToString(worksheet.Cells[row, 15].Value)) as string;
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
         PackName_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
@@ -1010,22 +1014,22 @@ public class Form12 : Form1
         row += !transpose ? cnt : 0;
 
         worksheet.Cells[row, column].Value = ConvertToExcelString(PassportNumber_DB);
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = NameIOU_DB;
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = FactoryNumber_DB;
-        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = string.IsNullOrEmpty(Mass_DB) || Mass_DB == "-" ? 0  : double.TryParse(Mass_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out var val) ? val : Mass_DB;
-        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = CreatorOKPO_DB;
-        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = CreationDate_DB;
-        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = string.IsNullOrEmpty(SignedServicePeriod_DB) || SignedServicePeriod_DB == "-" ? 0  : int.TryParse(SignedServicePeriod_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out var valInt) ? valInt : SignedServicePeriod_DB;
-        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = PropertyCode_DB;
-        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = Owner_DB;
-        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = DocumentVid_DB;
-        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = DocumentNumber_DB;
-        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = DocumentDate_DB;
-        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ProviderOrRecieverOKPO_DB;
-        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = TransporterOKPO_DB;
-        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = PackName_DB;
-        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = PackType_DB;
-        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = PackNumber_DB;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(NameIOU_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(FactoryNumber_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelDouble(Mass_DB);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelString(CreatorOKPO_DB);
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDate(CreationDate_DB);
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelDouble(SignedServicePeriod_DB);
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = PropertyCode_DB is null ? "-" : PropertyCode_DB;
+        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelDouble(Owner_DB);
+        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = DocumentVid_DB is null ? "-" : DocumentVid_DB;
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ConvertToExcelDouble(DocumentNumber_DB);
+        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ConvertToExcelDate(DocumentDate_DB);
+        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelDouble(ProviderOrRecieverOKPO_DB);
+        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = ConvertToExcelDouble(TransporterOKPO_DB);
+        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = ConvertToExcelDouble(PackName_DB);
+        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ConvertToExcelDouble(PackType_DB);
+        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = ConvertToExcelDouble(PackNumber_DB);
 
         return 17;
     }
