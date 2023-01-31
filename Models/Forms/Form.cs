@@ -208,6 +208,16 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
                 : value;
     }
 
+    private protected static string ConvertToExcelDate(object value)
+    {
+        var strValue = Convert.ToString(value);
+        return strValue is null or "" or "-"
+            ? "-"
+            : DateTime.TryParse(strValue, out var dateTime)
+                ? dateTime.ToShortDateString()
+                : strValue;
+    }
+
     private protected static object ConvertToExcelString(string value)
     {
         return value is null or "" or "-"

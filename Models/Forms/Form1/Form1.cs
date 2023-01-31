@@ -421,11 +421,7 @@ public abstract class Form1 : Form
             ? intValue
             : 0;
         OperationCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        OperationDate_DB = worksheet.Cells[row, 3].Value is null
-            ? "-"
-            : DateTime.TryParse(worksheet.Cells[row, 3].Value.ToString(), out var dateTime)
-                ? dateTime.ToShortDateString()
-                : worksheet.Cells[row, 3].Value.ToString();
+        OperationDate_DB = ConvertToExcelDate(worksheet.Cells[row, 3].Value);
     }
     public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
