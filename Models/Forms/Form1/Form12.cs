@@ -990,7 +990,7 @@ public class Form12 : Form1
         FactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
-        CreationDate_DB = ConvertToExcelDate(Convert.ToString(worksheet.Cells[row, 9].Value)) as string;
+        CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Value);
         SignedServicePeriod_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
         PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue)
             ? byteValue
@@ -1000,13 +1000,14 @@ public class Form12 : Form1
             ? byteValue
             : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 14].Value);
-        DocumentDate_DB = ConvertToExcelDate(Convert.ToString(worksheet.Cells[row, 15].Value)) as string;
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 15].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
         PackName_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
         PackType_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
         PackNumber_DB = Convert.ToString(worksheet.Cells[row, 20].Value);
     }
+
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpose);
@@ -1021,18 +1022,19 @@ public class Form12 : Form1
         worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDate(CreationDate_DB);
         worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelDouble(SignedServicePeriod_DB);
         worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = PropertyCode_DB is null ? "-" : PropertyCode_DB;
-        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelDouble(Owner_DB);
+        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelString(Owner_DB);
         worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = DocumentVid_DB is null ? "-" : DocumentVid_DB;
-        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ConvertToExcelDouble(DocumentNumber_DB);
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ConvertToExcelString(DocumentNumber_DB);
         worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ConvertToExcelDate(DocumentDate_DB);
-        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelDouble(ProviderOrRecieverOKPO_DB);
-        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = ConvertToExcelDouble(TransporterOKPO_DB);
-        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = ConvertToExcelDouble(PackName_DB);
-        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ConvertToExcelDouble(PackType_DB);
-        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = ConvertToExcelDouble(PackNumber_DB);
+        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
+        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = ConvertToExcelString(TransporterOKPO_DB);
+        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = ConvertToExcelString(PackName_DB);
+        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ConvertToExcelString(PackType_DB);
+        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = ConvertToExcelString(PackNumber_DB);
 
         return 17;
     }
+
     public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
         var cnt = Form1.ExcelHeader(worksheet, row, column, transpose);

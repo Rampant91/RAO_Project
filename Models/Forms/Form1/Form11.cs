@@ -1091,7 +1091,7 @@ public class Form11 : Form1
             : null;
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
-        CreationDate_DB = ConvertToExcelDate(Convert.ToString(worksheet.Cells[row, 11].Value)) as string;
+        CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Value);
         Category_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out var shortValue)
             ? shortValue
             : null;
@@ -1106,7 +1106,7 @@ public class Form11 : Form1
             ? byteValue
             : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
-        DocumentDate_DB = ConvertToExcelDate(Convert.ToString(worksheet.Cells[row, 18].Value)) as string;
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 18].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 20].Value);
         PackName_DB = Convert.ToString(worksheet.Cells[row, 21].Value);
@@ -1119,7 +1119,7 @@ public class Form11 : Form1
         column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
 
-        worksheet.Cells[row + 0, column + 0].Value = PassportNumber_DB;
+        worksheet.Cells[row + 0, column + 0].Value = ConvertToExcelString(PassportNumber_DB);
         worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(Type_DB);
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
         worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(FactoryNumber_DB);

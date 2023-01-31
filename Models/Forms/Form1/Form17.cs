@@ -2090,145 +2090,109 @@ public class Form17 : Form1
         PackType_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         PackFactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         PackNumber_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
-        FormingDate_DB = worksheet.Cells[row, 8].Value is null
-            ? "-"
-            : DateTime.TryParse(worksheet.Cells[row, 8].Value.ToString(), out var dateTime)
-                ? dateTime.ToShortDateString()
-                : worksheet.Cells[row, 8].Value.ToString();
+        FormingDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 8].Value);
         PassportNumber_DB = Convert.ToString(worksheet.Cells[row, 9].Value);
-        Volume_DB = Convert.ToString(worksheet.Cells[row, 10].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 10].Value), out var val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 10].Value);
-        Mass_DB = Convert.ToString(worksheet.Cells[row, 11].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 11].Value);
+        Volume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
+        Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
-        SpecificActivity_DB = Convert.ToString(worksheet.Cells[row, 13].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 13].Value);
-        DocumentVid_DB = worksheet.Cells[row, 14].Value is null ? null : Convert.ToByte(worksheet.Cells[row, 14].Value);
+        SpecificActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 13].Value);
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue)
+            ? byteValue
+            : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
-        DocumentDate_DB = worksheet.Cells[row, 16].Value is null 
-            ? "-"
-            : DateTime.TryParse(worksheet.Cells[row, 16].Value.ToString(), out dateTime)
-                ? dateTime.ToShortDateString()
-                : worksheet.Cells[row, 16].Value.ToString();
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 16].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
         StoragePlaceName_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
         StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[row, 20].Value);
         CodeRAO_DB = Convert.ToString(worksheet.Cells[row, 21].Value);
         StatusRAO_DB = Convert.ToString(worksheet.Cells[row, 22].Value);
-        VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[row, 23].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 23].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 23].Value);
-        MassOutOfPack_DB = Convert.ToString(worksheet.Cells[row, 24].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 24].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 24].Value);
-        Quantity_DB = Convert.ToString(worksheet.Cells[row, 25].Value);
-        TritiumActivity_DB = Convert.ToString(worksheet.Cells[row, 26].Value);
-        BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[row, 27].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 27].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 27].Value);
-        AlphaActivity_DB = Convert.ToString(worksheet.Cells[row, 28].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 28].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 28].Value);
-        TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[row, 29].Value).Equals("0")
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 29].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 29].Value);
+        VolumeOutOfPack_DB = ConvertFromExcelDouble(worksheet.Cells[row, 23].Value);
+        MassOutOfPack_DB = ConvertFromExcelDouble(worksheet.Cells[row, 24].Value);
+        Quantity_DB = ConvertFromExcelInt(worksheet.Cells[row, 25].Value);
+        TritiumActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 26].Value);
+        BetaGammaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 27].Value);
+        AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 28].Value);
+        TransuraniumActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 29].Value);
         RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[row, 30].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 31].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 32].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpon = true, string sumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
-        var cnt = base.ExcelRow(worksheet, row, column, transpon);
-        column += transpon ? cnt : 0;
-        row += !transpon ? cnt : 0;
+        var cnt = base.ExcelRow(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[row + 0, column + 0].Value = PackName_DB;
-        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = PackType_DB;
-        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = PackFactoryNumber_DB;
-        worksheet.Cells[row + (!transpon ? 3 : 0), column + (transpon ? 3 : 0)].Value = PackNumber_DB;
-        worksheet.Cells[row + (!transpon ? 4 : 0), column + (transpon ? 4 : 0)].Value = FormingDate_DB;
-        worksheet.Cells[row + (!transpon ? 5 : 0), column + (transpon ? 5 : 0)].Value = PassportNumber_DB;
-        worksheet.Cells[row + (!transpon ? 6 : 0), column + (transpon ? 6 : 0)].Value = string.IsNullOrEmpty(Volume_DB) || Volume_DB == "-" ? 0 : double.TryParse(Volume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out var val) ? val : Volume_DB;
-        worksheet.Cells[row + (!transpon ? 7 : 0), column + (transpon ? 7 : 0)].Value = string.IsNullOrEmpty(Mass_DB) || Mass_DB == "-" ? 0  : double.TryParse(Mass_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass_DB;
-        worksheet.Cells[row + (!transpon ? 8 : 0), column + (transpon ? 8 : 0)].Value = Radionuclids_DB;
-        worksheet.Cells[row + (!transpon ? 9 : 0), column + (transpon ? 9 : 0)].Value = string.IsNullOrEmpty(SpecificActivity_DB) || SpecificActivity_DB == "-" ? 0  : double.TryParse(SpecificActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SpecificActivity_DB;
-        worksheet.Cells[row + (!transpon ? 10 : 0), column + (transpon ? 10 : 0)].Value = DocumentVid_DB;
-        worksheet.Cells[row + (!transpon ? 11 : 0), column + (transpon ? 11 : 0)].Value = DocumentNumber_DB;
-        worksheet.Cells[row + (!transpon ? 12 : 0), column + (transpon ? 12 : 0)].Value = DocumentDate_DB;
-        worksheet.Cells[row + (!transpon ? 13 : 0), column + (transpon ? 13 : 0)].Value = ProviderOrRecieverOKPO_DB;
-        worksheet.Cells[row + (!transpon ? 14 : 0), column + (transpon ? 14 : 0)].Value = TransporterOKPO_DB;
-        worksheet.Cells[row + (!transpon ? 15 : 0), column + (transpon ? 15 : 0)].Value = StoragePlaceName_DB;
-        worksheet.Cells[row + (!transpon ? 16 : 0), column + (transpon ? 16 : 0)].Value = StoragePlaceCode_DB;
-        worksheet.Cells[row + (!transpon ? 17 : 0), column + (transpon ? 17 : 0)].Value = CodeRAO_DB;
-        worksheet.Cells[row + (!transpon ? 18 : 0), column + (transpon ? 18 : 0)].Value = StatusRAO_DB;
-        worksheet.Cells[row + (!transpon ? 19 : 0), column + (transpon ? 19 : 0)].Value = string.IsNullOrEmpty(VolumeOutOfPack_DB) || VolumeOutOfPack_DB == "-" ? 0 : double.TryParse(VolumeOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : VolumeOutOfPack_DB;
-        worksheet.Cells[row + (!transpon ? 20 : 0), column + (transpon ? 20 : 0)].Value = string.IsNullOrEmpty(MassOutOfPack_DB) || MassOutOfPack_DB == "-" ? 0 : double.TryParse(MassOutOfPack_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : MassOutOfPack_DB;
-        worksheet.Cells[row + (!transpon ? 21 : 0), column + (transpon ? 21 : 0)].Value = ConvertToExcelInt(Quantity_DB);
-        worksheet.Cells[row + (!transpon ? 22 : 0), column + (transpon ? 22 : 0)].Value = TritiumActivity_DB;
-        worksheet.Cells[row + (!transpon ? 23 : 0), column + (transpon ? 23 : 0)].Value = string.IsNullOrEmpty(BetaGammaActivity_DB) || BetaGammaActivity_DB == "-" ? 0 : double.TryParse(BetaGammaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : BetaGammaActivity_DB;
-        worksheet.Cells[row + (!transpon ? 24 : 0), column + (transpon ? 24 : 0)].Value = string.IsNullOrEmpty(AlphaActivity_DB) || AlphaActivity_DB == "-" ? 0 : double.TryParse(AlphaActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AlphaActivity_DB;
-        worksheet.Cells[row + (!transpon ? 25 : 0), column + (transpon ? 25 : 0)].Value = string.IsNullOrEmpty(TransuraniumActivity_DB) || TransuraniumActivity_DB == "-" ? 0 : double.TryParse(TransuraniumActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : TransuraniumActivity_DB;
-        worksheet.Cells[row + (!transpon ? 26 : 0), column + (transpon ? 26 : 0)].Value = RefineOrSortRAOCode_DB;
-        worksheet.Cells[row + (!transpon ? 27 : 0), column + (transpon ? 27 : 0)].Value = Subsidy_DB;
-        worksheet.Cells[row + (!transpon ? 28 : 0), column + (transpon ? 28 : 0)].Value = FcpNumber_DB;
+        worksheet.Cells[row + 0, column + 0].Value = ConvertToExcelString(PackName_DB);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(PackType_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(PackFactoryNumber_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(PackNumber_DB);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDate(FormingDate_DB);
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(PassportNumber_DB);
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelDouble(Volume_DB);
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDouble(Mass_DB);
+        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
+        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelDouble(SpecificActivity_DB);
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = DocumentVid_DB is null ? "-" : DocumentVid_DB;
+        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ConvertToExcelString(DocumentNumber_DB);
+        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelDate(DocumentDate_DB);
+        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
+        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = ConvertToExcelString(TransporterOKPO_DB);
+        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ConvertToExcelString(StoragePlaceName_DB);
+        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = ConvertToExcelString(StoragePlaceCode_DB);
+        worksheet.Cells[row + (!transpose ? 17 : 0), column + (transpose ? 17 : 0)].Value = ConvertToExcelString(CodeRAO_DB);
+        worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = ConvertToExcelString(StatusRAO_DB);
+        worksheet.Cells[row + (!transpose ? 19 : 0), column + (transpose ? 19 : 0)].Value = ConvertToExcelDouble(VolumeOutOfPack_DB);
+        worksheet.Cells[row + (!transpose ? 20 : 0), column + (transpose ? 20 : 0)].Value = ConvertToExcelDouble(MassOutOfPack_DB);
+        worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = ConvertToExcelInt(Quantity_DB);
+        worksheet.Cells[row + (!transpose ? 22 : 0), column + (transpose ? 22 : 0)].Value = ConvertToExcelDouble(TritiumActivity_DB);
+        worksheet.Cells[row + (!transpose ? 23 : 0), column + (transpose ? 23 : 0)].Value = ConvertToExcelDouble(BetaGammaActivity_DB);
+        worksheet.Cells[row + (!transpose ? 24 : 0), column + (transpose ? 24 : 0)].Value = ConvertToExcelDouble(AlphaActivity_DB);
+        worksheet.Cells[row + (!transpose ? 25 : 0), column + (transpose ? 25 : 0)].Value = ConvertToExcelDouble(TransuraniumActivity_DB);
+        worksheet.Cells[row + (!transpose ? 26 : 0), column + (transpose ? 26 : 0)].Value = ConvertToExcelString(RefineOrSortRAOCode_DB);
+        worksheet.Cells[row + (!transpose ? 27 : 0), column + (transpose ? 27 : 0)].Value = ConvertToExcelString(Subsidy_DB);
+        worksheet.Cells[row + (!transpose ? 28 : 0), column + (transpose ? 28 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
+
         return 29;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = Form1.ExcelHeader(worksheet, row, column, transpon);
-        column += transpon ? cnt : 0;
-        row += !transpon ? cnt : 0;
+        var cnt = Form1.ExcelHeader(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
         worksheet.Cells[row + 0, column + 0].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PackName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PackType))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PackFactoryNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 3 : 0), column + (transpon ? 3 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PackNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 4 : 0), column + (transpon ? 4 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(FormingDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 5 : 0), column + (transpon ? 5 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PassportNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 6 : 0), column + (transpon ? 6 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Volume))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 7 : 0), column + (transpon ? 7 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Mass))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 8 : 0), column + (transpon ? 8 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Radionuclids))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 9 : 0), column + (transpon ? 9 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(SpecificActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 10 : 0), column + (transpon ? 10 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(DocumentVid))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
-        worksheet.Cells[row + (!transpon ? 11 : 0), column + (transpon ? 11 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(DocumentNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
-        worksheet.Cells[row + (!transpon ? 12 : 0), column + (transpon ? 12 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(DocumentDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
-        worksheet.Cells[row + (!transpon ? 13 : 0), column + (transpon ? 13 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(ProviderOrRecieverOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
-        worksheet.Cells[row + (!transpon ? 14 : 0), column + (transpon ? 14 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(TransporterOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
-        worksheet.Cells[row + (!transpon ? 15 : 0), column + (transpon ? 15 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(StoragePlaceName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
-        worksheet.Cells[row + (!transpon ? 16 : 0), column + (transpon ? 16 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(StoragePlaceCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
-        worksheet.Cells[row + (!transpon ? 17 : 0), column + (transpon ? 17 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(CodeRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 18 : 0), column + (transpon ? 18 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(StatusRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 19 : 0), column + (transpon ? 19 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(VolumeOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 20 : 0), column + (transpon ? 20 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(MassOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 21 : 0), column + (transpon ? 21 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Quantity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 22 : 0), column + (transpon ? 22 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(TritiumActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 23 : 0), column + (transpon ? 23 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(BetaGammaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 24 : 0), column + (transpon ? 24 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(AlphaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 25 : 0), column + (transpon ? 25 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(TransuraniumActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 26 : 0), column + (transpon ? 26 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(RefineOrSortRAOCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 27 : 0), column + (transpon ? 27 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Subsidy))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-        worksheet.Cells[row + (!transpon ? 28 : 0), column + (transpon ? 28 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(FcpNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PackType))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PackFactoryNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PackNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(FormingDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(PassportNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Volume))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Mass))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Radionuclids))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(SpecificActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(DocumentVid))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(DocumentNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(DocumentDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(ProviderOrRecieverOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(TransporterOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(StoragePlaceName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(StoragePlaceCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 17 : 0), column + (transpose ? 17 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(CodeRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(StatusRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 19 : 0), column + (transpose ? 19 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(VolumeOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 20 : 0), column + (transpose ? 20 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(MassOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Quantity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 22 : 0), column + (transpose ? 22 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(TritiumActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 23 : 0), column + (transpose ? 23 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(BetaGammaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 24 : 0), column + (transpose ? 24 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(AlphaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 25 : 0), column + (transpose ? 25 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(TransuraniumActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 26 : 0), column + (transpose ? 26 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(RefineOrSortRAOCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 27 : 0), column + (transpose ? 27 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Subsidy))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 28 : 0), column + (transpose ? 28 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(FcpNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        
         return 29;
     }
     #endregion
@@ -2253,6 +2217,7 @@ public class Form17 : Form1
             operationCodeR.Binding = nameof(OperationCode);
             numberInOrderR += operationCodeR;
             #endregion
+
             #region OperationDate (3)
             var operationDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             operationDateR.SetSizeColToAllLevels(88);
@@ -2266,54 +2231,63 @@ public class Form17 : Form1
             packNameR.Binding = nameof(PackName);
             numberInOrderR += packNameR;
             #endregion
+
             #region PackType (5)
             var packTypeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackType))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             packTypeR.SetSizeColToAllLevels(88);
             packTypeR.Binding = nameof(PackType);
             numberInOrderR += packTypeR;
             #endregion
+
             #region PackFactoryNumber (6)
             var packFactoryNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackFactoryNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             packFactoryNumberR.SetSizeColToAllLevels(170);
             packFactoryNumberR.Binding = nameof(PackFactoryNumber);
             numberInOrderR += packFactoryNumberR;
             #endregion
+
             #region PackNumber (7)
             var packNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PackNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             packNumberR.SetSizeColToAllLevels(260);
             packNumberR.Binding = nameof(PackNumber);
             numberInOrderR += packNumberR;
             #endregion
+
             #region FormingDate (8)
             var formingDateR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(FormingDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             formingDateR.SetSizeColToAllLevels(133);
             formingDateR.Binding = nameof(FormingDate);
             numberInOrderR += formingDateR;
             #endregion
+
             #region PassportNumber (9)
             var passportNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(PassportNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             passportNumberR.SetSizeColToAllLevels(143);
             passportNumberR.Binding = nameof(PassportNumber);
             numberInOrderR += passportNumberR;
             #endregion
+
             #region Volume (10)
             var volumeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Volume))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             volumeR.SetSizeColToAllLevels(88);
             volumeR.Binding = nameof(Volume);
             numberInOrderR += volumeR;
             #endregion
+
             #region Mass (11)
             var massR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Mass))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             massR.SetSizeColToAllLevels(95);
             massR.Binding = nameof(Mass);
             numberInOrderR += massR;
             #endregion
+
             #region Radionuclids (12)
             var radionuclidsR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Radionuclids))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())?.GetDataColumnStructureD(numberInOrderR);
             radionuclidsR.SetSizeColToAllLevels(170);
             radionuclidsR.Binding = nameof(Radionuclids);
             numberInOrderR += radionuclidsR;
             #endregion
+
             #region SpecificActivity (13)
             var specificActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(SpecificActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             specificActivityR.SetSizeColToAllLevels(163);
@@ -2327,12 +2301,14 @@ public class Form17 : Form1
             documentVidR.Binding = nameof(DocumentVid);
             numberInOrderR += documentVidR;
             #endregion
+
             #region DocumentNumber (15)
             var documentNumberR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             documentNumberR.SetSizeColToAllLevels(103);
             documentNumberR.Binding = nameof(DocumentNumber);
             numberInOrderR += documentNumberR;
             #endregion
+
             #region DocumentDate (16)
             var documentDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             documentDateR.SetSizeColToAllLevels(88);
@@ -2346,6 +2322,7 @@ public class Form17 : Form1
             providerOrRecieverOkpor.Binding = nameof(ProviderOrRecieverOKPO);
             numberInOrderR += providerOrRecieverOkpor;
             #endregion
+
             #region TransporterOKPO (18)
             var transporterOkpor = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TransporterOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             transporterOkpor.SetSizeColToAllLevels(163);
@@ -2359,6 +2336,7 @@ public class Form17 : Form1
             storagePlaceNameR.Binding = nameof(StoragePlaceName);
             numberInOrderR += storagePlaceNameR;
             #endregion
+
             #region StoragePlaceCode (20)
             var storagePlaceCodeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StoragePlaceCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             storagePlaceCodeR.SetSizeColToAllLevels(88);
@@ -2372,24 +2350,28 @@ public class Form17 : Form1
             codeRaor.Binding = nameof(CodeRAO);
             numberInOrderR += codeRaor;
             #endregion
+
             #region StatusRAO (22)
             var statusRaor = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(StatusRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             statusRaor.SetSizeColToAllLevels(88);
             statusRaor.Binding = nameof(StatusRAO);
             numberInOrderR += statusRaor;
             #endregion
+
             #region VolumeOutOfPack (23)
             var volumeOutOfPackR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(VolumeOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             volumeOutOfPackR.SetSizeColToAllLevels(163);
             volumeOutOfPackR.Binding = nameof(VolumeOutOfPack);
             numberInOrderR += volumeOutOfPackR;
             #endregion
+
             #region MassOutOfPack (24)
             var massOutOfPackR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(MassOutOfPack))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             massOutOfPackR.SetSizeColToAllLevels(170);
             massOutOfPackR.Binding = nameof(MassOutOfPack);
             numberInOrderR += massOutOfPackR;
             #endregion
+
             #region Quantity (25)
             var quantityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(Quantity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             quantityR.SetSizeColToAllLevels(140);
@@ -2403,24 +2385,28 @@ public class Form17 : Form1
             tritiumActivityR.Binding = nameof(TritiumActivity);
             numberInOrderR += tritiumActivityR;
             #endregion
+
             #region BetaGammaActivity (27)
             var betaGammaActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(BetaGammaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             betaGammaActivityR.SetSizeColToAllLevels(180);
             betaGammaActivityR.Binding = nameof(BetaGammaActivity);
             numberInOrderR += betaGammaActivityR;
             #endregion
+
             #region AlphaActivity (28)
             var alphaActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(AlphaActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             alphaActivityR.SetSizeColToAllLevels(185);
             alphaActivityR.Binding = nameof(AlphaActivity);
             numberInOrderR += alphaActivityR;
             #endregion
+
             #region TransuraniumActivity (29)
             var transuraniumActivityR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(TransuraniumActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             transuraniumActivityR.SetSizeColToAllLevels(200);
             transuraniumActivityR.Binding = nameof(TransuraniumActivity);
             numberInOrderR += transuraniumActivityR;
             #endregion
+
             #region RefineOrSortRAOCode (30)
             var refineOrSortRaoCodeR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(RefineOrSortRAOCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             refineOrSortRaoCodeR.SetSizeColToAllLevels(120);
@@ -2434,12 +2420,14 @@ public class Form17 : Form1
             subsidyR.Binding = nameof(Subsidy);
             numberInOrderR += subsidyR;
             #endregion
+
             #region FcpNumber (32)
             var fcpNumberR = ((FormPropertyAttribute)typeof(Form17).GetProperty(nameof(FcpNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(numberInOrderR);
             fcpNumberR.SetSizeColToAllLevels(163);
             fcpNumberR.Binding = nameof(FcpNumber);
             numberInOrderR += fcpNumberR;
             #endregion
+
             _DataGridColumns = numberInOrderR;
         }
         return _DataGridColumns;

@@ -174,11 +174,40 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
         return 0;
     }
 
+    #region Convert
+    private protected static string ConvertFromExcelDate(object value)
+    {
+        var strValue = Convert.ToString(value);
+        return strValue is null or "" or "-"
+            ? "-"
+            : DateTime.TryParse(strValue, out var dateTime)
+                ? dateTime.ToShortDateString()
+                : strValue;
+    }
+
     private protected static string ConvertFromExcelDouble(object value)
     {
-        return double.TryParse(Convert.ToString(value), out var doubleValue)
+        var strValue = Convert.ToString(value);
+        return double.TryParse(strValue, out var doubleValue)
             ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-            : Convert.ToString(value);
+            : strValue;
+    }
+
+    private protected static string ConvertFromExcelInt(object value)
+    {
+        var strValue = Convert.ToString(value);
+        return int.TryParse(strValue, out var intValue)
+            ? intValue.ToString()
+            : strValue;
+    }
+
+    private protected static object ConvertToExcelDate(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : DateTime.TryParse(value, out var dateTime)
+                ? dateTime.ToShortDateString()
+                : value;
     }
 
     private protected static object ConvertToExcelDouble(string value)
@@ -199,25 +228,6 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
                 : value;
     }
 
-    private protected static object ConvertToExcelDate(string value)
-    {
-        return value is null or "" or "-"
-            ? "-"
-            : DateTime.TryParse(value, out var dateTime)
-                ? dateTime.ToShortDateString()
-                : value;
-    }
-
-    private protected static string ConvertToExcelDate(object value)
-    {
-        var strValue = Convert.ToString(value);
-        return strValue is null or "" or "-"
-            ? "-"
-            : DateTime.TryParse(strValue, out var dateTime)
-                ? dateTime.ToShortDateString()
-                : strValue;
-    }
-
     private protected static object ConvertToExcelString(string value)
     {
         return value is null or "" or "-"
@@ -229,7 +239,9 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     {
         return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
             .Replace("(", "").Replace(")", "").Replace(".", ",");
-    }
+    } 
+    #endregion
+
     #endregion
 
     #region IDataGridColumn

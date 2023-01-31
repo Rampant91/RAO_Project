@@ -341,42 +341,38 @@ public class Form19 : Form1
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
-        DocumentVid_DB = Convert.ToByte(worksheet.Cells[row, 4].Value);
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue)
+            ? byteValue
+            : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
-        DocumentDate_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
-        CodeTypeAccObject_DB = Convert.ToInt16(worksheet.Cells[row, 7].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 6].Value);
+        CodeTypeAccObject_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 7].Value), out var shortValue)
+            ? shortValue
+            : null;
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
-        Activity_DB = Convert.ToString(worksheet.Cells[row, 9].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 9].Value), out var val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 9].Value);
+        Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
     }
 
-    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string SumNumber = "")
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpose);
         column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
 
-        worksheet.Cells[row, column].Value = DocumentVid_DB;
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = DocumentNumber_DB;
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = DocumentDate_DB;
-        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = CodeTypeAccObject_DB;
-        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = Radionuclids_DB;
-        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value =
-            Activity_DB is null or "" or "-"
-                ? 0
-                : double.TryParse(Activity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out var val)
-                    ? val
-                    : Activity_DB;
+        worksheet.Cells[row, column].Value = DocumentVid_DB is null ? "-" : DocumentVid_DB;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(DocumentNumber_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDate(DocumentDate_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = CodeTypeAccObject_DB is null ? "-" : CodeTypeAccObject_DB;
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDouble(Activity_DB);
+
         return 6;
     }
 
     public static void ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
         var cnt = Form1.ExcelHeader(worksheet, row, column, transpose);
-        column += +(transpose ? cnt : 0);
+        column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
 
         worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form19,Models")?.GetProperty(nameof(DocumentVid))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
@@ -401,54 +397,63 @@ public class Form19 : Form1
             NumberInOrderR.Blocked = true;
             NumberInOrderR.ChooseLine = true;
             #endregion
+
             #region OperationCode (2)
             var OperationCodeR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             OperationCodeR.SetSizeColToAllLevels(88);
             OperationCodeR.Binding = nameof(OperationCode);
             NumberInOrderR += OperationCodeR;
             #endregion
+
             #region OperationDate (3)
             var OperationDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(OperationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             OperationDateR.SetSizeColToAllLevels(88);
             OperationDateR.Binding = nameof(OperationDate);
             NumberInOrderR += OperationDateR;
             #endregion
+
             #region DocumentVid (4)
             var DocumentVidR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentVidR.SetSizeColToAllLevels(88);
             DocumentVidR.Binding = nameof(DocumentVid);
             NumberInOrderR += DocumentVidR;
             #endregion
+
             #region DocumentNumber (5)
             var DocumentNumberR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentNumberR.SetSizeColToAllLevels(103);
             DocumentNumberR.Binding = nameof(DocumentNumber);
             NumberInOrderR += DocumentNumberR;
             #endregion
+
             #region DocumentDate (6)
             var DocumentDateR = ((FormPropertyAttribute)typeof(Form1).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             DocumentDateR.SetSizeColToAllLevels(88);
             DocumentDateR.Binding = nameof(DocumentDate);
             NumberInOrderR += DocumentDateR;
             #endregion
+
             #region CodeTypeAccObject (7)
             var CodeTypeAccObjectR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(CodeTypeAccObject)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             CodeTypeAccObjectR.SetSizeColToAllLevels(163);
             CodeTypeAccObjectR.Binding = nameof(CodeTypeAccObject);
             NumberInOrderR += CodeTypeAccObjectR;
             #endregion
+
             #region Radionuclids (8)
             var RadionuclidsR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             RadionuclidsR.SetSizeColToAllLevels(125);
             RadionuclidsR.Binding = nameof(Radionuclids);
             NumberInOrderR += RadionuclidsR;
             #endregion
+
             #region Activity (9)
             var ActivityR = ((FormPropertyAttribute)typeof(Form19).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
             ActivityR.SetSizeColToAllLevels(125);
             ActivityR.Binding = nameof(Activity);
             NumberInOrderR += ActivityR;
             #endregion
+
             _DataGridColumns = NumberInOrderR;
         }
         return _DataGridColumns;
