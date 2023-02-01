@@ -144,7 +144,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             try
             {
                 var names = file.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
-                Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.5 Текущая база данных - {names[^1]}";
+                Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.6 Текущая база данных - {names[^1]}";
                 StaticConfiguration.DBPath = file;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -159,7 +159,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         if (!flag)
         {
-            Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.5 Текущая база данных - Local_{i}.raodb";
+            Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.6 Текущая база данных - Local_{i}.raodb";
             StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"Local_{i}.raodb");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
