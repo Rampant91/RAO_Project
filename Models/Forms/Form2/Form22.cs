@@ -2002,52 +2002,18 @@ public class Form22 : Form2, IBaseColor
         StoragePlaceCode.Value = Convert.ToString(worksheet.Cells[row, 3].Value);
         PackName.Value = Convert.ToString(worksheet.Cells[row, 4].Value);
         PackType.Value = Convert.ToString(worksheet.Cells[row, 5].Value);
-        PackQuantity_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
+        PackQuantity_DB = ConvertFromExcelInt(worksheet.Cells[row, 6].Value);
         CodeRAO_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
         StatusRAO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
-        VolumeOutOfPack_DB = Convert.ToString(worksheet.Cells[row, 9].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 9].Value), out var val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 9].Value);
-        VolumeInPack_DB = Convert.ToString(worksheet.Cells[row, 10].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 10].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 10].Value);
-        MassOutOfPack_DB = Convert.ToString(worksheet.Cells[row, 11].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 11].Value);
-        MassInPack_DB = Convert.ToString(worksheet.Cells[row, 12].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 12].Value);
-        QuantityOZIII_DB = Convert.ToString(worksheet.Cells[row, 13].Value) is "0"
-            ? "-"
-            : Convert.ToString(worksheet.Cells[row, 13].Value);
-        TritiumActivity_DB = Convert.ToString(worksheet.Cells[row, 14].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 14].Value);
-        BetaGammaActivity_DB = Convert.ToString(worksheet.Cells[row, 15].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 15].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 15].Value);
-        AlphaActivity_DB = Convert.ToString(worksheet.Cells[row, 16].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 16].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 16].Value);
-        TransuraniumActivity_DB = Convert.ToString(worksheet.Cells[row, 17].Value) is "0"
-            ? "-"
-            : double.TryParse(Convert.ToString(worksheet.Cells[row, 17].Value), out val)
-                ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
-                : Convert.ToString(worksheet.Cells[row, 17].Value);
+        VolumeOutOfPack_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
+        VolumeInPack_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
+        MassOutOfPack_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
+        MassInPack_DB = ConvertFromExcelDouble(worksheet.Cells[row, 12].Value);
+        QuantityOZIII_DB = ConvertFromExcelInt(worksheet.Cells[row, 13].Value);
+        TritiumActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 14].Value);
+        BetaGammaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 15].Value);
+        AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 16].Value);
+        TransuraniumActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 17].Value);
         MainRadionuclids_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 20].Value);
@@ -2058,65 +2024,27 @@ public class Form22 : Form2, IBaseColor
         var cnt = base.ExcelRow(worksheet, row, column, transpose, sumNumber);
         column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
-        worksheet.Cells[row, column].Value = StoragePlaceName.Value ?? "";
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = StoragePlaceCode.Value ?? "";
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = PackName.Value ?? "";
-        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = PackType.Value ?? "";
-        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = PackQuantity_DB is null or "" or "-"
-            ? 0
-            : int.TryParse(PackQuantity_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out var valInt)
-                ? valInt
-                : PackQuantity_DB;
-        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = CodeRAO_DB;
-        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = StatusRAO_DB;
-        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = VolumeOutOfPack_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(VolumeOutOfPack_DB), out var val)
-                ? val
-                : VolumeOutOfPack_DB;
-        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = VolumeInPack_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(VolumeInPack_DB), out val)
-                ? val
-                : VolumeInPack_DB;
-        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = MassOutOfPack_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(MassOutOfPack_DB), out val)
-                ? val
-                : MassOutOfPack_DB;
-        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = MassInPack_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(MassInPack_DB), out val)
-                ? val
-                : MassInPack_DB;
-        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = QuantityOZIII_DB is null or "" or "-"
-            ? 0
-            : int.TryParse(QuantityOZIII_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out valInt)
-                ? valInt
-                : QuantityOZIII_DB;
-        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = TritiumActivity_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(TritiumActivity_DB), out val)
-                ? val
-                : TritiumActivity_DB;
-        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = BetaGammaActivity_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(BetaGammaActivity_DB), out val)
-                ? val
-                : BetaGammaActivity_DB;
-        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = AlphaActivity_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(AlphaActivity_DB), out val)
-                ? val
-                : AlphaActivity_DB;
-        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = TransuraniumActivity_DB is null or "" or "-"
-            ? 0
-            : double.TryParse(ReplaceE(TransuraniumActivity_DB), out val)
-                ? val
-                : TransuraniumActivity_DB;
-        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = MainRadionuclids_DB;
-        worksheet.Cells[row + (!transpose ? 17 : 0), column + (transpose ? 17 : 0)].Value = Subsidy_DB;
-        worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = FcpNumber_DB;
+
+        worksheet.Cells[row, column].Value =  ConvertToExcelString(StoragePlaceName.Value);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(StoragePlaceCode.Value);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(PackName.Value);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(PackType.Value);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelInt(PackQuantity_DB);
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(CodeRAO_DB);
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelString(StatusRAO_DB);
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDouble(VolumeOutOfPack_DB);
+        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelDouble(VolumeInPack_DB);
+        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelDouble(MassOutOfPack_DB);
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ConvertToExcelDouble(MassInPack_DB);
+        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ConvertToExcelInt(QuantityOZIII_DB);
+        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelDouble(TritiumActivity_DB);
+        worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = ConvertToExcelDouble(BetaGammaActivity_DB);
+        worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = ConvertToExcelDouble(AlphaActivity_DB);
+        worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ConvertToExcelDouble(TransuraniumActivity_DB);
+        worksheet.Cells[row + (!transpose ? 16 : 0), column + (transpose ? 16 : 0)].Value = ConvertToExcelString(MainRadionuclids_DB);
+        worksheet.Cells[row + (!transpose ? 17 : 0), column + (transpose ? 17 : 0)].Value = ConvertToExcelString(Subsidy_DB);
+        worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
+
         return 19;
     }
 
@@ -2125,6 +2053,7 @@ public class Form22 : Form2, IBaseColor
         var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
         column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
+
         worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form22,Models")?.GetProperty(nameof(StoragePlaceName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
         worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form22,Models")?.GetProperty(nameof(StoragePlaceCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form22,Models")?.GetProperty(nameof(PackName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
@@ -2146,6 +2075,7 @@ public class Form22 : Form2, IBaseColor
         worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form22,Models")?.GetProperty(nameof(FcpNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
         return 19;
     }
+    
     #endregion
 
     #region IDataGridColumn
@@ -2416,6 +2346,7 @@ public class Form22 : Form2, IBaseColor
         #endregion
 
         _DataGridColumns = numberInOrderR;
+
         return _DataGridColumns;
     }
     #endregion

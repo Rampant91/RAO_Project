@@ -54,7 +54,6 @@ public class Form23 : Form2
                  DocumentDate.HasErrors);
     }
 
-    //StoragePlaceName property
     #region  StoragePlaceName
     public string StoragePlaceName_DB { get; set; } = "";
     [NotMapped]
@@ -110,7 +109,6 @@ public class Form23 : Form2
     //StoragePlaceName property
     #endregion
 
-    //StoragePlaceCode property
     #region  StoragePlaceCode
     public string StoragePlaceCode_DB { get; set; } = "";
     [NotMapped]
@@ -220,7 +218,6 @@ public class Form23 : Form2
     //StoragePlaceCode property
     #endregion
 
-    //ProjectVolume property
     #region  ProjectVolume
     public string ProjectVolume_DB { get; set; } = "";
     [NotMapped]
@@ -310,7 +307,6 @@ public class Form23 : Form2
     //ProjectVolume property
     #endregion
 
-    //CodeRAO property
     #region  CodeRAO
     public string CodeRAO_DB { get; set; } = "";
     [NotMapped]
@@ -427,7 +423,6 @@ public class Form23 : Form2
     //CodeRAO property
     #endregion
 
-    //Volume property
     #region  Volume
     public string Volume_DB { get; set; }
     [NotMapped]
@@ -513,7 +508,6 @@ public class Form23 : Form2
     //Volume property
     #endregion
 
-    //Mass Property
     #region  Mass
     public string Mass_DB { get; set; }
     [NotMapped]
@@ -603,7 +597,6 @@ public class Form23 : Form2
     //Mass Property
     #endregion
 
-    //QuantityOZIII property
     #region  QuantityOZIII
     public string QuantityOZIII_DB { get; set; }
     [NotMapped]
@@ -670,7 +663,6 @@ public class Form23 : Form2
     //QuantityOZIII property
     #endregion
 
-    //SummaryActivity property
     #region  SummaryActivity
     public string SummaryActivity_DB { get; set; }
     [NotMapped]
@@ -760,7 +752,6 @@ public class Form23 : Form2
     //SummaryActivity property
     #endregion
 
-    //DocumentNumber property
     #region  DocumentNumber
     public string DocumentNumber_DB { get; set; } = "";
     [NotMapped]
@@ -810,7 +801,6 @@ public class Form23 : Form2
     //DocumentNumber property
     #endregion
 
-    //DocumentDate property
     #region DocumentDate 
     public string DocumentDate_DB { get; set; } = "";
     [NotMapped]
@@ -884,7 +874,6 @@ public class Form23 : Form2
     //DocumentDate property
     #endregion
 
-    //ExpirationDate property
     #region  ExpirationDate
     public string ExpirationDate_DB { get; set; } = "";
     [NotMapped]
@@ -958,7 +947,6 @@ public class Form23 : Form2
     //ExpirationDate property
     #endregion
 
-    //DocumentName property
     #region  DocumentName
     public string DocumentName_DB { get; set; } = "";
     [NotMapped]
@@ -1009,154 +997,170 @@ public class Form23 : Form2
     #endregion
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
-    {
-        double val;
-        base.ExcelGetRow(worksheet, Row);
-        StoragePlaceName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
-        ProjectVolume_DB = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
-        CodeRAO_DB = Convert.ToString(worksheet.Cells[Row, 5].Value);
-        Volume_DB = Convert.ToString(worksheet.Cells[Row, 6].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 6].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 6].Value);
-        Mass_DB = Convert.ToString(worksheet.Cells[Row, 7].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 7].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 7].Value);
-        QuantityOZIII_DB = Convert.ToString(worksheet.Cells[Row, 8].Value).Equals("0") ? "-" : Convert.ToString(worksheet.Cells[Row, 8].Value);
-        SummaryActivity_DB = Convert.ToString(worksheet.Cells[Row, 9].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 9].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 9].Value);
-        DocumentNumber_DB = Convert.ToString(worksheet.Cells[Row, 10].Value);
-        DocumentDate_DB = Convert.ToString(worksheet.Cells[Row, 11].Value);
-        ExpirationDate_DB = Convert.ToString(worksheet.Cells[Row, 12].Value);
-        DocumentName_DB = Convert.ToString(worksheet.Cells[Row, 13].Value);
 
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
+    {
+        base.ExcelGetRow(worksheet, row);
+        StoragePlaceName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        ProjectVolume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
+        CodeRAO_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
+        Volume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
+        Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
+        QuantityOZIII_DB = ConvertFromExcelInt(worksheet.Cells[row, 8].Value);
+        SummaryActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
+        DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Value);
+        ExpirationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 12].Value);
+        DocumentName_DB = Convert.ToString(worksheet.Cells[row, 13].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
-    {
-        var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
-        double val;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = StoragePlaceName_DB;
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = StoragePlaceCode_DB;
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = string.IsNullOrEmpty(ProjectVolume_DB) || ProjectVolume_DB == null ? 0  : double.TryParse(ProjectVolume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : ProjectVolume_DB;
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = CodeRAO_DB;
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = string.IsNullOrEmpty(Volume_DB) || Volume_DB == null ? 0  : double.TryParse(Volume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Volume_DB;
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = string.IsNullOrEmpty(Mass_DB) || Mass_DB == null ? 0  : double.TryParse(Mass_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : Mass_DB;
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = string.IsNullOrEmpty(QuantityOZIII_DB) || QuantityOZIII_DB == null ? 0  : int.TryParse(QuantityOZIII_DB.Replace("(", "").Replace(")", "").Replace(".", ","), out var valInt) ? valInt : QuantityOZIII_DB;
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = string.IsNullOrEmpty(SummaryActivity_DB) || SummaryActivity_DB == null ? 0  : double.TryParse(SummaryActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : SummaryActivity_DB;
-        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = DocumentNumber_DB;
-        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = DocumentDate_DB;
-        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ExpirationDate_DB;
-        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = DocumentName_DB;
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
+    {
+        var cnt = base.ExcelRow(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
+
+        worksheet.Cells[row, column].Value = ConvertToExcelString(StoragePlaceName_DB);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(StoragePlaceCode_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDouble(ProjectVolume_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(CodeRAO_DB);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDouble(Volume_DB);
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDouble(Mass_DB);
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelInt(QuantityOZIII_DB);
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDouble(SummaryActivity_DB);
+        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelString(DocumentNumber_DB);
+        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelDate(DocumentDate_DB);
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ConvertToExcelDate(ExpirationDate_DB);
+        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ConvertToExcelString(DocumentName_DB);
+        
         return 12;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
+        var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(ProjectVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(Volume)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(Mass)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 6 : 0), Column + (Transpon ? 6 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 7 : 0), Column + (Transpon ? 7 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(SummaryActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 8 : 0), Column + (Transpon ? 8 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 9 : 0), Column + (Transpon ? 9 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 10 : 0), Column + (Transpon ? 10 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(ExpirationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 11 : 0), Column + (Transpon ? 11 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models").GetProperty(nameof(DocumentName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(StoragePlaceName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(StoragePlaceCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(ProjectVolume))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(CodeRAO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(Volume))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(Mass))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(QuantityOZIII))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(SummaryActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(DocumentNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(DocumentDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(ExpirationDate))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form23,Models")?.GetProperty(nameof(DocumentName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        
         return 12;
     }
+    
     #endregion
+
     #region IDataGridColumn
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
     {
-        if (_DataGridColumns == null)
-        {
-            #region NumberInOrder (1)
-            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
-            NumberInOrderR.Binding = nameof(NumberInOrder);
-            NumberInOrderR.Blocked = true;
-            NumberInOrderR.ChooseLine = true;
-            #endregion
-            #region StoragePlaceName (2)
-            var StoragePlaceNameR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            StoragePlaceNameR.SetSizeColToAllLevels(163);
-            StoragePlaceNameR.Binding = nameof(StoragePlaceName);
-            NumberInOrderR += StoragePlaceNameR;
-            #endregion
-            #region StoragePlaceCode (3)
-            var StoragePlaceCodeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            StoragePlaceCodeR.SetSizeColToAllLevels(88);
-            StoragePlaceCodeR.Binding = nameof(StoragePlaceCode);
-            NumberInOrderR += StoragePlaceCodeR;
-            #endregion
-            #region ProjectVolume (4)
-            var ProjectVolumeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(ProjectVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ProjectVolumeR.SetSizeColToAllLevels(133);
-            ProjectVolumeR.Binding = nameof(ProjectVolume);
-            NumberInOrderR += ProjectVolumeR;
-            #endregion
-            #region CodeRAO (5)
-            var CodeRAOR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            CodeRAOR.SetSizeColToAllLevels(88);
-            CodeRAOR.Binding = nameof(CodeRAO);
-            NumberInOrderR += CodeRAOR;
-            #endregion
-            #region Volume (6)
-            var VolumeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(Volume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            VolumeR.SetSizeColToAllLevels(163);
-            VolumeR.Binding = nameof(Volume);
-            NumberInOrderR += VolumeR;
-            #endregion
-            #region Mass (7)
-            var MassR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(Mass)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            MassR.SetSizeColToAllLevels(123);
-            MassR.Binding = nameof(Mass);
-            NumberInOrderR += MassR;
-            #endregion
-            #region QuantityOZIII (8)
-            var QuantityOZIIIR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            QuantityOZIIIR.SetSizeColToAllLevels(123);
-            QuantityOZIIIR.Binding = nameof(QuantityOZIII);
-            NumberInOrderR += QuantityOZIIIR;
-            #endregion
-            #region SummaryActivity (9)
-            var SummaryActivityR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(SummaryActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            SummaryActivityR.SetSizeColToAllLevels(163);
-            SummaryActivityR.Binding = nameof(SummaryActivity);
-            NumberInOrderR += SummaryActivityR;
-            #endregion
-            #region DocumentNumber (10)
-            var DocumentNumberR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentNumberR.SetSizeColToAllLevels(103);
-            DocumentNumberR.Binding = nameof(DocumentNumber);
-            NumberInOrderR += DocumentNumberR;
-            #endregion
-            #region DocumentDate (11)
-            var DocumentDateR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentDateR.SetSizeColToAllLevels(88);
-            DocumentDateR.Binding = nameof(DocumentDate);
-            NumberInOrderR += DocumentDateR;
-            #endregion
-            #region ExpirationDate (12)
-            var ExpirationDateR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(ExpirationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ExpirationDateR.SetSizeColToAllLevels(163);
-            ExpirationDateR.Binding = nameof(ExpirationDate);
-            NumberInOrderR += ExpirationDateR;
-            #endregion
-            #region DocumentName (13)
-            var DocumentNameR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            DocumentNameR.SetSizeColToAllLevels(163);
-            DocumentNameR.Binding = nameof(DocumentName);
-            NumberInOrderR += DocumentNameR;
-            #endregion
-            _DataGridColumns = NumberInOrderR;
-        }
+        if (_DataGridColumns != null) return _DataGridColumns;
+
+        #region NumberInOrder (1)
+        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        NumberInOrderR.SetSizeColToAllLevels(50);
+        NumberInOrderR.Binding = nameof(NumberInOrder);
+        NumberInOrderR.Blocked = true;
+        NumberInOrderR.ChooseLine = true;
+        #endregion
+
+        #region StoragePlaceName (2)
+        var StoragePlaceNameR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        StoragePlaceNameR.SetSizeColToAllLevels(163);
+        StoragePlaceNameR.Binding = nameof(StoragePlaceName);
+        NumberInOrderR += StoragePlaceNameR;
+        #endregion
+
+        #region StoragePlaceCode (3)
+        var StoragePlaceCodeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        StoragePlaceCodeR.SetSizeColToAllLevels(88);
+        StoragePlaceCodeR.Binding = nameof(StoragePlaceCode);
+        NumberInOrderR += StoragePlaceCodeR;
+        #endregion
+
+        #region ProjectVolume (4)
+        var ProjectVolumeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(ProjectVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        ProjectVolumeR.SetSizeColToAllLevels(133);
+        ProjectVolumeR.Binding = nameof(ProjectVolume);
+        NumberInOrderR += ProjectVolumeR;
+        #endregion
+
+        #region CodeRAO (5)
+        var CodeRAOR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        CodeRAOR.SetSizeColToAllLevels(88);
+        CodeRAOR.Binding = nameof(CodeRAO);
+        NumberInOrderR += CodeRAOR;
+        #endregion
+
+        #region Volume (6)
+        var VolumeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(Volume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        VolumeR.SetSizeColToAllLevels(163);
+        VolumeR.Binding = nameof(Volume);
+        NumberInOrderR += VolumeR;
+        #endregion
+
+        #region Mass (7)
+        var MassR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(Mass)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        MassR.SetSizeColToAllLevels(123);
+        MassR.Binding = nameof(Mass);
+        NumberInOrderR += MassR;
+        #endregion
+
+        #region QuantityOZIII (8)
+        var QuantityOZIIIR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        QuantityOZIIIR.SetSizeColToAllLevels(123);
+        QuantityOZIIIR.Binding = nameof(QuantityOZIII);
+        NumberInOrderR += QuantityOZIIIR;
+        #endregion
+
+        #region SummaryActivity (9)
+        var SummaryActivityR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(SummaryActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        SummaryActivityR.SetSizeColToAllLevels(163);
+        SummaryActivityR.Binding = nameof(SummaryActivity);
+        NumberInOrderR += SummaryActivityR;
+        #endregion
+
+        #region DocumentNumber (10)
+        var DocumentNumberR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        DocumentNumberR.SetSizeColToAllLevels(103);
+        DocumentNumberR.Binding = nameof(DocumentNumber);
+        NumberInOrderR += DocumentNumberR;
+        #endregion
+
+        #region DocumentDate (11)
+        var DocumentDateR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        DocumentDateR.SetSizeColToAllLevels(88);
+        DocumentDateR.Binding = nameof(DocumentDate);
+        NumberInOrderR += DocumentDateR;
+        #endregion
+
+        #region ExpirationDate (12)
+        var ExpirationDateR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(ExpirationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        ExpirationDateR.SetSizeColToAllLevels(163);
+        ExpirationDateR.Binding = nameof(ExpirationDate);
+        NumberInOrderR += ExpirationDateR;
+        #endregion
+
+        #region DocumentName (13)
+        var DocumentNameR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        DocumentNameR.SetSizeColToAllLevels(163);
+        DocumentNameR.Binding = nameof(DocumentName);
+        NumberInOrderR += DocumentNameR;
+        #endregion
+
+        _DataGridColumns = NumberInOrderR;
+
         return _DataGridColumns;
     }
     #endregion

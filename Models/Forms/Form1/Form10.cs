@@ -1060,70 +1060,73 @@ public class Form10 : Form
     #endregion
 
     #region IExcel
-    public override void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         throw new NotImplementedException();
     }
-    public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool transpose = true, string SumNumber = "")
+
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
-        if (SumNumber.Equals(""))
+        if (sumNumber.Equals(""))
         {
-            worksheet.Cells[Row + (!transpose ? 0 : 0), Column + (transpose ? 0 : 0)].Value = Okpo_DB;
-            worksheet.Cells[Row + (!transpose ? 1 : 0), Column + (transpose ? 1 : 0)].Value = ShortJurLico_DB;
-            worksheet.Cells[Row + (!transpose ? 2 : 0), Column + (transpose ? 2 : 0)].Value = RegNo_DB;
+            worksheet.Cells[row, column].Value = Okpo_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ShortJurLico_DB;
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = RegNo_DB;
 
             return 3;
         }
-        else
-        {
-            worksheet.Cells[Row + (!transpose ? 0 : 0), Column + (transpose ? 0 : 0)].Value = SumNumber;
-            worksheet.Cells[Row + (!transpose ? 1 : 0), Column + (transpose ? 1 : 0)].Value = Okpo_DB;
-            worksheet.Cells[Row + (!transpose ? 2 : 0), Column + (transpose ? 2 : 0)].Value = ShortJurLico_DB;
-            worksheet.Cells[Row + (!transpose ? 3 : 0), Column + (transpose ? 3 : 0)].Value = RegNo_DB;
 
-            return 4;
-        }
+        worksheet.Cells[row, column].Value = sumNumber;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = Okpo_DB;
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ShortJurLico_DB;
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = RegNo_DB;
+
+        return 4;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true, string ID = "")
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
     {
-        var cnt = Form.ExcelHeader(worksheet,Row,Column,Transpon);
-        Column += Transpon == true ? cnt : 0;
-        Row += Transpon == false ? cnt : 0;
+        var cnt = Form.ExcelHeader(worksheet,row,column,transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        if (ID.Equals(""))
+        if (id.Equals(""))
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(Okpo))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(ShortJurLico))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(RegNo))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+            worksheet.Cells[row, column].Value = 
+                ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models")?.GetProperty(nameof(Okpo))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];                                        
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = 
+                ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models")?.GetProperty(nameof(ShortJurLico))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];                                        
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value =
+                ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models")?.GetProperty(nameof(RegNo))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
 
             return 3;
         }
-        else
-        {
-            worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ID;
-            worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(Okpo))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(ShortJurLico))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];                                        
-            worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models").GetProperty(nameof(RegNo))
-                .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
 
-            return 4;
-        }
+        worksheet.Cells[row, column].Value = id;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value =
+            ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models")?.GetProperty(nameof(Okpo))
+            ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];                                        
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value =
+            ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models")?.GetProperty(nameof(ShortJurLico))
+            ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];                                        
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value =
+            ((FormPropertyAttribute) Type.GetType("Models.Forms.Form1.Form10,Models")?.GetProperty(nameof(RegNo))
+            ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
+
+        return 4;
     }
 
     #endregion
 
     #region IDataGridColumn
+
     public override DataGridColumns GetColumnStructure(string param)
     {
         return null;
     }
-
         
     #endregion
 }

@@ -1086,25 +1086,15 @@ public class Form11 : Form1
         Type_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         FactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue)
-            ? intValue
-            : null;
+        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue) ? intValue : null;
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
         CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Value);
-        Category_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out var shortValue)
-            ? shortValue
-            : null;
-        SignedServicePeriod_DB = float.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out var floatValue)
-            ? floatValue
-            : null;
-        PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue)
-            ? byteValue
-            : null;
+        Category_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out var shortValue) ? shortValue : null;
+        SignedServicePeriod_DB = float.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out var floatValue) ? floatValue : null;
+        PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
-        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 16].Value), out byteValue)
-            ? byteValue
-            : null;
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 16].Value), out byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
         DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 18].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 19].Value);

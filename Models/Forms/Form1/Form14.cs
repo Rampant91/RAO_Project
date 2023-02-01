@@ -1191,24 +1191,16 @@ public class Form14 : Form1
         base.ExcelGetRow(worksheet, row);
         PassportNumber_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
         Name_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
-        Sort_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 6].Value), out var byteValue)
-            ? byteValue
-            : null;
+        Sort_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 6].Value), out var byteValue) ? byteValue : null;
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
         ActivityMeasurementDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Value);
         Volume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
-        AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out byteValue)
-            ? byteValue
-            : null;
-        PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out byteValue)
-            ? byteValue
-            : null;
+        AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out byteValue) ? byteValue : null;
+        PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 14].Value);
-        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 15].Value), out byteValue)
-            ? byteValue
-            : null;
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 15].Value), out byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
         DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 17].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 18].Value);

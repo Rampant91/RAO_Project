@@ -41,7 +41,6 @@ public class Form212 : Form2
                  ProviderOrRecieverOKPO.HasErrors);
     }
 
-    //OperationCode property
     #region  OperationCode
     public short? OperationCode_DB { get; set; }
     [NotMapped]
@@ -96,7 +95,6 @@ public class Form212 : Form2
     //OperationCode property
     #endregion
 
-    //ObjectTypeCode property
     #region 
     public short? ObjectTypeCode_DB { get; set; }
     [NotMapped]
@@ -151,7 +149,6 @@ public class Form212 : Form2
     //ObjectTypeCode property
     #endregion
 
-    //Radionuclids property
     #region  Radionuclids
     public string Radionuclids_DB { get; set; } = "";
     [NotMapped]
@@ -218,7 +215,6 @@ public class Form212 : Form2
     //Radionuclids property
     #endregion
 
-    //Activity property
     #region  Activity
     public string Activity_DB { get; set; }
     [NotMapped]
@@ -305,7 +301,6 @@ public class Form212 : Form2
     //Activity property
     #endregion
 
-    //ProviderOrRecieverOKPO property
     #region  ProviderOrRecieverOKPO
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
     [NotMapped]
@@ -379,41 +374,44 @@ public class Form212 : Form2
     #endregion
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        base.ExcelGetRow(worksheet, Row);
-        OperationCode_DB = Convert.ToInt16(worksheet.Cells[Row, 2].Value);
-        ObjectTypeCode_DB = Convert.ToInt16(worksheet.Cells[Row, 3].Value);
-        Radionuclids_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
-        Activity_DB = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 5].Value), out var val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 5].Value);
-        ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[Row, 6].Value);
+        base.ExcelGetRow(worksheet, row);
+        OperationCode_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 2].Value), out var shortValue) ? shortValue : null;
+        ObjectTypeCode_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 3].Value), out shortValue) ? shortValue : null;
+        Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
+        Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
+        ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
 
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
-    {
-        var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = OperationCode_DB;
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ObjectTypeCode_DB;
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = Radionuclids_DB;
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(Activity_DB) || Activity_DB == null ? 0 : double.TryParse(Activity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out var val) ? val : Activity_DB;
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ProviderOrRecieverOKPO_DB;
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
+    {
+        var cnt = base.ExcelRow(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
+
+        worksheet.Cells[row, column].Value = OperationCode_DB is null ? "-" : OperationCode_DB;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ObjectTypeCode_DB is null ? "-" : ObjectTypeCode_DB;
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelDouble(Activity_DB);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
+        
         return 5;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
+        var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models").GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models").GetProperty(nameof(ObjectTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models").GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models").GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models").GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models")?.GetProperty(nameof(OperationCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models")?.GetProperty(nameof(ObjectTypeCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models")?.GetProperty(nameof(Radionuclids))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models")?.GetProperty(nameof(Activity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form212,Models")?.GetProperty(nameof(ProviderOrRecieverOKPO))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        
         return 5;
     }
     #endregion
@@ -422,47 +420,53 @@ public class Form212 : Form2
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
     {
-        if (_DataGridColumns == null)
-        {
-            #region NumberInOrder (1)
-            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
-            NumberInOrderR.Binding = nameof(NumberInOrder);
-            NumberInOrderR.Blocked = true;
-            NumberInOrderR.ChooseLine = true;
-            #endregion
-            #region OperationCode (2)
-            var OperationCodeR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            OperationCodeR.SetSizeColToAllLevels(100);
-            OperationCodeR.Binding = nameof(OperationCode);
-            NumberInOrderR += OperationCodeR;
-            #endregion
-            #region ObjectTypeCode (3)
-            var ObjectTypeCodeR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(ObjectTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ObjectTypeCodeR.SetSizeColToAllLevels(193);
-            ObjectTypeCodeR.Binding = nameof(ObjectTypeCode);
-            NumberInOrderR += ObjectTypeCodeR;
-            #endregion
-            #region Radionuclids (4)
-            var RadionuclidsR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RadionuclidsR.SetSizeColToAllLevels(145);
-            RadionuclidsR.Binding = nameof(Radionuclids);
-            NumberInOrderR += RadionuclidsR;
-            #endregion
-            #region Activity (5)
-            var ActivityR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ActivityR.SetSizeColToAllLevels(108);
-            ActivityR.Binding = nameof(Activity);
-            NumberInOrderR += ActivityR;
-            #endregion
-            #region ProviderOrRecieverOKPO (6)
-            var ProviderOrRecieverOKPOR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ProviderOrRecieverOKPOR.SetSizeColToAllLevels(193);
-            ProviderOrRecieverOKPOR.Binding = nameof(ProviderOrRecieverOKPO);
-            NumberInOrderR += ProviderOrRecieverOKPOR;
-            #endregion
-            _DataGridColumns = NumberInOrderR;
-        }
+        if (_DataGridColumns != null) return _DataGridColumns;
+
+        #region NumberInOrder (1)
+        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        NumberInOrderR.SetSizeColToAllLevels(50);
+        NumberInOrderR.Binding = nameof(NumberInOrder);
+        NumberInOrderR.Blocked = true;
+        NumberInOrderR.ChooseLine = true;
+        #endregion
+
+        #region OperationCode (2)
+        var OperationCodeR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        OperationCodeR.SetSizeColToAllLevels(100);
+        OperationCodeR.Binding = nameof(OperationCode);
+        NumberInOrderR += OperationCodeR;
+        #endregion
+
+        #region ObjectTypeCode (3)
+        var ObjectTypeCodeR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(ObjectTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        ObjectTypeCodeR.SetSizeColToAllLevels(193);
+        ObjectTypeCodeR.Binding = nameof(ObjectTypeCode);
+        NumberInOrderR += ObjectTypeCodeR;
+        #endregion
+
+        #region Radionuclids (4)
+        var RadionuclidsR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        RadionuclidsR.SetSizeColToAllLevels(145);
+        RadionuclidsR.Binding = nameof(Radionuclids);
+        NumberInOrderR += RadionuclidsR;
+        #endregion
+
+        #region Activity (5)
+        var ActivityR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        ActivityR.SetSizeColToAllLevels(108);
+        ActivityR.Binding = nameof(Activity);
+        NumberInOrderR += ActivityR;
+        #endregion
+
+        #region ProviderOrRecieverOKPO (6)
+        var ProviderOrRecieverOKPOR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        ProviderOrRecieverOKPOR.SetSizeColToAllLevels(193);
+        ProviderOrRecieverOKPOR.Binding = nameof(ProviderOrRecieverOKPO);
+        NumberInOrderR += ProviderOrRecieverOKPOR;
+        #endregion
+
+        _DataGridColumns = NumberInOrderR;
+
         return _DataGridColumns;
     }
     #endregion

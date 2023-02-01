@@ -1085,16 +1085,10 @@ public class Form13 : Form1
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 9].Value);
         CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 10].Value);
-        AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue)
-            ? byteValue
-            : null;
-        PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out byteValue)
-            ? byteValue
-            : null;
+        AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue) ? byteValue : null;
+        PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 13].Value);
-        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out byteValue)
-            ? byteValue
-            : null;
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
         DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 16].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);

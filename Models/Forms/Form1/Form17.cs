@@ -2096,9 +2096,7 @@ public class Form17 : Form1
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
         SpecificActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 13].Value);
-        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue)
-            ? byteValue
-            : null;
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
         DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 16].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);

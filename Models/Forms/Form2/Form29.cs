@@ -38,7 +38,6 @@ public class Form29 : Form2
                  FactedActivity.HasErrors);
     }
 
-    //WasteSourceName property
     #region WasteSourceName 
     public string WasteSourceName_DB { get; set; } = ""; [NotMapped]
     [FormProperty(true,"null-2","Наименование, номер выпуска сточных вод","2")]
@@ -85,7 +84,6 @@ public class Form29 : Form2
     //WasteSourceName property
     #endregion
 
-    //RadionuclidName property
     #region RadionuclidName
     public string RadionuclidName_DB { get; set; } = ""; 
     [NotMapped]        
@@ -141,7 +139,6 @@ public class Form29 : Form2
     //RadionuclidName property
     #endregion
 
-    //AllowedActivity property
     #region AllowedActivity
     public string AllowedActivity_DB { get; set; } = "";
     [NotMapped]
@@ -233,7 +230,7 @@ public class Form29 : Form2
     }
     //AllowedActivity property
     #endregion
-    //FactedActivity property
+
     #region FactedActivity
     public string FactedActivity_DB { get; set; }
     [NotMapped]
@@ -323,82 +320,88 @@ public class Form29 : Form2
     #endregion
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        double val;
-        base.ExcelGetRow(worksheet, Row);
-        WasteSourceName_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
-        RadionuclidName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        AllowedActivity_DB = Convert.ToString(worksheet.Cells[Row, 3].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 3].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 3].Value);
-        FactedActivity_DB = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
-
+        base.ExcelGetRow(worksheet, row);
+        WasteSourceName_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        AllowedActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 3].Value);
+        FactedActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
-        double val = 0;
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = WasteSourceName_DB;
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = RadionuclidName_DB;
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = string.IsNullOrEmpty(AllowedActivity_DB) || AllowedActivity_DB == null ? 0 : double.TryParse(AllowedActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AllowedActivity_DB;
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(FactedActivity_DB) || FactedActivity_DB == null ? 0 : double.TryParse(FactedActivity_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : FactedActivity_DB;
+        var cnt = base.ExcelRow(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
+
+        worksheet.Cells[row, column].Value = ConvertToExcelString(WasteSourceName_DB);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(RadionuclidName_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDouble(AllowedActivity_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelDouble(FactedActivity_DB);
 
         return 4;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
+        var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models").GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models").GetProperty(nameof(AllowedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models").GetProperty(nameof(FactedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models")?.GetProperty(nameof(WasteSourceName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models")?.GetProperty(nameof(RadionuclidName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models")?.GetProperty(nameof(AllowedActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form29,Models")?.GetProperty(nameof(FactedActivity))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        
         return 4;
     }
     #endregion
+
     #region IDataGridColumn
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
     {
-        if (_DataGridColumns == null)
-        {
-            #region NumberInOrder (1)
-            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
-            NumberInOrderR.Binding = nameof(NumberInOrder);
-            NumberInOrderR.Blocked = true;
-            NumberInOrderR.ChooseLine = true;
-            #endregion
-            #region WasteSourceName (2)
-            var WasteSourceNameR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            WasteSourceNameR.SetSizeColToAllLevels(268);
-            WasteSourceNameR.Binding = nameof(WasteSourceName);
-            NumberInOrderR += WasteSourceNameR;
-            #endregion
-            #region RadionuclidName (3)
-            var RadionuclidNameR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RadionuclidNameR.SetSizeColToAllLevels(183);
-            RadionuclidNameR.Binding = nameof(RadionuclidName);
-            NumberInOrderR += RadionuclidNameR;
-            #endregion
-            #region AllowedActivity (4)
-            var AllowedActivityR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(AllowedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            AllowedActivityR.SetSizeColToAllLevels(94);
-            AllowedActivityR.Binding = nameof(AllowedActivity);
-            NumberInOrderR += AllowedActivityR;
-            #endregion
-            #region FactedActivity (5)
-            var FactedActivityR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(FactedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            FactedActivityR.SetSizeColToAllLevels(94);
-            FactedActivityR.Binding = nameof(FactedActivity);
-            NumberInOrderR += FactedActivityR;
-            #endregion
-            _DataGridColumns = NumberInOrderR;
-        }
+        if (_DataGridColumns != null) return _DataGridColumns;
+
+        #region NumberInOrder (1)
+        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        NumberInOrderR.SetSizeColToAllLevels(50);
+        NumberInOrderR.Binding = nameof(NumberInOrder);
+        NumberInOrderR.Blocked = true;
+        NumberInOrderR.ChooseLine = true;
+        #endregion
+
+        #region WasteSourceName (2)
+        var WasteSourceNameR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        WasteSourceNameR.SetSizeColToAllLevels(268);
+        WasteSourceNameR.Binding = nameof(WasteSourceName);
+        NumberInOrderR += WasteSourceNameR;
+        #endregion
+
+        #region RadionuclidName (3)
+        var RadionuclidNameR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        RadionuclidNameR.SetSizeColToAllLevels(183);
+        RadionuclidNameR.Binding = nameof(RadionuclidName);
+        NumberInOrderR += RadionuclidNameR;
+        #endregion
+
+        #region AllowedActivity (4)
+        var AllowedActivityR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(AllowedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        AllowedActivityR.SetSizeColToAllLevels(94);
+        AllowedActivityR.Binding = nameof(AllowedActivity);
+        NumberInOrderR += AllowedActivityR;
+        #endregion
+
+        #region FactedActivity (5)
+        var FactedActivityR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(FactedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        FactedActivityR.SetSizeColToAllLevels(94);
+        FactedActivityR.Binding = nameof(FactedActivity);
+        NumberInOrderR += FactedActivityR;
+        #endregion
+
+        _DataGridColumns = NumberInOrderR;
+
         return _DataGridColumns;
     }
     #endregion

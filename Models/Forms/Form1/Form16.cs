@@ -1715,9 +1715,7 @@ public class Form16 : Form1
         AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 12].Value);
         TransuraniumActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 13].Value);
         ActivityMeasurementDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 14].Value);
-        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 15].Value), out var byteValue)
-            ? byteValue
-            : null;
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 15].Value), out var byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
         DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 17].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 18].Value);

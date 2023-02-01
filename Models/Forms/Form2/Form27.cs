@@ -40,7 +40,6 @@ public class Form27 : Form2
                  WasteOutbreakPreviousYear.HasErrors);
     }
 
-    //ObservedSourceNumber property
     #region  ObservedSourceNumber
     public string ObservedSourceNumber_DB { get; set; } = "";
     [NotMapped]
@@ -89,7 +88,6 @@ public class Form27 : Form2
     //ObservedSourceNumber property
     #endregion
 
-    //RadionuclidName property
     #region  RadionuclidName
     public string RadionuclidName_DB { get; set; } = "";
     [NotMapped]
@@ -146,7 +144,6 @@ public class Form27 : Form2
     //RadionuclidName property
     #endregion
 
-    //AllowedWasteValue property
     #region  AllowedWasteValue
     public string AllowedWasteValue_DB { get; set; } = "";
     [NotMapped]
@@ -237,7 +234,6 @@ public class Form27 : Form2
     //AllowedWasteValue property
     #endregion
 
-    //FactedWasteValue property
     #region  FactedWasteValue
     public string FactedWasteValue_DB { get; set; } = "";
     [NotMapped]
@@ -335,7 +331,6 @@ public class Form27 : Form2
     //FactedWasteValue property
     #endregion
 
-    //WasteOutbreakPreviousYear property
     #region  WasteOutbreakPreviousYear
     public string WasteOutbreakPreviousYear_DB { get; set; } = "";
     [NotMapped]
@@ -433,95 +428,103 @@ public class Form27 : Form2
     //WasteOutbreakPreviousYear property
     #endregion
 
-
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        double val;
-        base.ExcelGetRow(worksheet, Row);
-        ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
-        RadionuclidName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        AllowedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 3].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 3].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 3].Value);
-        FactedWasteValue_DB = Convert.ToString(worksheet.Cells[Row, 4].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 4].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 4].Value);
-        WasteOutbreakPreviousYear_DB = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 5].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 5].Value);
+        base.ExcelGetRow(worksheet, row);
+        ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        AllowedWasteValue_DB = ConvertFromExcelDouble(worksheet.Cells[row, 3].Value);
+        FactedWasteValue_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
+        WasteOutbreakPreviousYear_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
     }
 
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
-        double val;
+        var cnt = base.ExcelRow(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ObservedSourceNumber_DB;
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = RadionuclidName_DB;
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = string.IsNullOrEmpty(AllowedWasteValue_DB) || AllowedWasteValue_DB == null ? 0 : double.TryParse(AllowedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AllowedWasteValue_DB;
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = string.IsNullOrEmpty(FactedWasteValue_DB) || FactedWasteValue_DB == null ? 0 : double.TryParse(FactedWasteValue_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : FactedWasteValue_DB;
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = string.IsNullOrEmpty(WasteOutbreakPreviousYear_DB) || WasteOutbreakPreviousYear_DB == null ? 0 : double.TryParse(WasteOutbreakPreviousYear_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : WasteOutbreakPreviousYear_DB;
+        worksheet.Cells[row, column].Value = ConvertToExcelString(ObservedSourceNumber_DB);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(RadionuclidName_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertFromExcelDouble(AllowedWasteValue_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertFromExcelDouble(FactedWasteValue_DB);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertFromExcelDouble(WasteOutbreakPreviousYear_DB);
         return 5;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
+        var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models").GetProperty(nameof(AllowedWasteValue)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models").GetProperty(nameof(FactedWasteValue)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models").GetProperty(nameof(WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models")?.GetProperty(nameof(ObservedSourceNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models")?.GetProperty(nameof(RadionuclidName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models")?.GetProperty(nameof(AllowedWasteValue))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models")?.GetProperty(nameof(FactedWasteValue))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form27,Models")?.GetProperty(nameof(WasteOutbreakPreviousYear))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        
         return 5;
     }
+    
     #endregion
 
     #region IDataGridColumn
+
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
     {
-        if (_DataGridColumns == null)
-        {
-            #region NumberInOrder (1)
-            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
-            NumberInOrderR.Binding = nameof(NumberInOrder);
-            NumberInOrderR.Blocked = true;
-            NumberInOrderR.ChooseLine = true;
-            #endregion
-            #region ObservedSourceNumber (2)
-            var ObservedSourceNumberR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            ObservedSourceNumberR.SetSizeColToAllLevels(228);
-            ObservedSourceNumberR.Binding = nameof(ObservedSourceNumber);
-            NumberInOrderR += ObservedSourceNumberR;
-            #endregion
-            #region RadionuclidName (3)
-            var RadionuclidNameR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RadionuclidNameR.SetSizeColToAllLevels(183);
-            RadionuclidNameR.Binding = nameof(RadionuclidName);
-            NumberInOrderR += RadionuclidNameR;
-            #endregion
-            #region AllowedWasteValue (4)
-            var AllowedWasteValueR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(AllowedWasteValue)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            AllowedWasteValueR.SetSizeColToAllLevels(170);
-            AllowedWasteValueR.Binding = nameof(AllowedWasteValue);
-            NumberInOrderR += AllowedWasteValueR;
-            #endregion
-            #region FactedWasteValue (5)
-            var FactedWasteValueR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(FactedWasteValue)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            FactedWasteValueR.SetSizeColToAllLevels(170);
-            FactedWasteValueR.Binding = nameof(FactedWasteValue);
-            NumberInOrderR += FactedWasteValueR;
-            #endregion
-            #region WasteOutbreakPreviousYear (6)
-            var WasteOutbreakPreviousYearR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            WasteOutbreakPreviousYearR.SetSizeColToAllLevels(363);
-            WasteOutbreakPreviousYearR.Binding = nameof(WasteOutbreakPreviousYear);
-            NumberInOrderR += WasteOutbreakPreviousYearR;
-            #endregion
-            _DataGridColumns = NumberInOrderR;
-        }
+        if (_DataGridColumns != null) return _DataGridColumns;
+
+        #region NumberInOrder (1)
+        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        NumberInOrderR.SetSizeColToAllLevels(50);
+        NumberInOrderR.Binding = nameof(NumberInOrder);
+        NumberInOrderR.Blocked = true;
+        NumberInOrderR.ChooseLine = true;
+        #endregion
+
+        #region ObservedSourceNumber (2)
+        var ObservedSourceNumberR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        ObservedSourceNumberR.SetSizeColToAllLevels(228);
+        ObservedSourceNumberR.Binding = nameof(ObservedSourceNumber);
+        NumberInOrderR += ObservedSourceNumberR;
+        #endregion
+
+        #region RadionuclidName (3)
+        var RadionuclidNameR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        RadionuclidNameR.SetSizeColToAllLevels(183);
+        RadionuclidNameR.Binding = nameof(RadionuclidName);
+        NumberInOrderR += RadionuclidNameR;
+        #endregion
+
+        #region AllowedWasteValue (4)
+        var AllowedWasteValueR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(AllowedWasteValue)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        AllowedWasteValueR.SetSizeColToAllLevels(170);
+        AllowedWasteValueR.Binding = nameof(AllowedWasteValue);
+        NumberInOrderR += AllowedWasteValueR;
+        #endregion
+
+        #region FactedWasteValue (5)
+        var FactedWasteValueR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(FactedWasteValue)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        FactedWasteValueR.SetSizeColToAllLevels(170);
+        FactedWasteValueR.Binding = nameof(FactedWasteValue);
+        NumberInOrderR += FactedWasteValueR;
+        #endregion
+
+        #region WasteOutbreakPreviousYear (6)
+        var WasteOutbreakPreviousYearR = ((FormPropertyAttribute)typeof(Form27).GetProperty(nameof(WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        WasteOutbreakPreviousYearR.SetSizeColToAllLevels(363);
+        WasteOutbreakPreviousYearR.Binding = nameof(WasteOutbreakPreviousYear);
+        NumberInOrderR += WasteOutbreakPreviousYearR;
+        #endregion
+
+        _DataGridColumns = NumberInOrderR;
+
         return _DataGridColumns;
     }
+
     #endregion
 }

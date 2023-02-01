@@ -42,7 +42,6 @@ public class Form28 : Form2
                  PoolDistrictName.HasErrors);
     }
 
-    //WasteSourceName property
     #region WasteSourceName
     public string WasteSourceName_DB { get; set; } = "";
     [NotMapped]
@@ -91,7 +90,6 @@ public class Form28 : Form2
     //WasteSourceName property
     #endregion
 
-    //WasteRecieverName property
     #region WasteRecieverName
     public string WasteRecieverName_DB { get; set; } = "";
     [NotMapped]
@@ -140,7 +138,6 @@ public class Form28 : Form2
     //WasteRecieverName property
     #endregion
 
-    //RecieverTypeCode property
     #region RecieverTypeCode
     public string RecieverTypeCode_DB { get; set; } = ""; [NotMapped]
     [FormProperty(true,"Приемник отведенных вод", "код типа приемника","4")]
@@ -193,7 +190,6 @@ public class Form28 : Form2
     //RecieverTypeCode property
     #endregion
 
-    //PoolDistrictName property
     #region PoolDistrictName
     public string PoolDistrictName_DB { get; set; } = ""; [NotMapped]
     [FormProperty(true,"Приемник отведенных вод", "наименование бассейнового округа","5")]
@@ -248,7 +244,6 @@ public class Form28 : Form2
     //PoolDistrictName property
     #endregion
 
-    //AllowedWasteRemovalVolume property
     #region AllowedWasteRemovalVolume
     public string AllowedWasteRemovalVolume_DB { get; set; } = ""; [NotMapped]
     [FormProperty(true,"null-3","Допустимый объем водоотведения за год, тыс. куб. м", "6")]
@@ -337,7 +332,6 @@ public class Form28 : Form2
     //AllowedWasteRemovalVolume property
     #endregion
 
-    //RemovedWasteVolume property
     #region RemovedWasteVolume
     public string RemovedWasteVolume_DB { get; set; } [NotMapped]
     [FormProperty(true,"null-4","Отведено за отчетный период, тыс. куб. м","7")]
@@ -423,100 +417,108 @@ public class Form28 : Form2
     #endregion
 
     #region IExcel
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        double val;
-        base.ExcelGetRow(worksheet, Row);
-        WasteSourceName_DB = Convert.ToString(worksheet.Cells[Row, 1].Value);
-        WasteRecieverName_DB = Convert.ToString(worksheet.Cells[Row, 2].Value);
-        RecieverTypeCode_DB = Convert.ToString(worksheet.Cells[Row, 3].Value);
-        PoolDistrictName_DB = Convert.ToString(worksheet.Cells[Row, 4].Value);
-        AllowedWasteRemovalVolume_DB = Convert.ToString(worksheet.Cells[Row, 5].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 5].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 5].Value);
-        RemovedWasteVolume_DB = Convert.ToString(worksheet.Cells[Row, 6].Value).Equals("0") ? "-" : double.TryParse(Convert.ToString(worksheet.Cells[Row, 6].Value), out val) ? val.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture) : Convert.ToString(worksheet.Cells[Row, 6].Value);
+        base.ExcelGetRow(worksheet, row);
+        WasteSourceName_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+        WasteRecieverName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        RecieverTypeCode_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        PoolDistrictName_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
+        AllowedWasteRemovalVolume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
+        RemovedWasteVolume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
     }
-    public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
-    {
-        var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
-        double val;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = WasteSourceName_DB;
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = WasteRecieverName_DB;
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = RecieverTypeCode_DB;
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = PoolDistrictName_DB;
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = string.IsNullOrEmpty(AllowedWasteRemovalVolume_DB) || AllowedWasteRemovalVolume_DB == null ? 0 : double.TryParse(AllowedWasteRemovalVolume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : AllowedWasteRemovalVolume_DB;
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = string.IsNullOrEmpty(RemovedWasteVolume_DB) || RemovedWasteVolume_DB == null ? 0 : double.TryParse(RemovedWasteVolume_DB.Replace("е", "E").Replace("(", "").Replace(")", "").Replace("Е", "E").Replace(".", ","), out val) ? val : RemovedWasteVolume_DB;
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
+    {
+        var cnt = base.ExcelRow(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
+
+        worksheet.Cells[row, column].Value = ConvertToExcelString(WasteSourceName_DB);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(WasteRecieverName_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(RecieverTypeCode_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(PoolDistrictName_DB);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDouble(AllowedWasteRemovalVolume_DB);
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDouble(RemovedWasteVolume_DB);
+        
         return 6;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
-        Column += Transpon ? cnt : 0;
-        Row += !Transpon ? cnt : 0;
+        var cnt = Form2.ExcelHeader(worksheet, row, column, transpose);
+        column += transpose ? cnt : 0;
+        row += !transpose ? cnt : 0;
 
-        worksheet.Cells[Row + (!Transpon ? 0 : 0), Column + (Transpon ? 0 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models").GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 1 : 0), Column + (Transpon ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models").GetProperty(nameof(WasteRecieverName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 2 : 0), Column + (Transpon ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models").GetProperty(nameof(RecieverTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 3 : 0), Column + (Transpon ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models").GetProperty(nameof(PoolDistrictName)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 4 : 0), Column + (Transpon ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models").GetProperty(nameof(AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
-        worksheet.Cells[Row + (!Transpon ? 5 : 0), Column + (Transpon ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models").GetProperty(nameof(RemovedWasteVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[1];
+        worksheet.Cells[row, column].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models")?.GetProperty(nameof(WasteSourceName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models")?.GetProperty(nameof(WasteRecieverName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models")?.GetProperty(nameof(RecieverTypeCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models")?.GetProperty(nameof(PoolDistrictName))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models")?.GetProperty(nameof(AllowedWasteRemovalVolume))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form28,Models")?.GetProperty(nameof(RemovedWasteVolume))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
 
         return 6;
     }
     #endregion
+
     #region IDataGridColumn
     private static DataGridColumns _DataGridColumns { get; set; }
     public override DataGridColumns GetColumnStructure(string param = "")
     {
-        if (_DataGridColumns == null)
-        {
-            #region NumberInOrder (1)
-            var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
-            NumberInOrderR.Binding = nameof(NumberInOrder);
-            NumberInOrderR.Blocked = true;
-            NumberInOrderR.ChooseLine = true;
-            #endregion
-            #region WasteSourceName (2)
-            var WasteSourceNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            WasteSourceNameR.SetSizeColToAllLevels(258);
-            WasteSourceNameR.Binding = nameof(WasteSourceName);
-            NumberInOrderR += WasteSourceNameR;
-            #endregion
-            #region WasteRecieverName (3)
-            var WasteRecieverNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(WasteRecieverName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            WasteRecieverNameR.SetSizeColToAllLevels(238);
-            WasteRecieverNameR.Binding = nameof(WasteRecieverName);
-            NumberInOrderR += WasteRecieverNameR;
-            #endregion
-            #region RecieverTypeCode (4)
-            var RecieverTypeCodeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(RecieverTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RecieverTypeCodeR.SetSizeColToAllLevels(200);
-            RecieverTypeCodeR.Binding = nameof(RecieverTypeCode);
-            NumberInOrderR += RecieverTypeCodeR;
-            #endregion
-            #region PoolDistrictName (5)
-            var PoolDistrictNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(PoolDistrictName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            PoolDistrictNameR.SetSizeColToAllLevels(213);
-            PoolDistrictNameR.Binding = nameof(PoolDistrictName);
-            NumberInOrderR += PoolDistrictNameR;
-            #endregion
-            #region AllowedWasteRemovalVolume (6)
-            var AllowedWasteRemovalVolumeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            AllowedWasteRemovalVolumeR.SetSizeColToAllLevels(213);
-            AllowedWasteRemovalVolumeR.Binding = nameof(AllowedWasteRemovalVolume);
-            NumberInOrderR += AllowedWasteRemovalVolumeR;
-            #endregion
-            #region RemovedWasteVolume (7)
-            var RemovedWasteVolumeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(RemovedWasteVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-            RemovedWasteVolumeR.SetSizeColToAllLevels(208);
-            RemovedWasteVolumeR.Binding = nameof(RemovedWasteVolume);
-            NumberInOrderR += RemovedWasteVolumeR;
-            #endregion
-            _DataGridColumns = NumberInOrderR;
-        }
+        if (_DataGridColumns != null) return _DataGridColumns;
+
+        #region NumberInOrder (1)
+        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        NumberInOrderR.SetSizeColToAllLevels(50);
+        NumberInOrderR.Binding = nameof(NumberInOrder);
+        NumberInOrderR.Blocked = true;
+        NumberInOrderR.ChooseLine = true;
+        #endregion
+
+        #region WasteSourceName (2)
+        var WasteSourceNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        WasteSourceNameR.SetSizeColToAllLevels(258);
+        WasteSourceNameR.Binding = nameof(WasteSourceName);
+        NumberInOrderR += WasteSourceNameR;
+        #endregion
+
+        #region WasteRecieverName (3)
+        var WasteRecieverNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(WasteRecieverName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        WasteRecieverNameR.SetSizeColToAllLevels(238);
+        WasteRecieverNameR.Binding = nameof(WasteRecieverName);
+        NumberInOrderR += WasteRecieverNameR;
+        #endregion
+
+        #region RecieverTypeCode (4)
+        var RecieverTypeCodeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(RecieverTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        RecieverTypeCodeR.SetSizeColToAllLevels(200);
+        RecieverTypeCodeR.Binding = nameof(RecieverTypeCode);
+        NumberInOrderR += RecieverTypeCodeR;
+        #endregion
+
+        #region PoolDistrictName (5)
+        var PoolDistrictNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(PoolDistrictName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        PoolDistrictNameR.SetSizeColToAllLevels(213);
+        PoolDistrictNameR.Binding = nameof(PoolDistrictName);
+        NumberInOrderR += PoolDistrictNameR;
+        #endregion
+
+        #region AllowedWasteRemovalVolume (6)
+        var AllowedWasteRemovalVolumeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        AllowedWasteRemovalVolumeR.SetSizeColToAllLevels(213);
+        AllowedWasteRemovalVolumeR.Binding = nameof(AllowedWasteRemovalVolume);
+        NumberInOrderR += AllowedWasteRemovalVolumeR;
+        #endregion
+
+        #region RemovedWasteVolume (7)
+        var RemovedWasteVolumeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(RemovedWasteVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
+        RemovedWasteVolumeR.SetSizeColToAllLevels(208);
+        RemovedWasteVolumeR.Binding = nameof(RemovedWasteVolume);
+        NumberInOrderR += RemovedWasteVolumeR;
+        #endregion
+
+        _DataGridColumns = NumberInOrderR;
+
         return _DataGridColumns;
     }
     #endregion

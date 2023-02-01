@@ -1989,9 +1989,7 @@ public class Form18 : Form1
         SaltConcentration_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 9].Value);
         SpecificActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
-        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue)
-            ? byteValue
-            : null;
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
         DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 13].Value);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 14].Value);

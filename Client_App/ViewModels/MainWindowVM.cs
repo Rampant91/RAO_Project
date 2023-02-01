@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -3585,13 +3584,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         int masterHeaderLength;
         if (param.Split('.')[0] == "1")
         {
-            masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
-            masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
+            masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1, id: "ID") + 1;
+            masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1, id: "ID") + 1;
         }
         else
         {
-            masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1, ID: "ID") + 1;
-            masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1, ID: "ID") + 1;
+            masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1, id: "ID") + 1;
+            masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1, id: "ID") + 1;
         }
 
         var t = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength);
@@ -7222,20 +7221,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1]
                                   .ExcelRow(worksheetPrim, curRow, 1,
-                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                      sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
                               1
                             : reps.Master_DB.Rows10[0]
                                   .ExcelRow(worksheetPrim, curRow, 1,
-                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                      sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
                               1
                         : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows20[1]
                                   .ExcelRow(worksheetPrim, curRow, 1,
-                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                      sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
                               1
                             : reps.Master_DB.Rows20[0]
                                   .ExcelRow(worksheetPrim, curRow, 1,
-                                      SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                      sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
                               1
                     : param.Split('.')[0] == "1"
                         ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
@@ -7384,14 +7383,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             {
                                 yu = reps.Master_DB.Rows10[1]
                                          .ExcelRow(worksheet, count, 1,
-                                             SumNumber: reps.Master_DB.Rows10[1].Id.ToString()) +
+                                             sumNumber: reps.Master_DB.Rows10[1].Id.ToString()) +
                                      1;
                             }
                             else
                             {
                                 yu = reps.Master_DB.Rows10[0]
                                          .ExcelRow(worksheet, count, 1,
-                                             SumNumber: reps.Master_DB.Rows10[0].Id.ToString()) +
+                                             sumNumber: reps.Master_DB.Rows10[0].Id.ToString()) +
                                      1;
                             }
                         }
@@ -7401,14 +7400,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             {
                                 yu = reps.Master_DB.Rows20[1]
                                          .ExcelRow(worksheet, count, 1,
-                                             SumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
+                                             sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) +
                                      1;
                             }
                             else
                             {
                                 yu = reps.Master_DB.Rows20[0]
                                          .ExcelRow(worksheet, count, 1,
-                                             SumNumber: reps.Master_DB.Rows20[0].Id.ToString()) +
+                                             sumNumber: reps.Master_DB.Rows20[0].Id.ToString()) +
                                      1;
                             }
                         }
