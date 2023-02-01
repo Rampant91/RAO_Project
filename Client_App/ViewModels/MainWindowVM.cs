@@ -2333,7 +2333,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     {
                         item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
                     }
-                    else
+                    if (item.Master.Rows20.Count != 0)
                     {
                         item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
                     }
