@@ -1469,7 +1469,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private async Task ProcessIfHasReports11(Reports baseReps, Reports impReps)
+    private async Task ProcessIfHasReports11(Reports baseReps, Reports impReps, int impFileCount)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         
@@ -1627,8 +1627,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     res = "Заменить";
                     if (!skipReplace)
                     {
-                        //doSomething = true;
-                        if (impReps.Report_Collection.Count > 1)
+                        if (impReps.Report_Collection.Count > 1 || impFileCount > 1)
                         {
                             #region MessageImportReportHasHigherCorrectionNumber
 
@@ -1870,7 +1869,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             res = "Да";
             if (!skipNew)
             {
-                if (impReps.Report_Collection.Count > 1)
+                if (impReps.Report_Collection.Count > 1 || impFileCount > 1)
                 {
                     #region MessageNewReport
 
@@ -1954,7 +1953,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
-    private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps)
+    private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps, int impFileCount)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
@@ -2067,7 +2066,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 res = "Заменить";
                 if (!skipReplace)
                 {
-                    if (impReps.Report_Collection.Count > 1)
+                    if (impReps.Report_Collection.Count > 1 || impFileCount > 1)
                     {
                         #region MessageImportReportHasHigherCorrectionNumber
 
@@ -2197,7 +2196,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             res = "Да";
             if (!skipNew)
             {
-                if (impReps.Report_Collection.Count > 1)
+                if (impReps.Report_Collection.Count > 1 || impFileCount > 1)
                 {
                     #region MessageNewReport
 
@@ -2279,8 +2278,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
-    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null,
-        bool doSomething = false)
+    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
     {
         switch (an)
         {
@@ -2328,6 +2326,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 var sourceFile = new FileInfo(res);
                 sourceFile.CopyTo(file, true);
                 var reportsCollection = await GetReportsFromDataBase(file);
+                
                 foreach (var item in reportsCollection) //Для каждой импортируемой организации
                 {
                     if (item.Master.Rows10.Count != 0)
@@ -2346,11 +2345,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     await ProcessIfNoteOrder0(item);
                     if (first11 != null)
                     {
-                        await ProcessIfHasReports11(first11, item);
+                        await ProcessIfHasReports11(first11, item, answer.Length);
                     }
                     else if (first21 != null)
                     {
-                        await ProcessIfHasReports21(first21, item);
+                        await ProcessIfHasReports21(first21, item, answer.Length);
                     }
                     else if (first11 == null && first21 == null)
                     {
