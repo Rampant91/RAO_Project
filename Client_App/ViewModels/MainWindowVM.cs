@@ -1472,11 +1472,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task ProcessIfHasReports11(Reports baseReps, Reports impReps)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        var doSomething = false; //Удалить после рефакторинга
-        var skipInter = false; //Пропускать уведомления и отменять импорт при пересечении дат
-        var skipLess = false; //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
-        var skipNew = false; //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
-        var skipReplace = false; //Пропускать уведомления о замене форм
+        
         foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
         {
             var impRep = (Report)key;
@@ -1584,8 +1580,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     if (impRep.CorrectionNumber_DB == baseRep.CorrectionNumber_DB)
                     {
-                        //doSomething = true;
-
                         #region MessageImportReportHasSamePeriodCorrectionNumberAndExportDate
 
                         res = await MessageBox.Avalonia.MessageBoxManager
@@ -1622,7 +1616,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                         #endregion
 
-                        await ChechAanswer(res, baseReps, baseRep, impRep, doSomething);
+                        await ChechAanswer(res, baseReps, baseRep, impRep);
                         break;
                     }
 
@@ -1718,8 +1712,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         }
                     }
 
-                    await ChechAanswer(res, baseReps, baseRep, impRep, doSomething);
-                    //doSomething = true;
+                    await ChechAanswer(res, baseReps, baseRep, impRep);
                     break;
 
                     #endregion
@@ -1830,8 +1823,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         if (res is "Отменить импорт формы") break;
                     }
 
-                    await ChechAanswer(res, baseReps, null, impRep, doSomething);
-                    //doSomething = true;
+                    await ChechAanswer(res, baseReps, null, impRep);
                     break;
                 }
 
@@ -1965,9 +1957,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        var skipLess = false; //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
-        var skipNew = false; //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
-        var skipReplace = false; //Пропускать уведомления о замене форм
         foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
         {
             var impRep = (Report)key;
@@ -2314,6 +2303,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    private bool skipNewOrg; //Пропустить уведомления о добавлении новой организации
+    private bool skipInter; //Пропускать уведомления и отменять импорт при пересечении дат
+    private bool skipLess; //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
+    private bool skipNew; //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
+    private bool skipReplace; //Пропускать уведомления о замене форм
+
     private async Task _ImportForm()
     {
         try
@@ -2321,10 +2316,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
             var answer = await GetSelectedFilesFromDialog("RAODB", "raodb");
             if (answer is null) return;
+            skipNewOrg = false;
+            skipInter = false;
+            skipLess = false;
+            skipNew = false;
+            skipReplace = false;
             foreach (var res in answer) //Для каждого импортируемого файла
             {
                 if (res == "") continue;
-                var skip = false; //Пропустить уведомления о добавлении новой организации
                 var file = await GetRaoFileName();
                 var sourceFile = new FileInfo(res);
                 sourceFile.CopyTo(file, true);
@@ -2358,9 +2357,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         #region AddNewOrg
 
                         var an = "Добавить";
-                        if (!skip)
+                        if (!skipNewOrg)
                         {
-                            if (reportsCollection.Count > 1)
+                            if (reportsCollection.Count > 1 || answer.Length > 1)
                             {
                                 #region MessageNewOrg
 
@@ -2391,7 +2390,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                                 #endregion
 
-                                if (an is "Да для всех") skip = true;
+                                if (an is "Да для всех") skipNewOrg = true;
                             }
                             else
                             {
