@@ -584,10 +584,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null
                     ? ""
                     : Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -598,8 +596,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null
                     ? ""
                     : Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
@@ -633,10 +630,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
                 newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
@@ -645,8 +640,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB =
-                    Convert.ToString(worksheet0.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
                 newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
@@ -879,6 +873,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             var rep = (Report)key;
                             var stElem = DateTimeOffset.Now;
                             var enElem = DateTimeOffset.Now;
+
                             try
                             {
                                 stElem = DateTime.Parse(rep.StartPeriod_DB) > DateTime.Parse(rep.EndPeriod_DB)
@@ -890,23 +885,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             }
                             catch (Exception)
                             {
+                                // ignored
                             }
 
                             var stIt = DateTimeOffset.Now;
                             var enIt = DateTimeOffset.Now;
                             try
                             {
-                                stIt = DateTime.Parse(repFromEx.StartPeriod_DB) >
-                                       DateTime.Parse(repFromEx.EndPeriod_DB)
+                                stIt = DateTime.Parse(repFromEx.StartPeriod_DB) > DateTime.Parse(repFromEx.EndPeriod_DB)
                                     ? DateTime.Parse(repFromEx.EndPeriod_DB)
                                     : DateTime.Parse(repFromEx.StartPeriod_DB);
-                                enIt = DateTime.Parse(repFromEx.StartPeriod_DB) <
-                                       DateTime.Parse(repFromEx.EndPeriod_DB)
+                                enIt = DateTime.Parse(repFromEx.StartPeriod_DB) < DateTime.Parse(repFromEx.EndPeriod_DB)
                                     ? DateTime.Parse(repFromEx.EndPeriod_DB)
                                     : DateTime.Parse(repFromEx.StartPeriod_DB);
                             }
                             catch (Exception)
                             {
+                                // ignored
                             }
 
                             if (stElem == stIt && enElem == enIt && repFromEx.FormNum_DB == rep.FormNum_DB)
@@ -2472,133 +2467,125 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _ExportForm(object par)
     {
-        var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            if (param != null)
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+            || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
+        var obj = param.First();
+        OpenFolderDialog dial = new();
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (res is null) return;
+        foreach (var item in param)
+        {
+            var a = DateTime.Now.Date;
+            var aDay = a.Day.ToString();
+            var aMonth = a.Month.ToString();
+            if (aDay.Length < 2) aDay = $"0{aDay}";
+            if (aMonth.Length < 2) aMonth = $"0{aMonth}";
+            ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
+        }
+
+        if (res != "")
+        {
+            var dt = DateTime.Now;
+            var filename = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+            var rep = (Report)obj;
+
+            var dtDay = dt.Day.ToString();
+            var dtMonth = dt.Month.ToString();
+            if (dtDay.Length < 2) dtDay = $"0{dtDay}";
+            if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
+
+            rep.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
+            var findReports = Local_Reports.Reports_Collection
+                .Where(t => t.Report_Collection.Contains(rep));
+
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+
+            var rt = findReports.FirstOrDefault();
+            if (rt is null) return;
+            var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{filename}_exp.raodb");
+
+            var tsk = new Task(() =>
             {
-                var obj = param.First();
-                OpenFolderDialog dial = new();
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                if (res != null)
+                DBModel db = new(tmp);
+                try
                 {
-                    foreach (var item in param)
+                    Reports rp = new()
                     {
-                        var a = DateTime.Now.Date;
-                        var aDay = a.Day.ToString();
-                        var aMonth = a.Month.ToString();
-                        if (aDay.Length < 2) aDay = $"0{aDay}";
-                        if (aMonth.Length < 2) aMonth = $"0{aMonth}";
-                        ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
+                        Master = rt.Master
+                    };
+                    rp.Report_Collection.Add(rep);
+
+                    db.Database.MigrateAsync();
+                    db.ReportsCollectionDbSet.Add(rp);
+                    db.SaveChangesAsync();
+
+                    var filename2 = "";
+                    if (rp.Master_DB.FormNum_DB == "1.0")
+                    {
+                        filename2 += rp.Master.RegNoRep.Value;
+                        filename2 += $"_{rp.Master.OkpoRep.Value}";
+
+                        filename2 += $"_{rep.FormNum_DB}";
+                        filename2 += $"_{rep.StartPeriod_DB}";
+                        filename2 += $"_{rep.EndPeriod_DB}";
+                        filename2 += $"_{rep.CorrectionNumber_DB}";
+                    }
+                    else
+                    {
+                        if (rp.Master.Rows20.Count > 0)
+                        {
+                            filename2 += rp.Master.RegNoRep.Value;
+                            filename2 += $"_{rp.Master.OkpoRep.Value}";
+
+                            filename2 += $"_{rep.FormNum_DB}";
+                            filename2 += $"_{rep.Year_DB}";
+                            filename2 += $"_{rep.CorrectionNumber_DB}";
+                        }
                     }
 
-                    if (res != "")
+                    res = Path.Combine(res, $"{filename2}.raodb");
+
+
+                    var t = db.Database.GetDbConnection() as FbConnection;
+                    t.CloseAsync();
+                    t.DisposeAsync();
+
+                    db.Database.CloseConnectionAsync();
+                    db.DisposeAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            });
+            tsk.Start();
+            await tsk.ContinueWith((_) =>
+            {
+                try
+                {
+                    using (var inputFile = new FileStream(
+                               tmp,
+                               FileMode.Open,
+                               FileAccess.Read,
+                               FileShare.ReadWrite))
+                    using (var outputFile = new FileStream(res, FileMode.Create))
                     {
-                        var dt = DateTime.Now;
-                        var filename = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-                        var rep = (Report)obj;
+                        var buffer = new byte[0x10000];
+                        int bytes;
 
-                        var dtDay = dt.Day.ToString();
-                        var dtMonth = dt.Month.ToString();
-                        if (dtDay.Length < 2) dtDay = $"0{dtDay}";
-                        if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
-
-                        rep.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
-                        var findReports = Local_Reports.Reports_Collection
-                            .Where(t => t.Report_Collection.Contains(rep));
-
-                        await StaticConfiguration.DBModel.SaveChangesAsync();
-
-                        var rt = findReports.FirstOrDefault();
-                        if (rt != null)
+                        while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
                         {
-                            var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()),
-                                $"{filename}_exp.raodb");
-
-                            var tsk = new Task(() =>
-                            {
-                                DBModel db = new(tmp);
-                                try
-                                {
-                                    Reports rp = new()
-                                    {
-                                        Master = rt.Master
-                                    };
-                                    rp.Report_Collection.Add(rep);
-
-                                    db.Database.MigrateAsync();
-                                    db.ReportsCollectionDbSet.Add(rp);
-                                    db.SaveChangesAsync();
-
-                                    string filename2 = "";
-                                    if (rp.Master_DB.FormNum_DB == "1.0")
-                                    {
-                                        filename2 += rp.Master.RegNoRep.Value;
-                                        filename2 += $"_{rp.Master.OkpoRep.Value}";
-
-                                        filename2 += $"_{rep.FormNum_DB}";
-                                        filename2 += $"_{rep.StartPeriod_DB}";
-                                        filename2 += $"_{rep.EndPeriod_DB}";
-                                        filename2 += $"_{rep.CorrectionNumber_DB}";
-                                    }
-                                    else
-                                    {
-                                        if (rp.Master.Rows20.Count > 0)
-                                        {
-                                            filename2 += rp.Master.RegNoRep.Value;
-                                            filename2 += $"_{rp.Master.OkpoRep.Value}";
-
-                                            filename2 += $"_{rep.FormNum_DB}";
-                                            filename2 += $"_{rep.Year_DB}";
-                                            filename2 += $"_{rep.CorrectionNumber_DB}";
-                                        }
-                                    }
-
-                                    res = Path.Combine(res, $"{filename2}.raodb");
-
-
-                                    var t = db.Database.GetDbConnection() as FbConnection;
-                                    t.CloseAsync();
-                                    t.DisposeAsync();
-
-                                    db.Database.CloseConnectionAsync();
-                                    db.DisposeAsync();
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine(e);
-                                    throw;
-                                }
-                            });
-                            tsk.Start();
-                            await tsk.ContinueWith((_) =>
-                            {
-                                try
-                                {
-                                    using (var inputFile = new FileStream(
-                                               tmp,
-                                               FileMode.Open,
-                                               FileAccess.Read,
-                                               FileShare.ReadWrite))
-                                    using (var outputFile = new FileStream(res, FileMode.Create))
-                                    {
-                                        var buffer = new byte[0x10000];
-                                        int bytes;
-
-                                        while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
-                                        {
-                                            outputFile.Write(buffer, 0, bytes);
-                                        }
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine(e);
-                                }
-                            });
+                            outputFile.Write(buffer, 0, bytes);
                         }
                     }
                 }
-            }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            });
+        }
     }
 
     #endregion

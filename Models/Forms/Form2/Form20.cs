@@ -282,15 +282,15 @@ public class Form20 : Form
         set
         {
             ShortJurLico_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(ShortJurLico));
+            OnPropertyChanged();
         }
     }
 
-    private void ShortJurLicoValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ShortJurLicoValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ShortJurLico_DB = ParseInnerText(((RamAccess<string>) Value).Value);
+            ShortJurLico_DB = ParseInnerText(((RamAccess<string>) value).Value);
         }
     }
 

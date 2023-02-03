@@ -61,26 +61,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(RegNo)]).ValueWithOutHandlerAndPropChanged = RegNo_DB;
                 return (RamAccess<string>)Dictionary[nameof(RegNo)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
-                rm.PropertyChanged += RegNoValueChanged;
-                Dictionary.Add(nameof(RegNo), rm);
-                return (RamAccess<string>)Dictionary[nameof(RegNo)];
-            }
+
+            var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
+            rm.PropertyChanged += RegNoValueChanged;
+            Dictionary.Add(nameof(RegNo), rm);
+            return (RamAccess<string>)Dictionary[nameof(RegNo)];
         }
         set
         {
             RegNo_DB = value.Value;
-            OnPropertyChanged(nameof(RegNo));
+            OnPropertyChanged();
         }
     }
 
-    private void RegNoValueChanged(object Value, PropertyChangedEventArgs args)
+    private void RegNoValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            RegNo_DB = ((RamAccess<string>)Value).Value;
+            RegNo_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -96,14 +94,7 @@ public class Form10 : Form
         {
             return true;
         }
-        if (value.Value.Length != 5)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-
-        Regex mask = new("^[0123456789]{5}$");
-        if (!mask.IsMatch(value.Value))
+        if (value.Value.Length != 5 || !new Regex("^[0123456789]{5}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -129,26 +120,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(OrganUprav)]).Value = OrganUprav_DB;
                 return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
-                rm.PropertyChanged += OrganUpravValueChanged;
-                Dictionary.Add(nameof(OrganUprav), rm);
-                return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
-            }
+
+            var rm = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
+            rm.PropertyChanged += OrganUpravValueChanged;
+            Dictionary.Add(nameof(OrganUprav), rm);
+            return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
         }
         set
         {
             OrganUprav_DB = value.Value;
-            OnPropertyChanged(nameof(OrganUprav));
+            OnPropertyChanged();
         }
     }
 
-    private void OrganUpravValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OrganUpravValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            OrganUprav_DB = ((RamAccess<string>)Value).Value;
+            OrganUprav_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -175,26 +164,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(SubjectRF)]).Value = SubjectRF_DB;
                 return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
-                rm.PropertyChanged += SubjectRFValueChanged;
-                Dictionary.Add(nameof(SubjectRF), rm);
-                return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
-            }
+
+            var rm = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
+            rm.PropertyChanged += SubjectRFValueChanged;
+            Dictionary.Add(nameof(SubjectRF), rm);
+            return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
         }
         set
         {
             SubjectRF_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(SubjectRF));
+            OnPropertyChanged();
         }
     }
 
-    private void SubjectRFValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SubjectRFValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            SubjectRF_DB = ParseInnerText(((RamAccess<string>)Value).Value);
+            SubjectRF_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -221,26 +208,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(JurLico)]).Value = JurLico_DB;
                 return (RamAccess<string>)Dictionary[nameof(JurLico)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(JurLico_Validation, JurLico_DB);
-                rm.PropertyChanged += JurLicoValueChanged;
-                Dictionary.Add(nameof(JurLico), rm);
-                return (RamAccess<string>)Dictionary[nameof(JurLico)];
-            }
+
+            var rm = new RamAccess<string>(JurLico_Validation, JurLico_DB);
+            rm.PropertyChanged += JurLicoValueChanged;
+            Dictionary.Add(nameof(JurLico), rm);
+            return (RamAccess<string>)Dictionary[nameof(JurLico)];
         }
         set
         {
             JurLico_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(JurLico));
+            OnPropertyChanged();
         }
     }
 
-    private void JurLicoValueChanged(object Value, PropertyChangedEventArgs args)
+    private void JurLicoValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            JurLico_DB = ParseInnerText(((RamAccess<string>)Value).Value);
+            JurLico_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -267,26 +252,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(ShortJurLico)]).ValueWithOutHandlerAndPropChanged = ShortJurLico_DB;
                 return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
-                rm.PropertyChanged += ShortJurLicoValueChanged;
-                Dictionary.Add(nameof(ShortJurLico), rm);
-                return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
-            }
+
+            var rm = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
+            rm.PropertyChanged += ShortJurLicoValueChanged;
+            Dictionary.Add(nameof(ShortJurLico), rm);
+            return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
         }
         set
         {
             ShortJurLico_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(ShortJurLico));
+            OnPropertyChanged();
         }
     }
 
-    private void ShortJurLicoValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ShortJurLicoValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ShortJurLico_DB = ParseInnerText(((RamAccess<string>)Value).Value);
+            ShortJurLico_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -313,27 +296,25 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(JurLicoAddress)]).Value = JurLicoAddress_DB;
                 return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
-                rm.PropertyChanged += JurLicoAddressValueChanged;
-                Dictionary.Add(nameof(JurLicoAddress), rm);
-                return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
-            }
+
+            var rm = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
+            rm.PropertyChanged += JurLicoAddressValueChanged;
+            Dictionary.Add(nameof(JurLicoAddress), rm);
+            return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
         }
         set
         {
 
             JurLicoAddress_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(JurLicoAddress));
+            OnPropertyChanged();
         }
     }
 
-    private void JurLicoAddressValueChanged(object Value, PropertyChangedEventArgs args)
+    private void JurLicoAddressValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            JurLicoAddress_DB = ParseInnerText(((RamAccess<string>)Value).Value);
+            JurLicoAddress_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -360,26 +341,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)]).Value = JurLicoFactAddress_DB;
                 return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
-                rm.PropertyChanged += JurLicoFactAddressValueChanged;
-                Dictionary.Add(nameof(JurLicoFactAddress), rm);
-                return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
-            }
+
+            var rm = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
+            rm.PropertyChanged += JurLicoFactAddressValueChanged;
+            Dictionary.Add(nameof(JurLicoFactAddress), rm);
+            return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
         }
         set
         {
             JurLicoFactAddress_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(JurLicoFactAddress));
+            OnPropertyChanged();
         }
     }
 
-    private void JurLicoFactAddressValueChanged(object Value, PropertyChangedEventArgs args)
+    private void JurLicoFactAddressValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            JurLicoFactAddress_DB = ParseInnerText(((RamAccess<string>)Value).Value);
+            JurLicoFactAddress_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -406,26 +385,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(GradeFIO)]).Value = GradeFIO_DB;
                 return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
-                rm.PropertyChanged += GradeFIOValueChanged;
-                Dictionary.Add(nameof(GradeFIO), rm);
-                return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
-            }
+
+            var rm = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
+            rm.PropertyChanged += GradeFIOValueChanged;
+            Dictionary.Add(nameof(GradeFIO), rm);
+            return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
         }
         set
         {
             GradeFIO_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(GradeFIO));
+            OnPropertyChanged();
         }
     }
 
-    private void GradeFIOValueChanged(object Value, PropertyChangedEventArgs args)
+    private void GradeFIOValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            GradeFIO_DB = ParseInnerText(((RamAccess<string>)Value).Value);
+            GradeFIO_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -452,26 +429,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Telephone)]).Value = Telephone_DB;
                 return (RamAccess<string>)Dictionary[nameof(Telephone)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
-                rm.PropertyChanged += TelephoneValueChanged;
-                Dictionary.Add(nameof(Telephone), rm);
-                return (RamAccess<string>)Dictionary[nameof(Telephone)];
-            }
+
+            var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
+            rm.PropertyChanged += TelephoneValueChanged;
+            Dictionary.Add(nameof(Telephone), rm);
+            return (RamAccess<string>)Dictionary[nameof(Telephone)];
         }
         set
         {
             Telephone_DB = value.Value;
-            OnPropertyChanged(nameof(Telephone));
+            OnPropertyChanged();
         }
     }
 
-    private void TelephoneValueChanged(object Value, PropertyChangedEventArgs args)
+    private void TelephoneValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Telephone_DB = ((RamAccess<string>)Value).Value;
+            Telephone_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -498,26 +473,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Fax)]).Value = Fax_DB;
                 return (RamAccess<string>)Dictionary[nameof(Fax)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
-                rm.PropertyChanged += FaxValueChanged;
-                Dictionary.Add(nameof(Fax), rm);
-                return (RamAccess<string>)Dictionary[nameof(Fax)];
-            }
+
+            var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
+            rm.PropertyChanged += FaxValueChanged;
+            Dictionary.Add(nameof(Fax), rm);
+            return (RamAccess<string>)Dictionary[nameof(Fax)];
         }
         set
         {
             Fax_DB = value.Value;
-            OnPropertyChanged(nameof(Fax));
+            OnPropertyChanged();
         }
     }
 
-    private void FaxValueChanged(object Value, PropertyChangedEventArgs args)
+    private void FaxValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Fax_DB = ((RamAccess<string>)Value).Value;
+            Fax_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -544,26 +517,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Email)]).Value = Email_DB;
                 return (RamAccess<string>)Dictionary[nameof(Email)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Email_Validation, Email_DB);
-                rm.PropertyChanged += EmailValueChanged;
-                Dictionary.Add(nameof(Email), rm);
-                return (RamAccess<string>)Dictionary[nameof(Email)];
-            }
+
+            var rm = new RamAccess<string>(Email_Validation, Email_DB);
+            rm.PropertyChanged += EmailValueChanged;
+            Dictionary.Add(nameof(Email), rm);
+            return (RamAccess<string>)Dictionary[nameof(Email)];
         }
         set
         {
             Email_DB = value.Value;
-            OnPropertyChanged(nameof(Email));
+            OnPropertyChanged();
         }
     }
 
-    private void EmailValueChanged(object Value, PropertyChangedEventArgs args)
+    private void EmailValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Email_DB = ((RamAccess<string>)Value).Value;
+            Email_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -590,26 +561,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okpo)]).ValueWithOutHandlerAndPropChanged = Okpo_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okpo)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
-                rm.PropertyChanged += OkpoValueChanged;
-                Dictionary.Add(nameof(Okpo), rm);
-                return (RamAccess<string>)Dictionary[nameof(Okpo)];
-            }
+
+            var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
+            rm.PropertyChanged += OkpoValueChanged;
+            Dictionary.Add(nameof(Okpo), rm);
+            return (RamAccess<string>)Dictionary[nameof(Okpo)];
         }
         set
         {
             Okpo_DB = value.Value;
-            OnPropertyChanged(nameof(Okpo));
+            OnPropertyChanged();
         }
     }
 
-    private void OkpoValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OkpoValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Okpo_DB = ((RamAccess<string>)Value).Value;
+            Okpo_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -655,26 +624,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okved)]).Value = Okved_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okved)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Okved_Validation, Okved_DB);
-                rm.PropertyChanged += OkvedValueChanged;
-                Dictionary.Add(nameof(Okved), rm);
-                return (RamAccess<string>)Dictionary[nameof(Okved)];
-            }
+
+            var rm = new RamAccess<string>(Okved_Validation, Okved_DB);
+            rm.PropertyChanged += OkvedValueChanged;
+            Dictionary.Add(nameof(Okved), rm);
+            return (RamAccess<string>)Dictionary[nameof(Okved)];
         }
         set
         {
             Okved_DB = value.Value;
-            OnPropertyChanged(nameof(Okved));
+            OnPropertyChanged();
         }
     }
 
-    private void OkvedValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OkvedValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Okved_DB = ((RamAccess<string>)Value).Value;
+            Okved_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -712,26 +679,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okogu)]).Value = Okogu_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okogu)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Okogu_Validation, Okogu_DB);
-                rm.PropertyChanged += OkoguValueChanged;
-                Dictionary.Add(nameof(Okogu), rm);
-                return (RamAccess<string>)Dictionary[nameof(Okogu)];
-            }
+
+            var rm = new RamAccess<string>(Okogu_Validation, Okogu_DB);
+            rm.PropertyChanged += OkoguValueChanged;
+            Dictionary.Add(nameof(Okogu), rm);
+            return (RamAccess<string>)Dictionary[nameof(Okogu)];
         }
         set
         {
             Okogu_DB = value.Value;
-            OnPropertyChanged(nameof(Okogu));
+            OnPropertyChanged();
         }
     }
 
-    private void OkoguValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OkoguValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Okogu_DB = ((RamAccess<string>)Value).Value;
+            Okogu_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -771,26 +736,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Oktmo)]).Value = Oktmo_DB;
                 return (RamAccess<string>)Dictionary[nameof(Oktmo)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
-                rm.PropertyChanged += OktmoValueChanged;
-                Dictionary.Add(nameof(Oktmo), rm);
-                return (RamAccess<string>)Dictionary[nameof(Oktmo)];
-            }
+
+            var rm = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
+            rm.PropertyChanged += OktmoValueChanged;
+            Dictionary.Add(nameof(Oktmo), rm);
+            return (RamAccess<string>)Dictionary[nameof(Oktmo)];
         }
         set
         {
             Oktmo_DB = value.Value;
-            OnPropertyChanged(nameof(Oktmo));
+            OnPropertyChanged();
         }
     }
 
-    private void OktmoValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OktmoValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Oktmo_DB = ((RamAccess<string>)Value).Value;
+            Oktmo_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -803,8 +766,7 @@ public class Form10 : Form
             return false;
         }
 
-        Regex ex = new("^[0-9]{11}$");
-        if (!ex.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{11}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -830,26 +792,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Inn)]).Value = Inn_DB;
                 return (RamAccess<string>)Dictionary[nameof(Inn)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Inn_Validation, Inn_DB);
-                rm.PropertyChanged += InnValueChanged;
-                Dictionary.Add(nameof(Inn), rm);
-                return (RamAccess<string>)Dictionary[nameof(Inn)];
-            }
+
+            var rm = new RamAccess<string>(Inn_Validation, Inn_DB);
+            rm.PropertyChanged += InnValueChanged;
+            Dictionary.Add(nameof(Inn), rm);
+            return (RamAccess<string>)Dictionary[nameof(Inn)];
         }
         set
         {
             Inn_DB = value.Value;
-            OnPropertyChanged(nameof(Inn));
+            OnPropertyChanged();
         }
     }
 
-    private void InnValueChanged(object Value, PropertyChangedEventArgs args)
+    private void InnValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Inn_DB = ((RamAccess<string>)Value).Value;
+            Inn_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -862,8 +822,7 @@ public class Form10 : Form
             return false;
         }
 
-        Regex ex = new("^[0-9]{10}$");
-        if (!ex.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{10}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -889,26 +848,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Kpp)]).Value = Kpp_DB;
                 return (RamAccess<string>)Dictionary[nameof(Kpp)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Kpp_Validation, Kpp_DB);
-                rm.PropertyChanged += KppValueChanged;
-                Dictionary.Add(nameof(Kpp), rm);
-                return (RamAccess<string>)Dictionary[nameof(Kpp)];
-            }
+
+            var rm = new RamAccess<string>(Kpp_Validation, Kpp_DB);
+            rm.PropertyChanged += KppValueChanged;
+            Dictionary.Add(nameof(Kpp), rm);
+            return (RamAccess<string>)Dictionary[nameof(Kpp)];
         }
         set
         {
             Kpp_DB = value.Value;
-            OnPropertyChanged(nameof(Kpp));
+            OnPropertyChanged();
         }
     }
 
-    private void KppValueChanged(object Value, PropertyChangedEventArgs args)
+    private void KppValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Kpp_DB = ((RamAccess<string>)Value).Value;
+            Kpp_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -921,8 +878,7 @@ public class Form10 : Form
             return false;
         }
 
-        Regex ex = new("^[0-9]{9}$|-");
-        if (!ex.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{9}$|-").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -948,26 +904,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okopf)]).Value = Okopf_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okopf)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Okopf_Validation, Okopf_DB);
-                rm.PropertyChanged += OkopfValueChanged;
-                Dictionary.Add(nameof(Okopf), rm);
-                return (RamAccess<string>)Dictionary[nameof(Okopf)];
-            }
+
+            var rm = new RamAccess<string>(Okopf_Validation, Okopf_DB);
+            rm.PropertyChanged += OkopfValueChanged;
+            Dictionary.Add(nameof(Okopf), rm);
+            return (RamAccess<string>)Dictionary[nameof(Okopf)];
         }
         set
         {
             Okopf_DB = value.Value;
-            OnPropertyChanged(nameof(Okopf));
+            OnPropertyChanged();
         }
     }
 
-    private void OkopfValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OkopfValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Okopf_DB = ((RamAccess<string>)Value).Value;
+            Okopf_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -980,8 +934,7 @@ public class Form10 : Form
             return false;
         }
 
-        Regex ex = new("^[0-9]{5}$");
-        if (!ex.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{5}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1007,26 +960,24 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okfs)]).Value = Okfs_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okfs)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Okfs_Validation, Okfs_DB);
-                rm.PropertyChanged += OkfsValueChanged;
-                Dictionary.Add(nameof(Okfs), rm);
-                return (RamAccess<string>)Dictionary[nameof(Okfs)];
-            }
+
+            var rm = new RamAccess<string>(Okfs_Validation, Okfs_DB);
+            rm.PropertyChanged += OkfsValueChanged;
+            Dictionary.Add(nameof(Okfs), rm);
+            return (RamAccess<string>)Dictionary[nameof(Okfs)];
         }
         set
         {
             Okfs_DB = value.Value;
-            OnPropertyChanged(nameof(Okfs));
+            OnPropertyChanged();
         }
     }
 
-    private void OkfsValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OkfsValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Okfs_DB = ((RamAccess<string>)Value).Value;
+            Okfs_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -1039,8 +990,7 @@ public class Form10 : Form
             return false;
         }
 
-        Regex ex = new("^[0-9]{2}$");
-        if (!ex.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{2}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1052,10 +1002,9 @@ public class Form10 : Form
     #endregion
 
     #region ParseInnerText
-    private string ParseInnerText(string Text)
+    private string ParseInnerText(string text)
     {
-        Text = Text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
-        return Text;
+        return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
     }
     #endregion
 

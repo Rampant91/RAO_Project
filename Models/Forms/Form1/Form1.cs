@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
@@ -18,10 +19,7 @@ public abstract class Form1 : Form
 
     [NotMapped]
     public bool flag = false;
-    public Form1():base()
-    {
 
-    }
     protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
     {
         OnPropertyChanged(args.PropertyName);
@@ -77,15 +75,15 @@ public abstract class Form1 : Form
             if (!OperationCode_Hidden_Priv)
             {
                 OperationCode_DB = value.Value;
-                OnPropertyChanged(nameof(OperationCode));
+                OnPropertyChanged();
             }
         }
     }
-    private void OperationCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OperationCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            OperationCode_DB = ((RamAccess<string>)Value).Value;
+            OperationCode_DB = ((RamAccess<string>)value).Value;
         }
     }
     protected virtual bool OperationCode_Validation(RamAccess<string> value)//Ready
@@ -140,23 +138,23 @@ public abstract class Form1 : Form
             if (!OperationDate_Hidden_Priv)
             {
                 OperationDate_DB = value.Value;
-                OnPropertyChanged(nameof(OperationDate));
+                OnPropertyChanged();
             }
         }
     }
-    private void OperationDateValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OperationDateValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
+            var tmp = ((RamAccess<string>)value).Value;
+            if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
             OperationDate_DB = tmp;
         }
     }
+
     protected virtual bool OperationDate_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -166,19 +164,11 @@ public abstract class Form1 : Form
             return false;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        try { DateTimeOffset.Parse(tmp); }
-        catch (Exception)
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -231,7 +221,7 @@ public abstract class Form1 : Form
         set
         {
             DocumentVid_DB = value.Value;
-            OnPropertyChanged(nameof(DocumentVid));
+            OnPropertyChanged();
         }
     }
 
@@ -242,6 +232,7 @@ public abstract class Form1 : Form
             DocumentVid_DB = ((RamAccess<byte?>)Value).Value;
         }
     }
+
     protected virtual bool DocumentVid_Validation(RamAccess<byte?> value)//Ready
     {
         value.ClearErrors();
@@ -250,12 +241,10 @@ public abstract class Form1 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        foreach (var item in Spravochniks.SprDocumentVidName)
+
+        if (Spravochniks.SprDocumentVidName.Any(item => value.Value == item.Item1))
         {
-            if (value.Value == item.Item1)
-            {
-                return true;
-            }
+            return true;
         }
         value.AddError("Недопустимое значение");
         return false;
@@ -307,15 +296,15 @@ public abstract class Form1 : Form
             if (!DocumentNumber_Hidden_Priv)
             {
                 DocumentNumber_DB = value.Value;
-                OnPropertyChanged(nameof(DocumentNumber));
+                OnPropertyChanged();
             }
         }
     }
-    private void DocumentNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void DocumentNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            DocumentNumber_DB = ((RamAccess<string>)Value).Value;
+            DocumentNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
     protected virtual bool DocumentNumber_Validation(RamAccess<string> value)//Ready
@@ -367,23 +356,23 @@ public abstract class Form1 : Form
             if (!DocumentDate_Hidden_Priv)
             {
                 DocumentDate_DB = value.Value;
-                OnPropertyChanged(nameof(DocumentDate));
+                OnPropertyChanged();
             }
         }
     }
-    private void DocumentDateValueChanged(object Value, PropertyChangedEventArgs args)
+    private void DocumentDateValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
+            var tmp = ((RamAccess<string>)value).Value;
+            if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
             {
                 tmp = tmp.Insert(6, "20");
             }
             DocumentDate_DB = tmp;
         }
     }
+
     protected virtual bool DocumentDate_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -393,19 +382,16 @@ public abstract class Form1 : Form
             return false;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
-        catch (Exception)
+        if (!DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -415,6 +401,7 @@ public abstract class Form1 : Form
     #endregion
 
     #region IExcel
+
     public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         NumberInOrder_DB = int.TryParse(worksheet.Cells[row, 1].Value.ToString(), out var intValue)
@@ -423,6 +410,7 @@ public abstract class Form1 : Form
         OperationCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
         OperationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 3].Value);
     }
+
     public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         worksheet.Cells[row, column].Value = NumberInOrder_DB;
@@ -444,5 +432,6 @@ public abstract class Form1 : Form
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
         return 3;
     }
+
     #endregion
 }

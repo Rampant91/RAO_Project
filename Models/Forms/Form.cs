@@ -4,12 +4,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
 namespace Models.Forms;
 
@@ -93,7 +91,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
         set
         {
             NumberInOrder_DB = value.Value;
-            OnPropertyChanged(nameof(NumberInOrder));
+            OnPropertyChanged();
         }
     }
     private void NumberInOrderValueChanged(object value, PropertyChangedEventArgs args)
@@ -131,7 +129,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
         set
         {
             NumberOfFields_DB = value.Value;
-            OnPropertyChanged(nameof(NumberOfFields));
+            OnPropertyChanged();
         }
     }
     private void NumberOfFieldsValueChanged(object value, PropertyChangedEventArgs args)
@@ -150,18 +148,23 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     #endregion
 
     #region For_Validation
+
     public abstract bool Object_Validation();
 
     private protected const NumberStyles StyleDecimalThousandExp = 
         NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+
     #endregion
 
     #region INotifyPropertyChanged
+
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
+
     public event PropertyChangedEventHandler PropertyChanged;
+
     #endregion
 
     #region IExcel
@@ -175,6 +178,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
     }
 
     #region Convert
+
     private protected static string ConvertFromExcelDate(object value)
     {
         var strValue = Convert.ToString(value);
@@ -235,19 +239,22 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             : value;
     }
 
-    private protected static string ReplaceE(string numberE)
+    private static string ReplaceE(string numberE)
     {
         return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
             .Replace("(", "").Replace(")", "").Replace(".", ",");
     } 
+
     #endregion
 
     #endregion
 
     #region IDataGridColumn
+
     public virtual DataGridColumns GetColumnStructure(string param)
     {
         return null;
     }
+
     #endregion
 }
