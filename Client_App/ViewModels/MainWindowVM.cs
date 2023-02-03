@@ -1343,27 +1343,38 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         try
         {
-            if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is "2.0")
+            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is "2.0")
             {
-                return Local_Reports.Reports_Collection20
-                    .FirstOrDefault(t => (
-                                             item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                                             && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                                             && item.Master.Rows20[1].Okpo_DB == "")
-                                         || (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                                             && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                                             && item.Master.Rows20[1].Okpo_DB != "")
-                                         || (item.Master.Rows20[1].Okpo_DB != ""
-                                             && t.Master.Rows20[1].Okpo_DB == ""
-                                             && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                                             && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB)
-                                         || (item.Master.Rows20[1].Okpo_DB == ""
-                                             && t.Master.Rows20[1].Okpo_DB != ""
-                                             && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                                             && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));
+                return null;
+            }
+            var localReports = Local_Reports.Reports_Collection20
+                .FirstOrDefault(t => (
+                                         item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                                         && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                                         && item.Master.Rows20[1].Okpo_DB == "")
+                                     || (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                                         && item.Master.Rows20[1].Okpo_DB != "")
+                                     || (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                                         && item.Master.Rows20[1].Okpo_DB != ""
+                                         && t.Master.Rows20[1].RegNo_DB == "")
+                                     || (item.Master.Rows20[1].Okpo_DB != ""
+                                         && t.Master.Rows20[1].Okpo_DB == ""
+                                         && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB)
+                                     || (item.Master.Rows20[1].Okpo_DB == ""
+                                         && t.Master.Rows20[1].Okpo_DB != ""
+                                         && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));
+            if (localReports?.Master.Rows20[1].RegNo_DB is ""
+                && localReports.Master.Rows20[0].RegNo_DB is not ""
+                && localReports.Master.Rows20[1].Okpo_DB is not "")
+            {
+                localReports.Master.Rows20[1].RegNo_DB = localReports.Master.Rows20[0].RegNo_DB;
             }
 
-            return null;
+            return localReports;
         }
         catch
         {
@@ -2314,7 +2325,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             skipLess = false;
             skipNew = false;
             skipReplace = false;
-            bool hasMultipleReports;
             foreach (var res in answer) //Для каждого импортируемого файла
             {
                 if (res == "") continue;
@@ -2339,7 +2349,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     await RestoreReportsOrders(item);
                     item.CleanIds();
                     await ProcessIfNoteOrder0(item);
-                    hasMultipleReports = answer.Length > 1 || reportsCollection.Count > 1;
+                    var hasMultipleReports = answer.Length > 1 || reportsCollection.Count > 1;
                     if (first11 != null)
                     {
                         await ProcessIfHasReports11(first11, item, hasMultipleReports);
