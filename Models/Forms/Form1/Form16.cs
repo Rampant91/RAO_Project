@@ -1676,27 +1676,16 @@ public class Form16 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        var a0 = value.Value == "15";
-        var a1 = value.Value == "17";
-        var a2 = value.Value == "46";
-        var a3 = value.Value == "47";
-        var a4 = value.Value == "53";
-        var a5 = value.Value == "54";
-        var a6 = value.Value == "58";
-        var a7 = value.Value == "61";
-        var a8 = value.Value == "62";
-        var a9 = value.Value == "65";
-        var a10 = value.Value == "66";
-        var a11 = value.Value == "67";
-        var a12 = value.Value == "81";
-        var a13 = value.Value == "82";
-        var a14 = value.Value == "83";
-        var a15 = value.Value == "85";
-        var a16 = value.Value == "86";
-        var a17 = value.Value == "87";
-        if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15 || a16 || a17)
-            value.AddError("Код операции не может быть использован для РАО");
-        return false;
+        if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
+            || !byte.TryParse(value.Value, out var byteValue)
+            || byteValue is not (15 or 17 or 46 or 47 or 53 or 54 or 58 or 61 or 62 or 65 or 66 or 67 or 81
+                or 82 or 83 or 85 or 86 or 87))
+        {
+            value.AddError("Код операции не может быть использован в форме 1.6");
+            return false;
+        }
+
+        return true;
     }
 
     #region IExcel
@@ -1714,10 +1703,10 @@ public class Form16 : Form1
         BetaGammaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
         AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 12].Value);
         TransuraniumActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 13].Value);
-        ActivityMeasurementDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 14].Value);
+        ActivityMeasurementDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 14].Text);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 15].Value), out var byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
-        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 17].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 17].Text);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
         StoragePlaceName_DB = Convert.ToString(worksheet.Cells[row, 20].Value);

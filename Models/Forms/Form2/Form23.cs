@@ -1010,8 +1010,8 @@ public class Form23 : Form2
         QuantityOZIII_DB = ConvertFromExcelInt(worksheet.Cells[row, 8].Value);
         SummaryActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
-        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Value);
-        ExpirationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 12].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Text);
+        ExpirationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 12].Text);
         DocumentName_DB = Convert.ToString(worksheet.Cells[row, 13].Value);
     }
 

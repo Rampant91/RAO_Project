@@ -1194,7 +1194,7 @@ public class Form14 : Form1
         Sort_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 6].Value), out var byteValue) ? byteValue : null;
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
-        ActivityMeasurementDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Value);
+        ActivityMeasurementDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Text);
         Volume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
         AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out byteValue) ? byteValue : null;
@@ -1202,7 +1202,7 @@ public class Form14 : Form1
         Owner_DB = Convert.ToString(worksheet.Cells[row, 14].Value);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 15].Value), out byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
-        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 17].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 17].Text);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
         PackName_DB = Convert.ToString(worksheet.Cells[row, 20].Value);

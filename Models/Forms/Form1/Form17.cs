@@ -2008,25 +2008,15 @@ public class Form17 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        var a0 = value.Value == "01";
-        var a1 = value.Value == "10";
-        var a2 = value.Value == "18";
-        var a3 = value.Value == "55";
-        var a4 = value.Value == "63";
-        var a5 = value.Value == "64";
-        var a6 = value.Value == "68";
-        var a7 = value.Value == "97";
-        var a8 = value.Value == "98";
-        var a9 = value.Value == "99";
-        var a12 = value.Value == "51";
-        var a13 = value.Value == "52";
-        var a10 = int.Parse(value.Value) >= 21 && int.Parse(value.Value) <= 29;
-        var a11 = int.Parse(value.Value) >= 31 && int.Parse(value.Value) <= 39;
-        if (!(a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13))
+        if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
+            || !byte.TryParse(value.Value, out var byteValue)
+            || byteValue is not (1 or 10 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68
+                or 97 or 98 or 99))
         {
             value.AddError("Код операции не может быть использован в форме 1.7");
             return false;
         }
+
         return true;
     }
     protected override bool DocumentNumber_Validation(RamAccess<string> value)
@@ -2090,7 +2080,7 @@ public class Form17 : Form1
         PackType_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         PackFactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         PackNumber_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
-        FormingDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 8].Value);
+        FormingDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 8].Text);
         PassportNumber_DB = Convert.ToString(worksheet.Cells[row, 9].Value);
         Volume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 11].Value);
@@ -2098,7 +2088,7 @@ public class Form17 : Form1
         SpecificActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 13].Value);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
-        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 16].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 16].Text);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
         StoragePlaceName_DB = Convert.ToString(worksheet.Cells[row, 19].Value);

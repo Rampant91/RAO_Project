@@ -990,13 +990,13 @@ public class Form12 : Form1
         FactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
-        CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Value);
+        CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Text);
         SignedServicePeriod_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
         PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 14].Value);
-        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 15].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 15].Text);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 16].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
         PackName_DB = Convert.ToString(worksheet.Cells[row, 18].Value);
