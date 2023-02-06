@@ -1239,6 +1239,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
 
+    
+
     private async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -1343,11 +1345,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         try
         {
-            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is "2.0")
+            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
             {
                 return null;
             }
-            var localReports = Local_Reports.Reports_Collection20
+            return Local_Reports.Reports_Collection20
                 .FirstOrDefault(t => (
                                          item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
                                          && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
@@ -1367,14 +1369,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                          && t.Master.Rows20[1].Okpo_DB != ""
                                          && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
                                          && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));
-            if (localReports?.Master.Rows20[1].RegNo_DB is ""
-                && localReports.Master.Rows20[0].RegNo_DB is not ""
-                && localReports.Master.Rows20[1].Okpo_DB is not "")
-            {
-                localReports.Master.Rows20[1].RegNo_DB = localReports.Master.Rows20[0].RegNo_DB;
-            }
-
-            return localReports;
         }
         catch
         {
@@ -2284,6 +2278,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
+    
+
     private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
     {
         switch (an)
@@ -2346,6 +2342,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     var first11 = await GetReports11FromLocalEqual(item);
                     var first21 = await GetReports21FromLocalEqual(item);
+                    FillEmptyRegNo(ref first11);
+                    FillEmptyRegNo(ref first21);
                     await RestoreReportsOrders(item);
                     item.CleanIds();
                     await ProcessIfNoteOrder0(item);
@@ -2443,6 +2441,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         catch
         {
             // ignored
+        }
+    }
+
+    private void FillEmptyRegNo(ref Reports? reps)
+    {
+        if (reps?.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" && reps.Master.Rows20[1].Okpo_DB is not "")
+        {
+            reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
+        }
+        if (reps?.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" && reps.Master.Rows10[1].Okpo_DB is not "")
+        {
+            reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
         }
     }
 

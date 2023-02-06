@@ -457,23 +457,12 @@ public class Form11 : Form1
             return false;
         }
         var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        try { DateTimeOffset.Parse(tmp); }
-        catch (Exception)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
+        
         return true;
     }
     #endregion
@@ -1089,14 +1078,14 @@ public class Form11 : Form1
         Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue) ? intValue : null;
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
-        CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Value);
+        CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Text);
         Category_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 12].Value), out var shortValue) ? shortValue : null;
         SignedServicePeriod_DB = float.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out var floatValue) ? floatValue : null;
         PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 15].Value);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 16].Value), out byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 17].Value);
-        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 18].Value);
+        DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 18].Text);
         ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 19].Value);
         TransporterOKPO_DB = Convert.ToString(worksheet.Cells[row, 20].Value);
         PackName_DB = Convert.ToString(worksheet.Cells[row, 21].Value);

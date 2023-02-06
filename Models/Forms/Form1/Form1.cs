@@ -164,11 +164,8 @@ public abstract class Form1 : Form
             return false;
         }
         var tmp = value.Value;
-        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || DateTimeOffset.TryParse(tmp, out _))
+        
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -382,20 +379,13 @@ public abstract class Form1 : Form
             return false;
         }
         var tmp = value.Value;
-        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp))
+        
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (!DateTimeOffset.TryParse(tmp, out _))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
+        
         return true;
     }
     #endregion
@@ -408,7 +398,7 @@ public abstract class Form1 : Form
             ? intValue
             : 0;
         OperationCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        OperationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 3].Value);
+        OperationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 3].Text);
     }
 
     public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
