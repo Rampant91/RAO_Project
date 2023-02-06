@@ -1478,8 +1478,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var impRep = (Report)key;
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in
-                     baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
+            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
             {
                 var baseRep = (Report)key1;
 
@@ -2347,7 +2346,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     await RestoreReportsOrders(item);
                     item.CleanIds();
                     await ProcessIfNoteOrder0(item);
-                    var hasMultipleReports = answer.Length > 1 || reportsCollection.Count > 1;
+                    var hasMultipleReports = item.Report_Collection.Count > 1 || reportsCollection.Count > 1 || answer.Length > 1;
                     if (first11 != null)
                     {
                         await ProcessIfHasReports11(first11, item, hasMultipleReports);
@@ -2363,7 +2362,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         var an = "Добавить";
                         if (!skipNewOrg)
                         {
-                            if (reportsCollection.Count > 1 || answer.Length > 1)
+                            if (item.Report_Collection.Count > 1 || reportsCollection.Count > 1 || answer.Length > 1)
                             {
                                 #region MessageNewOrg
 
