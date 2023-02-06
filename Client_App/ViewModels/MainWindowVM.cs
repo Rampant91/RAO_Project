@@ -74,6 +74,34 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Init
 
+    private class PussyOrg1
+    {
+        public string ReNoReg { get; set; }
+        public string ShotrYrLic { get; set; }
+        public string OKPO { get; set; }
+
+        public PussyOrg1(string reNoReg, string shotrYrLic, string oKPO)
+        {
+            ReNoReg = reNoReg;
+            ShotrYrLic = shotrYrLic;
+            OKPO = oKPO;
+        }
+    }
+    private async Task<PussyOrg1[]> getPussyOrg1(int page)
+    {
+        using(var dbContext = new DBModel(StaticConfiguration.DBPath))
+        {
+            return await dbContext.ReportsCollectionDbSet.AsNoTracking()
+                .Include(x => x.Master_DB.Rows10)
+                .Select(x => new PussyOrg1(x.Master_DB.Rows10[0].RegNo_DB,
+                    x.Master_DB.Rows10[0].ShortJurLico_DB,
+                    x.Master_DB.Rows10[0].Okpo_DB))
+                .Skip(page * 5).Take(5)
+                .ToArrayAsync();
+        }
+    }
+
+
     private async Task<string> ProcessRaoDirectory(string systemDirectory)
     {
         var tmp = "";
@@ -285,20 +313,22 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         OnStartProgressBar = 15;
         await ProcessDataBaseCreate(raoDirectory);
 
-        OnStartProgressBar = 25;
-        var dbm = StaticConfiguration.DBModel;
-        await dbm.LoadTablesAsync();
+        //OnStartProgressBar = 25;
+        //var dbm = StaticConfiguration.DBModel;
+        //await dbm.LoadTablesAsync();
 
-        OnStartProgressBar = 55;
-        await ProcessDataBaseFillEmpty(dbm);
+        //OnStartProgressBar = 55;
+        //await ProcessDataBaseFillEmpty(dbm);
 
+
+        var testDate = await this.getPussyOrg1(0);
         OnStartProgressBar = 70;
-        Local_Reports = dbm.DBObservableDbSet.Local.First();
+        Local_Reports = null;
 
         await ProcessDataBaseFillNullOrder();
 
-        OnStartProgressBar = 75;
-        await dbm.SaveChangesAsync();
+        //OnStartProgressBar = 75;
+        //await dbm.SaveChangesAsync();
         Local_Reports.PropertyChanged += Local_ReportsChanged;
 
         OnStartProgressBar = 80;
