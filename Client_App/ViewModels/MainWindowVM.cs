@@ -1469,7 +1469,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private async Task ProcessIfHasReports11(Reports baseReps, Reports impReps, bool hasMultipleReports)
+    private async Task ProcessIfHasReports11(Reports baseReps, Reports impReps)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         
@@ -1626,7 +1626,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     res = "Заменить";
                     if (!skipReplace)
                     {
-                        if (impReps.Report_Collection.Count > 1 || hasMultipleReports)
+                        if (hasMultipleReport)
                         {
                             #region MessageImportReportHasHigherCorrectionNumber
 
@@ -1868,7 +1868,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             res = "Да";
             if (!skipNew)
             {
-                if (impReps.Report_Collection.Count > 1 || hasMultipleReports)
+                if (hasMultipleReport)
                 {
                     #region MessageNewReport
 
@@ -1952,7 +1952,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
-    private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps, bool hasMultipleReports)
+    private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
@@ -2065,7 +2065,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 res = "Заменить";
                 if (!skipReplace)
                 {
-                    if (impReps.Report_Collection.Count > 1 || hasMultipleReports)
+                    if (hasMultipleReport)
                     {
                         #region MessageImportReportHasHigherCorrectionNumber
 
@@ -2195,7 +2195,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             res = "Да";
             if (!skipNew)
             {
-                if (impReps.Report_Collection.Count > 1 || hasMultipleReports)
+                if (hasMultipleReport)
                 {
                     #region MessageNewReport
 
@@ -2307,6 +2307,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private bool skipLess; //Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
     private bool skipNew; //Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
     private bool skipReplace; //Пропускать уведомления о замене форм
+    private bool hasMultipleReport; //Имеет множество форм
 
     private async Task _ImportForm()
     {
@@ -2320,6 +2321,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             skipLess = false;
             skipNew = false;
             skipReplace = false;
+            hasMultipleReport = false;
+
             foreach (var res in answer) //Для каждого импортируемого файла
             {
                 if (res == "") continue;
@@ -2327,7 +2330,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 var sourceFile = new FileInfo(res);
                 sourceFile.CopyTo(file, true);
                 var reportsCollection = await GetReportsFromDataBase(file);
-                var hasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
+
+                if (!hasMultipleReport)
+                {
+                    hasMultipleReport = (reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1);
+                }
                 foreach (var item in reportsCollection) //Для каждой импортируемой организации
                 {
                     if (item.Master.Rows10.Count != 0)
@@ -2349,11 +2356,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     if (first11 != null)
                     {
-                        await ProcessIfHasReports11(first11, item, hasMultipleReport);
+                        await ProcessIfHasReports11(first11, item);
                     }
                     else if (first21 != null)
                     {
-                        await ProcessIfHasReports21(first21, item, hasMultipleReport);
+                        await ProcessIfHasReports21(first21, item);
                     }
                     else if (first11 == null && first21 == null)
                     {
@@ -2362,7 +2369,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         var an = "Добавить";
                         if (!skipNewOrg)
                         {
-                            if (item.Report_Collection.Count > 1 || reportsCollection.Count > 1 || answer.Length > 1)
+                            if (hasMultipleReport)
                             {
                                 #region MessageNewOrg
 
