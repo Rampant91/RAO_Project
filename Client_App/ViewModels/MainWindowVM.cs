@@ -136,30 +136,34 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task ProcessDataBaseCreate(string tempDirectory)
     {
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         var i = 0;
-        var flag = false;
-        DBModel dbm = null;
-        foreach (var file in Directory.GetFiles(tempDirectory))
+        var loadDbFile = false;
+        DBModel dbm;
+        DirectoryInfo dirInfo = new(tempDirectory);
+        foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                     .Where(x => x.Name.EndsWith(".RAODB"))
+                     .OrderByDescending((x => x.LastWriteTime)))
         {
             try
             {
-                var names = file.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
-                Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.6 Текущая база данных - {names[^1]}";
-                StaticConfiguration.DBPath = file;
+                Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {fileInfo.Name}";
+                StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
                 await dbm.Database.MigrateAsync();
-                flag = true;
+                loadDbFile = true;
                 break;
             }
             catch (Exception)
             {
+                //ignored
             }
         }
 
-        if (!flag)
+        if (!loadDbFile) //Если не прочитали файл базы, то создаем пустой.
         {
-            Current_Db = $"Интерактивное пособие по вводу данных ver.1.2.2.6 Текущая база данных - Local_{i}.raodb";
+            Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - Local_{i}.raodb";
             StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"Local_{i}.raodb");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
@@ -271,37 +275,162 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         return maxNum + 1;
     }
 
-    public async Task Init()
+    public async Task Init(OnStartProgressBarVM onStartProgressBarVm)
     {
+        onStartProgressBarVm.LoadStatus = "Поиск системной директории";
         OnStartProgressBar = 1;
         var systemDirectory = await GetSystemDirectory();
 
+        onStartProgressBarVm.LoadStatus = "Создание временных файлов";
         OnStartProgressBar = 5;
         var raoDirectory = await ProcessRaoDirectory(systemDirectory);
 
+        onStartProgressBarVm.LoadStatus = "Загрузка справочников";
         OnStartProgressBar = 10;
         await ProcessSpravochniks();
 
+        onStartProgressBarVm.LoadStatus = "Создание базы данных";
         OnStartProgressBar = 15;
         await ProcessDataBaseCreate(raoDirectory);
-
-        OnStartProgressBar = 25;
+        
+        onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
+        OnStartProgressBar = 20;
         var dbm = StaticConfiguration.DBModel;
-        await dbm.LoadTablesAsync();
 
-        OnStartProgressBar = 55;
+        #region LoadTables
+        onStartProgressBarVm.LoadStatus = "Загрузка примечаний";
+        OnStartProgressBar = 22;
+        await dbm.notes.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
+        OnStartProgressBar = 24;
+        await dbm.form_10.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.1";
+        OnStartProgressBar = 26;
+        await dbm.form_11.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.2";
+        OnStartProgressBar = 28;
+        await dbm.form_12.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.3";
+        OnStartProgressBar = 30;
+        await dbm.form_13.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.4";
+        OnStartProgressBar = 32;
+        await dbm.form_14.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.5";
+        OnStartProgressBar = 34;
+        await dbm.form_15.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.6";
+        OnStartProgressBar = 36;
+        await dbm.form_16.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.7";
+        OnStartProgressBar = 38;
+        await dbm.form_17.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.8";
+        OnStartProgressBar = 40;
+        await dbm.form_18.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.9";
+        OnStartProgressBar = 42;
+        await dbm.form_19.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
+        OnStartProgressBar = 45;
+        await dbm.form_20.LoadAsync();
+        try
+        {
+
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.1";
+            OnStartProgressBar = 48;
+            await dbm.form_21.LoadAsync();
+
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.2";
+            OnStartProgressBar = 50;
+            await dbm.form_22.LoadAsync();
+        }
+        catch
+        {
+            dbm.form_21.Local.Clear();
+            dbm.form_22.Local.Clear();
+        }
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.3";
+        OnStartProgressBar = 52;
+        await dbm.form_23.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.4";
+        OnStartProgressBar = 54;
+        await dbm.form_24.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.5";
+        OnStartProgressBar = 56;
+        await dbm.form_25.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.6";
+        OnStartProgressBar = 58;
+        await dbm.form_26.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.7";
+        OnStartProgressBar = 60;
+        await dbm.form_27.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.8";
+        OnStartProgressBar = 62;
+        await dbm.form_28.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.9";
+        OnStartProgressBar = 64;
+        await dbm.form_29.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.10";
+        OnStartProgressBar = 66;
+        await dbm.form_210.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.11";
+        OnStartProgressBar = 68;
+        await dbm.form_211.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.12";
+        OnStartProgressBar = 70;
+        await dbm.form_212.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
+        OnStartProgressBar = 72;
+        await dbm.ReportCollectionDbSet.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
+        OnStartProgressBar = 74;
+        await dbm.ReportsCollectionDbSet.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
+        OnStartProgressBar = 76;
+        await dbm.DBObservableDbSet.LoadAsync(); 
+        #endregion
+
+        onStartProgressBarVm.LoadStatus = "Сортировка организаций";
+        OnStartProgressBar = 80;
         await ProcessDataBaseFillEmpty(dbm);
 
-        OnStartProgressBar = 70;
+        onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
+        OnStartProgressBar = 85;
         Local_Reports = dbm.DBObservableDbSet.Local.First();
-
         await ProcessDataBaseFillNullOrder();
 
-        OnStartProgressBar = 75;
+        onStartProgressBarVm.LoadStatus = "Сохранение";
+        OnStartProgressBar = 90;
         await dbm.SaveChangesAsync();
         Local_Reports.PropertyChanged += Local_ReportsChanged;
 
-        OnStartProgressBar = 80;
+        onStartProgressBarVm.LoadStatus = "Инициализация";
+        OnStartProgressBar = 95;
         await PropertiesInit();
 
         OnStartProgressBar = 100;
@@ -2369,7 +2498,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         var an = "Добавить";
                         if (!skipNewOrg)
                         {
-                            if (hasMultipleReport)
+                            if (answer.Length > 1 || reportsCollection.Count > 1)
                             {
                                 #region MessageNewOrg
 
@@ -2385,18 +2514,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         ContentTitle = "Импорт из .raodb",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация содержащая {reportsCollection.Count} форм отчетности." +
+                                            $"Будет добавлена новая организация ({item.Master.FormNum_DB}) содержащая {item.Report_Collection.Count} форм отчетности." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
                                             $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}" +
-                                            $"{Environment.NewLine}" +
-                                            $"{Environment.NewLine}Номер формы - {item.Master.FormNum_DB}" +
-                                            $"{Environment.NewLine}Начало отчетного периода - {item.Master.StartPeriod_DB}" +
-                                            $"{Environment.NewLine}Конец отчетного периода - {item.Master.EndPeriod_DB}" +
-                                            $"{Environment.NewLine}Дата выгрузки - {item.Master.ExportDate_DB}" +
-                                            $"{Environment.NewLine}Номер корректировки - {item.Master.CorrectionNumber_DB}" +
-                                            $"{Environment.NewLine}Количество строк - {item.Master.Rows.Count}{InventoryCheck(item.Master)}" +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                             $"{Environment.NewLine}импортировать все новые организации.",
@@ -2424,7 +2546,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         ContentTitle = "Импорт из .raodb",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация содержащая {reportsCollection.Count} форм отчетности." +
+                                            $"Будет добавлена новая организация ({item.Master.FormNum_DB}) содержащая {item.Report_Collection.Count} форм отчетности." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
@@ -2860,7 +2982,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             Name = "Excel",
             Extensions = { "xlsx" }
         };
-        dial.Filters?.Add(filter);
+        dial.Filters.Add(filter);
+        dial.InitialFileName = $"Аналитика - разрывы и пересечения в {GetRaoFileName().Result}";
         var res = await dial.ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(res)) return;
         var path = res;

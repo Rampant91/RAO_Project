@@ -10,6 +10,6 @@
 		HasSystemDecorations="False">
 	<Panel>
 		<ProgressBar  Maximum="100" Minimum="0" Height="40" Value="{Binding OnStartProgressBar}"></ProgressBar>
-		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="Загрузка МПЗФ..."/>
+		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding LoadStatus}"/>
     </Panel>
 </Window>

@@ -9,6 +9,8 @@ public class BaseVM
 {
     private protected static string PasFolderPath = @"Y:\Исайчева\Паспорта\Тестовые паспорта";
 
+    private protected const string Version = @"1.2.2.7";
+
     private protected static bool ComparePasParam(string? nameDb, string? namePas)
     {
         if (nameDb == null || namePas == null)

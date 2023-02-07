@@ -179,6 +179,18 @@ public class DataContext:DbContext
         }
     }
 
+    public async Task LoadNotesAsync()
+    {
+        try
+        {
+            await notes.LoadAsync();
+        }
+        catch
+        {
+            //ignored
+        }
+    }
+
     public void Restore()
     {
         var changedEntries = ChangeTracker.Entries()

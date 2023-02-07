@@ -22,19 +22,30 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         get => _OnStartProgressBar;
         set
         {
-            if (_OnStartProgressBar != value)
-            {
-                _OnStartProgressBar = value;
-                OnPropertyChanged(nameof(OnStartProgressBar));
-            }
+            if (_OnStartProgressBar == value) return;
+            _OnStartProgressBar = value;
+            OnPropertyChanged();
         }
     }
+
+    private string _LoadStatus;
+    public string LoadStatus
+    {
+        get => _LoadStatus;
+        set
+        {
+            if (_LoadStatus == value) return;
+            _LoadStatus = value;
+            OnPropertyChanged();
+        }
+    }
+
     public MainWindowVM VMDataContext {get;set;}
     public async Task Start()
     {
         VMDataContext = new MainWindowVM();
         VMDataContext.PropertyChanged += OnVMPropertyChanged;
-        await VMDataContext.Init();
+        await VMDataContext.Init(this);
     }
     public void OnVMPropertyChanged(object sender,PropertyChangedEventArgs args)
     {
