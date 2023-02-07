@@ -1497,7 +1497,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                      || (item.Master.Rows20[1].Okpo_DB == ""
                                          && t.Master.Rows20[1].Okpo_DB != ""
                                          && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));
+                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));           
         }
         catch
         {
@@ -2581,13 +2581,28 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private void FillEmptyRegNo(ref Reports? reps)
     {
-        if (reps?.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" && reps.Master.Rows20[1].Okpo_DB is not "")
+        if (reps is null) return;
+        if (reps.Master.Rows10.Count >= 2)
         {
-            reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
+            if (reps.Master.Rows10[0]?.RegNo_DB is "" && reps.Master.Rows10[1]?.RegNo_DB is not "" && reps.Master.Rows10[0]?.Okpo_DB is not "")
+            {
+                reps.Master.Rows10[0].RegNo_DB = reps.Master.Rows10[1].RegNo_DB;
+            }
+            if (reps.Master.Rows10[1]?.RegNo_DB is "" && reps.Master.Rows10[0]?.RegNo_DB is not "" && reps.Master.Rows10[1]?.Okpo_DB is not "")
+            {
+                reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
+            }
         }
-        if (reps?.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" && reps.Master.Rows10[1].Okpo_DB is not "")
+        if (reps.Master.Rows20.Count >= 2)
         {
-            reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
+            if (reps.Master.Rows20[0]?.RegNo_DB is "" && reps.Master.Rows20[1]?.RegNo_DB is not "" && reps.Master.Rows20[0]?.Okpo_DB is not "")
+            {
+                reps.Master.Rows20[0].RegNo_DB = reps.Master.Rows20[1].RegNo_DB;
+            }
+            if (reps.Master.Rows20[1]?.RegNo_DB is "" && reps.Master.Rows20[0]?.RegNo_DB is not "" && reps.Master.Rows20[1]?.Okpo_DB is not "")
+            {
+                reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
+            }
         }
     }
 
