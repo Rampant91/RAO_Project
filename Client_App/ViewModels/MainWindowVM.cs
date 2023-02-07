@@ -2327,7 +2327,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 var sourceFile = new FileInfo(res);
                 sourceFile.CopyTo(file, true);
                 var reportsCollection = await GetReportsFromDataBase(file);
-                
+                var hasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
                 foreach (var item in reportsCollection) //Для каждой импортируемой организации
                 {
                     if (item.Master.Rows10.Count != 0)
@@ -2346,14 +2346,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     await RestoreReportsOrders(item);
                     item.CleanIds();
                     await ProcessIfNoteOrder0(item);
-                    var hasMultipleReports = item.Report_Collection.Count > 1 || reportsCollection.Count > 1 || answer.Length > 1;
+
                     if (first11 != null)
                     {
-                        await ProcessIfHasReports11(first11, item, hasMultipleReports);
+                        await ProcessIfHasReports11(first11, item, hasMultipleReport);
                     }
                     else if (first21 != null)
                     {
-                        await ProcessIfHasReports21(first21, item, hasMultipleReports);
+                        await ProcessIfHasReports21(first21, item, hasMultipleReport);
                     }
                     else if (first11 == null && first21 == null)
                     {
@@ -2383,6 +2383,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                             $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
                                             $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}" +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Номер формы - {item.Master.FormNum_DB}" +
+                                            $"{Environment.NewLine}Начало отчетного периода - {item.Master.StartPeriod_DB}" +
+                                            $"{Environment.NewLine}Конец отчетного периода - {item.Master.EndPeriod_DB}" +
+                                            $"{Environment.NewLine}Дата выгрузки - {item.Master.ExportDate_DB}" +
+                                            $"{Environment.NewLine}Номер корректировки - {item.Master.CorrectionNumber_DB}" +
+                                            $"{Environment.NewLine}Количество строк - {item.Master.Rows.Count}{InventoryCheck(item.Master)}" +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                             $"{Environment.NewLine}импортировать все новые организации.",
