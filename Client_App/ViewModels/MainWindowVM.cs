@@ -1442,7 +1442,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         try
         {
-            if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is "1.0")
+            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is not "1.0")
             {
                 return null;
             }
