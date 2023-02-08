@@ -2569,7 +2569,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
-
             await Local_Reports.Reports_Collection.QuickSortAsync();
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
@@ -2579,27 +2578,27 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private void FillEmptyRegNo(ref Reports? reps)
+    private static void FillEmptyRegNo(ref Reports? reps)
     {
         if (reps is null) return;
         if (reps.Master.Rows10.Count >= 2)
         {
-            if (reps.Master.Rows10[0]?.RegNo_DB is "" && reps.Master.Rows10[1]?.RegNo_DB is not "" && reps.Master.Rows10[0]?.Okpo_DB is not "")
+            if (reps.Master.Rows10[0].RegNo_DB is "" && reps.Master.Rows10[1].RegNo_DB is not "" && reps.Master.Rows10[0].Okpo_DB is not "")
             {
                 reps.Master.Rows10[0].RegNo_DB = reps.Master.Rows10[1].RegNo_DB;
             }
-            if (reps.Master.Rows10[1]?.RegNo_DB is "" && reps.Master.Rows10[0]?.RegNo_DB is not "" && reps.Master.Rows10[1]?.Okpo_DB is not "")
+            if (reps.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" && reps.Master.Rows10[1].Okpo_DB is not "")
             {
                 reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
             }
         }
         if (reps.Master.Rows20.Count >= 2)
         {
-            if (reps.Master.Rows20[0]?.RegNo_DB is "" && reps.Master.Rows20[1]?.RegNo_DB is not "" && reps.Master.Rows20[0]?.Okpo_DB is not "")
+            if (reps.Master.Rows20[0].RegNo_DB is "" && reps.Master.Rows20[1].RegNo_DB is not "" && reps.Master.Rows20[0].Okpo_DB is not "")
             {
                 reps.Master.Rows20[0].RegNo_DB = reps.Master.Rows20[1].RegNo_DB;
             }
-            if (reps.Master.Rows20[1]?.RegNo_DB is "" && reps.Master.Rows20[0]?.RegNo_DB is not "" && reps.Master.Rows20[1]?.Okpo_DB is not "")
+            if (reps.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" && reps.Master.Rows20[1].Okpo_DB is not "")
             {
                 reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
             }
