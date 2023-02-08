@@ -1444,25 +1444,50 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             if (item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is "1.0")
             {
-                return Local_Reports.Reports_Collection10
-                    .FirstOrDefault(t => (
-                                             item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                                             && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                                             && item.Master.Rows10[1].Okpo_DB == "")
-                                         || (item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                                             && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                                             && item.Master.Rows10[1].Okpo_DB != "")
-                                         || (item.Master.Rows10[1].Okpo_DB != ""
-                                             && t.Master.Rows10[1].Okpo_DB == ""
-                                             && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                                             && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB)
-                                         || (item.Master.Rows10[1].Okpo_DB == ""
-                                             && t.Master.Rows10[1].Okpo_DB != ""
-                                             && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                                             && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB));
+                return null;
             }
 
-            return null;
+            return Local_Reports.Reports_Collection10
+                       .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB != ""
+                           && t.Master.Rows10[1].RegNo_DB == "")
+
+                   ?? Local_Reports
+                       .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                       .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           item.Master.Rows10[1].Okpo_DB != ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+                           && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB != ""
+                           && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB);
         }
         catch
         {
@@ -1478,26 +1503,47 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 return null;
             }
+
             return Local_Reports.Reports_Collection20
-                .FirstOrDefault(t => (
-                                         item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                                         && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                                         && item.Master.Rows20[1].Okpo_DB == "")
-                                     || (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                                         && item.Master.Rows20[1].Okpo_DB != "")
-                                     || (item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                                         && item.Master.Rows20[1].Okpo_DB != ""
-                                         && t.Master.Rows20[1].RegNo_DB == "")
-                                     || (item.Master.Rows20[1].Okpo_DB != ""
-                                         && t.Master.Rows20[1].Okpo_DB == ""
-                                         && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB)
-                                     || (item.Master.Rows20[1].Okpo_DB == ""
-                                         && t.Master.Rows20[1].Okpo_DB != ""
-                                         && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                                         && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB));           
+                       .FirstOrDefault(t => 
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB != ""
+                           && t.Master.Rows20[1].RegNo_DB == "")
+
+                   ?? Local_Reports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                       .FirstOrDefault(t => 
+                               
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           item.Master.Rows20[1].Okpo_DB != ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+                           && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB != ""
+                           && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB);
         }
         catch
         {
