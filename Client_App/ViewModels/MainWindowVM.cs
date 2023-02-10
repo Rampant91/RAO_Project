@@ -855,8 +855,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         if (answer is null) return;
         foreach (var res in answer)
         {
-            if (res == "") continue;
-            using ExcelPackage excelPackage = new(new FileInfo(res));
+            if (res is "") continue;
+            var fileInfo = new FileInfo(res);
+            using ExcelPackage excelPackage = new(fileInfo);
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
             var val = worksheet0.Name == "1.0"
                       && Convert.ToString(worksheet0.Cells["A3"].Value)
@@ -868,16 +869,29 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                           or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ";
             if (!val)
             {
-                await ShowMessage.Handle(new List<string>
-                {
-                    "Не соответствует формат данных!", "Формат данных", "Ок"
-                });
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions = new[]
+                        {
+                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                        },
+                        ContentTitle = "Импорт из Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            $"Не удалось импортировать данные из {fileInfo.FullName}." +
+                            $"{Environment.NewLine}Не соответствует формат данных!",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
                 continue;
             }
 
             var timeCreate = new List<string>()
             {
-                excelPackage.File.CreationTime.Day.ToString(), excelPackage.File.CreationTime.Month.ToString(),
+                excelPackage.File.CreationTime.Day.ToString(),
+                excelPackage.File.CreationTime.Month.ToString(),
                 excelPackage.File.CreationTime.Year.ToString()
             };
             if (timeCreate[0].Length == 1)
@@ -890,19 +904,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 timeCreate[1] = $"0{timeCreate[1]}";
             }
 
-            var newRepsFromExcel = await CheckReps(worksheet0);
+            var baseReps = await CheckReps(worksheet0);
             var worksheet1 = excelPackage.Workbook.Worksheets[1];
             var param1 = worksheet1.Name;
-            var repFromEx = new Report
+            var impRep = new Report
             {
                 FormNum_DB = param1,
                 ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}"
             };
             if (param1.Split('.')[0] == "1")
             {
-                repFromEx.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Text).Replace("/", ".");
-                repFromEx.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Text).Replace("/", ".");
-                repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G5"].Value);
+                impRep.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Text).Replace("/", ".");
+                impRep.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Text).Replace("/", ".");
+                impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G5"].Value);
             }
             else
             {
@@ -910,71 +924,72 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     case "2.6":
                     {
-                        repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        repFromEx.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                        repFromEx.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                        impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
                         break;
                     }
                     case "2.7":
                     {
-                        repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
-                        repFromEx.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
-                        repFromEx.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
-                        repFromEx.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
-                        repFromEx.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        repFromEx.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
+                        impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                        impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+                        impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
+                        impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
                         break;
                     }
                     case "2.8":
                     {
-                        repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
-                        repFromEx.PermissionNumber_28_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
-                        repFromEx.ValidBegin_28_DB = Convert.ToString(worksheet1.Cells["K4"].Value);
-                        repFromEx.ValidThru_28_DB = Convert.ToString(worksheet1.Cells["N4"].Value);
-                        repFromEx.PermissionDocumentName_28_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
-                        repFromEx.PermissionNumber1_28_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        repFromEx.ValidBegin1_28_DB = Convert.ToString(worksheet1.Cells["K6"].Value);
-                        repFromEx.ValidThru1_28_DB = Convert.ToString(worksheet1.Cells["N6"].Value);
-                        repFromEx.PermissionDocumentName1_28_DB = Convert.ToString(worksheet1.Cells["G7"].Value);
-                        repFromEx.ContractNumber_28_DB = Convert.ToString(worksheet1.Cells["G8"].Value);
-                        repFromEx.ValidBegin2_28_DB = Convert.ToString(worksheet1.Cells["K8"].Value);
-                        repFromEx.ValidThru2_28_DB = Convert.ToString(worksheet1.Cells["N8"].Value);
-                        repFromEx.OrganisationReciever_28_DB = Convert.ToString(worksheet1.Cells["G9"].Value);
-                        repFromEx.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
-                        repFromEx.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
-                        repFromEx.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
-                        repFromEx.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                        repFromEx.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
+                        impRep.PermissionNumber_28_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                        impRep.ValidBegin_28_DB = Convert.ToString(worksheet1.Cells["K4"].Value);
+                        impRep.ValidThru_28_DB = Convert.ToString(worksheet1.Cells["N4"].Value);
+                        impRep.PermissionDocumentName_28_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+                        impRep.PermissionNumber1_28_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                        impRep.ValidBegin1_28_DB = Convert.ToString(worksheet1.Cells["K6"].Value);
+                        impRep.ValidThru1_28_DB = Convert.ToString(worksheet1.Cells["N6"].Value);
+                        impRep.PermissionDocumentName1_28_DB = Convert.ToString(worksheet1.Cells["G7"].Value);
+                        impRep.ContractNumber_28_DB = Convert.ToString(worksheet1.Cells["G8"].Value);
+                        impRep.ValidBegin2_28_DB = Convert.ToString(worksheet1.Cells["K8"].Value);
+                        impRep.ValidThru2_28_DB = Convert.ToString(worksheet1.Cells["N8"].Value);
+                        impRep.OrganisationReciever_28_DB = Convert.ToString(worksheet1.Cells["G9"].Value);
+                        impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
+                        impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
+                        impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
+                        impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
                         break;
                     }
                     default:
                     {
-                        repFromEx.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        repFromEx.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
+                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
                         break;
                     }
                 }
             }
 
-            repFromEx.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"D{worksheet1.Dimension.Rows - 1}"].Value);
-            repFromEx.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value);
-            repFromEx.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
-            repFromEx.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value);
+            impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"D{worksheet1.Dimension.Rows - 1}"].Value);
+            impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value);
+            impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
+            impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value);
             var start = param1 is "2.8"
                 ? 14
                 : 11;
             var end = $"A{start}";
-            while (worksheet1.Cells[end].Value != null &&
-                   worksheet1.Cells[end].Value.ToString().ToLower() != "примечание:")
+
+            var value = worksheet1.Cells[end].Value;
+            while (Convert.ToString(value)?.ToLower() != "примечание:")
             {
-                await GetDataFromRow(param1, worksheet1, start, repFromEx);
+                await GetDataFromRow(param1, worksheet1, start, impRep);
                 start++;
                 end = $"A{start}";
             }
 
-            if (worksheet1.Cells[end].Value == null)
+            if (value is null)
                 start += 3;
-            else if (worksheet1.Cells[end].Value.ToString().ToLower() == "примечание:")
+            else if (Convert.ToString(value)?.ToLower() == "примечание:")
                 start += 2;
             while (worksheet1.Cells[$"A{start}"].Value != null ||
                    worksheet1.Cells[$"B{start}"].Value != null ||
@@ -982,379 +997,35 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 Note newNote = new();
                 newNote.ExcelGetRow(worksheet1, start);
-                repFromEx.Notes.Add(newNote);
+                impRep.Notes.Add(newNote);
                 start++;
             }
 
-            if (newRepsFromExcel.Report_Collection.Count != 0)
+            skipNewOrg = false;
+            skipInter = false;
+            skipLess = false;
+            skipNew = false;
+            skipReplace = false;
+            hasMultipleReport = answer.Length > 1;
+            if (baseReps.Report_Collection.Count != 0)
             {
                 switch (worksheet0.Name)
                 {
                     case "1.0":
                     {
-                        var notIn = false;
-                        var skipLess = false;
-                        var skipNew = false;
-                        var _skipNew = false;
-                        var skipInter = false;
-                        foreach (var key in newRepsFromExcel.Report_Collection)
-                        {
-                            var rep = (Report)key;
-                            var stElem = DateTimeOffset.Now;
-                            var enElem = DateTimeOffset.Now;
-
-                            try
-                            {
-                                stElem = DateTime.Parse(rep.StartPeriod_DB) > DateTime.Parse(rep.EndPeriod_DB)
-                                    ? DateTime.Parse(rep.EndPeriod_DB)
-                                    : DateTime.Parse(rep.StartPeriod_DB);
-                                enElem = DateTime.Parse(rep.StartPeriod_DB) < DateTime.Parse(rep.EndPeriod_DB)
-                                    ? DateTime.Parse(rep.EndPeriod_DB)
-                                    : DateTime.Parse(rep.StartPeriod_DB);
-                            }
-                            catch (Exception)
-                            {
-                                // ignored
-                            }
-
-                            var stIt = DateTimeOffset.Now;
-                            var enIt = DateTimeOffset.Now;
-                            try
-                            {
-                                stIt = DateTime.Parse(repFromEx.StartPeriod_DB) > DateTime.Parse(repFromEx.EndPeriod_DB)
-                                    ? DateTime.Parse(repFromEx.EndPeriod_DB)
-                                    : DateTime.Parse(repFromEx.StartPeriod_DB);
-                                enIt = DateTime.Parse(repFromEx.StartPeriod_DB) < DateTime.Parse(repFromEx.EndPeriod_DB)
-                                    ? DateTime.Parse(repFromEx.EndPeriod_DB)
-                                    : DateTime.Parse(repFromEx.StartPeriod_DB);
-                            }
-                            catch (Exception)
-                            {
-                                // ignored
-                            }
-
-                            if (stElem == stIt && enElem == enIt && repFromEx.FormNum_DB == rep.FormNum_DB)
-                            {
-                                notIn = true;
-                                if (repFromEx.CorrectionNumber_DB < rep.CorrectionNumber_DB)
-                                {
-                                    if (!skipLess)
-                                    {
-                                        var str =
-                                            $" Вы пытаетесь загрузить форму с наименьшим номером корректировки - {repFromEx.CorrectionNumber_DB}," +
-                                            $"{Environment.NewLine}при текущем значении корректировки - {rep.CorrectionNumber_DB}." +
-                                            $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                            $"{Environment.NewLine}Начало отчетного периода - {repFromEx.StartPeriod_DB}" +
-                                            $"{Environment.NewLine}Конец отчетного периода - {repFromEx.EndPeriod_DB}" +
-                                            $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                            $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                            $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                        var an = await ShowMessage.Handle(new List<string>
-                                            { str, "Отчет", "OK", "Пропустить для всех" });
-                                        if (an == "Пропустить для всех")
-                                        {
-                                            skipLess = true;
-                                        }
-                                    }
-                                }
-                                else if (repFromEx.CorrectionNumber_DB == rep.CorrectionNumber_DB)
-                                {
-                                    var str =
-                                        $"Совпадение даты в {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB} ." +
-                                        $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}{newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                    var an = await ShowMessage.Handle(new List<string>
-                                    {
-                                        str, "Отчет",
-                                        "Заменить",
-                                        "Дополнить",
-                                        "Сохранить оба",
-                                        "Отменить"
-                                    });
-                                    await ChechAanswer(an, newRepsFromExcel, rep, repFromEx);
-                                }
-                                else
-                                {
-                                    var an = "Загрузить новую";
-                                    if (!skipNew)
-                                    {
-                                        if (newRepsFromExcel.Report_Collection.Count > 1)
-                                        {
-                                            var str =
-                                                "Загрузить новую форму?" +
-                                                $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                                $"{Environment.NewLine}Начало отчетного периода - {repFromEx.StartPeriod_DB}" +
-                                                $"{Environment.NewLine}Конец отчетного периода - {repFromEx.EndPeriod_DB}" +
-                                                $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                                $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                                $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                                $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                                $"{Environment.NewLine}Форма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена." +
-                                                $"{Environment.NewLine}Сделайте резервную копию." +
-                                                $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                            an = await ShowMessage.Handle(new List<string>
-                                            {
-                                                str, "Отчет",
-                                                "Загрузить новую",
-                                                "Отмена",
-                                                "Загрузить для все"
-                                            });
-                                            if (an == "Загрузить для всех") skipNew = true;
-                                            an = "Загрузить новую";
-                                        }
-                                        else
-                                        {
-                                            var str =
-                                                "Загрузить новую форму?" +
-                                                $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                                $"{Environment.NewLine}Начало отчетного периода - {repFromEx.StartPeriod_DB}" +
-                                                $"{Environment.NewLine}Конец отчетного периода - {repFromEx.EndPeriod_DB}" +
-                                                $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                                $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                                $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                                $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                                $"{Environment.NewLine}Форма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена." +
-                                                $"{Environment.NewLine}Сделайте резервную копию." +
-                                                $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                            an = await ShowMessage.Handle(new List<string>
-                                            {
-                                                str, "Отчет",
-                                                "Загрузить новую",
-                                                "Отмена"
-                                            });
-                                        }
-                                    }
-
-                                    await ChechAanswer(an, newRepsFromExcel, rep, repFromEx);
-                                }
-                            }
-
-                            if ((stElem > stIt && stElem < enIt || enElem > stIt && enElem < enIt) &&
-                                repFromEx.FormNum.Value == rep.FormNum.Value)
-                            {
-                                notIn = true;
-                                var an = "Отменить";
-                                if (!skipInter)
-                                {
-                                    var str =
-                                        $"Пересечение даты в форме {rep.FormNum_DB} импортируемого отчета ({repFromEx.StartPeriod_DB}-{repFromEx.EndPeriod_DB})"
-                                        + $"{Environment.NewLine}с имеющимся в базе отчетом ({rep.StartPeriod_DB}-{rep.EndPeriod_DB})"
-                                        + $"{Environment.NewLine}у организации рег. номер {newRepsFromExcel.Master.RegNoRep.Value} {newRepsFromExcel.Master.ShortJurLicoRep.Value} ОКПО {newRepsFromExcel.Master.OkpoRep.Value}"
-                                        + $"{Environment.NewLine}Количество строк в импортируемом отчете - {repFromEx.Rows.Count}";
-                                    an = await ShowMessage.Handle(new List<string>
-                                        { str, "Отчет", "Сохранить оба", "Отменить" });
-                                    skipInter = true;
-                                }
-
-                                await ChechAanswer(an, newRepsFromExcel, null, repFromEx);
-                            }
-                        }
-
-                        if (!notIn)
-                        {
-                            var an = "Да";
-                            if (!_skipNew)
-                            {
-                                if (newRepsFromExcel.Report_Collection.Count > 1)
-                                {
-                                    var str =
-                                        "Загрузить новую форму?" +
-                                        $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Начало отчетного периода - {repFromEx.StartPeriod_DB}" +
-                                        $"{Environment.NewLine}Конец отчетного периода - {repFromEx.EndPeriod_DB}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                    an = await ShowMessage.Handle(new List<string>
-                                    {
-                                        str, "Отчет", "Да", "Нет", "Загрузить для всех"
-                                    });
-                                }
-                                else
-                                {
-                                    var str =
-                                        $"Загрузить новую форму?" +
-                                        $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Начало отчетного периода - {repFromEx.StartPeriod_DB}" +
-                                        $"{Environment.NewLine}Конец отчетного периода - {repFromEx.EndPeriod_DB}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                    an = await ShowMessage.Handle(new List<string>
-                                        { str, "Отчет", "Да", "Нет" });
-                                }
-                            }
-
-                            await ChechAanswer(an, newRepsFromExcel, null, repFromEx);
-                        }
-
+                        await ProcessIfHasReports11(baseReps, null, impRep);
                         break;
                     }
                     case "2.0":
                     {
-                        var notIn = false;
-                        var skipLess = false;
-                        var skipNew = false;
-                        var _skipNew = false;
-                        var skipInter = false;
-                        foreach (var key in newRepsFromExcel.Report_Collection)
-                        {
-                            var rep = (Report)key;
-                            if (rep.Year_DB != repFromEx.Year_DB || repFromEx.FormNum_DB != rep.FormNum_DB)
-                                continue;
-                            notIn = true;
-                            if (repFromEx.CorrectionNumber_DB < rep.CorrectionNumber_DB)
-                            {
-                                if (skipLess) continue;
-                                var str =
-                                    $"Вы пытаетесь загрузить форму с наименьшим номером корректировки - {repFromEx.CorrectionNumber_DB}," +
-                                    $"{Environment.NewLine}при текущем значении корректировки - {rep.CorrectionNumber_DB}." +
-                                    $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                    $"{Environment.NewLine}Отчетный год - {repFromEx.Year_DB}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                    $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                var an = await ShowMessage.Handle(new List<string>
-                                    { str, "Отчет", "OK", "Пропустить для всех" });
-                                if (an == "Пропустить для всех") skipLess = true;
-                            }
-                            else if (repFromEx.CorrectionNumber_DB == rep.CorrectionNumber_DB)
-                            {
-                                var str =
-                                    $"Совпадение даты в {rep.FormNum_DB} {rep.Year_DB} ." +
-                                    $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}{newRepsFromExcel.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}{newRepsFromExcel.Master.ShortJurLicoRep.Value} {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                var an = await ShowMessage.Handle(new List<string>
-                                {
-                                    str, "Отчет",
-                                    "Заменить",
-                                    "Сохранить оба",
-                                    "Отменить"
-                                });
-                                await ChechAanswer(an, newRepsFromExcel, rep, repFromEx);
-                            }
-                            else
-                            {
-                                var an = "Загрузить новую";
-                                if (!skipNew)
-                                {
-                                    if (newRepsFromExcel.Report_Collection.Count > 1)
-                                    {
-                                        var str =
-                                            "Загрузить новую форму?" +
-                                            $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                            $"{Environment.NewLine}Отчетный год - {repFromEx.Year_DB}" +
-                                            $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                            $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                            $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                            $"{Environment.NewLine}Форма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена." +
-                                            $"{Environment.NewLine}Сделайте резервную копию." +
-                                            $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                        an = await ShowMessage.Handle(new List<string>
-                                        {
-                                            str,
-                                            "Отчет",
-                                            "Загрузить новую",
-                                            "Отмена",
-                                            "Загрузить для всех"
-                                        });
-                                        if (an == "Загрузить для всех") skipNew = true;
-                                        an = "Загрузить новую";
-                                    }
-                                    else
-                                    {
-                                        var str =
-                                            "Загрузить новую форму?" +
-                                            $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                            $"{Environment.NewLine}Отчетный год - {repFromEx.Year_DB}" +
-                                            $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                            $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                            $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                            $"{Environment.NewLine}Форма с предыдущим номером корректировки №{rep.CorrectionNumber_DB} будет безвозвратно удалена." +
-                                            $"{Environment.NewLine}Сделайте резервную копию." +
-                                            $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                        an = await ShowMessage.Handle(new List<string>
-                                        {
-                                            str,
-                                            "Отчет",
-                                            "Загрузить новую",
-                                            "Отмена"
-                                        });
-                                    }
-                                }
-
-                                await ChechAanswer(an, newRepsFromExcel, rep, repFromEx);
-                            }
-                        }
-
-                        if (!notIn)
-                        {
-                            var an = "Да";
-                            if (!_skipNew)
-                            {
-                                if (newRepsFromExcel.Report_Collection.Count > 1)
-                                {
-                                    var str =
-                                        "Загрузить новую форму?" +
-                                        $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                        $"{Environment.NewLine}Отчетный год - {repFromEx.Year_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                    an = await ShowMessage.Handle(new List<string>
-                                    {
-                                        str, "Отчет",
-                                        "Да",
-                                        "Нет",
-                                        "Загрузить для всех"
-                                    });
-                                    if (an == "Загрузить для всех") _skipNew = true;
-                                    an = "Да";
-                                }
-                                else
-                                {
-                                    var str =
-                                        "Загрузить новую форму?" +
-                                        $"{Environment.NewLine}Номер формы - {repFromEx.FormNum_DB}" +
-                                        $"{Environment.NewLine}Отчетный год - {repFromEx.Year_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки -{repFromEx.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {newRepsFromExcel.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {newRepsFromExcel.Master.ShortJurLicoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {newRepsFromExcel.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Количество строк - {repFromEx.Rows.Count}";
-                                    an = await ShowMessage.Handle(new List<string>
-                                    {
-                                        str, "Отчет",
-                                        "Да",
-                                        "Нет"
-                                    });
-                                }
-                            }
-
-                            await ChechAanswer(an, newRepsFromExcel, null, repFromEx);
-                            notIn = false;
-                        }
-
+                        await ProcessIfHasReports21(baseReps, null, impRep);
                         break;
                     }
                 }
             }
             else
             {
-                newRepsFromExcel.Report_Collection.Add(repFromEx);
+                baseReps.Report_Collection.Add(impRep);
             }
 
             var dbm = StaticConfiguration.DBModel;
@@ -1644,13 +1315,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private async Task ProcessIfHasReports11(Reports baseReps, Reports impReps)
+    private async Task ProcessIfHasReports11(Reports baseReps, Reports? impReps = null, Report? impReport = null)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        
-        foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
+        var listImpRep = new List<Report>();
+        if (impReps != null)
         {
-            var impRep = (Report)key;
+            listImpRep.AddRange(impReps.Report_Collection);
+        }
+        if (impReport != null)
+        {
+            listImpRep.Add(impReport);
+        }
+        foreach (var impRep in listImpRep) //Для каждой импортируемой формы
+        {
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
             foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
@@ -1898,103 +1576,54 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 if (stBase < endImp && endBase > stImp && impRep.FormNum_DB == baseRep.FormNum_DB)
                 {
                     impInBase = true;
-                    if (impRep.CorrectionNumber_DB < baseRep.CorrectionNumber_DB)
-                    {
-                        if (skipLess || skipInter) break;
 
-                        #region MessageImportReportHasLowerCorrectionNumber
+                    if (skipInter) break;
 
-                        res = await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                ButtonDefinitions = new[]
-                                {
-                                    new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
-                                    new ButtonDefinition { Name = "Пропустить для всех" }
-                                },
-                                ContentTitle = "Импорт из .raodb",
-                                ContentHeader = "Уведомление",
-                                ContentMessage =
-                                    $"Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
-                                    $"{Environment.NewLine}с меньшим номером корректировки, чем у текущего отчета в базе." +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
-                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                    $"{Environment.NewLine}Начало периода отчета в базе - {baseRep.StartPeriod_DB}" +
-                                    $"{Environment.NewLine}Конец периода отчета в базе - {baseRep.EndPeriod_DB}" +
-                                    $"{Environment.NewLine}Начало периода импортируемого отчета - {impRep.StartPeriod_DB}" +
-                                    $"{Environment.NewLine}Конец периода импортируемого отчета - {impRep.EndPeriod_DB}" +
-                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
-                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
-                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRep.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета - {impRep.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}" +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
-                                    $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
+                    #region MessagePeriodsIntersect
 
-                        #endregion
-
-                        if (res is "Пропустить для всех") skipLess = true;
-                    }
-                    else
-                    {
-                        if (skipInter) break;
-
-                        #region MessagePeriodsIntersect
-
-                        res = await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                ButtonDefinitions = new[]
-                                {
-                                    new ButtonDefinition { Name = "Сохранить оба", IsDefault = true },
-                                    new ButtonDefinition { Name = "Отменить для всех пересечений" },
-                                    new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
-                                ContentHeader = "Уведомление",
-                                ContentMessage =
-                                    "Периоды импортируемого и имеющегося в базе отчетов пересекаются, но не совпадают." +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
-                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                    $"{Environment.NewLine}Начало периода отчета в базе - {baseRep.StartPeriod_DB}" +
-                                    $"{Environment.NewLine}Конец периода отчета в базе - {baseRep.EndPeriod_DB}" +
-                                    $"{Environment.NewLine}Начало периода импортируемого отчета - {impRep.StartPeriod_DB}" +
-                                    $"{Environment.NewLine}Конец периода импортируемого отчета - {impRep.EndPeriod_DB}" +
-                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
-                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
-                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRep.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета- {impRep.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(desktop.MainWindow);
-
-                        #endregion
-
-                        if (res is "Отменить для всех пересечений")
+                    res = await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            skipInter = true;
-                            break;
-                        }
+                            ButtonDefinitions = new[]
+                            {
+                                new ButtonDefinition { Name = "Сохранить оба", IsDefault = true },
+                                new ButtonDefinition { Name = "Отменить для всех пересечений" },
+                                new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                            },
+                            ContentTitle = "Импорт из .raodb",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Периоды импортируемого и имеющегося в базе отчетов пересекаются, но не совпадают." +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
+                                $"{Environment.NewLine}Начало периода отчета в базе - {baseRep.StartPeriod_DB}" +
+                                $"{Environment.NewLine}Конец периода отчета в базе - {baseRep.EndPeriod_DB}" +
+                                $"{Environment.NewLine}Начало периода импортируемого отчета - {impRep.StartPeriod_DB}" +
+                                $"{Environment.NewLine}Конец периода импортируемого отчета - {impRep.EndPeriod_DB}" +
+                                $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
+                                $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
+                                $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRep.CorrectionNumber_DB}" +
+                                $"{Environment.NewLine}Номер корректировки импортируемого отчета- {impRep.CorrectionNumber_DB}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
 
-                        if (res is "Отменить импорт формы") break;
+                    #endregion
+
+                    if (res is "Отменить для всех пересечений")
+                    {
+                        skipInter = true;
+                        break;
                     }
+
+                    if (res is "Отменить импорт формы") break;
 
                     await ChechAanswer(res, baseReps, null, impRep);
                     break;
@@ -2127,10 +1756,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
-    private async Task ProcessIfHasReports21(Reports baseReps, Reports impReps)
+    private async Task ProcessIfHasReports21(Reports baseReps, Reports? impReps = null, Report? impReport = null)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        foreach (var key in impReps.Report_Collection) //Для каждой импортируемой формы
+        var listImpRep = new List<Report>();
+        if (impReps != null)
+        {
+            listImpRep.AddRange(impReps.Report_Collection);
+        }
+        if (impReport != null)
+        {
+            listImpRep.Add(impReport);
+        }
+        foreach (var key in listImpRep) //Для каждой импортируемой формы
         {
             var impRep = (Report)key;
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
@@ -3036,53 +2674,85 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        SaveFileDialog dial = new();
-        var filter = new FileDialogFilter
-        {
-            Name = "Excel",
-            Extensions = { "xlsx" }
-        };
-        dial.Filters.Add(filter);
-        dial.InitialFileName = $"Аналитика - разрывы и пересечения в {GetRaoFileName().Result}";
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.Contains(".xlsx"))
-        {
-            path += ".xlsx";
-        }
+        #region MessageSaveOrOpenTemp
 
-        if (File.Exists(path))
-        {
-            try
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                File.Delete(path);
-            }
-            catch (Exception)
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        var path = "";
+        if (openTemp)
+        {
+            var tempFolder = GetSystemDirectory().Result.Concat("RAO").Concat("temp");
+        }
+        else
+        {
+            SaveFileDialog dial = new();
+            var filter = new FileDialogFilter
             {
-                #region MessageFailedToSaveFile
+                Name = "Excel",
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = $"Аналитика - разрывы и пересечения в {GetRaoFileName().Result}";
+            path = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(path)) return;
+            if (!path.Contains(".xlsx"))
+            {
+                path += ".xlsx";
+            }
 
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
+            if (File.Exists(path))
+            {
+                try
+                {
+                    File.Delete(path);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
 
-                #endregion
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {path}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
 
-                return;
+                    #endregion
+
+                    return;
+                }
             }
         }
+            
+            
+
+
+        
 
         using ExcelPackage excelPackage = new(new FileInfo(path));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -3261,7 +2931,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #region MessageExcelExportComplete
 
-        res = await MessageBox.Avalonia.MessageBoxManager
+        var res = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions = new[]
@@ -6592,36 +6262,37 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         worksheet.Cells[1, 1].Value = "Рег.№";
         worksheet.Cells[1, 2].Value = "Регион";
-        worksheet.Cells[1, 3].Value = "ОКПО";
-        worksheet.Cells[1, 4].Value = "Сокращенное наименование";
-        worksheet.Cells[1, 5].Value = "Адрес";
-        worksheet.Cells[1, 6].Value = "ИНН";
-        worksheet.Cells[1, 7].Value = "Форма 1.1";
-        worksheet.Cells[1, 8].Value = "Форма 1.2";
-        worksheet.Cells[1, 9].Value = "Форма 1.3";
-        worksheet.Cells[1, 10].Value = "Форма 1.4";
-        worksheet.Cells[1, 11].Value = "Форма 1.5";
-        worksheet.Cells[1, 12].Value = "Форма 1.6";
-        worksheet.Cells[1, 13].Value = "Форма 1.7";
-        worksheet.Cells[1, 14].Value = "Форма 1.8";
-        worksheet.Cells[1, 15].Value = "Форма 1.9";
-        worksheet.Cells[1, 16].Value = "Форма 2.1";
-        worksheet.Cells[1, 17].Value = "Форма 2.2";
-        worksheet.Cells[1, 18].Value = "Форма 2.3";
-        worksheet.Cells[1, 19].Value = "Форма 2.4";
-        worksheet.Cells[1, 20].Value = "Форма 2.5";
-        worksheet.Cells[1, 21].Value = "Форма 2.6";
-        worksheet.Cells[1, 22].Value = "Форма 2.7";
-        worksheet.Cells[1, 23].Value = "Форма 2.8";
-        worksheet.Cells[1, 24].Value = "Форма 2.9";
-        worksheet.Cells[1, 25].Value = "Форма 2.10";
-        worksheet.Cells[1, 26].Value = "Форма 2.11";
-        worksheet.Cells[1, 27].Value = "Форма 2.12";
+        worksheet.Cells[1, 3].Value = "Орган управления";
+        worksheet.Cells[1, 4].Value = "ОКПО";
+        worksheet.Cells[1, 5].Value = "Сокращенное наименование";
+        worksheet.Cells[1, 6].Value = "Адрес";
+        worksheet.Cells[1, 7].Value = "ИНН";
+        worksheet.Cells[1, 8].Value = "Форма 1.1";
+        worksheet.Cells[1, 9].Value = "Форма 1.2";
+        worksheet.Cells[1, 10].Value = "Форма 1.3";
+        worksheet.Cells[1, 11].Value = "Форма 1.4";
+        worksheet.Cells[1, 12].Value = "Форма 1.5";
+        worksheet.Cells[1, 13].Value = "Форма 1.6";
+        worksheet.Cells[1, 14].Value = "Форма 1.7";
+        worksheet.Cells[1, 15].Value = "Форма 1.8";
+        worksheet.Cells[1, 16].Value = "Форма 1.9";
+        worksheet.Cells[1, 17].Value = "Форма 2.1";
+        worksheet.Cells[1, 18].Value = "Форма 2.2";
+        worksheet.Cells[1, 19].Value = "Форма 2.3";
+        worksheet.Cells[1, 20].Value = "Форма 2.4";
+        worksheet.Cells[1, 21].Value = "Форма 2.5";
+        worksheet.Cells[1, 22].Value = "Форма 2.6";
+        worksheet.Cells[1, 23].Value = "Форма 2.7";
+        worksheet.Cells[1, 24].Value = "Форма 2.8";
+        worksheet.Cells[1, 25].Value = "Форма 2.9";
+        worksheet.Cells[1, 26].Value = "Форма 2.10";
+        worksheet.Cells[1, 27].Value = "Форма 2.11";
+        worksheet.Cells[1, 28].Value = "Форма 2.12";
 
         #endregion
 
-        worksheet.Column(4).AutoFit();
         worksheet.Column(5).AutoFit();
+        worksheet.Column(6).AutoFit();
 
         var lst = new List<Reports>();
         var checkedLst = new List<Reports>();
@@ -6640,68 +6311,68 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 #region BindingCells
 
-                worksheet.Cells[row, 7].Value =
-                    (int)worksheet.Cells[row, 7].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
                 worksheet.Cells[row, 8].Value =
                     (int)worksheet.Cells[row, 8].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
                 worksheet.Cells[row, 9].Value =
                     (int)worksheet.Cells[row, 9].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
                 worksheet.Cells[row, 10].Value =
                     (int)worksheet.Cells[row, 10].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
                 worksheet.Cells[row, 11].Value =
                     (int)worksheet.Cells[row, 11].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
                 worksheet.Cells[row, 12].Value =
                     (int)worksheet.Cells[row, 12].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
                 worksheet.Cells[row, 13].Value =
                     (int)worksheet.Cells[row, 13].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
                 worksheet.Cells[row, 14].Value =
                     (int)worksheet.Cells[row, 14].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
                 worksheet.Cells[row, 15].Value =
                     (int)worksheet.Cells[row, 15].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
                 worksheet.Cells[row, 16].Value =
                     (int)worksheet.Cells[row, 16].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
                 worksheet.Cells[row, 17].Value =
                     (int)worksheet.Cells[row, 17].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
                 worksheet.Cells[row, 18].Value =
                     (int)worksheet.Cells[row, 18].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
                 worksheet.Cells[row, 19].Value =
                     (int)worksheet.Cells[row, 19].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
                 worksheet.Cells[row, 20].Value =
                     (int)worksheet.Cells[row, 20].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
                 worksheet.Cells[row, 21].Value =
                     (int)worksheet.Cells[row, 21].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
                 worksheet.Cells[row, 22].Value =
                     (int)worksheet.Cells[row, 22].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
                 worksheet.Cells[row, 23].Value =
                     (int)worksheet.Cells[row, 23].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
                 worksheet.Cells[row, 24].Value =
                     (int)worksheet.Cells[row, 24].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
                 worksheet.Cells[row, 25].Value =
                     (int)worksheet.Cells[row, 25].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
                 worksheet.Cells[row, 26].Value =
                     (int)worksheet.Cells[row, 26].Value
-                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
                 worksheet.Cells[row, 27].Value =
                     (int)worksheet.Cells[row, 27].Value
+                    + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
+                worksheet.Cells[row, 28].Value =
+                    (int)worksheet.Cells[row, 28].Value
                     + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.12"));
 
                 #endregion
@@ -6750,51 +6421,60 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2
                     ? reps.Master.RegNoRep.Value[..2]
                     : reps.Master.RegNoRep.Value;
-                worksheet.Cells[row, 3].Value = reps.Master.OkpoRep.Value;
-                worksheet.Cells[row, 4].Value = reps.Master.ShortJurLicoRep.Value;
-                worksheet.Cells[row, 5].Value = address;
-                worksheet.Cells[row, 6].Value = inn;
-                worksheet.Cells[row, 7].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.1"));
+                worksheet.Cells[row, 3].Value = !string.IsNullOrEmpty(reps.Master.Rows10[0].OrganUprav_DB)
+                    ? reps.Master.Rows10[0].OrganUprav_DB
+                    : !string.IsNullOrEmpty(reps.Master.Rows10[1].OrganUprav_DB)
+                        ? reps.Master.Rows10[1].OrganUprav_DB
+                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].OrganUprav_DB)
+                            ? reps.Master.Rows20[0].OrganUprav_DB
+                            : !string.IsNullOrEmpty(reps.Master.Rows20[0].OrganUprav_DB)
+                                ? reps.Master.Rows20[1].OrganUprav_DB
+                                : "";
+                worksheet.Cells[row, 4].Value = reps.Master.OkpoRep.Value;
+                worksheet.Cells[row, 5].Value = reps.Master.ShortJurLicoRep.Value;
+                worksheet.Cells[row, 6].Value = address;
+                worksheet.Cells[row, 7].Value = inn;
                 worksheet.Cells[row, 8].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.2"));
+                    .Count(x => x.FormNum_DB.Equals("1.1"));
                 worksheet.Cells[row, 9].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.3"));
+                    .Count(x => x.FormNum_DB.Equals("1.2"));
                 worksheet.Cells[row, 10].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.4"));
+                    .Count(x => x.FormNum_DB.Equals("1.3"));
                 worksheet.Cells[row, 11].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.5"));
+                    .Count(x => x.FormNum_DB.Equals("1.4"));
                 worksheet.Cells[row, 12].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.6"));
+                    .Count(x => x.FormNum_DB.Equals("1.5"));
                 worksheet.Cells[row, 13].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.7"));
+                    .Count(x => x.FormNum_DB.Equals("1.6"));
                 worksheet.Cells[row, 14].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.8"));
+                    .Count(x => x.FormNum_DB.Equals("1.7"));
                 worksheet.Cells[row, 15].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("1.9"));
+                    .Count(x => x.FormNum_DB.Equals("1.8"));
                 worksheet.Cells[row, 16].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.1"));
+                    .Count(x => x.FormNum_DB.Equals("1.9"));
                 worksheet.Cells[row, 17].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.2"));
+                    .Count(x => x.FormNum_DB.Equals("2.1"));
                 worksheet.Cells[row, 18].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.3"));
+                    .Count(x => x.FormNum_DB.Equals("2.2"));
                 worksheet.Cells[row, 19].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.4"));
+                    .Count(x => x.FormNum_DB.Equals("2.3"));
                 worksheet.Cells[row, 20].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.5"));
+                    .Count(x => x.FormNum_DB.Equals("2.4"));
                 worksheet.Cells[row, 21].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.6"));
+                    .Count(x => x.FormNum_DB.Equals("2.5"));
                 worksheet.Cells[row, 22].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.7"));
+                    .Count(x => x.FormNum_DB.Equals("2.6"));
                 worksheet.Cells[row, 23].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.8"));
+                    .Count(x => x.FormNum_DB.Equals("2.7"));
                 worksheet.Cells[row, 24].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.9"));
+                    .Count(x => x.FormNum_DB.Equals("2.8"));
                 worksheet.Cells[row, 25].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.10"));
+                    .Count(x => x.FormNum_DB.Equals("2.9"));
                 worksheet.Cells[row, 26].Value = reps.Report_Collection
-                    .Count(x => x.FormNum_DB.Equals("2.11"));
+                    .Count(x => x.FormNum_DB.Equals("2.10"));
                 worksheet.Cells[row, 27].Value = reps.Report_Collection
+                    .Count(x => x.FormNum_DB.Equals("2.11"));
+                worksheet.Cells[row, 28].Value = reps.Report_Collection
                     .Count(x => x.FormNum_DB.Equals("2.12"));
 
                 #endregion
