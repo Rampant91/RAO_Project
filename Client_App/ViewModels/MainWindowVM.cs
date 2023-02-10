@@ -6428,7 +6428,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ? reps.Master.Rows10[1].OrganUprav_DB
                         : !string.IsNullOrEmpty(reps.Master.Rows20[0].OrganUprav_DB)
                             ? reps.Master.Rows20[0].OrganUprav_DB
-                            : !string.IsNullOrEmpty(reps.Master.Rows20[0].OrganUprav_DB)
+                            : !string.IsNullOrEmpty(reps.Master.Rows20[1].OrganUprav_DB)
                                 ? reps.Master.Rows20[1].OrganUprav_DB
                                 : "";
                 worksheet.Cells[row, 4].Value = reps.Master.OkpoRep.Value;
