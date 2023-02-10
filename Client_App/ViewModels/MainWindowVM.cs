@@ -6291,6 +6291,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #endregion
 
+        worksheet.Column(3).AutoFit();
         worksheet.Column(5).AutoFit();
         worksheet.Column(6).AutoFit();
 
@@ -6486,7 +6487,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
         {
-            if (worksheet.Cells[1, col].Value is "Сокращенное наименование" or "Адрес") continue;
+            if (worksheet.Cells[1, col].Value is "Сокращенное наименование" or "Адрес" or "Орган управления") continue;
             worksheet.Column(col).AutoFit();
         }
 
