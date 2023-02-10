@@ -6382,40 +6382,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
             else
             {
-                var inn = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB)
-                    ? reps.Master.Rows10[0].Inn_DB
-                    : !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB)
-                        ? reps.Master.Rows10[1].Inn_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB)
-                            ? reps.Master.Rows20[0].Inn_DB
-                            : reps.Master.Rows20[1].Inn_DB;
-                var address =
-                    !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) &&
-                    !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-")
-                        ? reps.Master.Rows10[1].JurLicoFactAddress_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) &&
-                          !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-")
-                            ? reps.Master.Rows20[1].JurLicoFactAddress_DB
-                            : !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) &&
-                              !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-")
-                                ? reps.Master.Rows10[1].JurLicoAddress_DB
-                                : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) &&
-                                  !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-")
-                                    ? reps.Master.Rows20[1].JurLicoAddress_DB
-                                    : !string.IsNullOrEmpty(reps.Master.Rows10[0]
-                                          .JurLicoFactAddress_DB) &&
-                                      !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-")
-                                        ? reps.Master.Rows10[0].JurLicoFactAddress_DB
-                                        : !string.IsNullOrEmpty(reps.Master.Rows20[0]
-                                              .JurLicoFactAddress_DB) &&
-                                          !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-")
-                                            ? reps.Master.Rows20[0].JurLicoFactAddress_DB
-                                            : !string.IsNullOrEmpty(reps.Master.Rows10[0]
-                                                  .JurLicoAddress_DB) &&
-                                              !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-")
-                                                ? reps.Master.Rows10[0].JurLicoAddress_DB
-                                                : reps.Master.Rows20[0].JurLicoAddress_DB;
-
                 #region BindingCells
 
                 worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
@@ -6433,8 +6399,36 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 : "";
                 worksheet.Cells[row, 4].Value = reps.Master.OkpoRep.Value;
                 worksheet.Cells[row, 5].Value = reps.Master.ShortJurLicoRep.Value;
-                worksheet.Cells[row, 6].Value = address;
-                worksheet.Cells[row, 7].Value = inn;
+                worksheet.Cells[row, 6].Value = 
+                    !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) &&
+                    !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-")
+                        ? reps.Master.Rows10[1].JurLicoFactAddress_DB
+                        : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) &&
+                          !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-")
+                            ? reps.Master.Rows20[1].JurLicoFactAddress_DB
+                            : !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) &&
+                              !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-")
+                                ? reps.Master.Rows10[1].JurLicoAddress_DB
+                                : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) &&
+                                  !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-")
+                                    ? reps.Master.Rows20[1].JurLicoAddress_DB
+                                    : !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) &&
+                                      !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-")
+                                        ? reps.Master.Rows10[0].JurLicoFactAddress_DB
+                                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) &&
+                                          !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-")
+                                            ? reps.Master.Rows20[0].JurLicoFactAddress_DB
+                                            : !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) &&
+                                              !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-")
+                                                ? reps.Master.Rows10[0].JurLicoAddress_DB
+                                                : reps.Master.Rows20[0].JurLicoAddress_DB;
+                worksheet.Cells[row, 7].Value = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB)
+                    ? reps.Master.Rows10[0].Inn_DB
+                    : !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB)
+                        ? reps.Master.Rows10[1].Inn_DB
+                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB)
+                            ? reps.Master.Rows20[0].Inn_DB
+                            : reps.Master.Rows20[1].Inn_DB;
                 worksheet.Cells[row, 8].Value = reps.Report_Collection
                     .Count(x => x.FormNum_DB.Equals("1.1"));
                 worksheet.Cells[row, 9].Value = reps.Report_Collection
