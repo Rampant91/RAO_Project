@@ -394,7 +394,7 @@ public abstract class Form1 : Form
 
     public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        NumberInOrder_DB = int.TryParse(worksheet.Cells[row, 1].Value.ToString(), out var intValue)
+        NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
             ? intValue
             : 0;
         OperationCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value);

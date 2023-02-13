@@ -980,16 +980,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var end = $"A{start}";
 
             var value = worksheet1.Cells[end].Value;
-            while (Convert.ToString(value)?.ToLower() != "примечание:")
+            while (value != null && Convert.ToString(value)?.ToLower() is not ("примечание:" or "примечания:"))
             {
                 await GetDataFromRow(param1, worksheet1, start, impRep);
                 start++;
                 end = $"A{start}";
+                value = worksheet1.Cells[end].Value;
             }
 
             if (value is null)
                 start += 3;
-            else if (Convert.ToString(value)?.ToLower() == "примечание:")
+            else if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
                 start += 2;
             while (worksheet1.Cells[$"A{start}"].Value != null ||
                    worksheet1.Cells[$"B{start}"].Value != null ||

@@ -68,7 +68,7 @@ public abstract class Form2 : Form
 
     public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        NumberInOrder_DB = int.TryParse(worksheet.Cells[row, 1].Value.ToString(), out var intValue)
+        NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
             ? intValue
             : 0;
     }
