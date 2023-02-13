@@ -1842,6 +1842,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             ButtonDefinitions = new[]
                             {
                                 new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                new ButtonDefinition { Name = "Дополнить" },
                                 new ButtonDefinition { Name = "Сохранить оба" },
                                 new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
                             },
