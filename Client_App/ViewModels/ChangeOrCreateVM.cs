@@ -982,8 +982,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         var param = _param as object[];
         var collection = param[0] as IKeyCollection;
+        var clipboard = Application.Current.Clipboard.GetTextAsync().Result;
         var minColumn = Convert.ToInt32(param[1]) + 1;
         var maxColumn = Convert.ToInt32(param[2]) + 1;
+        //if (!string.IsNullOrEmpty(clipboard) && minColumn == maxColumn)
+        //{
+        //    return;
+        //}
         if (minColumn == 1 && param[0] is Form1 or Form2)
         {
             minColumn++;
@@ -1000,7 +1005,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             var props = item.GetType().GetProperties();
             foreach (var prop in props)
             {
-                var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
+                var test = prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
+                var attr = (FormPropertyAttribute?)prop?.GetCustomAttributes(typeof(FormPropertyAttribute), false)?.FirstOrDefault();
                 if (attr == null) continue;
                 var newNum = attr.Names.Length > 1 && attr.Names[0] != "null-1-1"
                     ? Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol
@@ -1033,7 +1039,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
-                catch { }
+                catch
+                {
+                    //ignored
+                }
             }
         }
         foreach (var item in dic.OrderBy(x => x.Key))
@@ -1049,8 +1058,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     txt += $"{it.Value}\t";
                 }
             }
-            txt = txt.Remove(txt.Length - 1, 1);
-            txt += "\n";
+            txt = txt.Remove(txt.Length - 1, 1) + "\n";
         }
         txt = txt.Remove(txt.Length - 1, 1);
 
