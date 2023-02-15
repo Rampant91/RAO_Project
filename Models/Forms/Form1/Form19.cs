@@ -341,7 +341,7 @@ public class Form19 : Form1
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
-        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 14].Value), out var byteValue) ? byteValue : null;
+        DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out var byteValue) ? byteValue : null;
         DocumentNumber_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         DocumentDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 6].Text);
         CodeTypeAccObject_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 7].Value), out var shortValue) ? shortValue : null;

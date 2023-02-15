@@ -323,10 +323,10 @@ public class Form29 : Form2
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
-        WasteSourceName_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
-        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        AllowedActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 3].Value);
-        FactedActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
+        WasteSourceName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        AllowedActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
+        FactedActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)

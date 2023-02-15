@@ -677,15 +677,15 @@ public class Form25 : Form2
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
-        StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
-        StoragePlaceName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        CodeOYAT_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
-        FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
-        FuelMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
-        CellMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 7].Value), out var intValue) ? intValue : null;
-        AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
-        BetaGammaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
+        StoragePlaceCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        StoragePlaceName_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        CodeOYAT_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
+        FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
+        FuelMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
+        CellMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
+        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue) ? intValue : null;
+        AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
+        BetaGammaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
     }
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {

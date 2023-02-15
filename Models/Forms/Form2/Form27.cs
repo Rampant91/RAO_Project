@@ -433,11 +433,11 @@ public class Form27 : Form2
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
-        ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
-        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        AllowedWasteValue_DB = ConvertFromExcelDouble(worksheet.Cells[row, 3].Value);
-        FactedWasteValue_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
-        WasteOutbreakPreviousYear_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
+        ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        AllowedWasteValue_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
+        FactedWasteValue_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
+        WasteOutbreakPreviousYear_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)

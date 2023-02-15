@@ -420,12 +420,12 @@ public class Form28 : Form2
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
-        WasteSourceName_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
-        WasteRecieverName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        RecieverTypeCode_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
-        PoolDistrictName_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
-        AllowedWasteRemovalVolume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
-        RemovedWasteVolume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
+        WasteSourceName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        WasteRecieverName_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        RecieverTypeCode_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
+        PoolDistrictName_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
+        AllowedWasteRemovalVolume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
+        RemovedWasteVolume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true)

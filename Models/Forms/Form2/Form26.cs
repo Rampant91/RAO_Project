@@ -527,13 +527,13 @@ public class Form26 : Form2
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
-        ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
-        ControlledAreaName_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        SupposedWasteSource_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
-        DistanceToWasteSource_DB = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
-        TestDepth_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
-        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
-        AverageYearConcentration_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
+        ObservedSourceNumber_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        ControlledAreaName_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        SupposedWasteSource_DB = Convert.ToString(worksheet.Cells[row, 4].Value);
+        DistanceToWasteSource_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
+        TestDepth_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
+        RadionuclidName_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
+        AverageYearConcentration_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
 
     }
 
