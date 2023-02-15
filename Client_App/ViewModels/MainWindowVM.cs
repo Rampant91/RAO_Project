@@ -906,13 +906,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
             var baseReps = await CheckReps(worksheet0);
             var worksheet1 = excelPackage.Workbook.Worksheets[1];
-            var param1 = worksheet1.Name;
+            var repNumber = worksheet0.Name;
+            var formNumber = worksheet1.Name;
             var impRep = new Report
             {
-                FormNum_DB = param1,
+                FormNum_DB = formNumber,
                 ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}"
             };
-            if (param1.Split('.')[0] == "1")
+            if (formNumber.Split('.')[0] == "1")
             {
                 impRep.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Text).Replace("/", ".");
                 impRep.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Text).Replace("/", ".");
@@ -920,7 +921,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
             else
             {
-                switch (param1)
+                switch (formNumber)
                 {
                     case "2.6":
                     {
@@ -974,7 +975,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value);
             impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
             impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value);
-            var start = param1 is "2.8"
+            var start = formNumber is "2.8"
                 ? 14
                 : 11;
             var end = $"A{start}";
@@ -982,7 +983,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var value = worksheet1.Cells[end].Value;
             while (value != null && Convert.ToString(value)?.ToLower() is not ("примечание:" or "примечания:"))
             {
-                await GetDataFromRow(param1, worksheet1, start, impRep);
+                await GetDataFromRow(formNumber, worksheet1, start, impRep);
                 start++;
                 end = $"A{start}";
                 value = worksheet1.Cells[end].Value;
@@ -1026,7 +1027,80 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
             else
             {
-                baseReps.Report_Collection.Add(impRep);
+                #region AddNewOrg
+
+                var an = "Добавить";
+                if (!skipNewOrg)
+                {
+                    if (answer.Length > 1)
+                    {
+                        #region MessageNewOrg
+
+                        an = await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions = new[]
+                                {
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Да для всех" },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                },
+                                ContentTitle = "Импорт из .raodb",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {impRep.FormNum_DB}." +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                    $"{Environment.NewLine}" +
+
+                                    $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                    $"{Environment.NewLine}импортировать все новые организации.",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+
+                        #endregion
+
+                        if (an is "Да для всех") skipNewOrg = true;
+                    }
+                    else
+                    {
+                        #region MessageNewOrg
+
+                        an = await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions = new[]
+                                {
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                },
+                                ContentTitle = "Импорт из .raodb",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    $"Будет добавлена новая организация ({repNumber})." +
+                                    $"{Environment.NewLine}",
+                                    //$"{Environment.NewLine}Регистрационный номер - {impRep.Master.RegNoRep.Value}" +
+                                    //$"{Environment.NewLine}Сокращенное наименование - {impRep.Master.ShortJurLicoRep.Value}" +
+                                    //$"{Environment.NewLine}ОКПО - {impRep.Master.OkpoRep.Value}",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+
+                        #endregion
+                    }
+                }
+
+                if (an is "Добавить" or "Да для всех")
+                {
+                    baseReps.Report_Collection.Add(impRep);
+                }
+
+                #endregion
             }
 
             var dbm = StaticConfiguration.DBModel;
@@ -1969,39 +2043,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 #endregion
             }
-
-            #region AddEmptyOrgThatAlreadyExist
-
-            if (impReps.Report_Collection.Count == 0)
-            {
-                impInBase = true;
-
-                #region MessageNewReport
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        ButtonDefinitions = new[]
-                        {
-                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
-                        },
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Уведомление",
-                        ContentMessage =
-                            "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
-                            $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-            }
-
-            #endregion
 
             if (impInBase) continue;
 
