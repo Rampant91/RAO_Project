@@ -2044,6 +2044,39 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 #endregion
             }
 
+            #region TryAddEmptyOrg
+
+            if (impReps?.Report_Collection.Count == 0)
+            {
+                impInBase = true;
+
+                #region MessageNewReport
+
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions = new[]
+                        {
+                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                        },
+                        ContentTitle = "Импорт из .raodb",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(desktop.MainWindow);
+
+                #endregion
+            }
+
+            #endregion
+
             if (impInBase) continue;
 
             #region AddNewForm
