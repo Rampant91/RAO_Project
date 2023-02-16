@@ -22,8 +22,8 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Collections;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
@@ -32,7 +32,6 @@ using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Path = System.IO.Path;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 
 namespace Client_App.ViewModels;
 
@@ -1008,19 +1007,19 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 byte newNum;
                 if (attr.Names.Length <= 1 || attr.Names[0] == "null-1-1")
                 {
-                    byte.TryParse(attr.Number, out newNum);
+                    _ = byte.TryParse(attr.Number, out newNum);
                 }
                 else
                 {
                     switch (attr.Names.Length)
                     {
                         case 3:
-                            byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
+                            _ = byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
                                 ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])
                                 ?.innertCol[0].name, out newNum);
                             break;
                         case 4:
-                            byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
+                            _ = byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
                                 ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])
                                 ?.innertCol.FirstOrDefault(x => x.name == attr.Names[2])
                                 ?.innertCol[0].name, out newNum);
@@ -1078,15 +1077,33 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1) + "\n";
         }
         textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1);
-        var currentClipboard = Application.Current.Clipboard.GetTextAsync().Result;
-        if (minColumn == maxColumn && !string.IsNullOrEmpty(currentClipboard) && textInSelectedCells.Contains(currentClipboard) )
-        {
-            return;
-        }
         if (Application.Current.Clipboard is { } clip)
         {
-            await clip.ClearAsync();
-            await clip.SetTextAsync(textInSelectedCells);
+            var currentClipboard = "";
+            if (await clip.GetTextAsync() is not null)  //GetTextAsync под Linux может выдавать null
+            {
+                currentClipboard = await clip.GetTextAsync();
+            }
+            if (minColumn == maxColumn && !string.IsNullOrEmpty(currentClipboard) && textInSelectedCells.Contains(currentClipboard))
+            {
+                return;
+            }
+            if (OperatingSystem.IsWindows())
+            {
+                var thread = new Thread(() =>
+                {
+                    clip.ClearAsync();
+                    clip.SetTextAsync(textInSelectedCells);
+                });
+                thread.SetApartmentState(ApartmentState.STA); //Set the thread to STA
+                thread.Start();
+                thread.Join();
+            }
+            else
+            {
+                await clip.ClearAsync();
+                await clip.SetTextAsync(textInSelectedCells);
+            }
         }
     }
     #endregion
