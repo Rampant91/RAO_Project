@@ -980,20 +980,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> CopyRows { get; protected set; }
     private async Task _CopyRows(object _param)
     {
-        var param = _param as object[];
-        var collection = param[0] as IKeyCollection;
-        var clipboard = Application.Current.Clipboard.GetTextAsync().Result;
+        if (_param is not object[] param || param[0] is not IKeyCollection collection) return;
         var minColumn = Convert.ToInt32(param[1]) + 1;
         var maxColumn = Convert.ToInt32(param[2]) + 1;
-        //if (!string.IsNullOrEmpty(clipboard) && minColumn == maxColumn)
-        //{
-        //    return;
-        //}
         if (minColumn == 1 && param[0] is Form1 or Form2)
         {
             minColumn++;
         }
-        var txt = "";
         Dictionary<long, Dictionary<int, string>> dic = new();
         foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
         {
@@ -1002,17 +995,40 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             var findStructure = dStructure.GetColumnStructure();
             var level = findStructure.Level;
             var tre = findStructure.GetLevel(level - 1);
-            var props = item.GetType().GetProperties();
+            var props = item
+                .GetType()
+                .GetProperties()
+                .Where(x => x.CustomAttributes
+                    .Any(y => y.AttributeType.Name is "FormPropertyAttribute"));
             foreach (var prop in props)
             {
-                var test = prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
                 var attr = (FormPropertyAttribute?)prop?.GetCustomAttributes(typeof(FormPropertyAttribute), false)?.FirstOrDefault();
                 if (attr == null) continue;
-                var newNum = attr.Names.Length > 1 && attr.Names[0] != "null-1-1"
-                    ? Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol
-                        .FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name)
-                    : Convert.ToInt32(attr.Number);
-                //var numAttr = Convert.ToInt32(attr.Number);
+
+                byte newNum;
+                if (attr.Names.Length <= 1 || attr.Names[0] == "null-1-1")
+                {
+                    byte.TryParse(attr.Number, out newNum);
+                }
+                else
+                {
+                    switch (attr.Names.Length)
+                    {
+                        case 3:
+                            byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
+                                ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])
+                                ?.innertCol[0].name, out newNum);
+                            break;
+                        case 4:
+                            byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
+                                ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])
+                                ?.innertCol.FirstOrDefault(x => x.name == attr.Names[2])
+                                ?.innertCol[0].name, out newNum);
+                            break;
+                        default:
+                            continue;
+                    }
+                }
                 try
                 {
                     if (newNum >= minColumn && newNum <= maxColumn)
@@ -1045,27 +1061,32 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        var textInSelectedCells = "";
         foreach (var item in dic.OrderBy(x => x.Key))
         {
             foreach (var it in item.Value.OrderBy(x => x.Key))
             {
                 if (it.Value.Contains('\n') || it.Value.Contains('\r'))
                 {
-                    txt += $"\"{it.Value}\"\t";
+                    textInSelectedCells += $"\"{it.Value}\"\t";
                 }
                 else
                 {
-                    txt += $"{it.Value}\t";
+                    textInSelectedCells += $"{it.Value}\t";
                 }
             }
-            txt = txt.Remove(txt.Length - 1, 1) + "\n";
+            textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1) + "\n";
         }
-        txt = txt.Remove(txt.Length - 1, 1);
-
+        textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1);
+        var currentClipboard = Application.Current.Clipboard.GetTextAsync().Result;
+        if (minColumn == maxColumn && !string.IsNullOrEmpty(currentClipboard) && textInSelectedCells.Contains(currentClipboard) )
+        {
+            return;
+        }
         if (Application.Current.Clipboard is { } clip)
         {
             await clip.ClearAsync();
-            await clip.SetTextAsync(txt);
+            await clip.SetTextAsync(textInSelectedCells);
         }
     }
     #endregion
