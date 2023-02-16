@@ -1080,6 +1080,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.Clipboard is { } clip)
         {
             var currentClipboard = "";
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (await clip.GetTextAsync() is not null)  //GetTextAsync под Linux может выдавать null
             {
                 currentClipboard = await clip.GetTextAsync();
@@ -2047,9 +2048,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var a = FormType.Replace(".", "");
         if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] is "1" or "2")
         {
-            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name}"
-                           + $"{Storages.Master_DB.RegNoRep.Value}"
-                           + $"{Storages.Master_DB.ShortJurLicoRep.Value}"
+            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
+                           + $"{Storages.Master_DB.RegNoRep.Value} "
+                           + $"{Storages.Master_DB.ShortJurLicoRep.Value} "
                            + $"{Storages.Master_DB.OkpoRep.Value}";
         }
         else if (FormType is "1.0" or "2.0")

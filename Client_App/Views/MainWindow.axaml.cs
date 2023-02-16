@@ -127,6 +127,16 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             ContextMenuText = new[] { "Редактировать форму" },
             Command = dataContext.ChangeReport
         });
+
+        grd1.CommandsList.Add(new KeyCommand
+        {
+            IsDoubleTappedCommand = false,
+            IsContextMenuCommand = true,
+            ParamName = "SelectedItems",
+            ContextMenuText = new[] { "Выгрузить организацию" },
+            Command = dataContext.ExportForm
+        });
+
         grd1.CommandsList.Add(new KeyCommand
         {
             Key = Avalonia.Input.Key.D,
