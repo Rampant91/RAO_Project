@@ -103,11 +103,13 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     }
     #endregion
 
-    #region ShowInit
+    #region ShowInit_Контекстное меню и не только
 
-    private static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, ViewModels.MainWindowVM dataContext)
+    private static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal,
+        ViewModels.MainWindowVM dataContext)
     {
-        #region Grd1
+        #region Grd1_Список организаций_Контекстное меню
+
         grd1.CommandsList.Add(new KeyCommand
         {
             Key = Avalonia.Input.Key.T,
@@ -134,7 +136,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Выгрузить организацию" },
-            Command = dataContext.ExportForm
+            Command = dataContext.ExportOrg
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -149,7 +151,8 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
         });
 
         #endregion
-        #region Grd2
+
+        #region Grd2_Список форм_Контекстное меню
         grd2.CommandsList.Add(new KeyCommand
         {
             IsDoubleTappedCommand = false,
@@ -206,6 +209,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
         });
         #endregion
     }
+
     private void ShowInit()
     {
         var dataContext = (ViewModels.MainWindowVM)DataContext;

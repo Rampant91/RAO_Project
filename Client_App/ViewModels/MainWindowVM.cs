@@ -239,6 +239,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportForm = ReactiveCommand.CreateFromTask(_ImportForm);
         ImportFrom = ReactiveCommand.CreateFromTask(_ImportFrom);
         ExportForm = ReactiveCommand.CreateFromTask<object>(_ExportForm);
+        ExportOrg = ReactiveCommand.CreateFromTask<object>(_ExportOrg);
         ChangeForm = ReactiveCommand.CreateFromTask<object>(_ChangeForm);
         ChangeReport = ReactiveCommand.CreateFromTask<object>(_ChangeReport);
         DeleteForm = ReactiveCommand.CreateFromTask<object>(_DeleteForm);
@@ -2514,6 +2515,258 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     Console.WriteLine(e);
                 }
             });
+        }
+    }
+
+    #endregion
+
+    #region ExportOrg
+
+    public ReactiveCommand<object, Unit> ExportOrg { get; private set; }
+
+    private async Task _ExportOrg(object par)
+    {
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+            || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
+        var obj = param.First();
+        OpenFolderDialog dial = new();
+        var res = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(res)) return;
+        //var dt = DateTime.Now;
+        //foreach (var item in param)
+        //{
+        //    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+        //}
+        //var filename = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+        var repsExp = (Reports)obj;
+        await StaticConfiguration.DBModel.SaveChangesAsync();
+        //var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{filename}_exp.raodb");
+        //await _getData(tmp, res, repsExp, desktop); //через такую отдельную async task работает без крашей, но интерфейс виснет
+
+        #region test
+        //var tsk = Task.Run(async () =>
+        //{
+        //    DBModel db = new(tmp);
+        //    try
+        //    {
+        //        await db.Database.MigrateAsync();
+        //        await db.ReportsCollectionDbSet.AddAsync(repsExp);
+        //        await db.SaveChangesAsync();
+
+        //        var filename2 = "";
+        //        switch (repsExp.Master_DB.FormNum_DB)
+        //        {
+        //            case "1.0":
+        //                filename2 += repsExp.Master.RegNoRep.Value;
+        //                filename2 += $"_{repsExp.Master.OkpoRep.Value}";
+        //                filename2 += $"_{repsExp.Master.FormNum_DB}";
+        //                filename2 += $"_{repsExp.Master.StartPeriod_DB}";
+        //                filename2 += $"_{repsExp.Master.EndPeriod_DB}";
+        //                filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
+        //                break;
+        //            case "2.0" when repsExp.Master.Rows20.Count > 0:
+        //                filename2 += repsExp.Master.RegNoRep.Value;
+        //                filename2 += $"_{repsExp.Master.OkpoRep.Value}";
+        //                filename2 += $"_{repsExp.Master.FormNum_DB}";
+        //                filename2 += $"_{repsExp.Master.Year_DB}";
+        //                filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
+        //                break;
+        //        }
+
+        //        res = Path.Combine(res, $"{filename2}.raodb");
+        //        if (File.Exists(res))
+        //        {
+        //            try
+        //            {
+        //                File.Delete(res);
+        //            }
+        //            catch (Exception)
+        //            {
+        //                #region MessageFailedToSaveFile
+
+        //                await MessageBox.Avalonia.MessageBoxManager
+        //                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        //                    {
+        //                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        //                        ContentTitle = "Выгрузка в Excel",
+        //                        ContentHeader = "Ошибка",
+        //                        ContentMessage =
+        //                            $"Не удалось сохранить файл по пути: {res}" +
+        //                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+        //                            $"{Environment.NewLine}и используется другим процессом.",
+        //                        MinWidth = 400,
+        //                        MinHeight = 150,
+        //                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+        //                    })
+        //                    .ShowDialog(desktop.MainWindow);
+
+        //                #endregion
+
+        //                return;
+        //            }
+        //        }
+
+        //        var t = db.Database.GetDbConnection() as FbConnection;
+        //        await t.CloseAsync();
+        //        await t.DisposeAsync();
+
+        //        await db.Database.CloseConnectionAsync();
+        //        await db.DisposeAsync();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+        //});
+        //await tsk.ContinueWith(async _ =>
+        //{
+        //    try
+        //    {
+        //        await using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        //        await using var outputFile = new FileStream(res, FileMode.Create);
+        //        var buffer = new byte[0x10000];
+        //        int bytes;
+        //        while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+        //        {
+        //            outputFile.Write(buffer, 0, bytes);
+        //        }
+        //        await MessageBox.Avalonia.MessageBoxManager
+        //            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        //            {
+        //                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        //                ContentTitle = "Выгрузка в Excel",
+        //                ContentHeader = "Ошибка",
+        //                ContentMessage =
+        //                    $"Экспорт закончен",
+        //                MinWidth = 400,
+        //                MinHeight = 150,
+        //                WindowStartupLocation = WindowStartupLocation.CenterScreen
+        //            })
+        //            .ShowDialog(desktop.MainWindow);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //    }
+        //}); 
+        #endregion
+
+    }
+
+    private async Task _getData(string? tmp, string res, Reports repsExp, IClassicDesktopStyleApplicationLifetime desktop)
+    {
+        DBModel db = new(tmp);
+        try
+        {
+            await db.Database.MigrateAsync();
+            await db.ReportsCollectionDbSet.AddAsync(repsExp);
+            await db.SaveChangesAsync();
+
+            var filename2 = "";
+            switch (repsExp.Master_DB.FormNum_DB)
+            {
+                case "1.0":
+                    filename2 += repsExp.Master.RegNoRep.Value;
+                    filename2 += $"_{repsExp.Master.OkpoRep.Value}";
+                    filename2 += $"_{repsExp.Master.FormNum_DB}";
+                    filename2 += $"_{repsExp.Master.StartPeriod_DB}";
+                    filename2 += $"_{repsExp.Master.EndPeriod_DB}";
+                    filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
+                    break;
+                case "2.0" when repsExp.Master.Rows20.Count > 0:
+                    filename2 += repsExp.Master.RegNoRep.Value;
+                    filename2 += $"_{repsExp.Master.OkpoRep.Value}";
+                    filename2 += $"_{repsExp.Master.FormNum_DB}";
+                    filename2 += $"_{repsExp.Master.Year_DB}";
+                    filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
+                    break;
+            }
+
+            res = Path.Combine(res, $"{filename2}.raodb");
+            if (File.Exists(res))
+            {
+                try
+                {
+                    File.Delete(res);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
+
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {res}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+
+                    #endregion
+
+                    return;
+                }
+            }
+
+            var t = db.Database.GetDbConnection() as FbConnection;
+            await t.CloseAsync();
+            await t.DisposeAsync();
+
+            await db.Database.CloseConnectionAsync();
+            await db.DisposeAsync();
+
+            await _createRAODB(tmp, res, repsExp, desktop);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async Task _createRAODB(string? tmp, string res, Reports repsExp, IClassicDesktopStyleApplicationLifetime desktop)
+    {
+        try
+        {
+            await using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            await using var outputFile = new FileStream(res, FileMode.Create);
+            var buffer = new byte[0x10000];
+            int bytes;
+            while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                outputFile.Write(buffer, 0, bytes);
+            }
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Файл экспорт организации, содержащей {repsExp.Report_Collection.Count} форм," +
+                        $"{Environment.NewLine}сохранен по пути:" +
+                        $"{Environment.NewLine}{res}" +
+                        $"{Environment.NewLine}" +
+                        $"{Environment.NewLine}Регистрационный номер - {repsExp.Master.RegNoRep.Value}" +
+                        $"{Environment.NewLine}Сокращенное наименование - {repsExp.Master.ShortJurLicoRep.Value}" +
+                        $"{Environment.NewLine}ОКПО - {repsExp.Master.OkpoRep.Value}",
+                    MinWidth = 400,
+                    MinHeight = 300,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                })
+                .ShowDialog(desktop.MainWindow);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
         }
     }
 
@@ -5983,6 +6236,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Created = DateTime.Now;
         if (Local_Reports.Reports_Collection.Count == 0) return;
         worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
+
+        #region Headers
+
         worksheet.Cells[1, 1].Value = "Рег.№";
         worksheet.Cells[1, 2].Value = "ОКПО";
         worksheet.Cells[1, 3].Value = "Форма";
@@ -5990,6 +6246,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         worksheet.Cells[1, 5].Value = "Дата конца";
         worksheet.Cells[1, 6].Value = "Номер кор.";
         worksheet.Cells[1, 7].Value = "Количество строк";
+        worksheet.Cells[1, 8].Value = "Инвентаризация"; 
+
+        #endregion
 
         var lst = new List<Reports>();
         foreach (var key in Local_Reports.Reports_Collection)
@@ -6015,6 +6274,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
                 worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
                 worksheet.Cells[row, 7].Value = rep.Rows.Count;
+                worksheet.Cells[row, 8].Value = InventoryCheck(rep).TrimStart();
                 row++;
             }
         }
