@@ -2452,29 +2452,26 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     var filename2 = "";
                     if (rp.Master_DB.FormNum_DB == "1.0")
                     {
-                        filename2 += rp.Master.RegNoRep.Value;
-                        filename2 += $"_{rp.Master.OkpoRep.Value}";
-
-                        filename2 += $"_{rep.FormNum_DB}";
-                        filename2 += $"_{rep.StartPeriod_DB}";
-                        filename2 += $"_{rep.EndPeriod_DB}";
-                        filename2 += $"_{rep.CorrectionNumber_DB}";
+                        filename2 = RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
+                                     $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
+                                     $"_{rep.FormNum_DB}" +
+                                     $"_{RemoveForbiddenChars(rep.StartPeriod_DB)}" +
+                                     $"_{RemoveForbiddenChars(rep.EndPeriod_DB)}" +
+                                     $"_{rep.CorrectionNumber_DB}";
                     }
                     else
                     {
                         if (rp.Master.Rows20.Count > 0)
                         {
-                            filename2 += rp.Master.RegNoRep.Value;
-                            filename2 += $"_{rp.Master.OkpoRep.Value}";
-
-                            filename2 += $"_{rep.FormNum_DB}";
-                            filename2 += $"_{rep.Year_DB}";
-                            filename2 += $"_{rep.CorrectionNumber_DB}";
+                            filename2 += RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
+                                         $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
+                                         $"_{rep.FormNum_DB}" +
+                                         $"_{RemoveForbiddenChars(rep.Year_DB)}" +
+                                         $"_{rep.CorrectionNumber_DB}";
                         }
                     }
 
                     res = Path.Combine(res, $"{filename2}.raodb");
-
 
                     var t = db.Database.GetDbConnection() as FbConnection;
                     t.CloseAsync();
@@ -2494,20 +2491,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 try
                 {
-                    using (var inputFile = new FileStream(
-                               tmp,
-                               FileMode.Open,
-                               FileAccess.Read,
-                               FileShare.ReadWrite))
-                    using (var outputFile = new FileStream(res, FileMode.Create))
-                    {
-                        var buffer = new byte[0x10000];
-                        int bytes;
+                    using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using var outputFile = new FileStream(res, FileMode.Create);
+                    var buffer = new byte[0x10000];
+                    int bytes;
 
-                        while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            outputFile.Write(buffer, 0, bytes);
-                        }
+                    while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        outputFile.Write(buffer, 0, bytes);
                     }
                 }
                 catch (Exception e)

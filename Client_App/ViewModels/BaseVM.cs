@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia;
 
 namespace Client_App.ViewModels;
 
@@ -9,7 +10,7 @@ public class BaseVM
 {
     private protected static string PasFolderPath = @"Y:\Исайчева\Паспорта\Тестовые паспорта";
 
-    private protected const string Version = @"1.2.2.7";
+    private protected const string Version = @"1.2.2.8";
 
     private protected static bool ComparePasParam(string? nameDb, string? namePas)
     {
@@ -49,6 +50,13 @@ public class BaseVM
         return DateTime.TryParse(date, out var dateTime) 
             ? dateTime.Year.ToString()
             : "0000";
+    }
+
+    private protected string RemoveForbiddenChars(string str)
+    {
+        str = str.Replace(Environment.NewLine, "").Trim();
+        str = Regex.Replace(str, "[\\\\/:*?\"<>|]", "");
+        return str;
     }
 
     private protected static string TranslateToEng(string pasName)
