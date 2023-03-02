@@ -2434,7 +2434,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             if (rt is null) return;
             var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{filename}_exp.raodb");
 
-            var tsk = new Task(() =>
+            await Task.Factory.StartNew(async () =>
             {
                 DBModel db = new(tmp);
                 try
@@ -2445,54 +2445,46 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     };
                     rp.Report_Collection.Add(rep);
 
-                    db.Database.MigrateAsync();
-                    db.ReportsCollectionDbSet.Add(rp);
-                    db.SaveChangesAsync();
+                    await db.Database.MigrateAsync();
+                    await db.ReportsCollectionDbSet.AddAsync(rp);
+                    await db.SaveChangesAsync();
 
-                    var filename2 = "";
-                    if (rp.Master_DB.FormNum_DB == "1.0")
+                    var filename2 = rp.Master_DB.FormNum_DB switch
                     {
-                        filename2 = RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
-                                     $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
-                                     $"_{rep.FormNum_DB}" +
-                                     $"_{RemoveForbiddenChars(rep.StartPeriod_DB)}" +
-                                     $"_{RemoveForbiddenChars(rep.EndPeriod_DB)}" +
-                                     $"_{rep.CorrectionNumber_DB}";
-                    }
-                    else
-                    {
-                        if (rp.Master.Rows20.Count > 0)
-                        {
-                            filename2 += RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
-                                         $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
-                                         $"_{rep.FormNum_DB}" +
-                                         $"_{RemoveForbiddenChars(rep.Year_DB)}" +
-                                         $"_{rep.CorrectionNumber_DB}";
-                        }
-                    }
+                        "1.0" => RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
+                                 $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
+                                 $"_{rep.FormNum_DB}" +
+                                 $"_{RemoveForbiddenChars(rep.StartPeriod_DB)}" +
+                                 $"_{RemoveForbiddenChars(rep.EndPeriod_DB)}" +
+                                 $"_{rep.CorrectionNumber_DB}",
+                        "2.0" when rp.Master.Rows20.Count > 0 =>
+                            RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
+                            $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
+                            $"_{rep.FormNum_DB}" +
+                            $"_{RemoveForbiddenChars(rep.Year_DB)}" +
+                            $"_{rep.CorrectionNumber_DB}",
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
 
                     res = Path.Combine(res, $"{filename2}.raodb");
 
                     var t = db.Database.GetDbConnection() as FbConnection;
-                    t.CloseAsync();
-                    t.DisposeAsync();
+                    await t.CloseAsync();
+                    await t.DisposeAsync();
 
-                    db.Database.CloseConnectionAsync();
-                    db.DisposeAsync();
+                    await db.Database.CloseConnectionAsync();
+                    await db.DisposeAsync();
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    throw;
                 }
-            });
-            tsk.Start();
-            await tsk.ContinueWith((_) =>
+            }).ContinueWith(async _ =>
             {
                 try
                 {
-                    using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using var outputFile = new FileStream(res, FileMode.Create);
+                    await using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    await using var outputFile = new FileStream(res, FileMode.Create);
                     var buffer = new byte[0x10000];
                     int bytes;
 
@@ -2500,12 +2492,40 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     {
                         outputFile.Write(buffer, 0, bytes);
                     }
+                    
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
             });
+
+            #region ExportCompliteMessage
+            await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в .raodb",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Файл экспорта формы сохранен по пути:" +
+                            $"{Environment.NewLine}{res}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Регистрационный номер - {rt.Master.RegNoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {rt.Master.ShortJurLicoRep.Value}" +
+                            $"{Environment.NewLine}ОКПО - {rt.Master.OkpoRep.Value}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Номер формы - {rep.FormNum_DB}" +
+                            $"{Environment.NewLine}Начало отчетного периода - {rep.StartPeriod_DB}" +
+                            $"{Environment.NewLine}Конец отчетного периода - {rep.EndPeriod_DB}" +
+                            $"{Environment.NewLine}Дата выгрузки - {rep.ExportDate_DB}" +
+                            $"{Environment.NewLine}Номер корректировки - {rep.CorrectionNumber_DB}" +
+                            $"{Environment.NewLine}Количество строк - {rep.Rows.Count}{InventoryCheck(rep)}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    })
+                    .ShowDialog(desktop.MainWindow); 
+            #endregion
         }
     }
 
@@ -2523,16 +2543,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         OpenFolderDialog dial = new();
         var res = await dial.ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(res)) return;
-        //var dt = DateTime.Now;
-        //foreach (var item in param)
-        //{
-        //    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
-        //}
-        //var filename = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+        var dt = DateTime.Now;
+        foreach (var item in param)
+        {
+            ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+        }
+        var filename = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
         var repsExp = (Reports)obj;
         await StaticConfiguration.DBModel.SaveChangesAsync();
-        //var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{filename}_exp.raodb");
-        //await _getData(tmp, res, repsExp, desktop); //через такую отдельную async task работает без крашей, но интерфейс виснет
+        var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{filename}_exp.raodb");
+        await _getData(tmp, res, repsExp, desktop); //через такую отдельную async task работает без крашей, но интерфейс виснет
 
         #region test
         //var tsk = Task.Run(async () =>
@@ -2654,25 +2674,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await db.ReportsCollectionDbSet.AddAsync(repsExp);
             await db.SaveChangesAsync();
 
-            var filename2 = "";
-            switch (repsExp.Master_DB.FormNum_DB)
+            var filename2 = repsExp.Master_DB.FormNum_DB switch
             {
-                case "1.0":
-                    filename2 += repsExp.Master.RegNoRep.Value;
-                    filename2 += $"_{repsExp.Master.OkpoRep.Value}";
-                    filename2 += $"_{repsExp.Master.FormNum_DB}";
-                    filename2 += $"_{repsExp.Master.StartPeriod_DB}";
-                    filename2 += $"_{repsExp.Master.EndPeriod_DB}";
-                    filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
-                    break;
-                case "2.0" when repsExp.Master.Rows20.Count > 0:
-                    filename2 += repsExp.Master.RegNoRep.Value;
-                    filename2 += $"_{repsExp.Master.OkpoRep.Value}";
-                    filename2 += $"_{repsExp.Master.FormNum_DB}";
-                    filename2 += $"_{repsExp.Master.Year_DB}";
-                    filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
-                    break;
-            }
+                "1.0" => RemoveForbiddenChars(repsExp.Master.RegNoRep.Value) +
+                         $"_{RemoveForbiddenChars(repsExp.Master.OkpoRep.Value)}" +
+                         $"_{repsExp.Master.FormNum_DB}",
+                "2.0" when repsExp.Master.Rows20.Count > 0 =>
+                    RemoveForbiddenChars(repsExp.Master.RegNoRep.Value) +
+                    $"_{RemoveForbiddenChars(repsExp.Master.OkpoRep.Value)}" +
+                    $"_{repsExp.Master.FormNum_DB}",
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
             res = Path.Combine(res, $"{filename2}.raodb");
             if (File.Exists(res))
@@ -2742,7 +2754,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в .raodb",
                     ContentHeader = "Уведомление",
                     ContentMessage =
-                        $"Файл экспорт организации, содержащей {repsExp.Report_Collection.Count} форм," +
+                        $"Файл экспорта организации, содержащей {repsExp.Report_Collection.Count} форм," +
                         $"{Environment.NewLine}сохранен по пути:" +
                         $"{Environment.NewLine}{res}" +
                         $"{Environment.NewLine}" +
@@ -2750,7 +2762,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         $"{Environment.NewLine}Сокращенное наименование - {repsExp.Master.ShortJurLicoRep.Value}" +
                         $"{Environment.NewLine}ОКПО - {repsExp.Master.OkpoRep.Value}",
                     MinWidth = 400,
-                    MinHeight = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
                 })
                 .ShowDialog(desktop.MainWindow);
