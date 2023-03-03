@@ -52,7 +52,7 @@ public class BaseVM
             : "0000";
     }
 
-    private protected string RemoveForbiddenChars(string str)
+    private protected static string RemoveForbiddenChars(string str)
     {
         str = str.Replace(Environment.NewLine, "").Trim();
         str = Regex.Replace(str, "[\\\\/:*?\"<>|]", "");

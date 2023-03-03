@@ -29,6 +29,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsTCPIP;
+using Avalonia.Threading;
 
 namespace Client_App.ViewModels;
 
@@ -2227,6 +2229,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 foreach (var item in reportsCollection) //Для каждой импортируемой организации
                 {
+                    await item.SortAsync();
                     if (item.Master.Rows10.Count != 0)
                     {
                         item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
@@ -2328,6 +2331,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                         #endregion
                     }
+
+                    switch (item.Master_DB.FormNum_DB)
+                    {
+                        case "1.0":
+                            await item.Master_DB.Rows10.QuickSortAsync();
+                            break;
+                        case "2.0":
+                            await item.Master_DB.Rows20.QuickSortAsync();
+                            break;
+                    }
                 }
             }
             await Local_Reports.Reports_Collection.QuickSortAsync();
@@ -2400,9 +2413,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
             || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
         var obj = param.First();
-        OpenFolderDialog dial = new();
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (res is null) return;
+        var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(folderPath)) return;
         foreach (var item in param)
         {
             var a = DateTime.Now.Date;
@@ -2413,95 +2425,138 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
         }
 
-        if (res != "")
+        var dt = DateTime.Now;
+        var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+        var exportForm = (Report)obj;
+
+        var dtDay = dt.Day.ToString();
+        var dtMonth = dt.Month.ToString();
+        if (dtDay.Length < 2) dtDay = $"0{dtDay}";
+        if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
+        exportForm.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
+
+        await StaticConfiguration.DBModel.SaveChangesAsync();
+
+        var rp = Local_Reports.Reports_Collection
+            .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
+        if (rp is null) return;
+
+        var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
+
+        Reports orgWithExpForm = new()
         {
-            var dt = DateTime.Now;
-            var filename = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-            var rep = (Report)obj;
+            Master = rp.Master
+        };
+        orgWithExpForm.Report_Collection.Add(exportForm);
 
-            var dtDay = dt.Day.ToString();
-            var dtMonth = dt.Month.ToString();
-            if (dtDay.Length < 2) dtDay = $"0{dtDay}";
-            if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
+        var filename = rp.Master_DB.FormNum_DB switch
+        {
+            "1.0" =>
+                RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
+                $"_{RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
+                $"_{exportForm.FormNum_DB}" +
+                $"_{RemoveForbiddenChars(exportForm.StartPeriod_DB)}" +
+                $"_{RemoveForbiddenChars(exportForm.EndPeriod_DB)}" +
+                $"_{exportForm.CorrectionNumber_DB}",
 
-            rep.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
-            var findReports = Local_Reports.Reports_Collection
-                .Where(t => t.Report_Collection.Contains(rep));
+            "2.0" when orgWithExpForm.Master.Rows20.Count > 0 =>
+                RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
+                $"_{RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
+                $"_{exportForm.FormNum_DB}" +
+                $"_{RemoveForbiddenChars(exportForm.Year_DB)}" +
+                $"_{exportForm.CorrectionNumber_DB}",
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
-            await StaticConfiguration.DBModel.SaveChangesAsync();
+        var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
 
-            var rt = findReports.FirstOrDefault();
-            if (rt is null) return;
-            var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{filename}_exp.raodb");
-
-            await Task.Factory.StartNew(async () =>
+        if (File.Exists(fullPath))
+        {
+            try
             {
-                DBModel db = new(tmp);
-                try
-                {
-                    Reports rp = new()
-                    {
-                        Master = rt.Master
-                    };
-                    rp.Report_Collection.Add(rep);
-
-                    await db.Database.MigrateAsync();
-                    await db.ReportsCollectionDbSet.AddAsync(rp);
-                    await db.SaveChangesAsync();
-
-                    var filename2 = rp.Master_DB.FormNum_DB switch
-                    {
-                        "1.0" => RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
-                                 $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
-                                 $"_{rep.FormNum_DB}" +
-                                 $"_{RemoveForbiddenChars(rep.StartPeriod_DB)}" +
-                                 $"_{RemoveForbiddenChars(rep.EndPeriod_DB)}" +
-                                 $"_{rep.CorrectionNumber_DB}",
-                        "2.0" when rp.Master.Rows20.Count > 0 =>
-                            RemoveForbiddenChars(rp.Master.RegNoRep.Value) +
-                            $"_{RemoveForbiddenChars(rp.Master.OkpoRep.Value)}" +
-                            $"_{rep.FormNum_DB}" +
-                            $"_{RemoveForbiddenChars(rep.Year_DB)}" +
-                            $"_{rep.CorrectionNumber_DB}",
-                        _ => throw new ArgumentOutOfRangeException()
-                    };
-
-                    res = Path.Combine(res, $"{filename2}.raodb");
-
-                    var t = db.Database.GetDbConnection() as FbConnection;
-                    await t.CloseAsync();
-                    await t.DisposeAsync();
-
-                    await db.Database.CloseConnectionAsync();
-                    await db.DisposeAsync();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }).ContinueWith(async _ =>
+                File.Delete(fullPath);
+            }
+            catch (Exception)
             {
-                try
-                {
-                    await using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    await using var outputFile = new FileStream(res, FileMode.Create);
-                    var buffer = new byte[0x10000];
-                    int bytes;
+                #region FailedToSaveFileMessage
 
-                    while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        outputFile.Write(buffer, 0, bytes);
-                    }
-                    
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            });
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                "Не удалось сохранить файл по пути:" +
+                                $"{Environment.NewLine}{fullPath}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        }).ShowDialog(desktop.MainWindow));
+
+                #endregion
+                
+                return;
+            }
+        }
+
+        await Task.Run(async () =>
+        {
+            DBModel db = new(fullPathTmp);
+            try
+            {
+                await db.Database.MigrateAsync();
+                await db.ReportsCollectionDbSet.AddAsync(rp);
+                await db.SaveChangesAsync();
+
+                var t = db.Database.GetDbConnection() as FbConnection;
+                await t.CloseAsync();
+                await t.DisposeAsync();
+
+                await db.Database.CloseConnectionAsync();
+                await db.DisposeAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+
+            try
+            {
+                File.Copy(fullPathTmp, fullPath);
+                File.Delete(fullPathTmp);
+            }
+            catch (Exception e)
+            {
+                #region FailedCopyFromTempMessage
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
+                                             $"{Environment.NewLine}Экспорт не выполнен.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        }).ShowDialog(desktop.MainWindow));
+        
+                #endregion
+
+                return;
+            }
 
             #region ExportCompliteMessage
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -2509,24 +2564,25 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             "Файл экспорта формы сохранен по пути:" +
-                            $"{Environment.NewLine}{res}" +
+                            $"{Environment.NewLine}{fullPath}" +
                             $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Регистрационный номер - {rt.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {rt.Master.ShortJurLicoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {rt.Master.OkpoRep.Value}" +
+                            $"{Environment.NewLine}Регистрационный номер - {orgWithExpForm.Master.RegNoRep.Value}" +
+                            $"{Environment.NewLine}ОКПО - {orgWithExpForm.Master.OkpoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {orgWithExpForm.Master.ShortJurLicoRep.Value}" +
                             $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Номер формы - {rep.FormNum_DB}" +
-                            $"{Environment.NewLine}Начало отчетного периода - {rep.StartPeriod_DB}" +
-                            $"{Environment.NewLine}Конец отчетного периода - {rep.EndPeriod_DB}" +
-                            $"{Environment.NewLine}Дата выгрузки - {rep.ExportDate_DB}" +
-                            $"{Environment.NewLine}Номер корректировки - {rep.CorrectionNumber_DB}" +
-                            $"{Environment.NewLine}Количество строк - {rep.Rows.Count}{InventoryCheck(rep)}",
+                            $"{Environment.NewLine}Номер формы - {exportForm.FormNum_DB}" +
+                            $"{Environment.NewLine}Начало отчетного периода - {exportForm.StartPeriod_DB}" +
+                            $"{Environment.NewLine}Конец отчетного периода - {exportForm.EndPeriod_DB}" +
+                            $"{Environment.NewLine}Дата выгрузки - {exportForm.ExportDate_DB}" +
+                            $"{Environment.NewLine}Номер корректировки - {exportForm.CorrectionNumber_DB}" +
+                            $"{Environment.NewLine}Количество строк - {exportForm.Rows.Count}{InventoryCheck(exportForm)}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    })
-                    .ShowDialog(desktop.MainWindow); 
+                    }).ShowDialog(desktop.MainWindow));
+
             #endregion
-        }
+
+        });
     }
 
     #endregion
@@ -2540,236 +2596,133 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
             || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
         var obj = param.First();
-        OpenFolderDialog dial = new();
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
+        var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(folderPath)) return;
         var dt = DateTime.Now;
         foreach (var item in param)
         {
             ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
         }
-        var filename = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-        var repsExp = (Reports)obj;
+        var fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+        var exportOrg = (Reports)obj;
         await StaticConfiguration.DBModel.SaveChangesAsync();
-        var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{filename}_exp.raodb");
-        await _getData(tmp, res, repsExp, desktop); //через такую отдельную async task работает без крашей, но интерфейс виснет
 
-        #region test
-        //var tsk = Task.Run(async () =>
-        //{
-        //    DBModel db = new(tmp);
-        //    try
-        //    {
-        //        await db.Database.MigrateAsync();
-        //        await db.ReportsCollectionDbSet.AddAsync(repsExp);
-        //        await db.SaveChangesAsync();
+        var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
+        var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
+                       $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
+                       $"_{exportOrg.Master.FormNum_DB}";
 
-        //        var filename2 = "";
-        //        switch (repsExp.Master_DB.FormNum_DB)
-        //        {
-        //            case "1.0":
-        //                filename2 += repsExp.Master.RegNoRep.Value;
-        //                filename2 += $"_{repsExp.Master.OkpoRep.Value}";
-        //                filename2 += $"_{repsExp.Master.FormNum_DB}";
-        //                filename2 += $"_{repsExp.Master.StartPeriod_DB}";
-        //                filename2 += $"_{repsExp.Master.EndPeriod_DB}";
-        //                filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
-        //                break;
-        //            case "2.0" when repsExp.Master.Rows20.Count > 0:
-        //                filename2 += repsExp.Master.RegNoRep.Value;
-        //                filename2 += $"_{repsExp.Master.OkpoRep.Value}";
-        //                filename2 += $"_{repsExp.Master.FormNum_DB}";
-        //                filename2 += $"_{repsExp.Master.Year_DB}";
-        //                filename2 += $"_{repsExp.Master.CorrectionNumber_DB}";
-        //                break;
-        //        }
+        var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
 
-        //        res = Path.Combine(res, $"{filename2}.raodb");
-        //        if (File.Exists(res))
-        //        {
-        //            try
-        //            {
-        //                File.Delete(res);
-        //            }
-        //            catch (Exception)
-        //            {
-        //                #region MessageFailedToSaveFile
-
-        //                await MessageBox.Avalonia.MessageBoxManager
-        //                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-        //                    {
-        //                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-        //                        ContentTitle = "Выгрузка в Excel",
-        //                        ContentHeader = "Ошибка",
-        //                        ContentMessage =
-        //                            $"Не удалось сохранить файл по пути: {res}" +
-        //                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-        //                            $"{Environment.NewLine}и используется другим процессом.",
-        //                        MinWidth = 400,
-        //                        MinHeight = 150,
-        //                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-        //                    })
-        //                    .ShowDialog(desktop.MainWindow);
-
-        //                #endregion
-
-        //                return;
-        //            }
-        //        }
-
-        //        var t = db.Database.GetDbConnection() as FbConnection;
-        //        await t.CloseAsync();
-        //        await t.DisposeAsync();
-
-        //        await db.Database.CloseConnectionAsync();
-        //        await db.DisposeAsync();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //        throw;
-        //    }
-        //});
-        //await tsk.ContinueWith(async _ =>
-        //{
-        //    try
-        //    {
-        //        await using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        //        await using var outputFile = new FileStream(res, FileMode.Create);
-        //        var buffer = new byte[0x10000];
-        //        int bytes;
-        //        while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
-        //        {
-        //            outputFile.Write(buffer, 0, bytes);
-        //        }
-        //        await MessageBox.Avalonia.MessageBoxManager
-        //            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-        //            {
-        //                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-        //                ContentTitle = "Выгрузка в Excel",
-        //                ContentHeader = "Ошибка",
-        //                ContentMessage =
-        //                    $"Экспорт закончен",
-        //                MinWidth = 400,
-        //                MinHeight = 150,
-        //                WindowStartupLocation = WindowStartupLocation.CenterScreen
-        //            })
-        //            .ShowDialog(desktop.MainWindow);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //    }
-        //}); 
-        #endregion
-
-    }
-
-    private async Task _getData(string? tmp, string res, Reports repsExp, IClassicDesktopStyleApplicationLifetime desktop)
-    {
-        DBModel db = new(tmp);
-        try
+        if (File.Exists(fullPath))
         {
-            await db.Database.MigrateAsync();
-            await db.ReportsCollectionDbSet.AddAsync(repsExp);
-            await db.SaveChangesAsync();
-
-            var filename2 = repsExp.Master_DB.FormNum_DB switch
+            try
             {
-                "1.0" => RemoveForbiddenChars(repsExp.Master.RegNoRep.Value) +
-                         $"_{RemoveForbiddenChars(repsExp.Master.OkpoRep.Value)}" +
-                         $"_{repsExp.Master.FormNum_DB}",
-                "2.0" when repsExp.Master.Rows20.Count > 0 =>
-                    RemoveForbiddenChars(repsExp.Master.RegNoRep.Value) +
-                    $"_{RemoveForbiddenChars(repsExp.Master.OkpoRep.Value)}" +
-                    $"_{repsExp.Master.FormNum_DB}",
-                _ => throw new ArgumentOutOfRangeException()
-            };
-
-            res = Path.Combine(res, $"{filename2}.raodb");
-            if (File.Exists(res))
+                File.Delete(fullPath);
+            }
+            catch (Exception)
             {
-                try
-                {
-                    File.Delete(res);
-                }
-                catch (Exception)
-                {
-                    #region MessageFailedToSaveFile
+                #region FailedToSaveFileMessage
 
-                    await MessageBox.Avalonia.MessageBoxManager
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                             ContentTitle = "Выгрузка в Excel",
                             ContentHeader = "Ошибка",
                             ContentMessage =
-                                $"Не удалось сохранить файл по пути: {res}" +
+                                "Не удалось сохранить файл по пути:" +
+                                $"{Environment.NewLine}{fullPath}" +
+                                $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
                                 $"{Environment.NewLine}и используется другим процессом.",
                             MinWidth = 400,
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
+                        }).ShowDialog(desktop.MainWindow));
 
-                    #endregion
-
-                    return;
-                }
+                #endregion
+                
+                return;
             }
-
-            var t = db.Database.GetDbConnection() as FbConnection;
-            await t.CloseAsync();
-            await t.DisposeAsync();
-
-            await db.Database.CloseConnectionAsync();
-            await db.DisposeAsync();
-
-            await _createRAODB(tmp, res, repsExp, desktop);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    private async Task _createRAODB(string? tmp, string res, Reports repsExp, IClassicDesktopStyleApplicationLifetime desktop)
-    {
-        try
+        await Task.Run(async () =>
         {
-            await using var inputFile = new FileStream(tmp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            await using var outputFile = new FileStream(res, FileMode.Create);
-            var buffer = new byte[0x10000];
-            int bytes;
-            while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+            DBModel db = new(fullPathTmp);
+            try
             {
-                outputFile.Write(buffer, 0, bytes);
+                await db.Database.MigrateAsync();
+                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                await db.SaveChangesAsync();
+
+                var t = db.Database.GetDbConnection() as FbConnection;
+                await t.CloseAsync();
+                await t.DisposeAsync();
+
+                await db.Database.CloseConnectionAsync();
+                await db.DisposeAsync();
             }
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в .raodb",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        $"Файл экспорта организации, содержащей {repsExp.Report_Collection.Count} форм," +
-                        $"{Environment.NewLine}сохранен по пути:" +
-                        $"{Environment.NewLine}{res}" +
-                        $"{Environment.NewLine}" +
-                        $"{Environment.NewLine}Регистрационный номер - {repsExp.Master.RegNoRep.Value}" +
-                        $"{Environment.NewLine}Сокращенное наименование - {repsExp.Master.ShortJurLicoRep.Value}" +
-                        $"{Environment.NewLine}ОКПО - {repsExp.Master.OkpoRep.Value}",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen
-                })
-                .ShowDialog(desktop.MainWindow);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+
+            try
+            {
+                File.Copy(fullPathTmp, fullPath);
+                File.Delete(fullPathTmp);
+            }
+            catch (Exception e)
+            {
+                #region FailedCopyFromTempMessage
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
+                                             $"{Environment.NewLine}Экспорт не выполнен.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        }).ShowDialog(desktop.MainWindow));
+        
+                #endregion
+
+                return;
+            }
+
+            #region ExportCompliteMessage
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = 
+                            $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB}) сохранен по пути:" +
+                            $"{Environment.NewLine}{folderPath}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Регистрационный номер - {exportOrg.Master.RegNoRep.Value}" +
+                            $"{Environment.NewLine}ОКПО - {exportOrg.Master.OkpoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.ShortJurLicoRep.Value}",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(desktop.MainWindow));
+        
+            #endregion
+
+        });
+
     }
 
     #endregion
