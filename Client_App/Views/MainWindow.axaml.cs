@@ -141,6 +141,15 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
 
         grd1.CommandsList.Add(new KeyCommand
         {
+            IsDoubleTappedCommand = false,
+            IsContextMenuCommand = true,
+            ParamName = "SelectedItems",
+            ContextMenuText = new[] { "Выгрузить организацию с указанием диапазона дат" },
+            Command = dataContext.ExportOrgWithDateRange
+        });
+
+        grd1.CommandsList.Add(new KeyCommand
+        {
             Key = Avalonia.Input.Key.D,
             KeyModifiers = Avalonia.Input.KeyModifiers.Control,
             IsDoubleTappedCommand = false,

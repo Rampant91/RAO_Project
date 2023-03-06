@@ -242,6 +242,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportFrom = ReactiveCommand.CreateFromTask(_ImportFrom);
         ExportForm = ReactiveCommand.CreateFromTask<object>(_ExportForm);
         ExportOrg = ReactiveCommand.CreateFromTask<object>(_ExportOrg);
+        ExportOrgWithDateRange = ReactiveCommand.CreateFromTask<object>(_ExportOrgWithDateRange);
         ChangeForm = ReactiveCommand.CreateFromTask<object>(_ChangeForm);
         ChangeReport = ReactiveCommand.CreateFromTask<object>(_ChangeReport);
         DeleteForm = ReactiveCommand.CreateFromTask<object>(_DeleteForm);
@@ -2404,6 +2405,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    #region Export
+
     #region ExportForm
 
     public ReactiveCommand<object, Unit> ExportForm { get; private set; }
@@ -2412,7 +2415,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
             || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
-        var obj = param.First();
         var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(folderPath)) return;
         foreach (var item in param)
@@ -2427,7 +2429,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-        var exportForm = (Report)obj;
+        var exportForm = (Report) param.First();
 
         var dtDay = dt.Day.ToString();
         var dtMonth = dt.Month.ToString();
@@ -2595,7 +2597,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
             || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
-        var obj = param.First();
         var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(folderPath)) return;
         var dt = DateTime.Now;
@@ -2604,7 +2605,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
         }
         var fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-        var exportOrg = (Reports)obj;
+        var exportOrg = (Reports) param.First();
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
         var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
@@ -2629,7 +2630,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
+                            ContentTitle = "Выгрузка",
                             ContentHeader = "Ошибка",
                             ContentMessage =
                                 "Не удалось сохранить файл по пути:" +
@@ -2684,7 +2685,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
+                            ContentTitle = "Выгрузка",
                             ContentHeader = "Ошибка",
                             ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
                                              $"{Environment.NewLine}Экспорт не выполнен.",
@@ -2705,7 +2706,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка",
                         ContentHeader = "Уведомление",
                         ContentMessage = 
                             $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB}) сохранен по пути:" +
@@ -2724,6 +2725,98 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         });
 
     }
+
+    #endregion
+
+    #region ExportOrgWithDateRange
+
+    public ReactiveCommand<object, Unit> ExportOrgWithDateRange { get; private set; }
+
+    private async Task _ExportOrgWithDateRange(object par)
+    {
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+            || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
+
+        #region MessageAskStartDate
+        var startDate = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отменить экспорт", IsCancel = true }
+                },
+                ContentTitle = "Выгрузка",
+                ContentMessage =
+                    "Введите дату начала периода. Если оставить поле пустым," +
+                    $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате начала периода.",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow); 
+        #endregion
+
+        if (startDate.Button is null or "Отменить экспорт") return;
+
+        #region MessageAskEndDate
+        var endDate = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отменить экспорт", IsCancel = true }
+                },
+                ContentTitle = "Выгрузка",
+                ContentMessage =
+                    "Введите дату конца периода. Если оставить поле пустым," +
+                    $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате конца периода.",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow); 
+        #endregion
+
+        if (startDate.Button is null or "Отменить экспорт") return;
+
+        var canParseDateRange = (DateTime.TryParse(startDate.Message, out var startDateTime) || startDate.Message is "")
+                            & (DateTime.TryParse(endDate.Message, out var endDateTime) || endDate.Message is "");
+
+        if (!canParseDateRange)
+        {
+            #region MessageErrorAtParseDate
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Экспорт не будет выполнен, поскольку период дат введён некорректно.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
+
+        var org = (Reports) param.First();
+        var repInRange = org.Report_Collection.Where(rep =>
+        {
+            if (!DateTime.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
+                || !DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)) return false;
+            return startDateTime <= repStartDateTime && endDateTime >= repEndDateTime;
+        });
+        Reports exportOrg = new() { Master = org.Master };
+        exportOrg.Report_Collection.AddRange(repInRange);
+        //await _ExportOrg((ObservableCollectionWithItemPropertyChanged<IKey>) exportOrg);
+    }
+
+    #endregion
 
     #endregion
 
