@@ -1118,8 +1118,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
 
-    
-
     private async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -1713,7 +1711,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
             #region TryAddEmptyOrg
 
-            if (impReps.Report_Collection.Count == 0)
+            if (impReps?.Report_Collection.Count == 0)
             {
                 impInBase = true;
 
@@ -2170,8 +2168,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await baseReps.SortAsync();
     }
 
-    
-
     private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
     {
         switch (an)
@@ -2595,19 +2591,30 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _ExportOrg(object par)
     {
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
-            || par is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(folderPath)) return;
         var dt = DateTime.Now;
-        foreach (var item in param)
+        Reports exportOrg;
+        string fileNameTmp;
+        if (par is ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
-            ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+            foreach (var item in param)
+            {
+                ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+            }
+            fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+            exportOrg = (Reports) param.First();
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        } else if (par is Reports)
+        {
+            fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+            exportOrg = (Reports)par;
+            exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
+            await StaticConfiguration.DBModel.SaveChangesAsync();
         }
-        var fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-        var exportOrg = (Reports) param.First();
-        await StaticConfiguration.DBModel.SaveChangesAsync();
-
+        else return;
+        
         var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
         var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
@@ -2747,6 +2754,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     new ButtonDefinition { Name = "Отменить экспорт", IsCancel = true }
                 },
                 ContentTitle = "Выгрузка",
+                ShowInCenter = true,
                 ContentMessage =
                     "Введите дату начала периода. Если оставить поле пустым," +
                     $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате начала периода.",
@@ -2779,8 +2787,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         if (startDate.Button is null or "Отменить экспорт") return;
 
-        var canParseDateRange = (DateTime.TryParse(startDate.Message, out var startDateTime) || startDate.Message is "")
-                            & (DateTime.TryParse(endDate.Message, out var endDateTime) || endDate.Message is "");
+        var canParseDateRange = 
+            (DateTime.TryParse(startDate.Message, out var startDateTime) | string.IsNullOrEmpty(startDate.Message))
+            & (DateTime.TryParse(endDate.Message, out var endDateTime) | string.IsNullOrEmpty(endDate.Message));
+        if (endDateTime == DateTime.MinValue) endDateTime = DateTime.MaxValue;
 
         if (!canParseDateRange)
         {
@@ -2796,8 +2806,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(desktop.MainWindow);
+                }).ShowDialog(desktop.MainWindow);
 
             #endregion
 
@@ -2809,11 +2818,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             if (!DateTime.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
                 || !DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)) return false;
-            return startDateTime <= repStartDateTime && endDateTime >= repEndDateTime;
+            return startDateTime <= repEndDateTime && endDateTime >= repStartDateTime;
         });
         Reports exportOrg = new() { Master = org.Master };
         exportOrg.Report_Collection.AddRange(repInRange);
-        //await _ExportOrg((ObservableCollectionWithItemPropertyChanged<IKey>) exportOrg);
+        await _ExportOrg(exportOrg);
     }
 
     #endregion
