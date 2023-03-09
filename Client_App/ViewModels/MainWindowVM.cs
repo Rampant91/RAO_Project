@@ -873,22 +873,27 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                           or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ";
             if (!val)
             {
+                #region InvalidDataFormatMessage
+
                 await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        ButtonDefinitions = new[]
-                        {
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions = new[]
+                                {
                             new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
-                        },
-                        ContentTitle = "Импорт из Excel",
-                        ContentHeader = "Уведомление",
-                        ContentMessage =
-                            $"Не удалось импортировать данные из {fileInfo.FullName}." +
-                            $"{Environment.NewLine}Не соответствует формат данных!",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
+                                },
+                                ContentTitle = "Импорт из Excel",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    $"Не удалось импортировать данные из {fileInfo.FullName}." +
+                                    $"{Environment.NewLine}Не соответствует формат данных!",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow); 
+
+                #endregion
+
                 continue;
             }
 
@@ -1055,10 +1060,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {impRep.FormNum_DB}." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}" +
-
                                     $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                     $"{Environment.NewLine}импортировать все новые организации.",
                                 MinWidth = 400,
@@ -1086,10 +1090,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     $"Будет добавлена новая организация ({repNumber})." +
-                                    $"{Environment.NewLine}",
-                                    //$"{Environment.NewLine}Регистрационный номер - {impRep.Master.RegNoRep.Value}" +
-                                    //$"{Environment.NewLine}Сокращенное наименование - {impRep.Master.ShortJurLicoRep.Value}" +
-                                    //$"{Environment.NewLine}ОКПО - {impRep.Master.OkpoRep.Value}",
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
+                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -1477,8 +1481,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     $"{Environment.NewLine}с меньшим номером корректировки, чем у текущего отчета в базе." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                     $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
@@ -1527,8 +1531,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     "Импортируемый отчет имеет тот же период, номер корректировки, что и имеющийся в базе." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                     $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
@@ -1576,8 +1580,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                         $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                         $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
@@ -1619,8 +1623,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                         $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                         $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                         $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
@@ -1673,8 +1677,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 "Периоды импортируемого и имеющегося в базе отчетов пересекаются, но не совпадают." +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Начало периода отчета в базе - {baseRep.StartPeriod_DB}" +
@@ -1730,8 +1734,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
                             $"{Environment.NewLine}" +
                             $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}",
+                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
@@ -1768,8 +1772,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
@@ -1807,8 +1811,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
@@ -1879,8 +1883,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 $"{Environment.NewLine}с меньшим номером корректировки, чем у текущего отчета в базе." +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Отчетный год - {impRep.Year_DB}" +
@@ -1928,8 +1932,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 "Импортируемый отчет имеет тот же год и номер корректировки, что и имеющийся в базе." +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Отчетный год - {impRep.Year_DB}" +
@@ -1976,8 +1980,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                     $"{Environment.NewLine}Отчетный год - {impRep.Year_DB}" +
@@ -2018,8 +2022,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                     $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                     $"{Environment.NewLine}Отчетный год - {impRep.Year_DB}" +
@@ -2067,8 +2071,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
                             $"{Environment.NewLine}" +
                             $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}",
+                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
@@ -2105,8 +2109,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Отчетный год - {impRep.Year_DB}" +
@@ -2143,8 +2147,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
                                 $"{Environment.NewLine}Отчетный год - {impRep.Year_DB}" +
@@ -2278,8 +2282,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                             $"Будет добавлена новая организация ({item.Master.FormNum_DB}) содержащая {item.Report_Collection.Count} форм отчетности." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
                                             $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                             $"{Environment.NewLine}импортировать все новые организации.",
@@ -2310,8 +2314,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                             $"Будет добавлена новая организация ({item.Master.FormNum_DB}) содержащая {item.Report_Collection.Count} форм отчетности." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
-                                            $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}",
+                                            $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
@@ -2792,7 +2796,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             & (DateTime.TryParse(endDate.Message, out var endDateTime) | string.IsNullOrEmpty(endDate.Message));
         if (endDateTime == DateTime.MinValue) endDateTime = DateTime.MaxValue;
 
-        if (!canParseDateRange)
+        if (!canParseDateRange || startDateTime > endDateTime)
         {
             #region MessageErrorAtParseDate
 
@@ -3134,12 +3138,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
-            
-            
-
-
         
-
         using ExcelPackage excelPackage = new(new FileInfo(path));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
