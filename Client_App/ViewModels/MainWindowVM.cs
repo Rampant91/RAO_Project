@@ -57,6 +57,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Current_Db
 
+    private string dbFileName;
+
     private string _current_Db = "";
 
     public string Current_Db
@@ -149,7 +151,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             try
             {
-                Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {fileInfo.Name}";
+                dbFileName = fileInfo.Name;
+                Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {dbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -2459,14 +2462,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 $"_{exportForm.FormNum_DB}" +
                 $"_{RemoveForbiddenChars(exportForm.StartPeriod_DB)}" +
                 $"_{RemoveForbiddenChars(exportForm.EndPeriod_DB)}" +
-                $"_{exportForm.CorrectionNumber_DB}",
+                $"_{exportForm.CorrectionNumber_DB}" +
+                $"_{Version}",
 
             "2.0" when orgWithExpForm.Master.Rows20.Count > 0 =>
                 RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
                 $"_{RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
                 $"_{exportForm.FormNum_DB}" +
                 $"_{RemoveForbiddenChars(exportForm.Year_DB)}" +
-                $"_{exportForm.CorrectionNumber_DB}",
+                $"_{exportForm.CorrectionNumber_DB}" +
+                $"_{Version}",
             _ => throw new ArgumentOutOfRangeException()
         };
 
@@ -2555,13 +2560,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                 return;
             }
+        });
 
-            #region ExportCompliteMessage
-            await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        #region ExportCompliteMessage
+
+        var answer = await Dispatcher.UIThread.InvokeAsync(() =>                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = new[]
+                        {
+                            new ButtonDefinition { Name = "Ок", IsDefault = true },
+                            new ButtonDefinition { Name = "Открыть расположение файла" }
+                        },
                         ContentTitle = "Выгрузка в .raodb",
                         ContentHeader = "Уведомление",
                         ContentMessage =
@@ -2582,9 +2592,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
                     }).ShowDialog(desktop.MainWindow));
 
-            #endregion
+        #endregion
 
-        });
+        if (answer is "Открыть расположение файла")
+        {
+            Process.Start("explorer", folderPath);
+        }
     }
 
     #endregion
@@ -2622,7 +2635,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
         var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
-                       $"_{exportOrg.Master.FormNum_DB}";
+                       $"_{exportOrg.Master.FormNum_DB}" +
+                       $"_{Version}";
 
         var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
 
@@ -2659,7 +2673,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 return;
             }
         }
-
+        
         await Task.Run(async () =>
         {
             DBModel db = new(fullPathTmp);
@@ -2704,37 +2718,37 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterScreen
                         }).ShowDialog(desktop.MainWindow));
-        
+
                 #endregion
 
                 return;
             }
-
-            #region ExportCompliteMessage
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = 
-                            $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB}) сохранен по пути:" +
-                            $"{Environment.NewLine}{folderPath}" +
-                            $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Регистрационный номер - {exportOrg.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {exportOrg.Master.OkpoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.ShortJurLicoRep.Value}",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(desktop.MainWindow));
-        
-            #endregion
-
         });
-
+        var answer = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Открыть расположение файла" }
+                },
+                ContentTitle = "Выгрузка",
+                ContentHeader = "Уведомление",
+                ContentMessage =
+                    $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB}) сохранен по пути:" +
+                    $"{Environment.NewLine}{fullPath}" +
+                    $"{Environment.NewLine}" +
+                    $"{Environment.NewLine}Регистрационный номер - {exportOrg.Master.RegNoRep.Value}" +
+                    $"{Environment.NewLine}ОКПО - {exportOrg.Master.OkpoRep.Value}" +
+                    $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.ShortJurLicoRep.Value}",
+                MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            }).ShowDialog(desktop.MainWindow);
+        if (answer is "Открыть расположение файла")
+        {
+            Process.Start("explorer", folderPath);
+        }
     }
 
     #endregion
@@ -3098,7 +3112,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 Extensions = { "xlsx" }
             };
             dial.Filters.Add(filter);
-            dial.InitialFileName = $"Аналитика - разрывы и пересечения в {GetRaoFileName().Result}";
+            dial.InitialFileName = $"Аналитика - разрывы и пересечения в {dbFileName}";
             path = await dial.ShowAsync(desktop.MainWindow);
             if (string.IsNullOrEmpty(path)) return;
             if (!path.Contains(".xlsx"))
