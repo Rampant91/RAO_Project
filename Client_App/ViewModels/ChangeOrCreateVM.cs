@@ -1306,7 +1306,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (!string.IsNullOrEmpty(res))
             {
                 var path = res;
-                if (!path.Contains(".xlsx"))
+                if (!path.EndsWith(".xlsx"))
                 {
                     path += ".xlsx";
                 }
