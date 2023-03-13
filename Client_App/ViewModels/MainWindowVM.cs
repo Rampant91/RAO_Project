@@ -2441,19 +2441,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
-        var rp = Local_Reports.Reports_Collection
+        var reps = Local_Reports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
-        if (rp is null) return;
+        if (reps is null) return;
 
         var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
 
         Reports orgWithExpForm = new()
         {
-            Master = rp.Master
+            Master = reps.Master
         };
         orgWithExpForm.Report_Collection.Add(exportForm);
 
-        var filename = rp.Master_DB.FormNum_DB switch
+        var filename = reps.Master_DB.FormNum_DB switch
         {
             "1.0" =>
                 RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
@@ -2516,7 +2516,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             try
             {
                 await db.Database.MigrateAsync();
-                await db.ReportsCollectionDbSet.AddAsync(rp);
+                await db.ReportsCollectionDbSet.AddAsync(reps);
                 await db.SaveChangesAsync();
 
                 var t = db.Database.GetDbConnection() as FbConnection;
@@ -3098,23 +3098,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         #endregion
 
         var fullPath = "";
-        
+        var fileName = $"Разрывы и пересечения_{dbFileName}";
         if (openTemp)
         {
-            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result), "RAO"), "temp"));
-            var tmpFiles = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result!), "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
                 .Where(x => x.Name.StartsWith("Разрывы и пересечения") && x.Name.EndsWith(".xlsx"))
-                .OrderByDescending(x => x.Name);
-            if (tmpFiles.Count() == 0)
+                .MaxBy(x => x.Name);
+            if (lastTmpFile is null)
             {
-                fullPath = Path.Combine(tmpFolder.FullName, "Разрывы и пересечения_1.xlsx");
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
             }
             else
             {
-                var index = Convert.ToInt32(tmpFiles.ElementAt(0).Name
-                    .TrimStart("Разрывы и пересечения_".ToCharArray())
-                    .TrimEnd(".xlsx".ToCharArray()));
-                fullPath = Path.Combine(tmpFolder.FullName, $"Разрывы и пересечения_{index + 1}.xlsx");
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
             }
         }
         else
@@ -3383,8 +3383,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _Excel_Export(object par)
     {
-        var forms = par as ObservableCollectionWithItemPropertyChanged<IKey>;
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+            par is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
 
         #region MessageSaveOrOpenTemp
 
@@ -3406,30 +3406,51 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #endregion
 
-        var fileName = "";
+        var exportForm = (Report)forms.First();
+        var orgWithExportForm = Local_Reports.Reports_Collection
+            .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
+        var formNum = exportForm.FormNum_DB;
+        if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
+        var regNum = RemoveForbiddenChars(orgWithExportForm.Master.RegNoRep.Value);
+        var okpo = RemoveForbiddenChars(orgWithExportForm.Master.OkpoRep.Value);
+        var corNum = Convert.ToString(exportForm.CorrectionNumber_DB);
         string fullPath;
-        var formNum = "";
         string? answer;
-        
-        if (openTemp)
+        string fileName;
+        switch (formNum[0])
         {
-            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result), "RAO"), "temp"));
-            var tmpFiles = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+            case '1':
+                var startPeriod = RemoveForbiddenChars(exportForm.StartPeriod_DB);
+                var endPeriod = RemoveForbiddenChars(exportForm.EndPeriod_DB);
+                fileName = $"Для анализа_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Version}";
+                break;
+            case '2':
+                var year = RemoveForbiddenChars(exportForm.Year_DB);
+                fileName = $"Для анализа_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Version}";
+                break;
+            default:
+                return;
+        }
+
+        if (openTemp) //имя и путь для временного файла
+        {
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
                 .Where(x => x.Name.StartsWith("Для анализа") && x.Name.EndsWith(".xlsx"))
-                .OrderByDescending(x => x.Name);
-            if (!tmpFiles.Any())
+                .MaxBy(x => x.Name);
+            if (lastTmpFile is null)
             {
-                fullPath = Path.Combine(tmpFolder.FullName, "Для анализа_1.xlsx");
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
             }
             else
             {
-                var index = Convert.ToInt32(tmpFiles.ElementAt(0).Name
-                    .TrimStart("Для анализа_".ToCharArray())
-                    .TrimEnd(".xlsx".ToCharArray()));
-                fullPath = Path.Combine(tmpFolder.FullName, $"Для анализа_{index + 1}.xlsx");
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
             }
         }
-        else
+        else // имя и путь для локального файла
         {
             SaveFileDialog dial = new();
             var filter = new FileDialogFilter
@@ -3437,37 +3458,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 Name = "Excel",
                 Extensions = { "xlsx" }
             };
-            if (forms is { Count: > 0 })
-            {
-                var rep = (Report)forms.First();
-                formNum = rep.FormNum_DB;
-                string regN;
-                string okpo;
-                string corN;
-                switch (formNum[0])
-                {
-                    case '1':
-                    {
-                        regN = RemoveForbiddenChars(rep.Rows10[0].RegNo_DB);
-                        okpo = RemoveForbiddenChars(rep.Rows10[0].Okpo_DB);
-                        var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
-                        var endPeriod = RemoveForbiddenChars(rep.EndPeriod_DB);
-                        corN = Convert.ToString(rep.CorrectionNumber_DB);
-                        fileName += $"Для анализа_{regN}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corN}_{Version}";
-                        break;
-                    }
-                    case '2':
-                        regN = RemoveForbiddenChars(rep.Rows20[0].RegNo_DB);
-                        okpo = RemoveForbiddenChars(rep.Rows20[0].Okpo_DB);
-                        var year = RemoveForbiddenChars(rep.Year_DB);
-                        corN = Convert.ToString(rep.CorrectionNumber_DB);
-                        fileName += $"Для анализа_{regN}_{okpo}_{formNum}_{year}_{corN}_{Version}";
-                        break;
-                }
-            }
             dial.Filters.Add(filter);
             dial.InitialFileName = fileName;
-            if (formNum is "") return;
             answer = await dial.ShowAsync(desktop.MainWindow);
             if (string.IsNullOrEmpty(answer)) return;
             fullPath = answer;
@@ -3517,12 +3509,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         int masterHeaderLength;
         if (formNum.Split('.')[0] == "1")
         {
-            masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1);
+            Form10.ExcelHeader(worksheet, 1, 1);
             masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1);
         }
         else
         {
-            masterHeaderLength = Form20.ExcelHeader(worksheet, 1, 1);
+            Form20.ExcelHeader(worksheet, 1, 1);
             masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1);
         }
 
@@ -3600,10 +3592,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
         worksheetPrim.Cells.AutoFitColumns();
 
-        var lst = new List<Report>();
-        var form = forms.FirstOrDefault() as Report;
-        lst.Add(form);
-        _Excel_Export_Rows(formNum, 2, masterHeaderLength, worksheet, lst);
+        var exportFormList = new List<Report> { exportForm };
+        _Excel_Export_Rows(formNum, 2, masterHeaderLength, worksheet, exportFormList);
         if (formNum is "2.2")
         {
             for (var col = worksheet.Dimension.Start.Column; col <= worksheet.Dimension.End.Column; col++)
@@ -3615,7 +3605,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break;
             }
         }
-        _Excel_Export_Notes(formNum, 2, masterHeaderLength, worksheetPrim, lst);
+        _Excel_Export_Notes(formNum, 2, masterHeaderLength, worksheetPrim, exportFormList);
         worksheet.View.FreezePanes(2, 1);
         worksheetPrim.View.FreezePanes(2, 1);
         try
@@ -3645,30 +3635,37 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        #region MessageExcelExportComplete
-
-        answer = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage = "Выгрузка формы для анализа сохранена по пути:" +
-                                 $"{Environment.NewLine}{fullPath}",
-                MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (answer is "Открыть выгрузку")
+        if (openTemp)
         {
             Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Выгрузка формы для анализа сохранена по пути:" +
+                                     $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
         }
     }
 
