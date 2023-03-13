@@ -3406,7 +3406,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #endregion
 
-        var fullPath = "";
+        var fileName = "";
+        string fullPath;
+        var formNum = "";
+        string? answer;
         
         if (openTemp)
         {
@@ -3434,35 +3437,40 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 Name = "Excel",
                 Extensions = { "xlsx" }
             };
-            var param = "";
-            var fileName = "";
             if (forms is { Count: > 0 })
             {
                 var rep = (Report)forms.First();
-                param = rep.FormNum_DB;
-                
-                if (param[0] is '1')
+                formNum = rep.FormNum_DB;
+                string regN;
+                string okpo;
+                string corN;
+                switch (formNum[0])
                 {
-                    var regN = RemoveForbiddenChars(rep.Rows10[0].RegNo_DB);
-                    var okpo = RemoveForbiddenChars(rep.Rows10[0].Okpo_DB);
-                    var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
-                    var endPeriod = RemoveForbiddenChars(rep.EndPeriod_DB);
-                    var corN = rep.CorrectionNumber_DB;
-                    fileName += $"Для анализа_{regN}_{okpo}_{param}_{startPeriod}_{endPeriod}_{corN}_{Version}";
+                    case '1':
+                    {
+                        regN = RemoveForbiddenChars(rep.Rows10[0].RegNo_DB);
+                        okpo = RemoveForbiddenChars(rep.Rows10[0].Okpo_DB);
+                        var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
+                        var endPeriod = RemoveForbiddenChars(rep.EndPeriod_DB);
+                        corN = Convert.ToString(rep.CorrectionNumber_DB);
+                        fileName += $"Для анализа_{regN}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corN}_{Version}";
+                        break;
+                    }
+                    case '2':
+                        regN = RemoveForbiddenChars(rep.Rows20[0].RegNo_DB);
+                        okpo = RemoveForbiddenChars(rep.Rows20[0].Okpo_DB);
+                        var year = RemoveForbiddenChars(rep.Year_DB);
+                        corN = Convert.ToString(rep.CorrectionNumber_DB);
+                        fileName += $"Для анализа_{regN}_{okpo}_{formNum}_{year}_{corN}_{Version}";
+                        break;
                 }
-
-                if (param[0] is '2')
-                {
-
-                }
-                
             }
             dial.Filters.Add(filter);
             dial.InitialFileName = fileName;
-            if (param is "") return;
-            var res = await dial.ShowAsync(desktop.MainWindow);
-            if (string.IsNullOrEmpty(res)) return;
-            fullPath = res;
+            if (formNum is "") return;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
             if (!fullPath.EndsWith(".xlsx"))
             {
                 fullPath += ".xlsx";
@@ -3504,10 +3512,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
         if (forms?.Count == 0) return;
-        worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
-        var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
+        worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}");
+        var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
         int masterHeaderLength;
-        if (param.Split('.')[0] == "1")
+        if (formNum.Split('.')[0] == "1")
         {
             masterHeaderLength = Form10.ExcelHeader(worksheet, 1, 1);
             masterHeaderLength = Form10.ExcelHeader(worksheetPrim, 1, 1);
@@ -3518,10 +3526,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             masterHeaderLength = Form20.ExcelHeader(worksheetPrim, 1, 1);
         }
 
-        var tmpLength = Report.ExcelHeader(worksheet, param, 1, masterHeaderLength + 1);
-        Report.ExcelHeader(worksheetPrim, param, 1, masterHeaderLength + 1);
+        var tmpLength = Report.ExcelHeader(worksheet, formNum, 1, masterHeaderLength + 1);
+        Report.ExcelHeader(worksheetPrim, formNum, 1, masterHeaderLength + 1);
         masterHeaderLength += tmpLength;
-        switch (param)
+        switch (formNum)
         {
             case "1.1":
                 Form11.ExcelHeader(worksheet, 1, masterHeaderLength + 1);
@@ -3595,8 +3603,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var lst = new List<Report>();
         var form = forms.FirstOrDefault() as Report;
         lst.Add(form);
-        _Excel_Export_Rows(param, 2, masterHeaderLength, worksheet, lst);
-        if (param is "2.2")
+        _Excel_Export_Rows(formNum, 2, masterHeaderLength, worksheet, lst);
+        if (formNum is "2.2")
         {
             for (var col = worksheet.Dimension.Start.Column; col <= worksheet.Dimension.End.Column; col++)
             {
@@ -3607,9 +3615,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break;
             }
         }
-
-        _Excel_Export_Notes(param, 2, masterHeaderLength, worksheetPrim, lst);
-
+        _Excel_Export_Notes(formNum, 2, masterHeaderLength, worksheetPrim, lst);
         worksheet.View.FreezePanes(2, 1);
         worksheetPrim.View.FreezePanes(2, 1);
         try
@@ -3641,7 +3647,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #region MessageExcelExportComplete
 
-        res = await MessageBox.Avalonia.MessageBoxManager
+        answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions = new[]
@@ -3660,7 +3666,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #endregion
 
-        if (res is "Открыть выгрузку")
+        if (answer is "Открыть выгрузку")
         {
             Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
         }
