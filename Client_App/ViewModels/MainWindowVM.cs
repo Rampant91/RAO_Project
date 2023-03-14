@@ -3091,7 +3091,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 },
                 ContentTitle = "Выгрузка в Excel",
                 ContentHeader = "Уведомление",
-                ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
@@ -3402,7 +3403,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 },
                 ContentTitle = "Выгрузка в Excel",
                 ContentHeader = "Уведомление",
-                ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
@@ -3957,55 +3959,114 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        SaveFileDialog dial = new();
-        var filter = new FileDialogFilter
+        #region MessageSaveOrOpenTemp
+
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        string? answer;
+        string? fullPath;
+        var exportType = forSelectedOrg
+            ? $"Выбранная организация_Формы {param}"
+            : $"Формы {param}";
+        var fileName = forSelectedOrg
+            ? $"{exportType}"
+            : $"{exportType}_{dbFileName}";
+        if (forSelectedOrg)
         {
-            Name = "Excel",
-            Extensions = { "xlsx" }
-        };
-        dial.Filters!.Add(filter);
-        if (param == "") return;
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.EndsWith(".xlsx"))
-        {
-            path += ".xlsx";
+            var regNum = RemoveForbiddenChars(selectedReports!.Master.RegNoRep.Value);
+            var okpo = RemoveForbiddenChars(selectedReports!.Master.OkpoRep.Value);
+            fileName += $"_{regNum}_{okpo}";
         }
 
-        if (File.Exists(path))
+        if (openTemp)
         {
-            try
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                .Where(x => x.Name.EndsWith(".xlsx"))
+                .MaxBy(x => x.Name);
+            
+            if (lastTmpFile is null)
             {
-                File.Delete(path);
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
             }
-            catch (Exception)
+            else
             {
-                #region MessageFailedToSaveFile
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
+            }
+        }
+        else
+        {
+            SaveFileDialog dial = new();
+            var filter = new FileDialogFilter
+            {
+                Name = "Excel",
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = fileName;
+            if (param == "") return;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
+            if (!fullPath.EndsWith(".xlsx"))
+            {
+                fullPath += ".xlsx";
+            }
 
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
 
-                #endregion
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {fullPath}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
 
-                return;
+                    #endregion
+
+                    return;
+                }
             }
         }
 
-        using ExcelPackage excelPackage = new(new FileInfo(path));
+        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
@@ -4144,7 +4205,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                     $"{Environment.NewLine}{path}",
+                                     $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -4156,34 +4217,41 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        #region MessageExcelExportComplete
-
-        var msg = $"Выгрузка форм {param} ";
-        msg += forSelectedOrg
-            ? "для выбранной организации "
-            : "для всех организаций ";
-        msg += $"сохранена по пути {Environment.NewLine}{path}";
-        res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage = msg,
-                MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (res is "Открыть выгрузку")
+        if (openTemp)
         {
-            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            var msg = $"Выгрузка форм {param} ";
+            msg += forSelectedOrg
+                ? "для выбранной организации "
+                : "для всех организаций ";
+            msg += $"сохранена по пути {Environment.NewLine}{fullPath}";
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = msg,
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
         }
     }
 
@@ -4195,7 +4263,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _SelectOrgExcelExport()
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         var mainWindow = desktop.MainWindow as MainWindow;
         var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
         if (selectedReports is null || !selectedReports.Report_Collection.Any())
@@ -4224,55 +4292,106 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        SaveFileDialog dial = new();
-        var filter = new FileDialogFilter
+        #region MessageSaveOrOpenTemp
+
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        string? answer;
+        string? fullPath;
+        var regNum = RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
+        var okpo = RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
+        var exportType = $"Выбранная организация_Все формы";
+        var fileName = $"{exportType}_{regNum}_{okpo}";
+
+        if (openTemp)
         {
-            Name = "Excel",
-            Extensions = { "xlsx" }
-        };
-        dial.Filters?.Add(filter);
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.EndsWith(".xlsx"))
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                .Where(x => x.Name.EndsWith(".xlsx"))
+                .MaxBy(x => x.Name);
+            
+            if (lastTmpFile is null)
+            {
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
+            }
+            else
+            {
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
+            }
+        }
+        else
         {
-            path += ".xlsx";
+            SaveFileDialog dial = new();
+            var filter = new FileDialogFilter
+            {
+                Name = "Excel",
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = fileName;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
+            if (!fullPath.EndsWith(".xlsx"))
+            {
+                fullPath += ".xlsx";
+            }
+
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
+
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                "Не удалось сохранить файл по пути:" +
+                                $"{Environment.NewLine}{fullPath}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+
+                    #endregion
+
+                    return;
+                }
+            }
         }
 
-        if (File.Exists(path))
-        {
-            try
-            {
-                File.Delete(path);
-            }
-            catch (Exception)
-            {
-                #region MessageFailedToSaveFile
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            "Не удалось сохранить файл по пути:" +
-                            $"{Environment.NewLine}{path}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-
-                return;
-            }
-        }
-
-        using ExcelPackage excelPackage = new(new FileInfo(path));
+        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
@@ -4445,7 +4564,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                     $"{Environment.NewLine}{path}",
+                                     $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -4457,30 +4576,37 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        #region MessageExcelExportComplete
-
-        res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage = "Выгрузка всех форм выбранной организации сохранена по пути:" +
-                                 $"{Environment.NewLine}{path}",
-                MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (res is "Открыть выгрузку")
+        if (openTemp)
         {
-            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Выгрузка всех форм выбранной организации сохранена по пути:" +
+                                     $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
         }
     }
 
@@ -6412,54 +6538,102 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        SaveFileDialog dial = new();
-        var filter = new FileDialogFilter
-        {
-            Name = "Excel",
-            Extensions = { "xlsx" }
-        };
-        dial.Filters.Add(filter);
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.EndsWith(".xlsx"))
-        {
-            path += ".xlsx";
-        }
+        #region MessageSaveOrOpenTemp
 
-        if (File.Exists(path))
-        {
-            try
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                File.Delete(path);
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        string? answer;
+        string? fullPath;
+        var exportType = "Список форм 1";
+        var fileName = $"{exportType}_{dbFileName}";
+
+        if (openTemp)
+        {
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                .Where(x => x.Name.EndsWith(".xlsx"))
+                .MaxBy(x => x.Name);
+            if (lastTmpFile is null)
+            {
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
             }
-            catch (Exception)
+            else
             {
-                #region MessageFailedToSaveFile
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-
-                return;
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
             }
         }
+        else
+        {
+            SaveFileDialog dial = new();
+            var filter = new FileDialogFilter
+            {
+                Name = "Excel",
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = fileName;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
+            if (!fullPath.EndsWith(".xlsx"))
+            {
+                fullPath += ".xlsx";
+            }
 
-        using ExcelPackage excelPackage = new(new FileInfo(path));
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
+
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {fullPath}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+
+                    #endregion
+
+                    return;
+                }
+            }
+        }
+
+        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
@@ -6525,7 +6699,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                     $"{Environment.NewLine}{path}",
+                                     $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -6537,31 +6711,38 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        #region MessageExcelExportComplete
-
-        res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage = "Выгрузка списка всех отчетов по форме 1 " +
-                                 "с указанием количества строк сохранена по пути:" +
-                                 $"{Environment.NewLine}{path}",
-                MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (res is "Открыть выгрузку")
+        if (openTemp)
         {
-            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Выгрузка списка всех отчетов по форме 1 " +
+                                     "с указанием количества строк сохранена по пути:" +
+                                     $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
         }
     }
 
@@ -6612,54 +6793,102 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        SaveFileDialog dial = new();
-        var filter = new FileDialogFilter
-        {
-            Name = "Excel",
-            Extensions = { "xlsx" }
-        };
-        dial.Filters.Add(filter);
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.EndsWith(".xlsx"))
-        {
-            path += ".xlsx";
-        }
+        #region MessageSaveOrOpenTemp
 
-        if (File.Exists(path))
-        {
-            try
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                File.Delete(path);
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        string? answer;
+        string? fullPath;
+        var exportType = "Список форм 2";
+        var fileName = $"{exportType}_{dbFileName}";
+
+        if (openTemp)
+        {
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                .Where(x => x.Name.EndsWith(".xlsx"))
+                .MaxBy(x => x.Name);
+            if (lastTmpFile is null)
+            {
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
             }
-            catch (Exception)
+            else
             {
-                #region MessageFailedToSaveFile
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-
-                return;
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
             }
         }
+        else
+        {
+            SaveFileDialog dial = new();
+            var filter = new FileDialogFilter
+            {
+                Name = "Excel",
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = fileName;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
+            if (!fullPath.EndsWith(".xlsx"))
+            {
+                fullPath += ".xlsx";
+            }
 
-        using ExcelPackage excelPackage = new(new FileInfo(path));
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
+
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {fullPath}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+
+                    #endregion
+
+                    return;
+                }
+            }
+        }
+
+        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
@@ -6717,7 +6946,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                     $"{Environment.NewLine}{path}",
+                                     $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -6729,31 +6958,38 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        #region MessageExcelExportComplete
-
-        res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage =
-                    "Выгрузка списка всех отчетов по форме 2 с указанием количества строк сохранена по пути:" +
-                    $"{Environment.NewLine}{path}",
-                MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (res is "Открыть выгрузку")
+        if (openTemp)
         {
-            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Выгрузка списка всех отчетов по форме 2 с указанием количества строк сохранена по пути:" +
+                        $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
         }
     }
 
@@ -6768,54 +7004,103 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var findReps = Local_Reports.Reports_Collection.Count;
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
             findReps == 0) return;
-        SaveFileDialog dial = new();
-        var filter = new FileDialogFilter
+
+        #region MessageSaveOrOpenTemp
+
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        string? answer;
+        string? fullPath;
+        var exportType = "Список организаций";
+        var fileName = $"{exportType}_{dbFileName}";
+
+        if (openTemp)
         {
-            Name = "Excel",
-            Extensions = { "xlsx" }
-        };
-        dial.Filters.Add(filter);
-        var res = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.EndsWith(".xlsx"))
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                .Where(x => x.Name.EndsWith(".xlsx"))
+                .MaxBy(x => x.Name);
+            if (lastTmpFile is null)
+            {
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
+            }
+            else
+            {
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
+            }
+        }
+        else
         {
-            path += ".xlsx";
+            SaveFileDialog dial = new();
+            var filter = new FileDialogFilter
+            {
+                Name = "Excel",
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = fileName;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
+            if (!fullPath.EndsWith(".xlsx"))
+            {
+                fullPath += ".xlsx";
+            }
+
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
+
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {fullPath}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+
+                    #endregion
+
+                    return;
+                }
+            }
         }
 
-        if (File.Exists(path))
-        {
-            try
-            {
-                File.Delete(path);
-            }
-            catch (Exception)
-            {
-                #region MessageFailedToSaveFile
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-
-                return;
-            }
-        }
-
-        using ExcelPackage excelPackage = new(new FileInfo(path));
+        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
@@ -7066,7 +7351,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                     $"{Environment.NewLine}{path}",
+                                     $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -7078,31 +7363,38 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        #region MessageExcelExportComplete
-
-        res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage =
-                    "Выгрузка списка всех организаций с указанием количества форм сохранена по пути:" +
-                    $"{Environment.NewLine}{path}",
-                MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (res is "Открыть выгрузку")
+        if (openTemp)
         {
-            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Выгрузка списка всех организаций с указанием количества форм сохранена по пути:" +
+                        $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
         }
     }
 
@@ -7117,50 +7409,103 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _ExcelMissingPas(object param)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        SaveFileDialog saveFileDialog = new();
-        FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
-        saveFileDialog.Filters.Add(filter);
-        var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.EndsWith(".xlsx"))
+
+        #region MessageSaveOrOpenTemp
+
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        string? answer;
+        string? fullPath;
+        var exportType = "Отчеты без паспортов";
+        var fileName = $"{exportType}_{dbFileName}";
+
+        if (openTemp)
         {
-            path += ".xlsx";
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                .Where(x => x.Name.EndsWith(".xlsx"))
+                .MaxBy(x => x.Name);
+            if (lastTmpFile is null)
+            {
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
+            }
+            else
+            {
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
+            }
+        }
+        else
+        {
+            SaveFileDialog dial = new();
+            var filter = new FileDialogFilter
+            {
+                Name = "Excel",
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = fileName;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
+            if (!fullPath.EndsWith(".xlsx"))
+            {
+                fullPath += ".xlsx";
+            }
+
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
+
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {fullPath}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
+
+                    #endregion
+
+                    return;
+                }
+            }
         }
 
-        if (File.Exists(path))
-        {
-            try
-            {
-                File.Delete(path);
-            }
-            catch (Exception)
-            {
-                #region MessageFailedToSaveFile
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 200,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-
-                return;
-            }
-        }
-
-        using ExcelPackage excelPackage = new(new FileInfo(path));
+        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
@@ -7333,7 +7678,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                     $"{Environment.NewLine}{path}",
+                                     $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -7343,35 +7688,42 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             #endregion
         }
 
-        #region MessageExcelExportComplete
-
-        res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage =
-                    "Выгрузка всех записей паспортов с кодом 11 или 85, категорий 1, 2, 3," +
-                    $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути:" +
-                    $"{Environment.NewLine}{directory.FullName}" +
-                    $"{Environment.NewLine}сохранена по пути:" +
-                    $"{Environment.NewLine}{path}",
-                MinWidth = 400,
-                MinHeight = 200,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (res is "Открыть выгрузку")
+        if (openTemp)
         {
-            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Выгрузка всех записей паспортов с кодом 11 или 85, категорий 1, 2, 3," +
+                        $"{Environment.NewLine}для которых отсутствуют файлы паспортов по пути:" +
+                        $"{Environment.NewLine}{directory.FullName}" +
+                        $"{Environment.NewLine}сохранена по пути:" +
+                        $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    MinHeight = 200,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
         }
     }
 
@@ -7383,10 +7735,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _ExcelPasWithoutRep(object param)
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        SaveFileDialog saveFileDialog = new();
-        FileDialogFilter filter = new() { Name = "Excel", Extensions = { "xlsx" } };
-        saveFileDialog.Filters?.Add(filter);
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        SaveFileDialog dial = new();
+        FileDialogFilter filter = new()
+        {
+            Name = "Excel", 
+            Extensions = { "xlsx" }
+        };
+        dial.Filters.Add(filter);
 
         #region MessageInputCategoryNums
 
@@ -7436,19 +7792,63 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             #endregion
         }
 
-        var res = await saveFileDialog.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(res)) return;
-        var path = res;
-        if (!path.EndsWith(".xlsx"))
+        #region MessageSaveOrOpenTemp
+
+        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                },
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать" +
+                                 $"{Environment.NewLine} с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
+
+        #endregion
+
+        string? fullPath;
+        var exportType = "Паспорта без отчетов";
+        var fileName = $"{exportType}_{dbFileName}";
+
+        if (openTemp)
         {
-            path += ".xlsx";
+            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                .Where(x => x.Name.EndsWith(".xlsx"))
+                .MaxBy(x => x.Name);
+            if (lastTmpFile is null)
+            {
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
+            }
+            else
+            {
+                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
+                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
+                if (!int.TryParse(m.Value, out var index)) return;
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
+            }
         }
 
-        if (File.Exists(path))
+        var answer = await dial.ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(answer)) return;
+        fullPath = answer;
+        if (!fullPath.EndsWith(".xlsx"))
+        {
+            fullPath += ".xlsx";
+        }
+
+        if (File.Exists(fullPath))
         {
             try
             {
-                File.Delete(path);
+                File.Delete(fullPath);
             }
             catch (Exception)
             {
@@ -7461,7 +7861,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Ошибка",
                         ContentMessage =
-                            $"Не удалось сохранить файл по пути: {path}" +
+                            $"Не удалось сохранить файл по пути: {fullPath}" +
                             $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
                             $"{Environment.NewLine}и используется другим процессом.",
                         MinWidth = 400,
@@ -7476,7 +7876,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
 
-        using ExcelPackage excelPackage = new(new FileInfo(path));
+        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
@@ -7508,7 +7908,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage =
-                        $"Не удалось открыть сетевое хранилище паспортов:" +
+                        "Не удалось открыть сетевое хранилище паспортов:" +
                         $"{Environment.NewLine}{directory.FullName}",
                     MinWidth = 400,
                     MinHeight = 150,
@@ -7577,7 +7977,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
-                                     $"{Environment.NewLine}{path}",
+                                     $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -7589,37 +7989,45 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             return;
         }
 
-        #region MessageExcelExportComplete
-
-        res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок" },
-                    new ButtonDefinition { Name = "Открыть выгрузку" }
-                },
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage =
-                    "Выгрузка всех имён файлов паспортов в директории" +
-                    $"{Environment.NewLine}{directory.FullName}" +
-                    $"{Environment.NewLine}для которых отсутствуют соответствующие записи паспортов " +
-                    $"с кодами 11 и 85 категорий: {string.Join(", ", categories)}" +
-                    $"{Environment.NewLine}сохранена по пути:" +
-                    $"{Environment.NewLine}{path}",
-                MinWidth = 400,
-                MinHeight = 200,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(desktop.MainWindow);
-
-        #endregion
-
-        if (res is "Открыть выгрузку")
+        if (openTemp)
         {
-            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
         }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    },
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Выгрузка всех имён файлов паспортов в директории" +
+                        $"{Environment.NewLine}{directory.FullName}" +
+                        $"{Environment.NewLine}для которых отсутствуют соответствующие записи паспортов " +
+                        $"с кодами 11 и 85 категорий: {string.Join(", ", categories)}" +
+                        $"{Environment.NewLine}сохранена по пути:" +
+                        $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    MinHeight = 200,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
+        }
+
     }
 
     #endregion
