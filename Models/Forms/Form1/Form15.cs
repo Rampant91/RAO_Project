@@ -1118,9 +1118,10 @@ public class Form15 : Form1
         try
         {
             var tmp = int.Parse(value.Value);
-            if (!(tmp > 0 && tmp <= 100))
+            if (tmp is not (>= 0 and <= 100))
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
         }
         catch

@@ -1914,7 +1914,7 @@ public class Form22 : Form2, IBaseColor
         {
             return true;
         }
-        if (!int.TryParse(value.Value, out var tmpInt) || tmpInt is not (> 0 and < 100))
+        if (!int.TryParse(value.Value, out var tmpInt) || tmpInt is not (>= 0 and <= 100))
         {
             value.AddError("Недопустимое значение");
             return false;

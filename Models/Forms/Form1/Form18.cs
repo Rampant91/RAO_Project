@@ -1806,11 +1806,11 @@ public class Form18 : Form1
             OnPropertyChanged(nameof(Subsidy));
         }
     }
-    private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SubsidyValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Subsidy_DB = ((RamAccess<string>)Value).Value;
+            Subsidy_DB = ((RamAccess<string>)value).Value;
         }
     }
     private bool Subsidy_Validation(RamAccess<string> value)//Ready
@@ -1827,14 +1827,16 @@ public class Form18 : Form1
         try
         {
             var tmp = int.Parse(value.Value);
-            if (!(tmp > 0 && tmp <= 100))
+            if (tmp is not (>= 0 and <= 100))
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
         }
         catch
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение");
+            return false;
         }
         return true;
     }

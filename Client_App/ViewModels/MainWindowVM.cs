@@ -246,6 +246,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportFrom = ReactiveCommand.CreateFromTask(_ImportFrom);
         ExportForm = ReactiveCommand.CreateFromTask<object>(_ExportForm);
         ExportOrg = ReactiveCommand.CreateFromTask<object>(_ExportOrg);
+        ExportAllOrg = ReactiveCommand.CreateFromTask<object>(_ExportAllOrg);
         ExportOrgWithDateRange = ReactiveCommand.CreateFromTask<object>(_ExportOrgWithDateRange);
         ChangeForm = ReactiveCommand.CreateFromTask<object>(_ChangeForm);
         ChangeReport = ReactiveCommand.CreateFromTask<object>(_ChangeReport);
@@ -2842,6 +2843,134 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         Reports exportOrg = new() { Master = org.Master };
         exportOrg.Report_Collection.AddRange(repInRange);
         await _ExportOrg(exportOrg);
+    }
+
+    #endregion
+
+    #region ExportAllOrg
+
+    public ReactiveCommand<object, Unit> ExportAllOrg { get; private set; }
+
+    private async Task _ExportAllOrg(object par)
+    {
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
+        if (string.IsNullOrEmpty(folderPath)) return;
+        string fileNameTmp;
+        foreach (var org in Local_Reports.Reports_Collection)
+        {
+            var exportOrg = (Reports)org;
+            var dt = DateTime.Now;
+            if (par is ObservableCollectionWithItemPropertyChanged<IKey> param)
+            {
+                foreach (var item in param)
+                {
+                    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+                }
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+            } 
+            else if (par is Reports)
+            {
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+                exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+            }
+            else return;
+            
+            var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
+            var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
+                           $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
+                           $"_{exportOrg.Master.FormNum_DB}" +
+                           $"_{Version}";
+
+            var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
+
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region FailedToSaveFileMessage
+
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    "Не удалось сохранить файл по пути:" +
+                                    $"{Environment.NewLine}{fullPath}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                    $"{Environment.NewLine}и используется другим процессом.",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            }).Show(desktop.MainWindow));
+
+                    #endregion
+                    
+                    return;
+                }
+            }
+            await Task.Run(async () =>
+            {
+                DBModel db = new(fullPathTmp);
+                try
+                {
+                    await db.Database.MigrateAsync();
+                    await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                    await db.SaveChangesAsync();
+
+                    var t = db.Database.GetDbConnection() as FbConnection;
+                    await t.CloseAsync();
+                    await t.DisposeAsync();
+
+                    await db.Database.CloseConnectionAsync();
+                    await db.DisposeAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return;
+                }
+
+                try
+                {
+                    File.Copy(fullPathTmp, fullPath);
+                    File.Delete(fullPathTmp);
+                }
+                catch (Exception e)
+                {
+                    #region FailedCopyFromTempMessage
+
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка",
+                                ContentHeader = "Ошибка",
+                                ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
+                                                 $"{Environment.NewLine}Экспорт не выполнен.",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterScreen
+                            }).ShowDialog(desktop.MainWindow));
+
+                    #endregion
+
+                    return;
+                }
+            });
+        }
+        
     }
 
     #endregion
@@ -7736,13 +7865,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _ExcelPasWithoutRep(object param)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        SaveFileDialog dial = new();
-        FileDialogFilter filter = new()
-        {
-            Name = "Excel", 
-            Extensions = { "xlsx" }
-        };
-        dial.Filters.Add(filter);
 
         #region MessageInputCategoryNums
 
@@ -7813,6 +7935,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #endregion
 
+        string? answer;
         string? fullPath;
         var exportType = "Паспорта без отчетов";
         var fileName = $"{exportType}_{dbFileName}";
@@ -7835,44 +7958,54 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
             }
         }
-
-        var answer = await dial.ShowAsync(desktop.MainWindow);
-        if (string.IsNullOrEmpty(answer)) return;
-        fullPath = answer;
-        if (!fullPath.EndsWith(".xlsx"))
+        else
         {
-            fullPath += ".xlsx";
-        }
-
-        if (File.Exists(fullPath))
-        {
-            try
+            SaveFileDialog dial = new();
+            FileDialogFilter filter = new()
             {
-                File.Delete(fullPath);
+                Name = "Excel", 
+                Extensions = { "xlsx" }
+            };
+            dial.Filters.Add(filter);
+            dial.InitialFileName = fileName;
+            answer = await dial.ShowAsync(desktop.MainWindow);
+            if (string.IsNullOrEmpty(answer)) return;
+            fullPath = answer;
+            if (!fullPath.EndsWith(".xlsx"))
+            {
+                fullPath += ".xlsx";
             }
-            catch (Exception)
+
+            if (File.Exists(fullPath))
             {
-                #region MessageFailedToSaveFile
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception)
+                {
+                    #region MessageFailedToSaveFile
 
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить файл по пути: {fullPath}" +
-                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                            $"{Environment.NewLine}и используется другим процессом.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в Excel",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить файл по пути: {fullPath}" +
+                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                $"{Environment.NewLine}и используется другим процессом.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow);
 
-                #endregion
+                    #endregion
 
-                return;
+                    return;
+                }
             }
         }
 

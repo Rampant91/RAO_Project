@@ -1541,10 +1541,11 @@ public class Form16 : Form1
         }
         try
         {
-            var tmp = Int32.Parse(value.Value);
-            if (!(tmp > 0 && tmp <= 100))
+            var tmp = int.Parse(value.Value);
+            if (tmp is not (>= 0 and <= 100))
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
         }
         catch

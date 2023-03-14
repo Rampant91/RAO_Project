@@ -1183,60 +1183,7 @@ public class Form17 : Form1
     }
     #endregion
 
-    #region Subsidy
-    public string Subsidy_DB { get; set; } = "";
-    [NotMapped]
-    [FormProperty(true, "null-31-1", "null-31-2","Субсидия, %","31")]
-    public RamAccess<string> Subsidy // 0<number<=100 or empty.
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(Subsidy)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(Subsidy)]).Value = Subsidy_DB;
-                return (RamAccess<string>)Dictionary[nameof(Subsidy)];
-            }
-            var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
-            rm.PropertyChanged += SubsidyValueChanged;
-            Dictionary.Add(nameof(Subsidy), rm);
-            return (RamAccess<string>)Dictionary[nameof(Subsidy)];
-        }
-        set
-        {
-            Subsidy_DB = value.Value;
-            OnPropertyChanged(nameof(Subsidy));
-        }
-    }
-    private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            Subsidy_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool Subsidy_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        {
-            return true;
-        }
-        try
-        {
-            var tmp = int.Parse(value.Value);
-            if (!(tmp > 0 && tmp <= 100))
-            {
-                value.AddError("Недопустимое значение"); return false;
-            }
-        }
-        catch
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
-    #endregion
+    
 
     #region FcpNumber
     public string FcpNumber_DB { get; set; } = "";
@@ -1988,6 +1935,62 @@ public class Form17 : Form1
             return true;
         }
         if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        return true;
+    }
+    #endregion
+
+    #region Subsidy
+    public string Subsidy_DB { get; set; } = "";
+    [NotMapped]
+    [FormProperty(true, "null-31-1", "null-31-2","Субсидия, %","31")]
+    public RamAccess<string> Subsidy // 0<number<=100 or empty.
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(Subsidy)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(Subsidy)]).Value = Subsidy_DB;
+                return (RamAccess<string>)Dictionary[nameof(Subsidy)];
+            }
+            var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
+            rm.PropertyChanged += SubsidyValueChanged;
+            Dictionary.Add(nameof(Subsidy), rm);
+            return (RamAccess<string>)Dictionary[nameof(Subsidy)];
+        }
+        set
+        {
+            Subsidy_DB = value.Value;
+            OnPropertyChanged(nameof(Subsidy));
+        }
+    }
+    private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            Subsidy_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool Subsidy_Validation(RamAccess<string> value)//Ready
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        {
+            return true;
+        }
+        try
+        {
+            var tmp = int.Parse(value.Value);
+            if (tmp is not (>= 0 and <= 100))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+        }
+        catch
         {
             value.AddError("Недопустимое значение");
             return false;
