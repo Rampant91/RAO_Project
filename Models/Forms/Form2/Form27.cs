@@ -448,9 +448,9 @@ public class Form27 : Form2
 
         worksheet.Cells[row, column].Value = ConvertToExcelString(ObservedSourceNumber_DB);
         worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(RadionuclidName_DB);
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertFromExcelDouble(AllowedWasteValue_DB);
-        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertFromExcelDouble(FactedWasteValue_DB);
-        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertFromExcelDouble(WasteOutbreakPreviousYear_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDouble(AllowedWasteValue_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelDouble(FactedWasteValue_DB);
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDouble(WasteOutbreakPreviousYear_DB);
         return 5;
     }
 
