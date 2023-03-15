@@ -2890,7 +2890,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(folderPath)) return;
 
-        await Parallel.ForEachAsync(Local_Reports.Reports_Collection, async (exportOrg, token) =>
+        Parallel.ForEach(Local_Reports.Reports_Collection, async exportOrg =>
         {
             var dt = DateTime.Now;
             string fileNameTmp;
@@ -2900,14 +2900,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
                 }
-                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-                await StaticConfiguration.DBModel.SaveChangesAsync(token);
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Ticks}";
+                await StaticConfiguration.DBModel.SaveChangesAsync();
             } 
             else if (par is Reports)
             {
-                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Ticks}";
                 exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
-                await StaticConfiguration.DBModel.SaveChangesAsync(token);
+                await StaticConfiguration.DBModel.SaveChangesAsync();
             }
             else return;
             
@@ -2925,11 +2925,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 if (m.Success)
                 {
                     if (!int.TryParse(m.Value, out var index)) return;
+                    fileNameTmp = fileNameTmp.TrimEnd(".raodb".ToCharArray());
                     fileNameTmp = Path.Combine(fileNameTmp, $"#{index + 1}.raodb");
                 }
                 else
                 {
-                    fileNameTmp = fullPath.TrimEnd(".raodb".ToCharArray());
+                    fileNameTmp = fileNameTmp.TrimEnd(".raodb".ToCharArray());
                     fileNameTmp += "#1.raodb";
                 }
             }
@@ -2940,6 +2941,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 if (m.Success)
                 {
                     if (!int.TryParse(m.Value, out var index)) return;
+                    fullPath = fullPath.TrimEnd(".raodb".ToCharArray());
                     fullPath = Path.Combine(fullPath, $"#{index + 1}.raodb");
                 }
                 else
@@ -2954,9 +2956,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 DBModel db = new(fullPathTmp);
                 try
                 {
-                    await db.Database.MigrateAsync(cancellationToken: token);
-                    await db.ReportsCollectionDbSet.AddAsync(exportOrg, token);
-                    await db.SaveChangesAsync(token);
+                    await db.Database.MigrateAsync();
+                    await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                    await db.SaveChangesAsync();
 
                     var t = db.Database.GetDbConnection() as FbConnection;
                     await t.CloseAsync();
@@ -2988,17 +2990,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                 ContentTitle = "Выгрузка",
                                 ContentHeader = "Ошибка",
                                 ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
-                                                 $"{Environment.NewLine}Экспорт не выполнен.",
+                                                 $"{Environment.NewLine}Экспорт не выполнен." +
+                                                 $"{Environment.NewLine}{e.Message}",
                                 MinWidth = 400,
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterScreen
-                            }).ShowDialog(desktop.MainWindow));
+                            })
+                            .ShowDialog(desktop.MainWindow));
 
                     #endregion
 
                     return;
                 }
-            }, token);
+            });
         });
         
 
