@@ -2726,6 +2726,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 return;
             }
         });
+
+        #region ExportDoneMessage
+
         var answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
@@ -2746,7 +2749,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 MinWidth = 400,
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
-            }).ShowDialog(desktop.MainWindow);
+            }).ShowDialog(desktop.MainWindow); 
+
+        #endregion
+
         if (answer is "Открыть расположение файла")
         {
             Process.Start("explorer", folderPath);
@@ -2854,13 +2860,40 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _ExportAllOrg(object par)
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        string? answer;
+        if (Local_Reports.Reports_Collection.Count > 10)
+        {
+            #region ExportDoneMessage
+
+            answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Ок", IsDefault = true },
+                        new ButtonDefinition { Name = "Отменить выгрузку", IsCancel = true }
+                    },
+                    ContentTitle = "Выгрузка",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Текущая база содержит {Local_Reports.Reports_Collection.Count} форм организаций," +
+                        $"{Environment.NewLine}выгрузка займет примерно {Local_Reports.Reports_Collection.Count / 20} минут",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                }).ShowDialog(desktop.MainWindow); 
+
+            #endregion
+
+            if (answer is "Отменить выгрузку") return;
+        }
         var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(folderPath)) return;
-        string fileNameTmp;
-        foreach (var org in Local_Reports.Reports_Collection)
+
+        await Parallel.ForEachAsync(Local_Reports.Reports_Collection, async (exportOrg, token) =>
         {
-            var exportOrg = (Reports)org;
             var dt = DateTime.Now;
+            string fileNameTmp;
             if (par is ObservableCollectionWithItemPropertyChanged<IKey> param)
             {
                 foreach (var item in param)
@@ -2868,17 +2901,17 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
                 }
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                await StaticConfiguration.DBModel.SaveChangesAsync(token);
             } 
             else if (par is Reports)
             {
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                await StaticConfiguration.DBModel.SaveChangesAsync(token);
             }
             else return;
             
-            var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
+            var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}.raodb");
             var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                            $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                            $"_{exportOrg.Master.FormNum_DB}" +
@@ -2886,47 +2919,44 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
             var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
 
-            if (File.Exists(fullPath))
+            while (File.Exists(fileNameTmp)) // insert index if tmp file exist
             {
-                try
+                var m = new Regex(@"(?<=\w*#)\d(?=\.raodb)$").Match(fileNameTmp);
+                if (m.Success)
                 {
-                    File.Delete(fullPath);
+                    if (!int.TryParse(m.Value, out var index)) return;
+                    fileNameTmp = Path.Combine(fileNameTmp, $"#{index + 1}.raodb");
                 }
-                catch (Exception)
+                else
                 {
-                    #region FailedToSaveFileMessage
-
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                        MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    "Не удалось сохранить файл по пути:" +
-                                    $"{Environment.NewLine}{fullPath}" +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                    $"{Environment.NewLine}и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            }).Show(desktop.MainWindow));
-
-                    #endregion
-                    
-                    return;
+                    fileNameTmp = fullPath.TrimEnd(".raodb".ToCharArray());
+                    fileNameTmp += "#1.raodb";
                 }
             }
+
+            while (File.Exists(fullPath)) // insert index if file exist
+            {
+                var m = new Regex(@"(?<=\w*#)\d(?=\.raodb)$").Match(fullPath);
+                if (m.Success)
+                {
+                    if (!int.TryParse(m.Value, out var index)) return;
+                    fullPath = Path.Combine(fullPath, $"#{index + 1}.raodb");
+                }
+                else
+                {
+                    fullPath = fullPath.TrimEnd(".raodb".ToCharArray());
+                    fullPath += "#1.raodb";
+                }
+            }
+
             await Task.Run(async () =>
             {
                 DBModel db = new(fullPathTmp);
                 try
                 {
-                    await db.Database.MigrateAsync();
-                    await db.ReportsCollectionDbSet.AddAsync(exportOrg);
-                    await db.SaveChangesAsync();
+                    await db.Database.MigrateAsync(cancellationToken: token);
+                    await db.ReportsCollectionDbSet.AddAsync(exportOrg, token);
+                    await db.SaveChangesAsync(token);
 
                     var t = db.Database.GetDbConnection() as FbConnection;
                     await t.CloseAsync();
@@ -2968,9 +2998,36 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     return;
                 }
-            });
-        }
+            }, token);
+        });
         
+
+        #region ExportDoneMessage
+
+        answer = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Открыть расположение файлов" }
+                },
+                ContentTitle = "Выгрузка",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка всех организаций в отдельные" +
+                                 $"{Environment.NewLine}файлы .raodb завершена.",
+                MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            })
+            .ShowDialog(desktop.MainWindow); 
+
+        #endregion
+
+        if (answer is "Открыть расположение файлов")
+        {
+            Process.Start("explorer", folderPath);
+        }
     }
 
     #endregion
