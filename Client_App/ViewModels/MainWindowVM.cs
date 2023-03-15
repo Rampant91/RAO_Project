@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsTCPIP;
 using Avalonia.Threading;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.Reactive.Joins;
 
 namespace Client_App.ViewModels;
 
@@ -2900,12 +2901,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
                 }
-                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Ticks}";
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             } 
             else if (par is Reports)
             {
-                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Ticks}";
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
                 exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }
@@ -2919,92 +2920,72 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
             var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
 
-            while (File.Exists(fileNameTmp)) // insert index if tmp file exist
+            DBModel db = new(fullPathTmp);
+            try
             {
-                var m = new Regex(@"(?<=\w*#)\d(?=\.raodb)$").Match(fileNameTmp);
-                if (m.Success)
-                {
-                    if (!int.TryParse(m.Value, out var index)) return;
-                    fileNameTmp = fileNameTmp.TrimEnd(".raodb".ToCharArray());
-                    fileNameTmp = Path.Combine(fileNameTmp, $"#{index + 1}.raodb");
-                }
-                else
-                {
-                    fileNameTmp = fileNameTmp.TrimEnd(".raodb".ToCharArray());
-                    fileNameTmp += "#1.raodb";
-                }
+                await db.Database.MigrateAsync();
+                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                await db.SaveChangesAsync();
+
+                var t = db.Database.GetDbConnection() as FbConnection;
+                await t.CloseAsync();
+                await t.DisposeAsync();
+
+                await db.Database.CloseConnectionAsync();
+                await db.DisposeAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
             }
 
-            while (File.Exists(fullPath)) // insert index if file exist
+            try
             {
-                var m = new Regex(@"(?<=\w*#)\d(?=\.raodb)$").Match(fullPath);
-                if (m.Success)
+                while (File.Exists(fullPath)) // insert index if file already exist
                 {
-                    if (!int.TryParse(m.Value, out var index)) return;
-                    fullPath = fullPath.TrimEnd(".raodb".ToCharArray());
-                    fullPath = Path.Combine(fullPath, $"#{index + 1}.raodb");
+                    MatchCollection matches = Regex.Matches(fullPath, @"(.+)#(\d+)(?=\.raodb)");
+                    if (matches.Count > 0)
+                    {
+                        foreach (Match match in matches)
+                        {
+                            if (!int.TryParse(match.Groups[2].Value, out var index)) return;
+                            fullPath = match.Groups[1].Value + $"#{index + 1}.raodb";
+                        }
+                    }
+                    else
+                    {
+                        fullPath = fullPath.TrimEnd(".raodb".ToCharArray()) + "#1.raodb";
+                    }
                 }
-                else
-                {
-                    fullPath = fullPath.TrimEnd(".raodb".ToCharArray());
-                    fullPath += "#1.raodb";
-                }
+                File.Copy(fullPathTmp, fullPath);
+                File.Delete(fullPathTmp);
             }
-
-            await Task.Run(async () =>
+            catch (Exception e)
             {
-                DBModel db = new(fullPathTmp);
-                try
-                {
-                    await db.Database.MigrateAsync();
-                    await db.ReportsCollectionDbSet.AddAsync(exportOrg);
-                    await db.SaveChangesAsync();
+                #region FailedCopyFromTempMessage
 
-                    var t = db.Database.GetDbConnection() as FbConnection;
-                    await t.CloseAsync();
-                    await t.DisposeAsync();
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка",
+                            ContentHeader = "Ошибка",
+                            ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
+                                             $"{Environment.NewLine}Экспорт не выполнен." +
+                                             $"{Environment.NewLine}{e.Message}",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        })
+                        .ShowDialog(desktop.MainWindow));
 
-                    await db.Database.CloseConnectionAsync();
-                    await db.DisposeAsync();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return;
-                }
+                #endregion
 
-                try
-                {
-                    File.Copy(fullPathTmp, fullPath);
-                    File.Delete(fullPathTmp);
-                }
-                catch (Exception e)
-                {
-                    #region FailedCopyFromTempMessage
-
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                        MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка",
-                                ContentHeader = "Ошибка",
-                                ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
-                                                 $"{Environment.NewLine}Экспорт не выполнен." +
-                                                 $"{Environment.NewLine}{e.Message}",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterScreen
-                            })
-                            .ShowDialog(desktop.MainWindow));
-
-                    #endregion
-
-                    return;
-                }
-            });
+                return;
+            }
         });
-        
 
         #region ExportDoneMessage
 
