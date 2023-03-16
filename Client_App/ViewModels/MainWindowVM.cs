@@ -3978,7 +3978,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     "data"), "Excel"), $"{formNum}.xlsx");
 #else
                                 string pth =
- Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"), "Excel"), param+".xlsx");
+ Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"), "Excel"), formNum+".xlsx");
 #endif
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(pth));
