@@ -23,18 +23,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsTCPIP;
 using Avalonia.Threading;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
-using System.Reactive.Joins;
 
 namespace Client_App.ViewModels;
 
