@@ -2232,6 +2232,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 foreach (var item in reportsCollection) //Для каждой импортируемой организации
                 {
                     await item.SortAsync();
+                    await RestoreReportsOrders(item);
                     if (item.Master.Rows10.Count != 0)
                     {
                         item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
@@ -2245,7 +2246,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     var first21 = await GetReports21FromLocalEqual(item);
                     FillEmptyRegNo(ref first11);
                     FillEmptyRegNo(ref first21);
-                    await RestoreReportsOrders(item);
                     item.CleanIds();
                     await ProcessIfNoteOrder0(item);
 
@@ -2886,7 +2886,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(folderPath)) return;
 
-        Parallel.ForEach(Local_Reports.Reports_Collection, async exportOrg =>
+        foreach (Reports exportOrg in Local_Reports.Reports_Collection)
         {
             var dt = DateTime.Now;
             string fileNameTmp;
@@ -2898,7 +2898,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
                 await StaticConfiguration.DBModel.SaveChangesAsync();
-            } 
+            }
             else if (par is Reports)
             {
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
@@ -2906,7 +2906,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }
             else return;
-            
+
             var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}.raodb");
             var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                            $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
@@ -2915,72 +2915,76 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
             var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
 
-            DBModel db = new(fullPathTmp);
-            try
-            {
-                await db.Database.MigrateAsync();
-                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
-                await db.SaveChangesAsync();
 
-                var t = db.Database.GetDbConnection() as FbConnection;
-                await t.CloseAsync();
-                await t.DisposeAsync();
-
-                await db.Database.CloseConnectionAsync();
-                await db.DisposeAsync();
-            }
-            catch (Exception e)
+            await Task.Run(async () =>
             {
-                Console.WriteLine(e);
-                return;
-            }
-
-            try
-            {
-                while (File.Exists(fullPath)) // insert index if file already exist
+                DBModel db = new(fullPathTmp);
+                try
                 {
-                    MatchCollection matches = Regex.Matches(fullPath, @"(.+)#(\d+)(?=\.raodb)");
-                    if (matches.Count > 0)
+                    await db.Database.MigrateAsync();
+                    await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                    await db.SaveChangesAsync();
+
+                    var t = db.Database.GetDbConnection() as FbConnection;
+                    await t.CloseAsync();
+                    await t.DisposeAsync();
+
+                    await db.Database.CloseConnectionAsync();
+                    await db.DisposeAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return;
+                }
+
+                try
+                {
+                    while (File.Exists(fullPath)) // insert index if file already exist
                     {
-                        foreach (Match match in matches)
+                        MatchCollection matches = Regex.Matches(fullPath, @"(.+)#(\d+)(?=\.raodb)");
+                        if (matches.Count > 0)
                         {
-                            if (!int.TryParse(match.Groups[2].Value, out var index)) return;
-                            fullPath = match.Groups[1].Value + $"#{index + 1}.raodb";
+                            foreach (Match match in matches)
+                            {
+                                if (!int.TryParse(match.Groups[2].Value, out var index)) return;
+                                fullPath = match.Groups[1].Value + $"#{index + 1}.raodb";
+                            }
+                        }
+                        else
+                        {
+                            fullPath = fullPath.TrimEnd(".raodb".ToCharArray()) + "#1.raodb";
                         }
                     }
-                    else
-                    {
-                        fullPath = fullPath.TrimEnd(".raodb".ToCharArray()) + "#1.raodb";
-                    }
+                    File.Copy(fullPathTmp, fullPath);
+                    File.Delete(fullPathTmp);
                 }
-                File.Copy(fullPathTmp, fullPath);
-                File.Delete(fullPathTmp);
-            }
-            catch (Exception e)
-            {
-                #region FailedCopyFromTempMessage
+                catch (Exception e)
+                {
+                    #region FailedCopyFromTempMessage
 
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                    MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка",
-                            ContentHeader = "Ошибка",
-                            ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
-                                             $"{Environment.NewLine}Экспорт не выполнен." +
-                                             $"{Environment.NewLine}{e.Message}",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterScreen
-                        })
-                        .ShowDialog(desktop.MainWindow));
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка",
+                                ContentHeader = "Ошибка",
+                                ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
+                                                 $"{Environment.NewLine}Экспорт не выполнен." +
+                                                 $"{Environment.NewLine}{e.Message}",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterScreen
+                            })
+                            .ShowDialog(desktop.MainWindow));
 
-                #endregion
+                    #endregion
 
-                return;
-            }
-        });
+                    return;
+                }
+            });
+        }
 
         #region ExportDoneMessage
 
