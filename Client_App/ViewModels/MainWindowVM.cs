@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 
 namespace Client_App.ViewModels;
 
@@ -2515,7 +2516,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             try
             {
                 await db.Database.MigrateAsync();
-                await db.ReportsCollectionDbSet.AddAsync(reps);
+                await db.ReportsCollectionDbSet.AddAsync(orgWithExpForm);
                 await db.SaveChangesAsync();
 
                 var t = db.Database.GetDbConnection() as FbConnection;
@@ -2886,38 +2887,21 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var folderPath = await new OpenFolderDialog().ShowAsync(desktop.MainWindow);
         if (string.IsNullOrEmpty(folderPath)) return;
 
-        foreach (Reports exportOrg in Local_Reports.Reports_Collection)
+        ParallelOptions po = new ParallelOptions();
+        Parallel.ForEach(Local_Reports.Reports_Collection, async exportOrg =>
         {
-            var dt = DateTime.Now;
-            string fileNameTmp;
-            if (par is ObservableCollectionWithItemPropertyChanged<IKey> param)
-            {
-                foreach (var item in param)
-                {
-                    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
-                }
-                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
-                await StaticConfiguration.DBModel.SaveChangesAsync();
-            }
-            else if (par is Reports)
-            {
-                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
-                exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
-                await StaticConfiguration.DBModel.SaveChangesAsync();
-            }
-            else return;
-
-            var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}.raodb");
-            var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
-                           $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
-                           $"_{exportOrg.Master.FormNum_DB}" +
-                           $"_{Version}";
-
-            var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
-
-
             await Task.Run(async () =>
             {
+                var dt = DateTime.Now;
+                var fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+                var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}.raodb");
+                var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
+                               $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
+                               $"_{exportOrg.Master.FormNum_DB}" +
+                               $"_{Version}";
+
+                var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
                 DBModel db = new(fullPathTmp);
                 try
                 {
@@ -2984,8 +2968,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     return;
                 }
             });
-        }
-
+        });
+        
         #region ExportDoneMessage
 
         answer = await MessageBox.Avalonia.MessageBoxManager
@@ -3004,7 +2988,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             })
-            .ShowDialog(desktop.MainWindow); 
+            .ShowDialog(desktop.MainWindow);
 
         #endregion
 
@@ -3012,6 +2996,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             Process.Start("explorer", folderPath);
         }
+
+        
     }
 
     #endregion
