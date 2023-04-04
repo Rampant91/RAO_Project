@@ -11,7 +11,7 @@ using OfficeOpenXml;
 namespace Models.Forms.Form2;
 
 [Serializable]
-[Form_Class("Форма 2.0: Титульный лист годового отчета организации")]
+[Form_Class("Форма 2.0: Титульный лист организации")]
 public class Form20 : Form
 {
     public Form20()
