@@ -291,7 +291,7 @@ public class Form1_Visual
             TextAlignment = TextAlignment.Center,
             FontWeight = FontWeight.Bold,
             FontSize = 16,
-            Text = "Обособленное подразделение",
+            Text = "Территориальное обособленное подразделение",
         });
         obosobPodrazdStackPanel.Children.Add(Create10Item("SubjectRF", BindingPrefix, scp, 1));
         obosobPodrazdStackPanel.Children.Add(Create10Item("JurLico", BindingPrefix, scp, 1));
