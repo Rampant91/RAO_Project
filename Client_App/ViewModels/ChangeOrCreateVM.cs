@@ -1472,7 +1472,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
-                worksheet.Cells.AutoFitColumns();
+
+                if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+                {
+                    worksheet.Cells.AutoFitColumns();
+                }
+                
                 var headersCellsString = "A1:A" + worksheet.Dimension.End.Column;
                 worksheet.Cells[headersCellsString].Style.WrapText = true;
                 worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
@@ -1614,7 +1619,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         }
                     }
                 }
-                worksheet.Cells.AutoFitColumns();
+
+                if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+                {
+                    worksheet.Cells.AutoFitColumns();
+                }
                 headersCellsString = "A1:A" + worksheet.Dimension.End.Column;
                 worksheet.Cells[headersCellsString].Style.WrapText = true;
                 worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
@@ -1658,6 +1667,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     })
                     .ShowDialog(desktop.MainWindow);
                 #endregion
+
                 if (res is "Открыть выгрузку")
                 {
                     Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });

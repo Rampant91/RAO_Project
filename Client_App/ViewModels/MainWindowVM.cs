@@ -31,6 +31,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Client_App.ViewModels;
 
@@ -149,7 +150,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             try
             {
-                dbFileName = fileInfo.Name;
+                dbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
                 Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {dbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
@@ -166,8 +167,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         if (!loadDbFile) //Если не прочитали файл базы, то создаем пустой.
         {
-            Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - Local_{i}.raodb";
-            StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"Local_{i}.raodb");
+            dbFileName = $"Local_{i}";
+            Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {dbFileName}";
+            StaticConfiguration.DBPath = Path.Combine(tempDirectory, dbFileName);
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
             await dbm.Database.MigrateAsync();
@@ -3237,7 +3239,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #region MessageSaveOrOpenTemp
 
-        var openTemp =  "Открыть временную копию" == await MessageBox.Avalonia.MessageBoxManager
+        var res = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions = new[]
@@ -3256,76 +3258,77 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #endregion
 
+        var openTemp = res is "Открыть временную копию";
         string? fullPath;
         var exportType = "Разрывы и пересечения";
-        var fileName = $"{exportType}_{dbFileName}";
-        if (openTemp)
+        var fileName = $"{exportType}_{dbFileName}_{Version}";
+        switch (res)
         {
-            DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
-            var lastTmpFile = tmpFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                .Where(x => x.Name.EndsWith(".xlsx"))
-                .MaxBy(x => x.Name);
-            if (lastTmpFile is null)
+            case "Открыть временную копию":
             {
-                fullPath = Path.Combine(tmpFolder.FullName, fileName + "_1.xlsx");
-            }
-            else
-            {
-                var fileNameWithoutExtension = lastTmpFile.Name.TrimEnd(".xlsx".ToCharArray());
-                var m = new Regex(@"(?<=\w*_)\d$").Match(fileNameWithoutExtension);
-                if (!int.TryParse(m.Value, out var index)) return;
-                fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{index + 1}.xlsx");
-            }
-        }
-        else
-        {
-            SaveFileDialog dial = new();
-            var filter = new FileDialogFilter
-            {
-                Name = "Excel",
-                Extensions = { "xlsx" }
-            };
-            dial.Filters.Add(filter);
-            dial.InitialFileName = fileName;
-            fullPath = await dial.ShowAsync(desktop.MainWindow);
-            if (fullPath is null) return;
-            if (string.IsNullOrEmpty(fullPath)) return;
-            if (!fullPath.EndsWith(".xlsx"))
-            {
-                fullPath += ".xlsx";
-            }
-
-            if (File.Exists(fullPath))
-            {
-                try
+                DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(Path.GetPathRoot(GetSystemDirectory().Result)!, "RAO"), "temp"));
+                var count = 0;
+                do
                 {
-                    File.Delete(fullPath);
-                }
-                catch (Exception)
-                {
-                    #region MessageFailedToSaveFile
+                    fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
+                } while (File.Exists(fullPath));
 
-                    await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Ошибка",
-                            ContentMessage =
-                                $"Не удалось сохранить файл по пути: {fullPath}" +
-                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                $"{Environment.NewLine}и используется другим процессом.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(desktop.MainWindow);
-
-                    #endregion
-
-                    return;
-                }
+                break;
             }
+            case "Сохранить":
+            {
+                SaveFileDialog dial = new();
+                var filter = new FileDialogFilter
+                {
+                    Name = "Excel",
+                    Extensions = { "xlsx" }
+                };
+                dial.Filters.Add(filter);
+                dial.InitialFileName = fileName;
+                fullPath = await dial.ShowAsync(desktop.MainWindow);
+                if (fullPath is null) return;
+                if (string.IsNullOrEmpty(fullPath)) return;
+                if (!fullPath.EndsWith(".xlsx"))
+                {
+                    fullPath += ".xlsx";
+                }
+
+                if (File.Exists(fullPath))
+                {
+                    try
+                    {
+                        File.Delete(fullPath);
+                    }
+                    catch (Exception)
+                    {
+                        #region MessageFailedToSaveFile
+
+                        await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка в Excel",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    $"Не удалось сохранить файл по пути: {fullPath}" +
+                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                    $"{Environment.NewLine}и используется другим процессом.",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(desktop.MainWindow);
+
+                        #endregion
+
+                        return;
+                    }
+                }
+
+                break;
+            }
+            default:
+                return;
         }
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -3344,7 +3347,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         worksheet.Cells[1, 8].Value = "Конец периода";
         worksheet.Cells[1, 9].Value = "Зона разрыва";
         worksheet.Cells[1, 10].Value = "Вид несоответствия";
-        worksheet.Column(3).AutoFit();
+
+        if (OperatingSystem.IsWindows()) worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров
+        
 
         var listSortRep = new List<ReportForSort>();
         foreach (var key in Local_Reports.Reports_Collection)
@@ -3471,7 +3476,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
         {
             if (worksheet.Cells[1, col].Value is "Сокращенное наименование") continue;
-            worksheet.Column(col).AutoFit();
+
+            if (OperatingSystem.IsWindows()) worksheet.Column(col).AutoFit();
         }
 
         worksheet.View.FreezePanes(2, 1);
@@ -3510,7 +3516,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             #region MessageExcelExportComplete
 
-            var res = await MessageBox.Avalonia.MessageBoxManager
+            res = await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions = new[]
@@ -3751,9 +3757,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break;
         }
 
-        worksheet.Cells.AutoFitColumns();
         Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
-        worksheetPrim.Cells.AutoFitColumns();
+        if (OperatingSystem.IsWindows())
+        {
+            worksheet.Cells.AutoFitColumns();
+            worksheetPrim.Cells.AutoFitColumns();
+        }
 
         var exportFormList = new List<Report> { exportForm };
         _Excel_Export_Rows(formNum, 2, masterHeaderLength, worksheet, exportFormList);
@@ -4312,9 +4321,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 break;
         }
 
-        worksheet.Cells.AutoFitColumns();
         Note.ExcelHeader(worksheetPrim, 1, masterHeaderLength + 1);
-        worksheetPrim.Cells.AutoFitColumns();
+        if (OperatingSystem.IsWindows())
+        {
+            worksheet.Cells.AutoFitColumns();
+            worksheetPrim.Cells.AutoFitColumns();
+        }
 
         var tyu = 2;
         var lst = new List<Report>();
@@ -6838,7 +6850,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
 
-        worksheet.Cells.AutoFitColumns();
+        if (OperatingSystem.IsWindows()) worksheet.Cells.AutoFitColumns();   // Под Astra Linux эта команда крашит программу без GDI дров
         worksheet.View.FreezePanes(2, 1);
         try
         {
@@ -7085,7 +7097,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
 
-        worksheet.Cells.AutoFitColumns();
+        if (OperatingSystem.IsWindows()) worksheet.Cells.AutoFitColumns();   // Под Astra Linux эта команда крашит программу без GDI дров
         worksheet.View.FreezePanes(2, 1);
         try
         {
@@ -7297,9 +7309,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         #endregion
 
-        worksheet.Column(3).AutoFit();
-        worksheet.Column(5).AutoFit();
-        worksheet.Column(6).AutoFit();
+        if (OperatingSystem.IsWindows())    // Под Astra Linux эта команда крашит программу без GDI дров
+        {
+            worksheet.Column(3).AutoFit();
+            worksheet.Column(5).AutoFit();
+            worksheet.Column(6).AutoFit();
+        }
 
         var lst = new List<Reports>();
         var checkedLst = new List<Reports>();
@@ -7488,7 +7503,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
         {
             if (worksheet.Cells[1, col].Value is "Сокращенное наименование" or "Адрес" or "Орган управления") continue;
-            worksheet.Column(col).AutoFit();
+            if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+            {
+                worksheet.Column(col).AutoFit();
+            }
         }
 
         worksheet.View.FreezePanes(2, 1);
@@ -7700,7 +7718,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         worksheet.Cells[1, 29].Value = "наименование";
         worksheet.Cells[1, 30].Value = "тип";
         worksheet.Cells[1, 31].Value = "номер";
-        worksheet.Cells.AutoFitColumns();
+
+        if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+        {
+            worksheet.Cells.AutoFitColumns();
+        }
         worksheet.View.FreezePanes(2, 1);
 
         #endregion
@@ -8121,7 +8143,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             currentRow++;
         }
 
-        worksheet.Cells.AutoFitColumns();
+        if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+        {
+            worksheet.Cells.AutoFitColumns();
+        }
+
         try
         {
             excelPackage.Save();
