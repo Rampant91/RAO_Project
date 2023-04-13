@@ -144,7 +144,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         DBModel dbm;
         DirectoryInfo dirInfo = new(tempDirectory);
         foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                     .Where(x => x.Name.EndsWith(".RAODB"))
+                     .Where(x => x.Name.ToLower().EndsWith(".raodb"))
                      .OrderByDescending((x => x.LastWriteTime)))
         {
             try
@@ -421,6 +421,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
         OnStartProgressBar = 76;
+        if (!dbm.DBObservableDbSet.Any())
+        {
+            dbm.DBObservableDbSet.Add(new DBObservable());
+            dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
+        }
         await dbm.DBObservableDbSet.LoadAsync(); 
         #endregion
 
@@ -1122,7 +1127,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     }
 
     #endregion
-
+    
     #region ImportForm
 
     public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
@@ -2520,6 +2525,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 await db.Database.MigrateAsync();
                 await db.ReportsCollectionDbSet.AddAsync(orgWithExpForm);
+                if (!db.DBObservableDbSet.Any())
+                {
+                    db.DBObservableDbSet.Add(new DBObservable());
+                    db.DBObservableDbSet.Local.First().Reports_Collection.AddRange(db.ReportsCollectionDbSet.Local);
+                }
                 await db.SaveChangesAsync();
 
                 var t = db.Database.GetDbConnection() as FbConnection;
