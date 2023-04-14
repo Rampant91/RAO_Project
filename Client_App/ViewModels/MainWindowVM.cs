@@ -2471,7 +2471,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         if (reps is null) return;
 
-        var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
+        var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.RAODB");
 
         Reports orgWithExpForm = new()
         {
@@ -2500,7 +2500,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
+        var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
         if (File.Exists(fullPath))
         {
@@ -2663,13 +2663,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
         else return;
         
-        var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.raodb");
+        var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}_exp.RAODB");
         var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                        $"_{exportOrg.Master.FormNum_DB}" +
                        $"_{Version}";
 
-        var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
+        var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
         if (File.Exists(fullPath))
         {
@@ -2927,13 +2927,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 var dt = DateTime.Now;
                 var fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
                 await StaticConfiguration.DBModel.SaveChangesAsync();
-                var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}.raodb");
+                var fullPathTmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), $"{fileNameTmp}.RAODB");
                 var filename = $"{RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                                $"_{RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                                $"_{exportOrg.Master.FormNum_DB}" +
                                $"_{Version}";
 
-                var fullPath = Path.Combine(folderPath, $"{filename}.raodb");
+                var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
                 DBModel db = new(fullPathTmp);
                 try
                 {
@@ -2958,18 +2958,18 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 {
                     while (File.Exists(fullPath)) // insert index if file already exist
                     {
-                        MatchCollection matches = Regex.Matches(fullPath, @"(.+)#(\d+)(?=\.raodb)");
+                        MatchCollection matches = Regex.Matches(fullPath, @"(.+)#(\d+)(?=\.RAODB)");
                         if (matches.Count > 0)
                         {
                             foreach (Match match in matches)
                             {
                                 if (!int.TryParse(match.Groups[2].Value, out var index)) return;
-                                fullPath = match.Groups[1].Value + $"#{index + 1}.raodb";
+                                fullPath = match.Groups[1].Value + $"#{index + 1}.RAODB";
                             }
                         }
                         else
                         {
-                            fullPath = fullPath.TrimEnd(".raodb".ToCharArray()) + "#1.raodb";
+                            fullPath = fullPath.TrimEnd(".RAODB".ToCharArray()) + "#1.RAODB";
                         }
                     }
                     File.Copy(fullPathTmp, fullPath);
