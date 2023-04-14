@@ -26,12 +26,10 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using DynamicData;
 
 namespace Client_App.ViewModels;
