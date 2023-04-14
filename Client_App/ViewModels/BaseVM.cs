@@ -24,6 +24,10 @@ public class BaseVM
 
     private protected static string SystemDirectory = "";
 
+    private protected static string RaoDirectory = "";
+
+    private protected static string TmpDirectory = "";
+
     private protected static bool ComparePasParam(string? nameDb, string? namePas)
     {
         if (nameDb == null || namePas == null)

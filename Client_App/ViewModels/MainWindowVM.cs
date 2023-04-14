@@ -76,40 +76,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Init
 
-    private async Task<string> ProcessRaoDirectory(string systemDirectory)
-    {
-        var tmp = "";
-        var pty = "";
-        try
-        {
-            tmp = Path.Combine(systemDirectory, "RAO");
-            pty = tmp;
-            tmp = Path.Combine(tmp, "temp");
-            Directory.CreateDirectory(tmp);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            await ShowMessage.Handle(ErrorMessages.Error2);
-            throw new Exception(ErrorMessages.Error2[0]);
-        }
-        var fl = Directory.GetFiles(tmp, ".");
-        foreach (var file in fl)
-        {
-            try
-            {
-                File.Delete(file);
-            }
-            catch (Exception e)
-            {
-                //Console.WriteLine(e.Message);
-                //await ShowMessage.Handle(ErrorMessages.Error3);
-                //throw new Exception(ErrorMessages.Error3[0]);
-            }
-        }
-        return pty;
-    }
-
     private async Task<string> GetSystemDirectory()
     {
         try
@@ -135,7 +101,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             process.Start();
             process.StandardInput.WriteLine("logname");
             var userName = process.StandardOutput.ReadLine();
-            return Path.Combine("/home", userName!);
+            SystemDirectory = Path.Combine("/home", userName!);
+            return SystemDirectory;
         }
         catch (Exception e)
         {
@@ -145,6 +112,38 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    private async Task ProcessRaoDirectory()
+    {
+        try
+        {
+            RaoDirectory = Path.Combine(SystemDirectory, "RAO");
+            TmpDirectory = Path.Combine(RaoDirectory, "temp");
+            Directory.CreateDirectory(TmpDirectory);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            await ShowMessage.Handle(ErrorMessages.Error2);
+            throw new Exception(ErrorMessages.Error2[0]);
+        }
+        var fl = Directory.GetFiles(TmpDirectory, ".");
+        foreach (var file in fl)
+        {
+            try
+            {
+                File.Delete(file);
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine(e.Message);
+                //await ShowMessage.Handle(ErrorMessages.Error3);
+                //throw new Exception(ErrorMessages.Error3[0]);
+            }
+        }
+    }
+
+    
+
     private static Task ProcessSpravochniks()
     {
         var a = Spravochniks.SprRadionuclids;
@@ -152,13 +151,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         return Task.CompletedTask;
     }
 
-    private async Task ProcessDataBaseCreate(string tempDirectory)
+    private async Task ProcessDataBaseCreate()
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         var i = 0;
         var loadDbFile = false;
         DBModel dbm;
-        DirectoryInfo dirInfo = new(tempDirectory);
+        DirectoryInfo dirInfo = new(RaoDirectory);
         foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
                      .Where(x => x.Name.ToLower().EndsWith(".raodb"))
                      .OrderByDescending((x => x.LastWriteTime)))
@@ -184,7 +183,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             DbFileName = $"Local_{i}";
             Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {DbFileName}";
-            StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"{DbFileName}.RAODB");
+            StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
             await dbm.Database.MigrateAsync();
@@ -304,11 +303,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         onStartProgressBarVm.LoadStatus = "Поиск системной директории";
         OnStartProgressBar = 1;
-        var systemDirectory = await GetSystemDirectory();
+        await GetSystemDirectory();
 
         onStartProgressBarVm.LoadStatus = "Создание временных файлов";
         OnStartProgressBar = 5;
-        var raoDirectory = await ProcessRaoDirectory(systemDirectory);
+        await ProcessRaoDirectory();
 
         onStartProgressBarVm.LoadStatus = "Загрузка справочников";
         OnStartProgressBar = 10;
@@ -316,7 +315,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         onStartProgressBarVm.LoadStatus = "Создание базы данных";
         OnStartProgressBar = 15;
-        await ProcessDataBaseCreate(raoDirectory);
+        await ProcessDataBaseCreate();
         
         onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
         OnStartProgressBar = 20;
@@ -881,7 +880,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private async Task _ImportFrom()
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        var answer = await GetSelectedFilesFromDialog("Excel", "xlsx");
+        string[] extensions = { "xlsx", "XLSX" };
+        var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
         foreach (var res in answer)
         {
@@ -1183,14 +1183,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private async Task<string> GetRaoFileName()
+    private static async Task<string> GetRaoFileName()
     {
-        var tmp = await GetTempDirectory(await GetSystemDirectory());
         var count = 0;
         string? file;
         do
         {
-            file = Path.Combine(tmp, $"file_imp_{count++}.raodb");
+            file = Path.Combine(TmpDirectory, $"file_imp_{count++}.raodb");
         } while (File.Exists(file));
 
         return file;
@@ -2233,7 +2232,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         try
         {
             if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-            var answer = await GetSelectedFilesFromDialog("RAODB", "raodb");
+            string[] extensions = { "raodb", "RAODB" };
+            var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
             if (answer is null) return;
             skipNewOrg = false;
             skipInter = false;
