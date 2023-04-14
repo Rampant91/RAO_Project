@@ -1681,6 +1681,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ReactiveCommand<object, Unit> OpenPassport { get; protected set; }
     private async Task _OpenPassport(object param)
     {
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         PassportUniqParam(param, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
         var year = ConvertDateToYear(date);
         if (okpo is null or ""
@@ -1689,8 +1690,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             || pasNum is null or ""
             || factoryNum is null or "")
         {
-            var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             #region MessageUnableToOpenPassport
+
             await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow("Уведомление",
                         "Паспорт не может быть открыт, поскольку не заполнены или заполнены некорректно все требуемые поля:"
@@ -1699,8 +1700,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         + Environment.NewLine + "- номер;"
                         + Environment.NewLine + "- код ОКПО изготовителя;"
                         + Environment.NewLine + "- дата выпуска;")
-                    .ShowDialog(desktop!.MainWindow);
+                    .ShowDialog(desktop.MainWindow);
+
             #endregion
+
             return;
         }
         
@@ -1708,29 +1711,30 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
 
-        if (Directory.EnumerateFiles(PasFolderPath, uniqPasName).FirstOrDefault() != null)
+        var pasFullPath = Directory.EnumerateFiles(PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault() is not null
+            ? Directory.EnumerateFiles(PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault()
+            : Directory.EnumerateFiles(PasFolderPath, TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
+                ? Directory.EnumerateFiles(PasFolderPath, TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
+                : Directory.EnumerateFiles(PasFolderPath, TranslateToRus(uniqPasName)).FirstOrDefault() != null
+                    ? Directory.EnumerateFiles(PasFolderPath, TranslateToRus(uniqPasName)).FirstOrDefault()
+                    : null;
+
+        if (pasFullPath is not null)
         {
-            Process.Start(new ProcessStartInfo
-                { FileName = Path.Combine(PasFolderPath, uniqPasName), UseShellExecute = true });
-        }
-        else if (Directory.EnumerateFiles(PasFolderPath, TranslateToEng(uniqPasName)).FirstOrDefault() != null)
-        {
-            Process.Start(new ProcessStartInfo
-                { FileName = Path.Combine(PasFolderPath, TranslateToEng(uniqPasName)), UseShellExecute = true });
-        }
-        else if (Directory.EnumerateFiles(PasFolderPath, TranslateToRus(uniqPasName)).FirstOrDefault() != null)
-        {
-            Process.Start(new ProcessStartInfo
-                { FileName = Path.Combine(PasFolderPath, TranslateToRus(uniqPasName)), UseShellExecute = true });
+            Process.Start(new ProcessStartInfo { FileName = pasFullPath, UseShellExecute = true });
         }
         else
         {
-            var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            #region MessagePasportFileMissing
+
             await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow("Уведомление", 
-                    $"Паспорт {uniqPasName}{Environment.NewLine}" +
-                    $"отсутствует в сетевом хранилище {PasFolderPath}")
-                .ShowDialog(desktop!.MainWindow);
+                    $"Паспорт {uniqPasName}" +
+                    $"{Environment.NewLine}отсутствует в сетевом хранилище:" +
+                    $"{Environment.NewLine}{PasFolderPath}")
+                .ShowDialog(desktop.MainWindow);
+
+            #endregion
         }
     }
 
