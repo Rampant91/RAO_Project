@@ -6655,10 +6655,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         List<string> pasNames = new();
         List<string[]> pasUniqParam = new();
         DirectoryInfo directory = new(PasFolderPath);
-        FileInfo[] files;
+        List<FileInfo> files = new();
         try
         {
-            files = directory.GetFiles("*#*#*#*#*.pdf");
+            files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
         }
         catch (Exception)
         {
@@ -6919,9 +6919,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                  && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
                                  && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
                     {
-                        //var a = files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                         files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-                        //pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                         break;
                     }
                 }

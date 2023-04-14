@@ -10,7 +10,7 @@ namespace Client_App.ViewModels;
 
 public class BaseVM
 {
-    private protected static string PasFolderPath = @"Y:\Исайчева\Паспорта\Тестовые паспорта";
+    private protected static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
 
     private protected const string Version = @"1.2.2.10";
 
