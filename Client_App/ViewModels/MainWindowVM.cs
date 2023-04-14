@@ -7686,7 +7686,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     },
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
-                    ContentMessage = "Выгрузка всех форм выбранной организации сохранена по пути:" +
+                    ContentMessage = "Выгрузка сохранена по пути:" +
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

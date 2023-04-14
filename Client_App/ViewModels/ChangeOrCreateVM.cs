@@ -1297,6 +1297,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     })
                     .ShowDialog(desktop.MainWindow);
                 #endregion
+
                 return;
             }
             SaveFileDialog saveFileDialog = new();
@@ -1332,9 +1333,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                             })
                             .ShowDialog(desktop.MainWindow); 
                         #endregion
+
                         return;
                     }
                 }
+
                 using ExcelPackage excelPackage = new(new FileInfo(path));
                 excelPackage.Workbook.Properties.Author = "RAO_APP";
                 excelPackage.Workbook.Properties.Title = "Report";
@@ -1629,6 +1632,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                 worksheet.Cells[headersCellsString].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center; 
                 #endregion
+
                 try
                 {
                     excelPackage.Save();
@@ -1678,6 +1682,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region OpenPassport
+
     public ReactiveCommand<object, Unit> OpenPassport { get; protected set; }
     private async Task _OpenPassport(object param)
     {
@@ -1737,7 +1742,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             #endregion
         }
     }
-
     
     #endregion
 
