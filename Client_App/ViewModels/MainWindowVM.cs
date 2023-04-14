@@ -116,8 +116,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             if (OperatingSystem.IsWindows())
             {
-                systemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
-                return systemDirectory;
+                SystemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
+                return SystemDirectory;
             }
 
             //var userName = await RunCommandInBush("logname");
@@ -165,8 +165,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             try
             {
-                dbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {dbFileName}";
+                DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
+                Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {DbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -182,9 +182,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         if (!loadDbFile) //Если не прочитали файл базы, то создаем пустой.
         {
-            dbFileName = $"Local_{i}";
-            Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {dbFileName}";
-            StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"{dbFileName}.RAODB");
+            DbFileName = $"Local_{i}";
+            Current_Db = $"Интерактивное пособие по вводу данных ver.{Version} Текущая база данных - {DbFileName}";
+            StaticConfiguration.DBPath = Path.Combine(tempDirectory, $"{DbFileName}.RAODB");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
             await dbm.Database.MigrateAsync();
@@ -3271,7 +3271,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var cts = new CancellationTokenSource();
         var exportType = "Разрывы и пересечения";
-        var fileName = $"{exportType}_{dbFileName}_{Version}";
+        var fileName = $"{exportType}_{DbFileName}_{Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -3786,7 +3786,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var okpo = RemoveForbiddenChars(selectedReports!.Master.OkpoRep.Value);
         var fileName = forSelectedOrg
             ? $"{exportType}_{regNum}_{okpo}_{Version}"
-            : $"{exportType}_{dbFileName}_{Version}";
+            : $"{exportType}_{DbFileName}_{Version}";
 
         (string fullPath, bool openTemp) result;
         try
@@ -6097,7 +6097,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var cts = new CancellationTokenSource();
         var exportType = "Список форм 1";
-        var fileName = $"{exportType}_{dbFileName}_{Version}";
+        var fileName = $"{exportType}_{DbFileName}_{Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -6223,7 +6223,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var cts = new CancellationTokenSource();
         var exportType = "Список форм 2";
-        var fileName = $"{exportType}_{dbFileName}_{Version}";
+        var fileName = $"{exportType}_{DbFileName}_{Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -6306,7 +6306,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var cts = new CancellationTokenSource();
         var exportType = "Список организаций";
-        var fileName = $"{exportType}_{dbFileName}_{Version}";
+        var fileName = $"{exportType}_{DbFileName}_{Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -6583,7 +6583,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var cts = new CancellationTokenSource();
         var exportType = "Отчеты без паспортов";
-        var fileName = $"{exportType}_{dbFileName}_{Version}";
+        var fileName = $"{exportType}_{DbFileName}_{Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -6827,7 +6827,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var cts = new CancellationTokenSource();
         var exportType = "Паспорта без отчетов";
-        var fileName = $"{exportType}_{dbFileName}_{Version}";
+        var fileName = $"{exportType}_{DbFileName}_{Version}";
         (string fullPath, bool openTemp) result;
         try
         {

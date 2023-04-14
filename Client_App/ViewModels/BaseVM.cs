@@ -20,9 +20,9 @@ public class BaseVM
 
     private protected const string Version = @"1.2.2.10";
 
-    private protected static string dbFileName = "Local_0";
+    private protected static string DbFileName = "Local_0";
 
-    private protected static string systemDirectory = "";
+    private protected static string SystemDirectory = "";
 
     private protected static bool ComparePasParam(string? nameDb, string? namePas)
     {
@@ -194,7 +194,7 @@ public class BaseVM
         {
             case "Открыть временную копию":
                 {
-                    DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(systemDirectory, "RAO"), "temp"));
+                    DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(SystemDirectory, "RAO"), "temp"));
                     var count = 0;
                     do
                     {
