@@ -32,6 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using DynamicData;
 
 namespace Client_App.ViewModels;
 
@@ -6764,6 +6765,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 }
             }
         }
+        worksheet.View.FreezePanes(2, 1);
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
@@ -6852,20 +6854,25 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Created = DateTime.Now;
         worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчетов");
 
-        worksheet.Cells[1, 1].Value = "Полное имя файла";
-        worksheet.Cells[1, 2].Value = "Код ОКПО изготовителя";
-        worksheet.Cells[1, 3].Value = "Тип";
-        worksheet.Cells[1, 4].Value = "Год выпуска";
-        worksheet.Cells[1, 5].Value = "Номер паспорта";
-        worksheet.Cells[1, 6].Value = "Номер";
+        #region Headers
+
+        worksheet.Cells[1, 1].Value = "Путь до папки";
+        worksheet.Cells[1, 2].Value = "Имя файла";
+        worksheet.Cells[1, 3].Value = "Код ОКПО изготовителя";
+        worksheet.Cells[1, 4].Value = "Тип";
+        worksheet.Cells[1, 5].Value = "Год выпуска";
+        worksheet.Cells[1, 6].Value = "Номер паспорта";
+        worksheet.Cells[1, 7].Value = "Номер"; 
+
+        #endregion
 
         List<string> pasNames = new();
         List<string[]> pasUniqParam = new();
         DirectoryInfo directory = new(PasFolderPath);
-        FileInfo[] files;
+        List<FileInfo> files = new();
         try
         {
-            files = directory.GetFiles("*#*#*#*#*.pdf");
+            files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
         }
         catch (Exception)
         {
@@ -6912,7 +6919,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                                  && ComparePasParam(ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
                                  && ComparePasParam(ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
                     {
-                        pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                        //var a = files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                        files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+                        //pasNames.Remove($"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                         break;
                     }
                 }
@@ -6920,14 +6929,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
 
         var currentRow = 2;
-        foreach (var pasName in pasNames)
+        foreach (var file in files)
         {
-            worksheet.Cells[currentRow, 1].Value = pasName;
-            worksheet.Cells[currentRow, 2].Value = pasName.Split('#')[0];
-            worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[1];
-            worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[2];
-            worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[3];
-            worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[4];
+            var pasName = file.Name.TrimEnd(".pdf".ToCharArray());
+            worksheet.Cells[currentRow, 1].Value = file.DirectoryName;
+            worksheet.Cells[currentRow, 2].Value = pasName;
+            worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[0];
+            worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[1];
+            worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[2];
+            worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[3];
+            worksheet.Cells[currentRow, 7].Value = pasName.Split('#')[4];
             currentRow++;
         }
 
@@ -6935,6 +6946,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             worksheet.Cells.AutoFitColumns();
         }
+        worksheet.View.FreezePanes(2, 1);
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
