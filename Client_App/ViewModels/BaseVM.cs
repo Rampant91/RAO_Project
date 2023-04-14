@@ -1,7 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 
 namespace Client_App.ViewModels;
@@ -123,5 +125,23 @@ public class BaseVM
             else newPasName += ch;
         }
         return newPasName;
+    }
+
+    private protected async Task<string?> RunCommandInBush(string command)
+    {
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "bash",
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+            }
+        };
+        process.Start();
+        await process.StandardInput.WriteLineAsync(command);
+        return await process.StandardOutput.ReadLineAsync();
     }
 }
