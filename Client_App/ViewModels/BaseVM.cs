@@ -11,6 +11,8 @@ using MessageBox.Avalonia.Models;
 using OfficeOpenXml;
 using System.IO;
 using System.Threading;
+using Models.Collections;
+using Models.Forms.Form1;
 
 namespace Client_App.ViewModels;
 
@@ -18,15 +20,32 @@ public class BaseVM
 {
     private protected static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
 
-    private protected const string Version = @"1.2.2.10";
+    internal const string Version = @"1.2.2.10";
 
-    private protected static string DbFileName = "Local_0";
+    internal static string DbFileName = "Local_0";
 
-    private protected static string SystemDirectory = "";
+    internal static string SystemDirectory = "";
 
     private protected static string RaoDirectory = "";
 
     private protected static string TmpDirectory = "";
+
+    #region LocalReports
+
+    private static DBObservable _localReports = new();
+    public static DBObservable LocalReports
+    {
+        get => _localReports;
+        set
+        {
+            if (_localReports != value)
+            {
+                _localReports = value;
+            }
+        }
+    }
+
+    #endregion
 
     private protected static bool ComparePasParam(string? nameDb, string? namePas)
     {
@@ -68,11 +87,41 @@ public class BaseVM
             : "0000";
     }
 
+    internal static string InventoryCheck(Report? rep)
+    {
+        if (rep is null)
+        {
+            return "";
+        }
+
+        var countCode10 = 0;
+        foreach (var key in rep.Rows)
+        {
+            if (key is Form1 { OperationCode_DB: "10" })
+            {
+                countCode10++;
+            }
+        }
+
+        return countCode10 == rep.Rows.Count
+            ? " (ИНВ)"
+            : countCode10 > 0
+                ? " (инв)"
+                : "";
+    }
+
     private protected static string RemoveForbiddenChars(string str)
     {
         str = str.Replace(Environment.NewLine, "").Trim();
         str = Regex.Replace(str, "[\\\\/:*?\"<>|]", "");
         return str;
+    }
+
+    internal static string StringReverse(string str)
+    {
+        var charArray = str.Replace("_", "0").Replace("/", ".").Split(".");
+        Array.Reverse(charArray);
+        return string.Join("", charArray);
     }
 
     private protected static string TranslateToEng(string pasName)

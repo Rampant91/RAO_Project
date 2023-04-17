@@ -36,25 +36,6 @@ namespace Client_App.ViewModels;
 
 public class MainWindowVM : BaseVM, INotifyPropertyChanged
 {
-    #region Local_Reports
-
-    private DBObservable _local_Reports = new();
-
-    public DBObservable Local_Reports
-    {
-        get => _local_Reports;
-        set
-        {
-            if (_local_Reports != value)
-            {
-                _local_Reports = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    #endregion
-
     #region Current_Db
 
     private string _current_Db = "";
@@ -229,7 +210,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task ProcessDataBaseFillNullOrder()
     {
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             foreach (var key1 in item.Report_Collection)
@@ -248,7 +229,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await item.SortAsync();
         }
 
-        await Local_Reports.Reports_Collection.QuickSortAsync();
+        await LocalReports.Reports_Collection.QuickSortAsync();
     }
 
     private Task PropertiesInit()
@@ -450,13 +431,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
         OnStartProgressBar = 85;
-        Local_Reports = dbm.DBObservableDbSet.Local.First();
+        LocalReports = dbm.DBObservableDbSet.Local.First();
         await ProcessDataBaseFillNullOrder();
 
         onStartProgressBarVm.LoadStatus = "Сохранение";
         OnStartProgressBar = 90;
         await dbm.SaveChangesAsync();
-        Local_Reports.PropertyChanged += Local_ReportsChanged;
+        LocalReports.PropertyChanged += Local_ReportsChanged;
 
         onStartProgressBarVm.LoadStatus = "Инициализация";
         OnStartProgressBar = 95;
@@ -467,7 +448,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
     {
-        OnPropertyChanged(nameof(Local_Reports));
+        OnPropertyChanged(nameof(LocalReports));
     }
 
     #endregion
@@ -507,10 +488,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         {
             var t = desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-            ChangeOrCreateVM frm = new(param, Local_Reports);
+            ChangeOrCreateVM frm = new(param, LocalReports);
             await ShowDialog.Handle(frm);
             t.SelectedReports = tmp;
-            await Local_Reports.Reports_Collection.QuickSortAsync();
+            await LocalReports.Reports_Collection.QuickSortAsync();
         }
     }
 
@@ -829,10 +810,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         IEnumerable<Reports>? reps = worksheet0.Name switch
         {
-            "1.0" => Local_Reports.Reports_Collection10
+            "1.0" => LocalReports.Reports_Collection10
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB),
-            "2.0" => Local_Reports.Reports_Collection20
+            "2.0" => LocalReports.Reports_Collection20
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB),
             _ => null
@@ -873,7 +854,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
 
         await GetDataTitleReps(newRepsFromExcel, worksheet0);
-        Local_Reports.Reports_Collection.Add(newRepsFromExcel);
+        LocalReports.Reports_Collection.Add(newRepsFromExcel);
         return newRepsFromExcel;
     }
 
@@ -1224,7 +1205,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 return null;
             }
 
-            return Local_Reports.Reports_Collection10
+            return LocalReports.Reports_Collection10
                        .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -1250,7 +1231,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                            && item.Master.Rows10[1].Okpo_DB != ""
                            && t.Master.Rows10[1].RegNo_DB == "")
 
-                   ?? Local_Reports
+                   ?? LocalReports
                        .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                        .FirstOrDefault(t =>
 
@@ -1281,7 +1262,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 return null;
             }
 
-            return Local_Reports.Reports_Collection20
+            return LocalReports.Reports_Collection20
                        .FirstOrDefault(t => 
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -1307,7 +1288,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                            && item.Master.Rows20[1].Okpo_DB != ""
                            && t.Master.Rows20[1].RegNo_DB == "")
 
-                   ?? Local_Reports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                   ?? LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                        .FirstOrDefault(t => 
                                
                            // юр лицо в базе совпадает с обособленным в импорте
@@ -2353,7 +2334,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                         if (an is "Добавить" or "Да для всех")
                         {
-                            Local_Reports.Reports_Collection.Add(item);
+                            LocalReports.Reports_Collection.Add(item);
                         }
 
                         #endregion
@@ -2370,7 +2351,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     }
                 }
             }
-            await Local_Reports.Reports_Collection.QuickSortAsync();
+            await LocalReports.Reports_Collection.QuickSortAsync();
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
         catch
@@ -2406,28 +2387,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private static string InventoryCheck(Report? rep)
-    {
-        if (rep is null)
-        {
-            return "";
-        }
-
-        var countCode10 = 0;
-        foreach (var key in rep.Rows)
-        {
-            if (key is Form1 { OperationCode_DB: "10" })
-            {
-                countCode10++;
-            }
-        }
-
-        return countCode10 == rep.Rows.Count
-            ? " (ИНВ)"
-            : countCode10 > 0
-                ? " (инв)"
-                : "";
-    }
+    
 
     #endregion
 
@@ -2465,7 +2425,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
-        var reps = Local_Reports.Reports_Collection
+        var reps = LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         if (reps is null) return;
 
@@ -2888,7 +2848,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         string? answer;
-        if (Local_Reports.Reports_Collection.Count > 10)
+        if (LocalReports.Reports_Collection.Count > 10)
         {
             #region ExportDoneMessage
 
@@ -2903,8 +2863,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Уведомление",
                     ContentMessage =
-                        $"Текущая база содержит {Local_Reports.Reports_Collection.Count} форм организаций," +
-                        $"{Environment.NewLine}выгрузка займет примерно {Local_Reports.Reports_Collection.Count / 20} минут",
+                        $"Текущая база содержит {LocalReports.Reports_Collection.Count} форм организаций," +
+                        $"{Environment.NewLine}выгрузка займет примерно {LocalReports.Reports_Collection.Count / 20} минут",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
@@ -2918,7 +2878,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         if (string.IsNullOrEmpty(folderPath)) return;
 
         ParallelOptions po = new ParallelOptions();
-        Parallel.ForEach(Local_Reports.Reports_Collection, async exportOrg =>
+        Parallel.ForEach(LocalReports.Reports_Collection, async exportOrg =>
         {
             await Task.Run(async () =>
             {
@@ -3047,10 +3007,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var t = desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
             var rep = (Report)obj;
-            var tre = Local_Reports.Reports_Collection
+            var tre = LocalReports.Reports_Collection
                 .FirstOrDefault(i => i.Report_Collection.Contains(rep));
             var numForm = rep.FormNum.Value;
-            var frm = new ChangeOrCreateVM(numForm, rep, tre, Local_Reports);
+            var frm = new ChangeOrCreateVM(numForm, rep, tre, LocalReports);
             switch (numForm)
             {
                 case "2.1":
@@ -3117,7 +3077,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             var t = desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
             var rep = (Reports)obj;
-            var frm = new ChangeOrCreateVM(rep.Master.FormNum.Value, rep.Master, rep, Local_Reports);
+            var frm = new ChangeOrCreateVM(rep.Master.FormNum.Value, rep.Master, rep, LocalReports);
             await ShowDialog.Handle(frm);
 
             //Local_Reports.Reports_Collection.Sorted = false;
@@ -3181,7 +3141,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
                     foreach (var item in param)
                     {
-                        Local_Reports.Reports_Collection.Remove((Reports)item);
+                        LocalReports.Reports_Collection.Remove((Reports)item);
                     }
                 }
 
@@ -3202,7 +3162,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();
-            await Local_Reports.Reports_Collection.QuickSortAsync();
+            await LocalReports.Reports_Collection.QuickSortAsync();
         }
     }
 
@@ -3213,12 +3173,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     private ExcelWorksheet worksheet { get; set; }
     private ExcelWorksheet worksheetComment { get; set; }
 
-    private static string StringReverse(string str)
-    {
-        var charArray = str.Replace("_", "0").Replace("/", ".").Split(".");
-        Array.Reverse(charArray);
-        return string.Join("", charArray);
-    }
+    
 
     #region StatisticExcelExport //Excel-Разрывы и пересечения
 
@@ -3231,7 +3186,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         #region ReportsCountCheck
 
         var findRep = 0;
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -3294,7 +3249,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (Local_Reports.Reports_Collection.Count == 0) return;
+        if (LocalReports.Reports_Collection.Count == 0) return;
 
         worksheet = excelPackage.Workbook.Worksheets.Add("Разрывы и пересечения");
 
@@ -3316,7 +3271,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         if (OperatingSystem.IsWindows()) worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров
 
         var listSortRep = new List<ReportForSort>();
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             if (item.Master_DB.FormNum_DB.Split('.')[0] != "1") continue;
@@ -3461,7 +3416,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             par is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
 
         var exportForm = (Report)forms.First();
-        var orgWithExportForm = Local_Reports.Reports_Collection
+        var orgWithExportForm = LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         var formNum = exportForm.FormNum_DB;
         if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
@@ -3636,7 +3591,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             || par is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
         
         var exportForm = (Report)forms.First();
-        var orgWithExportForm = Local_Reports.Reports_Collection
+        var orgWithExportForm = LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         var formNum = exportForm.FormNum_DB;
         if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
@@ -3718,7 +3673,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         #region CheckReportsCount
 
         var findRep = 0;
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -3809,7 +3764,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (Local_Reports.Reports_Collection.Count == 0) return;
+        if (LocalReports.Reports_Collection.Count == 0) return;
         worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
         var worksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
         int masterHeaderLength;
@@ -3917,7 +3872,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
         else
         {
-            foreach (var key in Local_Reports.Reports_Collection)
+            foreach (var key in LocalReports.Reports_Collection)
             {
                 var item = (Reports)key;
                 var newItem = item.Report_Collection
@@ -6057,7 +6012,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         #region ReportsCountCheck
 
         var findRep = 0;
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -6119,7 +6074,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (Local_Reports.Reports_Collection.Count == 0) return;
+        if (LocalReports.Reports_Collection.Count == 0) return;
         worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
 
         #region Headers
@@ -6136,7 +6091,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         #endregion
 
         var lst = new List<Reports>();
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")
@@ -6183,7 +6138,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         #region ReportsCountCheck
 
         var findRep = 0;
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -6245,7 +6200,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (Local_Reports.Reports_Collection.Count == 0) return;
+        if (LocalReports.Reports_Collection.Count == 0) return;
 
         worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 2");
 
@@ -6261,7 +6216,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         #endregion
 
         var lst = new List<Reports>();
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             if (item.Master_DB.FormNum_DB.Split('.')[0] == "2")
@@ -6301,7 +6256,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private async Task _AllOrganization_Excel_Export()
     {
-        var findReps = Local_Reports.Reports_Collection.Count;
+        var findReps = LocalReports.Reports_Collection.Count;
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || findReps == 0) return;
 
         var cts = new CancellationTokenSource();
@@ -6329,7 +6284,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        if (Local_Reports.Reports_Collection.Count == 0) return;
+        if (LocalReports.Reports_Collection.Count == 0) return;
         worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
 
         #region ColumnHeaders
@@ -6374,7 +6329,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         var lst = new List<Reports>();
         var checkedLst = new List<Reports>();
-        foreach (var key in Local_Reports.Reports_Collection)
+        foreach (var key in LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             lst.Add(item);
@@ -6684,7 +6639,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
         var currentRow = 2;
-        foreach (var key in Local_Reports.Reports_Collection10)
+        foreach (var key in LocalReports.Reports_Collection10)
         {
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
@@ -6897,7 +6852,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-        foreach (var key in Local_Reports.Reports_Collection10)
+        foreach (var key in LocalReports.Reports_Collection10)
         {
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
@@ -6974,7 +6929,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         foreach (var item in forms)
         {
-            var findReports = Local_Reports.Reports_Collection
+            var findReports = LocalReports.Reports_Collection
                 .Where(t => t.Report_Collection.Contains(item));
             var reps = findReports.FirstOrDefault();
             if (reps == null) continue;
@@ -7022,7 +6977,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         foreach (var item in forms)
         {
-            var findReports = Local_Reports.Reports_Collection
+            var findReports = LocalReports.Reports_Collection
                 .Where(t => t.Report_Collection.Contains(item));
             var reps = findReports.FirstOrDefault();
             if (reps is null) continue;
@@ -7178,7 +7133,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
     {
-        var findReports = Local_Reports.Reports_Collection
+        var findReports = LocalReports.Reports_Collection
             .Where(t => t.Report_Collection.Contains(form));
         var reps = findReports.FirstOrDefault();
         var master = reps.Master_DB;
@@ -7279,7 +7234,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
     {
-        var findReports = Local_Reports.Reports_Collection
+        var findReports = LocalReports.Reports_Collection
             .Where(t => t.Report_Collection.Contains(form));
         var reps = findReports.FirstOrDefault();
         var master = reps.Master_DB;
