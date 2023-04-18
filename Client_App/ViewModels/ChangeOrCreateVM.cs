@@ -108,6 +108,23 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
+    #region LocalReports
+
+    private static DBObservable _localReports = new();
+    public static DBObservable LocalReports
+    {
+        get => _localReports;
+        set
+        {
+            if (_localReports != value)
+            {
+                _localReports = value;
+            }
+        }
+    }
+
+    #endregion
+
     #region DBO
     private DBObservable _DBO;
     public DBObservable DBO

@@ -24,8 +24,8 @@
                     <MenuItem Header="Изменить расположение паспортов по умолчанию" Command="{Binding ChangePasDir}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Список организаций" Command="{Binding AllOrganization_Excel_Export}"></MenuItem>
-                <MenuItem Header="Список форм 1" Command="{Binding AllForms1_Excel_Export}"></MenuItem>
-                <MenuItem Header="Список форм 2" Command="{Binding AllForms2_Excel_Export}"></MenuItem>
+                <MenuItem Header="Список форм 1" Command="{Binding ExcelExportAllForms1}"></MenuItem>
+                <MenuItem Header="Список форм 2" Command="{Binding ExcelExportAllForms2}"></MenuItem>
                 <MenuItem Header="Разрывы и пересечения" Command="{Binding Statistic_Excel_Export}"></MenuItem>
                 <MenuItem Header="Формы 1">
                     <MenuItem Header="Форма 1.1" Command="{Binding All_Excel_Export}" CommandParameter="1.1"></MenuItem>

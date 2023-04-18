@@ -18,10 +18,11 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 using Avalonia;
+using Client_App.Views;
 
 namespace Client_App.Commands.AsyncCommands.Excel
 {
-    internal class ExcelBaseAsync
+    public abstract class ExcelBaseAsyncCommand : AsyncBaseCommand
     {
         private protected ExcelWorksheet? Worksheet { get; set; }
 
@@ -31,7 +32,7 @@ namespace Client_App.Commands.AsyncCommands.Excel
 
         #region Constructor
 
-        public ExcelBaseAsync()
+        protected ExcelBaseAsyncCommand()
         {
             Desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
         }
@@ -45,7 +46,7 @@ namespace Client_App.Commands.AsyncCommands.Excel
         {
             foreach (var item in forms)
             {
-                var findReports = BaseVM.LocalReports.Reports_Collection
+                var findReports = MainWindowVM.LocalReports.Reports_Collection
                     .Where(t => t.Report_Collection.Contains(item));
                 var reps = findReports.FirstOrDefault();
                 if (reps == null) continue;
@@ -203,7 +204,7 @@ namespace Client_App.Commands.AsyncCommands.Excel
         {
             foreach (var item in forms)
             {
-                var findReports = BaseVM.LocalReports.Reports_Collection
+                var findReports = MainWindowVM.LocalReports.Reports_Collection
                     .Where(t => t.Report_Collection.Contains(item));
                 var reps = findReports.FirstOrDefault();
                 if (reps is null) continue;
@@ -359,7 +360,7 @@ namespace Client_App.Commands.AsyncCommands.Excel
 
         private void ExcelPrintTitulExport(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = BaseVM.LocalReports.Reports_Collection
+            var findReports = MainWindowVM.LocalReports.Reports_Collection
                 .Where(t => t.Report_Collection.Contains(form));
             var reps = findReports.FirstOrDefault();
             var master = reps.Master_DB;
@@ -460,7 +461,7 @@ namespace Client_App.Commands.AsyncCommands.Excel
 
         private void ExcelPrintSubMainExport(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = BaseVM.LocalReports.Reports_Collection
+            var findReports = MainWindowVM.LocalReports.Reports_Collection
                 .Where(t => t.Report_Collection.Contains(form));
             var reps = findReports.FirstOrDefault();
             var master = reps.Master_DB;

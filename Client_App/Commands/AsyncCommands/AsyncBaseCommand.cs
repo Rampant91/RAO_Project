@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Client_App.Commands.SyncCommands;
 
 namespace Client_App.Commands.AsyncCommands;
 
-public abstract class AsyncBaseCommand
+public abstract class AsyncBaseCommand : BaseCommand
 {
-    private bool _isExecute = false;
+    private bool _isExecute;
 
-    public bool isExecute
+    public bool IsExecute
     {
         get => _isExecute;
         set
@@ -19,4 +16,18 @@ public abstract class AsyncBaseCommand
             OnCanExecuteChanged();
         }
     }
+
+    public override bool CanExecute(object? parameter)
+    {
+        return !_isExecute;
+    }
+
+    public override async void Execute(object? parameter)
+    {
+        IsExecute = true;
+        await AsyncExecute(parameter);
+        IsExecute = false;
+    }
+
+    public abstract Task AsyncExecute(object? parameter);
 }

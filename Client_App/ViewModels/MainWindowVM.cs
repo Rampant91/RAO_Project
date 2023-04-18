@@ -17,6 +17,7 @@ using OfficeOpenXml;
 using ReactiveUI;
 using Spravochniki;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,7 +30,9 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Excel;
 using DynamicData;
 
 namespace Client_App.ViewModels;
@@ -49,6 +52,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 _current_Db = value;
                 OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
+    #region LocalReports
+
+    private static DBObservable _localReports = new();
+    public static DBObservable LocalReports
+    {
+        get => _localReports;
+        set
+        {
+            if (_localReports != value)
+            {
+                _localReports = value;
             }
         }
     }
@@ -122,8 +142,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
-
-    
 
     private static Task ProcessSpravochniks()
     {
@@ -251,8 +269,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         Print_Excel_Export = ReactiveCommand.CreateFromTask<object>(_Print_Excel_Export);
         Excel_Export = ReactiveCommand.CreateFromTask<object>(_Excel_Export);
         All_Excel_Export = ReactiveCommand.CreateFromTask<object>(_All_Excel_Export);
-        AllForms1_Excel_Export = ReactiveCommand.CreateFromTask(_AllForms1_Excel_Export);
-        AllForms2_Excel_Export = ReactiveCommand.CreateFromTask(_AllForms2_Excel_Export);
         Statistic_Excel_Export = ReactiveCommand.CreateFromTask(_Statistic_Excel_Export);
         SelectOrgExcelExport = ReactiveCommand.CreateFromTask(_SelectOrgExcelExport);
         AllOrganization_Excel_Export = ReactiveCommand.CreateFromTask(_AllOrganization_Excel_Export);
@@ -466,6 +482,23 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             _OnStartProgressBar = value;
             OnPropertyChanged();
         }
+    }
+
+    #endregion
+
+    #region Commands
+
+    public ICommand ExcelExportAllForms1 { get; set; }
+    public ICommand ExcelExportAllForms2 { get; set; }
+
+    #endregion
+
+    #region Constructor
+
+    public MainWindowVM()
+    {
+        ExcelExportAllForms1 = new ExcelExportAllForms1AsyncCommand();
+        ExcelExportAllForms2 = new ExcelExportAllForms1AsyncCommand();
     }
 
     #endregion
@@ -3172,8 +3205,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private ExcelWorksheet worksheet { get; set; }
     private ExcelWorksheet worksheetComment { get; set; }
-
-    
 
     #region StatisticExcelExport //Excel-Разрывы и пересечения
 
@@ -6001,255 +6032,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #endregion
     
-    #region AllForms1_Excel_Export //Excel-Список форм 1
-
-    public ReactiveCommand<Unit, Unit> AllForms1_Excel_Export { get; private set; }
-
-    private async Task _AllForms1_Excel_Export()
-    {
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-
-        #region ReportsCountCheck
-
-        var findRep = 0;
-        foreach (var key in LocalReports.Reports_Collection)
-        {
-            var reps = (Reports)key;
-            foreach (var key1 in reps.Report_Collection)
-            {
-                var rep = (Report)key1;
-                if (rep.FormNum_DB.Split('.')[0] == "1")
-                {
-                    findRep += 1;
-                }
-            }
-        }
-        if (findRep == 0)
-        {
-            #region MessageRepsNotFound
-
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам 1",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(desktop.MainWindow);
-
-            #endregion
-
-            return;
-        } 
-
-        #endregion
-
-        var cts = new CancellationTokenSource();
-        var exportType = "Список форм 1";
-        var fileName = $"{exportType}_{DbFileName}_{Version}";
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
-        finally
-        {
-            cts.Dispose();
-        }
-        var fullPath = result.fullPath;
-        var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
-
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (LocalReports.Reports_Collection.Count == 0) return;
-        worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
-
-        #region Headers
-
-        worksheet.Cells[1, 1].Value = "Рег.№";
-        worksheet.Cells[1, 2].Value = "ОКПО";
-        worksheet.Cells[1, 3].Value = "Форма";
-        worksheet.Cells[1, 4].Value = "Дата начала";
-        worksheet.Cells[1, 5].Value = "Дата конца";
-        worksheet.Cells[1, 6].Value = "Номер кор.";
-        worksheet.Cells[1, 7].Value = "Количество строк";
-        worksheet.Cells[1, 8].Value = "Инвентаризация"; 
-
-        #endregion
-
-        var lst = new List<Reports>();
-        foreach (var key in LocalReports.Reports_Collection)
-        {
-            var item = (Reports)key;
-            if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")
-            {
-                lst.Add(item);
-            }
-        }
-
-        var row = 2;
-        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep.Value))
-        {
-            foreach (var rep in reps.Report_Collection
-                         .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => StringReverse(x.StartPeriod_DB)))
-            {
-                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
-                worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-                worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
-                worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
-                worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-                worksheet.Cells[row, 7].Value = rep.Rows.Count;
-                worksheet.Cells[row, 8].Value = InventoryCheck(rep).TrimStart();
-                row++;
-            }
-        }
-
-        if (OperatingSystem.IsWindows()) worksheet.Cells.AutoFitColumns();   // Под Astra Linux эта команда крашит программу без GDI дров
-        worksheet.View.FreezePanes(2, 1);
-        
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
-    }
-
-    #endregion
-
-    #region AllForms2_Excel_Export //Excel-Список форм 2
-
-    public ReactiveCommand<Unit, Unit> AllForms2_Excel_Export { get; private set; }
-
-    private async Task _AllForms2_Excel_Export()
-    {
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-
-        #region ReportsCountCheck
-
-        var findRep = 0;
-        foreach (var key in LocalReports.Reports_Collection)
-        {
-            var reps = (Reports)key;
-            foreach (var key1 in reps.Report_Collection)
-            {
-                var rep = (Report)key1;
-                if (rep.FormNum_DB.Split('.')[0] == "2")
-                {
-                    findRep += 1;
-                }
-            }
-        }
-        if (findRep == 0)
-        {
-            #region MessageRepsNotFound
-
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        "Не удалось совершить выгрузку списка всех отчетов по форме 2 с указанием количества строк," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 2",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(desktop.MainWindow);
-
-            #endregion
-
-            return;
-        } 
-
-        #endregion
-
-        var cts = new CancellationTokenSource();
-        var exportType = "Список форм 2";
-        var fileName = $"{exportType}_{DbFileName}_{Version}";
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
-        finally
-        {
-            cts.Dispose();
-        }
-        var fullPath = result.fullPath;
-        var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
-
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (LocalReports.Reports_Collection.Count == 0) return;
-
-        worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 2");
-
-        #region Headers
-
-        worksheet.Cells[1, 1].Value = "Рег.№";
-        worksheet.Cells[1, 2].Value = "ОКПО";
-        worksheet.Cells[1, 3].Value = "Форма";
-        worksheet.Cells[1, 4].Value = "Отчетный год";
-        worksheet.Cells[1, 5].Value = "Номер кор.";
-        worksheet.Cells[1, 6].Value = "Количество строк"; 
-
-        #endregion
-
-        var lst = new List<Reports>();
-        foreach (var key in LocalReports.Reports_Collection)
-        {
-            var item = (Reports)key;
-            if (item.Master_DB.FormNum_DB.Split('.')[0] == "2")
-            {
-                lst.Add(item);
-            }
-        }
-
-        var row = 2;
-        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep.Value))
-        {
-            foreach (var rep in reps.Report_Collection
-                         .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => x.Year_DB))
-            {
-                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
-                worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-                worksheet.Cells[row, 4].Value = rep.Year_DB;
-                worksheet.Cells[row, 5].Value = rep.CorrectionNumber_DB;
-                worksheet.Cells[row, 6].Value = rep.Rows.Count;
-                row++;
-            }
-        }
-
-        if (OperatingSystem.IsWindows()) worksheet.Cells.AutoFitColumns();   // Под Astra Linux эта команда крашит программу без GDI дров
-        worksheet.View.FreezePanes(2, 1);
-        
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
-    }
-
-    #endregion
-
     #region AllOrganization_Excel_Export //Excel-Список организаций
 
     public ReactiveCommand<Unit, Unit> AllOrganization_Excel_Export { get; private set; }
@@ -7479,7 +7261,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region INotifyPropertyChanged
 
-    private void OnPropertyChanged([CallerMemberName] string prop = "")
+    private protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }

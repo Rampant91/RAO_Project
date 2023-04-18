@@ -30,23 +30,6 @@ public class BaseVM
 
     private protected static string TmpDirectory = "";
 
-    #region LocalReports
-
-    private static DBObservable _localReports = new();
-    public static DBObservable LocalReports
-    {
-        get => _localReports;
-        set
-        {
-            if (_localReports != value)
-            {
-                _localReports = value;
-            }
-        }
-    }
-
-    #endregion
-
     private protected static bool ComparePasParam(string? nameDb, string? namePas)
     {
         if (nameDb == null || namePas == null)
@@ -392,4 +375,6 @@ public class BaseVM
     }
 
     #endregion
+
+    
 }

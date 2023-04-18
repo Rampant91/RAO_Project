@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Client_App.Commands.SyncCommands
@@ -13,11 +9,11 @@ namespace Client_App.Commands.SyncCommands
 
         public abstract bool CanExecute(object? parameter);
 
-        public abstract Execute(object? parameter);
+        public abstract void Execute(object? parameter);
 
         protected virtual void OnCanExecuteChanged()
         {
-
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -66,7 +66,7 @@ public class Form2_Visual
 
         Binding b = new()
         {
-            Path = "DataContext.Local_Reports.Reports_Collection20",
+            Path = "DataContext.LocalReports.Reports_Collection20",
             ElementName = "MainWindow",
             NameScope = new WeakReference<INameScope>(scp)
         };
