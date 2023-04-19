@@ -18,7 +18,7 @@ namespace Client_App.ViewModels;
 
 public class BaseVM
 {
-    private protected static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
+    internal static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
 
     internal const string Version = @"1.2.2.11";
 
@@ -30,7 +30,7 @@ public class BaseVM
 
     private protected static string TmpDirectory = "";
 
-    private protected static bool ComparePasParam(string? nameDb, string? namePas)
+    internal static bool ComparePasParam(string? nameDb, string? namePas)
     {
         if (nameDb == null || namePas == null)
         {
@@ -45,7 +45,7 @@ public class BaseVM
                || TranslateToRus(nameDb).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
     }
 
-    private protected static string ConvertPrimToDash(string? num)
+    internal static string ConvertPrimToDash(string? num)
     {
         if (num == null)
         {
@@ -63,7 +63,7 @@ public class BaseVM
         return num;
     }
 
-    private protected static string ConvertDateToYear(string? date)
+    internal static string ConvertDateToYear(string? date)
     {
         return DateTime.TryParse(date, out var dateTime) 
             ? dateTime.Year.ToString()
@@ -93,7 +93,7 @@ public class BaseVM
                 : "";
     }
 
-    private protected static string RemoveForbiddenChars(string str)
+    internal static string RemoveForbiddenChars(string str)
     {
         str = str.Replace(Environment.NewLine, "").Trim();
         str = Regex.Replace(str, "[\\\\/:*?\"<>|]", "");

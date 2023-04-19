@@ -12,12 +12,13 @@ using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
-public class ExcelExportAllForms1AsyncCommand : ExcelBaseAsyncCommand
+//  Excel -> Список форм 1
+public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        const string exportType = "Список форм 1";
+        ExportType = "Список форм 1";
         var findRep = 0;
 
         #region ReportsCountCheck
@@ -61,7 +62,7 @@ public class ExcelExportAllForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
         
-        var fileName = $"{exportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
         {

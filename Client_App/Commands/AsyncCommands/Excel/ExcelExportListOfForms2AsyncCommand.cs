@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
@@ -7,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
-public class ExcelExportAllForms2AsyncCommand : ExcelBaseAsyncCommand
+//  Excel -> Список форм 2
+public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -60,8 +59,8 @@ public class ExcelExportAllForms2AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var cts = new CancellationTokenSource();
-        var exportType = "Список форм 2";
-        var fileName = $"{exportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        ExportType = "Список форм 2";
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -125,7 +124,10 @@ public class ExcelExportAllForms2AsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
-        if (OperatingSystem.IsWindows()) Worksheet.Cells.AutoFitColumns();   // Под Astra Linux эта команда крашит программу без GDI дров
+        if (OperatingSystem.IsWindows()) 
+        {
+            Worksheet.Cells.AutoFitColumns();  // Под Astra Linux эта команда крашит программу без GDI дров
+        }
         Worksheet.View.FreezePanes(2, 1);
         
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);

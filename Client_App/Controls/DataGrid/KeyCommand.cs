@@ -1,6 +1,7 @@
 ﻿using Avalonia.Input;
 using ReactiveUI;
 using System.Reactive;
+using System.Windows.Input;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -14,7 +15,7 @@ public class KeyCommand
     public bool IsUpdateCells { get; set; }
     public Key Key { get; set; }
     public KeyModifiers KeyModifiers { get; set; }
-    public ReactiveCommand<object, Unit> Command { get; set; }
+    public ICommand Command { get; set; }
 
     public void DoCommand(object param)
     {

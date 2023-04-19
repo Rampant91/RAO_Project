@@ -1,10 +1,23 @@
 ﻿using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.SyncCommands;
 
 namespace Client_App.Commands.AsyncCommands;
 
-public abstract class AsyncBaseCommand : BaseCommand
+public abstract class BaseAsyncCommand : BaseCommand
 {
+    #region Constructor
+
+    protected BaseAsyncCommand()
+    {
+        Desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+    } 
+
+    #endregion
+
+    private protected static IClassicDesktopStyleApplicationLifetime? Desktop { get; set; }
+
     private bool _isExecute;
 
     public bool IsExecute

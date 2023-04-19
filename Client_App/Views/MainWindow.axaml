@@ -19,66 +19,66 @@
             </MenuItem>
             <MenuItem Header="_Excel" FontSize="14">
                 <MenuItem Header="Паспорта">
-                    <MenuItem Header="Отчеты без паспортов" Command="{Binding ExcelMissingPas}"></MenuItem>
-                    <MenuItem Header="Паспорта без отчетов" Command="{Binding ExcelPasWithoutRep}"></MenuItem>
-                    <MenuItem Header="Изменить расположение паспортов по умолчанию" Command="{Binding ChangePasDir}"></MenuItem>
+                    <MenuItem Header="Отчеты без паспортов" Command="{Binding ExcelExportRepWithoutPas}"></MenuItem>
+                    <MenuItem Header="Паспорта без отчетов" Command="{Binding ExcelExportPasWithoutRep}"></MenuItem>
+                    <MenuItem Header="Изменить расположение паспортов по умолчанию" Command="{Binding ChangePasFolder}"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Список организаций" Command="{Binding AllOrganization_Excel_Export}"></MenuItem>
+                <MenuItem Header="Список организаций" Command="{Binding ExcelExportListOfOrgs}"></MenuItem>
                 <MenuItem Header="Список форм 1" Command="{Binding ExcelExportAllForms1}"></MenuItem>
                 <MenuItem Header="Список форм 2" Command="{Binding ExcelExportAllForms2}"></MenuItem>
-                <MenuItem Header="Разрывы и пересечения" Command="{Binding Statistic_Excel_Export}"></MenuItem>
+                <MenuItem Header="Разрывы и пересечения" Command="{Binding ExcelExportIntersections}"></MenuItem>
                 <MenuItem Header="Формы 1">
-                    <MenuItem Header="Форма 1.1" Command="{Binding All_Excel_Export}" CommandParameter="1.1"></MenuItem>
-                    <MenuItem Header="Форма 1.2" Command="{Binding All_Excel_Export}" CommandParameter="1.2"></MenuItem>
-                    <MenuItem Header="Форма 1.3" Command="{Binding All_Excel_Export}" CommandParameter="1.3"></MenuItem>
-                    <MenuItem Header="Форма 1.4" Command="{Binding All_Excel_Export}" CommandParameter="1.4"></MenuItem>
-                    <MenuItem Header="Форма 1.5" Command="{Binding All_Excel_Export}" CommandParameter="1.5"></MenuItem>
-                    <MenuItem Header="Форма 1.6" Command="{Binding All_Excel_Export}" CommandParameter="1.6"></MenuItem>
-                    <MenuItem Header="Форма 1.7" Command="{Binding All_Excel_Export}" CommandParameter="1.7"></MenuItem>
-                    <MenuItem Header="Форма 1.8" Command="{Binding All_Excel_Export}" CommandParameter="1.8"></MenuItem>
-                    <MenuItem Header="Форма 1.9" Command="{Binding All_Excel_Export}" CommandParameter="1.9"></MenuItem>
+                    <MenuItem Header="Форма 1.1" Command="{Binding ExcelExportForms}" CommandParameter="1.1"></MenuItem>
+                    <MenuItem Header="Форма 1.2" Command="{Binding ExcelExportForms}" CommandParameter="1.2"></MenuItem>
+                    <MenuItem Header="Форма 1.3" Command="{Binding ExcelExportForms}" CommandParameter="1.3"></MenuItem>
+                    <MenuItem Header="Форма 1.4" Command="{Binding ExcelExportForms}" CommandParameter="1.4"></MenuItem>
+                    <MenuItem Header="Форма 1.5" Command="{Binding ExcelExportForms}" CommandParameter="1.5"></MenuItem>
+                    <MenuItem Header="Форма 1.6" Command="{Binding ExcelExportForms}" CommandParameter="1.6"></MenuItem>
+                    <MenuItem Header="Форма 1.7" Command="{Binding ExcelExportForms}" CommandParameter="1.7"></MenuItem>
+                    <MenuItem Header="Форма 1.8" Command="{Binding ExcelExportForms}" CommandParameter="1.8"></MenuItem>
+                    <MenuItem Header="Форма 1.9" Command="{Binding ExcelExportForms}" CommandParameter="1.9"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Формы 2">
-                    <MenuItem Header="Форма 2.1" Command="{Binding All_Excel_Export}" CommandParameter="2.1"></MenuItem>
-                    <MenuItem Header="Форма 2.2" Command="{Binding All_Excel_Export}" CommandParameter="2.2"></MenuItem>
-                    <MenuItem Header="Форма 2.3" Command="{Binding All_Excel_Export}" CommandParameter="2.3"></MenuItem>
-                    <MenuItem Header="Форма 2.4" Command="{Binding All_Excel_Export}" CommandParameter="2.4"></MenuItem>
-                    <MenuItem Header="Форма 2.5" Command="{Binding All_Excel_Export}" CommandParameter="2.5"></MenuItem>
-                    <MenuItem Header="Форма 2.6" Command="{Binding All_Excel_Export}" CommandParameter="2.6"></MenuItem>
-                    <MenuItem Header="Форма 2.7" Command="{Binding All_Excel_Export}" CommandParameter="2.7"></MenuItem>
-                    <MenuItem Header="Форма 2.8" Command="{Binding All_Excel_Export}" CommandParameter="2.8"></MenuItem>
-                    <MenuItem Header="Форма 2.9" Command="{Binding All_Excel_Export}" CommandParameter="2.9"></MenuItem>
-                    <MenuItem Header="Форма 2.10" Command="{Binding All_Excel_Export}" CommandParameter="2.10"></MenuItem>
-                    <MenuItem Header="Форма 2.11" Command="{Binding All_Excel_Export}" CommandParameter="2.11"></MenuItem>
-                    <MenuItem Header="Форма 2.12" Command="{Binding All_Excel_Export}" CommandParameter="2.12"></MenuItem>
+                    <MenuItem Header="Форма 2.1" Command="{Binding ExcelExportForms}" CommandParameter="2.1"></MenuItem>
+                    <MenuItem Header="Форма 2.2" Command="{Binding ExcelExportForms}" CommandParameter="2.2"></MenuItem>
+                    <MenuItem Header="Форма 2.3" Command="{Binding ExcelExportForms}" CommandParameter="2.3"></MenuItem>
+                    <MenuItem Header="Форма 2.4" Command="{Binding ExcelExportForms}" CommandParameter="2.4"></MenuItem>
+                    <MenuItem Header="Форма 2.5" Command="{Binding ExcelExportForms}" CommandParameter="2.5"></MenuItem>
+                    <MenuItem Header="Форма 2.6" Command="{Binding ExcelExportForms}" CommandParameter="2.6"></MenuItem>
+                    <MenuItem Header="Форма 2.7" Command="{Binding ExcelExportForms}" CommandParameter="2.7"></MenuItem>
+                    <MenuItem Header="Форма 2.8" Command="{Binding ExcelExportForms}" CommandParameter="2.8"></MenuItem>
+                    <MenuItem Header="Форма 2.9" Command="{Binding ExcelExportForms}" CommandParameter="2.9"></MenuItem>
+                    <MenuItem Header="Форма 2.10" Command="{Binding ExcelExportForms}" CommandParameter="2.10"></MenuItem>
+                    <MenuItem Header="Форма 2.11" Command="{Binding ExcelExportForms}" CommandParameter="2.11"></MenuItem>
+                    <MenuItem Header="Форма 2.12" Command="{Binding ExcelExportForms}" CommandParameter="2.12"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Выбранная организация">
                     <MenuItem Header="Формы 1">
-                        <MenuItem Header="Форма 1.1" Command="{Binding All_Excel_Export}" CommandParameter="Org1.1"></MenuItem>
-                        <MenuItem Header="Форма 1.2" Command="{Binding All_Excel_Export}" CommandParameter="Org1.2"></MenuItem>
-                        <MenuItem Header="Форма 1.3" Command="{Binding All_Excel_Export}" CommandParameter="Org1.3"></MenuItem>
-                        <MenuItem Header="Форма 1.4" Command="{Binding All_Excel_Export}" CommandParameter="Org1.4"></MenuItem>
-                        <MenuItem Header="Форма 1.5" Command="{Binding All_Excel_Export}" CommandParameter="Org1.5"></MenuItem>
-                        <MenuItem Header="Форма 1.6" Command="{Binding All_Excel_Export}" CommandParameter="Org1.6"></MenuItem>
-                        <MenuItem Header="Форма 1.7" Command="{Binding All_Excel_Export}" CommandParameter="Org1.7"></MenuItem>
-                        <MenuItem Header="Форма 1.8" Command="{Binding All_Excel_Export}" CommandParameter="Org1.8"></MenuItem>
-                        <MenuItem Header="Форма 1.9" Command="{Binding All_Excel_Export}" CommandParameter="Org1.9"></MenuItem>
+                        <MenuItem Header="Форма 1.1" Command="{Binding ExcelExportForms}" CommandParameter="Org1.1"></MenuItem>
+                        <MenuItem Header="Форма 1.2" Command="{Binding ExcelExportForms}" CommandParameter="Org1.2"></MenuItem>
+                        <MenuItem Header="Форма 1.3" Command="{Binding ExcelExportForms}" CommandParameter="Org1.3"></MenuItem>
+                        <MenuItem Header="Форма 1.4" Command="{Binding ExcelExportForms}" CommandParameter="Org1.4"></MenuItem>
+                        <MenuItem Header="Форма 1.5" Command="{Binding ExcelExportForms}" CommandParameter="Org1.5"></MenuItem>
+                        <MenuItem Header="Форма 1.6" Command="{Binding ExcelExportForms}" CommandParameter="Org1.6"></MenuItem>
+                        <MenuItem Header="Форма 1.7" Command="{Binding ExcelExportForms}" CommandParameter="Org1.7"></MenuItem>
+                        <MenuItem Header="Форма 1.8" Command="{Binding ExcelExportForms}" CommandParameter="Org1.8"></MenuItem>
+                        <MenuItem Header="Форма 1.9" Command="{Binding ExcelExportForms}" CommandParameter="Org1.9"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Формы 2">
-                        <MenuItem Header="Форма 2.1" Command="{Binding All_Excel_Export}" CommandParameter="Org2.1"></MenuItem>
-                        <MenuItem Header="Форма 2.2" Command="{Binding All_Excel_Export}" CommandParameter="Org2.2"></MenuItem>
-                        <MenuItem Header="Форма 2.3" Command="{Binding All_Excel_Export}" CommandParameter="Org2.3"></MenuItem>
-                        <MenuItem Header="Форма 2.4" Command="{Binding All_Excel_Export}" CommandParameter="Org2.4"></MenuItem>
-                        <MenuItem Header="Форма 2.5" Command="{Binding All_Excel_Export}" CommandParameter="Org2.5"></MenuItem>
-                        <MenuItem Header="Форма 2.6" Command="{Binding All_Excel_Export}" CommandParameter="Org2.6"></MenuItem>
-                        <MenuItem Header="Форма 2.7" Command="{Binding All_Excel_Export}" CommandParameter="Org2.7"></MenuItem>
-                        <MenuItem Header="Форма 2.8" Command="{Binding All_Excel_Export}" CommandParameter="Org2.8"></MenuItem>
-                        <MenuItem Header="Форма 2.9" Command="{Binding All_Excel_Export}" CommandParameter="Org2.9"></MenuItem>
-                        <MenuItem Header="Форма 2.10" Command="{Binding All_Excel_Export}" CommandParameter="Org2.10"></MenuItem>
-                        <MenuItem Header="Форма 2.11" Command="{Binding All_Excel_Export}" CommandParameter="Org2.11"></MenuItem>
-                        <MenuItem Header="Форма 2.12" Command="{Binding All_Excel_Export}" CommandParameter="Org2.12"></MenuItem>
+                        <MenuItem Header="Форма 2.1" Command="{Binding ExcelExportForms}" CommandParameter="Org2.1"></MenuItem>
+                        <MenuItem Header="Форма 2.2" Command="{Binding ExcelExportForms}" CommandParameter="Org2.2"></MenuItem>
+                        <MenuItem Header="Форма 2.3" Command="{Binding ExcelExportForms}" CommandParameter="Org2.3"></MenuItem>
+                        <MenuItem Header="Форма 2.4" Command="{Binding ExcelExportForms}" CommandParameter="Org2.4"></MenuItem>
+                        <MenuItem Header="Форма 2.5" Command="{Binding ExcelExportForms}" CommandParameter="Org2.5"></MenuItem>
+                        <MenuItem Header="Форма 2.6" Command="{Binding ExcelExportForms}" CommandParameter="Org2.6"></MenuItem>
+                        <MenuItem Header="Форма 2.7" Command="{Binding ExcelExportForms}" CommandParameter="Org2.7"></MenuItem>
+                        <MenuItem Header="Форма 2.8" Command="{Binding ExcelExportForms}" CommandParameter="Org2.8"></MenuItem>
+                        <MenuItem Header="Форма 2.9" Command="{Binding ExcelExportForms}" CommandParameter="Org2.9"></MenuItem>
+                        <MenuItem Header="Форма 2.10" Command="{Binding ExcelExportForms}" CommandParameter="Org2.10"></MenuItem>
+                        <MenuItem Header="Форма 2.11" Command="{Binding ExcelExportForms}" CommandParameter="Org2.11"></MenuItem>
+                        <MenuItem Header="Форма 2.12" Command="{Binding ExcelExportForms}" CommandParameter="Org2.12"></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Все формы" Command="{Binding SelectOrgExcelExport}" />
+                    <MenuItem Header="Все формы" Command="{Binding ExcelExportSelectedOrgAll}" />
                 </MenuItem>
             </MenuItem>
         </Menu>

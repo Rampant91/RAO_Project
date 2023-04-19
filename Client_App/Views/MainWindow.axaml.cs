@@ -177,7 +177,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Выгрузка Excel", "Для печати" },
-            Command = dataContext.Print_Excel_Export
+            Command = dataContext.ExcelExportFormPrint
         });
         grd2.CommandsList.Add(new KeyCommand
         {
@@ -185,7 +185,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Выгрузка Excel", "Для анализа" },
-            Command = dataContext.Excel_Export
+            Command = dataContext.ExcelExportFormAnalysis
         });
         grd2.CommandsList.Add(new KeyCommand
         {
