@@ -1140,7 +1140,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null);
-            foreach (var rep in form.OrderBy(x => StringReverse(x.StartPeriod_DB)))
+            foreach (var rep in form.OrderBy(x => BaseVM.StringReverse(x.StartPeriod_DB)))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows19.OrderBy(x => x.NumberInOrder_DB))
