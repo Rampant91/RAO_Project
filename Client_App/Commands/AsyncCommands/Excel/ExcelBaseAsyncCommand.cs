@@ -26,8 +26,6 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     private protected ExcelWorksheet? WorksheetPrim { get; set; }
 
-    private protected static IClassicDesktopStyleApplicationLifetime? Desktop { get; set; }
-
     private protected string ExportType;
 
     #region ExcelExportNotes
