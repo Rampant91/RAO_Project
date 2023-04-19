@@ -498,7 +498,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public MainWindowVM()
     {
         ExcelExportAllForms1 = new ExcelExportAllForms1AsyncCommand();
-        ExcelExportAllForms2 = new ExcelExportAllForms1AsyncCommand();
+        ExcelExportAllForms2 = new ExcelExportAllForms2AsyncCommand();
     }
 
     #endregion

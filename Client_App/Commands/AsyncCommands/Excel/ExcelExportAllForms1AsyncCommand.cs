@@ -16,9 +16,12 @@ public class ExcelExportAllForms1AsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        var cts = new CancellationTokenSource();
+        const string exportType = "Список форм 1";
+        var findRep = 0;
+
         #region ReportsCountCheck
 
-        var findRep = 0;
         foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
@@ -57,9 +60,7 @@ public class ExcelExportAllForms1AsyncCommand : ExcelBaseAsyncCommand
         }
 
         #endregion
-
-        var cts = new CancellationTokenSource();
-        const string exportType = "Список форм 1";
+        
         var fileName = $"{exportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
