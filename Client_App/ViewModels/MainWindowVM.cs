@@ -495,7 +495,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportListOfForms1 { get; set; }   //  Excel -> Список форм 1
     public ICommand ExcelExportListOfForms2 { get; set; }   //  Excel -> Список форм 2
     public ICommand ExcelExportListOfOrgs { get; set; }     //  Excel -> Список организаций
-    public ICommand ExcelExportPasWithoutRep { get; set; }  //  Excel -> Список организаций
+    public ICommand ExcelExportPasWithoutRep { get; set; }  //  Excel -> Паспорта -> Паспорта без отчетов
     public ICommand ExcelExportRepWithoutPas { get; set; }  //  Excel -> Паспорта -> Отчеты без паспортов
     public ICommand ExcelExportSelectedOrgAll { get; set; } //  Excel -> Выбранная организация -> Все формы
 

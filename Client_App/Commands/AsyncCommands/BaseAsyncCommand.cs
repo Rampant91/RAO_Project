@@ -38,7 +38,14 @@ public abstract class BaseAsyncCommand : BaseCommand
     public override async void Execute(object? parameter)
     {
         IsExecute = true;
-        await AsyncExecute(parameter);
+        try
+        {
+            await AsyncExecute(parameter);
+        }
+        catch
+        {
+            // ignored
+        }
         IsExecute = false;
     }
 
