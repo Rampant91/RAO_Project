@@ -23,12 +23,15 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var mainWindow = Desktop.MainWindow as MainWindow;
+        var cts = new CancellationTokenSource();
+        var findRep = 0;
+        string fileName;
+
         var forSelectedOrg = parameter.ToString()!.Contains("Org");
         var param = Regex.Replace(parameter.ToString()!, "[^\\d.]", "");
 
         #region CheckReportsCount
 
-        var findRep = 0;
         foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
@@ -68,35 +71,39 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
         #endregion
         
         var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
-        if (forSelectedOrg && selectedReports is null)
+        switch (forSelectedOrg)
         {
-            #region MessageExcelExportFail
+            case true when selectedReports is null:
 
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(mainWindow);
+                #region MessageExcelExportFail
 
-            #endregion
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(mainWindow);
 
-            return;
+                #endregion
+
+                return;
+            case true:
+            {
+                ExportType = $"Выбранная организация_Формы {param}";
+                var regNum = BaseVM.RemoveForbiddenChars(selectedReports!.Master.RegNoRep.Value);
+                var okpo = BaseVM.RemoveForbiddenChars(selectedReports!.Master.OkpoRep.Value);
+                fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
+                break;
+            }
+            default:
+                ExportType = $"Формы {param}";
+                fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+                break;
         }
-
-        var cts = new CancellationTokenSource();
-        ExportType = forSelectedOrg
-            ? $"Выбранная организация_Формы {param}"
-            : $"Формы {param}";
-        var regNum = BaseVM.RemoveForbiddenChars(selectedReports!.Master.RegNoRep.Value);
-        var okpo = BaseVM.RemoveForbiddenChars(selectedReports!.Master.OkpoRep.Value);
-        var fileName = forSelectedOrg
-            ? $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}"
-            : $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
 
         (string fullPath, bool openTemp) result;
         try

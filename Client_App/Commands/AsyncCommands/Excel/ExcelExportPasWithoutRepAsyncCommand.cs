@@ -23,6 +23,37 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     {
         var cts = new CancellationTokenSource();
         ExportType = "Паспорта без отчетов";
+        List<string> pasNames = new();
+        List<string[]> pasUniqParam = new();
+        DirectoryInfo directory = new(BaseVM.PasFolderPath);
+        List<FileInfo> files = new();
+        try
+        {
+            files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
+        }
+        catch (Exception)
+        {
+            #region MessageFailedToOpenPassportDirectory
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage =
+                        "Не удалось открыть сетевое хранилище паспортов:" +
+                        $"{Environment.NewLine}{directory.FullName}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
 
         #region MessageInputCategoryNums
 
@@ -108,37 +139,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        List<string> pasNames = new();
-        List<string[]> pasUniqParam = new();
-        DirectoryInfo directory = new(BaseVM.PasFolderPath);
-        List<FileInfo> files = new();
-        try
-        {
-            files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
-        }
-        catch (Exception)
-        {
-            #region MessageFailedToOpenPassportDirectory
-
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Ошибка",
-                    ContentMessage =
-                        "Не удалось открыть сетевое хранилище паспортов:" +
-                        $"{Environment.NewLine}{directory.FullName}",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow);
-
-            #endregion
-
-            return;
-        }
+        
 
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));

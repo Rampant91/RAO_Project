@@ -17,7 +17,6 @@ using OfficeOpenXml;
 using ReactiveUI;
 using Spravochniki;
 using System;
-using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,13 +27,11 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Excel;
-using DynamicData;
 
 namespace Client_App.ViewModels;
 
