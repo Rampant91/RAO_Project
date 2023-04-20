@@ -13,14 +13,19 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
+using JetBrains.Annotations;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
 //  Excel -> Выбранная организация -> Все формы
 public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 {
+    private Reports _SelectedReports;
+
     public override async Task AsyncExecute(object? parameter)
     {
+        var cts = new CancellationTokenSource();
+        ExportType = "Выбранная организация_Все формы";
         var mainWindow = Desktop.MainWindow as MainWindow;
         var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
         if (selectedReports is null || !selectedReports.Report_Collection.Any())
@@ -28,7 +33,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
             #region MessageExcelExportFail
 
             var msg = "Выгрузка не выполнена, поскольку ";
-            msg += selectedReports is null
+            msg += _SelectedReports is null
                 ? "не выбрана организация."
                 : "у выбранной организации отсутствуют формы отчетности.";
             await MessageBox.Avalonia.MessageBoxManager
@@ -48,11 +53,10 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
             return;
         }
+        _SelectedReports = selectedReports;
 
-        var cts = new CancellationTokenSource();
-        ExportType = "Выбранная организация_Все формы";
-        var regNum = BaseVM.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
-        var okpo = BaseVM.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
+        var regNum = BaseVM.RemoveForbiddenChars(_SelectedReports.Master.RegNoRep.Value);
+        var okpo = BaseVM.RemoveForbiddenChars(_SelectedReports.Master.OkpoRep.Value);
         var fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
@@ -76,171 +80,97 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
         HashSet<string> formNums = new();
-        foreach (var key in selectedReports.Report_Collection)
+        foreach (var key in _SelectedReports.Report_Collection)
         {
             var rep = (Report)key;
             formNums.Add(rep.FormNum_DB);
         }
 
-        #region BindingExportForms
-
-        if (formNums.Contains("1.1"))
+        foreach (var formNum in formNums)
         {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.1");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.1");
-            ExportForm11Data(selectedReports);
+            Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
+            WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
+            FillExportForms(formNum);
         }
-
-        if (formNums.Contains("1.2"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.2");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.2");
-            ExportForm12Data(selectedReports);
-        }
-
-        if (formNums.Contains("1.3"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.3");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.3");
-            ExportForm13Data(selectedReports);
-        }
-
-        if (formNums.Contains("1.4"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.4");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.4");
-            ExportForm14Data(selectedReports);
-        }
-
-        if (formNums.Contains("1.5"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.5");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.5");
-            ExportForm15Data(selectedReports);
-        }
-
-        if (formNums.Contains("1.6"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.6");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.6");
-            ExportForm16Data(selectedReports);
-        }
-
-        if (formNums.Contains("1.7"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.7");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.7");
-            ExportForm17Data(selectedReports);
-        }
-
-        if (formNums.Contains("1.8"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.8");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.8");
-            ExportForm18Data(selectedReports);
-        }
-
-        if (formNums.Contains("1.9"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 1.9");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 1.9");
-            ExportForm19Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.1"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.1");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.1");
-            ExportForm21Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.2"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.2");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.2");
-            ExportForm22Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.3"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.3");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.3");
-            ExportForm23Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.4"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.4");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.4");
-            ExportForm24Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.5"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.5");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.5");
-            ExportForm25Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.6"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.6");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.6");
-            ExportForm26Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.7"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.7");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.7");
-            ExportForm27Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.8"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.8");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.8");
-            ExportForm28Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.9"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.9");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.9");
-            ExportForm29Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.10"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.10");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.10");
-            ExportForm210Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.11"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.11");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.11");
-            ExportForm211Data(selectedReports);
-        }
-
-        if (formNums.Contains("2.12"))
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add("Форма 2.12");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add("Примечания 2.12");
-            ExportForm212Data(selectedReports);
-        }
-
-        #endregion
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+    }
+
+    private void FillExportForms(string formNum)
+    {
+        switch (formNum)
+        {
+            case "1.1":
+                ExportForm11Data();
+                break;
+            case "1.2":
+                ExportForm12Data();
+                break;
+            case "1.3":
+                ExportForm13Data();
+                break;
+            case "1.4":
+                ExportForm14Data();
+                break;
+            case "1.5":
+                ExportForm15Data();
+                break;
+            case "1.6":
+                ExportForm16Data();
+                break;
+            case "1.7":
+                ExportForm17Data();
+                break;
+            case "1.8":
+                ExportForm18Data();
+                break;
+            case "1.9":
+                ExportForm19Data();
+                break;
+            case "2.1":
+                ExportForm21Data();
+                break;
+            case "2.2":
+                ExportForm22Data();
+                break;
+            case "2.3":
+                ExportForm23Data();
+                break;
+            case "2.4":
+                ExportForm24Data();
+                break;
+            case "2.5":
+                ExportForm25Data();
+                break;
+            case "2.6":
+                ExportForm26Data();
+                break;
+            case "2.7":
+                ExportForm27Data();
+                break;
+            case "2.8":
+                ExportForm28Data();
+                break;
+            case "2.9":
+                ExportForm29Data();
+                break;
+            case "2.10":
+                ExportForm210Data();
+                break;
+            case "2.11":
+                ExportForm211Data();
+                break;
+            case "2.12":
+                ExportForm212Data();
+                break;
+        }
     }
 
     #region ExportForms
 
     #region ExportForm_11
 
-    private void ExportForm11Data(Reports selectedReports)
+    private void ExportForm11Data( )
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -276,7 +206,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
@@ -346,7 +276,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_12
 
-    private void ExportForm12Data(Reports selectedReports)
+    private void ExportForm12Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -379,7 +309,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null);
@@ -446,7 +376,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_13
 
-    private void ExportForm13Data(Reports selectedReports)
+    private void ExportForm13Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -480,7 +410,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null);
@@ -548,7 +478,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_14
 
-    private void ExportForm14Data(Reports selectedReports)
+    private void ExportForm14Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -583,7 +513,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null);
@@ -652,7 +582,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_15
 
-    private void ExportForm15Data(Reports selectedReports)
+    private void ExportForm15Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -689,7 +619,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null);
@@ -760,7 +690,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_16
 
-    private void ExportForm16Data(Reports selectedReports)
+    private void ExportForm16Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -800,7 +730,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null);
@@ -874,7 +804,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_17
 
-    private void ExportForm17Data(Reports selectedReports)
+    private void ExportForm17Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -919,7 +849,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null);
@@ -998,7 +928,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_18
 
-    private void ExportForm18Data(Reports selectedReports)
+    private void ExportForm18Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1039,7 +969,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null);
@@ -1114,7 +1044,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_19
 
-    private void ExportForm19Data(Reports selectedReports)
+    private void ExportForm19Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1136,7 +1066,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null);
@@ -1192,7 +1122,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_21
 
-    private void ExportForm21Data(Reports selectedReports)
+    private void ExportForm21Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1225,7 +1155,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.1") && x.Rows21 != null);
@@ -1291,7 +1221,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_22
 
-    private void ExportForm22Data(Reports selectedReports)
+    private void ExportForm22Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1321,7 +1251,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.2") && x.Rows22 != null);
@@ -1384,7 +1314,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_23
 
-    private void ExportForm23Data(Reports selectedReports)
+    private void ExportForm23Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1407,7 +1337,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.3") && x.Rows23 != null);
@@ -1463,7 +1393,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_24
 
-    private void ExportForm24Data(Reports selectedReports)
+    private void ExportForm24Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1490,7 +1420,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.4") && x.Rows24 != null);
@@ -1550,7 +1480,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_25
 
-    private void ExportForm25Data(Reports selectedReports)
+    private void ExportForm25Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1570,7 +1500,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.5") && x.Rows25 != null);
@@ -1623,7 +1553,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_26
 
-    private void ExportForm26Data(Reports selectedReports)
+    private void ExportForm26Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1642,7 +1572,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.6") && x.Rows26 != null);
@@ -1693,7 +1623,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_27
 
-    private void ExportForm27Data(Reports selectedReports)
+    private void ExportForm27Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1709,7 +1639,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.7") && x.Rows27 != null);
@@ -1758,7 +1688,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_28
 
-    private void ExportForm28Data(Reports selectedReports)
+    private void ExportForm28Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1775,7 +1705,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.8") && x.Rows28 != null);
@@ -1825,7 +1755,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_29
 
-    private void ExportForm29Data(Reports selectedReports)
+    private void ExportForm29Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1840,7 +1770,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.9") && x.Rows29 != null);
@@ -1888,7 +1818,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_210
 
-    private void ExportForm210Data(Reports selectedReports)
+    private void ExportForm210Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1909,7 +1839,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.10") && x.Rows210 != null);
@@ -1963,7 +1893,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_211
 
-    private void ExportForm211Data(Reports selectedReports)
+    private void ExportForm211Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -1982,7 +1912,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.11") && x.Rows211 != null);
@@ -2034,7 +1964,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_212
 
-    private void ExportForm212Data(Reports selectedReports)
+    private void ExportForm212Data()
     {
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -2050,7 +1980,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         NotesHeaders();
 
         var tmp = 2;
-        List<Reports> repList = new() { selectedReports };
+        List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("2.12") && x.Rows212 != null);
