@@ -1679,7 +1679,7 @@ public class Form16 : Form1
         }
         if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
             || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is not (15 or 17 or 46 or 47 or 53 or 54 or 58 or 61 or 62 or 65 or 66 or 67 or 81
+            || byteValue is (15 or 17 or 46 or 47 or 53 or 54 or 58 or 61 or 62 or 65 or 66 or 67 or 81
                 or 82 or 83 or 85 or 86 or 87))
         {
             value.AddError("Код операции не может быть использован в форме 1.6");
