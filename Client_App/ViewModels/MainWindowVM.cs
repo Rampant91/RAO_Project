@@ -250,8 +250,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private Task PropertiesInit()
     {
-        AddReport = ReactiveCommand.CreateFromTask<object>(_AddReport);
-        AddForm = ReactiveCommand.CreateFromTask<object>(_AddForm);
         ImportForm = ReactiveCommand.CreateFromTask(_ImportForm);
         ImportFrom = ReactiveCommand.CreateFromTask(_ImportFrom);
         ExportForm = ReactiveCommand.CreateFromTask<object>(_ExportForm);
@@ -259,20 +257,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExportAllOrg = ReactiveCommand.CreateFromTask<object>(_ExportAllOrg);
         ExportOrgWithDateRange = ReactiveCommand.CreateFromTask<object>(_ExportOrgWithDateRange);
         ChangeForm = ReactiveCommand.CreateFromTask<object>(_ChangeForm);
-        ChangeReport = ReactiveCommand.CreateFromTask<object>(_ChangeReport);
         DeleteForm = ReactiveCommand.CreateFromTask<object>(_DeleteForm);
         DeleteReport = ReactiveCommand.CreateFromTask<object>(_DeleteReport);
         SaveReport = ReactiveCommand.CreateFromTask<object>(_SaveReport);
-        //Print_Excel_Export = ReactiveCommand.CreateFromTask<object>(_Print_Excel_Export);
-        //Excel_Export = ReactiveCommand.CreateFromTask<object>(_Excel_Export);
-        //All_Excel_Export = ReactiveCommand.CreateFromTask<object>(_All_Excel_Export);
-        //SelectOrgExcelExport = ReactiveCommand.CreateFromTask(_SelectOrgExcelExport);
-        //AllOrganization_Excel_Export = ReactiveCommand.CreateFromTask(_AllOrganization_Excel_Export);
-        //ExcelMissingPas = ReactiveCommand.CreateFromTask<object>(_ExcelMissingPas);
-        //ExcelPasWithoutRep = ReactiveCommand.CreateFromTask<object>(_ExcelPasWithoutRep);
-        //ChangePasDir = ReactiveCommand.CreateFromTask<object>(_ChangePasDir);
-        ShowDialog = new Interaction<ChangeOrCreateVM, object>();
-        ShowMessage = new Interaction<List<string>, string>();
 
         return Task.CompletedTask;
     }
@@ -484,7 +471,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Commands
 
+    public ICommand AddForm { get; set; }                   //  Создать и открыть новое окно формы для выбранной организации
+    public ICommand AddReports { get; set; }                //  Создать и открыть новое окно формы организации (1.0 и 2.0)
     public ICommand ChangePasFolder { get; set; }           //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
+    public ICommand ChangeReports { get; set; }             //  Изменить Формы организации (1.0 и 2.0)
     public ICommand ExcelExportFormAnalysis { get; set; }   //  Выбранная форма -> Выгрузка Excel -> Для анализа
     public ICommand ExcelExportFormPrint { get; set; }      //  Выбранная форма -> Выгрузка Excel -> Для печати
     public ICommand ExcelExportForms { get; set; }          //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
@@ -502,7 +492,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     public MainWindowVM()
     {
+        AddForm = new AddFormAsyncCommand();
+        AddReports = new AddReportsAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
+        ChangeReports = new ChangeReportsAsyncCommand();
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
         ExcelExportFormPrint = new ExcelExportFormPrintAsyncCommand(); 
         ExcelExportForms = new ExcelExportFormsAsyncCommand();
@@ -519,84 +512,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Interactions
 
-    public Interaction<ChangeOrCreateVM, object> ShowDialog { get; private set; }
-    public Interaction<List<string>, string> ShowMessage { get; private set; }
-
-    #endregion
-
-    #region AddReport
-
-    public ReactiveCommand<object, Unit> AddReport { get; private set; }
-
-    private async Task _AddReport(object par)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
-            par is string param)
-        {
-            var t = desktop.MainWindow as MainWindow;
-            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-            ChangeOrCreateVM frm = new(param, LocalReports);
-            await ShowDialog.Handle(frm);
-            t.SelectedReports = tmp;
-            await LocalReports.Reports_Collection.QuickSortAsync();
-        }
-    }
-
-    #endregion
-
-    #region AddForm
-
-    public ReactiveCommand<object, Unit> AddForm { get; private set; }
-
-    private async Task _AddForm(object par)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
-            par is string param)
-        {
-            var t = desktop.MainWindow as MainWindow;
-            if (t?.SelectedReports is null
-                || !t.SelectedReports.Any()
-                || ((Reports)t.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
-            {
-                #region MessageFailedToOpenForm
-
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = $"Создание формы {param}",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось создать форму {param}, поскольку не выбрана организация. Перед созданием формы убедитесь,"
-                            + $"{Environment.NewLine}что в списке организаций имеется выбранная организация (подсвечивается голубым цветом).",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow);
-
-                #endregion
-
-                return;
-            }
-
-            var y = t.SelectedReports.First() as Reports;
-            if (y?.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
-            {
-                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-
-                ChangeOrCreateVM frm = new(param, y);
-                Form2_Visual.tmpVM = param switch
-                {
-                    "2.1" or "2.2" => frm,
-                    _ => Form2_Visual.tmpVM
-                };
-                await ShowDialog.Handle(frm);
-                t.SelectedReports = tmp;
-                await y.Report_Collection.QuickSortAsync();
-            }
-        }
-    }
+    public static Interaction<ChangeOrCreateVM, object> ShowDialog  { get; } = new();
+    public static Interaction<List<string>, string> ShowMessage { get; } = new();
 
     #endregion
 
@@ -3105,30 +3022,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             }
 
             await ShowDialog.Handle(frm);
-            t.SelectedReports = tmp;
-        }
-    }
-
-    #endregion
-
-    #region ChangeReport
-
-    public ReactiveCommand<object, Unit> ChangeReport { get; private set; }
-
-    private async Task _ChangeReport(object par)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-            && par is ObservableCollectionWithItemPropertyChanged<IKey> param
-            && param.First() is { } obj)
-        {
-            var t = desktop.MainWindow as MainWindow;
-            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-            var rep = (Reports)obj;
-            var frm = new ChangeOrCreateVM(rep.Master.FormNum.Value, rep.Master, rep, LocalReports);
-            await ShowDialog.Handle(frm);
-
-            //Local_Reports.Reports_Collection.Sorted = false;
-            //await Local_Reports.Reports_Collection.QuickSortAsync();
             t.SelectedReports = tmp;
         }
     }

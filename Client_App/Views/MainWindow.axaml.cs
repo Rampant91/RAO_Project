@@ -10,13 +10,14 @@ using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
+using Client_App.ViewModels;
 using Client_App.VisualRealization.Short_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Interfaces;
 
 namespace Client_App.Views;
 
-public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
+public class MainWindow : ReactiveWindow<MainWindowVM>
 {
     #region SelectedReports
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
@@ -38,14 +39,14 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     #endregion
 
     #region Contructures
-    public MainWindow(ViewModels.MainWindowVM dataContext)
+    public MainWindow(MainWindowVM dataContext)
     {
         DataContext = dataContext;
         Init();
     }
     public MainWindow()
     {
-        DataContext = new ViewModels.MainWindowVM();
+        DataContext = new MainWindowVM();
         Init();
     }
     private void Init()
@@ -54,8 +55,8 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
 #if DEBUG
         this.AttachDevTools();
 #endif
-        this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-        this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsyncT)));
+        this.WhenActivated(d => d(MainWindowVM.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+        this.WhenActivated(d => d(MainWindowVM.ShowMessage.RegisterHandler(DoShowDialogAsyncT)));
     }
     private void InitializeComponent()
     {
@@ -64,7 +65,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     #endregion
 
     #region ShowDialog
-    private async Task DoShowDialogAsync(InteractionContext<ViewModels.ChangeOrCreateVM, object> interaction)
+    private async Task DoShowDialogAsync(InteractionContext<ChangeOrCreateVM, object> interaction)
     {
         FormChangeOrCreate frm = new(interaction.Input);
 
@@ -106,7 +107,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     #region ShowInit_Контекстное меню и не только
 
     private static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal,
-        ViewModels.MainWindowVM dataContext)
+        MainWindowVM dataContext)
     {
         #region Grd1_Список организаций_Контекстное меню
 
@@ -118,7 +119,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = paramVal,
             ContextMenuText = new[] { "Добавить форму        Ctrl+T" },
-            Command = dataContext.AddReport
+            Command = dataContext.AddReports
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -127,7 +128,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Редактировать форму" },
-            Command = dataContext.ChangeReport
+            Command = dataContext.ChangeReports
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -230,7 +231,7 @@ public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
 
     private void ShowInit()
     {
-        var dataContext = (ViewModels.MainWindowVM)DataContext;
+        var dataContext = (MainWindowVM)DataContext;
 
         var tab10 = this.FindControl<Panel>("Forms_p1_0");
         var tab1X = this.FindControl<Panel>("Forms_p1_X");

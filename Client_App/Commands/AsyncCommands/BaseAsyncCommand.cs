@@ -7,16 +7,8 @@ namespace Client_App.Commands.AsyncCommands;
 
 public abstract class BaseAsyncCommand : BaseCommand
 {
-    #region Constructor
-
-    protected BaseAsyncCommand()
-    {
-        Desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-    } 
-
-    #endregion
-
-    private protected static IClassicDesktopStyleApplicationLifetime? Desktop { get; set; }
+    private protected static IClassicDesktopStyleApplicationLifetime Desktop =
+        (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
     private bool _isExecute;
 

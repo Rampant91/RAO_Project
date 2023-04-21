@@ -78,7 +78,6 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
-        
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
