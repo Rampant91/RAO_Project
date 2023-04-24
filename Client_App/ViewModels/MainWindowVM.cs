@@ -256,7 +256,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExportOrg = ReactiveCommand.CreateFromTask<object>(_ExportOrg);
         ExportAllOrg = ReactiveCommand.CreateFromTask<object>(_ExportAllOrg);
         ExportOrgWithDateRange = ReactiveCommand.CreateFromTask<object>(_ExportOrgWithDateRange);
-        ChangeForm = ReactiveCommand.CreateFromTask<object>(_ChangeForm);
         DeleteForm = ReactiveCommand.CreateFromTask<object>(_DeleteForm);
         DeleteReport = ReactiveCommand.CreateFromTask<object>(_DeleteReport);
         SaveReport = ReactiveCommand.CreateFromTask<object>(_SaveReport);
@@ -473,6 +472,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     public ICommand AddForm { get; set; }                   //  Создать и открыть новое окно формы для выбранной организации
     public ICommand AddReports { get; set; }                //  Создать и открыть новое окно формы организации (1.0 и 2.0)
+    public ICommand ChangeForm { get; set; }                //  Открыть окно редактирования выбранной формы
     public ICommand ChangePasFolder { get; set; }           //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }             //  Изменить Формы организации (1.0 и 2.0)
     public ICommand ExcelExportFormAnalysis { get; set; }   //  Выбранная форма -> Выгрузка Excel -> Для анализа
@@ -494,6 +494,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         AddForm = new AddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
+        ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
@@ -2955,76 +2956,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     }
 
     #endregion
-
-    #endregion
-
-    #region ChangeForm
-
-    public ReactiveCommand<object, Unit> ChangeForm { get; private set; }
-
-    private async Task _ChangeForm(object par)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-            && par is ObservableCollectionWithItemPropertyChanged<IKey> param
-            && param.First() is { } obj)
-        {
-            var t = desktop.MainWindow as MainWindow;
-            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-            var rep = (Report)obj;
-            var tre = LocalReports.Reports_Collection
-                .FirstOrDefault(i => i.Report_Collection.Contains(rep));
-            var numForm = rep.FormNum.Value;
-            var frm = new ChangeOrCreateVM(numForm, rep, tre, LocalReports);
-            switch (numForm)
-            {
-                case "2.1":
-                {
-                    Form2_Visual.tmpVM = frm;
-                    if (frm.isSum)
-                    {
-                        //var sumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
-                        await frm.UnSum21();
-                        await frm.Sum21();
-                        //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
-                    }
-
-                    break;
-                }
-                case "2.2":
-                {
-                    Form2_Visual.tmpVM = frm;
-                    if (frm.isSum)
-                    {
-                        var sumRow = frm.Storage.Rows22.Where(x => x.Sum_DB).ToList();
-                        Dictionary<long, List<string>> dic = new();
-                        foreach (var oldR in sumRow)
-                        {
-                            dic[oldR.NumberInOrder_DB] = new List<string>
-                                { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
-                        }
-
-                        await frm.UnSum22();
-                        await frm.Sum22();
-                        var newSumRow = frm.Storage.Rows22.Where(x => x.Sum_DB);
-                        foreach (var newR in newSumRow)
-                        {
-                            foreach (var oldR in dic.Where(oldR => newR.NumberInOrder_DB == oldR.Key))
-                            {
-                                newR.PackQuantity_DB = oldR.Value[0];
-                                newR.VolumeInPack_DB = oldR.Value[1];
-                                newR.MassInPack_DB = oldR.Value[2];
-                            }
-                        }
-                    }
-
-                    break;
-                }
-            }
-
-            await ShowDialog.Handle(frm);
-            t.SelectedReports = tmp;
-        }
-    }
 
     #endregion
 
