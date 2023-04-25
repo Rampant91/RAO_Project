@@ -166,7 +166,7 @@ public class MainWindow : ReactiveWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Удалить форму           Ctrl+D" },
-            Command = dataContext.DeleteReport
+            Command = dataContext.DeleteReports
         });
 
         #endregion
@@ -224,7 +224,7 @@ public class MainWindow : ReactiveWindow<MainWindowVM>
             ParamName = "SelectedItems",
             IsUpdateCells = true,
             ContextMenuText = new[] { "Сохранить комментарий           Ctrl+J" },
-            Command = dataContext.SaveReport
+            Command = dataContext.SaveReports
         });
         #endregion
     }

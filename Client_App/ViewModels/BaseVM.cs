@@ -70,29 +70,6 @@ public class BaseVM
             : "0000";
     }
 
-    internal static string InventoryCheck(Report? rep)
-    {
-        if (rep is null)
-        {
-            return "";
-        }
-
-        var countCode10 = 0;
-        foreach (var key in rep.Rows)
-        {
-            if (key is Form1 { OperationCode_DB: "10" })
-            {
-                countCode10++;
-            }
-        }
-
-        return countCode10 == rep.Rows.Count
-            ? " (ИНВ)"
-            : countCode10 > 0
-                ? " (инв)"
-                : "";
-    }
-
     internal static string RemoveForbiddenChars(string str)
     {
         str = str.Replace(Environment.NewLine, "").Trim();
@@ -375,6 +352,4 @@ public class BaseVM
     }
 
     #endregion
-
-    
 }
