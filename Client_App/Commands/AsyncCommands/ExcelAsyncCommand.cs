@@ -17,7 +17,7 @@ using Models.Forms.Form2;
 namespace Client_App.Commands.AsyncCommands;
 
 //  Импорт -> Из Excel
-internal class ImportExcelAsyncCommand : BaseImportAsyncCommand
+internal class ExcelAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -179,12 +179,12 @@ internal class ImportExcelAsyncCommand : BaseImportAsyncCommand
                 start++;
             }
 
-            skipNewOrg = false;
-            skipInter = false;
-            skipLess = false;
-            skipNew = false;
-            skipReplace = false;
-            hasMultipleReport = answer.Length > 1;
+            SkipNewOrg = false;
+            SkipInter = false;
+            SkipLess = false;
+            SkipNew = false;
+            SkipReplace = false;
+            HasMultipleReport = answer.Length > 1;
             if (baseReps.Report_Collection.Count != 0)
             {
                 switch (worksheet0.Name)
@@ -206,7 +206,7 @@ internal class ImportExcelAsyncCommand : BaseImportAsyncCommand
                 #region AddNewOrg
 
                 var an = "Добавить";
-                if (!skipNewOrg)
+                if (!SkipNewOrg)
                 {
                     if (answer.Length > 1)
                     {
@@ -239,7 +239,7 @@ internal class ImportExcelAsyncCommand : BaseImportAsyncCommand
 
                         #endregion
 
-                        if (an is "Да для всех") skipNewOrg = true;
+                        if (an is "Да для всех") SkipNewOrg = true;
                     }
                     else
                     {

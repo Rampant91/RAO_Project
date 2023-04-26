@@ -1,5 +1,4 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -10,14 +9,15 @@ using System.Threading.Tasks;
 using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands;
-internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
+
+internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected bool skipNewOrg;          // Пропустить уведомления о добавлении новой организации
-    private protected bool skipInter;           // Пропускать уведомления и отменять импорт при пересечении дат
-    private protected bool skipLess;            // Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
-    private protected bool skipNew;             // Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
-    private protected bool skipReplace;         // Пропускать уведомления о замене форм
-    private protected bool hasMultipleReport;   // Имеет множество форм
+    private protected bool SkipNewOrg;          // Пропустить уведомления о добавлении новой организации
+    private protected bool SkipInter;           // Пропускать уведомления и отменять импорт при пересечении дат
+    private protected bool SkipLess;            // Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
+    private protected bool SkipNew;             // Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
+    private protected bool SkipReplace;         // Пропускать уведомления о замене форм
+    private protected bool HasMultipleReport;   // Имеет множество форм
 
     #region CheckAanswer
     
@@ -156,7 +156,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                     if (impRep.CorrectionNumber_DB < baseRep.CorrectionNumber_DB)
                     {
-                        if (skipLess) break;
+                        if (SkipLess) break;
 
                         #region MessageImportReportHasLowerCorrectionNumber
 
@@ -197,7 +197,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                         #endregion
 
-                        if (res is "Пропустить для всех") skipLess = true;
+                        if (res is "Пропустить для всех") SkipLess = true;
                         break;
                     }
 
@@ -252,9 +252,9 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
                     #region HigherCorrectionNumber
 
                     res = "Заменить";
-                    if (!skipReplace)
+                    if (!SkipReplace)
                     {
-                        if (hasMultipleReport)
+                        if (HasMultipleReport)
                         {
                             #region MessageImportReportHasHigherCorrectionNumber
 
@@ -296,7 +296,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                             #endregion
 
-                            if (res is "Заменять все формы") skipReplace = true;
+                            if (res is "Заменять все формы") SkipReplace = true;
                         }
                         else
                         {
@@ -352,7 +352,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
                 {
                     impInBase = true;
 
-                    if (skipInter) break;
+                    if (SkipInter) break;
 
                     #region MessagePeriodsIntersect
 
@@ -394,7 +394,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                     if (res is "Отменить для всех пересечений")
                     {
-                        skipInter = true;
+                        SkipInter = true;
                         break;
                     }
 
@@ -445,9 +445,9 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
             #region AddNewForm
 
             res = "Да";
-            if (!skipNew)
+            if (!SkipNew)
             {
-                if (hasMultipleReport)
+                if (HasMultipleReport)
                 {
                     #region MessageNewReport
 
@@ -485,7 +485,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    if (res is "Да для всех") skipNew = true;
+                    if (res is "Да для всех") SkipNew = true;
                 }
                 else
                 {
@@ -561,7 +561,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                 if (impRep.CorrectionNumber_DB < baseRep.CorrectionNumber_DB)
                 {
-                    if (skipLess) break;
+                    if (SkipLess) break;
 
                     #region MessageImportReportHasLowerCorrectionNumber
 
@@ -601,7 +601,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    if (res == "Пропустить для всех") skipLess = true;
+                    if (res == "Пропустить для всех") SkipLess = true;
                     break;
                 }
 
@@ -655,9 +655,9 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
                 #region HigherCorrectionNumber
 
                 res = "Заменить";
-                if (!skipReplace)
+                if (!SkipReplace)
                 {
-                    if (hasMultipleReport)
+                    if (HasMultipleReport)
                     {
                         #region MessageImportReportHasHigherCorrectionNumber
 
@@ -698,7 +698,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                         #endregion
 
-                        if (res is "Заменять все формы") skipReplace = true;
+                        if (res is "Заменять все формы") SkipReplace = true;
                     }
                     else
                     {
@@ -785,9 +785,9 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
             #region AddNewForm
 
             res = "Да";
-            if (!skipNew)
+            if (!SkipNew)
             {
-                if (hasMultipleReport)
+                if (HasMultipleReport)
                 {
                     #region MessageNewReport
 
@@ -824,7 +824,7 @@ internal abstract class BaseImportAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    if (res == "Да для всех") skipNew = true;
+                    if (res == "Да для всех") SkipNew = true;
                 }
                 else
                 {

@@ -11,8 +11,6 @@ using MessageBox.Avalonia.Models;
 using OfficeOpenXml;
 using System.IO;
 using System.Threading;
-using Models.Collections;
-using Models.Forms.Form1;
 
 namespace Client_App.ViewModels;
 
@@ -26,9 +24,9 @@ public class BaseVM
 
     internal static string SystemDirectory = "";
 
-    private protected static string RaoDirectory = "";
+    internal static string RaoDirectory = "";
 
-    private protected static string TmpDirectory = "";
+    internal static string TmpDirectory = "";
 
     internal static bool ComparePasParam(string? nameDb, string? namePas)
     {

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
+using Models.Forms.Form1;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -126,7 +127,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
                 Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[row, 7].Value = rep.Rows.Count;
-                Worksheet.Cells[row, 8].Value = BaseVM.InventoryCheck(rep).TrimStart();
+                Worksheet.Cells[row, 8].Value = InventoryCheck(rep).TrimStart();
                 row++;
             }
         }

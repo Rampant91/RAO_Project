@@ -753,4 +753,31 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     }
 
     #endregion
+
+    #region InventoryCheck
+
+    private protected static string InventoryCheck(Report? rep)
+    {
+        if (rep is null)
+        {
+            return "";
+        }
+
+        var countCode10 = 0;
+        foreach (var key in rep.Rows)
+        {
+            if (key is Form1 { OperationCode_DB: "10" })
+            {
+                countCode10++;
+            }
+        }
+
+        return countCode10 == rep.Rows.Count
+            ? " (ИНВ)"
+            : countCode10 > 0
+                ? " (инв)"
+                : "";
+    }
+
+    #endregion
 }
