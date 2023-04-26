@@ -103,7 +103,7 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
         Reports exportOrg = new() { Master = org.Master };
         exportOrg.Report_Collection.AddRange(repInRange);
 
-        if (_MainWindowViewModel.ExportForm.CanExecute(null))
-            _MainWindowViewModel.ExportForm.Execute(exportOrg);
+        if (_MainWindowViewModel.ExportReports.CanExecute(null))
+            _MainWindowViewModel.ExportReports.Execute(exportOrg);
     }
 }

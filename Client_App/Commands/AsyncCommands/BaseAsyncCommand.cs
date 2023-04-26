@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.SyncCommands;
@@ -36,7 +37,7 @@ public abstract class BaseAsyncCommand : BaseCommand
         {
             await AsyncExecute(parameter);
         }
-        catch
+        catch (Exception e)
         {
             // ignored
         }

@@ -1,6 +1,7 @@
 ﻿using Models.Collections;
 using OfficeOpenXml;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -59,8 +60,16 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return; 
+
+        #if DEBUG
         var appFolderPath =
-            Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "Excel"), $"{formNum}.xlsx");
+            Path.Combine(
+                Path.Combine(
+                    Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"),
+                    "Excel"), $"{formNum}.xlsx");
+        #else
+        var appFolderPath = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "Excel"), $"{formNum}.xlsx");
+        #endif
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
         await exportForm.SortAsync();
