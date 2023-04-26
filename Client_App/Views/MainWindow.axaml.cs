@@ -137,7 +137,7 @@ public class MainWindow : ReactiveWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Выгрузить организацию" },
-            Command = dataContext.ExportOrg
+            Command = dataContext.ExportReports
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -146,7 +146,7 @@ public class MainWindow : ReactiveWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Выгрузить организацию с указанием диапазона дат" },
-            Command = dataContext.ExportOrgWithDateRange
+            Command = dataContext.ExportReportsWithDateRange
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -155,7 +155,7 @@ public class MainWindow : ReactiveWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Выгрузить все организации" },
-            Command = dataContext.ExportAllOrg
+            Command = dataContext.ExportAllReports
         });
 
         grd1.CommandsList.Add(new KeyCommand
