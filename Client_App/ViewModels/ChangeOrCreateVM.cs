@@ -24,6 +24,8 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Client_App.Commands.AsyncCommands;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
@@ -1637,104 +1639,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region OpenPassport
-
-    public ReactiveCommand<object, Unit> OpenPassport { get; protected set; }
-    private async Task _OpenPassport(object param)
-    {
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        PassportUniqParam(param, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
-        var year = ConvertDateToYear(date);
-        if (okpo is null or ""
-            || type is null or ""
-            || year is null or ""
-            || pasNum is null or ""
-            || factoryNum is null or "")
-        {
-            #region MessageUnableToOpenPassport
-
-            await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Уведомление",
-                        "Паспорт не может быть открыт, поскольку не заполнены или заполнены некорректно все требуемые поля:"
-                        + Environment.NewLine + "- номер паспорта (сертификата);"
-                        + Environment.NewLine + "- тип;"
-                        + Environment.NewLine + "- номер;"
-                        + Environment.NewLine + "- код ОКПО изготовителя;"
-                        + Environment.NewLine + "- дата выпуска;")
-                    .ShowDialog(desktop.MainWindow);
-
-            #endregion
-
-            return;
-        }
-        
-        var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
-        uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
-        uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
-
-        var pasFullPath = Directory.EnumerateFiles(PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault() is not null
-            ? Directory.EnumerateFiles(PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault()
-            : Directory.EnumerateFiles(PasFolderPath, TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
-                ? Directory.EnumerateFiles(PasFolderPath, TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
-                : Directory.EnumerateFiles(PasFolderPath, TranslateToRus(uniqPasName)).FirstOrDefault() != null
-                    ? Directory.EnumerateFiles(PasFolderPath, TranslateToRus(uniqPasName)).FirstOrDefault()
-                    : null;
-
-        if (pasFullPath is not null)
-        {
-            Process.Start(new ProcessStartInfo { FileName = pasFullPath, UseShellExecute = true });
-        }
-        else
-        {
-            #region MessagePasportFileMissing
-
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Уведомление", 
-                    $"Паспорт {uniqPasName}" +
-                    $"{Environment.NewLine}отсутствует в сетевом хранилище:" +
-                    $"{Environment.NewLine}{PasFolderPath}")
-                .ShowDialog(desktop.MainWindow);
-
-            #endregion
-        }
-    }
-    
-    #endregion
-
-    #region CopyPasName
-    public ReactiveCommand<object, Unit> CopyPasName { get; protected set; }
-    private async Task _CopyPasName(object param)
-    {
-        PassportUniqParam(param, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
-        var year = ConvertDateToYear(date);
-        if (okpo is null or ""
-            || type is null or ""
-            || year is null or ""
-            || pasNum is null or ""
-            || factoryNum is null or "")
-        {
-            var desktop = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            #region MessageFailedToCopyPasName
-            await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Уведомление", "Имя паспорта не было скопировано, не заполнены все требуемые поля:"
-                                                                + Environment.NewLine + "- номер паспорта (сертификата)"
-                                                                + Environment.NewLine + "- тип"
-                                                                + Environment.NewLine + "- номер"
-                                                                + Environment.NewLine + "- код ОКПО изготовителя"
-                                                                + Environment.NewLine + "- дата выпуска")
-                    .ShowDialog(desktop!.MainWindow); 
-            #endregion
-            return;
-        }
-        var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
-        uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
-        uniqPasName = Regex.Replace(uniqPasName, "\\s+", "");
-        await Application.Current.Clipboard.SetTextAsync(uniqPasName);
-    }
-    #endregion
-
     #region PassportUniqParam
-    private static void PassportUniqParam(object param, out string? okpo, out string? type, out string? date, out string? pasNum, out string? factoryNum)
+    public static void PassportUniqParam(object param, out string? okpo, out string? type, out string? date, out string? pasNum, out string? factoryNum)
     {
         var par = param as object[];
         var collection = par?[0] as IKeyCollection;
@@ -1900,7 +1806,16 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region Constacture
+    #region Commands
+
+    public ICommand CopyPasName { get; set; }   //  Скопировать в буфер обмена уникальное имя паспорта
+    public ICommand OpenPas { get; set; }       //  Найти и открыть соответствующий файл паспорта в сетевом хранилище 
+
+    #endregion
+
+    #region Constructor
+
+    //  При изменении формы или организации
     public ChangeOrCreateVM(string param, in Report rep, Reports reps, DBObservable localReports)
     {
         Storage = rep;
@@ -1912,6 +1827,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         isSum = sumR21 > 0 || sumR22 > 0;
         Init();
     }
+
+    //  При добавлении новой формы
     public ChangeOrCreateVM(string param, in Reports reps)
     {
         Storage = new Report { FormNum_DB = param };
@@ -1930,7 +1847,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     FormType = param;
                     Storage.StartPeriod.Value = ty;
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
             }
         }
         else
@@ -1950,7 +1870,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         Storage.Year.Value = (Convert.ToInt32(ty) + 1).ToString();
                     }
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
             }
         }
         switch (param)
@@ -1980,6 +1903,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         FormType = param;
         Init();
     }
+
+    //  При добавлении новой организации
     public ChangeOrCreateVM(string param, in DBObservable reps)
     {
         Storage = new Report { FormNum_DB = param };
@@ -2010,6 +1935,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         DBO = reps;
         Init();
     }
+
     #endregion
 
     #region Interaction
@@ -2032,6 +1958,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
+
+        CopyPasName = new CopyPasNameAsyncCommand();
+        OpenPas = new OpenPasAsyncCommand();
+
         AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
         AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
         DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
@@ -2045,9 +1975,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
         SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
         DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
-        OpenPassport = ReactiveCommand.CreateFromTask<object>(_OpenPassport);
         ExcelPassport = ReactiveCommand.CreateFromTask<object>(_ExcelPassport);
-        CopyPasName = ReactiveCommand.CreateFromTask<object>(_CopyPasName);
         CopyExecutorData = ReactiveCommand.CreateFromTask<object>(_CopyExecutorData);
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();

@@ -82,7 +82,7 @@ public class BaseVM
         return string.Join("", charArray);
     }
 
-    private protected static string TranslateToEng(string pasName)
+    internal static string TranslateToEng(string pasName)
     {
         Dictionary<string, string> dictRusToEng = new()
         {
@@ -115,7 +115,7 @@ public class BaseVM
         return newPasName;
     }
 
-    private protected static string TranslateToRus(string pasName)
+    internal static string TranslateToRus(string pasName)
     {
         Dictionary<string, string> dictEngToRus = new()
         {
@@ -148,6 +148,7 @@ public class BaseVM
         return newPasName;
     }
 
+    //  Запускает баш скрипт с введенной командой
     private protected async Task<string?> RunCommandInBush(string command)
     {
         var process = new Process

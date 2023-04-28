@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86</Platforms>
-    <ApplicationIcon>briefcase_business_icon_221256.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -19,7 +19,7 @@
     <Compile Remove="Assets\Converters.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="briefcase_business_icon_221256.ico" />
+    <Content Include="Assets\logo.ico" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.10" />

@@ -242,7 +242,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
                     ContextMenuText = new[] { "Открыть паспорт                                      Ctrl+P" },
-                    Command = dataContext.OpenPassport
+                    Command = dataContext.OpenPas
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
