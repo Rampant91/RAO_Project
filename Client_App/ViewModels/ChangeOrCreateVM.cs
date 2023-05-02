@@ -8,33 +8,26 @@ using Models.Classes;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;
-using OfficeOpenXml;
 using ReactiveUI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Resources;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.Forms;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Path = System.IO.Path;
 using Client_App.Commands.AsyncCommands.Excel;
 
 namespace Client_App.ViewModels;
@@ -981,140 +974,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region CopyRows
-    public ReactiveCommand<object, Unit> CopyRows { get; protected set; }
-    private async Task _CopyRows(object _param)
-    {
-        if (_param is not object[] param || param[0] is not IKeyCollection collection) return;
-        var minColumn = Convert.ToInt32(param[1]) + 1;
-        var maxColumn = Convert.ToInt32(param[2]) + 1;
-        if (minColumn == 1 && param[0] is Form1 or Form2)
-        {
-            minColumn++;
-        }
-        Dictionary<long, Dictionary<int, string>> dic = new();
-        foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
-        {
-            dic.Add(item.Order, new Dictionary<int, string>());
-            var dStructure = (IDataGridColumn)item;
-            var findStructure = dStructure.GetColumnStructure();
-            var level = findStructure.Level;
-            var tre = findStructure.GetLevel(level - 1);
-            var props = item
-                .GetType()
-                .GetProperties()
-                .Where(x => x.CustomAttributes
-                    .Any(y => y.AttributeType.Name is "FormPropertyAttribute"));
-            foreach (var prop in props)
-            {
-                var attr = (FormPropertyAttribute?)prop?.GetCustomAttributes(typeof(FormPropertyAttribute), false)?.FirstOrDefault();
-                if (attr == null) continue;
-
-                byte newNum;
-                if (attr.Names.Length <= 1 || attr.Names[0] == "null-1-1")
-                {
-                    _ = byte.TryParse(attr.Number, out newNum);
-                }
-                else
-                {
-                    switch (attr.Names.Length)
-                    {
-                        case 3:
-                            _ = byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
-                                ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])
-                                ?.innertCol[0].name, out newNum);
-                            break;
-                        case 4:
-                            _ = byte.TryParse(tre.FirstOrDefault(x => x.name == attr.Names[0])
-                                ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])
-                                ?.innertCol.FirstOrDefault(x => x.name == attr.Names[2])
-                                ?.innertCol[0].name, out newNum);
-                            break;
-                        default:
-                            continue;
-                    }
-                }
-                try
-                {
-                    if (newNum >= minColumn && newNum <= maxColumn)
-                    {
-                        var midValue = prop.GetMethod?.Invoke(item, null);
-                        var value = midValue?.GetType().GetProperty("Value")?.GetMethod?.Invoke(midValue, null);
-                        if (value != null)
-                        {
-                            try
-                            {
-                                if (dic[item.Order][newNum] == "")
-                                {
-                                    dic[item.Order][newNum] = value.ToString();
-                                }
-                            }
-                            catch
-                            {
-                                dic[item.Order].Add(newNum, value.ToString());
-                            }
-                        }
-                        else
-                        {
-                            dic[item.Order].Add(newNum, "");
-                        }
-                    }
-                }
-                catch
-                {
-                    //ignored
-                }
-            }
-        }
-        var textInSelectedCells = "";
-        foreach (var item in dic.OrderBy(x => x.Key))
-        {
-            foreach (var it in item.Value.OrderBy(x => x.Key))
-            {
-                if (it.Value.Contains('\n') || it.Value.Contains('\r'))
-                {
-                    textInSelectedCells += $"\"{it.Value}\"\t";
-                }
-                else
-                {
-                    textInSelectedCells += $"{it.Value}\t";
-                }
-            }
-            textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1) + "\n";
-        }
-        textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1);
-        if (Application.Current.Clipboard is { } clip)
-        {
-            var currentClipboard = "";
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-            if (await clip.GetTextAsync() is not null)  //GetTextAsync под Linux может выдавать null
-            {
-                currentClipboard = await clip.GetTextAsync();
-            }
-            if (minColumn == maxColumn && !string.IsNullOrEmpty(currentClipboard) && textInSelectedCells.Contains(currentClipboard))
-            {
-                return;
-            }
-            if (OperatingSystem.IsWindows())
-            {
-                var thread = new Thread(() =>
-                {
-                    clip.ClearAsync();
-                    clip.SetTextAsync(textInSelectedCells);
-                });
-                thread.SetApartmentState(ApartmentState.STA); //Set the thread to STA
-                thread.Start();
-                thread.Join();
-            }
-            else
-            {
-                await clip.ClearAsync();
-                await clip.SetTextAsync(textInSelectedCells);
-            }
-        }
-    }
-    #endregion
-
     #region PasteRows
     public ReactiveCommand<object, Unit> PasteRows { get; protected set; }
     private async Task _PasteRows(object _param)
@@ -1340,75 +1199,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region CopyExecutorData
-    public ReactiveCommand<object, Unit> CopyExecutorData { get; protected set; }
-    private async Task _CopyExecutorData(object param)
-    {
-        var comparator = new CustomStringDateComparer(StringComparer.CurrentCulture);
-        var lastReportWithExecutor = Storages.Report_Collection
-            .Where(rep => rep.FormNum_DB == FormType
-                          && !rep.Equals(Storage)
-                          && (rep.FIOexecutor_DB is not (null or "" or "-")
-                              || rep.ExecEmail_DB is not (null or "" or "-")
-                              || rep.ExecPhone_DB is not (null or "" or "-")
-                              || rep.GradeExecutor_DB is not (null or "" or "-")))
-            .MaxBy(rep => rep.EndPeriod_DB, comparator);
-        if (lastReportWithExecutor is null)
-        {
-            #region ShowMessageMissingExecutorData
-            var orgName = "данной организации";
-            var lastReport = Storages.Report_Collection
-                .Where(rep => rep.FormNum_DB.Equals(FormType) && !rep.Equals(Storage))
-                .MaxBy(rep => rep.EndPeriod_DB, comparator);
-            if (FormType.ToCharArray()[0] == '1')
-            {
-                if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[1].ShortJurLico_DB) && Storages.Master_DB.Rows10[1].ShortJurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows10[1].ShortJurLico_DB;
-                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[1].JurLico_DB) && Storages.Master_DB.Rows10[1].JurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows10[1].JurLico_DB;
-                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[0].ShortJurLico_DB) && Storages.Master_DB.Rows10[0].ShortJurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows10[0].ShortJurLico_DB;
-                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows10[0].JurLico_DB) && Storages.Master_DB.Rows10[0].JurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows10[0].JurLico_DB;
-            }
-            if (FormType.ToCharArray()[0] == '2')
-            {
-                if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[1].ShortJurLico_DB) && Storages.Master_DB.Rows20[1].ShortJurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows20[1].ShortJurLico_DB;
-                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[1].JurLico_DB) && Storages.Master_DB.Rows20[1].JurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows20[1].JurLico_DB;
-                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[0].ShortJurLico_DB) && Storages.Master_DB.Rows20[0].ShortJurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows20[0].ShortJurLico_DB;
-                else if (!string.IsNullOrEmpty(Storages.Master_DB.Rows20[0].JurLico_DB) && Storages.Master_DB.Rows20[0].JurLico_DB != "-")
-                    orgName = Storages.Master_DB.Rows20[0].JurLico_DB;
-            }
-            var msg = lastReport is null
-                ? $"У {orgName}" + Environment.NewLine + $"отсутствуют другие формы {FormType}"
-                : $"У {orgName}" + Environment.NewLine + $"в формах {FormType} не заполнены данные исполнителя";
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        ContentHeader = "Уведомление",
-                        ContentMessage = msg
-                    })
-                    .ShowDialog(desktop.MainWindow);
-            }
-            #endregion
-            return;
-        }
-        Storage.FIOexecutor.Value = lastReportWithExecutor.FIOexecutor_DB;
-        Storage.ExecEmail.Value = lastReportWithExecutor.ExecEmail_DB;
-        Storage.ExecPhone.Value = lastReportWithExecutor.ExecPhone_DB;
-        Storage.GradeExecutor.Value = lastReportWithExecutor.GradeExecutor_DB;
-    }
-    #endregion
-
     #region Commands
 
+    public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
     public ICommand CopyPasName { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
+    public ICommand CopyRows { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище 
 
@@ -1560,7 +1355,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
 
+        CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
+        CopyRows = new CopyRowsAsyncCommand();
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();
         OpenPas = new OpenPasAsyncCommand();
 
@@ -1571,13 +1368,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         CheckReport = ReactiveCommand.Create(_CheckReport);
         PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
         DuplicateRowsx1 = ReactiveCommand.CreateFromTask<object>(_DuplicateRowsx1);
-        CopyRows = ReactiveCommand.CreateFromTask<object>(_CopyRows);
         AddNote = ReactiveCommand.CreateFromTask<object>(_AddNote);
         DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
         DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
         SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
         DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
-        CopyExecutorData = ReactiveCommand.CreateFromTask<object>(_CopyExecutorData);
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();

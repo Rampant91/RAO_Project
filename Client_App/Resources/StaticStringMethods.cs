@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Client_App.Resources;
 
-internal class StaticStringMethods
+internal static class StaticStringMethods
 {
     internal static bool ComparePasParam(string? nameDb, string? namePas)
     {
