@@ -172,7 +172,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк                                    Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -285,7 +285,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -365,7 +365,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -448,7 +448,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -528,7 +528,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -611,7 +611,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -691,7 +691,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -774,7 +774,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -854,7 +854,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -967,7 +967,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -1047,7 +1047,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1130,7 +1130,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -1210,7 +1210,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1293,7 +1293,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -1373,7 +1373,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1456,7 +1456,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -1536,7 +1536,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1619,7 +1619,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -1712,7 +1712,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1795,7 +1795,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -1875,7 +1875,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1958,7 +1958,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -2038,7 +2038,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2121,7 +2121,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -2201,7 +2201,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2284,7 +2284,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -2364,7 +2364,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2447,7 +2447,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -2527,7 +2527,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2610,7 +2610,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -2690,7 +2690,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2773,7 +2773,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -2853,7 +2853,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2936,7 +2936,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -3016,7 +3016,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3099,7 +3099,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -3179,7 +3179,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3262,7 +3262,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -3342,7 +3342,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3425,7 +3425,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -3505,7 +3505,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк            Ctrl+N" },
-                    Command = dataContext.DuplicateRowsx1
+                    Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3588,7 +3588,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "",
                     ContextMenuText = new string[] { "Добавить N строк        Ctrl+N" },
-                    Command = dataContext.DuplicateNotes
+                    Command = dataContext.AddNotes
                 });
                 Ngrd.CommandsList.Add(new KeyCommand
                 {

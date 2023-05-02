@@ -698,16 +698,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     //public ReactiveCommand<string, Unit> AddSort { get; protected set; }
     //#endregion
 
-    #region AddNote
-    public ReactiveCommand<object, Unit> AddNote { get; protected set; }
-    private async Task _AddNote(object param)
-    {
-        Note? nt = new() { Order = GetNumberInOrder(Storage.Notes) };
-        Storage.Notes.Add(nt);
-        await Storage.SortAsync();
-    }
-    #endregion
-
     #region SetNumberOrder
     public ReactiveCommand<object, Unit> SetNumberOrder { get; protected set; }
     private async Task _SetNumberOrder(object param)
@@ -719,17 +709,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             row.SetOrder(count);
             count++;
         }
-    }
-    #endregion
-
-    #region AddRow
-    public ReactiveCommand<object, Unit> AddRow { get; protected set; }
-    private async Task _AddRow(object param)
-    {
-        var frm = FormCreator.Create(FormType);
-        frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
-        Storage[Storage.FormNum_DB].Add(frm);
-        await Storage.SortAsync();
     }
     #endregion
 
@@ -845,7 +824,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     //    count++;
                     //}
                     await Storage.SortAsync();
-                    var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem);
+                    var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem).ToList();
                     foreach (var item in itemQ)
                     {
                         item.SetOrder(minItem);
@@ -853,52 +832,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                     }
                 }
                 //await Storage.SortAsync();
-            }
-        }
-    }
-    #endregion
-
-    #region DuplicateRowsx1
-    public ReactiveCommand<object, Unit> DuplicateRowsx1 { get; private set; }
-    private async Task _DuplicateRowsx1(object param)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            var t = await ShowDialog.Handle(desktop.MainWindow);
-            if (t > 0)
-            {
-                var number = GetNumberInOrder(Storage.Rows);
-                var lst = new List<Form?>();
-                for (var i = 0; i < t; i++)
-                {
-                    var frm = FormCreator.Create(FormType);
-                    frm.NumberInOrder_DB = number;
-                    lst.Add(frm);
-                    number++;
-                }
-                Storage.Rows.AddRange(lst);
-            }
-        }
-    }
-    #endregion
-
-    #region DuplicateNotes
-    public ReactiveCommand<object, Unit> DuplicateNotes { get; private set; }
-    private async Task _DuplicateNotes(object param)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            var t = await ShowDialog.Handle(desktop.MainWindow);
-            if (t > 0)
-            {
-                var r = GetNumberInOrder(Storage.Notes);
-                var lst = new List<Note?>();
-                for (var i = 0; i < t; i++, r++)
-                {
-                    var note = new Note { Order = r };
-                    lst.Add(note);
-                }
-                Storage.Notes.AddRange(lst);
             }
         }
     }
@@ -1201,9 +1134,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #region Commands
 
+    public ICommand AddNote { get; set; }                           //  Добавить примечание в форму
+    public ICommand AddNotes { get; set; }                          //  Добавить N примечаний в форму
+    public ICommand AddRow { get; set; }                            //  Добавить строку в форму
+    public ICommand AddRows { get; set; }                           //  Добавить строку в форму
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
     public ICommand CopyPasName { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
-    public ICommand CopyRows { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
+    public ICommand CopyRows { get; set; }                          //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище 
 
@@ -1355,22 +1292,22 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
 
+        AddNote = new AddNoteAsyncCommand(this);
+        AddNotes = new AddNotesAsyncCommand(this);
+        AddRow = new AddRowAsyncCommand(this);
+        AddRows = new AddRowsAsyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();
         OpenPas = new OpenPasAsyncCommand();
 
-        AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
         AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
         DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
         ChangeReportOrder = ReactiveCommand.CreateFromTask(_ChangeReportOrder);
         CheckReport = ReactiveCommand.Create(_CheckReport);
         PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
-        DuplicateRowsx1 = ReactiveCommand.CreateFromTask<object>(_DuplicateRowsx1);
-        AddNote = ReactiveCommand.CreateFromTask<object>(_AddNote);
         DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
-        DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
         SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
         DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
         ShowDialog = new Interaction<object, int>();
@@ -1464,20 +1401,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     //{
     //    Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20;
     //}
-
-    private static int GetNumberInOrder(IKeyCollection lst)
-    {
-        var maxNum = 0;
-        foreach (var item in lst)
-        {
-            var frm = (INumberInOrder)item;
-            if (frm.Order >= maxNum)
-            {
-                maxNum++;
-            }
-        }
-        return maxNum + 1;
-    }
 
     #region ParseInnerText
     private static string[] ParseInnerTextRows(string text)
