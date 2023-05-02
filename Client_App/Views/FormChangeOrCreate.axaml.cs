@@ -4,7 +4,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using System.ComponentModel;
 using Models.DBRealization;
-using Models;
 using ReactiveUI;
 using System;
 using System.Reactive.Linq;
@@ -252,7 +251,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
                     ContextMenuText = new[] { "Выгрузка в Excel движения источника   Ctrl+E" },
-                    Command = dataContext.ExcelPassport
+                    Command = dataContext.ExcelExportSourceMovementHistory
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -934,7 +933,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
                     ContextMenuText = new[] { "Выгрузка в Excel движения источника   Ctrl+E" },
-                    Command = dataContext.ExcelPassport
+                    Command = dataContext.ExcelExportSourceMovementHistory
                 });
                 //Rgrd.CommandsList.Add(new KeyCommand
                 //{

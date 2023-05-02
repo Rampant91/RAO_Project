@@ -14,6 +14,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Interfaces;
 using Models.Forms.Form1;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -62,19 +63,19 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
         var filename = reps.Master_DB.FormNum_DB switch
         {
             "1.0" =>
-                BaseVM.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
-                $"_{BaseVM.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
+                StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
+                $"_{StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
                 $"_{exportForm.FormNum_DB}" +
-                $"_{BaseVM.RemoveForbiddenChars(exportForm.StartPeriod_DB)}" +
-                $"_{BaseVM.RemoveForbiddenChars(exportForm.EndPeriod_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportForm.StartPeriod_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportForm.EndPeriod_DB)}" +
                 $"_{exportForm.CorrectionNumber_DB}" +
                 $"_{BaseVM.Version}",
 
             "2.0" when orgWithExpForm.Master.Rows20.Count > 0 =>
-                BaseVM.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
-                $"_{BaseVM.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
+                StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
+                $"_{StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
                 $"_{exportForm.FormNum_DB}" +
-                $"_{BaseVM.RemoveForbiddenChars(exportForm.Year_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportForm.Year_DB)}" +
                 $"_{exportForm.CorrectionNumber_DB}" +
                 $"_{BaseVM.Version}",
             _ => throw new ArgumentOutOfRangeException()

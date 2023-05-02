@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 
@@ -15,7 +16,7 @@ internal class CopyPasNameAsyncCommand : BaseAsyncCommand
     {
         if (parameter is null) return;
         ChangeOrCreateVM.PassportUniqParam(parameter, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
-        var year = BaseVM.ConvertDateToYear(date);
+        var year = StaticStringMethods.ConvertDateToYear(date);
         if (okpo is null or ""
             || type is null or ""
             || year is null or ""

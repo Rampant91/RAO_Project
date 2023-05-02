@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Models.Interfaces;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -50,8 +51,8 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         }
         
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
-        var filename = $"{BaseVM.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
-                       $"_{BaseVM.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
+        var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
+                       $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                        $"_{exportOrg.Master.FormNum_DB}" +
                        $"_{BaseVM.Version}";
 

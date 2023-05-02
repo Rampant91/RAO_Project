@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using JetBrains.Annotations;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -55,8 +56,8 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         }
         _SelectedReports = selectedReports;
 
-        var regNum = BaseVM.RemoveForbiddenChars(_SelectedReports.Master.RegNoRep.Value);
-        var okpo = BaseVM.RemoveForbiddenChars(_SelectedReports.Master.OkpoRep.Value);
+        var regNum = StaticStringMethods.RemoveForbiddenChars(_SelectedReports.Master.RegNoRep.Value);
+        var okpo = StaticStringMethods.RemoveForbiddenChars(_SelectedReports.Master.OkpoRep.Value);
         var fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
@@ -210,7 +211,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-            foreach (var rep in form.OrderBy(x => BaseVM.StringReverse(x.StartPeriod_DB)))
+            foreach (var rep in form.OrderBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB)))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows11.OrderBy(x => x.NumberInOrder_DB))
@@ -1070,7 +1071,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null);
-            foreach (var rep in form.OrderBy(x => BaseVM.StringReverse(x.StartPeriod_DB)))
+            foreach (var rep in form.OrderBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB)))
             {
                 var currentRow = tmp;
                 foreach (var key in rep.Rows19.OrderBy(x => x.NumberInOrder_DB))

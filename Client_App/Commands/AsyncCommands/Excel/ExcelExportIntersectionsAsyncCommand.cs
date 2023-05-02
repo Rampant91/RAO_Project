@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -112,8 +113,8 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             foreach (var key1 in item.Report_Collection)
             {
                 var rep = (Report)key1;
-                var start = BaseVM.StringReverse(rep.StartPeriod_DB);
-                var end = BaseVM.StringReverse(rep.EndPeriod_DB);
+                var start = StaticStringMethods.StringReverse(rep.StartPeriod_DB);
+                var end = StaticStringMethods.StringReverse(rep.EndPeriod_DB);
                 if (!long.TryParse(start, out var startL) || !long.TryParse(end, out var endL)) continue;
                 listSortRep.Add(new ReportForSort
                 {

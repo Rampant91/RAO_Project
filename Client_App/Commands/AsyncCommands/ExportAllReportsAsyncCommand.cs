@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -58,8 +59,8 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                 var fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}";
                 await StaticConfiguration.DBModel.SaveChangesAsync();
                 var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}.RAODB");
-                var filename = $"{BaseVM.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
-                               $"_{BaseVM.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
+                var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
+                               $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                                $"_{exportOrg.Master.FormNum_DB}" +
                                $"_{BaseVM.Version}";
 

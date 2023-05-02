@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using System;
@@ -17,7 +18,7 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
     {
         if (parameter is null) return;
         ChangeOrCreateVM.PassportUniqParam(parameter, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
-        var year = BaseVM.ConvertDateToYear(date);
+        var year = StaticStringMethods.ConvertDateToYear(date);
         if (okpo is null or ""
             || type is null or ""
             || year is null or ""
@@ -47,9 +48,9 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
 
         var pasFullPath = Directory.EnumerateFiles(BaseVM.PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault() is not null
             ? Directory.EnumerateFiles(BaseVM.PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault()
-            : Directory.EnumerateFiles(BaseVM.PasFolderPath, BaseVM.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
-                ? Directory.EnumerateFiles(BaseVM.PasFolderPath, BaseVM.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
-                : Directory.EnumerateFiles(BaseVM.PasFolderPath, BaseVM.TranslateToRus(uniqPasName)).FirstOrDefault();
+            : Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
+                ? Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
+                : Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToRus(uniqPasName)).FirstOrDefault();
 
         if (pasFullPath is not null)
         {

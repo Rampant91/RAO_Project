@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -126,7 +127,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
                 .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
-                .OrderBy(x => BaseVM.StringReverse(x.StartPeriod_DB))
+                .OrderBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB))
                 .ThenBy(x => x.NumberInOrder_DB);
             foreach (var rep in form11)
             {
@@ -138,11 +139,11 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                     var findPasFile = false;
                     foreach (var pasParam in pasUniqParam)
                     {
-                        if (BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
-                            && BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.Type_DB), pasParam[1])
-                            && BaseVM.ComparePasParam(BaseVM.ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                            && BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
-                            && BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4]))
+                        if (StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
+                            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.Type_DB), pasParam[1])
+                            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
+                            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
+                            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4]))
                         {
                             findPasFile = true;
                             break;

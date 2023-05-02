@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -156,11 +157,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 foreach (var repForm in repPas)
                 {
                     foreach (var pasParam in pasUniqParam.Where(pasParam =>
-                                 BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
-                                 && BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.Type_DB), pasParam[1])
-                                 && BaseVM.ComparePasParam(BaseVM.ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                 && BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
-                                 && BaseVM.ComparePasParam(BaseVM.ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
+                                 StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
+                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.Type_DB), pasParam[1])
+                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
+                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
+                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
                     {
                         files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
                         break;

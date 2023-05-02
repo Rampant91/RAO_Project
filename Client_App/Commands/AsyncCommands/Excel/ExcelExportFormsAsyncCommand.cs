@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -94,8 +95,8 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
             case true:
             {
                 ExportType = $"Выбранная организация_Формы {param}";
-                var regNum = BaseVM.RemoveForbiddenChars(selectedReports!.Master.RegNoRep.Value);
-                var okpo = BaseVM.RemoveForbiddenChars(selectedReports!.Master.OkpoRep.Value);
+                var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports!.Master.RegNoRep.Value);
+                var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports!.Master.OkpoRep.Value);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
                 break;
             }
@@ -229,7 +230,7 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
         {
             var newItem = selectedReports!.Report_Collection
                 .Where(x => x.FormNum_DB.Equals(param))
-                .OrderBy(x => param[0] is '1' ? BaseVM.StringReverse(x.StartPeriod_DB) : x.Year_DB);
+                .OrderBy(x => param[0] is '1' ? StaticStringMethods.StringReverse(x.StartPeriod_DB) : x.Year_DB);
             lst.AddRange(newItem);
         }
         else
@@ -239,7 +240,7 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
                 var item = (Reports)key;
                 var newItem = item.Report_Collection
                     .Where(x => x.FormNum_DB.Equals(param))
-                    .OrderBy(x => param[0] is '1' ? BaseVM.StringReverse(x.StartPeriod_DB) : x.Year_DB);
+                    .OrderBy(x => param[0] is '1' ? StaticStringMethods.StringReverse(x.StartPeriod_DB) : x.Year_DB);
                 lst.AddRange(newItem);
             }
         }

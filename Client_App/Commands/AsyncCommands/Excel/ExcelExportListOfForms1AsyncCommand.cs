@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Forms.Form1;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -117,7 +118,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         {
             foreach (var rep in reps.Report_Collection
                          .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => BaseVM.StringReverse(x.StartPeriod_DB))
+                         .ThenBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB))
                          .ToList())
             {
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;

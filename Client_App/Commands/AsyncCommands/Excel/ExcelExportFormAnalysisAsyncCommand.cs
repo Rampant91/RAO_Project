@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Interfaces;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -29,20 +30,20 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         var formNum = exportForm.FormNum_DB;
         if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
         
-        var regNum = BaseVM.RemoveForbiddenChars(orgWithExportForm.Master.RegNoRep.Value);
-        var okpo = BaseVM.RemoveForbiddenChars(orgWithExportForm.Master.OkpoRep.Value);
+        var regNum = StaticStringMethods.RemoveForbiddenChars(orgWithExportForm.Master.RegNoRep.Value);
+        var okpo = StaticStringMethods.RemoveForbiddenChars(orgWithExportForm.Master.OkpoRep.Value);
         var corNum = Convert.ToString(exportForm.CorrectionNumber_DB);
         
         string fileName;
         switch (formNum[0])
         {
             case '1':
-                var startPeriod = BaseVM.RemoveForbiddenChars(exportForm.StartPeriod_DB);
-                var endPeriod = BaseVM.RemoveForbiddenChars(exportForm.EndPeriod_DB);
+                var startPeriod = StaticStringMethods.RemoveForbiddenChars(exportForm.StartPeriod_DB);
+                var endPeriod = StaticStringMethods.RemoveForbiddenChars(exportForm.EndPeriod_DB);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{BaseVM.Version}";
                 break;
             case '2':
-                var year = BaseVM.RemoveForbiddenChars(exportForm.Year_DB);
+                var year = StaticStringMethods.RemoveForbiddenChars(exportForm.Year_DB);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{BaseVM.Version}";
                 break;
             default:
