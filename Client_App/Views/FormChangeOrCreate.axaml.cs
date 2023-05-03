@@ -182,7 +182,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед                         Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -210,9 +210,10 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    IsUpdateCells = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                                         Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -375,7 +376,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -405,7 +406,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -538,7 +539,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -568,7 +569,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -701,7 +702,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -731,7 +732,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -864,7 +865,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -894,7 +895,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1057,7 +1058,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1087,7 +1088,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1220,7 +1221,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1250,7 +1251,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1383,7 +1384,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1413,7 +1414,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1546,7 +1547,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1576,7 +1577,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1722,7 +1723,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1752,7 +1753,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1885,7 +1886,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -1915,7 +1916,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2048,7 +2049,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2078,7 +2079,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2211,7 +2212,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2241,7 +2242,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2374,7 +2375,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2404,7 +2405,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2537,7 +2538,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2567,7 +2568,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2700,7 +2701,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2730,7 +2731,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2863,7 +2864,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -2893,7 +2894,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3026,7 +3027,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3056,7 +3057,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3189,7 +3190,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3219,7 +3220,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3352,7 +3353,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3382,7 +3383,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3515,7 +3516,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Добавить N строк перед Ctrl+I" },
-                    Command = dataContext.AddRowIn
+                    Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -3545,7 +3546,7 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
                     ContextMenuText = new string[] { "Удалить строки                 Ctrl+D" },
-                    Command = dataContext.DeleteRow
+                    Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {

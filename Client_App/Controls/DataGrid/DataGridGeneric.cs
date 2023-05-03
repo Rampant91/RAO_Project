@@ -13,8 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Client_App.ViewModels;
 using Client_App.VisualRealization.Converters;
 
 namespace Client_App.Controls.DataGrid;

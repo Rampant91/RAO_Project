@@ -712,131 +712,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region AddRowIn
-    public ReactiveCommand<object, Unit> AddRowIn { get; protected set; }
-    private async Task _AddRowIn(object _param)
-    {
-        var param = (IEnumerable)_param;
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
-        {
-            var item = param.Cast<Form>().ToList().FirstOrDefault();
-            if (item != null)
-            {
-                var numberCell = item.NumberInOrder_DB;
-                var t2 = await ShowDialogIn.Handle(numberCell);
-                if (t2 > 0)
-                {
-                    foreach (var key in Storage[item.FormNum_DB])
-                    {
-                        var it = (Form)key;
-                        if (it.NumberInOrder_DB > numberCell - 1)
-                        {
-                            it.NumberInOrder.Value = it.NumberInOrder_DB + t2;
-                        }
-                    }
-                    List<Form> lst = new();
-                    for (var i = 0; i < t2; i++)
-                    {
-                        var frm = FormCreator.Create(FormType);
-                        frm.NumberInOrder_DB = numberCell;
-                        lst.Add(frm);
-                        numberCell++;
-                    }
-                    Storage[Storage.FormNum_DB].AddRange(lst);
-                    await Storage.SortAsync();
-                }
-            }
-        }
-    }
-    #endregion
-
-    #region DeleteRow
-    public ReactiveCommand<object, Unit> DeleteRow { get; protected set; }
-    private async Task _DeleteRow(object _param)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            var param = (IEnumerable<IKey>)_param;
-            #region MessageDeleteLine
-            var answer = await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        ButtonDefinitions = new[]
-                        {
-                        new ButtonDefinition { Name = "Да", IsDefault = true },
-                        new ButtonDefinition { Name = "Нет", IsCancel = true }
-                        },
-                        ContentTitle = "Удаление строки",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = "Вы действительно хотите удалить строчку?",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(desktop.MainWindow); 
-            #endregion
-            if (answer is "Да")
-            {
-                //var lst = new List<IKey>(Storage.Rows.GetEnumerable());
-                var minItem = param.Min(x => x.Order);
-                //var maxItem = param.Max(x => x.Order);
-                foreach (var item in param)
-                {
-                    if (item != null)
-                    {
-                        Storage.Rows.Remove(item);
-                    }
-                }
-                //var itemQ = Storage.Rows.GetEnumerable().Where(x=>x.Order>maxItem);
-                //foreach(var item in itemQ)
-                //{
-                //    item.SetOrder(minItem);
-                //    minItem++;
-                //}
-                var rows = Storage[Storage.FormNum_DB].GetEnumerable();
-                if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.1"))
-                {
-                    var count = 1;
-                    foreach (var key in rows)
-                    {
-                        var row = (Form21)key;
-                        row.SetOrder(count);
-                        count++;
-                        row.NumberInOrderSum = new RamAccess<string>(null, "");
-                    }
-                }
-                else if ((rows.FirstOrDefault() as Form).FormNum_DB.Equals("2.2"))
-                {
-                    var count = 1;
-                    foreach (var key in rows)
-                    {
-                        var row = (Form22)key;
-                        row.SetOrder(count);
-                        count++;
-                        row.NumberInOrderSum = new RamAccess<string>(null, "");
-                    }
-                }
-                else
-                {
-                    //var count = 1;
-                    //foreach (var row in Storage[Storage.FormNum_DB])
-                    //{
-                    //    row.SetOrder(count);
-                    //    count++;
-                    //}
-                    await Storage.SortAsync();
-                    var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem).ToList();
-                    foreach (var item in itemQ)
-                    {
-                        item.SetOrder(minItem);
-                        minItem++;
-                    }
-                }
-                //await Storage.SortAsync();
-            }
-        }
-    }
-    #endregion
-
     #region DeleteDataInRows
     public ReactiveCommand<object, Unit> DeleteDataInRows { get; protected set; }
     private async Task _DeleteDataInRows(object _param)
@@ -1137,10 +1012,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand AddNote { get; set; }                           //  Добавить примечание в форму
     public ICommand AddNotes { get; set; }                          //  Добавить N примечаний в форму
     public ICommand AddRow { get; set; }                            //  Добавить строку в форму
-    public ICommand AddRows { get; set; }                           //  Добавить строку в форму
+    public ICommand AddRows { get; set; }                           //  Добавить N строк в форму
+    public ICommand AddRowsIn { get; set; }                         //  Добавить N строк в форму перед выбранной строкой
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
     public ICommand CopyPasName { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand CopyRows { get; set; }                          //  Скопировать в буфер обмена уникальное имя паспорта
+    public ICommand DeleteRows { get; set; }                        //  Удалить выбранные строчки из формы
     public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище 
 
@@ -1296,14 +1173,14 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddNotes = new AddNotesAsyncCommand(this);
         AddRow = new AddRowAsyncCommand(this);
         AddRows = new AddRowsAsyncCommand(this);
+        AddRowsIn = new AddRowsInAsyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
+        DeleteRows = new DeleteRowsAsyncCommand(this);
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();
         OpenPas = new OpenPasAsyncCommand();
 
-        AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
-        DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
         ChangeReportOrder = ReactiveCommand.CreateFromTask(_ChangeReportOrder);
         CheckReport = ReactiveCommand.Create(_CheckReport);
         PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
