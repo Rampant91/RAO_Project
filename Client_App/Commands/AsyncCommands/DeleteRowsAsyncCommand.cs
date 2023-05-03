@@ -70,6 +70,7 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                             var row = (Form21)key;
                             row.SetOrder(count);
                             count++;
+                            row.NumberInOrderSum_DB = "";
                             //row.NumberInOrderSum = new RamAccess<string>(null, "");
                         }
 
@@ -83,6 +84,7 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                             var row = (Form22)key;
                             row.SetOrder(count);
                             count++;
+                            row.NumberInOrderSum_DB = "";
                             //row.NumberInOrderSum = new RamAccess<string>(null, "");
                         }
 
