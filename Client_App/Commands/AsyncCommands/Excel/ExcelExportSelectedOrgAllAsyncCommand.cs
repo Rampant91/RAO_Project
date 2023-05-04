@@ -202,7 +202,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 29].Value = "наименование";
         Worksheet.Cells[1, 30].Value = "тип";
         Worksheet.Cells[1, 31].Value = "номер";
-        NotesHeaders();
+        NotesHeaders1();
 
         #endregion
 
@@ -324,7 +324,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 26].Value = "наименование";
         Worksheet.Cells[1, 27].Value = "тип";
         Worksheet.Cells[1, 28].Value = "номер";
-        NotesHeaders();
+        NotesHeaders1();
 
         #endregion
 
@@ -445,7 +445,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 27].Value = "наименование";
         Worksheet.Cells[1, 28].Value = "тип";
         Worksheet.Cells[1, 29].Value = "номер";
-        NotesHeaders();
+        NotesHeaders1();
 
         #endregion
 
@@ -568,7 +568,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 28].Value = "наименование";
         Worksheet.Cells[1, 29].Value = "тип";
         Worksheet.Cells[1, 30].Value = "номер";
-        NotesHeaders(); 
+        NotesHeaders1(); 
         
         #endregion
 
@@ -694,7 +694,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 30].Value = "Код переработки / сортировки РАО";
         Worksheet.Cells[1, 31].Value = "Субсидия, %";
         Worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
-        NotesHeaders(); 
+        NotesHeaders1(); 
         
         #endregion
 
@@ -825,7 +825,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 33].Value = "номер упаковки";
         Worksheet.Cells[1, 34].Value = "Субсидия, %";
         Worksheet.Cells[1, 35].Value = "Номер мероприятия ФЦП";
-        NotesHeaders(); 
+        NotesHeaders1(); 
         
         #endregion
 
@@ -964,7 +964,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 38].Value = "Код переработки/сортировки РАО";
         Worksheet.Cells[1, 39].Value = "Субсидия, %";
         Worksheet.Cells[1, 40].Value = "Номер мероприятия ФЦП";
-        NotesHeaders(); 
+        NotesHeaders1(); 
         
         #endregion
 
@@ -1103,7 +1103,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 34].Value = "Код переработки/сортировки РАО";
         Worksheet.Cells[1, 35].Value = "Субсидия, %";
         Worksheet.Cells[1, 36].Value = "Номер мероприятия ФЦП";
-        NotesHeaders(); 
+        NotesHeaders1(); 
         
         #endregion
 
@@ -1220,7 +1220,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 15].Value = "Код типа объектов учета";
         Worksheet.Cells[1, 16].Value = "радионуклиды";
         Worksheet.Cells[1, 17].Value = "активность, Бк"; 
-        NotesHeaders();
+        NotesHeaders1();
 
         #endregion
 
@@ -1330,7 +1330,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 26].Value = "бета-, гамма-излучающие радионуклиды (исключая";
         Worksheet.Cells[1, 27].Value = "альфа-излучающие радионуклиды (исключая";
         Worksheet.Cells[1, 28].Value = "трансурановые радионуклиды";
-        NotesHeaders(); 
+        NotesHeaders2(); 
 
         #endregion
 
@@ -1446,7 +1446,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 23].Value = "Основные радионуклиды";
         Worksheet.Cells[1, 24].Value = "Субсидия, %";
         Worksheet.Cells[1, 25].Value = "Номер мероприятия ФЦП";
-        NotesHeaders(); 
+        NotesHeaders2(); 
         
         #endregion
 
@@ -1552,7 +1552,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 16].Value = "дата";
         Worksheet.Cells[1, 17].Value = "срок действия";
         Worksheet.Cells[1, 18].Value = "наименование документа";
-        NotesHeaders(); 
+        NotesHeaders2(); 
         
         #endregion
 
@@ -1655,7 +1655,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 20].Value = "количество переработанных, шт";
         Worksheet.Cells[1, 21].Value = "масса снятия с учета, т";
         Worksheet.Cells[1, 22].Value = "количество снятых с учета, шт";
-        NotesHeaders();
+        NotesHeaders2();
         
         #endregion
 
@@ -1755,7 +1755,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 13].Value = "количество, шт";
         Worksheet.Cells[1, 14].Value = "альфа-излучающих нуклидов";
         Worksheet.Cells[1, 15].Value = "бета-, гамма-излучающих нуклидов";
-        NotesHeaders(); 
+        NotesHeaders2(); 
         
         #endregion
 
@@ -1847,7 +1847,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 11].Value = "Глубина отбора проб, м";
         Worksheet.Cells[1, 12].Value = "Наименование радионуклида";
         Worksheet.Cells[1, 13].Value = "Среднегодовое содержание радионуклида, Бк/кг";
-        NotesHeaders();
+        NotesHeaders2();
 
         #endregion
 
@@ -1932,7 +1932,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 9].Value = "разрешенный выброс за отчетный год";
         Worksheet.Cells[1, 10].Value = "фактический выброс за отчетный год";
         Worksheet.Cells[1, 11].Value = "фактический выброс за предыдущий год";
-        NotesHeaders(); 
+        NotesHeaders2(); 
         
         #endregion
 
@@ -2018,7 +2018,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 10].Value = "Наименование бассейнового округа";
         Worksheet.Cells[1, 11].Value = "Допустимый объем водоотведения за год, тыс.куб.м";
         Worksheet.Cells[1, 12].Value = "Отведено за отчетный период, тыс.куб.м";
-        NotesHeaders();
+        NotesHeaders2();
 
         #endregion
 
@@ -2103,7 +2103,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 8].Value = "Наименование радионуклида";
         Worksheet.Cells[1, 9].Value = "допустимая";
         Worksheet.Cells[1, 10].Value = "фактическая";
-        NotesHeaders();
+        NotesHeaders2();
 
         #endregion
 
@@ -2192,7 +2192,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 14].Value = "альфа-излучающие радионуклиды";
         Worksheet.Cells[1, 15].Value = "бета-излучающие радионуклиды";
         Worksheet.Cells[1, 16].Value = "Номер мероприятия ФЦП";
-        NotesHeaders(); 
+        NotesHeaders2(); 
         
         #endregion
 
@@ -2283,7 +2283,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 12].Value = "земельный участок";
         Worksheet.Cells[1, 13].Value = "жидкая фаза";
         Worksheet.Cells[1, 14].Value = "донные отложения";
-        NotesHeaders();
+        NotesHeaders2();
 
         #endregion
 
@@ -2371,7 +2371,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 9].Value = "радионуклиды";
         Worksheet.Cells[1, 10].Value = "активность, Бк";
         Worksheet.Cells[1, 11].Value = "ОКПО поставщика/получателя";
-        NotesHeaders();
+        NotesHeaders2();
 
         #endregion
 
@@ -2439,7 +2439,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region NotesHeader
 
-    private void NotesHeaders()
+    private void NotesHeaders1()
     {
         WorksheetPrim.Cells[1, 1].Value = "ОКПО";
         WorksheetPrim.Cells[1, 2].Value = "Сокращенное наименование";
@@ -2453,7 +2453,22 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         WorksheetPrim.View.FreezePanes(2, 1);
     }
 
+    private void NotesHeaders2()
+    {
+        WorksheetPrim.Cells[1, 1].Value = "ОКПО";
+        WorksheetPrim.Cells[1, 2].Value = "Сокращенное наименование";
+        WorksheetPrim.Cells[1, 3].Value = "Рег. №";
+        WorksheetPrim.Cells[1, 4].Value = "Номер корректировки";
+        WorksheetPrim.Cells[1, 5].Value = "Отчетный год";
+        WorksheetPrim.Cells[1, 6].Value = "№ строки";
+        WorksheetPrim.Cells[1, 7].Value = "№ графы";
+        WorksheetPrim.Cells[1, 8].Value = "Пояснение";
+        WorksheetPrim.View.FreezePanes(2, 1);
+    }
+
     #endregion
+
+
 
     #endregion
 }
