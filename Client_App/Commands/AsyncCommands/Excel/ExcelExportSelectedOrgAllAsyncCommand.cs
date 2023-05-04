@@ -172,6 +172,8 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm11Data( )
     {
+        #region Headers
+
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
         Worksheet.Cells[1, 3].Value = "ОКПО";
@@ -205,17 +207,26 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 31].Value = "номер";
         NotesHeaders();
 
+        #endregion
+
         var tmp = 2;
         List<Reports> repList = new() { _SelectedReports };
         foreach (var reps in repList)
         {
-            var form = reps.Report_Collection.Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
-            foreach (var rep in form.OrderBy(x => StringReverse(x.StartPeriod_DB)))
+            var form = reps.Report_Collection
+                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
+                .OrderBy(x => StringReverse(x.StartPeriod_DB))
+                .ToList();
+            foreach (var rep in form)
             {
                 var currentRow = tmp;
-                foreach (var key in rep.Rows11.OrderBy(x => x.NumberInOrder_DB))
+                var repSort = rep.Rows11
+                    .OrderBy(x => x.NumberInOrder_DB)
+                    .ToList();
+                foreach (var repForm in repSort)
                 {
-                    var repForm = (Form11)key;
+                    #region Binding
+
                     Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                     Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                     Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -247,14 +258,20 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
                     Worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
                     Worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
                     Worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+
+                    #endregion
+
                     currentRow++;
                 }
-
                 tmp = currentRow;
                 currentRow = 2;
-                foreach (var key in rep.Notes.OrderBy(x => x.Order))
+                var repNotes = rep.Notes
+                    .OrderBy(x => x.Order)
+                    .ToList();
+                foreach (var comment in repNotes)
                 {
-                    var comment = (Note)key;
+                    #region Binding
+
                     WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
                     WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
                     WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
@@ -264,11 +281,13 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
                     WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
                     WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
                     WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB;
+
+                    #endregion
+
                     currentRow++;
                 }
             }
         }
-
         Worksheet.View.FreezePanes(2, 1);
     }
 
