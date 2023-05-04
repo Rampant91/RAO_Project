@@ -525,7 +525,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             if (item.Value.Count != 0 && item.Value.Count != 1)
             {
-                var o = item.Value.FirstOrDefault().NumberInOrderSum = new RamAccess<string>(null, count.ToString());
+                var o = item.Value.First().NumberInOrderSum_DB = count.ToString();
                 lst.AddRange(item.Value);
                 //Storage.Rows22.AddRange(item.Value);
                 count++;

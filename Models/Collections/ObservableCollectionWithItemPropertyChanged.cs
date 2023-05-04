@@ -38,12 +38,26 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     public ObservableCollectionWithItemPropertyChanged(List<T> list) : base(list)
     {
-        ObserveAll();
+        try
+        {
+            ObserveAll();
+        }
+        catch(Exception ex)
+        {
+            //ignored
+        }
     }
 
     public ObservableCollectionWithItemPropertyChanged(IEnumerable<T> enumerable) : base(enumerable)
     {
-        ObserveAll();
+        try
+        {
+            ObserveAll();
+        }
+        catch (Exception ex)
+        {
+            //ignored
+        }
     }
 
     public bool Sorted { get; set; }
