@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Interfaces;
-using Client_App.Resources;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -24,22 +24,22 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var exportForm = (Report)forms.First();
         var orgWithExportForm = MainWindowVM.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
-        var formNum = exportForm.FormNum_DB;
+        var formNum = RemoveForbiddenChars(exportForm.FormNum_DB);
         if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
 
-        var regNum = StaticStringMethods.RemoveForbiddenChars(orgWithExportForm.Master.RegNoRep.Value);
-        var okpo = StaticStringMethods.RemoveForbiddenChars(orgWithExportForm.Master.OkpoRep.Value);
+        var regNum = RemoveForbiddenChars(orgWithExportForm.Master.RegNoRep.Value);
+        var okpo = RemoveForbiddenChars(orgWithExportForm.Master.OkpoRep.Value);
         var corNum = Convert.ToString(exportForm.CorrectionNumber_DB);
         string fileName;
         switch (formNum[0])
         {
             case '1':
-                var startPeriod = StaticStringMethods.RemoveForbiddenChars(exportForm.StartPeriod_DB);
-                var endPeriod = StaticStringMethods.RemoveForbiddenChars(exportForm.EndPeriod_DB);
+                var startPeriod = RemoveForbiddenChars(exportForm.StartPeriod_DB);
+                var endPeriod = RemoveForbiddenChars(exportForm.EndPeriod_DB);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{BaseVM.Version}";
                 break;
             case '2':
-                var year = StaticStringMethods.RemoveForbiddenChars(exportForm.Year_DB);
+                var year = RemoveForbiddenChars(exportForm.Year_DB);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{BaseVM.Version}";
                 break;
             default:

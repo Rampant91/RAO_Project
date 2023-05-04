@@ -95,8 +95,8 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
             case true:
             {
                 ExportType = $"Выбранная организация_Формы {param}";
-                var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports!.Master.RegNoRep.Value);
-                var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports!.Master.OkpoRep.Value);
+                var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
+                var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
                 break;
             }
