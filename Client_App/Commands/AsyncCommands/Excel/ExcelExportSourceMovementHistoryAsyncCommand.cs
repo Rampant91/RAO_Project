@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Client_App.Resources;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.Excel;
 
@@ -46,7 +47,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             return;
         }
 
-        var fileName = $"{ExportType}_{pasNum}_{factoryNum}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{RemoveForbiddenChars(pasNum)}_{RemoveForbiddenChars(factoryNum)}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -114,12 +115,14 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         {
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
+                .ToList();
             foreach (var rep in form11)
             {
                 var repPas = rep.Rows11
-                    .Where(x => StaticStringMethods.ComparePasParam(x.PassportNumber_DB, pasNum)
-                                && StaticStringMethods.ComparePasParam(x.FactoryNumber_DB, factoryNum));
+                    .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum)
+                                && ComparePasParam(x.FactoryNumber_DB, factoryNum))
+                    .ToList();
                 foreach (var repForm in repPas)
                 {
                     if (lastRow == 1)
@@ -165,8 +168,8 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                     }
                     for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
                     {
-                        if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(
-                                repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
+                        if (new CustomStringDateComparer(StringComparer.CurrentCulture)
+                                .Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
                         {
                             worksheet.InsertRow(currentRow, 1);
 
@@ -231,6 +234,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.5");
 
         #region ColumnHeaders
+
         worksheet.Cells[1, 1].Value = "Рег. №";
         worksheet.Cells[1, 2].Value = "Сокращенное наименование";
         worksheet.Cells[1, 3].Value = "ОКПО";
@@ -263,6 +267,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         worksheet.Cells[1, 30].Value = "Код переработки / сортировки РАО";
         worksheet.Cells[1, 31].Value = "Субсидия, %";
         worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
+        
         #endregion
 
         lastRow = 1;
@@ -270,17 +275,20 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         {
             var reps = (Reports)key;
             var form15 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null);
+                .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
+                .ToList();
             foreach (var rep in form15)
             {
                 var repPas = rep.Rows15
-                    .Where(x => StaticStringMethods.ComparePasParam(x.PassportNumber_DB, pasNum)
-                                && StaticStringMethods.ComparePasParam(x.FactoryNumber_DB, factoryNum));
+                    .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum)
+                                && ComparePasParam(x.FactoryNumber_DB, factoryNum))
+                    .ToList();
                 foreach (var repForm in repPas)
                 {
                     if (lastRow == 1)
                     {
                         #region BindingCells
+
                         worksheet.Cells[2, 1].Value = reps.Master.RegNoRep.Value;
                         worksheet.Cells[2, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                         worksheet.Cells[2, 3].Value = reps.Master.OkpoRep.Value;
@@ -313,6 +321,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                         worksheet.Cells[2, 30].Value = repForm.RefineOrSortRAOCode_DB;
                         worksheet.Cells[2, 31].Value = repForm.Subsidy_DB;
                         worksheet.Cells[2, 32].Value = repForm.FcpNumber_DB;
+                        
                         #endregion
 
                         lastRow++;
@@ -320,12 +329,13 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                     }
                     for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
                     {
-                        if (new CustomStringDateComparer(StringComparer.CurrentCulture).Compare(
-                                repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
+                        if (new CustomStringDateComparer(StringComparer.CurrentCulture)
+                                .Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
                         {
                             worksheet.InsertRow(currentRow, 1);
 
                             #region BindingCells
+
                             worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
                             worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
                             worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
@@ -358,9 +368,10 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                             worksheet.Cells[currentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
                             worksheet.Cells[currentRow, 31].Value = repForm.Subsidy_DB;
                             worksheet.Cells[currentRow, 32].Value = repForm.FcpNumber_DB;
-                            lastRow++;
+                            
                             #endregion
 
+                            lastRow++;
                             break;
                         }
                     }

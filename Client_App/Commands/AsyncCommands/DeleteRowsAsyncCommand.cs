@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Models.Forms.DataAccess;
 using Models.Forms.Form2;
 using Models.Forms;
 using System.Collections.Generic;
@@ -71,9 +70,8 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                             row.SetOrder(count);
                             count++;
                             row.NumberInOrderSum_DB = "";
-                            //row.NumberInOrderSum = new RamAccess<string>(null, "");
+                            //row.NumberInOrderSum = new RamAccess<string>(null, "");   //выполняется 0.2c. на итерацию, вроде работает и с заменой выше
                         }
-
                         break;
                     }
                     case "2.2":
@@ -87,13 +85,12 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                             row.NumberInOrderSum_DB = "";
                             //row.NumberInOrderSum = new RamAccess<string>(null, "");
                         }
-
                         break;
                     }
                     default:
                     {
                         await Storage.SortAsync();
-                        var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem).Select(x => x as Form).ToList();
+                        var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem).Select(x => x as Form).ToArray();
                         foreach (var form in itemQ)
                         {
                             //form.SetOrder(minItem);   //выполняется полсекунды на итерацию, вроде работает и с заменой ниже
@@ -101,7 +98,6 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                             form.NumberInOrder.OnPropertyChanged();
                             minItem++;
                         }
-
                         break;
                     }
                 }
