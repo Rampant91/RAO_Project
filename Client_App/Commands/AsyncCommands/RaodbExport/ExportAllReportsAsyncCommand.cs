@@ -13,7 +13,7 @@ using Client_App.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Client_App.Resources;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.ExportRaodb;
 
 //  Экспорт всех организаций организации в отдельные файлы .raodb
 internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
@@ -41,7 +41,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow); 
+                }).ShowDialog(Desktop.MainWindow);
 
             #endregion
 
@@ -130,7 +130,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                 }
             });
         });
-        
+
         #region ExportDoneMessage
 
         answer = await MessageBox.Avalonia.MessageBoxManager

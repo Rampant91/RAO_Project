@@ -12,10 +12,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Models.Forms;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-internal class RaodbAsyncCommand : ImportBaseAsyncCommand
+internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -39,7 +39,7 @@ internal class RaodbAsyncCommand : ImportBaseAsyncCommand
 
             if (!HasMultipleReport)
             {
-                HasMultipleReport = (reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1);
+                HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
             }
 
             foreach (var item in reportsCollection) //Для каждой импортируемой организации
@@ -284,7 +284,7 @@ internal class RaodbAsyncCommand : ImportBaseAsyncCommand
             }
 
             return MainWindowVM.LocalReports.Reports_Collection20
-                       .FirstOrDefault(t => 
+                       .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
                            item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
@@ -310,8 +310,8 @@ internal class RaodbAsyncCommand : ImportBaseAsyncCommand
                            && t.Master.Rows20[1].RegNo_DB == "")
 
                    ?? MainWindowVM.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t => 
-                               
+                       .FirstOrDefault(t =>
+
                            // юр лицо в базе совпадает с обособленным в импорте
                            item.Master.Rows20[1].Okpo_DB != ""
                            && t.Master.Rows20[1].Okpo_DB == ""

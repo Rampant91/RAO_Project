@@ -16,7 +16,7 @@ using Models.Interfaces;
 using Models.Forms.Form1;
 using Client_App.Resources;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.ExportRaodb;
 
 //  Экспорт формы в файл .raodb
 internal class ExportFormAsyncCommand : BaseAsyncCommand
@@ -38,7 +38,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
 
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-        var exportForm = (Report) param.First();
+        var exportForm = (Report)param.First();
 
         var dtDay = dt.Day.ToString();
         var dtMonth = dt.Month.ToString();
@@ -112,7 +112,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
                         }).ShowDialog(Desktop.MainWindow));
 
                 #endregion
-                
+
                 return;
             }
         }
@@ -166,7 +166,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterScreen
                         }).ShowDialog(Desktop.MainWindow));
-        
+
                 #endregion
 
                 return;
@@ -175,7 +175,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
 
         #region ExportCompliteMessage
 
-        var answer = await Dispatcher.UIThread.InvokeAsync(() =>                
+        var answer = await Dispatcher.UIThread.InvokeAsync(() =>
             MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {

@@ -1,11 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Client_App.Views;
-using Client_App.VisualRealization.Long_Visual;
-using FirebirdSql.Data.FirebirdClient;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -13,7 +7,6 @@ using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
-using OfficeOpenXml;
 using ReactiveUI;
 using Spravochniki;
 using System;
@@ -23,15 +16,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Excel;
+using Client_App.Commands.AsyncCommands.ExportRaodb;
+using Client_App.Commands.AsyncCommands.Import;
 
 namespace Client_App.ViewModels;
 
@@ -503,8 +495,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExportForm = new ExportFormAsyncCommand();
         ExportReports = new ExportReportsAsyncCommand();
         ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand(this);
-        ImportExcel = new ExcelAsyncCommand();
-        ImportRaodb = new RaodbAsyncCommand();
+        ImportExcel = new ImportExcelAsyncCommand();
+        ImportRaodb = new ImportRaodbAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
     }
 

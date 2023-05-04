@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Import;
 
 internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 {
@@ -20,17 +20,17 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected bool HasMultipleReport;   // Имеет множество форм
 
     #region CheckAanswer
-    
+
     private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
     {
         switch (an)
         {
             case "Сохранить оба" or "Да" or "Да для всех":
-            {
-                if (!doSomething)
-                    first.Report_Collection.Add(it);
-                break;
-            }
+                {
+                    if (!doSomething)
+                        first.Report_Collection.Add(it);
+                    break;
+                }
             case "Заменить" or "Заменять все формы" or "Загрузить новую" or "Загрузить новую форму":
                 first.Report_Collection.Remove(elem);
                 first.Report_Collection.Add(it);
@@ -548,7 +548,7 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         }
         foreach (var key in listImpRep) //Для каждой импортируемой формы
         {
-            var impRep = (Report)key;
+            var impRep = key;
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
             foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе

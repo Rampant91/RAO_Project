@@ -14,10 +14,10 @@ using Client_App.ViewModels;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из Excel
-internal class ExcelAsyncCommand : ImportBaseAsyncCommand
+internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -57,7 +57,7 @@ internal class ExcelAsyncCommand : ImportBaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow); 
+                            .ShowDialog(Desktop.MainWindow);
 
                 #endregion
 
@@ -100,50 +100,50 @@ internal class ExcelAsyncCommand : ImportBaseAsyncCommand
                 switch (formNumber)
                 {
                     case "2.6":
-                    {
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
-                        break;
-                    }
+                        {
+                            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                            impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
+                            impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                            break;
+                        }
                     case "2.7":
-                    {
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
-                        impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
-                        impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
-                        impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
-                        impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
-                        break;
-                    }
+                        {
+                            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
+                            impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                            impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+                            impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
+                            impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                            impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                            break;
+                        }
                     case "2.8":
-                    {
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
-                        impRep.PermissionNumber_28_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
-                        impRep.ValidBegin_28_DB = Convert.ToString(worksheet1.Cells["K4"].Value);
-                        impRep.ValidThru_28_DB = Convert.ToString(worksheet1.Cells["N4"].Value);
-                        impRep.PermissionDocumentName_28_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
-                        impRep.PermissionNumber1_28_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        impRep.ValidBegin1_28_DB = Convert.ToString(worksheet1.Cells["K6"].Value);
-                        impRep.ValidThru1_28_DB = Convert.ToString(worksheet1.Cells["N6"].Value);
-                        impRep.PermissionDocumentName1_28_DB = Convert.ToString(worksheet1.Cells["G7"].Value);
-                        impRep.ContractNumber_28_DB = Convert.ToString(worksheet1.Cells["G8"].Value);
-                        impRep.ValidBegin2_28_DB = Convert.ToString(worksheet1.Cells["K8"].Value);
-                        impRep.ValidThru2_28_DB = Convert.ToString(worksheet1.Cells["N8"].Value);
-                        impRep.OrganisationReciever_28_DB = Convert.ToString(worksheet1.Cells["G9"].Value);
-                        impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
-                        impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
-                        impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
-                        impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
-                        break;
-                    }
+                        {
+                            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
+                            impRep.PermissionNumber_28_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                            impRep.ValidBegin_28_DB = Convert.ToString(worksheet1.Cells["K4"].Value);
+                            impRep.ValidThru_28_DB = Convert.ToString(worksheet1.Cells["N4"].Value);
+                            impRep.PermissionDocumentName_28_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+                            impRep.PermissionNumber1_28_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                            impRep.ValidBegin1_28_DB = Convert.ToString(worksheet1.Cells["K6"].Value);
+                            impRep.ValidThru1_28_DB = Convert.ToString(worksheet1.Cells["N6"].Value);
+                            impRep.PermissionDocumentName1_28_DB = Convert.ToString(worksheet1.Cells["G7"].Value);
+                            impRep.ContractNumber_28_DB = Convert.ToString(worksheet1.Cells["G8"].Value);
+                            impRep.ValidBegin2_28_DB = Convert.ToString(worksheet1.Cells["K8"].Value);
+                            impRep.ValidThru2_28_DB = Convert.ToString(worksheet1.Cells["N8"].Value);
+                            impRep.OrganisationReciever_28_DB = Convert.ToString(worksheet1.Cells["G9"].Value);
+                            impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
+                            impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
+                            impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
+                            impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
+                            impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                            break;
+                        }
                     default:
-                    {
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
-                        break;
-                    }
+                        {
+                            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                            impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
+                            break;
+                        }
                 }
             }
 
@@ -190,15 +190,15 @@ internal class ExcelAsyncCommand : ImportBaseAsyncCommand
                 switch (worksheet0.Name)
                 {
                     case "1.0":
-                    {
-                        await ProcessIfHasReports11(baseReps, null, impRep);
-                        break;
-                    }
+                        {
+                            await ProcessIfHasReports11(baseReps, null, impRep);
+                            break;
+                        }
                     case "2.0":
-                    {
-                        await ProcessIfHasReports21(baseReps, null, impRep);
-                        break;
-                    }
+                        {
+                            await ProcessIfHasReports21(baseReps, null, impRep);
+                            break;
+                        }
                 }
             }
             else
@@ -346,152 +346,152 @@ internal class ExcelAsyncCommand : ImportBaseAsyncCommand
         switch (param1)
         {
             case "1.1":
-            {
-                Form11 form11 = new();
-                form11.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows11.Add(form11);
-                break;
-            }
+                {
+                    Form11 form11 = new();
+                    form11.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows11.Add(form11);
+                    break;
+                }
             case "1.2":
-            {
-                Form12 form12 = new();
-                form12.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows12.Add(form12);
-                break;
-            }
+                {
+                    Form12 form12 = new();
+                    form12.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows12.Add(form12);
+                    break;
+                }
             case "1.3":
-            {
-                Form13 form13 = new();
-                form13.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows13.Add(form13);
-                break;
-            }
+                {
+                    Form13 form13 = new();
+                    form13.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows13.Add(form13);
+                    break;
+                }
             case "1.4":
-            {
-                Form14 form14 = new();
-                form14.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows14.Add(form14);
-                break;
-            }
+                {
+                    Form14 form14 = new();
+                    form14.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows14.Add(form14);
+                    break;
+                }
             case "1.5":
-            {
-                Form15 form15 = new();
-                form15.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows15.Add(form15);
-                break;
-            }
+                {
+                    Form15 form15 = new();
+                    form15.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows15.Add(form15);
+                    break;
+                }
             case "1.6":
-            {
-                Form16 form16 = new();
-                form16.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows16.Add(form16);
-                break;
-            }
+                {
+                    Form16 form16 = new();
+                    form16.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows16.Add(form16);
+                    break;
+                }
             case "1.7":
-            {
-                Form17 form17 = new();
-                form17.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows17.Add(form17);
-                break;
-            }
+                {
+                    Form17 form17 = new();
+                    form17.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows17.Add(form17);
+                    break;
+                }
             case "1.8":
-            {
-                Form18 form18 = new();
-                form18.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows18.Add(form18);
-                break;
-            }
+                {
+                    Form18 form18 = new();
+                    form18.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows18.Add(form18);
+                    break;
+                }
             case "1.9":
-            {
-                Form19 form19 = new();
-                form19.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows19.Add(form19);
-                break;
-            }
+                {
+                    Form19 form19 = new();
+                    form19.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows19.Add(form19);
+                    break;
+                }
             case "2.1":
-            {
-                Form21 form21 = new();
-                form21.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows21.Add(form21);
-                break;
-            }
+                {
+                    Form21 form21 = new();
+                    form21.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows21.Add(form21);
+                    break;
+                }
             case "2.2":
-            {
-                Form22 form22 = new();
-                form22.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows22.Add(form22);
-                break;
-            }
+                {
+                    Form22 form22 = new();
+                    form22.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows22.Add(form22);
+                    break;
+                }
             case "2.3":
-            {
-                Form23 form23 = new();
-                form23.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows23.Add(form23);
-                break;
-            }
+                {
+                    Form23 form23 = new();
+                    form23.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows23.Add(form23);
+                    break;
+                }
             case "2.4":
-            {
-                Form24 form24 = new();
-                form24.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows24.Add(form24);
-                break;
-            }
+                {
+                    Form24 form24 = new();
+                    form24.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows24.Add(form24);
+                    break;
+                }
             case "2.5":
-            {
-                Form25 form25 = new();
-                form25.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows25.Add(form25);
-                break;
-            }
+                {
+                    Form25 form25 = new();
+                    form25.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows25.Add(form25);
+                    break;
+                }
             case "2.6":
-            {
-                Form26 form26 = new();
-                form26.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows26.Add(form26);
-                break;
-            }
+                {
+                    Form26 form26 = new();
+                    form26.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows26.Add(form26);
+                    break;
+                }
             case "2.7":
-            {
-                Form27 form27 = new();
-                form27.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows27.Add(form27);
-                break;
-            }
+                {
+                    Form27 form27 = new();
+                    form27.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows27.Add(form27);
+                    break;
+                }
             case "2.8":
-            {
-                Form28 form28 = new();
-                form28.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows28.Add(form28);
-                break;
-            }
+                {
+                    Form28 form28 = new();
+                    form28.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows28.Add(form28);
+                    break;
+                }
             case "2.9":
-            {
-                Form29 form29 = new();
-                form29.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows29.Add(form29);
-                break;
-            }
+                {
+                    Form29 form29 = new();
+                    form29.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows29.Add(form29);
+                    break;
+                }
             case "2.10":
-            {
-                Form210 form210 = new();
-                form210.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows210.Add(form210);
-                break;
-            }
+                {
+                    Form210 form210 = new();
+                    form210.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows210.Add(form210);
+                    break;
+                }
             case "2.11":
-            {
-                Form211 form211 = new();
-                form211.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows211.Add(form211);
-                break;
-            }
+                {
+                    Form211 form211 = new();
+                    form211.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows211.Add(form211);
+                    break;
+                }
             case "2.12":
-            {
-                Form212 form212 = new();
-                form212.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows212.Add(form212);
-                break;
-            }
+                {
+                    Form212 form212 = new();
+                    form212.ExcelGetRow(worksheet1, start);
+                    repFromEx.Rows212.Add(form212);
+                    break;
+                }
         }
     }
 

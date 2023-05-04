@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Interfaces;
 using Client_App.Resources;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.ExportRaodb;
 
 //  Экспорт организации в файл .raodb
 internal class ExportReportsAsyncCommand : BaseAsyncCommand
@@ -30,16 +30,16 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         switch (parameter)
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
-            {
-                foreach (var item in param)
                 {
-                    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+                    foreach (var item in param)
+                    {
+                        ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+                    }
+                    fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+                    exportOrg = (Reports)param.First();
+                    await StaticConfiguration.DBModel.SaveChangesAsync();
+                    break;
                 }
-                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-                exportOrg = (Reports) param.First();
-                await StaticConfiguration.DBModel.SaveChangesAsync();
-                break;
-            }
             case Reports reps:
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
@@ -49,7 +49,7 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
             default:
                 return;
         }
-        
+
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
@@ -87,11 +87,11 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                         }).ShowDialog(Desktop.MainWindow));
 
                 #endregion
-                
+
                 return;
             }
         }
-        
+
         await Task.Run(async () =>
         {
             DBModel db = new(fullPathTmp);
@@ -163,7 +163,7 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
-            }).ShowDialog(Desktop.MainWindow); 
+            }).ShowDialog(Desktop.MainWindow);
 
         #endregion
 

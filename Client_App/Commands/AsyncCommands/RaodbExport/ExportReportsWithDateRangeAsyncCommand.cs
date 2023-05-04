@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.ExportRaodb;
 
 //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
 internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
@@ -41,7 +41,7 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow); 
+            .ShowDialog(Desktop.MainWindow);
         #endregion
 
         if (startDate.Button is null or "Отменить экспорт") return;
@@ -62,12 +62,12 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow); 
+            .ShowDialog(Desktop.MainWindow);
         #endregion
 
         if (endDate.Button is null or "Отменить экспорт") return;
 
-        var canParseDateRange = 
+        var canParseDateRange =
             (DateTime.TryParse(startDate.Message, out var startDateTime) | string.IsNullOrEmpty(startDate.Message))
             & (DateTime.TryParse(endDate.Message, out var endDateTime) | string.IsNullOrEmpty(endDate.Message));
         if (endDateTime == DateTime.MinValue) endDateTime = DateTime.MaxValue;
@@ -93,7 +93,7 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
             return;
         }
 
-        var org = (Reports) param.First();
+        var org = (Reports)param.First();
         var repInRange = org.Report_Collection.Where(rep =>
         {
             if (!DateTime.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
