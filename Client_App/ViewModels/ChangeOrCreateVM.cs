@@ -16,7 +16,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -36,7 +35,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 {
     private string WindowHeader { get; set; } = "default";
     public event PropertyChangedEventHandler PropertyChanged;
-    private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+    internal void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
@@ -1019,7 +1018,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyRows { get; set; }                          //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand DeleteRows { get; set; }                        //  Удалить выбранные строчки из формы
     public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
-    public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище 
+    public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище
+    public ICommand SaveReport { get; set; }                        //  Сохранить отчет
 
     #endregion
 
@@ -1180,6 +1180,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         DeleteRows = new DeleteRowsAsyncCommand(this);
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();
         OpenPas = new OpenPasAsyncCommand();
+        SaveReport = new SaveReportAsyncCommand(this);
 
         ChangeReportOrder = ReactiveCommand.CreateFromTask(_ChangeReportOrder);
         CheckReport = ReactiveCommand.Create(_CheckReport);
@@ -1199,7 +1200,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #region IsCanSaveReportEnabled
     private bool _isCanSaveReportEnabled;
 
-    private bool IsCanSaveReportEnabled
+    public bool IsCanSaveReportEnabled
     {
         get => _isCanSaveReportEnabled;
         set
@@ -1220,55 +1221,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     //{
     //    return _isCanSaveReportEnabled;
     //}
-
-    public async Task SaveReport()
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
-        {
-            if (DBO != null)
-            {
-                var tmp = new Reports { Master = Storage };
-                if (tmp.Master.Rows10.Count != 0)
-                {
-                    tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;
-                    tmp.Master.Rows10[1].RegNo.Value = tmp.Master.Rows10[0].RegNo.Value;
-                }
-                if (tmp.Master.Rows20.Count != 0)
-                {
-                    tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
-                    tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
-                }
-
-                DBO.Reports_Collection.Add(tmp);
-                DBO = null;
-            }
-            else if (Storages != null && FormType is not ("1.0" or "2.0") && !Storages.Report_Collection.Contains(Storage))
-            {
-                Storages.Report_Collection.Add(Storage);
-            }
-
-            if (Storages != null)
-            {
-                if (Storages.Master.Rows10.Count != 0)
-                {
-                    Storages.Master.Rows10[1].OrganUprav.Value = Storages.Master.Rows10[0].OrganUprav.Value;
-                    Storages.Master.Rows10[1].RegNo.Value = Storages.Master.Rows10[0].RegNo.Value;
-                }
-                if (Storages.Master.Rows20.Count != 0)
-                {
-                    Storages.Master.Rows20[1].OrganUprav.Value = Storages.Master.Rows20[0].OrganUprav.Value;
-                    Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
-                }
-                Storages.Report_Collection.Sorted = false;
-                await Storages.Report_Collection.QuickSortAsync();
-            }
-            //Storages.Report_Collection.Sorted = false;
-            //Storages.Report_Collection.QuickSort();
-        }
-        var dbm = StaticConfiguration.DBModel;
-        await dbm.SaveChangesAsync();
-        IsCanSaveReportEnabled = false;
-    }
 
     //public void _AddRow10()
     //{
