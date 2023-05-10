@@ -28,6 +28,7 @@ using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Client_App.Commands.AsyncCommands.Excel;
+using Client_App.Commands.SyncCommands;
 
 namespace Client_App.ViewModels;
 
@@ -173,37 +174,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 _Storage20 = value;
                 NotifyPropertyChanged("Storage20");
             }
-        }
-    }
-    #endregion
-
-    #region CheckReport
-    public ReactiveCommand<Unit, Unit> CheckReport { get; protected set; }
-    private void _CheckReport()
-    {
-        IsCanSaveReportEnabled = true;
-    }
-    #endregion
-
-    #region ChangeReportOrder
-    public ReactiveCommand<Unit, Unit> ChangeReportOrder { get; protected set; }
-    private async Task _ChangeReportOrder()
-    {
-        if (Storage.FormNum.Value == "1.0")
-        {
-            Storage.Rows10.Sorted = false;
-            var tmp = Storage.Rows10[0].Order;
-            Storage.Rows10[0].SetOrder(Storage.Rows10[1].Order);
-            Storage.Rows10[1].SetOrder(tmp);
-            await Storage.Rows10.QuickSortAsync();
-        }
-        if (Storage.FormNum.Value == "2.0")
-        {
-            Storage.Rows20.Sorted = false;
-            var tmp = Storage.Rows20[0].Order;
-            Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
-            Storage.Rows20[1].SetOrder(tmp);
-            await Storage.Rows20.QuickSortAsync();
         }
     }
     #endregion
@@ -657,7 +627,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             var row = (Form21)item;
             row.SetOrder(count);
             count++;
-            row.NumberInOrderSum = new RamAccess<string>(null, "");
+            row.NumberInOrderSum_DB = "";
         }
     }
 
@@ -688,7 +658,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             var row = (Form22)item;
             row.SetOrder(count);
             count++;
-            row.NumberInOrderSum = new RamAccess<string>(null, "");
+            row.NumberInOrderSum_DB = "";
         }
     }
     #endregion
@@ -1013,6 +983,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRow { get; set; }                            //  Добавить строку в форму
     public ICommand AddRows { get; set; }                           //  Добавить N строк в форму
     public ICommand AddRowsIn { get; set; }                         //  Добавить N строк в форму перед выбранной строкой
+    public ICommand ChangeReportOrder { get; set; }                 //  Поменять местами юр. лицо и обособленное подразделение
+    public ICommand CheckReport { get; set; }                       //  Бесполезная команда, ничего не делает, активируется при нажатии кнопки "Проверить"
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
     public ICommand CopyPasName { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand CopyRows { get; set; }                          //  Скопировать в буфер обмена уникальное имя паспорта
@@ -1174,6 +1146,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRow = new AddRowAsyncCommand(this);
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
+        ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
+        CheckReport = new CheckReportAsyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
@@ -1182,8 +1156,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         OpenPas = new OpenPasAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
 
-        ChangeReportOrder = ReactiveCommand.CreateFromTask(_ChangeReportOrder);
-        CheckReport = ReactiveCommand.Create(_CheckReport);
         PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
         DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
         SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);

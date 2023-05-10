@@ -1,0 +1,104 @@
+﻿using Client_App.ViewModels;
+using DynamicData;
+using Models.Collections;
+using Models.Forms.Form2;
+using Models.Interfaces;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Client_App.Commands.AsyncCommands;
+
+//  Отменяет группировку по наименованию в формах 2.1 и 2.2
+internal class CancelSumRowAsyncCommand : BaseAsyncCommand
+{
+
+    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
+    private Report Storage => _ChangeOrCreateViewModel.Storage;
+
+    public CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
+    {
+        _ChangeOrCreateViewModel = changeOrCreateViewModel;
+    }
+
+    public override async Task AsyncExecute(object? parameter)
+    {
+        if (Storage.FormNum_DB == "2.1")
+        {
+            await UnSum21();
+            Storage.Rows21.Sorted = false;
+            await Storage.Rows21.QuickSortAsync();
+        }
+        if (Storage.FormNum_DB == "2.2")
+        {
+            await UnSum22();
+            Storage.Rows21.Sorted = false;
+            await Storage.Rows22.QuickSortAsync();
+        }
+    }
+
+    public Task UnSum21()
+    {
+        var sumRows = Storage.Rows21.Where(x => x.Sum_DB);
+
+        Storage.Rows21.RemoveMany(sumRows);
+
+        var sumRowsGroup = Storage.Rows21.Where(x => x.SumGroup_DB);
+        foreach (var row in sumRowsGroup)
+        {
+            row.RefineMachineName_Hidden_Set.Set(true);
+            row.MachineCode_Hidden_Set.Set(true);
+            row.MachinePower_Hidden_Set.Set(true);
+            row.NumberOfHoursPerYear_Hidden_Set.Set(true);
+            row.RefineMachineName_Hidden_Get.Set(true);
+            row.MachineCode_Hidden_Get.Set(true);
+            row.MachinePower_Hidden_Get.Set(true);
+            row.NumberOfHoursPerYear_Hidden_Get.Set(true);
+            row.SumGroup_DB = false;
+            row.BaseColor = ColorType.None;
+        }
+        var rows = Storage.Rows21.GetEnumerable();
+        var count = 1;
+        foreach (var item in rows)
+        {
+            var row = (Form21)item;
+            row.SetOrder(count);
+            count++;
+            row.NumberInOrderSum_DB = "";
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task UnSum22()
+    {
+        var sumRows = Storage.Rows22.Where(x => x.Sum_DB);
+
+        Storage.Rows22.RemoveMany(sumRows);
+
+        var sumRowsGroup = Storage.Rows22.Where(x => x.SumGroup_DB);
+        foreach (var row in sumRowsGroup)
+        {
+            row.StoragePlaceName_Hidden_Set.Set(true);
+            row.StoragePlaceCode_Hidden_Set.Set(true);
+            row.PackName_Hidden_Set.Set(true);
+            row.PackType_Hidden_Set.Set(true);
+            row.StoragePlaceName_Hidden_Get.Set(true);
+            row.StoragePlaceCode_Hidden_Get.Set(true);
+            row.PackName_Hidden_Get.Set(true);
+            row.PackType_Hidden_Get.Set(true);
+            row.SumGroup_DB = false;
+            row.BaseColor = ColorType.None;
+        }
+        var rows = Storage.Rows22.GetEnumerable();
+        var count = 1;
+        foreach (var item in rows)
+        {
+            var row = (Form22)item;
+            row.SetOrder(count);
+            count++;
+            row.NumberInOrderSum_DB = "";
+        }
+
+        return Task.CompletedTask;
+    }
+}
