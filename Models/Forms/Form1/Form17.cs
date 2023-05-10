@@ -238,6 +238,62 @@ public class Form17 : Form1
     }
     #endregion
 
+    #region PackFactoryNumber
+    public string PackFactoryNumber_DB { get; set; } = "";
+    public bool PackFactoryNumber_Hidden_Priv { get; set; }
+    [NotMapped]
+    public bool PackFactoryNumber_Hidden
+    {
+        get => PackFactoryNumber_Hidden_Priv;
+        set
+        {
+            PackFactoryNumber_Hidden_Priv = value;
+        }
+    }
+    [NotMapped]
+    [FormProperty(true,"Сведения об упаковке", "null-6", "заводской номер","6")]
+    public RamAccess<string> PackFactoryNumber
+    {
+        get
+        {
+            if (!PackFactoryNumber_Hidden_Priv)
+            {
+                if (Dictionary.ContainsKey(nameof(PackFactoryNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PackFactoryNumber)]).Value = PackFactoryNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PackFactoryNumber)];
+                }
+                var rm = new RamAccess<string>(PackFactoryNumber_Validation, PackFactoryNumber_DB);
+                rm.PropertyChanged += PackFactoryNumberValueChanged;
+                Dictionary.Add(nameof(PackFactoryNumber), rm);
+                return (RamAccess<string>)Dictionary[nameof(PackFactoryNumber)];
+            }
+            var tmp = new RamAccess<string>(null, null);
+            return tmp;
+        }
+        set
+        {
+            if (!PackFactoryNumber_Hidden_Priv)
+            {
+                PackFactoryNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PackFactoryNumber));
+            }
+        }
+    }
+    private void PackFactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            PackFactoryNumber_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool PackFactoryNumber_Validation(RamAccess<string> value)//TODO
+    {
+        value.ClearErrors();
+        return true;
+    }
+    #endregion
+
     #region PackNumber
     public string PackNumber_DB { get; set; } = "";
     public bool PackNumber_Hidden_Priv { get; set; }
@@ -289,62 +345,6 @@ public class Form17 : Form1
         }
     }
     private bool PackNumber_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        return true;
-    }
-    #endregion
-
-    #region PackFactoryNumber
-    public string PackFactoryNumber_DB { get; set; } = "";
-    public bool PackFactoryNumber_Hidden_Priv { get; set; }
-    [NotMapped]
-    public bool PackFactoryNumber_Hidden
-    {
-        get => PackFactoryNumber_Hidden_Priv;
-        set
-        {
-            PackFactoryNumber_Hidden_Priv = value;
-        }
-    }
-    [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-6", "заводской номер","6")]
-    public RamAccess<string> PackFactoryNumber
-    {
-        get
-        {
-            if (!PackFactoryNumber_Hidden_Priv)
-            {
-                if (Dictionary.ContainsKey(nameof(PackFactoryNumber)))
-                {
-                    ((RamAccess<string>)Dictionary[nameof(PackFactoryNumber)]).Value = PackFactoryNumber_DB;
-                    return (RamAccess<string>)Dictionary[nameof(PackFactoryNumber)];
-                }
-                var rm = new RamAccess<string>(PackFactoryNumber_Validation, PackFactoryNumber_DB);
-                rm.PropertyChanged += PackFactoryNumberValueChanged;
-                Dictionary.Add(nameof(PackFactoryNumber), rm);
-                return (RamAccess<string>)Dictionary[nameof(PackFactoryNumber)];
-            }
-            var tmp = new RamAccess<string>(null, null);
-            return tmp;
-        }
-        set
-        {
-            if (!PackFactoryNumber_Hidden_Priv)
-            {
-                PackFactoryNumber_DB = value.Value;
-                OnPropertyChanged(nameof(PackFactoryNumber));
-            }
-        }
-    }
-    private void PackFactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            PackFactoryNumber_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool PackFactoryNumber_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
         return true;
@@ -431,6 +431,62 @@ public class Form17 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
+        return true;
+    }
+    #endregion
+
+    #region PassportNumber
+    public string PassportNumber_DB { get; set; } = "";
+    public bool PassportNumber_Hidden_Priv { get; set; }
+    [NotMapped]
+    public bool PassportNumber_Hidden
+    {
+        get => PassportNumber_Hidden_Priv;
+        set
+        {
+            PassportNumber_Hidden_Priv = value;
+        }
+    }
+    [NotMapped]
+    [FormProperty(true,"Сведения об упаковке", "null-9", "номер паспорта","9")]
+    public RamAccess<string> PassportNumber
+    {
+        get
+        {
+            if (!PassportNumber_Hidden_Priv)
+            {
+                if (Dictionary.ContainsKey(nameof(PassportNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PassportNumber)]).Value = PassportNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
+                }
+                var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
+                rm.PropertyChanged += PassportNumberValueChanged;
+                Dictionary.Add(nameof(PassportNumber), rm);
+                return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
+            }
+            var tmp = new RamAccess<string>(null, null);
+            return tmp;
+        }
+        set
+        {
+            if (!PassportNumber_Hidden_Priv)
+            {
+                PassportNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PassportNumber));
+            }
+        }
+    }
+    private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            PassportNumber_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool PassportNumber_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
         return true;
     }
     #endregion
@@ -623,62 +679,6 @@ public class Form17 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        return true;
-    }
-    #endregion
-
-    #region PassportNumber
-    public string PassportNumber_DB { get; set; } = "";
-    public bool PassportNumber_Hidden_Priv { get; set; }
-    [NotMapped]
-    public bool PassportNumber_Hidden
-    {
-        get => PassportNumber_Hidden_Priv;
-        set
-        {
-            PassportNumber_Hidden_Priv = value;
-        }
-    }
-    [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-9", "номер паспорта","9")]
-    public RamAccess<string> PassportNumber
-    {
-        get
-        {
-            if (!PassportNumber_Hidden_Priv)
-            {
-                if (Dictionary.ContainsKey(nameof(PassportNumber)))
-                {
-                    ((RamAccess<string>)Dictionary[nameof(PassportNumber)]).Value = PassportNumber_DB;
-                    return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
-                }
-                var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
-                rm.PropertyChanged += PassportNumberValueChanged;
-                Dictionary.Add(nameof(PassportNumber), rm);
-                return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
-            }
-            var tmp = new RamAccess<string>(null, null);
-            return tmp;
-        }
-        set
-        {
-            if (!PassportNumber_Hidden_Priv)
-            {
-                PassportNumber_DB = value.Value;
-                OnPropertyChanged(nameof(PassportNumber));
-            }
-        }
-    }
-    private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            PassportNumber_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool PassportNumber_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
         return true;
     }
     #endregion
@@ -1179,46 +1179,6 @@ public class Form17 : Form1
                 return false;
             }
         }
-        return true;
-    }
-    #endregion
-
-    
-
-    #region FcpNumber
-    public string FcpNumber_DB { get; set; } = "";
-    [NotMapped]
-    [FormProperty(true, "null-32_1", "null-32_2","Номер мероприятия ФЦП","32")]
-    public RamAccess<string> FcpNumber
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(FcpNumber)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
-            }
-            var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
-            rm.PropertyChanged += FcpNumberValueChanged;
-            Dictionary.Add(nameof(FcpNumber), rm);
-            return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
-        }
-        set
-        {
-            FcpNumber_DB = value.Value;
-            OnPropertyChanged(nameof(FcpNumber));
-        }
-    }
-    private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            FcpNumber_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool FcpNumber_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
         return true;
     }
     #endregion
@@ -1995,6 +1955,44 @@ public class Form17 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
+        return true;
+    }
+    #endregion
+
+    #region FcpNumber
+    public string FcpNumber_DB { get; set; } = "";
+    [NotMapped]
+    [FormProperty(true, "null-32_1", "null-32_2","Номер мероприятия ФЦП","32")]
+    public RamAccess<string> FcpNumber
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(FcpNumber)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
+                return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+            }
+            var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
+            rm.PropertyChanged += FcpNumberValueChanged;
+            Dictionary.Add(nameof(FcpNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+        }
+        set
+        {
+            FcpNumber_DB = value.Value;
+            OnPropertyChanged(nameof(FcpNumber));
+        }
+    }
+    private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            FcpNumber_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+    {
+        value.ClearErrors();
         return true;
     }
     #endregion

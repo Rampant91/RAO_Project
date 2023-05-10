@@ -1,12 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Metadata;
 using DynamicData;
 using Models.Attributes;
 using Models.Classes;
 using Models.Collections;
-using Models.DBRealization;
 using Models.Interfaces;
 using ReactiveUI;
 using System;
@@ -55,6 +53,25 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+    #endregion
+
+    #region IsCanSaveReportEnabled
+    private bool _isCanSaveReportEnabled;
+
+    public bool IsCanSaveReportEnabled
+    {
+        get => _isCanSaveReportEnabled;
+        set
+        {
+            if (value == _isCanSaveReportEnabled)
+            {
+                return;
+            }
+            _isCanSaveReportEnabled = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
+        }
+    }
+
     #endregion
 
     #region isSum
@@ -663,10 +680,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    //#region AddSort
-    //public ReactiveCommand<string, Unit> AddSort { get; protected set; }
-    //#endregion
-
     #region SetNumberOrder
     public ReactiveCommand<object, Unit> SetNumberOrder { get; protected set; }
     private async Task _SetNumberOrder(object param)
@@ -740,119 +753,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                                     break;
                                 default:
                                     midValue?.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { "" });
-                                    break;
-                            }
-                        }
-                    }
-                    catch (Exception) { }
-                }
-            }
-        }
-    }
-    #endregion
-
-    #region PasteRows
-    public ReactiveCommand<object, Unit> PasteRows { get; protected set; }
-    private async Task _PasteRows(object _param)
-    {
-        var param = _param as object[];
-        var collection = param[0] as IKeyCollection;
-        var minColumn = Convert.ToInt32(param[1]) + 1;
-        var maxColumn = Convert.ToInt32(param[2]) + 1;
-        var collectionEn = collection.GetEnumerable();
-        if (minColumn == 1 && collectionEn.FirstOrDefault() is Form1 or Form2)
-        {
-            minColumn++;
-        }
-
-        if (Application.Current.Clipboard is { } clip)
-        {
-            var text = await clip.GetTextAsync();
-            var rowsText = ParseInnerTextRows(text);
-
-            foreach (var item in collectionEn.OrderBy(x => x.Order))
-            {
-                var props = item.GetType().GetProperties();
-                var rowText = rowsText[item.Order - collectionEn.Min(x => x.Order)];
-                if (Convert.ToInt32(param[1]) == 0 && collectionEn.FirstOrDefault() is not Note)
-                {
-                    var newText = rowText.ToArray();
-                    var count = 0;
-                    foreach (var t in newText)
-                    {
-                        count++;
-                        if (t.Equals('\t'))
-                        {
-                            break;
-                        }
-                    }
-                    rowText = rowText.Remove(0, count);
-                }
-                var columnsText = ParseInnerTextColumn(rowText);
-                var dStructure = (IDataGridColumn)item;
-                var findStructure = dStructure.GetColumnStructure();
-                var Level = findStructure.Level;
-                var tre = findStructure.GetLevel(Level - 1);
-
-                //if (maxColumn-1 != columnsText.Length) 
-                //{
-                //    columnsText = columnsText[1..columnsText.Length];
-                //}
-
-                foreach (var prop in props)
-                {
-                    var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
-                    if (attr == null) continue;
-                    try
-                    {
-                        int columnNum;
-                        if (attr.Names.Length > 1 && attr.Names.Length != 4 && attr.Names[0] is not("null-1-1" or "Документ" or "Сведения об операции"))
-                        {
-                            columnNum = Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name);
-                        }
-                        else if (attr.Names[0] == "Документ")
-                        {
-                            var findDock = tre.Where(x => x.name == "null-n");
-                            columnNum = Convert.ToInt32(findDock.Any() 
-                                ? findDock.FirstOrDefault()?.innertCol.FirstOrDefault(x => x.name == attr.Names[0])
-                                    ?.innertCol.FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name 
-                                : tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol
-                                    .FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name);
-                        }
-                        else
-                        {
-                            columnNum = Convert.ToInt32(attr.Number);
-                        }
-                        //var columnNum = Convert.ToInt32(attr.Number);
-                        if (columnNum >= minColumn && columnNum <= maxColumn)
-                        {
-                            var midValue = prop.GetMethod?.Invoke(item, null);
-                            switch (midValue)
-                            {
-                                case RamAccess<int?>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
-                                    break;
-                                case RamAccess<float?>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { float.Parse(columnsText[columnNum - minColumn]) });
-                                    break;
-                                case RamAccess<short>:
-                                case RamAccess<short?>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
-                                    break;
-                                case RamAccess<int>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
-                                    break;
-                                case RamAccess<string>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
-                                    break;
-                                case RamAccess<byte?>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
-                                    break;
-                                case RamAccess<bool>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
-                                    break;
-                                default:
-                                    midValue?.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { columnsText[columnNum - minColumn] });
                                     break;
                             }
                         }
@@ -991,6 +891,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand DeleteRows { get; set; }                        //  Удалить выбранные строчки из формы
     public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище
+    public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
 
     #endregion
@@ -1015,49 +916,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         Storage = new Report { FormNum_DB = param };
 
-        if (param.Split('.')[0] == "1")
-        {
-            if (param != "1.0")
-            {
-                try
-                {
-                    var ty = reps.Report_Collection
-                        .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
-                        .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
-                        .Select(t => t.EndPeriod_DB)
-                        .LastOrDefault();
-                    FormType = param;
-                    Storage.StartPeriod.Value = ty;
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-        }
-        else
-        {
-            if (param != "2.0")
-            {
-                try
-                {
-                    var ty = reps.Report_Collection
-                        .Where(t => t.FormNum_DB == param && t.Year_DB != null)
-                        .OrderBy(t => t.Year_DB)
-                        .Select(t => t.Year_DB)
-                        .LastOrDefault();
-                    FormType = param;
-                    if (ty != null)
-                    {
-                        Storage.Year.Value = (Convert.ToInt32(ty) + 1).ToString();
-                    }
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-        }
         switch (param)
         {
             case "1.0":
@@ -1078,6 +936,37 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 ty2.NumberInOrder_DB = 2;
                 Storage.Rows20.Add(ty1);
                 Storage.Rows20.Add(ty2);
+                break;
+            }
+            default:
+            {
+                if (param.StartsWith('1'))
+                {
+                    try
+                    {
+                        var ty = reps.Report_Collection
+                            .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
+                            .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
+                            .Select(t => t.EndPeriod_DB)
+                            .LastOrDefault();
+                        FormType = param;
+                        Storage.StartPeriod.Value = ty;
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
+                else if (param.StartsWith('2'))
+                {
+                    var ty1 = (Form20)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form20)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows20.Add(ty1);
+                    Storage.Rows20.Add(ty2);
+                }
+
                 break;
             }
         }
@@ -1154,9 +1043,9 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         DeleteRows = new DeleteRowsAsyncCommand(this);
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();
         OpenPas = new OpenPasAsyncCommand();
+        PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
 
-        PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
         DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
         SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
         DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
@@ -1168,105 +1057,4 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             Storage.Sort();
         }
     }
-
-    #region IsCanSaveReportEnabled
-    private bool _isCanSaveReportEnabled;
-
-    public bool IsCanSaveReportEnabled
-    {
-        get => _isCanSaveReportEnabled;
-        set
-        {
-            if (value == _isCanSaveReportEnabled)
-            {
-                return;
-            }
-            _isCanSaveReportEnabled = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
-        }
-    }
-
-    [DependsOn(nameof(IsCanSaveReportEnabled))]
-    #endregion
-
-    //private bool CanSaveReport(object parameter)
-    //{
-    //    return _isCanSaveReportEnabled;
-    //}
-
-    //public void _AddRow10()
-    //{
-    //    Form10? frm = new Form10(); Storage.Rows10.Add(frm); Storage.LastAddedForm = Report.Forms.Form10;
-    //}
-    //public void _AddRow20()
-    //{
-    //    Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20;
-    //}
-
-    #region ParseInnerText
-    private static string[] ParseInnerTextRows(string text)
-    {
-        List<string> lst = new();
-        var comaFlag = false;
-        text = text.Replace("\r\n", "\n");
-        var txt = "";
-        foreach (var item in text)
-        {
-            switch (item)
-            {
-                case '\"':
-                    txt += item;
-                    comaFlag = !comaFlag;
-                    break;
-                //||(item=='\t'))
-                case '\n' when !comaFlag:
-                    lst.Add(txt);
-                    txt = "";
-                    break;
-                case '\n':
-                    txt += item;
-                    break;
-                default:
-                    txt += item;
-                    break;
-            }
-        }
-        if (txt != "")
-        {
-            lst.Add(txt);
-        }
-        lst.Add("");
-        return lst.ToArray();
-    }
-    private static string[] ParseInnerTextColumn(string text)
-    {
-        List<string> lst = new();
-        var comaFlag = false;
-        var txt = "";
-        foreach (var item in text)
-        {
-            switch (item)
-            {
-                case '\"':
-                    comaFlag = true;
-                    break;
-                case '\t' when !comaFlag:
-                    lst.Add(txt);
-                    txt = "";
-                    break;
-                case '\t':
-                    txt += item;
-                    break;
-                default:
-                    txt += item;
-                    break;
-            }
-        }
-        if (txt != "")
-        {
-            lst.Add(txt);
-        }
-        return lst.ToArray();
-    }
-    #endregion
 }
