@@ -1813,7 +1813,7 @@ public class Form17 : Form1
     #region TransuraniumActivity
     public string TransuraniumActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "Суммарная активность", "трансурановые радионуклиды","28")]
+    [FormProperty(true,"Сведения о РАО", "Суммарная активность", "трансурановые радионуклиды","29")]
     public RamAccess<string> TransuraniumActivity
     {
         get
