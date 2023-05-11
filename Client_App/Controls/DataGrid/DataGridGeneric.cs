@@ -1279,10 +1279,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         var offsetMax = num * PageSize;
         if (Items != null)
         {
-            IKeyCollection tmpColl = new ObservableCollectionWithItemPropertyChanged<IKey>(Items.GetEnumerable());
+            var tmpColl = new ObservableCollectionWithItemPropertyChanged<IKey>(Items.GetEnumerable());
             if (Search)
             {
-                IKeyCollection tmp2Coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                var tmp2Coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
                 var searchText = ((TextBox)
                     ((Panel)
                         ((Border)
@@ -1366,14 +1366,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
                             var tmp2 = Rows
                                 .SelectMany(x => x.Children)
-                                .Where(item => ((Cell)item).Row == i);
+                                .Where(item => ((Cell)item).Row == i)
+                                .ToList();
                             var index = (int)_t.BaseColor;
                             var color = IBaseColor.ColorTypeList[index];
+                            var solidColorBrush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
 
                             foreach (var control in tmp2)
                             {
                                 var item = (Cell)control;
-                                item.Background = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+                                item.Background = solidColorBrush;
                             }
                         }
                     }

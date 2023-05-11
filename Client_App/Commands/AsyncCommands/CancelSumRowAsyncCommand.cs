@@ -110,7 +110,7 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
         foreach (var item in rows)
         {
             var row = (Form22)item;
-            row.SetOrder(count);
+            row.NumberInOrder_DB = count;
             count++;
             row.NumberInOrderSum_DB = "";
         }
