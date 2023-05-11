@@ -101,7 +101,7 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
             row.PackName_Hidden_Get.Set(true);
             row.PackType_Hidden_Get.Set(true);
             row.SumGroup_DB = false;
-            row.BaseColor = ColorType.None;
+            row._BaseColor = ColorType.None;
         }
         var rows = Storage.Rows22
             .GetEnumerable()
