@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.ViewModels;
@@ -40,8 +41,8 @@ public class Form2_Visual
             HorizontalAlignment = HorizontalAlignment.Center,
             IsChecked = tmpVM.isSum
         };
-        a.Checked += tmpVM._SumRow;
-        a.Unchecked += tmpVM._CancelSumRow;
+        a.Checked += new SumRowAsyncCommand(tmpVM).SumRow;
+        a.Unchecked += new CancelSumRowAsyncCommand(tmpVM).UnSumRow;
         return a;
     }
 
@@ -126,7 +127,7 @@ public class Form2_Visual
     static Grid Create20Item(string Property, string BindingPrefix, INameScope scp, int index)
     {
         Grid itemStackPanel = new();
-        itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition {Width=GridLength.Parse("1*")});
+        itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Parse("1*")});
         itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Parse("1*")});
 
         var tmp1 = CreateTextBlock("5,0,0,0", 30, ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty(Property).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[index], 0);

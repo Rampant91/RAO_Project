@@ -11,7 +11,6 @@ namespace Client_App.Commands.AsyncCommands;
 //  Отменяет группировку по наименованию в формах 2.1 и 2.2
 internal class CancelSumRowAsyncCommand : BaseAsyncCommand
 {
-
     private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
     private Report Storage => _ChangeOrCreateViewModel.Storage;
 
@@ -36,13 +35,22 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
         }
     }
 
+    public async void UnSumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        await AsyncExecute(null);
+    }
+
     public Task UnSum21()
     {
-        var sumRows = Storage.Rows21.Where(x => x.Sum_DB);
+        var sumRows = Storage.Rows21
+            .Where(x => x.Sum_DB)
+            .ToList();
 
         Storage.Rows21.RemoveMany(sumRows);
 
-        var sumRowsGroup = Storage.Rows21.Where(x => x.SumGroup_DB);
+        var sumRowsGroup = Storage.Rows21
+            .Where(x => x.SumGroup_DB)
+            .ToList();
         foreach (var row in sumRowsGroup)
         {
             row.RefineMachineName_Hidden_Set.Set(true);
@@ -54,14 +62,16 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
             row.MachinePower_Hidden_Get.Set(true);
             row.NumberOfHoursPerYear_Hidden_Get.Set(true);
             row.SumGroup_DB = false;
-            row.BaseColor = ColorType.None;
+            row._BaseColor = ColorType.None;
         }
-        var rows = Storage.Rows21.GetEnumerable();
+        var rows = Storage.Rows21
+            .GetEnumerable()
+            .ToList();
         var count = 1;
-        foreach (var item in rows)
+        foreach (var key in rows)
         {
-            var row = (Form21)item;
-            row.SetOrder(count);
+            var row = (Form21)key;
+            row.NumberInOrder_DB = count;
             count++;
             row.NumberInOrderSum_DB = "";
         }
@@ -71,11 +81,15 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
 
     public Task UnSum22()
     {
-        var sumRows = Storage.Rows22.Where(x => x.Sum_DB);
+        var sumRows = Storage.Rows22
+            .Where(x => x.Sum_DB)
+            .ToList();
 
         Storage.Rows22.RemoveMany(sumRows);
 
-        var sumRowsGroup = Storage.Rows22.Where(x => x.SumGroup_DB);
+        var sumRowsGroup = Storage.Rows22
+            .Where(x => x.SumGroup_DB)
+            .ToList();
         foreach (var row in sumRowsGroup)
         {
             row.StoragePlaceName_Hidden_Set.Set(true);
@@ -89,7 +103,9 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
             row.SumGroup_DB = false;
             row.BaseColor = ColorType.None;
         }
-        var rows = Storage.Rows22.GetEnumerable();
+        var rows = Storage.Rows22
+            .GetEnumerable()
+            .ToList();
         var count = 1;
         foreach (var item in rows)
         {

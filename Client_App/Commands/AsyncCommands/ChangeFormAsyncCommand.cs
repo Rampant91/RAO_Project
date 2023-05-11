@@ -32,8 +32,8 @@ internal class ChangeFormAsyncCommand : BaseAsyncCommand
                     if (frm.isSum)
                     {
                         //var sumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
-                        await frm.UnSum21();
-                        await frm.Sum21();
+                        await new CancelSumRowAsyncCommand(frm).AsyncExecute(null);
+                        await new SumRowAsyncCommand(frm).AsyncExecute(null);
                         //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
                     }
 
@@ -46,23 +46,25 @@ internal class ChangeFormAsyncCommand : BaseAsyncCommand
                     {
                         var sumRow = frm.Storage.Rows22
                             .Where(x => x.Sum_DB)
-                            .ToArray();
+                            .ToList();
                         Dictionary<long, List<string>> dic = new();
                         foreach (var oldR in sumRow)
                         {
                             dic[oldR.NumberInOrder_DB] = new List<string>
                                 { oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB };
                         }
-                        await frm.UnSum22();
-                        await frm.Sum22();
+                        await new CancelSumRowAsyncCommand(frm).AsyncExecute(null);
+                        await new SumRowAsyncCommand(frm).AsyncExecute(null);
                         var newSumRow = frm.Storage.Rows22
                             .Where(x => x.Sum_DB)
-                            .ToArray();
-                        
+                            .ToList();
 
                         foreach (var newR in newSumRow)
                         {
-                            foreach (var oldR in dic.Where(oldR => newR.NumberInOrder_DB == oldR.Key))
+                            var matchDic = dic
+                                .Where(oldR => newR.NumberInOrder_DB == oldR.Key)
+                                .ToList();
+                            foreach (var oldR in matchDic)
                             {
                                 newR.PackQuantity_DB = oldR.Value[0];
                                 newR.VolumeInPack_DB = oldR.Value[1];
