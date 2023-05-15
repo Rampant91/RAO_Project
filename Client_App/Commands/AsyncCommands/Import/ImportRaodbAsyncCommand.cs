@@ -11,6 +11,7 @@ using Models.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Models.Forms;
+using Client_App.Interfaces.Logger;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 

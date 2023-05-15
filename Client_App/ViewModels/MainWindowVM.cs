@@ -108,7 +108,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         try
         {
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
+            LogsDirectory = Path.Combine(RaoDirectory, "logs");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
+            Directory.CreateDirectory(LogsDirectory);
             Directory.CreateDirectory(TmpDirectory);
         }
         catch (Exception e)

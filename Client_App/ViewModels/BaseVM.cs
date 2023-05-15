@@ -20,6 +20,8 @@ public class BaseVM
 
     internal static string DbFileName = "Local_0";
 
+    internal static string LogsDirectory = "";
+
     internal static string SystemDirectory = "";
 
     internal static string RaoDirectory = "";

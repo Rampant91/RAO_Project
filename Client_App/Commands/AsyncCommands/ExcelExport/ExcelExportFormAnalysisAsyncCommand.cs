@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
 using Models.Interfaces;
 using static Client_App.Resources.StaticStringMethods;
@@ -21,6 +22,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        ServiceExtension.LoggerManager.Import("tatata555");
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
         var cts = new CancellationTokenSource();
         ExportType = "Для анализа";
