@@ -17,7 +17,7 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is null) return;
-        ChangeOrCreateVM.PassportUniqParam(parameter, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
+        StaticMethods.PassportUniqParam(parameter, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
         var year = StaticStringMethods.ConvertDateToYear(date);
         if (okpo is null or ""
             || type is null or ""

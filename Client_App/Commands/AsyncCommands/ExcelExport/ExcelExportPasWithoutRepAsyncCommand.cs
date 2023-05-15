@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.ViewModels;
 using Client_App.Resources;
 

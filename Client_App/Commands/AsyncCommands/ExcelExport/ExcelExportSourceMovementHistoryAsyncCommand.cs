@@ -1,18 +1,19 @@
-﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using Models.Collections;
-using OfficeOpenXml;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
+using Avalonia.Controls;
+using Client_App.Commands.AsyncCommands.Excel;
 using Client_App.Resources;
+using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using Models.Collections;
+using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Выгрузка в Excel истории движения источника
 internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
@@ -22,7 +23,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         if (parameter is null) return;
         var cts = new CancellationTokenSource();
         ExportType = "История движения источника";
-        ChangeOrCreateVM.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
+        StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
         if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
         {
             #region MessageFailedToLoadPassportUniqParam

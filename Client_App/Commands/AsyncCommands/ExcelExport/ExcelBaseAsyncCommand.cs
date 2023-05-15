@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls.ApplicationLifetimes;
-using Client_App.ViewModels;
-using Models.Collections;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Models.Forms;
-using Models.Interfaces;
-using OfficeOpenXml;
 using Avalonia.Controls;
+using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using System.IO;
-using System.Threading;
-using System.Diagnostics;
-using Avalonia;
+using Models.Collections;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Interfaces;
+using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
