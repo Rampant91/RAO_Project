@@ -3,11 +3,11 @@
 namespace Client_App.Commands.SyncCommands;
 
 //  Бесполезная команда, ничего не делает, активируется при нажатии кнопки "Проверить"
-internal class CheckReportAsyncCommand : BaseCommand
+internal class CheckReportSyncCommand : BaseCommand
 {
     private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
 
-    public CheckReportAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
+    public CheckReportSyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
     {
         _ChangeOrCreateViewModel = changeOrCreateViewModel;
     }

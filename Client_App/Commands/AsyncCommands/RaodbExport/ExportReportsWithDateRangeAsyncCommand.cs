@@ -1,14 +1,14 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Avalonia.Controls;
+using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Client_App.ViewModels;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands.ExportRaodb;
+namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
 internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand

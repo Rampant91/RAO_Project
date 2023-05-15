@@ -1,9 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using DynamicData;
 using Models.Attributes;
-using Models.Classes;
 using Models.Collections;
 using Models.Interfaces;
 using ReactiveUI;
@@ -11,7 +9,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
@@ -195,138 +192,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region SetNumberOrder
-    public ReactiveCommand<object, Unit> SetNumberOrder { get; protected set; }
-    private async Task _SetNumberOrder(object param)
-    {
-        var count = 1;
-        var rows = Storage.Rows.GetEnumerable();
-        foreach (var row in rows)
-        {
-            row.SetOrder(count);
-            count++;
-        }
-    }
-    #endregion
-
-    #region DeleteDataInRows
-    public ReactiveCommand<object, Unit> DeleteDataInRows { get; protected set; }
-    private async Task _DeleteDataInRows(object _param)
-    {
-        var param = _param as object[];
-        var collection = param[0] as IKeyCollection;
-        var minColumn = Convert.ToInt32(param[1]) + 1;
-        var maxColumn = Convert.ToInt32(param[2]) + 1;
-        var collectionEn = collection.GetEnumerable();
-        if (minColumn == 1 && collectionEn.FirstOrDefault() is Form1 or Form2)
-        {
-            minColumn++;
-        }
-        if (Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard)
-        {
-            foreach (var item in collectionEn.OrderBy(x => x.Order))
-            {
-                var props = item.GetType().GetProperties();
-                var dStructure = (IDataGridColumn)item;
-                var findStructure = dStructure.GetColumnStructure();
-                var level = findStructure.Level;
-                var tre = findStructure.GetLevel(level - 1);
-                foreach (var prop in props)
-                {
-                    var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
-                    if (attr is null) continue;
-                    try
-                    {
-                        var columnNum = attr.Names.Length > 1 && attr.Names[0] != "null-1-1"
-                            ? Convert.ToInt32(tre.FirstOrDefault(x => x.name == attr.Names[0])?.innertCol
-                                .FirstOrDefault(x => x.name == attr.Names[1])?.innertCol[0].name)
-                            : Convert.ToInt32(attr.Number);
-                        if (columnNum >= minColumn && columnNum <= maxColumn)
-                        {
-                            var midValue = prop.GetMethod?.Invoke(item, null);
-                            switch (midValue)
-                            {
-                                case RamAccess<int?>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse("") });
-                                    break;
-                                case RamAccess<float?>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { float.Parse("") });
-                                    break;
-                                case RamAccess<short>:
-                                case RamAccess<short?>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { short.Parse("") });
-                                    break;
-                                case RamAccess<int>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { int.Parse("") });
-                                    break;
-                                case RamAccess<string>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { "" });
-                                    break;
-                                case RamAccess<byte?>:
-                                case RamAccess<bool>:
-                                    midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { null });
-                                    break;
-                                default:
-                                    midValue?.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue, new object[] { "" });
-                                    break;
-                            }
-                        }
-                    }
-                    catch (Exception) { }
-                }
-            }
-        }
-    }
-    #endregion
-
-    #region DeleteNote
-    public ReactiveCommand<object, Unit> DeleteNote { get; protected set; }
-    private async Task _DeleteNote(object _param)
-    {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            var param = (IEnumerable)_param;
-            #region MessageDeleteNote
-            var answer = await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions = new[]
-                    {
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
-                    },
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = "Вы действительно хотите удалить комментарий?",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(desktop.MainWindow); 
-            #endregion
-            if (answer == "Да")
-            {
-                foreach (Note item in param)
-                {
-                    if (item == null) continue;
-                    foreach (var key in Storage.Notes)
-                    {
-                        var it = (Note)key;
-                        if (it.Order > item.Order)
-                        {
-                            it.Order -= 1;
-                        }
-                    }
-                    foreach (Note nt in param)
-                    {
-                        Storage.Notes.Remove(nt);
-                    }
-                }
-                await Storage.SortAsync();
-            }
-        }
-    }
-    #endregion
-
     #region Passport
 
     #region PassportUniqParam
@@ -403,11 +268,14 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
     public ICommand CopyPasName { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand CopyRows { get; set; }                          //  Скопировать в буфер обмена уникальное имя паспорта
+    public ICommand DeleteDataInRows { get; set; }                  //  Удалить данные в выделенных ячейках
+    public ICommand DeleteNote { get; set; }                        //  Удалить выбранный комментарий
     public ICommand DeleteRows { get; set; }                        //  Удалить выбранные строчки из формы
     public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
+    public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
 
     #endregion
 
@@ -551,19 +419,19 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
         ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
-        CheckReport = new CheckReportAsyncCommand(this);
+        CheckReport = new CheckReportSyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
+        DeleteDataInRows = new DeleteDataInRowsSyncCommand();
+        DeleteNote = new DeleteNoteAsyncCommand(this);
         DeleteRows = new DeleteRowsAsyncCommand(this);
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();
         OpenPas = new OpenPasAsyncCommand();
         PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
+        SetNumberOrder = new SetNumberOrderSyncCommand(this);
 
-        DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
-        SetNumberOrder = ReactiveCommand.CreateFromTask<object>(_SetNumberOrder);
-        DeleteDataInRows = ReactiveCommand.CreateFromTask<object>(_DeleteDataInRows);
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();

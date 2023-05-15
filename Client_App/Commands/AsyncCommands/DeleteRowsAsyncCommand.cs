@@ -58,7 +58,9 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                         Storage.Rows.Remove(item);
                     }
                 }
-                var rows = Storage[Storage.FormNum_DB].GetEnumerable().ToArray();
+                var rows = Storage[Storage.FormNum_DB]
+                    .GetEnumerable()
+                    .ToList();
                 switch ((rows.FirstOrDefault() as Form).FormNum_DB)
                 {
                     case "2.1":
@@ -67,7 +69,7 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                         foreach (var key in rows)
                         {
                             var row = (Form21)key;
-                            row.SetOrder(count);
+                            row.NumberInOrder_DB = count;
                             count++;
                             row.NumberInOrderSum_DB = "";
                             //row.NumberInOrderSum = new RamAccess<string>(null, "");   //выполняется 0.2c. на итерацию, вроде работает и с заменой выше
@@ -80,17 +82,20 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                         foreach (var key in rows)
                         {
                             var row = (Form22)key;
-                            row.SetOrder(count);
+                            row.NumberInOrder_DB = count;
                             count++;
                             row.NumberInOrderSum_DB = "";
-                            //row.NumberInOrderSum = new RamAccess<string>(null, "");
                         }
                         break;
                     }
                     default:
                     {
                         await Storage.SortAsync();
-                        var itemQ = Storage.Rows.GetEnumerable().Where(x => x.Order > minItem).Select(x => x as Form).ToArray();
+                        var itemQ = Storage.Rows
+                            .GetEnumerable()
+                            .Where(x => x.Order > minItem)
+                            .Select(x => x as Form)
+                            .ToList();
                         foreach (var form in itemQ)
                         {
                             //form.SetOrder(minItem);   //выполняется полсекунды на итерацию, вроде работает и с заменой ниже

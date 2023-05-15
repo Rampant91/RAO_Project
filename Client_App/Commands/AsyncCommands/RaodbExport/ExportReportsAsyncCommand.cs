@@ -1,21 +1,21 @@
-﻿using Avalonia.Controls;
-using Avalonia.Threading;
-using FirebirdSql.Data.FirebirdClient;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Models.Collections;
-using Models.DBRealization;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using Models.Interfaces;
+using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Resources;
+using Client_App.ViewModels;
+using FirebirdSql.Data.FirebirdClient;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands.ExportRaodb;
+namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 //  Экспорт организации в файл .raodb
 internal class ExportReportsAsyncCommand : BaseAsyncCommand
@@ -172,4 +172,6 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
             Process.Start("explorer", folderPath);
         }
     }
+
+    
 }
