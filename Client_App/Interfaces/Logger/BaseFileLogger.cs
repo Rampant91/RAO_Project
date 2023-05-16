@@ -37,7 +37,6 @@ public class BaseFileLogger : ILogger
 
     public void Import(string msg, ErrorCodeLogger code)
     {
-        
         ServiceExtension.FileManager.WriteToFile($"{msg}{Environment.NewLine}", FilePath, true);
     }
 }

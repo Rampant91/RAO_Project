@@ -32,6 +32,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         HasMultipleReport = false;
         var formCount = 1;
         var operationDate = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss"); //  дата начала операции
+        var isFirstLine = true;
 
         foreach (var res in answer) //Для каждого импортируемого файла
         {
@@ -67,9 +68,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 item.CleanIds();
                 ProcessIfNoteOrder0(item);
 
+                var impRepFormCount = item.Report_Collection.Count;
                 var impRepFormNum = item.Master.FormNum_DB;
-                var impRepRegNo = item.Master.RegNoRep.Value;
                 var impRepOkpo = item.Master.OkpoRep.Value;
+                var impRepRegNo = item.Master.RegNoRep.Value;
                 var impRepShortJurLico = item.Master.ShortJurLicoRep.Value;
 
                 if (first11 != null)
@@ -103,7 +105,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {item.Report_Collection.Count} форм отчетности." +
+                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {impRepRegNo}" +
                                         $"{Environment.NewLine}ОКПО - {impRepOkpo}" +
@@ -135,7 +137,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {item.Report_Collection.Count} форм отчетности." +
+                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {impRepRegNo}" +
                                         $"{Environment.NewLine}ОКПО - {impRepOkpo}" +
@@ -152,27 +154,28 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     if (an is "Добавить" or "Да для всех")
                     {
                         MainWindowVM.LocalReports.Reports_Collection.Add(item);
+
                         var sortedRepList = item.Report_Collection
                             .OrderBy(x => x.FormNum_DB)
                             .ThenBy(x => StringReverse(x.StartPeriod_DB))
                             .ToList();
-                        for (var i = 0; i < sortedRepList.Count; i++)
+                        foreach (var rep in sortedRepList)
                         {
-                            var rep = sortedRepList[i];
-                            var date = i == 0
+                            var date = isFirstLine
                                 ? $"{operationDate}"
                                 : "\t\t";
                             ServiceExtension.LoggerManager.Import($"{date}" +
-                                                                  $"\t{++formCount}" +
+                                                                  $"\t{formCount++}" +
                                                                   $"\t{impRepRegNo}" +
                                                                   $"\t{impRepOkpo}" +
-                                                                  $"\t{impRepFormNum}" +
+                                                                  $"\t{rep.FormNum_DB}" +
                                                                   $"\t{rep.CorrectionNumber_DB}" +
                                                                   $"\t{rep.Rows10.Count} зап." +
                                                                   "\t\t" +
                                                                   $"\t{rep.StartPeriod_DB}-{rep.EndPeriod_DB}" +
                                                                   $"\t{impRepShortJurLico}" +
-                                                                  $"{sourceFile}");
+                                                                  $"\t{sourceFile}");
+                            isFirstLine = false;
                         }
                     }
 
