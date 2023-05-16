@@ -5,19 +5,28 @@ using Models.Collections;
 using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Client_App.Interfaces.Logger;
 using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected bool SkipNewOrg;          // Пропустить уведомления о добавлении новой организации
-    private protected bool SkipInter;           // Пропускать уведомления и отменять импорт при пересечении дат
-    private protected bool SkipLess;            // Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
-    private protected bool SkipNew;             // Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
-    private protected bool SkipReplace;         // Пропускать уведомления о замене форм
-    private protected bool HasMultipleReport;   // Имеет множество форм
+    private protected bool SkipNewOrg;              // Пропустить уведомления о добавлении новой организации
+    private protected bool SkipInter;               // Пропускать уведомления и отменять импорт при пересечении дат
+    private protected bool SkipLess;                // Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
+    private protected bool SkipNew;                 // Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
+    private protected bool SkipReplace;             // Пропускать уведомления о замене форм
+    private protected bool HasMultipleReport;       // Имеет множество форм
+    private protected bool IsFirstLogLine = true;   // Это первая строчка в логгере ?
+    private protected int CurrentLogLine = 1;       // Порядковый номер добавляемой формы в логгере для текущей операции
+    private protected FileInfo? SourceFile;
+
+    private protected string OperationDate => IsFirstLogLine
+        ? DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")
+        : "\t\t";
 
     #region CheckAanswer
 
@@ -93,6 +102,10 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     private protected async Task ProcessIfHasReports11(Reports baseReps, Reports? impReps = null, Report? impReport = null)
     {
+        var baseRepsOkpo = baseReps.Master.OkpoRep.Value;
+        var baseRepsRegNum = baseReps.Master.RegNoRep.Value;
+        var baseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
+
         var listImpRep = new List<Report>();
         if (impReps != null)
         {
@@ -104,24 +117,37 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         }
         foreach (var impRep in listImpRep) //Для каждой импортируемой формы
         {
+            var impRepFormNum = impRep.FormNum_DB;
+            var impRepOkpo = impRep.OkpoRep.Value;
+            var impRepCorNum = impRep.CorrectionNumber_DB;
+            var impRepFormCount = impRep.Rows.Count;
+            var impRepStartPeriod = impRep.StartPeriod_DB;
+            var impRepEndPeriod = impRep.EndPeriod_DB;
+            var impRepShortName = impRep.ShortJurLicoRep.Value;
+
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
             foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
             {
                 var baseRep = (Report)key1;
-
+                var baseRepFormNum = baseRep.FormNum_DB;
+                var baseRepCorNum = baseRep.CorrectionNumber_DB;
+                var baseRepFormCount = baseRep.Rows.Count;
+                var baseRepStartPeriod = baseRep.StartPeriod_DB;
+                var baseRepEndPeriod = baseRep.EndPeriod_DB;
+                
                 #region Periods
 
                 var stBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Начало периода у отчета в базе
                 var endBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у отчета в базе
                 try
                 {
-                    stBase = DateTime.Parse(baseRep.StartPeriod_DB) > DateTime.Parse(baseRep.EndPeriod_DB)
-                        ? DateTime.Parse(baseRep.EndPeriod_DB)
-                        : DateTime.Parse(baseRep.StartPeriod_DB);
-                    endBase = DateTime.Parse(baseRep.StartPeriod_DB) < DateTime.Parse(baseRep.EndPeriod_DB)
-                        ? DateTime.Parse(baseRep.EndPeriod_DB)
-                        : DateTime.Parse(baseRep.StartPeriod_DB);
+                    stBase = DateTime.Parse(baseRepStartPeriod) > DateTime.Parse(baseRepEndPeriod)
+                        ? DateTime.Parse(baseRepEndPeriod)
+                        : DateTime.Parse(baseRepStartPeriod);
+                    endBase = DateTime.Parse(baseRepStartPeriod) < DateTime.Parse(baseRepEndPeriod)
+                        ? DateTime.Parse(baseRepEndPeriod)
+                        : DateTime.Parse(baseRepStartPeriod);
                 }
                 catch (Exception)
                 {
@@ -132,12 +158,12 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var endImp = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у импортируемого отчета
                 try
                 {
-                    stImp = DateTime.Parse(impRep.StartPeriod_DB) > DateTime.Parse(impRep.EndPeriod_DB)
-                        ? DateTime.Parse(impRep.EndPeriod_DB)
-                        : DateTime.Parse(impRep.StartPeriod_DB);
-                    endImp = DateTime.Parse(impRep.StartPeriod_DB) < DateTime.Parse(impRep.EndPeriod_DB)
-                        ? DateTime.Parse(impRep.EndPeriod_DB)
-                        : DateTime.Parse(impRep.StartPeriod_DB);
+                    stImp = DateTime.Parse(impRepStartPeriod) > DateTime.Parse(impRepEndPeriod)
+                        ? DateTime.Parse(impRepEndPeriod)
+                        : DateTime.Parse(impRepStartPeriod);
+                    endImp = DateTime.Parse(impRepStartPeriod) < DateTime.Parse(impRepEndPeriod)
+                        ? DateTime.Parse(impRepEndPeriod)
+                        : DateTime.Parse(impRepStartPeriod);
                 }
                 catch (Exception)
                 {
@@ -148,13 +174,13 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region SamePeriod
 
-                if (stBase == stImp && endBase == endImp && impRep.FormNum_DB == baseRep.FormNum_DB)
+                if (stBase == stImp && endBase == endImp && impRepFormNum == baseRepFormNum)
                 {
                     impInBase = true;
 
                     #region LessCorrectionNumber
 
-                    if (impRep.CorrectionNumber_DB < baseRep.CorrectionNumber_DB)
+                    if (impRepCorNum < baseRepCorNum)
                     {
                         if (SkipLess) break;
 
@@ -174,19 +200,19 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     "Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
                                     $"{Environment.NewLine}с меньшим номером корректировки, чем у текущего отчета в базе." +
                                     $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                    $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                                    $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}" +
                                     $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                    $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
-                                    $"{Environment.NewLine}Конец отчетного периода - {impRep.EndPeriod_DB}" +
+                                    $"{Environment.NewLine}Номер формы - {impRepFormNum}" +
+                                    $"{Environment.NewLine}Начало отчетного периода - {impRepStartPeriod}" +
+                                    $"{Environment.NewLine}Конец отчетного периода - {impRepEndPeriod}" +
                                     $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
                                     $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
-                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRep.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета - {impRep.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}" +
+                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRepCorNum}" +
+                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета - {impRepCorNum}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {baseRepFormCount}{InventoryCheck(baseRep)}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {impRepFormCount}{InventoryCheck(impRep)}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
                                     $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
@@ -198,6 +224,19 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         #endregion
 
                         if (res is "Пропустить для всех") SkipLess = true;
+
+                        ServiceExtension.LoggerManager.Import($"{OperationDate}" +
+                                                              $"\t{CurrentLogLine++}" +
+                                                              $"\t{impRep.RegNoRep.Value}" +
+                                                              $"\t{impRepOkpo}" +
+                                                              $"\t{impRepFormNum}" +
+                                                              $"\t{impRepCorNum}" +
+                                                              $"\t{impRepFormCount} зап." +
+                                                              "\tне загружен (меньший № корр.)" +
+                                                              $"\t{impRepStartPeriod} - {impRepEndPeriod}" +
+                                                              $"\t{impRepShortName}" +
+                                                              $"\t{SourceFile?.Name}");
+
                         break;
                     }
 
@@ -224,18 +263,18 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 ContentMessage =
                                     "Импортируемый отчет имеет тот же период, номер корректировки, что и имеющийся в базе." +
                                     $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                    $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                                    $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}" +
                                     $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                    $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
-                                    $"{Environment.NewLine}Конец отчетного периода - {impRep.EndPeriod_DB}" +
+                                    $"{Environment.NewLine}Номер формы - {impRepFormNum}" +
+                                    $"{Environment.NewLine}Начало отчетного периода - {impRepStartPeriod}" +
+                                    $"{Environment.NewLine}Конец отчетного периода - {impRepEndPeriod}" +
                                     $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
                                     $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
-                                    $"{Environment.NewLine}Номер корректировки - {impRep.CorrectionNumber_DB}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}",
+                                    $"{Environment.NewLine}Номер корректировки - {impRepCorNum}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {baseRepFormCount}{InventoryCheck(baseRep)}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {impRepFormCount}{InventoryCheck(impRep)}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -273,19 +312,19 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                         "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
                                         $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                        $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                                        $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}" +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                        $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
-                                        $"{Environment.NewLine}Конец отчетного периода - {impRep.EndPeriod_DB}" +
+                                        $"{Environment.NewLine}Номер формы - {impRepFormNum}" +
+                                        $"{Environment.NewLine}Начало отчетного периода - {impRepStartPeriod}" +
+                                        $"{Environment.NewLine}Конец отчетного периода - {impRepEndPeriod}" +
                                         $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
                                         $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRep.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки импортируемого отчета - {impRep.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
-                                        $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}" +
+                                        $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRepCorNum}" +
+                                        $"{Environment.NewLine}Номер корректировки импортируемого отчета - {impRepCorNum}" +
+                                        $"{Environment.NewLine}Количество строк отчета в базе - {baseRepFormCount}{InventoryCheck(baseRep)}" +
+                                        $"{Environment.NewLine}Количество строк импортируемого отчета - {impRepFormCount}{InventoryCheck(impRep)}" +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
                                         $"{Environment.NewLine}все формы с меньшим номером корректировки.",
@@ -316,19 +355,19 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                         "Импортируемый отчет имеет больший номер корректировки чем имеющийся в базе." +
                                         $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                        $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                                        $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}" +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                        $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
-                                        $"{Environment.NewLine}Конец отчетного периода - {impRep.EndPeriod_DB}" +
+                                        $"{Environment.NewLine}Номер формы - {impRepFormNum}" +
+                                        $"{Environment.NewLine}Начало отчетного периода - {impRepStartPeriod}" +
+                                        $"{Environment.NewLine}Конец отчетного периода - {impRepEndPeriod}" +
                                         $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
                                         $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRep.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Номер корректировки импортируемого отчета - {impRep.CorrectionNumber_DB}" +
-                                        $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
-                                        $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}",
+                                        $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRepCorNum}" +
+                                        $"{Environment.NewLine}Номер корректировки импортируемого отчета - {impRepCorNum}" +
+                                        $"{Environment.NewLine}Количество строк отчета в базе - {baseRepFormCount}{InventoryCheck(baseRep)}" +
+                                        $"{Environment.NewLine}Количество строк импортируемого отчета - {impRepFormCount}{InventoryCheck(impRep)}",
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
@@ -348,7 +387,7 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region Intersect
 
-                if (stBase < endImp && endBase > stImp && impRep.FormNum_DB == baseRep.FormNum_DB)
+                if (stBase < endImp && endBase > stImp && impRepFormNum == baseRepFormNum)
                 {
                     impInBase = true;
 
@@ -370,21 +409,21 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             ContentMessage =
                                 "Периоды импортируемого и имеющегося в базе отчетов пересекаются, но не совпадают." +
                                 $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                                $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}" +
                                 $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                $"{Environment.NewLine}Начало периода отчета в базе - {baseRep.StartPeriod_DB}" +
-                                $"{Environment.NewLine}Конец периода отчета в базе - {baseRep.EndPeriod_DB}" +
-                                $"{Environment.NewLine}Начало периода импортируемого отчета - {impRep.StartPeriod_DB}" +
-                                $"{Environment.NewLine}Конец периода импортируемого отчета - {impRep.EndPeriod_DB}" +
+                                $"{Environment.NewLine}Номер формы - {impRepFormNum}" +
+                                $"{Environment.NewLine}Начало периода отчета в базе - {baseRepStartPeriod}" +
+                                $"{Environment.NewLine}Конец периода отчета в базе - {baseRepEndPeriod}" +
+                                $"{Environment.NewLine}Начало периода импортируемого отчета - {impRepStartPeriod}" +
+                                $"{Environment.NewLine}Конец периода импортируемого отчета - {impRepEndPeriod}" +
                                 $"{Environment.NewLine}Дата выгрузки отчета в базе - {baseRep.ExportDate_DB}" +
                                 $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {impRep.ExportDate_DB}" +
-                                $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRep.CorrectionNumber_DB}" +
-                                $"{Environment.NewLine}Номер корректировки импортируемого отчета- {impRep.CorrectionNumber_DB}" +
-                                $"{Environment.NewLine}Количество строк отчета в базе - {baseRep.Rows.Count}{InventoryCheck(baseRep)}" +
-                                $"{Environment.NewLine}Количество строк импортируемого отчета - {impRep.Rows.Count}{InventoryCheck(impRep)}",
+                                $"{Environment.NewLine}Номер корректировки отчета в базе - {baseRepCorNum}" +
+                                $"{Environment.NewLine}Номер корректировки импортируемого отчета- {impRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {baseRepFormCount}{InventoryCheck(baseRep)}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {impRepFormCount}{InventoryCheck(impRep)}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
@@ -427,9 +466,9 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         ContentMessage =
                             "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
                             $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}",
+                            $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                            $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
@@ -465,16 +504,16 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
                                 $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                                $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}" +
                                 $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
-                                $"{Environment.NewLine}Конец отчетного периода - {impRep.EndPeriod_DB}" +
+                                $"{Environment.NewLine}Номер формы - {impRepFormNum}" +
+                                $"{Environment.NewLine}Начало отчетного периода - {impRepStartPeriod}" +
+                                $"{Environment.NewLine}Конец отчетного периода - {impRepEndPeriod}" +
                                 $"{Environment.NewLine}Дата выгрузки - {impRep.ExportDate_DB}" +
-                                $"{Environment.NewLine}Номер корректировки - {impRep.CorrectionNumber_DB}" +
-                                $"{Environment.NewLine}Количество строк - {impRep.Rows.Count}{InventoryCheck(impRep)}" +
+                                $"{Environment.NewLine}Номер корректировки - {impRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк - {impRepFormCount}{InventoryCheck(impRep)}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
                                 $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
@@ -504,16 +543,16 @@ internal abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
                                 $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                $"{Environment.NewLine}Регистрационный номер - {baseRepsRegNum}" +
+                                $"{Environment.NewLine}ОКПО - {baseRepsOkpo}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {baseRepsShortName}" +
                                 $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {impRep.FormNum_DB}" +
-                                $"{Environment.NewLine}Начало отчетного периода - {impRep.StartPeriod_DB}" +
-                                $"{Environment.NewLine}Конец отчетного периода - {impRep.EndPeriod_DB}" +
+                                $"{Environment.NewLine}Номер формы - {impRepFormNum}" +
+                                $"{Environment.NewLine}Начало отчетного периода - {impRepStartPeriod}" +
+                                $"{Environment.NewLine}Конец отчетного периода - {impRepEndPeriod}" +
                                 $"{Environment.NewLine}Дата выгрузки - {impRep.ExportDate_DB}" +
-                                $"{Environment.NewLine}Номер корректировки - {impRep.CorrectionNumber_DB}" +
-                                $"{Environment.NewLine}Количество строк - {impRep.Rows.Count}{InventoryCheck(impRep)}",
+                                $"{Environment.NewLine}Номер корректировки - {impRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк - {impRepFormCount}{InventoryCheck(impRep)}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })

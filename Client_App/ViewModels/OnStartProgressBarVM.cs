@@ -16,15 +16,13 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         ShowDialog = new Interaction<MainWindowVM, object>();
         backgroundWorker.BackgroundWorker(() =>
         {
-            ServiceExtension.LoggerManager.CreateFile("Import777.log");
+            ServiceExtension.LoggerManager.CreateFile("Import.log");
         }, () =>
         {
             MainTask=new Task(() => Start());
             MainTask.GetAwaiter().OnCompleted(async ()=> await ShowDialog.Handle(VMDataContext));
             MainTask.Start();
         });
-        
-        
     }
     private double _OnStartProgressBar;
     public double OnStartProgressBar

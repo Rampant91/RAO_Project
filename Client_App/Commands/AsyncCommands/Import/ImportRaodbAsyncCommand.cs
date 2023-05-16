@@ -30,16 +30,13 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
-        var formCount = 1;
-        var operationDate = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"); //  дата начала операции
-        var isFirstLine = true;
 
         foreach (var res in answer) //Для каждого импортируемого файла
         {
             if (res == "") continue;
             var file = GetRaoFileName();
-            var sourceFile = new FileInfo(res);
-            sourceFile.CopyTo(file, true);
+            SourceFile = new FileInfo(res);
+            SourceFile.CopyTo(file, true);
             var reportsCollection = await GetReportsFromDataBase(file);
 
             if (!HasMultipleReport)
@@ -155,17 +152,16 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     {
                         MainWindowVM.LocalReports.Reports_Collection.Add(item);
 
+                        #region LoggerImport
+
                         var sortedRepList = item.Report_Collection
-                            .OrderBy(x => x.FormNum_DB)
-                            .ThenBy(x => StringReverse(x.StartPeriod_DB))
-                            .ToList();
+                                            .OrderBy(x => x.FormNum_DB)
+                                            .ThenBy(x => StringReverse(x.StartPeriod_DB))
+                                            .ToList();
                         foreach (var rep in sortedRepList)
                         {
-                            var date = isFirstLine
-                                ? $"{operationDate}"
-                                : "\t\t";
-                            ServiceExtension.LoggerManager.Import($"{date}" +
-                                                                  $"\t{formCount++}" +
+                            ServiceExtension.LoggerManager.Import($"{OperationDate}" +
+                                                                  $"\t{CurrentLogLine++}" +
                                                                   $"\t{impRepRegNo}" +
                                                                   $"\t{impRepOkpo}" +
                                                                   $"\t{rep.FormNum_DB}" +
@@ -174,9 +170,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                                                   "\t\t" +
                                                                   $"\t{rep.StartPeriod_DB} - {rep.EndPeriod_DB}" +
                                                                   $"\t{impRepShortJurLico}" +
-                                                                  $"\t{sourceFile}");
-                            isFirstLine = false;
+                                                                  $"\t{SourceFile.Name}");
+                            IsFirstLogLine = false;
                         }
+
+                        #endregion
                     }
 
                     #endregion
