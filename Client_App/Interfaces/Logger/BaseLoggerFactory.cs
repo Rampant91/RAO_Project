@@ -104,6 +104,9 @@ public class BaseLoggerFactory : ILogFactory
 
     public void Import(ImportBaseAsyncCommand impCommand, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true)
     {
+        var periodOrYear = impCommand.ImpRepFormNum[0] is '1'
+            ? impCommand.ImpRepPeriod
+            : impCommand.ImpRepYear;
         var msg = impCommand.OperationDate +
                   $"\t{impCommand.CurrentLogLine}" +
                   $"\t{impCommand.BaseRepsRegNum}" +
@@ -112,7 +115,7 @@ public class BaseLoggerFactory : ILogFactory
                   $"\t{impCommand.ImpRepCorNum}" +
                   $"\t{impCommand.ImpRepFormCount} зап." +
                   $"\t{impCommand.Act}" +
-                  $"\t{impCommand.ImpRepPeriod}" +
+                  $"\t{periodOrYear}" +
                   $"\t{impCommand.BaseRepsShortName}" +
                   $"\t{impCommand.SourceFile!.FullName}";
         Loggers.ForEach(log => log.Import(msg, code));
