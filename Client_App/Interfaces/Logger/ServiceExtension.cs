@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Client_App.Interfaces.Logger;
 public class ServiceExtension
 {
-    public static ServiceProvider serviceProvider = new ServiceCollection()
+    public static ServiceProvider ServiceProvider = new ServiceCollection()
         .AddTransient<IFileManager, BaseFileManager>()
         .AddTransient<ILogFactory, BaseLoggerFactory>()
         .BuildServiceProvider();
-    public static IFileManager FileManager = serviceProvider.GetService<IFileManager>();
-    public static ILogFactory LoggerManager = serviceProvider.GetService<ILogFactory>();
+    public static IFileManager FileManager = ServiceProvider.GetService<IFileManager>();
+    public static ILogFactory LoggerManager = ServiceProvider.GetService<ILogFactory>();
 }

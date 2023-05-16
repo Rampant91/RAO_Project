@@ -31,7 +31,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         SkipReplace = false;
         HasMultipleReport = false;
         var formCount = 1;
-        var operationDate = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss"); //  дата начала операции
+        var operationDate = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"); //  дата начала операции
         var isFirstLine = true;
 
         foreach (var res in answer) //Для каждого импортируемого файла
@@ -163,7 +163,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             var date = isFirstLine
                                 ? $"{operationDate}"
-                                : "\t\t\t";
+                                : "\t\t";
                             ServiceExtension.LoggerManager.Import($"{date}" +
                                                                   $"\t{formCount++}" +
                                                                   $"\t{impRepRegNo}" +
@@ -172,7 +172,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                                                   $"\t{rep.CorrectionNumber_DB}" +
                                                                   $"\t{rep.Rows.Count} зап." +
                                                                   "\t\t" +
-                                                                  $"\t{rep.StartPeriod_DB}-{rep.EndPeriod_DB}" +
+                                                                  $"\t{rep.StartPeriod_DB} - {rep.EndPeriod_DB}" +
                                                                   $"\t{impRepShortJurLico}" +
                                                                   $"\t{sourceFile}");
                             isFirstLine = false;

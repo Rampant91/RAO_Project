@@ -61,7 +61,7 @@ public class BaseLoggerFactory : ILogFactory
 
     public void CreateFile(string path)
     {
-        new BaseLoggerFactory(new[] { new BaseFileLogger(path) });
+        var _ = new BaseLoggerFactory(new ILogger[] { new BaseFileLogger(path) });
     }
 
     public void Debug(string msg, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true)
@@ -103,10 +103,6 @@ public class BaseLoggerFactory : ILogFactory
 
     public void Import(string msg, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true)
     {
-        if (isIncludeOriginDetails)
-            msg = $"[{Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}.{Path.GetFileNameWithoutExtension(filePath)}.{origin} - " +
-                  $"Line {lineNumber}] -" +
-                  $"Message: {msg}";
         Loggers.ForEach(log => log.Import(msg, code));
         NewLog.Invoke((msg, code));
     }
