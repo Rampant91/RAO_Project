@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Interfaces.Logger.EnumLogger;
 
 namespace Client_App.Interfaces.Logger;
@@ -13,7 +14,7 @@ public interface ILogFactory
     public bool IncludeOriginalDetails { get; set; }
     public void AddLogger(ILogger innerLogger);
     public void RemoveLogger(ILogger innerLogger);
-    public void Import(string msg, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true);
+    public void Import(ImportBaseAsyncCommand impCommand, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true);
     public void Info(string msg, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true);
     public void Debug(string msg, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true);
     public void Warning(string msg, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true);
@@ -101,8 +102,19 @@ public class BaseLoggerFactory : ILogFactory
             NewLog.Invoke((msg, code));
         }
 
-    public void Import(string msg, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true)
+    public void Import(ImportBaseAsyncCommand impCommand, ErrorCodeLogger code = ErrorCodeLogger.Application, [CallerMemberName] string origin = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool isIncludeOriginDetails = true)
     {
+        var msg = impCommand.OperationDate +
+                  $"\t{impCommand.CurrentLogLine}" +
+                  $"\t{impCommand.BaseRepsRegNum}" +
+                  $"\t{impCommand.BaseRepsOkpo}" +
+                  $"\t{impCommand.ImpRepFormNum}" +
+                  $"\t{impCommand.ImpRepCorNum}" +
+                  $"\t{impCommand.ImpRepFormCount} зап." +
+                  $"\t{impCommand.Act}" +
+                  $"\t{impCommand.ImpRepPeriod}" +
+                  $"\t{impCommand.BaseRepsShortName}" +
+                  $"\t{impCommand.SourceFile!.FullName}";
         Loggers.ForEach(log => log.Import(msg, code));
         NewLog.Invoke((msg, code));
     }

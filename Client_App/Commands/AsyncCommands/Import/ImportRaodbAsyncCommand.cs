@@ -66,10 +66,9 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 ProcessIfNoteOrder0(item);
 
                 var impRepFormCount = item.Report_Collection.Count;
-                var impRepFormNum = item.Master.FormNum_DB;
-                var impRepOkpo = item.Master.OkpoRep.Value;
-                var impRepRegNo = item.Master.RegNoRep.Value;
-                var impRepShortJurLico = item.Master.ShortJurLicoRep.Value;
+                BaseRepsOkpo = item.Master.OkpoRep.Value;
+                BaseRepsRegNum = item.Master.RegNoRep.Value;
+                BaseRepsShortName = item.Master.ShortJurLicoRep.Value;
 
                 if (first11 != null)
                 {
@@ -102,11 +101,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
+                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {impRepRegNo}" +
-                                        $"{Environment.NewLine}ОКПО - {impRepOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {impRepShortJurLico}" +
+                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                         $"{Environment.NewLine}импортировать все новые организации.",
@@ -134,11 +133,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
+                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {impRepRegNo}" +
-                                        $"{Environment.NewLine}ОКПО - {impRepOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {impRepShortJurLico}",
+                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
@@ -160,17 +159,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                             .ToList();
                         foreach (var rep in sortedRepList)
                         {
-                            ServiceExtension.LoggerManager.Import($"{OperationDate}" +
-                                                                  $"\t{CurrentLogLine++}" +
-                                                                  $"\t{impRepRegNo}" +
-                                                                  $"\t{impRepOkpo}" +
-                                                                  $"\t{rep.FormNum_DB}" +
-                                                                  $"\t{rep.CorrectionNumber_DB}" +
-                                                                  $"\t{rep.Rows.Count} зап." +
-                                                                  "\t\t" +
-                                                                  $"\t{rep.StartPeriod_DB} - {rep.EndPeriod_DB}" +
-                                                                  $"\t{impRepShortJurLico}" +
-                                                                  $"\t{SourceFile.Name}");
+                            ImpRepCorNum = rep.CorrectionNumber_DB;
+                            ImpRepFormCount = rep.Rows.Count;
+                            ImpRepStartPeriod = rep.StartPeriod_DB;
+                            ImpRepEndPeriod = rep.EndPeriod_DB;
+                            ServiceExtension.LoggerManager.Import(this);
                             IsFirstLogLine = false;
                         }
 
