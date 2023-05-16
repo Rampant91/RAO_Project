@@ -163,14 +163,14 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             var date = isFirstLine
                                 ? $"{operationDate}"
-                                : "\t\t";
+                                : "\t\t\t";
                             ServiceExtension.LoggerManager.Import($"{date}" +
                                                                   $"\t{formCount++}" +
                                                                   $"\t{impRepRegNo}" +
                                                                   $"\t{impRepOkpo}" +
                                                                   $"\t{rep.FormNum_DB}" +
                                                                   $"\t{rep.CorrectionNumber_DB}" +
-                                                                  $"\t{rep.Rows10.Count} зап." +
+                                                                  $"\t{rep.Rows.Count} зап." +
                                                                   "\t\t" +
                                                                   $"\t{rep.StartPeriod_DB}-{rep.EndPeriod_DB}" +
                                                                   $"\t{impRepShortJurLico}" +
