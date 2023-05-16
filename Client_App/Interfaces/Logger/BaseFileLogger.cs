@@ -11,7 +11,6 @@ public class BaseFileLogger : ILogger
         FilePath = filePath;
     }
 
-
     public void Debug(string msg, ErrorCodeLogger code)
     {
         var currentTime = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss");
@@ -38,7 +37,7 @@ public class BaseFileLogger : ILogger
 
     public void Import(string msg, ErrorCodeLogger code)
     {
-        var currentTime = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss");
-        ServiceExtension.FileManager.WriteToFile($"{currentTime}\t{msg}{Environment.NewLine}", FilePath, true);
+        
+        ServiceExtension.FileManager.WriteToFile($"{msg}{Environment.NewLine}", FilePath, true);
     }
 }

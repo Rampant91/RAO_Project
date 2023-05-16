@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Models.Forms;
 using Client_App.Interfaces.Logger;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -29,6 +30,8 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
+        var formCount = 1;
+        var operationDate = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss"); //  дата начала операции
 
         foreach (var res in answer) //Для каждого импортируемого файла
         {
@@ -64,6 +67,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 item.CleanIds();
                 ProcessIfNoteOrder0(item);
 
+                var impRepFormNum = item.Master.FormNum_DB;
+                var impRepRegNo = item.Master.RegNoRep.Value;
+                var impRepOkpo = item.Master.OkpoRep.Value;
+                var impRepShortJurLico = item.Master.ShortJurLicoRep.Value;
+
                 if (first11 != null)
                 {
                     await ProcessIfHasReports11(first11, item);
@@ -95,11 +103,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({item.Master.FormNum_DB}) содержащая {item.Report_Collection.Count} форм отчетности." +
+                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {item.Report_Collection.Count} форм отчетности." +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}" +
+                                        $"{Environment.NewLine}Регистрационный номер - {impRepRegNo}" +
+                                        $"{Environment.NewLine}ОКПО - {impRepOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {impRepShortJurLico}" +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                         $"{Environment.NewLine}импортировать все новые организации.",
@@ -127,11 +135,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({item.Master.FormNum_DB}) содержащая {item.Report_Collection.Count} форм отчетности." +
+                                        $"Будет добавлена новая организация ({impRepFormNum}) содержащая {item.Report_Collection.Count} форм отчетности." +
                                         $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {item.Master.RegNoRep.Value}" +
-                                        $"{Environment.NewLine}ОКПО - {item.Master.OkpoRep.Value}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {item.Master.ShortJurLicoRep.Value}",
+                                        $"{Environment.NewLine}Регистрационный номер - {impRepRegNo}" +
+                                        $"{Environment.NewLine}ОКПО - {impRepOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {impRepShortJurLico}",
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
@@ -144,6 +152,28 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     if (an is "Добавить" or "Да для всех")
                     {
                         MainWindowVM.LocalReports.Reports_Collection.Add(item);
+                        var sortedRepList = item.Report_Collection
+                            .OrderBy(x => x.FormNum_DB)
+                            .ThenBy(x => StringReverse(x.StartPeriod_DB))
+                            .ToList();
+                        for (var i = 0; i < sortedRepList.Count; i++)
+                        {
+                            var rep = sortedRepList[i];
+                            var date = i == 0
+                                ? $"{operationDate}"
+                                : "\t\t";
+                            ServiceExtension.LoggerManager.Import($"{date}" +
+                                                                  $"\t{++formCount}" +
+                                                                  $"\t{impRepRegNo}" +
+                                                                  $"\t{impRepOkpo}" +
+                                                                  $"\t{impRepFormNum}" +
+                                                                  $"\t{rep.CorrectionNumber_DB}" +
+                                                                  $"\t{rep.Rows10.Count} зап." +
+                                                                  "\t\t" +
+                                                                  $"\t{rep.StartPeriod_DB}-{rep.EndPeriod_DB}" +
+                                                                  $"\t{impRepShortJurLico}" +
+                                                                  $"{sourceFile}");
+                        }
                     }
 
                     #endregion

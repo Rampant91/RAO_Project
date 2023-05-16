@@ -22,7 +22,6 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        ServiceExtension.LoggerManager.Import("tatata555");
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
         var cts = new CancellationTokenSource();
         ExportType = "Для анализа";
