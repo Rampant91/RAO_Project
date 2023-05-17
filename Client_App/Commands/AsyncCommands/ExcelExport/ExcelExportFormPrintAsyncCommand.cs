@@ -1,17 +1,15 @@
-﻿using Models.Collections;
-using OfficeOpenXml;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.ViewModels;
+using Models.Collections;
 using Models.Interfaces;
+using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Выбранная форма->Выгрузка Excel->Для печати
 public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand

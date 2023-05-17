@@ -1,23 +1,26 @@
-﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using Models.Collections;
-using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.ExcelExport;
+using Avalonia.Controls;
 using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Models.Collections;
+using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Excel -> Список форм 2
 public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        var cts = new CancellationTokenSource();
+        ExportType = "Список форм 2";
+
         #region ReportsCountCheck
 
         var findRep = 0;
@@ -59,8 +62,52 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        var cts = new CancellationTokenSource();
-        ExportType = "Список форм 2";
+        #region MessageInputYearRange
+
+        var res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                },
+                ContentTitle = "Задать период",
+                ContentMessage = "Введите год или период лет через дефис (прим: 2021-2023)." +
+                                 $"{Environment.NewLine}Если поле незаполнено или года введены некорректно," +
+                                 $"{Environment.NewLine}то выгрузка будет осуществляться без фильтра по годам.",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow);
+
+        #endregion
+
+        if (res.Button is null or "Отмена") return;
+        var minYear = 0;
+        var maxYear = 9999;
+        if (!res.Message.Contains('-'))
+        {
+            if (int.TryParse(res.Message, out var parseYear) && parseYear.ToString().Length == 4)
+            {
+                minYear = parseYear;
+                maxYear = parseYear;
+            }
+            else if (res.Message.Length > 1)
+            {
+                var firstResHalf = res.Message.Split('-')[0].Trim();
+                var secondResHalf = res.Message.Split('-')[1].Trim();
+                if(int.TryParse(firstResHalf, out var minYearParse) && minYearParse.ToString().Length == 4)
+                {
+                    minYear = minYearParse;
+                }
+                if(int.TryParse(firstResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
+                {
+                    maxYear = maxYearParse;
+                }
+            }
+        }
+
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try

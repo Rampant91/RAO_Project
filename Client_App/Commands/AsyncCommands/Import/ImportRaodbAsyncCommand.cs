@@ -200,6 +200,26 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync();
+
+        #region ImportDone
+
+        var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
+            ? "а"
+            : "ов";
+        await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ContentTitle = "Импорт из .raodb",
+                ContentHeader = "Уведомление",
+                ContentMessage = $"Импорт из файл{suffix} .raodb успешно завершен.",
+                MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow);
+
+        #endregion
     }
 
     #region FillEmptyRegNo

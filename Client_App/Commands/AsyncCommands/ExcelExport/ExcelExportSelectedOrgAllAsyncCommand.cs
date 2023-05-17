@@ -1,19 +1,18 @@
-﻿using Avalonia.Controls;
-using Client_App.Views;
-using MessageBox.Avalonia.DTO;
-using Models.Collections;
-using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.ExcelExport;
+using Avalonia.Controls;
 using Client_App.ViewModels;
+using Client_App.Views;
+using MessageBox.Avalonia.DTO;
+using Models.Collections;
+using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Excel -> Выбранная организация -> Все формы
 public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand

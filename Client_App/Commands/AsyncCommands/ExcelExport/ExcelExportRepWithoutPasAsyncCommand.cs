@@ -1,19 +1,18 @@
-﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using Models.Collections;
-using Models.Forms.Form1;
-using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.ViewModels;
+using Avalonia.Controls;
 using Client_App.Resources;
+using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
+using Models.Collections;
+using Models.Forms.Form1;
+using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Excel -> Паспорта -> Отчеты без паспортов
 public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand

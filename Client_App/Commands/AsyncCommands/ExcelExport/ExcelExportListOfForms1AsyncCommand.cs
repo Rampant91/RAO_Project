@@ -1,19 +1,18 @@
-﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using Models.Collections;
-using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.ExcelExport;
+using Avalonia.Controls;
 using Client_App.ViewModels;
-using Models.Forms.Form1;
-using Client_App.Resources;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Models.Collections;
+using OfficeOpenXml;
+using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Excel -> Список форм 1
 public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
@@ -65,6 +64,48 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
         
+        #region MessageInputDateRange
+
+        var res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                },
+                ContentTitle = "Задать период",
+                ContentMessage = "Введите период дат через дефис (прим: 01.01.2022-07.03.2023)." +
+                                 $"{Environment.NewLine}Если даты незаполнены или введены некорректно," +
+                                 $"{Environment.NewLine}то выгрузка будет осуществляться без фильтра по датам.",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow);
+
+        #endregion
+
+        if (res.Button is null or "Отмена") return;
+        var startDateTime = DateTime.MinValue;
+        var endDateTime = DateTime.MaxValue;
+        try
+        {
+            var firstPeriodHalf = res.Message.Split('-')[0].Trim();
+            var secondPeriodHalf = res.Message.Split('-')[1].Trim();
+            if (!DateTime.TryParse(firstPeriodHalf, out startDateTime) )
+            {
+                startDateTime = DateTime.MinValue;
+            }
+            if (!DateTime.TryParse(secondPeriodHalf, out endDateTime) )
+            {
+                endDateTime = DateTime.MaxValue;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
@@ -115,12 +156,23 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         }
 
         var row = 2;
-        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep.Value).ToList())
+        var orderedReps = lst
+            .OrderBy(x => x.Master_DB.RegNoRep.Value)
+            .ToList();
+        foreach (var reps in orderedReps)
         {
-            foreach (var rep in reps.Report_Collection
-                         .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB))
-                         .ToList())
+            var orderedRep = reps.Report_Collection
+                .Where(x =>
+                {
+                    if (!DateTime.TryParse(x.EndPeriod_DB, out var repEndDateTime))
+                        repEndDateTime = DateTime.MaxValue;
+                    return repEndDateTime >= startDateTime
+                           && repEndDateTime <= endDateTime;
+                })
+                .OrderBy(x => x.FormNum_DB)
+                .ThenBy(x => StringReverse(x.StartPeriod_DB))
+                .ToList();
+            foreach (var rep in orderedRep)
             {
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;

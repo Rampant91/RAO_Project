@@ -4,12 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.ViewModels;
 using Models.Collections;
 using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.Excel;
+namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Excel -> Список организаций
 public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand

@@ -76,7 +76,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelGetFullPath
 
-    private protected async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts)
+    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts)
     {
         #region MessageSaveOrOpenTemp
 
@@ -131,7 +131,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     cts.Cancel();
                     cts.Token.ThrowIfCancellationRequested();
                 }
-                if (File.Exists(fullPath + ".xlsx"))
+                if (File.Exists(fullPath))
                 {
                     try
                     {
@@ -181,7 +181,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelExportRows
 
-    private protected int ExcelExportRows(string param, int startRow, int startColumn, ExcelWorksheet worksheet,
+    private protected static int ExcelExportRows(string param, int startRow, int startColumn, ExcelWorksheet worksheet,
         List<Report> forms, bool id = false)
     {
         foreach (var item in forms)
@@ -765,7 +765,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
         }
 
-        return countCode10 == rep.Rows.Count
+        return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
             ? " (ИНВ)"
             : countCode10 > 0
                 ? " (инв)"
