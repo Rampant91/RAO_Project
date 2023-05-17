@@ -8,12 +8,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Client_App.Interfaces.Logger;
+using Models.DTO;
 using Models.Interfaces;
+using System.Security.Cryptography.X509Certificates;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 {
+    private protected LoggerImportDTO? LoggerImportDTO;
+
     private protected bool SkipNewOrg;              // Пропустить уведомления о добавлении новой организации
     private protected bool SkipInter;               // Пропускать уведомления и отменять импорт при пересечении дат
     private protected bool SkipLess;                // Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
@@ -53,7 +58,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region CheckAanswer
 
-    private async Task ChechAanswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
+    private async Task CheckAnswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
     {
         switch (an)
         {
@@ -61,21 +66,42 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 if (!doSomething)
                     first.Report_Collection.Add(it);
                 Act = "\t";
-                ServiceExtension.LoggerManager.Import(this);
+                LoggerImportDTO = new LoggerImportDTO
+                    {
+                        Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                        FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                        Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                        ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                    };
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
                 break;
             case "Сохранить оба":
                 if (!doSomething)
                     first.Report_Collection.Add(it);
                 Act = "Сохранены оба (пересечение)";
-                ServiceExtension.LoggerManager.Import(this);
+                LoggerImportDTO = new LoggerImportDTO
+                {
+                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                };
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO); 
                 IsFirstLogLine = false;
                 break;
             case "Заменить" or "Заменять все формы":
                 first.Report_Collection.Remove(elem);
                 first.Report_Collection.Add(it);
                 Act = "Замена (пересечение)";
-                ServiceExtension.LoggerManager.Import(this);
+                LoggerImportDTO = new LoggerImportDTO
+                {
+                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                };
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
                 break;
             case "Дополнить" when it != null && elem != null:
@@ -84,7 +110,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 it.Notes.AddRange<IKey>(0, elem.Notes);
                 first.Report_Collection.Add(it);
                 Act = "Дополнение (совпадение)";
-                ServiceExtension.LoggerManager.Import(this);
+                LoggerImportDTO = new LoggerImportDTO
+                {
+                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                };
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
                 break;
             case "Отменить для всех пересечений":
@@ -267,7 +300,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                         if (res is "Пропустить для всех") SkipLess = true;
                         Act = "не загружен (меньший № корр.)";
-                        ServiceExtension.LoggerManager.Import(this);
+                        LoggerImportDTO = new LoggerImportDTO
+                        {
+                            Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                            FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                            Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                            ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                        };
+                        ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                         IsFirstLogLine = false;
                         break;
                     }
@@ -314,7 +354,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                         #endregion
 
-                        await ChechAanswer(res, baseReps, baseRep, impRep);
+                        await CheckAnswer(res, baseReps, baseRep, impRep);
                         break;
                     }
 
@@ -409,7 +449,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         }
                     }
 
-                    await ChechAanswer(res, baseReps, baseRep, impRep);
+                    await CheckAnswer(res, baseReps, baseRep, impRep);
                     break;
 
                     #endregion
@@ -463,7 +503,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    await ChechAanswer(res, baseReps, null, impRep);
+                    await CheckAnswer(res, baseReps, null, impRep);
                     break;
                 }
 
@@ -586,7 +626,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
 
-            await ChechAanswer(res, baseReps, null, impRep);
+            await CheckAnswer(res, baseReps, null, impRep);
 
             #endregion
         }
@@ -681,7 +721,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     if (res == "Пропустить для всех") SkipLess = true;
                     Act = "не загружен (меньший № корр.)";
-                    ServiceExtension.LoggerManager.Import(this);
+                    LoggerImportDTO = new LoggerImportDTO
+                    {
+                        Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                        FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                        Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                        ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                    };
+                    ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                     IsFirstLogLine = false;
                     break;
                 }
@@ -727,7 +774,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    await ChechAanswer(res, baseReps, baseRep, impRep);
+                    await CheckAnswer(res, baseReps, baseRep, impRep);
                     break;
                 }
 
@@ -820,7 +867,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     }
                 }
 
-                await ChechAanswer(res, baseReps, baseRep, impRep);
+                await CheckAnswer(res, baseReps, baseRep, impRep);
                 break;
 
                 #endregion
@@ -855,6 +902,17 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     .ShowDialog(Desktop.MainWindow);
 
                 #endregion
+
+                Act = "не загружен (имп. орг. без форм)";
+                LoggerImportDTO = new LoggerImportDTO
+                {
+                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                };
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                IsFirstLogLine = false;
             }
 
             #endregion
@@ -940,7 +998,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
 
-            await ChechAanswer(res, baseReps, null, impRep);
+            await CheckAnswer(res, baseReps, null, impRep);
 
             #endregion
         }

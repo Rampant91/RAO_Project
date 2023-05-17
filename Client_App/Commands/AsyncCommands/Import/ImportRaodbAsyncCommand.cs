@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Models.Forms;
 using Client_App.Interfaces.Logger;
+using Models.DTO;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.Import;
@@ -31,7 +32,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         SkipReplace = false;
         HasMultipleReport = false;
 
-        foreach (var res in answer) //Для каждого импортируемого файла
+        foreach (var res in answer) // Для каждого импортируемого файла
         {
             if (res == "") continue;
             var file = GetRaoFileName();
@@ -44,7 +45,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
             }
 
-            foreach (var item in reportsCollection) //Для каждой импортируемой организации
+            foreach (var item in reportsCollection) // Для каждой импортируемой организации
             {
                 await item.SortAsync();
                 await RestoreReportsOrders(item);
@@ -65,7 +66,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 item.CleanIds();
                 ProcessIfNoteOrder0(item);
 
-                var impRepFormCount = item.Report_Collection.Count;
+                ImpRepFormCount = item.Report_Collection.Count;
                 BaseRepsOkpo = item.Master.OkpoRep.Value;
                 BaseRepsRegNum = item.Master.RegNoRep.Value;
                 BaseRepsShortName = item.Master.ShortJurLicoRep.Value;
@@ -101,7 +102,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
+                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -133,7 +134,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {impRepFormCount} форм отчетности." +
+                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -163,7 +164,15 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             ImpRepFormCount = rep.Rows.Count;
                             ImpRepStartPeriod = rep.StartPeriod_DB;
                             ImpRepEndPeriod = rep.EndPeriod_DB;
-                            ServiceExtension.LoggerManager.Import(this);
+                            Act = "\t";
+                            LoggerImportDTO = new LoggerImportDTO
+                            {
+                                Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                                FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                                Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                                ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                            };
+                            ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                             IsFirstLogLine = false;
                         }
 

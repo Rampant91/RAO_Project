@@ -10,7 +10,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
+using Models.DTO;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 
@@ -24,11 +26,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = { "xlsx", "XLSX" };
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
-        foreach (var res in answer)
+        foreach (var res in answer) // Для каждого импортируемого файла
         {
             if (res is "") continue;
-            var fileInfo = new FileInfo(res);
-            using ExcelPackage excelPackage = new(fileInfo);
+            SourceFile = new FileInfo(res);
+            using ExcelPackage excelPackage = new(SourceFile);
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
             var val = worksheet0.Name == "1.0"
                       && Convert.ToString(worksheet0.Cells["A3"].Value)
@@ -52,7 +54,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 ContentTitle = "Импорт из Excel",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
-                                    $"Не удалось импортировать данные из {fileInfo.FullName}." +
+                                    $"Не удалось импортировать данные из {SourceFile.FullName}." +
                                     $"{Environment.NewLine}Не соответствует формат данных!",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -273,6 +275,16 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 if (an is "Добавить" or "Да для всех")
                 {
                     baseReps.Report_Collection.Add(impRep);
+                    Act = "\t";
+                    LoggerImportDTO = new LoggerImportDTO
+                    {
+                        Act = Act, CorNum = impRep.CorrectionNumber_DB, CurrentLogLine = CurrentLogLine, EndPeriod = impRep.EndPeriod_DB,
+                        FormCount = impRep.Rows.Count, FormNum = impRep.FormNum_DB, StartPeriod = impRep.StartPeriod_DB,
+                        Okpo = baseReps.Master.OkpoRep.Value, OperationDate = OperationDate, RegNum = baseReps.Master.RegNoRep.Value,
+                        ShortName = baseReps.Master.ShortJurLicoRep.Value, SourceFileFullPath = SourceFile!.FullName, Year = impRep.Year_DB 
+                    };
+                    ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                    IsFirstLogLine = false;
                 }
 
                 #endregion
