@@ -22,6 +22,8 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        IsFirstLogLine = true;
+        CurrentLogLine = 1;
         string[] extensions = { "raodb", "RAODB" };
         var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
         if (answer is null) return;
@@ -162,9 +164,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             ImpRepCorNum = rep.CorrectionNumber_DB;
                             ImpRepFormCount = rep.Rows.Count;
+                            ImpRepFormNum = rep.FormNum_DB;
                             ImpRepStartPeriod = rep.StartPeriod_DB;
                             ImpRepEndPeriod = rep.EndPeriod_DB;
-                            Act = "\t";
+                            Act = "\t\t\t";
                             LoggerImportDTO = new LoggerImportDTO
                             {
                                 Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
@@ -174,6 +177,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             };
                             ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                             IsFirstLogLine = false;
+                            CurrentLogLine++;
                         }
 
                         #endregion

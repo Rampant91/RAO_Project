@@ -131,16 +131,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     cts.Cancel();
                     cts.Token.ThrowIfCancellationRequested();
                 }
-                if (fullPath!.EndsWith(".xlsx"))
-                {
-                    fullPath += ".xlsx";
-                }
-
-                if (File.Exists(fullPath))
+                if (File.Exists(fullPath + ".xlsx"))
                 {
                     try
                     {
-                        File.Delete(fullPath);
+                        File.Delete(fullPath!);
                     }
                     catch (Exception)
                     {

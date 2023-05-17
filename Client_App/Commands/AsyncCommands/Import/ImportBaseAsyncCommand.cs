@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using Client_App.Interfaces.Logger;
 using Models.DTO;
 using Models.Interfaces;
-using System.Security.Cryptography.X509Certificates;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -26,10 +24,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
 
-    private protected bool IsFirstLogLine = true;   // Это первая строчка в логгере ?
-    public int CurrentLogLine = 1;                  // Порядковый номер добавляемой формы в логгере для текущей операции
+    private protected bool IsFirstLogLine;   // Это первая строчка в логгере ?
+    public int CurrentLogLine;                  // Порядковый номер добавляемой формы в логгере для текущей операции
     public FileInfo? SourceFile;                    // Импортируемый файл
-    public string Act = "\t";                         // Действие с формой для логгера
+    public string Act = "\t\t\t";                   // Действие с формой для логгера
 
     public string BaseRepsOkpo = "";
     public string BaseRepsRegNum = "";
@@ -46,7 +44,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public string ImpRepFormNum = "";
     public string ImpRepStartPeriod = "";
     public string ImpRepEndPeriod = "";
-    public string ImpRepPeriod => $"{ImpRepStartPeriod} - {ImpRepEndPeriod}";
     public string ImpRepExpDate = "";
     public string ImpRepYear = "";
     public byte ImpRepCorNum;
@@ -58,14 +55,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region CheckAanswer
 
-    private async Task CheckAnswer(string an, Reports first, Report? elem = null, Report? it = null, bool doSomething = false)
+    private protected async Task CheckAnswer(string an, Reports first, Report? elem = null, Report? it = null, bool addToDB = true)
     {
         switch (an)
         {
-            case "Да" or "Да для всех":
-                if (!doSomething)
+            case "Да" or "Да для всех" or "Добавить":
+                if (addToDB)
                     first.Report_Collection.Add(it);
-                Act = "\t";
+                Act = "\t\t\t";
                 LoggerImportDTO = new LoggerImportDTO
                     {
                         Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
@@ -75,9 +72,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
+                CurrentLogLine++;
                 break;
             case "Сохранить оба":
-                if (!doSomething)
+                if (addToDB)
                     first.Report_Collection.Add(it);
                 Act = "Сохранены оба (пересечение)";
                 LoggerImportDTO = new LoggerImportDTO
@@ -89,11 +87,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO); 
                 IsFirstLogLine = false;
+                CurrentLogLine++;
                 break;
             case "Заменить" or "Заменять все формы":
                 first.Report_Collection.Remove(elem);
                 first.Report_Collection.Add(it);
-                Act = "Замена (пересечение)";
+                Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
                     Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
@@ -103,13 +102,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
+                CurrentLogLine++;
                 break;
             case "Дополнить" when it != null && elem != null:
                 first.Report_Collection.Remove(elem);
                 it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
                 it.Notes.AddRange<IKey>(0, elem.Notes);
                 first.Report_Collection.Add(it);
-                Act = "Дополнение (совпадение)";
+                Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
                     Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
@@ -119,6 +119,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
+                CurrentLogLine++;
                 break;
             case "Отменить для всех пересечений":
                 SkipInter = true;

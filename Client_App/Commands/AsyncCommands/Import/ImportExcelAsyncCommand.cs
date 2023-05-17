@@ -15,6 +15,7 @@ using Client_App.ViewModels;
 using Models.DTO;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Microsoft.Diagnostics.Runtime;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -23,6 +24,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        IsFirstLogLine = true;
+        CurrentLogLine = 1;
         string[] extensions = { "xlsx", "XLSX" };
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
@@ -83,6 +86,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
 
             var baseReps = await CheckReps(worksheet0);
+            BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
+            BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
+            BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
             var worksheet1 = excelPackage.Workbook.Worksheets[1];
             var repNumber = worksheet0.Name;
             var formNumber = worksheet1.Name;
@@ -148,7 +154,6 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         }
                 }
             }
-
             impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"D{worksheet1.Dimension.Rows - 1}"].Value);
             impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value);
             impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
@@ -180,6 +185,13 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 impRep.Notes.Add(newNote);
                 start++;
             }
+
+            ImpRepCorNum = impRep.CorrectionNumber_DB;
+            ImpRepEndPeriod = impRep.EndPeriod_DB;
+            ImpRepFormCount = impRep.Rows.Count;
+            ImpRepFormNum = impRep.FormNum_DB;
+            ImpRepStartPeriod = impRep.StartPeriod_DB;
+            ImpRepYear = impRep.Year_DB ?? "";
 
             SkipNewOrg = false;
             SkipInter = false;
@@ -226,11 +238,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
-                                    $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {impRep.FormNum_DB}." +
+                                    $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
                                     $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}" +
+                                    $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                    $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                     $"{Environment.NewLine}импортировать все новые организации.",
@@ -260,9 +272,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 ContentMessage =
                                     $"Будет добавлена новая организация ({repNumber})." +
                                     $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {baseReps.Master.RegNoRep.Value}" +
-                                    $"{Environment.NewLine}ОКПО - {baseReps.Master.OkpoRep.Value}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {baseReps.Master.ShortJurLicoRep.Value}",
+                                    $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                    $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -272,20 +284,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     }
                 }
 
-                if (an is "Добавить" or "Да для всех")
-                {
-                    baseReps.Report_Collection.Add(impRep);
-                    Act = "\t";
-                    LoggerImportDTO = new LoggerImportDTO
-                    {
-                        Act = Act, CorNum = impRep.CorrectionNumber_DB, CurrentLogLine = CurrentLogLine, EndPeriod = impRep.EndPeriod_DB,
-                        FormCount = impRep.Rows.Count, FormNum = impRep.FormNum_DB, StartPeriod = impRep.StartPeriod_DB,
-                        Okpo = baseReps.Master.OkpoRep.Value, OperationDate = OperationDate, RegNum = baseReps.Master.RegNoRep.Value,
-                        ShortName = baseReps.Master.ShortJurLicoRep.Value, SourceFileFullPath = SourceFile!.FullName, Year = impRep.Year_DB 
-                    };
-                    ServiceExtension.LoggerManager.Import(LoggerImportDTO);
-                    IsFirstLogLine = false;
-                }
+                await CheckAnswer(an, baseReps, null, impRep);
 
                 #endregion
             }
