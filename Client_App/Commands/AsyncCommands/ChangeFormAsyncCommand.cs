@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Client_App.VisualRealization.Long_Visual;
 using Models.Interfaces;
 using System.Reactive.Linq;
+using Client_App.Commands.AsyncCommands.SumRow;
 
 namespace Client_App.Commands.AsyncCommands;
 

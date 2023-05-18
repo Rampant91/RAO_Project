@@ -6,7 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.ViewModels;
