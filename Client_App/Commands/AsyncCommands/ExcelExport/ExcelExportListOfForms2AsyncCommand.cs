@@ -93,18 +93,18 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                 minYear = parseYear;
                 maxYear = parseYear;
             }
-            else if (res.Message.Length > 1)
+        }
+        else if (res.Message.Length > 5)
+        {
+            var firstResHalf = res.Message.Split('-')[0].Trim();
+            var secondResHalf = res.Message.Split('-')[1].Trim();
+            if(int.TryParse(firstResHalf, out var minYearParse) && minYearParse.ToString().Length == 4)
             {
-                var firstResHalf = res.Message.Split('-')[0].Trim();
-                var secondResHalf = res.Message.Split('-')[1].Trim();
-                if(int.TryParse(firstResHalf, out var minYearParse) && minYearParse.ToString().Length == 4)
-                {
-                    minYear = minYearParse;
-                }
-                if(int.TryParse(firstResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
-                {
-                    maxYear = maxYearParse;
-                }
+                minYear = minYearParse;
+            }
+            if(int.TryParse(firstResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
+            {
+                maxYear = maxYearParse;
             }
         }
 
@@ -156,11 +156,22 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         }
 
         var row = 2;
-        foreach (var reps in lst.OrderBy(x => x.Master_DB.RegNoRep.Value))
+        var repsList = lst
+            .OrderBy(x => x.Master_DB.RegNoRep.Value)
+            .ToList();
+        foreach (var reps in repsList)
         {
-            foreach (var rep in reps.Report_Collection
-                         .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => x.Year_DB))
+            var repList = reps.Report_Collection
+                .Where(x =>
+                {
+                    if (minYear == 0 && maxYear == 9999) return true;
+                    if (x.Year_DB.Length != 4 || !int.TryParse(x.Year_DB, out var currentRepsYear)) return false;
+                    return currentRepsYear >= minYear && currentRepsYear <= maxYear;
+                })
+                .OrderBy(x => x.FormNum_DB)
+                .ThenBy(x => x.Year_DB)
+                .ToList();
+            foreach (var rep in repList)
             {
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
@@ -171,7 +182,6 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                 row++;
             }
         }
-
         if (OperatingSystem.IsWindows()) 
         {
             Worksheet.Cells.AutoFitColumns();  // Под Astra Linux эта команда крашит программу без GDI дров

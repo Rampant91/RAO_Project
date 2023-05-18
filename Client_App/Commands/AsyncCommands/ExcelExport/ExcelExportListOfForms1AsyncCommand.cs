@@ -156,12 +156,12 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         }
 
         var row = 2;
-        var orderedReps = lst
+        var repsList = lst
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
             .ToList();
-        foreach (var reps in orderedReps)
+        foreach (var reps in repsList)
         {
-            var orderedRep = reps.Report_Collection
+            var repList = reps.Report_Collection
                 .Where(x =>
                 {
                     if (!DateTime.TryParse(x.EndPeriod_DB, out var repEndDateTime))
@@ -172,7 +172,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 .OrderBy(x => x.FormNum_DB)
                 .ThenBy(x => StringReverse(x.StartPeriod_DB))
                 .ToList();
-            foreach (var rep in orderedRep)
+            foreach (var rep in repList)
             {
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
@@ -185,7 +185,6 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 row++;
             }
         }
-
         if (OperatingSystem.IsWindows())
         {
             Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров

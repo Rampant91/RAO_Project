@@ -259,7 +259,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
             default:
             {
-                if (param.StartsWith('1'))
+                if (param.StartsWith('1') || param.StartsWith('2'))
                 {
                     try
                     {
@@ -276,16 +276,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         // ignored
                     }
                 }
-                else if (param.StartsWith('2'))
-                {
-                    var ty1 = (Form20)FormCreator.Create(param);
-                    ty1.NumberInOrder_DB = 1;
-                    var ty2 = (Form20)FormCreator.Create(param);
-                    ty2.NumberInOrder_DB = 2;
-                    Storage.Rows20.Add(ty1);
-                    Storage.Rows20.Add(ty2);
-                }
-
                 break;
             }
         }
