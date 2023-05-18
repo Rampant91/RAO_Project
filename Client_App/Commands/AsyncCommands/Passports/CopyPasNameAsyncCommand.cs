@@ -6,7 +6,7 @@ using Avalonia.Controls;
 using Client_App.Resources;
 using MessageBox.Avalonia.DTO;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Passports;
 
 //  Скопировать в буфер обмена уникальное имя паспорта
 internal class CopyPasNameAsyncCommand : BaseAsyncCommand

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Client_App.VisualRealization.Long_Visual;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Add;
 
 //  Создать и открыть новое окно формы для выбранной организации
 internal class AddFormAsyncCommand : BaseAsyncCommand

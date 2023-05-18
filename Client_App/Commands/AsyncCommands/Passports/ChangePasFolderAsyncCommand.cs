@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Passports;
 
 //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
 public class ChangePasFolderAsyncCommand : BaseAsyncCommand

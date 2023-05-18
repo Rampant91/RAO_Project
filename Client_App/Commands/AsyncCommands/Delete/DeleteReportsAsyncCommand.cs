@@ -7,7 +7,7 @@ using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Delete;
 
 //  Удалить выбранную организацию
 internal class DeleteReportsAsyncCommand : BaseAsyncCommand

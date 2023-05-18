@@ -6,7 +6,7 @@ using Models.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.SumRow;
 
 //  Отменяет группировку по наименованию в формах 2.1 и 2.2
 internal class CancelSumRowAsyncCommand : BaseAsyncCommand

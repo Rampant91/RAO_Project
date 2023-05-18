@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Add;
 
 //  Создать и открыть новое окно формы организации (1.0 и 2.0)
 internal class AddReportsAsyncCommand : BaseAsyncCommand

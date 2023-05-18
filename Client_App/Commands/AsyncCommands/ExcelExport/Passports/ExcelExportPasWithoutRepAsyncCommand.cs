@@ -15,7 +15,7 @@ using Models.Collections;
 using Models.Forms.Form1;
 using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
 //  Excel -> Паспорта -> Паспорта без отчетов
 public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
@@ -140,7 +140,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        
+
 
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
@@ -152,7 +152,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             foreach (var rep in form11)
             {
                 List<Form11> repPas = rep.Rows11
-                    .Where(x => x.OperationCode_DB is ("11" or "85") && categories.Contains(x.Category_DB))
+                    .Where(x => x.OperationCode_DB is "11" or "85" && categories.Contains(x.Category_DB))
                     .ToList();
                 foreach (var repForm in repPas)
                 {

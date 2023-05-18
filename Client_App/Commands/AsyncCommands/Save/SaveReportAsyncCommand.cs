@@ -3,7 +3,7 @@ using Models.Collections;
 using Models.DBRealization;
 using System.Threading.Tasks;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Save;
 
 //  Сохранить отчет
 internal class SaveReportAsyncCommand : BaseAsyncCommand
@@ -57,7 +57,14 @@ internal class SaveReportAsyncCommand : BaseAsyncCommand
             await Storages.Report_Collection.QuickSortAsync();
         }
         var dbm = StaticConfiguration.DBModel;
-        await dbm.SaveChangesAsync();
-        _ChangeOrCreateViewModel.IsCanSaveReportEnabled = false;
+        try
+        {
+            await dbm.SaveChangesAsync();
+            _ChangeOrCreateViewModel.IsCanSaveReportEnabled = false;
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }

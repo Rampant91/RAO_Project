@@ -4,23 +4,25 @@ using Models.Forms;
 using Models.Interfaces;
 using System.Threading.Tasks;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Add;
 
-//  Добавить примечание в форму
-internal class AddNoteAsyncCommand : BaseAsyncCommand
+// Добавить строку в форму
+internal class AddRowAsyncCommand : BaseAsyncCommand
 {
     private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
     private Report Storage => _ChangeOrCreateViewModel.Storage;
+    private string FormType => _ChangeOrCreateViewModel.FormType;
 
-    public AddNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
+    public AddRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
     {
         _ChangeOrCreateViewModel = changeOrCreateViewModel;
     }
 
     public override async Task AsyncExecute(object? parameter)
     {
-        Note nt = new() { Order = GetNumberInOrder(Storage.Notes) };
-        Storage.Notes.Add(nt);
+        var frm = FormCreator.Create(FormType);
+        frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
+        Storage[Storage.FormNum_DB].Add(frm);
         await Storage.SortAsync();
     }
 

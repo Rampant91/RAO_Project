@@ -1,23 +1,22 @@
 ﻿using Client_App.ViewModels;
 using Models.Collections;
+using Models.Interfaces;
+using ReactiveUI;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Models.Forms;
-using Models.Interfaces;
-using ReactiveUI;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Add;
 
-// Добавить N строк в форму
-internal class AddRowsAsyncCommand : BaseAsyncCommand
+//  Добавить N примечаний в форму
+internal class AddNotesAsyncCommand : BaseAsyncCommand
 {
     private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
     private Report Storage => _ChangeOrCreateViewModel.Storage;
-    private string FormType => _ChangeOrCreateViewModel.FormType;
     private Interaction<object, int> ShowDialog => _ChangeOrCreateViewModel.ShowDialog;
 
-    public AddRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
+    public AddNotesAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
     {
         _ChangeOrCreateViewModel = changeOrCreateViewModel;
     }
@@ -27,17 +26,14 @@ internal class AddRowsAsyncCommand : BaseAsyncCommand
         var t = await ShowDialog.Handle(Desktop.MainWindow);
         if (t > 0)
         {
-            var number = GetNumberInOrder(Storage.Rows);
-            var lst = new List<Form?>();
-            for (var i = 0; i < t; i++)
+            var r = GetNumberInOrder(Storage.Notes);
+            var lst = new List<Note?>();
+            for (var i = 0; i < t; i++, r++)
             {
-                var frm = FormCreator.Create(FormType);
-                frm.NumberInOrder_DB = number;
-                lst.Add(frm);
-                number++;
+                var note = new Note { Order = r };
+                lst.Add(note);
             }
-
-            Storage.Rows.AddRange(lst);
+            Storage.Notes.AddRange(lst);
         }
     }
 

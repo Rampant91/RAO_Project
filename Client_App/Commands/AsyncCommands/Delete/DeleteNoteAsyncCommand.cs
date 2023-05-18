@@ -7,7 +7,7 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Delete;
 
 //  Удалить выбранный комментарий
 internal class DeleteNoteAsyncCommand : BaseAsyncCommand
@@ -38,7 +38,7 @@ internal class DeleteNoteAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow); 
+            .ShowDialog(Desktop.MainWindow);
         #endregion
         if (answer is "Да")
         {

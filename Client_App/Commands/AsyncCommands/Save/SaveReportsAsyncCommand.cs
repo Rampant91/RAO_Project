@@ -2,7 +2,7 @@
 using Client_App.ViewModels;
 using Models.DBRealization;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Save;
 
 //  Сохраняет текущую базу, используется только для сохранения комментария формы
 internal class SaveReportsAsyncCommand : BaseAsyncCommand

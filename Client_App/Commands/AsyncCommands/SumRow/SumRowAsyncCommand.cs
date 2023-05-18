@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.SumRow;
 
 //  Группировка по наименованию в формах 2.1 и 2.2
 internal class SumRowAsyncCommand : BaseAsyncCommand
@@ -73,7 +73,7 @@ internal class SumRowAsyncCommand : BaseAsyncCommand
         {
             var sumRow = itemT.FirstOrDefault(x => x.Sum_DB);
 
-            if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
+            if (itemT.Count() > 1 && sumRow == null || itemT.Count() > 2 && sumRow != null)
             {
                 if (sumRow == null)
                 {
@@ -241,7 +241,7 @@ internal class SumRowAsyncCommand : BaseAsyncCommand
         Parallel.ForEach(tItems, itemT =>
         {
             var sumRow = itemT.FirstOrDefault(x => x.Sum_DB);
-            if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
+            if (itemT.Count() > 1 && sumRow == null || itemT.Count() > 2 && sumRow != null)
             {
                 if (sumRow == null)
                 {

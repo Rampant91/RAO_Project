@@ -10,7 +10,7 @@ using Models.Interfaces;
 using Client_App.ViewModels;
 using Models.Collections;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Delete;
 
 //  Удалить выбранные строчки из формы
 internal class DeleteRowsAsyncCommand : BaseAsyncCommand
@@ -44,7 +44,7 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow); 
+                    .ShowDialog(Desktop.MainWindow);
 
             #endregion
 
@@ -64,47 +64,47 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
                 switch ((rows.FirstOrDefault() as Form).FormNum_DB)
                 {
                     case "2.1":
-                    {
-                        var count = 1;
-                        foreach (var key in rows)
                         {
-                            var row = (Form21)key;
-                            row.NumberInOrder_DB = count;
-                            count++;
-                            row.NumberInOrderSum_DB = "";
-                            //row.NumberInOrderSum = new RamAccess<string>(null, "");   //выполняется 0.2c. на итерацию, вроде работает и с заменой выше
+                            var count = 1;
+                            foreach (var key in rows)
+                            {
+                                var row = (Form21)key;
+                                row.NumberInOrder_DB = count;
+                                count++;
+                                row.NumberInOrderSum_DB = "";
+                                //row.NumberInOrderSum = new RamAccess<string>(null, "");   //выполняется 0.2c. на итерацию, вроде работает и с заменой выше
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case "2.2":
-                    {
-                        var count = 1;
-                        foreach (var key in rows)
                         {
-                            var row = (Form22)key;
-                            row.NumberInOrder_DB = count;
-                            count++;
-                            row.NumberInOrderSum_DB = "";
+                            var count = 1;
+                            foreach (var key in rows)
+                            {
+                                var row = (Form22)key;
+                                row.NumberInOrder_DB = count;
+                                count++;
+                                row.NumberInOrderSum_DB = "";
+                            }
+                            break;
                         }
-                        break;
-                    }
                     default:
-                    {
-                        await Storage.SortAsync();
-                        var itemQ = Storage.Rows
-                            .GetEnumerable()
-                            .Where(x => x.Order > minItem)
-                            .Select(x => x as Form)
-                            .ToList();
-                        foreach (var form in itemQ)
                         {
-                            //form.SetOrder(minItem);   //выполняется полсекунды на итерацию, вроде работает и с заменой ниже
-                            form.NumberInOrder_DB = (int)minItem;
-                            form.NumberInOrder.OnPropertyChanged();
-                            minItem++;
+                            await Storage.SortAsync();
+                            var itemQ = Storage.Rows
+                                .GetEnumerable()
+                                .Where(x => x.Order > minItem)
+                                .Select(x => x as Form)
+                                .ToList();
+                            foreach (var form in itemQ)
+                            {
+                                //form.SetOrder(minItem);   //выполняется полсекунды на итерацию, вроде работает и с заменой ниже
+                                form.NumberInOrder_DB = (int)minItem;
+                                form.NumberInOrder.OnPropertyChanged();
+                                minItem++;
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
         }

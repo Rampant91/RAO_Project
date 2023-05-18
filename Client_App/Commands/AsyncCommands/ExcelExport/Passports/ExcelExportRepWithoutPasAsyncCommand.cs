@@ -12,13 +12,37 @@ using Models.Collections;
 using Models.Forms.Form1;
 using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
 //  Excel -> Паспорта -> Отчеты без паспортов
 public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        DirectoryInfo directory = new(BaseVM.PasFolderPath);
+        if (!directory.Exists)
+        {
+            #region MessageFailedToOpenPassportDirectory
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage =
+                        "Не удалось открыть сетевое хранилище паспортов:" +
+                        $"{Environment.NewLine}{directory.FullName}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+
+            return;
+        }
         var cts = new CancellationTokenSource();
         ExportType = "Отчеты без паспортов";
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
@@ -89,7 +113,6 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
         List<string> pasNames = new();
         List<string[]> pasUniqParam = new();
-        DirectoryInfo directory = new(BaseVM.PasFolderPath);
         List<FileInfo> files = new();
         try
         {

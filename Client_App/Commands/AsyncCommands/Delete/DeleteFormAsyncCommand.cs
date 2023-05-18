@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Delete;
 
 //  Удалить выбранную форму у выбранной организации
 internal class DeleteFormAsyncCommand : BaseAsyncCommand

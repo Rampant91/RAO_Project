@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Add;
 
 //  Добавить N строк в форму перед выбранной строкой
 internal class AddRowsInAsyncCommand : BaseAsyncCommand

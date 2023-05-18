@@ -94,7 +94,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                 maxYear = parseYear;
             }
         }
-        else if (res.Message.Length > 5)
+        else if (res.Message.Length > 4)
         {
             var firstResHalf = res.Message.Split('-')[0].Trim();
             var secondResHalf = res.Message.Split('-')[1].Trim();
@@ -102,7 +102,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             {
                 minYear = minYearParse;
             }
-            if(int.TryParse(firstResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
+            if(int.TryParse(secondResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
             {
                 maxYear = maxYearParse;
             }
@@ -165,7 +165,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                 .Where(x =>
                 {
                     if (minYear == 0 && maxYear == 9999) return true;
-                    if (x.Year_DB.Length != 4 || !int.TryParse(x.Year_DB, out var currentRepsYear)) return false;
+                    if (x.Year_DB?.Length != 4 || !int.TryParse(x.Year_DB, out var currentRepsYear)) return false;
                     return currentRepsYear >= minYear && currentRepsYear <= maxYear;
                 })
                 .OrderBy(x => x.FormNum_DB)
