@@ -88,22 +88,21 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         if (res.Button is null or "Отмена") return;
         var startDateTime = DateTime.MinValue;
         var endDateTime = DateTime.MaxValue;
-        try
+        if (res.Message != null)
         {
-            var firstPeriodHalf = res.Message.Split('-')[0].Trim();
-            var secondPeriodHalf = res.Message.Split('-')[1].Trim();
-            if (!DateTime.TryParse(firstPeriodHalf, out startDateTime) )
+            if (res.Message.Contains('-') && res.Message.Length > 6)
             {
-                startDateTime = DateTime.MinValue;
+                var firstPeriodHalf = res.Message.Split('-')[0].Trim();
+                var secondPeriodHalf = res.Message.Split('-')[1].Trim();
+                if (DateTime.TryParse(firstPeriodHalf, out var parseStartDateTime) )
+                {
+                    startDateTime = parseStartDateTime;
+                }
+                if (DateTime.TryParse(secondPeriodHalf, out var parseEndDateTime) )
+                {
+                    endDateTime = parseEndDateTime;
+                }
             }
-            if (!DateTime.TryParse(secondPeriodHalf, out endDateTime) )
-            {
-                endDateTime = DateTime.MaxValue;
-            }
-        }
-        catch
-        {
-            // ignored
         }
 
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
@@ -164,6 +163,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             var repList = reps.Report_Collection
                 .Where(x =>
                 {
+                    if (startDateTime == DateTime.MinValue && endDateTime == DateTime.MaxValue) return true;
                     if (!DateTime.TryParse(x.EndPeriod_DB, out var repEndDateTime))
                         repEndDateTime = DateTime.MaxValue;
                     return repEndDateTime >= startDateTime

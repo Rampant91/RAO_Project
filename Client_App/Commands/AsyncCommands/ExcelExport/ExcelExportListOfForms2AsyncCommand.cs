@@ -86,28 +86,31 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         if (res.Button is null or "Отмена") return;
         var minYear = 0;
         var maxYear = 9999;
-        if (!res.Message.Contains('-'))
+        if (res.Message != null)
         {
-            if (int.TryParse(res.Message, out var parseYear) && parseYear.ToString().Length == 4)
+            if (!res.Message.Contains('-'))
             {
-                minYear = parseYear;
-                maxYear = parseYear;
+                if (int.TryParse(res.Message, out var parseYear) && parseYear.ToString().Length == 4)
+                {
+                    minYear = parseYear;
+                    maxYear = parseYear;
+                }
+            }
+            else if (res.Message.Length > 4)
+            {
+                var firstResHalf = res.Message.Split('-')[0].Trim();
+                var secondResHalf = res.Message.Split('-')[1].Trim();
+                if(int.TryParse(firstResHalf, out var minYearParse) && minYearParse.ToString().Length == 4)
+                {
+                    minYear = minYearParse;
+                }
+                if(int.TryParse(secondResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
+                {
+                    maxYear = maxYearParse;
+                }
             }
         }
-        else if (res.Message.Length > 4)
-        {
-            var firstResHalf = res.Message.Split('-')[0].Trim();
-            var secondResHalf = res.Message.Split('-')[1].Trim();
-            if(int.TryParse(firstResHalf, out var minYearParse) && minYearParse.ToString().Length == 4)
-            {
-                minYear = minYearParse;
-            }
-            if(int.TryParse(secondResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
-            {
-                maxYear = maxYearParse;
-            }
-        }
-
+        
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
         (string fullPath, bool openTemp) result;
         try
