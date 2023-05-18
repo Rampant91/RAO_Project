@@ -164,10 +164,8 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 .Where(x =>
                 {
                     if (startDateTime == DateTime.MinValue && endDateTime == DateTime.MaxValue) return true;
-                    if (!DateTime.TryParse(x.EndPeriod_DB, out var repEndDateTime))
-                        repEndDateTime = DateTime.MaxValue;
-                    return repEndDateTime >= startDateTime
-                           && repEndDateTime <= endDateTime;
+                    if (!DateTime.TryParse(x.EndPeriod_DB, out var repEndDateTime)) return false;
+                    return repEndDateTime >= startDateTime && repEndDateTime <= endDateTime;
                 })
                 .OrderBy(x => x.FormNum_DB)
                 .ThenBy(x => StringReverse(x.StartPeriod_DB))
