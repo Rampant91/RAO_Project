@@ -139,16 +139,15 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 7].Value = "Номер";
 
         #endregion
-
-
-
+        
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
         foreach (var key in MainWindowVM.LocalReports.Reports_Collection10)
         {
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null);
+                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
+                .ToList();
             foreach (var rep in form11)
             {
                 List<Form11> repPas = rep.Rows11

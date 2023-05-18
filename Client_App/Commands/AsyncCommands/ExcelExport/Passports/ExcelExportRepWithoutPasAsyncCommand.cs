@@ -151,7 +151,8 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             var form11 = reps.Report_Collection
                 .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
                 .OrderBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB))
-                .ThenBy(x => x.NumberInOrder_DB);
+                .ThenBy(x => x.NumberInOrder_DB)
+                .ToList();
             foreach (var rep in form11)
             {
                 List<Form11> repPas = rep.Rows11
