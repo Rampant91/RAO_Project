@@ -116,11 +116,20 @@
     <Compile Update="Controls\DataGrid\DataGrids\DataGridReports.axaml.cs">
       <DependentUpon>DataGridReports.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Progress\OnStartProgressBarView.axaml.cs">
+      <DependentUpon>OnStartProgressBarView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\RowNumberIn.axaml.cs">
       <DependentUpon>RowNumberIn.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\RowNumber.axaml.cs">
       <DependentUpon>RowNumber.axaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\MainWindow2.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="State\NavigationForm\" />
   </ItemGroup>
 </Project>

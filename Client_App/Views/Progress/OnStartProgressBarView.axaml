@@ -6,10 +6,9 @@
 		Width="300"
 		Height="30"
 		WindowStartupLocation="CenterScreen"
-        x:Class="Client_App.Views.OnStartProgressBar"
-		HasSystemDecorations="False">
+        x:Class="Client_App.Views.Progress.OnStartProgressBarView">
 	<Panel>
-		<ProgressBar  Maximum="100" Minimum="0" Height="40" Value="{Binding OnStartProgressBar}"></ProgressBar>
+		<ProgressBar  Maximum="100" Minimum="0" Height="40"></ProgressBar>
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding LoadStatus}"/>
     </Panel>
 </Window>

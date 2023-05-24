@@ -264,82 +264,82 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     public async Task Init(OnStartProgressBarVM onStartProgressBarVm)
     {
-        onStartProgressBarVm.LoadStatus = "Поиск системной директории";
+        //onStartProgressBarVm.LoadStatus = "Поиск системной директории";
         OnStartProgressBar = 1;
         await GetSystemDirectory();
 
-        onStartProgressBarVm.LoadStatus = "Создание временных файлов";
+        //onStartProgressBarVm.LoadStatus = "Создание временных файлов";
         OnStartProgressBar = 5;
         await ProcessRaoDirectory();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка справочников";
+        //onStartProgressBarVm.LoadStatus = "Загрузка справочников";
         OnStartProgressBar = 10;
         await ProcessSpravochniks();
 
-        onStartProgressBarVm.LoadStatus = "Создание базы данных";
+        //onStartProgressBarVm.LoadStatus = "Создание базы данных";
         OnStartProgressBar = 15;
         await ProcessDataBaseCreate();
         
-        onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
+        //onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
         OnStartProgressBar = 20;
         var dbm = StaticConfiguration.DBModel;
 
         #region LoadTables
-        onStartProgressBarVm.LoadStatus = "Загрузка примечаний";
+        //onStartProgressBarVm.LoadStatus = "Загрузка примечаний";
         OnStartProgressBar = 22;
         await dbm.notes.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
         OnStartProgressBar = 24;
         await dbm.form_10.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.1";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.1";
         OnStartProgressBar = 26;
         await dbm.form_11.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.2";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.2";
         OnStartProgressBar = 28;
         await dbm.form_12.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.3";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.3";
         OnStartProgressBar = 30;
         await dbm.form_13.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.4";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.4";
         OnStartProgressBar = 32;
         await dbm.form_14.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.5";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.5";
         OnStartProgressBar = 34;
         await dbm.form_15.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.6";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.6";
         OnStartProgressBar = 36;
         await dbm.form_16.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.7";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.7";
         OnStartProgressBar = 38;
         await dbm.form_17.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.8";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.8";
         OnStartProgressBar = 40;
         await dbm.form_18.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.9";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.9";
         OnStartProgressBar = 42;
         await dbm.form_19.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
         OnStartProgressBar = 45;
         await dbm.form_20.LoadAsync();
         try
         {
 
-            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.1";
+            //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.1";
             OnStartProgressBar = 48;
             await dbm.form_21.LoadAsync();
 
-            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.2";
+            //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.2";
             OnStartProgressBar = 50;
             await dbm.form_22.LoadAsync();
         }
@@ -349,55 +349,55 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             dbm.form_22.Local.Clear();
         }
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.3";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.3";
         OnStartProgressBar = 52;
         await dbm.form_23.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.4";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.4";
         OnStartProgressBar = 54;
         await dbm.form_24.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.5";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.5";
         OnStartProgressBar = 56;
         await dbm.form_25.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.6";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.6";
         OnStartProgressBar = 58;
         await dbm.form_26.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.7";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.7";
         OnStartProgressBar = 60;
         await dbm.form_27.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.8";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.8";
         OnStartProgressBar = 62;
         await dbm.form_28.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.9";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.9";
         OnStartProgressBar = 64;
         await dbm.form_29.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.10";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.10";
         OnStartProgressBar = 66;
         await dbm.form_210.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.11";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.11";
         OnStartProgressBar = 68;
         await dbm.form_211.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.12";
+        //onStartProgressBarVm.LoadStatus = "Загрузка форм 2.12";
         OnStartProgressBar = 70;
         await dbm.form_212.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
+        //onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
         OnStartProgressBar = 72;
         await dbm.ReportCollectionDbSet.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
+        //onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
         OnStartProgressBar = 74;
         await dbm.ReportsCollectionDbSet.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
+        //onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
         OnStartProgressBar = 76;
         if (!dbm.DBObservableDbSet.Any())
         {
@@ -407,16 +407,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         await dbm.DBObservableDbSet.LoadAsync(); 
         #endregion
 
-        onStartProgressBarVm.LoadStatus = "Сортировка организаций";
+        //onStartProgressBarVm.LoadStatus = "Сортировка организаций";
         OnStartProgressBar = 80;
         await ProcessDataBaseFillEmpty(dbm);
 
-        onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
+        //onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
         OnStartProgressBar = 85;
         LocalReports = dbm.DBObservableDbSet.Local.First();
         await ProcessDataBaseFillNullOrder();
 
-        onStartProgressBarVm.LoadStatus = "Сохранение";
+        //onStartProgressBarVm.LoadStatus = "Сохранение";
         OnStartProgressBar = 90;
         await dbm.SaveChangesAsync();
         LocalReports.PropertyChanged += Local_ReportsChanged;

@@ -2,11 +2,10 @@ using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Client_App.Views;
 using System.Threading;
 using Avalonia.Controls;
+using Client_App.Views.Progress;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using MessageBox.Avalonia.Enums;
 
 namespace Client_App;
@@ -42,7 +41,7 @@ public class App : Application
                 #endregion
                 Environment.Exit(0);
             }
-            desktop.MainWindow = new OnStartProgressBar();
+            desktop.MainWindow = new OnStartProgressBarView();
         }
         base.OnFrameworkInitializationCompleted();
     }
