@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
+using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels;
 using Models.Collections;
 
@@ -14,20 +15,36 @@ public class Navigator : INotifyPropertyChanged, INavigator
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     #endregion
 
-    #region CurrentViewModel
+    #region CurrentVM
 
-    private BaseVM _currentViewModel;
-    public BaseVM CurrentViewModel
+    private BaseVM _currentVM;
+    public BaseVM CurrentVM
     {
-        get => _currentViewModel;
+        get => _currentVM;
         set
         {
-            _currentViewModel = value;
-            OnPropertyChanged(nameof(CurrentViewModel));
+            _currentVM = value;
+            OnPropertyChanged(nameof(CurrentVM));
+        }
+    }
+
+    #endregion
+
+    #region FormType
+
+    private ViewType _FormType = ViewType.Oper;
+    public ViewType FormType
+    {
+        get => _FormType;
+        set
+        {
+            _FormType = value;
+            //new UpdateCurrentVMCommand();
+            //OnPropertyChanged(nameof(IsForm1));
         }
     }
 
@@ -51,5 +68,5 @@ public class Navigator : INotifyPropertyChanged, INavigator
 
     #endregion
 
-    public ICommand UpdateCurrentViewModelCommand => null;//new UpdateCurrentViewModelCommand(this, ((OperReportsViewModel)_currentViewModel)._mainWindowViewModel);
+    public ICommand UpdateCurrentViewModelCommand => new UpdateCurrentVMCommand(this, ((OperReportsVM)_currentVM).MainWindow2VM);
 }

@@ -9,10 +9,11 @@ using MessageBox.Avalonia.Models;
 using OfficeOpenXml;
 using System.IO;
 using System.Threading;
+using ReactiveUI;
 
 namespace Client_App.ViewModels;
 
-public class BaseVM
+public class BaseVM : ReactiveObject
 {
     internal static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
 

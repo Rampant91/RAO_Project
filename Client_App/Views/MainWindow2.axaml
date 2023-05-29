@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Client_App.ViewModels"
         xmlns:v="Client_App.Views"
+        xmlns:valueConverters="clr-namespace:Client_App.Resources.ValueConverters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         MinHeight="200" MinWidth="200"
         d:DataContext="{d:DesignInstance Type=vm:MainWindow2VM}"
@@ -85,11 +86,16 @@
         </Grid>
         <Grid Grid.Row="1">
             <TabControl>
-                <TabItem Header="Формы 1" VerticalContentAlignment="Center">
-                    <ContentControl Content="{Binding Navigator.CurrentViewModel}"/>
+                <TabControl.Resources>
+                    <valueConverters:BooleanToViewTypeConverter x:Key="BooleanToViewTypeConverter" />
+                </TabControl.Resources>
+                <TabItem Header="Формы 1" x:Name="Forms1" VerticalContentAlignment="Center" 
+                         DataContext="{Binding MainWindowTabs[0]}">
+                    <ContentControl Content="{Binding Path=v.OperReportsView}"/>
                 </TabItem>
-                <TabItem Header="Формы 2" VerticalContentAlignment="Center">
-                    <TextBlock Text="I am in the circle page !" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <TabItem Header="Формы 2" x:Name="Forms2" VerticalContentAlignment="Center"
+                         DataContext="{Binding MainWindowTabs[1]}">
+                    <ContentControl Content="{Binding Path=v.AnnualReportsView}"/>
                 </TabItem>
             </TabControl>
         </Grid>

@@ -14,7 +14,7 @@ public enum ViewType
 
 public interface INavigator
 {
-    BaseVM CurrentViewModel { get; set; }
+    BaseVM CurrentVM { get; set; }
 
     List<Report>? ReportStorage { get; set; }
 
