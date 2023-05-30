@@ -11,6 +11,8 @@ using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -104,9 +106,10 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        if (OperatingSystem.IsWindows()) Worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров
+        if (OperatingSystem.IsWindows()) Worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров      
 
         var listSortRep = new List<ReportForSort>();
+
         foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
@@ -127,6 +130,26 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                 });
             }
         }
+
+        var list2 = MainWindowVM.LocalReports.Reports_Collection
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var start) && DateTime.TryParse(rep.EndPeriod_DB, out var end))
+                .Select(rep =>
+                {
+                    var start = DateTime.Parse(rep.StartPeriod_DB);
+                    var end = DateTime.Parse(rep.EndPeriod_DB);
+                    return new ReportForSort
+                        {
+                            RegNoRep = reps.Master_DB.RegNoRep.Value ?? "",
+                            OkpoRep = reps.Master_DB.OkpoRep.Value ?? "",
+                            FormNum = rep.FormNum_DB,
+                            StartPeriod = start,
+                            EndPeriod = end,
+                            ShortYr = reps.Master_DB.ShortJurLicoRep.Value
+                        };
+                })
+            )
+            .ToList();    
 
         listSortRep = listSortRep
             .OrderBy(x => x.RegNoRep)

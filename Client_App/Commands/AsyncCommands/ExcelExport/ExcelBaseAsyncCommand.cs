@@ -106,7 +106,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             case "Открыть временную копию":
             {
-                DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(BaseVM.SystemDirectory, "RAO"), "temp"));
+                DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
                 var count = 0;
                 do
                 {
@@ -186,38 +186,30 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         foreach (var item in forms)
         {
-            var findReports = MainWindowVM.LocalReports.Reports_Collection
-                .Where(t => t.Report_Collection.Contains(item));
-            var reps = findReports.FirstOrDefault();
+            var reps = MainWindowVM.LocalReports.Reports_Collection
+                .Where(t => t.Report_Collection.Contains(item))
+                .FirstOrDefault();
             if (reps is null) continue;
-            IEnumerable<IKey> t = null;
+            IEnumerable<IKey> t;
             switch (param)
             {
                 case "2.1":
-                {
                     t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
                     if (item[param].ToList<IKey>().Any() && !t.Any())
                     {
                         t = item[param].ToList<IKey>();
                     }
-
                     break;
-                }
                 case "2.2":
-                {
                     t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
                     if (item[param].ToList<IKey>().Any() && !t.Any())
                     {
                         t = item[param].ToList<IKey>();
                     }
-
                     break;
-                }
-            }
-
-            if (param != "2.1" && param != "2.2")
-            {
-                t = item[param].ToList<IKey>();
+                default:
+                    t = item[param].ToList<IKey>();
+                    break;
             }
 
             var lst = t.Any()
@@ -226,7 +218,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             if (lst.Count <= 0) continue;
             var count = startRow;
             startRow--;
-            foreach (var it in lst.Where(it => it != null).OrderBy(x => x.Order))
+            lst = lst
+                .Where(it => it != null)
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var it in lst)
             {
                 switch (it)
                 {

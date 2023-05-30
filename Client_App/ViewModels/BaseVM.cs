@@ -86,7 +86,7 @@ public class BaseVM
         {
             case "Открыть временную копию":
                 {
-                    DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(SystemDirectory, "RAO"), "temp"));
+                    DirectoryInfo tmpFolder = new(Path.Combine(SystemDirectory, "RAO", "temp"));
                     var count = 0;
                     do
                     {
