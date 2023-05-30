@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -108,34 +103,12 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         if (OperatingSystem.IsWindows()) Worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров      
 
-        var listSortRep = new List<ReportForSort>();
-
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
-        {
-            var item = (Reports)key;
-            if (item.Master_DB.FormNum_DB.Split('.')[0] != "1") continue;
-            foreach (var key1 in item.Report_Collection)
-            {
-                var rep = (Report)key1;
-                if (!DateTime.TryParse(rep.StartPeriod_DB, out var start)
-                    || !DateTime.TryParse(rep.EndPeriod_DB, out var end)) continue;
-                listSortRep.Add(new ReportForSort
-                {
-                    RegNoRep = item.Master_DB.RegNoRep.Value ?? "",
-                    OkpoRep = item.Master_DB.OkpoRep.Value ?? "",
-                    FormNum = rep.FormNum_DB,
-                    StartPeriod = start,
-                    EndPeriod = end,
-                    ShortYr = item.Master_DB.ShortJurLicoRep.Value
-                });
-            }
-        }
-
-        var list2 = MainWindowVM.LocalReports.Reports_Collection
+        var listSortRep = MainWindowVM.LocalReports.Reports_Collection
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var start) && DateTime.TryParse(rep.EndPeriod_DB, out var end))
                 .Select(rep =>
                 {
+                    if (true);
                     var start = DateTime.Parse(rep.StartPeriod_DB);
                     var end = DateTime.Parse(rep.EndPeriod_DB);
                     return new ReportForSort
@@ -149,14 +122,12 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                         };
                 })
             )
-            .ToList();    
-
-        listSortRep = listSortRep
             .OrderBy(x => x.RegNoRep)
             .ThenBy(x => x.FormNum)
             .ThenBy(x => x.StartPeriod)
             .ThenBy(x => x.EndPeriod)
             .ToList();
+
         var row = 2;
         for (var i = 0; i < listSortRep.Count; i++)
         {
