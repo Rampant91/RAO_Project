@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,6 +10,8 @@ using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -105,7 +109,8 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         var listSortRep = MainWindowVM.LocalReports.Reports_Collection
             .SelectMany(reps => reps.Report_Collection
-                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var start) && DateTime.TryParse(rep.EndPeriod_DB, out var end))
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var start)
+                              && DateTime.TryParse(rep.EndPeriod_DB, out var end))
                 .Select(rep =>
                 {
                     if (true);
@@ -127,8 +132,62 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             .ThenBy(x => x.StartPeriod)
             .ThenBy(x => x.EndPeriod)
             .ToList();
-
+       
         var row = 2;
+        var isNext2 = true;
+        Enumerable
+            .Range(0, listSortRep.Count - 1)
+            .SelectMany(i => Enumerable.Range(i + 1, listSortRep.Count - i - 1),
+                (i, j) => Tuple.Create(listSortRep[i], listSortRep[j]))
+            .ToList()
+            .Where(x => x.Item1.RegNoRep == x.Item2.RegNoRep
+                        && x.Item1.OkpoRep == x.Item2.OkpoRep
+                        && x.Item1.FormNum == x.Item2.FormNum)
+            .ToList()
+            .ForEach(x =>
+            {
+                var rep = x.Item1;
+                var repToCompare = x.Item2;
+                var repStart = rep.StartPeriod;
+                var repEnd = rep.EndPeriod;
+                var repToCompareStart = repToCompare.StartPeriod;
+                var repToCompareEnd = repToCompare.EndPeriod;
+                var minEndDate = repEnd < repToCompareEnd
+                    ? repEnd
+                    : repToCompareEnd;
+                if (repStart < repToCompareEnd && repEnd > repToCompareStart)
+                {
+                    Worksheet.Cells[row, 1].Value = rep.RegNoRep;
+                    Worksheet.Cells[row, 2].Value = rep.OkpoRep;
+                    Worksheet.Cells[row, 3].Value = rep.ShortYr;
+                    Worksheet.Cells[row, 4].Value = rep.FormNum;
+                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
+                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
+                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
+                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
+                    Worksheet.Cells[row, 9].Value = $"{repToCompareStart.ToShortDateString()}-{minEndDate.ToShortDateString()}";
+                    Worksheet.Cells[row, 10].Value = "пересечение";
+                    row++;
+                }
+                else if (isNext2 && repEnd < repToCompareStart)
+                {
+                    Worksheet.Cells[row, 1].Value = rep.RegNoRep;
+                    Worksheet.Cells[row, 2].Value = rep.OkpoRep;
+                    Worksheet.Cells[row, 3].Value = rep.ShortYr;
+                    Worksheet.Cells[row, 4].Value = rep.FormNum;
+                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
+                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
+                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
+                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
+                    Worksheet.Cells[row, 9].Value = $"{repEnd.ToShortDateString()}-{repToCompareStart.ToShortDateString()}";
+                    Worksheet.Cells[row, 10].Value = "разрыв";
+                    row++;
+                }
+                isNext2 = false;
+            });
+
+
+        //var row = 2;
         for (var i = 0; i < listSortRep.Count; i++)
         {
             var rep = listSortRep[i];
