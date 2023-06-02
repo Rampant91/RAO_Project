@@ -33,6 +33,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
+        atLeastOneImportDone = false;
 
         foreach (var res in answer) // Для каждого импортируемого файла
         {
@@ -202,13 +203,13 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
+        var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
+                ? "а"
+                : "ов";
         if (atLeastOneImportDone)
         {
             #region MessageImportDone
-
-            var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
-                ? "а"
-                : "ов";
+            
             await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
@@ -216,6 +217,25 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     ContentTitle = "Импорт из .raodb",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Импорт из файл{suffix} .raodb успешно завершен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+        }
+        else
+        {
+            #region MessageImportCancel
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт из файл{suffix} .raodb был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
