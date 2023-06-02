@@ -23,9 +23,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected bool SkipNew;                 // Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
+    private protected bool atLeastOneImportDone;    // Не отменена хотя бы одна операция импорта файлов/организаций/форм
 
-    private protected bool IsFirstLogLine;   // Это первая строчка в логгере ?
-    public int CurrentLogLine;                  // Порядковый номер добавляемой формы в логгере для текущей операции
+    private protected bool IsFirstLogLine;          // Это первая строчка в логгере ?
+    public int CurrentLogLine;                      // Порядковый номер добавляемой формы в логгере для текущей операции
     public FileInfo? SourceFile;                    // Импортируемый файл
     public string Act = "\t\t\t";                   // Действие с формой для логгера
 
@@ -53,7 +54,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         ? DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")
         : "\t\t";
 
-    #region CheckAanswer
+    #region CheckAnswer
 
     private protected async Task CheckAnswer(string an, Reports first, Report? elem = null, Report? it = null, bool addToDB = true)
     {
@@ -61,7 +62,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         {
             case "Да" or "Да для всех" or "Добавить":
                 if (addToDB)
+                {
                     first.Report_Collection.Add(it);
+                    atLeastOneImportDone = true;
+                }
                 Act = "\t\t\t";
                 LoggerImportDTO = new LoggerImportDTO
                     {
@@ -76,14 +80,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 break;
             case "Сохранить оба":
                 if (addToDB)
+                {
                     first.Report_Collection.Add(it);
+                    atLeastOneImportDone = true;
+                }
                 Act = "Сохранены оба (пересечение)";
                 LoggerImportDTO = new LoggerImportDTO
                 {
-                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                    Act = Act,
+                    CorNum = ImpRepCorNum,
+                    CurrentLogLine = CurrentLogLine,
+                    EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount,
+                    FormNum = ImpRepFormNum,
+                    StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo,
+                    OperationDate = OperationDate,
+                    RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName,
+                    SourceFileFullPath = SourceFile!.FullName,
+                    Year = ImpRepYear
                 };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO); 
                 IsFirstLogLine = false;
@@ -92,13 +108,23 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             case "Заменить" or "Заменять все формы":
                 first.Report_Collection.Remove(elem);
                 first.Report_Collection.Add(it);
+                atLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
-                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                    Act = Act,
+                    CorNum = ImpRepCorNum,
+                    CurrentLogLine = CurrentLogLine,
+                    EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount,
+                    FormNum = ImpRepFormNum,
+                    StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo,
+                    OperationDate = OperationDate,
+                    RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName,
+                    SourceFileFullPath = SourceFile!.FullName,
+                    Year = ImpRepYear
                 };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
@@ -109,13 +135,23 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
                 it.Notes.AddRange<IKey>(0, elem.Notes);
                 first.Report_Collection.Add(it);
+                atLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
-                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                    Act = Act,
+                    CorNum = ImpRepCorNum,
+                    CurrentLogLine = CurrentLogLine,
+                    EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount,
+                    FormNum = ImpRepFormNum,
+                    StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo,
+                    OperationDate = OperationDate,
+                    RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName,
+                    SourceFileFullPath = SourceFile!.FullName,
+                    Year = ImpRepYear
                 };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;

@@ -10,12 +10,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
-using Models.DTO;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Microsoft.Diagnostics.Runtime;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -288,9 +285,32 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                 #endregion
             }
+        }
 
-            var dbm = StaticConfiguration.DBModel;
-            await dbm.SaveChangesAsync();
+        await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+        await StaticConfiguration.DBModel.SaveChangesAsync();
+
+        if (atLeastOneImportDone)
+        {
+            #region MessageImportDone
+
+            var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
+                ? "а"
+                : "ов";
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт из файл{suffix} .xlsx успешно завершен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
         }
     }
 
