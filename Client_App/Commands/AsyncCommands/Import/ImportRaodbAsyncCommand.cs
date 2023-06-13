@@ -14,14 +14,23 @@ using Models.Forms;
 using Client_App.Interfaces.Logger;
 using Models.DTO;
 using static Client_App.Resources.StaticStringMethods;
+using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
 internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
+    private MainWindowVM _mainWindowVM;
+
+    public ImportRaodbAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+    }
+
     public override async Task AsyncExecute(object? parameter)
     {
+        _mainWindowVM.IsBusy = true;
         IsFirstLogLine = true;
         CurrentLogLine = 1;
         string[] extensions = { "raodb", "RAODB" };
@@ -126,26 +135,29 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             #region MessageNewOrg
 
-                            an = await MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions = new[]
+                            await Dispatcher.UIThread.InvokeAsync(async () =>
+                            {
+                                an = await MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                     {
-                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    },
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow);
+                                        ButtonDefinitions = new[]
+                                        {
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        },
+                                        ContentTitle = "Импорт из .raodb",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow);
+                            });
 
                             #endregion
                         }
@@ -203,25 +215,30 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
+        _mainWindowVM.IsBusy = false;
+
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
                 : "ов";
         if (atLeastOneImportDone)
         {
             #region MessageImportDone
-            
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из файл{suffix} .raodb успешно завершен.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow);
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Импорт из .raodb",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Импорт из файл{suffix} .raodb успешно завершен.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow);
+            });
 
             #endregion
         }
@@ -229,18 +246,21 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportCancel
 
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из файл{suffix} .raodb был отменен.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Импорт из .raodb",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Импорт из файл{suffix} .raodb был отменен.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow);
+            });
 
             #endregion
         }

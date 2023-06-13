@@ -17,7 +17,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
@@ -32,7 +31,7 @@ using Client_App.Commands.AsyncCommands.Save;
 
 namespace Client_App.ViewModels;
 
-public class MainWindowVM : BaseVM, INotifyPropertyChanged
+public class MainWindowVM : BaseVM
 {
     #region Current_Db
 
@@ -503,7 +502,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExportReports = new ExportReportsAsyncCommand();
         ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand(this);
         ImportExcel = new ImportExcelAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand();
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
         SaveReports = new SaveReportsAsyncCommand();
     }
 
@@ -513,17 +512,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     public static Interaction<ChangeOrCreateVM, object> ShowDialog  { get; } = new();
     public static Interaction<List<string>, string> ShowMessage { get; } = new();
-
-    #endregion
-
-    #region INotifyPropertyChanged
-
-    private protected void OnPropertyChanged([CallerMemberName] string prop = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 }

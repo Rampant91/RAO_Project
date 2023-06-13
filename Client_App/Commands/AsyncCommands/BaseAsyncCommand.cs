@@ -28,12 +28,13 @@ public abstract class BaseAsyncCommand : BaseCommand
         return !_isExecute;
     }
 
-    public override async void Execute(object? parameter)
+    public override void Execute(object? parameter)
     {
         IsExecute = true;
         try
         {
-            await AsyncExecute(parameter);
+             Task.Factory.StartNew(() => AsyncExecute(parameter));
+             //await AsyncExecute(parameter);
         }
         catch (Exception e)
         {

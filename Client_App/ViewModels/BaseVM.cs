@@ -9,10 +9,12 @@ using MessageBox.Avalonia.Models;
 using OfficeOpenXml;
 using System.IO;
 using System.Threading;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Client_App.ViewModels;
 
-public class BaseVM
+public class BaseVM : INotifyPropertyChanged
 {
     internal static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
 
@@ -27,9 +29,17 @@ public class BaseVM
     internal static string RaoDirectory = "";
 
     internal static string TmpDirectory = "";
+    private bool _isBusy;
 
-    private bool _IsBusy;
-    public bool IsBusy { get; set; }
+    internal bool IsBusy
+    {
+        get { return _isBusy; }
+        set
+        {
+            _isBusy = value;
+            OnPropertyChanged();
+        }
+    }
 
     //  Запускает баш скрипт с введенной командой
     private protected async Task<string?> RunCommandInBush(string command)
@@ -232,6 +242,17 @@ public class BaseVM
             }
         }
     }
+
+    #endregion
+
+    #region INotifyPropertyChanged
+
+    private protected void OnPropertyChanged([CallerMemberName] string prop = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 }
