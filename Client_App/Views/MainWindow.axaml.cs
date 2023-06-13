@@ -14,6 +14,8 @@ using Client_App.ViewModels;
 using Client_App.VisualRealization.Short_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Interfaces;
+using System.Reactive.Linq;
+using System.Reactive.Disposables;
 
 namespace Client_App.Views;
 
@@ -46,9 +48,24 @@ public class MainWindow : ReactiveWindow<MainWindowVM>
     }
     public MainWindow()
     {
+        this.WhenActivated((CompositeDisposable disposable) =>
+        {
+            ViewModel
+            .WhenAnyValue(x => x.IsBusy)
+            .Do(UpdateCursor)
+            .Subscribe()
+            .DisposeWith(disposable);
+        });
+        
         DataContext = new MainWindowVM();
         Init();
     }
+
+    private void UpdateCursor (bool show)
+    {
+        Cursor = show ? new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Wait) : Avalonia.Input.Cursor.Default;
+    }
+
     private void Init()
     {
         InitializeComponent();

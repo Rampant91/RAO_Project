@@ -7,6 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         MinHeight="200" MinWidth="200"
         x:Class="Client_App.Views.MainWindow"
+		Cursor ="{Binding Cursor}"
         Icon="/Assets/logo.png"
         Title="{Binding Current_Db}"
         x:Name="MainWindow"

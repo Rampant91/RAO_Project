@@ -28,6 +28,9 @@ public class BaseVM
 
     internal static string TmpDirectory = "";
 
+    private bool _IsBusy;
+    public bool IsBusy { get; set; }
+
     //  Запускает баш скрипт с введенной командой
     private protected async Task<string?> RunCommandInBush(string command)
     {
