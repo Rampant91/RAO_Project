@@ -12,7 +12,6 @@ using Spravochniki;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -40,14 +39,7 @@ public class MainWindowVM : BaseVM
     public string Current_Db
     {
         get => _current_Db;
-        set
-        {
-            if (_current_Db != value)
-            {
-                _current_Db = value;
-                OnPropertyChanged();
-            }
-        }
+        set => this.RaiseAndSetIfChanged(ref _current_Db, value);
     }
 
     #endregion
@@ -418,15 +410,15 @@ public class MainWindowVM : BaseVM
         onStartProgressBarVm.LoadStatus = "Сохранение";
         OnStartProgressBar = 90;
         await dbm.SaveChangesAsync();
-        LocalReports.PropertyChanged += Local_ReportsChanged;
+        //LocalReports.PropertyChanged += Local_ReportsChanged;
 
         OnStartProgressBar = 100;
     }
 
-    private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
-    {
-        OnPropertyChanged(nameof(LocalReports));
-    }
+    //private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
+    //{
+    //    OnPropertyChanged(nameof(LocalReports));
+    //}
 
     #endregion
 
@@ -437,12 +429,7 @@ public class MainWindowVM : BaseVM
     public double OnStartProgressBar
     {
         get => _OnStartProgressBar;
-        private set
-        {
-            if (_OnStartProgressBar.Equals(value)) return;
-            _OnStartProgressBar = value;
-            OnPropertyChanged();
-        }
+        private set => this.RaiseAndSetIfChanged(ref _OnStartProgressBar, value);
     }
 
     #endregion
