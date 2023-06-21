@@ -14,47 +14,57 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Выбранная организация -> Все формы
-public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
+//  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
+public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 {
-    private Reports _SelectedReports;
+    private Reports CurrentReports;
 
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Выбранная организация_Все формы";
+        var isSelectedOrg = parameter is "SelectedOrg";
+        string fileName;
         var mainWindow = Desktop.MainWindow as MainWindow;
-        var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
-        if (selectedReports is null || !selectedReports.Report_Collection.Any())
+        if (isSelectedOrg)
         {
-            #region MessageExcelExportFail
+            var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
+            if (selectedReports is null || !selectedReports.Report_Collection.Any())
+            {
+                #region MessageExcelExportFail
 
-            var msg = "Выгрузка не выполнена, поскольку ";
-            msg += _SelectedReports is null
-                ? "не выбрана организация."
-                : "у выбранной организации отсутствуют формы отчетности.";
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = msg,
-                    MinHeight = 125,
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(mainWindow);
+                var msg = "Выгрузка не выполнена, поскольку ";
+                msg += CurrentReports is null
+                    ? "не выбрана организация."
+                    : "у выбранной организации отсутствуют формы отчетности.";
+                await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = msg,
+                        MinHeight = 125,
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(mainWindow);
 
-            #endregion
+                #endregion
 
-            return;
+                return;
+            }
+            CurrentReports = selectedReports;
+            ExportType = "Выбранная организация_Все формы";
+            var regNum = RemoveForbiddenChars(CurrentReports.Master.RegNoRep.Value);
+            var okpo = RemoveForbiddenChars(CurrentReports.Master.OkpoRep.Value);
+            fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.DbFileName}_{BaseVM.Version}";
         }
-        _SelectedReports = selectedReports;
-
-        var regNum = RemoveForbiddenChars(_SelectedReports.Master.RegNoRep.Value);
-        var okpo = RemoveForbiddenChars(_SelectedReports.Master.OkpoRep.Value);
-        var fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
+        else
+        {
+            ExportType = "Все формы";
+            fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        }
+        
         (string fullPath, bool openTemp) result;
         try
         {
@@ -76,20 +86,40 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        HashSet<string> formNums = new();
-        foreach (var key in _SelectedReports.Report_Collection)
+
+        var repsList = new List<Reports>();
+        var orderedReportsCollection = MainWindowVM.LocalReports.Reports_Collection
+                .OrderBy(x => x.Master.RegNoRep.Value)
+                .ToList();
+        if (isSelectedOrg)
         {
-            var rep = (Report)key;
+            repsList.Add(CurrentReports);
+        }
+        else
+        {
+            repsList.AddRange(orderedReportsCollection);
+        }
+        HashSet<string> formNums = new();
+        foreach (var rep in repsList
+                     .SelectMany(reps => reps.Report_Collection)
+                     .ToList())
+        {
             formNums.Add(rep.FormNum_DB);
         }
-
+        
         foreach (var formNum in formNums)
         {
             Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
             WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
-            FillExportForms(formNum);
         }
-
+        foreach (var reps in repsList)
+        {
+            CurrentReports = reps;
+            foreach (var formNum in formNums)
+            {
+                FillExportForms(formNum);
+            }
+        }
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
 
@@ -207,7 +237,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -329,7 +359,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -450,7 +480,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -573,7 +603,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -699,7 +729,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -830,7 +860,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -969,7 +999,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1108,7 +1138,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1225,7 +1255,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1335,7 +1365,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1451,7 +1481,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1557,7 +1587,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1660,7 +1690,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1760,7 +1790,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1852,7 +1882,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -1937,7 +1967,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -2023,7 +2053,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -2108,7 +2138,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -2197,7 +2227,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -2288,7 +2318,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection
@@ -2376,7 +2406,7 @@ public class ExcelExportSelectedOrgAllAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var tmp = 2;
-        List<Reports> repList = new() { _SelectedReports };
+        List<Reports> repList = new() { CurrentReports };
         foreach (var reps in repList)
         {
             var form = reps.Report_Collection

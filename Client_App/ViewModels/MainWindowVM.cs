@@ -457,6 +457,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ChangeReports { get; set; }                 //  Изменить Формы организации (1.0 и 2.0)
     public ICommand DeleteForm { get; set; }                    //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                 //  Удалить выбранную организацию
+    public ICommand ExcelExportAll { get; set; }                //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
     public ICommand ExcelExportFormAnalysis { get; set; }       //  Выбранная форма -> Выгрузка Excel -> Для анализа
     public ICommand ExcelExportFormPrint { get; set; }          //  Выбранная форма -> Выгрузка Excel -> Для печати
     public ICommand ExcelExportForms { get; set; }              //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
@@ -466,7 +467,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportListOfOrgs { get; set; }         //  Excel -> Список организаций
     public ICommand ExcelExportPasWithoutRep { get; set; }      //  Excel -> Паспорта -> Паспорта без отчетов
     public ICommand ExcelExportRepWithoutPas { get; set; }      //  Excel -> Паспорта -> Отчеты без паспортов
-    public ICommand ExcelExportSelectedOrgAll { get; set; }     //  Excel -> Выбранная организация -> Все формы
     public ICommand ExportAllReports { get; set; }              //  Экспорт всех организаций организации в отдельные файлы .raodb
     public ICommand ExportForm { get; set; }                    //  Экспорт формы в файл .raodb
     public ICommand ExportReports { get; set; }                 //  Экспорт организации в файл .raodb
@@ -497,7 +497,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportListOfOrgs = new ExcelExportListOfOrgsAsyncCommand();
         ExcelExportPasWithoutRep = new ExcelExportPasWithoutRepAsyncCommand();
         ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
-        ExcelExportSelectedOrgAll = new ExcelExportSelectedOrgAllAsyncCommand();
+        ExcelExportAll = new ExcelExportAllAsyncCommand();
         ExportAllReports = new ExportAllReportsAsyncCommand();
         ExportForm = new ExportFormAsyncCommand();
         ExportReports = new ExportReportsAsyncCommand();
