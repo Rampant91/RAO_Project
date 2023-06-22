@@ -3,23 +3,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        MinHeight="70" MinWidth="250"
-        MaxHeight="70"
+        MinHeight="100" MinWidth="250"
+        MaxHeight="100"
         MaxWidth="250"
         Width="250"
-        Height="70"
+        Height="100"
         x:Class="Client_App.Views.RowNumber"
         xmlns:vm="using:Client_App.ViewModels"
         Name="RowNumber"
         Icon="/Assets/logo.png"
         Title="{Binding WindowHeader}">
-  <Panel x:Name="NumberPanel">
-    <StackPanel Orientation="Vertical">
-      <TextBlock Text="Какое кол-во строчек вы хотите добавить?"/>
-      <TextBox Text="{Binding #RowNumber.Number, Mode=TwoWay}"/>
-      <StackPanel Orientation="Horizontal">
-        <Button Content="Подтвердить" Click="OnButtonClick"/>
+    <Panel x:Name="NumberPanel">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="Какое кол-во строчек вы хотите добавить?" 
+                       Margin="5,5,5,5" />
+            <TextBox x:Name="MainTextBox"
+                     Text="{Binding #RowNumber.Number, Mode=TwoWay}"
+                     Margin="5,5,5,5" />
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Подтвердить"
+                        Click="OnButtonClick"
+                        IsDefault="True"
+                        Margin="5,5,5,5" />
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
-  </Panel>
+    </Panel>
 </Window>

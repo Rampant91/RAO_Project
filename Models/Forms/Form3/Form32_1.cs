@@ -1,13 +1,5 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using Spravochniki;
-using System.Linq;
+﻿namespace Models;
 
-namespace Models
-{
 //    [Serializable]
 //    [Attributes.Form_Class("")]
 //    public class Form32_1 : Abstracts.Form3
@@ -598,4 +590,3 @@ namespace Models
 
 //        //ValidThru property
 //    }
-}

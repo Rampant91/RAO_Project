@@ -3,102 +3,165 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Models.DBRealization;
-using Models;
-using Models.DataAccess;
 using OfficeOpenXml;
+using System;
+using System.Threading.Tasks;
+using Models.Forms.DataAccess;
+using Models.Forms.Form1;
+using Models.Interfaces;
 
-namespace Models.Collections
+namespace Models.Collections;
+
+public class Reports : IKey,INumberInOrder,IDataGridColumn
 {
-
-    public class Reports : IKey
+    [NotMapped]
+    public long Order
     {
-        public Reports()
+        get
         {
-            Init();
-        }
-        private void Init()
-        {
-
-            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
-            Report_Collection.CollectionChanged += CollectionChanged;
-        }
-
-        public Report Master_DB { get; set; }
-
-        [NotMapped]
-        public Report Master
-        {
-            get
+            try
             {
-                return Master_DB;
+                var num_str = "0";
+                if (Master_DB.RegNoRep.Value.Length >= 5)
+                {
+                    num_str = Master_DB.RegNoRep.Value[..5];
+                }
+                else 
+                {
+                    num_str = Master_DB.RegNoRep.Value;
+                }
+                var num_int = Convert.ToInt64(num_str);
+                return num_int;
             }
-            set
+            catch 
             {
-                Master_DB = value;
-                OnPropertyChanged(nameof(Master));
+                return 0;
             }
-        }
-
-        ObservableCollectionWithItemPropertyChanged<Report> Report_Collection_DB;
-
-        public ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
-        {
-            get
-            {
-                return Report_Collection_DB;
-            }
-            set
-            {
-                Report_Collection_DB = value;
-                OnPropertyChanged(nameof(Report_Collection));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public int Id { get; set; }
-
-        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            OnPropertyChanged(nameof(Report_Collection));
-        }
-
-        public void CleanIds()
-        {
-            Id = 0;
-            Master.CleanIds();
-            foreach (var item in Report_Collection)
-            {
-                item.CleanIds();
-            }
-        }
-
-        private bool Master_Validation(RamAccess<Report> value)
-        {
-            return true;
-        }
-
-        private bool Report_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Report>> value)
-        {
-            return true;
-        }
-
-        //Property Changed
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-        //Property Changed
-
-        public int ExcelRow(ExcelWorksheet worksheet,int Row, int Column, bool Tanspon = true)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
-        {
-            throw new System.NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
+    public Reports()
+    {
+        Init();
+    }
+    private void Init()
+    {
+        Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
+        Report_Collection.CollectionChanged += CollectionChanged;
+    }
+
+    public Report Master_DB { get; set; }
+
+    [NotMapped]
+    public Report Master
+    {
+        get
+        {
+            return Master_DB;
+        }
+        set
+        {
+            Master_DB = value;
+            OnPropertyChanged(nameof(Master));
+        }
+    }
+
+    ObservableCollectionWithItemPropertyChanged<Report> Report_Collection_DB;
+
+    public ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
+    {
+        get
+        {
+            return Report_Collection_DB;
+        }
+        set
+        {
+            Report_Collection_DB = value;
+            OnPropertyChanged(nameof(Report_Collection));
+        }
+    }
+
+    public void Sort()
+    {
+        Report_Collection.QuickSort();
+    }
+    public async Task SortAsync()
+    {
+        await Report_Collection.QuickSortAsync();
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public int Id { get; set; }
+
+    public void SetOrder(long index) { }
+
+    public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Report_Collection));
+    }
+
+    public void CleanIds()
+    {
+        Id = 0;
+        Master.CleanIds();
+        foreach (Report item in Report_Collection)
+        {
+            item.CleanIds();
+        }
+    }
+
+    private bool Master_Validation(RamAccess<Report> value)
+    {
+        return true;
+    }
+
+    private bool Report_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Report>> value)
+    {
+        return true;
+    }
+
+    //Property Changed
+    public void OnPropertyChanged([CallerMemberName] string prop = "")
+    {
+        if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
+    }
+    //Property Changed
+
+    #region IExcel
+    public int ExcelRow(ExcelWorksheet worksheet,int Row, int Column, bool transpose = true, string SumNumber = "")
+    {
+        throw new NotImplementedException();
+    }
+    public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
+
+    #region IDataGridColumn
+    public DataGridColumns GetColumnStructure(string param = "")
+    {
+        var regNoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.RegNo)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        regNoR.SizeCol = 50;
+        regNoR.Binding = $"{nameof(Master)}.{nameof(Report.RegNoRep)}";
+
+        var ShortJurLicoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        ShortJurLicoR.SizeCol = 603;
+        ShortJurLicoR.Binding = $"{nameof(Master)}.{nameof(Report.ShortJurLicoRep)}";
+        regNoR += ShortJurLicoR;
+
+        var okpoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        okpoR.SizeCol = 102;
+        okpoR.Binding = $"{nameof(Master)}.{nameof(Report.OkpoRep)}";
+        regNoR += okpoR;
+
+        return regNoR;
+    }
+
+    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
 }

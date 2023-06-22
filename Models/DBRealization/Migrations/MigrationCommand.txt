@@ -1,3 +1,5 @@
-﻿ФAdd-Migration DataModel_7 -Context DBModel -OutputDir DBRealization\Migrations\DataModel
+﻿Add-Migration DataModel_26 -Context DBModel -OutputDir DBRealization\Migrations\DataModel
+
+Remove-Migration -Context DbModel
 
 Update-Database -Context DBModel

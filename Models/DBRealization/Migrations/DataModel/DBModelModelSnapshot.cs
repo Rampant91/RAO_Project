@@ -138,8 +138,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("ValidThru_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("Year_DB")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Year_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
 
@@ -169,7 +169,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("ReportsCollection_DbSet");
                 });
 
-            modelBuilder.Entity("Models.Form10", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form10", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -251,7 +251,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_10");
                 });
 
-            modelBuilder.Entity("Models.Form11", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form11", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -357,7 +357,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_11");
                 });
 
-            modelBuilder.Entity("Models.Form12", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form12", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -441,8 +441,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<float?>("SignedServicePeriod_DB")
-                        .HasColumnType("FLOAT");
+                    b.Property<string>("SignedServicePeriod_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("TransporterOKPO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -454,7 +454,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_12");
                 });
 
-            modelBuilder.Entity("Models.Form13", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form13", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -554,7 +554,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_13");
                 });
 
-            modelBuilder.Entity("Models.Form14", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form14", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -657,7 +657,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_14");
                 });
 
-            modelBuilder.Entity("Models.Form15", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form15", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -766,7 +766,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_15");
                 });
 
-            modelBuilder.Entity("Models.Form16", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form16", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -884,7 +884,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_16");
                 });
 
-            modelBuilder.Entity("Models.Form17", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form17", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1056,7 +1056,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_17");
                 });
 
-            modelBuilder.Entity("Models.Form18", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form18", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1207,7 +1207,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_18");
                 });
 
-            modelBuilder.Entity("Models.Form19", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form19", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1271,7 +1271,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_19");
                 });
 
-            modelBuilder.Entity("Models.Form20", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form20", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1353,7 +1353,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_20");
                 });
 
-            modelBuilder.Entity("Models.Form21", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form21", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1392,25 +1392,16 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<short?>("MachineCode_DB")
                         .HasColumnType("SMALLINT");
 
-                    b.Property<bool>("MachineCode_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("MachineCode_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<string>("MachinePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<bool>("MachinePower_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("MachinePower_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("MassIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("MassOut_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("NumberInOrderSum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<int>("NumberInOrder_DB")
@@ -1422,13 +1413,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("NumberOfHoursPerYear_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN")
-                        .HasColumnName("NumberOfHoursPerYear_Hidden_P~1");
-
                     b.Property<string>("QuantityIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1437,12 +1421,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("RefineMachineName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<bool>("RefineMachineName_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("RefineMachineName_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
@@ -1457,6 +1435,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("StatusRAOout_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("SumGroup_DB")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("Sum_DB")
@@ -1480,6 +1461,33 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("VolumeOut_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<int>("_BaseColor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("_MachineCode_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_MachineCode_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_MachinePower_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_MachinePower_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_NumberOfHoursPerYear_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_NumberOfHoursPerYear_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_RefineMachineName_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_RefineMachineName_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ReportId");
@@ -1487,7 +1495,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_21");
                 });
 
-            modelBuilder.Entity("Models.Form210", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form210", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1545,7 +1553,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_210");
                 });
 
-            modelBuilder.Entity("Models.Form211", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form211", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1597,7 +1605,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_211");
                 });
 
-            modelBuilder.Entity("Models.Form212", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form212", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1640,7 +1648,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_212");
                 });
 
-            modelBuilder.Entity("Models.Form22", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form22", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1688,6 +1696,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("MassOutOfPack_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<string>("NumberInOrderSum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
                     b.Property<int>("NumberInOrder_DB")
                         .HasColumnType("INTEGER");
 
@@ -1697,23 +1708,11 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("PackName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<bool>("PackName_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("PackName_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<string>("PackQuantity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("PackType_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<bool>("PackType_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("PackType_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("QuantityOZIII_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1730,25 +1729,16 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("StoragePlaceCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<bool>("StoragePlaceCode_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("StoragePlaceCode_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<string>("StoragePlaceName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<bool>("StoragePlaceName_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("StoragePlaceName_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("Subsidy_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("Subsidy_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("SumGroup_DB")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("Sum_DB")
@@ -1772,6 +1762,33 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("VolumeOutOfPack_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<int>("_BaseColor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("_PackName_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_PackName_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_PackType_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_PackType_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_StoragePlaceCode_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_StoragePlaceCode_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_StoragePlaceName_Hidden_Get")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("_StoragePlaceName_Hidden_Set")
+                        .HasColumnType("BOOLEAN");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ReportId");
@@ -1779,7 +1796,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_22");
                 });
 
-            modelBuilder.Entity("Models.Form23", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form23", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1843,7 +1860,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_23");
                 });
 
-            modelBuilder.Entity("Models.Form24", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form24", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1919,7 +1936,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_24");
                 });
 
-            modelBuilder.Entity("Models.Form25", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form25", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1974,7 +1991,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_25");
                 });
 
-            modelBuilder.Entity("Models.Form26", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form26", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2023,7 +2040,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_26");
                 });
 
-            modelBuilder.Entity("Models.Form27", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form27", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2066,7 +2083,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_27");
                 });
 
-            modelBuilder.Entity("Models.Form28", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form28", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2112,7 +2129,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_28");
                 });
 
-            modelBuilder.Entity("Models.Form29", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form29", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2152,7 +2169,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_29");
                 });
 
-            modelBuilder.Entity("Models.Note", b =>
+            modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2163,6 +2180,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("GraphNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<long>("Order")
+                        .HasColumnType("BIGINT");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
@@ -2197,168 +2217,168 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Master_DB");
                 });
 
-            modelBuilder.Entity("Models.Form10", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form10", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows10")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form11", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form11", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows11")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form12", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form12", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows12")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form13", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form13", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows13")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form14", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form14", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows14")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form15", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form15", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows15")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form16", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form16", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows16")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form17", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form17", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows17")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form18", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form18", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows18")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form19", b =>
+            modelBuilder.Entity("Models.Forms.Form1.Form19", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows19")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form20", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form20", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows20")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form21", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form21", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows21")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form210", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form210", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows210")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form211", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form211", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows211")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form212", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form212", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows212")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form22", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form22", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows22")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form23", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form23", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows23")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form24", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form24", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows24")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form25", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form25", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows25")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form26", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form26", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows26")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form27", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form27", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows27")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form28", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form28", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows28")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Form29", b =>
+            modelBuilder.Entity("Models.Forms.Form2.Form29", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Rows29")
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("Models.Note", b =>
+            modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
                         .WithMany("Notes")

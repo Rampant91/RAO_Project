@@ -1,117 +1,120 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Avalonia;
-using System;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
-using Avalonia.VisualTree;
-using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace Client_App.Controls.DataGrid
+namespace Client_App.Controls.DataGrid;
+
+public class Cell : UserControl
 {
-    public class Cell : UserControl
+    public Cell()
     {
-        public static readonly DirectProperty<Cell, int> CellRowProperty =
-            AvaloniaProperty.RegisterDirect<Cell, int>(
-                nameof(CellRow),
-                o => o.CellRow,
-                (o, v) => o.CellRow = v);
+        InitializeComponent();
+    }
 
-        public int cellRow = -1;
+    public Cell(IControl ctrl)
+    {
+        Control = ctrl;
+        InitializeComponent();
+    }
 
-        public Cell(object DataContext, string BindingPath, bool IsReadOnly)
+    #region BorderColor
+    public static readonly DirectProperty<Cell, SolidColorBrush> BorderColorProperty =
+        AvaloniaProperty.RegisterDirect<Cell, SolidColorBrush>(
+            nameof(BorderColor),
+            o => o.BorderColor,
+            (o, v) => o.BorderColor = v);
+
+    private SolidColorBrush _BorderColor;
+
+    public SolidColorBrush BorderColor
+    {
+        get => _BorderColor;
+        set
         {
-            this.DataContext = DataContext;
-            this.IsReadOnly = IsReadOnly;
-            InitializeComponent();
-
-            Focusable = false;
-        }
-
-        public bool RightHandler { get; set; } = true;
-
-        public Cell(string BindingPath, bool IsReadOnly,bool RightHandler=true)
-        {
-            this.IsReadOnly = IsReadOnly;
-            InitializeComponent();
-            Focusable = false;
-            this.RightHandler = RightHandler;
-        }
-
-        public Cell()
-        {
-            InitializeComponent();
-        }
-
-        public static readonly DirectProperty<Cell, string> BindingPathProperty =
-            AvaloniaProperty.RegisterDirect<Cell, string>(
-        nameof(BindingPath),
-        o => o.BindingPath,
-        (o, v) => o.BindingPath = v);
-
-        string bindingPath = "";
-        public string BindingPath
-        {
-            get => bindingPath;
-            set
+            if (value != null)
             {
-                if (value != null)
-                {
-                    SetAndRaise(BindingPathProperty, ref bindingPath, value);
-                    SetBindingToText();
-                }
+                SetAndRaise(BorderColorProperty, ref _BorderColor, value);
             }
         }
-        void SetBindingToText()
-        {
-            if (this.DataContext == null)
-            {
-                var t = (TextBox)((Panel)((Border)Content).Child).Children[0];
-                if (t != null)
-                {
-                    Binding b = new()
-                    {
-                        Path = BindingPath,
+    }
+    #endregion
 
-                    };
-                    t.Bind(TextBox.DataContextProperty, b);
-                }
-            }
-            else
-            {
-                var t = (TextBox)((Panel)((Border)Content).Child).Children[0];
-                if (t != null)
-                {
-                    t.DataContext = this.DataContext;
-                }
-            }
+    #region ChooseColor
+    public static readonly DirectProperty<Cell, SolidColorBrush> ChooseColorProperty =
+        AvaloniaProperty.RegisterDirect<Cell, SolidColorBrush>(
+            nameof(ChooseColor),
+            o => o.ChooseColor,
+            (o, v) => o.ChooseColor = v);
+
+    private SolidColorBrush _ChooseColor;
+
+    public SolidColorBrush ChooseColor
+    {
+        get => _ChooseColor;
+        set
+        {
+            SetAndRaise(ChooseColorProperty, ref _ChooseColor, value);
         }
+    }
+    #endregion
 
-        public bool IsReadOnly { get; set; }
+    #region Row
+    public static readonly DirectProperty<Cell, int> RowProperty =
+        AvaloniaProperty.RegisterDirect<Cell, int>(
+            nameof(Row),
+            o => o.Row,
+            (o, v) => o.Row = v, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
-        public int CellRow
+    private int _Row = -1;
+    public int Row
+    {
+        get => _Row;
+        set => SetAndRaise(RowProperty, ref _Row, value);
+    }
+    #endregion
+
+    #region Column
+    public static readonly DirectProperty<Cell, int> ColumnProperty =
+        AvaloniaProperty.RegisterDirect<Cell, int>(
+            nameof(Column),
+            o => o.Column,
+            (o, v) => o.Column = v);
+
+    private int _Column = -1;
+    public int Column
+    {
+        get => _Column;
+        set => SetAndRaise(ColumnProperty, ref _Column, value);
+    }
+    #endregion
+
+    #region Control
+    IControl _Control;
+    public IControl Control 
+    {
+        get => _Control;
+        set 
         {
-            get => cellRow;
-            set
+            if (_Control != value && value != null)
             {
-                if (value != null) SetAndRaise(CellRowProperty, ref cellRow, value);
+                _Control = value;
+
+                var t = (Panel)((Border)Content).Child;
+                t.Children.Add(_Control);
             }
-        }
+        } 
+    }
+    #endregion
 
-        public int CellColumn { get; set; } = -1;
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
 
-        private void InitializeComponent()
+        if (Control != null)
         {
-            AvaloniaXamlLoader.Load(this);
-
-            this.BindingPath = BindingPath;
-
-            var t = (TextBox) ((Panel) ((Border) Content).Child).Children[0];
-            t.IsEnabled = !IsReadOnly;
+            var t = (Panel)((Border)Content).Child;
+            t.Children.Add(Control);
         }
     }
 }

@@ -1,46 +1,48 @@
-﻿using Avalonia.Collections;
+﻿using System;
+using System.Globalization;
 using Avalonia.Data.Converters;
 using Models.Collections;
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Globalization;
-using Models.DataAccess;
+using Models.Interfaces;
 
-namespace Client_App.Converters
+namespace Client_App.VisualRealization.Converters;
+
+public class ReportsToReport_Converter : IValueConverter
 {
-    public class ReportsToReport_Converter : IValueConverter
+    private Reports last_item { get; set; }
+    public object Convert(object Value, Type tp, object Param, CultureInfo info)
     {
-        private Reports last_item { get; set; }
-        public object Convert(object Value, Type tp, object Param, CultureInfo info)
+        if (Value != null)
         {
-            if (Value != null)
+            var rps_coll = (IKeyCollection)Value;
+            try
             {
-                IEnumerable? rps_coll = (IEnumerable)Value;
-                ObservableCollectionWithItemPropertyChanged<IKey>? lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                foreach (object? item in rps_coll)
+                if (rps_coll.Count != 0)
                 {
-                    Reports? rps = (Reports)item;
+                    var rps = (Reports)rps_coll.Get<Reports>(0);
                     last_item = rps;
                     if (rps != null)
                     {
-                        foreach (Report? it in rps.Report_Collection)
-                        {
-                            lst.Add(it);
-                        }
+                        return rps.Report_Collection;
                     }
                 }
-                return lst;
+                else
+                {
+                    return new ObservableCollectionWithItemPropertyChanged<IKey>();
+                }
             }
-            return null;
-        }
-        public object ConvertBack(object Value, Type tp, object Param, CultureInfo info)
-        {
-            if (last_item != null)
+            catch
             {
-                return last_item;
+
             }
-            return null;
         }
+        return null;
+    }
+    public object ConvertBack(object Value, Type tp, object Param, CultureInfo info)
+    {
+        if (last_item != null)
+        {
+            return last_item;
+        }
+        return null;
     }
 }

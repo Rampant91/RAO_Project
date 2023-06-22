@@ -1,46 +1,43 @@
-﻿using Models.Abstracts;
+﻿using Models.Forms.Form1;
+using Models.Forms.Form2;
 
-namespace Models
+namespace Models.Forms;
+
+public static class FormCreator
 {
-    public class FormCreator
+    public static Form Create(string param)
     {
-        public static Abstracts.Form Create(string Param)
+        Form tmp = param switch
         {
-            Form tmp = null;
-            switch (Param)
-            {
-                case "1.0": tmp=new Form10(); break;
-                case "1.1": tmp=new Form11(); break;
-                case "1.2": tmp=new Form12(); break;
-                case "1.3": tmp=new Form13(); break;
-                case "1.4": tmp=new Form14(); break;
-                case "1.5": tmp=new Form15(); break;
-                case "1.6": tmp=new Form16(); break;
-                case "1.7": tmp=new Form17(); break;
-                case "1.8": tmp=new Form18(); break;
-                case "1.9": tmp=new Form19(); break;
-
-                case "2.0": tmp=new Form20(); break;
-                case "2.1": tmp=new Form21(); break;
-                case "2.2": tmp=new Form22(); break;
-                case "2.3": tmp=new Form23(); break;
-                case "2.4": tmp=new Form24(); break;
-                case "2.5": tmp=new Form25(); break;
-                case "2.6": tmp=new Form26(); break;
-                case "2.7": tmp=new Form27(); break;
-                case "2.8": tmp=new Form28(); break;
-                case "2.9": tmp=new Form29(); break;
-                case "2.10": tmp=new Form210(); break;
-                case "2.11": tmp=new Form211(); break;
-                case "2.12": tmp=new Form212(); break;
-            }
-
-            if (tmp != null)
-            {
-                tmp.FormNum.Value = Param;
-            }
-
-            return tmp;
+            "1.0" => new Form10(),
+            "1.1" => new Form11(),
+            "1.2" => new Form12(),
+            "1.3" => new Form13(),
+            "1.4" => new Form14(),
+            "1.5" => new Form15(),
+            "1.6" => new Form16(),
+            "1.7" => new Form17(),
+            "1.8" => new Form18(),
+            "1.9" => new Form19(),
+            "2.0" => new Form20(),
+            "2.1" => new Form21(),
+            "2.2" => new Form22(),
+            "2.3" => new Form23(),
+            "2.4" => new Form24(),
+            "2.5" => new Form25(),
+            "2.6" => new Form26(),
+            "2.7" => new Form27(),
+            "2.8" => new Form28(),
+            "2.9" => new Form29(),
+            "2.10" => new Form210(),
+            "2.11" => new Form211(),
+            "2.12" => new Form212(),
+            _ => null
+        };
+        if (tmp != null)
+        {
+            tmp.FormNum.Value = param;
         }
+        return tmp;
     }
 }

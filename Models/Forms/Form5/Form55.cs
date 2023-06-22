@@ -1,10 +1,5 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿namespace Models;
 
-namespace Models
-{
 //    [Serializable]
 //    [Attributes.Form_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
 //    public class Form55 : Abstracts.Form5
@@ -267,4 +262,3 @@ namespace Models
 //        }
 //        //Mass Property
 //    }
-}

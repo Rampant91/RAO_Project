@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86</Platforms>
+    <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -18,13 +19,19 @@
     <Compile Remove="Assets\Converters.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.8" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.8" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.8" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.8" />
+    <Content Include="Assets\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.10" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.10" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.3" />
+    <PackageReference Include="BenchmarkDotNet.Annotations" Version="0.13.3" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.3" />
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <PackageReference Include="MessageBox.Avalonia" Version="1.7.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.12">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -34,11 +41,83 @@
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Controls\DataGrid\CellText.axaml.cs">
-      <DependentUpon>CellText.axaml</DependentUpon>
+    <Compile Update="Controls\DataGrid\Cell.axaml.cs">
+      <DependentUpon>Cell.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Controls\DataGrid\CustomCell.axaml.cs">
-      <DependentUpon>CustomCell.axaml</DependentUpon>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm211.axaml.cs">
+      <DependentUpon>DataGridForm211.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm212.axaml.cs">
+      <DependentUpon>DataGridForm212.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm210.axaml.cs">
+      <DependentUpon>DataGridForm210.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm28.axaml.cs">
+      <DependentUpon>DataGridForm28.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm27.axaml.cs">
+      <DependentUpon>DataGridForm27.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm29.axaml.cs">
+      <DependentUpon>DataGridForm29.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm26.axaml.cs">
+      <DependentUpon>DataGridForm26.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm25.axaml.cs">
+      <DependentUpon>DataGridForm25.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm24.axaml.cs">
+      <DependentUpon>DataGridForm24.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm23.axaml.cs">
+      <DependentUpon>DataGridForm23.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm22.axaml.cs">
+      <DependentUpon>DataGridForm22.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm21.axaml.cs">
+      <DependentUpon>DataGridForm21.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm13.axaml.cs">
+      <DependentUpon>DataGridForm13.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm14.axaml.cs">
+      <DependentUpon>DataGridForm14.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm15.axaml.cs">
+      <DependentUpon>DataGridForm15.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm17.axaml.cs">
+      <DependentUpon>DataGridForm17.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm18.axaml.cs">
+      <DependentUpon>DataGridForm18.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm19.axaml.cs">
+      <DependentUpon>DataGridForm19.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm16.axaml.cs">
+      <DependentUpon>DataGridForm16.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm12.axaml.cs">
+      <DependentUpon>DataGridForm12.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridNote.axaml.cs">
+      <DependentUpon>DataGridNote.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm11.axaml.cs">
+      <DependentUpon>DataGridForm11.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridReport.axaml.cs">
+      <DependentUpon>DataGridReport.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridReports.axaml.cs">
+      <DependentUpon>DataGridReports.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\RowNumberIn.axaml.cs">
+      <DependentUpon>RowNumberIn.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\RowNumber.axaml.cs">
       <DependentUpon>RowNumber.axaml</DependentUpon>

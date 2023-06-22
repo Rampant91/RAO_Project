@@ -1,18 +1,16 @@
-﻿using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Models.DBRealization.Migrations.DataModel
+namespace Models.DBRealization.Migrations.DataModel;
+
+public partial class DataModel_5 : Migration
 {
-    public partial class DataModel_5 : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
 
-        }
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
 
-        }
     }
 }
