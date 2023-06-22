@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -25,6 +26,20 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     private protected ExcelWorksheet? WorksheetPrim { get; set; }
 
     private protected string ExportType;
+
+    public override async void Execute(object? parameter)
+    {
+        IsExecute = true;
+        try
+        {
+            await Task.Run(() => AsyncExecute(parameter));
+        }
+        catch (Exception e)
+        {
+            // ignored
+        }
+        IsExecute = false;
+    }
 
     #region ExcelExportNotes
 
@@ -80,8 +95,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         #region MessageSaveOrOpenTemp
 
-        var res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
                 ButtonDefinitions = new[]
                 {
@@ -95,7 +110,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow);
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 
@@ -137,11 +152,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     {
                         File.Delete(fullPath!);
                     }
-                    catch (Exception)
+                    catch
                     {
                         #region MessageFailedToSaveFile
 
-                        await MessageBox.Avalonia.MessageBoxManager
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -155,7 +170,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow);
+                            .ShowDialog(Desktop.MainWindow));
 
                         #endregion
 
@@ -688,7 +703,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             #region MessageFailedToSaveFile
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -700,7 +715,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -715,7 +730,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             #region MessageExcelExportComplete
 
-            var answer = await MessageBox.Avalonia.MessageBoxManager
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions = new[]
@@ -730,7 +745,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
