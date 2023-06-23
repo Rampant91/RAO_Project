@@ -21,9 +21,9 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected ExcelWorksheet? Worksheet { get; set; }
+    private protected ExcelWorksheet Worksheet { get; set; }
 
-    private protected ExcelWorksheet? WorksheetPrim { get; set; }
+    private protected ExcelWorksheet WorksheetPrim { get; set; }
 
     private protected string ExportType;
 
@@ -43,7 +43,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelExportNotes
 
-    private protected int ExcelExportNotes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
+    private protected static int ExcelExportNotes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
         List<Report> forms, bool printId = false)
     {
         foreach (var item in forms)
@@ -351,12 +351,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintTitulExport
 
-    private protected void ExcelPrintTitleExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintTitleExport(string param, ExcelWorksheet worksheet, Report form)
     {
-        var findReports = MainWindowVM.LocalReports.Reports_Collection
-            .Where(t => t.Report_Collection.Contains(form));
-        var reps = findReports.FirstOrDefault();
-        var master = reps.Master_DB;
+        var master = MainWindowVM.LocalReports.Reports_Collection
+            .First(t => t.Report_Collection.Contains(form))
+            .Master_DB;
         if (param.Split('.')[0] == "2")
         {
             var frmYur = master.Rows20[0];
@@ -452,13 +451,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintSubMainExport
 
-    private protected void ExcelPrintSubMainExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintSubMainExport(string param, ExcelWorksheet worksheet, Report form)
     {
-        var findReports = MainWindowVM.LocalReports.Reports_Collection
-            .Where(t => t.Report_Collection.Contains(form));
-        var reps = findReports.FirstOrDefault();
-        var master = reps.Master_DB;
-
         if (param.Split('.')[0] == "1")
         {
             worksheet.Cells["G3"].Value = form.StartPeriod_DB;
@@ -526,7 +520,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintNotesExport
 
-    private protected void ExcelPrintNotesExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintNotesExport(string param, ExcelWorksheet worksheet, Report form)
     {
         var start = param is "2.8"
             ? 18
@@ -580,7 +574,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintRowsExport
 
-    private protected void ExcelPrintRowsExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintRowsExport(string param, ExcelWorksheet worksheet, Report form)
     {
         var start = param is "2.8"
             ? 14

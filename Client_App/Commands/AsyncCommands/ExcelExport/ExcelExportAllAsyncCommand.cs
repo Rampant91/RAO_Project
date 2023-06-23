@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
@@ -33,21 +34,22 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region MessageExcelExportFail
 
                 var msg = "Выгрузка не выполнена, поскольку ";
-                msg += CurrentReports is null
+                msg += selectedReports is null
                     ? "не выбрана организация."
-                    : "у выбранной организации отсутствуют формы отчетности.";
-                await MessageBox.Avalonia.MessageBoxManager
+                    : "у выбранной организации" +
+                       $"{Environment.NewLine}отсутствуют формы отчетности.";
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
                         ContentMessage = msg,
-                        MinHeight = 125,
+                        MinHeight = 150,
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(mainWindow);
+                    .ShowDialog(mainWindow));
 
                 #endregion
 
@@ -102,21 +104,24 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         HashSet<string> formNums = new();
         foreach (var rep in repsList
                      .SelectMany(reps => reps.Report_Collection)
+                     .OrderBy(x => byte.Parse(x.FormNum_DB.Split('.')[0]))
+                     .ThenBy(x => byte.Parse(x.FormNum_DB.Split('.')[1]))
                      .ToList())
         {
             formNums.Add(rep.FormNum_DB);
         }
-        
-        foreach (var formNum in formNums)
-        {
-            Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
-        }
+
         foreach (var reps in repsList)
         {
             CurrentReports = reps;
             foreach (var formNum in formNums)
             {
+                Worksheet = excelPackage.Workbook.Worksheets.Any(sheet => sheet.Name == $"Форма {formNum}")
+                    ? excelPackage.Workbook.Worksheets.First(sheet => sheet.Name == $"Форма {formNum}")
+                    : excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
+                WorksheetPrim = excelPackage.Workbook.Worksheets.Any(sheet => sheet.Name ==  $"Примечания {formNum}")
+                    ? excelPackage.Workbook.Worksheets.First(sheet => sheet.Name ==  $"Примечания {formNum}")
+                    : excelPackage.Workbook.Worksheets.Add( $"Примечания {formNum}");
                 FillExportForms(formNum);
             }
         }
@@ -2497,8 +2502,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     }
 
     #endregion
-
-
 
     #endregion
 }

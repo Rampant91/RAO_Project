@@ -336,7 +336,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region Check Reps
 
-    private async Task<Reports> CheckReps(ExcelWorksheet worksheet0)
+    private static async Task<Reports> CheckReps(ExcelWorksheet worksheet0)
     {
         IEnumerable<Reports>? reps = worksheet0.Name switch
         {

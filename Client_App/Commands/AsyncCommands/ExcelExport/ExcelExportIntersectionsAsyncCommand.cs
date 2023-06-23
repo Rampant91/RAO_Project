@@ -105,8 +105,8 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         var listSortRep = MainWindowVM.LocalReports.Reports_Collection
             .SelectMany(reps => reps.Report_Collection
-                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var start)
-                              && DateTime.TryParse(rep.EndPeriod_DB, out var end))
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
+                              && DateTime.TryParse(rep.EndPeriod_DB, out _))
                 .Select(rep =>
                 {
                     if (true);
@@ -121,8 +121,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                             EndPeriod = end,
                             ShortYr = reps.Master_DB.ShortJurLicoRep.Value
                         };
-                })
-            )
+                }))
             .OrderBy(x => x.RegNoRep)
             .ThenBy(x => x.FormNum)
             .ThenBy(x => x.StartPeriod)
