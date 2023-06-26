@@ -29,6 +29,7 @@ using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
+using Mono.Unix.Native;
 
 namespace Client_App.ViewModels;
 
@@ -117,6 +118,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
             Directory.CreateDirectory(LogsDirectory);
             Directory.CreateDirectory(TmpDirectory);
+
+            if (OperatingSystem.IsLinux())
+            {
+                new Mono.Unix.UnixFileInfo(LogsDirectory).Create(FilePermissions.ALLPERMS);
+                new Mono.Unix.UnixFileInfo(TmpDirectory).Create(FilePermissions.ALLPERMS);
+            }
         }
         catch (Exception e)
         {
@@ -130,6 +137,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             try
             {
                 File.Delete(file);
+                if (OperatingSystem.IsLinux())
+                {
+                    new Mono.Unix.UnixFileInfo(file).Delete();
+                }
             }
             catch (Exception e)
             {
