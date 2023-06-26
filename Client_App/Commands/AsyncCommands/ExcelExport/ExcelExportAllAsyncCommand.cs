@@ -113,6 +113,8 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             formNums.Add(rep.FormNum_DB);
         }
 
+        _currentRow = 2;
+        _currentPrimRow = 2;
         foreach (var reps in repsList)
         {
             CurrentReports = reps;
@@ -129,9 +131,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                     Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
                     WorksheetPrim.Cells.AutoFitColumns();
                 }
-
-                _currentRow = 2;
-                _currentPrimRow = 2;
                 FillExportForms(formNum);
             }
         }
