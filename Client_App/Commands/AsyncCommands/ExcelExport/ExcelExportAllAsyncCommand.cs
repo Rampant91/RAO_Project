@@ -10,10 +10,7 @@ using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
-using Models.Forms;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
