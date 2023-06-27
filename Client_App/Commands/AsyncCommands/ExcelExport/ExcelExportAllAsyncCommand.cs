@@ -10,7 +10,10 @@ using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
+using Models.Forms;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -114,11 +117,10 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             formNums.Add(rep.FormNum_DB);
         }
 
-        _currentRow = 2;
-        _currentPrimRow = 2;
-
         foreach (var formNum in formNums)
         {
+            _currentRow = 2;
+            _currentPrimRow = 2;
             Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
             WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
             if (OperatingSystem.IsWindows())
@@ -127,11 +129,14 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 WorksheetPrim.Cells.AutoFitColumns();
             }
             FillHeaders(formNum);
+
             foreach (var reps in repsList)
             {
                 CurrentReports = reps;
                 FillExportForms(formNum);
             }
+            Worksheet.View.FreezePanes(2, 1);
+            WorksheetPrim.View.FreezePanes(2, 1);
         }
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
@@ -946,11 +951,11 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm11Data()
     {
-        var reps = CurrentReports.Report_Collection
+        var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
             .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
-        foreach (var rep in reps)
+        foreach (var rep in repList)
         {
             var forms = rep.Rows11
                 .OrderBy(x => x.NumberInOrder_DB)
@@ -1018,7 +1023,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1027,11 +1031,11 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm12Data()
     {
-        var reps = CurrentReports.Report_Collection
+        var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null)
             .OrderBy(x => x.StartPeriod_DB)
             .ToList();
-        foreach (var rep in reps)
+        foreach (var rep in repList)
         {
             var repSort = rep.Rows12
                 .OrderBy(x => x.NumberInOrder_DB)
@@ -1096,7 +1100,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1105,85 +1108,76 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm13Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null)
+            .OrderBy(x => x.StartPeriod_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null)
-                .OrderBy(x => x.StartPeriod_DB)
+            var repSort = rep.Rows13
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows13
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.Activity_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.CreatorOKPO_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.CreationDate_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.AggregateState_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.PropertyCode_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.Owner_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.DocumentVid_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.ProviderOrRecieverOKPO_DB;
-                    Worksheet.Cells[currentRow, 26].Value = repForm.TransporterOKPO_DB;
-                    Worksheet.Cells[currentRow, 27].Value = repForm.PackName_DB;
-                    Worksheet.Cells[currentRow, 28].Value = repForm.PackType_DB;
-                    Worksheet.Cells[currentRow, 29].Value = repForm.PackNumber_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.PassportNumber_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.Type_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.FactoryNumber_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.Activity_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.CreatorOKPO_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.CreationDate_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.AggregateState_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.PropertyCode_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.Owner_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[_currentRow, 26].Value = repForm.TransporterOKPO_DB;
+                Worksheet.Cells[_currentRow, 27].Value = repForm.PackName_DB;
+                Worksheet.Cells[_currentRow, 28].Value = repForm.PackType_DB;
+                Worksheet.Cells[_currentRow, 29].Value = repForm.PackNumber_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.StartPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1192,86 +1186,77 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm14Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null)
+            .OrderBy(x => x.StartPeriod_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null)
-                .OrderBy(x => x.StartPeriod_DB)
+            var repSort = rep.Rows14
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows14
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
+                #region Binding
                     
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.Name_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.Sort_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.Activity_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.ActivityMeasurementDate_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.Volume_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.Mass_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.AggregateState_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.PropertyCode_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.Owner_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.DocumentVid_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 26].Value = repForm.ProviderOrRecieverOKPO_DB;
-                    Worksheet.Cells[currentRow, 27].Value = repForm.TransporterOKPO_DB;
-                    Worksheet.Cells[currentRow, 28].Value = repForm.PackName_DB;
-                    Worksheet.Cells[currentRow, 29].Value = repForm.PackType_DB;
-                    Worksheet.Cells[currentRow, 30].Value = repForm.PackNumber_DB; 
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.PassportNumber_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.Name_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.Sort_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.Activity_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.ActivityMeasurementDate_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.Volume_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.Mass_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.AggregateState_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.PropertyCode_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.Owner_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 26].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[_currentRow, 27].Value = repForm.TransporterOKPO_DB;
+                Worksheet.Cells[_currentRow, 28].Value = repForm.PackName_DB;
+                Worksheet.Cells[_currentRow, 29].Value = repForm.PackType_DB;
+                Worksheet.Cells[_currentRow, 30].Value = repForm.PackNumber_DB; 
 
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
                     
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.StartPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB; 
+                
+                #endregion
 
-                    currentRow++;
-                }
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1280,88 +1265,79 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm15Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
+            .OrderBy(x => x.StartPeriod_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
-                .OrderBy(x => x.StartPeriod_DB)
+            var repSort = rep.Rows15
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows15
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.CreationDate_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.StatusRAO_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.DocumentVid_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.ProviderOrRecieverOKPO_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.TransporterOKPO_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.PackName_DB;
-                    Worksheet.Cells[currentRow, 26].Value = repForm.PackType_DB;
-                    Worksheet.Cells[currentRow, 27].Value = repForm.PackNumber_DB;
-                    Worksheet.Cells[currentRow, 28].Value = repForm.StoragePlaceName_DB;
-                    Worksheet.Cells[currentRow, 29].Value = repForm.StoragePlaceCode_DB;
-                    Worksheet.Cells[currentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
-                    Worksheet.Cells[currentRow, 31].Value = repForm.Subsidy_DB;
-                    Worksheet.Cells[currentRow, 32].Value = repForm.FcpNumber_DB;
+                #region Binding
 
-                    #endregion
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.PassportNumber_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.Type_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.FactoryNumber_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.Quantity_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.Activity_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.CreationDate_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.StatusRAO_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.TransporterOKPO_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.PackName_DB;
+                Worksheet.Cells[_currentRow, 26].Value = repForm.PackType_DB;
+                Worksheet.Cells[_currentRow, 27].Value = repForm.PackNumber_DB;
+                Worksheet.Cells[_currentRow, 28].Value = repForm.StoragePlaceName_DB;
+                Worksheet.Cells[_currentRow, 29].Value = repForm.StoragePlaceCode_DB;
+                Worksheet.Cells[_currentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
+                Worksheet.Cells[_currentRow, 31].Value = repForm.Subsidy_DB;
+                Worksheet.Cells[_currentRow, 32].Value = repForm.FcpNumber_DB;
 
-                    currentRow++;
-                }
+                #endregion
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                _currentRow++;
+            }
 
-                    currentRow++;
-                }
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.StartPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1370,91 +1346,82 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm16Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null)
+            .OrderBy(x => x.StartPeriod_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null)
-                .OrderBy(x => x.StartPeriod_DB)
+            var repSort = rep.Rows16
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows16
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.CodeRAO_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.StatusRAO_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.Volume_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.Mass_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.QuantityOZIII_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.MainRadionuclids_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.TritiumActivity_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.BetaGammaActivity_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.AlphaActivity_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.TransuraniumActivity_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.ActivityMeasurementDate_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.DocumentVid_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 26].Value = repForm.ProviderOrRecieverOKPO_DB;
-                    Worksheet.Cells[currentRow, 27].Value = repForm.TransporterOKPO_DB;
-                    Worksheet.Cells[currentRow, 28].Value = repForm.StoragePlaceName_DB;
-                    Worksheet.Cells[currentRow, 29].Value = repForm.StoragePlaceCode_DB;
-                    Worksheet.Cells[currentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
-                    Worksheet.Cells[currentRow, 31].Value = repForm.PackName_DB;
-                    Worksheet.Cells[currentRow, 32].Value = repForm.PackType_DB;
-                    Worksheet.Cells[currentRow, 33].Value = repForm.PackNumber_DB;
-                    Worksheet.Cells[currentRow, 34].Value = repForm.Subsidy_DB;
-                    Worksheet.Cells[currentRow, 35].Value = repForm.FcpNumber_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.CodeRAO_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.StatusRAO_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.Volume_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.Mass_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.QuantityOZIII_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.MainRadionuclids_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.TritiumActivity_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.BetaGammaActivity_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.AlphaActivity_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.TransuraniumActivity_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.ActivityMeasurementDate_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 26].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[_currentRow, 27].Value = repForm.TransporterOKPO_DB;
+                Worksheet.Cells[_currentRow, 28].Value = repForm.StoragePlaceName_DB;
+                Worksheet.Cells[_currentRow, 29].Value = repForm.StoragePlaceCode_DB;
+                Worksheet.Cells[_currentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
+                Worksheet.Cells[_currentRow, 31].Value = repForm.PackName_DB;
+                Worksheet.Cells[_currentRow, 32].Value = repForm.PackType_DB;
+                Worksheet.Cells[_currentRow, 33].Value = repForm.PackNumber_DB;
+                Worksheet.Cells[_currentRow, 34].Value = repForm.Subsidy_DB;
+                Worksheet.Cells[_currentRow, 35].Value = repForm.FcpNumber_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                    
-                    WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB; 
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.StartPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1463,95 +1430,87 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm17Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null)
+            .OrderBy(x => x.StartPeriod_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null)
-                .OrderBy(x => x.StartPeriod_DB)
+            var repSort = rep.Rows17
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows17
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.PackName_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.PackType_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.PackFactoryNumber_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.PackFactoryNumber_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.FormingDate_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.PassportNumber_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.Volume_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.Mass_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.SpecificActivity_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.DocumentVid_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.ProviderOrRecieverOKPO_DB;
-                    Worksheet.Cells[currentRow, 26].Value = repForm.TransporterOKPO_DB;
-                    Worksheet.Cells[currentRow, 27].Value = repForm.StoragePlaceName_DB;
-                    Worksheet.Cells[currentRow, 28].Value = repForm.StoragePlaceCode_DB;
-                    Worksheet.Cells[currentRow, 29].Value = repForm.CodeRAO_DB;
-                    Worksheet.Cells[currentRow, 30].Value = repForm.StatusRAO_DB;
-                    Worksheet.Cells[currentRow, 31].Value = repForm.VolumeOutOfPack_DB;
-                    Worksheet.Cells[currentRow, 32].Value = repForm.MassOutOfPack_DB;
-                    Worksheet.Cells[currentRow, 33].Value = repForm.Quantity_DB;
-                    Worksheet.Cells[currentRow, 34].Value = repForm.TritiumActivity_DB;
-                    Worksheet.Cells[currentRow, 35].Value = repForm.BetaGammaActivity_DB;
-                    Worksheet.Cells[currentRow, 36].Value = repForm.AlphaActivity_DB;
-                    Worksheet.Cells[currentRow, 37].Value = repForm.TransuraniumActivity_DB;
-                    Worksheet.Cells[currentRow, 38].Value = repForm.RefineOrSortRAOCode_DB;
-                    Worksheet.Cells[currentRow, 39].Value = repForm.Subsidy_DB;
-                    Worksheet.Cells[currentRow, 40].Value = repForm.FcpNumber_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB; 
-                    
-                    #endregion
-                    
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.PackName_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.PackType_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.PackFactoryNumber_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.PackFactoryNumber_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.FormingDate_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.PassportNumber_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.Volume_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.Mass_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.SpecificActivity_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[_currentRow, 26].Value = repForm.TransporterOKPO_DB;
+                Worksheet.Cells[_currentRow, 27].Value = repForm.StoragePlaceName_DB;
+                Worksheet.Cells[_currentRow, 28].Value = repForm.StoragePlaceCode_DB;
+                Worksheet.Cells[_currentRow, 29].Value = repForm.CodeRAO_DB;
+                Worksheet.Cells[_currentRow, 30].Value = repForm.StatusRAO_DB;
+                Worksheet.Cells[_currentRow, 31].Value = repForm.VolumeOutOfPack_DB;
+                Worksheet.Cells[_currentRow, 32].Value = repForm.MassOutOfPack_DB;
+                Worksheet.Cells[_currentRow, 33].Value = repForm.Quantity_DB;
+                Worksheet.Cells[_currentRow, 34].Value = repForm.TritiumActivity_DB;
+                Worksheet.Cells[_currentRow, 35].Value = repForm.BetaGammaActivity_DB;
+                Worksheet.Cells[_currentRow, 36].Value = repForm.AlphaActivity_DB;
+                Worksheet.Cells[_currentRow, 37].Value = repForm.TransuraniumActivity_DB;
+                Worksheet.Cells[_currentRow, 38].Value = repForm.RefineOrSortRAOCode_DB;
+                Worksheet.Cells[_currentRow, 39].Value = repForm.Subsidy_DB;
+                Worksheet.Cells[_currentRow, 40].Value = repForm.FcpNumber_DB;
+
+                #endregion
+
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.StartPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1560,92 +1519,83 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm18Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var form = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null)
+            .OrderBy(x => x.StartPeriod_DB)
+            .ToList();
+        foreach (var rep in form)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null)
-                .OrderBy(x => x.StartPeriod_DB)
+            var repSort = rep.Rows18
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows18
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.IndividualNumberZHRO_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.PassportNumber_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.Volume6_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.Mass7_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.SaltConcentration_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.SpecificActivity_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.DocumentVid_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.ProviderOrRecieverOKPO_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.TransporterOKPO_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.StoragePlaceName_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.StoragePlaceCode_DB;
-                    Worksheet.Cells[currentRow, 26].Value = repForm.CodeRAO_DB;
-                    Worksheet.Cells[currentRow, 27].Value = repForm.StatusRAO_DB;
-                    Worksheet.Cells[currentRow, 28].Value = repForm.Volume20_DB;
-                    Worksheet.Cells[currentRow, 29].Value = repForm.Mass21_DB;
-                    Worksheet.Cells[currentRow, 30].Value = repForm.TritiumActivity_DB;
-                    Worksheet.Cells[currentRow, 31].Value = repForm.BetaGammaActivity_DB;
-                    Worksheet.Cells[currentRow, 32].Value = repForm.AlphaActivity_DB;
-                    Worksheet.Cells[currentRow, 33].Value = repForm.TransuraniumActivity_DB;
-                    Worksheet.Cells[currentRow, 34].Value = repForm.RefineOrSortRAOCode_DB;
-                    Worksheet.Cells[currentRow, 35].Value = repForm.Subsidy_DB;
-                    Worksheet.Cells[currentRow, 36].Value = repForm.FcpNumber_DB; 
-                   
-                    #endregion
-                    
-                    currentRow++;
-                }
+                #region Binding
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.IndividualNumberZHRO_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.PassportNumber_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.Volume6_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.Mass7_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.SaltConcentration_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.SpecificActivity_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.TransporterOKPO_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.StoragePlaceName_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.StoragePlaceCode_DB;
+                Worksheet.Cells[_currentRow, 26].Value = repForm.CodeRAO_DB;
+                Worksheet.Cells[_currentRow, 27].Value = repForm.StatusRAO_DB;
+                Worksheet.Cells[_currentRow, 28].Value = repForm.Volume20_DB;
+                Worksheet.Cells[_currentRow, 29].Value = repForm.Mass21_DB;
+                Worksheet.Cells[_currentRow, 30].Value = repForm.TritiumActivity_DB;
+                Worksheet.Cells[_currentRow, 31].Value = repForm.BetaGammaActivity_DB;
+                Worksheet.Cells[_currentRow, 32].Value = repForm.AlphaActivity_DB;
+                Worksheet.Cells[_currentRow, 33].Value = repForm.TransuraniumActivity_DB;
+                Worksheet.Cells[_currentRow, 34].Value = repForm.RefineOrSortRAOCode_DB;
+                Worksheet.Cells[_currentRow, 35].Value = repForm.Subsidy_DB;
+                Worksheet.Cells[_currentRow, 36].Value = repForm.FcpNumber_DB;
 
-                    currentRow++;
-                }
+                #endregion
+
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.StartPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1654,74 +1604,64 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm19Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null)
-                .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            var repSort = rep.Rows19
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows19
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
+                #region Binding
 
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.DocumentVid_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.CodeTypeAccObject_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.CodeTypeAccObject_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.Activity_DB;
 
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
 
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 9].Value = comment.Comment_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.StartPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB;
 
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentPrimRow++;
             }
         }
-
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1730,83 +1670,74 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm21Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.1") && x.Rows21 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.1") && x.Rows21 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows21
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows21
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
+                #region Binding
 
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.RefineMachineName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.MachineCode_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.MachinePower_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.NumberOfHoursPerYear_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.CodeRAOIn_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.StatusRAOIn_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.VolumeIn_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.MassIn_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.QuantityIn_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.TritiumActivityIn_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.BetaGammaActivityIn_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.AlphaActivityIn_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.TransuraniumActivityIn_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.CodeRAOout_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.StatusRAOout_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.VolumeOut_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.MassOut_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.QuantityOZIIIout_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.TritiumActivityOut_DB;
-                    Worksheet.Cells[currentRow, 26].Value = repForm.BetaGammaActivityOut_DB;
-                    Worksheet.Cells[currentRow, 27].Value = repForm.AlphaActivityOut_DB;
-                    Worksheet.Cells[currentRow, 28].Value = repForm.TransuraniumActivityOut_DB; 
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.RefineMachineName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.MachineCode_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.MachinePower_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.NumberOfHoursPerYear_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.CodeRAOIn_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.StatusRAOIn_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.VolumeIn_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.MassIn_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.QuantityIn_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.TritiumActivityIn_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.BetaGammaActivityIn_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.AlphaActivityIn_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.TransuraniumActivityIn_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.CodeRAOout_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.StatusRAOout_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.VolumeOut_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.MassOut_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.QuantityOZIIIout_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.TritiumActivityOut_DB;
+                Worksheet.Cells[_currentRow, 26].Value = repForm.BetaGammaActivityOut_DB;
+                Worksheet.Cells[_currentRow, 27].Value = repForm.AlphaActivityOut_DB;
+                Worksheet.Cells[_currentRow, 28].Value = repForm.TransuraniumActivityOut_DB;
 
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
 
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
 
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1815,80 +1746,71 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm22Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.2") && x.Rows22 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.2") && x.Rows22 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows22
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows22
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.StoragePlaceName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.StoragePlaceCode_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.PackName_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.PackType_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.PackQuantity_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.CodeRAO_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.StatusRAO_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.VolumeOutOfPack_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.VolumeInPack_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.MassOutOfPack_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.MassInPack_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.QuantityOZIII_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.TritiumActivity_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.BetaGammaActivity_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.AlphaActivity_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.TransuraniumActivity_DB;
-                    Worksheet.Cells[currentRow, 23].Value = repForm.MainRadionuclids_DB;
-                    Worksheet.Cells[currentRow, 24].Value = repForm.Subsidy_DB;
-                    Worksheet.Cells[currentRow, 25].Value = repForm.FcpNumber_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.StoragePlaceName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.StoragePlaceCode_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.PackName_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.PackType_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.PackQuantity_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.CodeRAO_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.StatusRAO_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.VolumeOutOfPack_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.VolumeInPack_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.MassOutOfPack_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.MassInPack_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.QuantityOZIII_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.TritiumActivity_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.BetaGammaActivity_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.AlphaActivity_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.TransuraniumActivity_DB;
+                Worksheet.Cells[_currentRow, 23].Value = repForm.MainRadionuclids_DB;
+                Worksheet.Cells[_currentRow, 24].Value = repForm.Subsidy_DB;
+                Worksheet.Cells[_currentRow, 25].Value = repForm.FcpNumber_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1897,73 +1819,64 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm23Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.3") && x.Rows23 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.3") && x.Rows23 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows23
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows23
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.StoragePlaceName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.StoragePlaceCode_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.ProjectVolume_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.CodeRAO_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.Volume_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.Mass_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.QuantityOZIII_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.SummaryActivity_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.DocumentNumber_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.DocumentDate_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.ExpirationDate_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.DocumentName_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.StoragePlaceName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.StoragePlaceCode_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.ProjectVolume_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.CodeRAO_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.Volume_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.Mass_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.QuantityOZIII_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.SummaryActivity_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.ExpirationDate_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.DocumentName_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB;
+                #endregion
 
-                    #endregion
+                _currentRow++;
+            }
 
-                    currentRow++;
-                }
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -1972,77 +1885,68 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm24Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.4") && x.Rows24 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.4") && x.Rows24 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows24
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows24
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.CodeOYAT_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.FcpNumber_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.MassCreated_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.QuantityCreated_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.MassFromAnothers_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.QuantityFromAnothers_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.MassFromAnothersImported_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.QuantityFromAnothersImported_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.MassAnotherReasons_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.QuantityAnotherReasons_DB;
-                    Worksheet.Cells[currentRow, 17].Value = repForm.MassTransferredToAnother_DB;
-                    Worksheet.Cells[currentRow, 18].Value = repForm.QuantityTransferredToAnother_DB;
-                    Worksheet.Cells[currentRow, 19].Value = repForm.MassRefined_DB;
-                    Worksheet.Cells[currentRow, 20].Value = repForm.QuantityRefined_DB;
-                    Worksheet.Cells[currentRow, 21].Value = repForm.MassRemovedFromAccount_DB;
-                    Worksheet.Cells[currentRow, 22].Value = repForm.QuantityRemovedFromAccount_DB; 
-                    
-                    #endregion
-                    
-                    currentRow++;
-                }
+                #region Binding
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB;
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.CodeOYAT_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.FcpNumber_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.MassCreated_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.QuantityCreated_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.MassFromAnothers_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.QuantityFromAnothers_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.MassFromAnothersImported_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.QuantityFromAnothersImported_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.MassAnotherReasons_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.QuantityAnotherReasons_DB;
+                Worksheet.Cells[_currentRow, 17].Value = repForm.MassTransferredToAnother_DB;
+                Worksheet.Cells[_currentRow, 18].Value = repForm.QuantityTransferredToAnother_DB;
+                Worksheet.Cells[_currentRow, 19].Value = repForm.MassRefined_DB;
+                Worksheet.Cells[_currentRow, 20].Value = repForm.QuantityRefined_DB;
+                Worksheet.Cells[_currentRow, 21].Value = repForm.MassRemovedFromAccount_DB;
+                Worksheet.Cells[_currentRow, 22].Value = repForm.QuantityRemovedFromAccount_DB;
 
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2051,70 +1955,61 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm25Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.5") && x.Rows25 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.5") && x.Rows25 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows25
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows25
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.StoragePlaceName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.StoragePlaceCode_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.CodeOYAT_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.FcpNumber_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.FuelMass_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.CellMass_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.Quantity_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.AlphaActivity_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.BetaGammaActivity_DB;
+                #region Binding
 
-                    #endregion
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.StoragePlaceName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.StoragePlaceCode_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.CodeOYAT_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.FcpNumber_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.FuelMass_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.CellMass_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.Quantity_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.AlphaActivity_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.BetaGammaActivity_DB;
 
-                    currentRow++;
-                }
+                #endregion
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB;
-                    
-                    #endregion
+                _currentRow++;
+            }
 
-                    currentRow++;
-                }
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2123,66 +2018,59 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm26Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.6") && x.Rows26 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.6") && x.Rows26 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows26
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows26
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.ObservedSourceNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.ControlledAreaName_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.SupposedWasteSource_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.DistanceToWasteSource_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.TestDepth_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.RadionuclidName_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.AverageYearConcentration_DB;
+                #region Binding
 
-                    #endregion
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.ObservedSourceNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.ControlledAreaName_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.SupposedWasteSource_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.DistanceToWasteSource_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.TestDepth_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.RadionuclidName_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.AverageYearConcentration_DB;
 
-                    currentRow++;
-                }
+                #endregion
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes.OrderBy(x => x.Order).ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                _currentRow++;
+            }
 
-                    currentRow++;
-                }
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2191,66 +2079,57 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm27Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.7") && x.Rows27 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.7") && x.Rows27 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows27
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows27
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.ObservedSourceNumber_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.RadionuclidName_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.AllowedWasteValue_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.FactedWasteValue_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.WasteOutbreakPreviousYear_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.ObservedSourceNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.RadionuclidName_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.AllowedWasteValue_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.FactedWasteValue_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.WasteOutbreakPreviousYear_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB;
+                #endregion
 
-                    #endregion
+                _currentRow++;
+            }
 
-                    currentRow++;
-                }
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2259,67 +2138,58 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm28Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.8") && x.Rows28 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.8") && x.Rows28 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows28
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows28
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.WasteSourceName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.WasteRecieverName_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.RecieverTypeCode_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.PoolDistrictName_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.AllowedWasteRemovalVolume_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.RemovedWasteVolume_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.WasteSourceName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.WasteRecieverName_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.RecieverTypeCode_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.PoolDistrictName_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.AllowedWasteRemovalVolume_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.RemovedWasteVolume_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2328,65 +2198,56 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm29Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.9") && x.Rows29 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.9") && x.Rows29 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows29
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows29
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.WasteSourceName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.RadionuclidName_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.AllowedActivity_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.FactedActivity_DB; 
-                    
-                    #endregion
-                    
-                    currentRow++;
-                }
+                #region Binding
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.WasteSourceName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.RadionuclidName_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.AllowedActivity_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.FactedActivity_DB;
 
-                    currentRow++;
-                }
+                #endregion
+
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2395,69 +2256,62 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm210Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.10") && x.Rows210 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.10") && x.Rows210 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows210
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows210
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.IndicatorName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.PlotName_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.PlotKadastrNumber_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.PlotCode_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.InfectedArea_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.AvgGammaRaysDosePower_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.MaxGammaRaysDosePower_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.WasteDensityAlpha_DB;
-                    Worksheet.Cells[currentRow, 15].Value = repForm.WasteDensityBeta_DB;
-                    Worksheet.Cells[currentRow, 16].Value = repForm.FcpNumber_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.IndicatorName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.PlotName_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.PlotKadastrNumber_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.PlotCode_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.InfectedArea_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.AvgGammaRaysDosePower_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.MaxGammaRaysDosePower_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.WasteDensityAlpha_DB;
+                Worksheet.Cells[_currentRow, 15].Value = repForm.WasteDensityBeta_DB;
+                Worksheet.Cells[_currentRow, 16].Value = repForm.FcpNumber_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes.OrderBy(x => x.Order).ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                #endregion
 
-                    currentRow++;
-                }
+                _currentRow++;
+            }
+
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2466,69 +2320,60 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm211Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.11") && x.Rows211 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.11") && x.Rows211 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows211
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows211
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.PlotName_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.PlotKadastrNumber_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.PlotCode_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.InfectedArea_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 12].Value = repForm.SpecificActivityOfPlot_DB;
-                    Worksheet.Cells[currentRow, 13].Value = repForm.SpecificActivityOfLiquidPart_DB;
-                    Worksheet.Cells[currentRow, 14].Value = repForm.SpecificActivityOfDensePart_DB; 
-                    
-                    #endregion
+                #region Binding
 
-                    currentRow++;
-                }
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.PlotName_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.PlotKadastrNumber_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.PlotCode_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.InfectedArea_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 12].Value = repForm.SpecificActivityOfPlot_DB;
+                Worksheet.Cells[_currentRow, 13].Value = repForm.SpecificActivityOfLiquidPart_DB;
+                Worksheet.Cells[_currentRow, 14].Value = repForm.SpecificActivityOfDensePart_DB;
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes
-                    .OrderBy(x => x.Order)
-                    .ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB;
+                #endregion
 
-                    #endregion
+                _currentRow++;
+            }
 
-                    currentRow++;
-                }
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
@@ -2537,64 +2382,57 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void ExportForm212Data()
     {
-        var tmp = 2;
-        List<Reports> repList = new() { CurrentReports };
-        foreach (var reps in repList)
+        var repList = CurrentReports.Report_Collection
+            .Where(x => x.FormNum_DB.Equals("2.12") && x.Rows212 != null)
+            .OrderBy(x => x.Year_DB)
+            .ToList();
+        foreach (var rep in repList)
         {
-            var form = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("2.12") && x.Rows212 != null)
-                .OrderBy(x => x.Year_DB)
+            var repSort = rep.Rows212
+                .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
-            foreach (var rep in form)
+            foreach (var repForm in repSort)
             {
-                var currentRow = tmp;
-                var repSort = rep.Rows212
-                    .OrderBy(x => x.NumberInOrder_DB)
-                    .ToList();
-                foreach (var repForm in repSort)
-                {
-                    #region Binding
-                    
-                    Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                    Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                    Worksheet.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    Worksheet.Cells[currentRow, 5].Value = rep.Year_DB;
-                    Worksheet.Cells[currentRow, 6].Value = repForm.NumberInOrder_DB;
-                    Worksheet.Cells[currentRow, 7].Value = repForm.OperationCode_DB;
-                    Worksheet.Cells[currentRow, 8].Value = repForm.ObjectTypeCode_DB;
-                    Worksheet.Cells[currentRow, 9].Value = repForm.Radionuclids_DB;
-                    Worksheet.Cells[currentRow, 10].Value = repForm.Activity_DB;
-                    Worksheet.Cells[currentRow, 11].Value = repForm.ProviderOrRecieverOKPO_DB;
+                #region Binding
 
-                    #endregion
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[_currentRow, 7].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[_currentRow, 8].Value = repForm.ObjectTypeCode_DB;
+                Worksheet.Cells[_currentRow, 9].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[_currentRow, 10].Value = repForm.Activity_DB;
+                Worksheet.Cells[_currentRow, 11].Value = repForm.ProviderOrRecieverOKPO_DB;
 
-                    currentRow++;
-                }
+                #endregion
 
-                tmp = currentRow;
-                currentRow = 2;
-                var repNotes = rep.Notes.OrderBy(x => x.Order).ToList();
-                foreach (var comment in repNotes)
-                {
-                    #region Binding
-                    
-                    WorksheetPrim.Cells[currentRow, 1].Value = reps.Master.OkpoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 2].Value = reps.Master.ShortJurLicoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 3].Value = reps.Master.RegNoRep.Value;
-                    WorksheetPrim.Cells[currentRow, 4].Value = rep.CorrectionNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 5].Value = rep.Year_DB;
-                    WorksheetPrim.Cells[currentRow, 6].Value = comment.RowNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 7].Value = comment.GraphNumber_DB;
-                    WorksheetPrim.Cells[currentRow, 8].Value = comment.Comment_DB; 
-                    
-                    #endregion
+                _currentRow++;
+            }
 
-                    currentRow++;
-                }
+            var repNotes = rep.Notes
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var comment in repNotes)
+            {
+                #region Binding
+
+                WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
+                WorksheetPrim.Cells[_currentPrimRow, 4].Value = rep.CorrectionNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 5].Value = rep.Year_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 6].Value = comment.RowNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.GraphNumber_DB;
+                WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.Comment_DB;
+
+                #endregion
+
+                _currentPrimRow++;
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
     }
 
     #endregion
