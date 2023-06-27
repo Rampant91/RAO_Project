@@ -120,13 +120,12 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             _currentPrimRow = 2;
             Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
             WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
+            FillHeaders(formNum);
             if (OperatingSystem.IsWindows())
             {
                 Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
                 WorksheetPrim.Cells.AutoFitColumns();
             }
-            FillHeaders(formNum);
-
             foreach (var reps in repsList)
             {
                 CurrentReports = reps;
