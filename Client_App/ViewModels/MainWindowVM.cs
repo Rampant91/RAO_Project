@@ -13,7 +13,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -29,6 +28,7 @@ using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
+using Mono.Unix;
 using Mono.Unix.Native;
 
 namespace Client_App.ViewModels;
@@ -73,33 +73,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Init
 
-    private static async Task<string> GetSystemDirectory()
+    private static async Task GetSystemDirectory()
     {
         try
         {
             if (OperatingSystem.IsWindows())
             {
                 SystemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
-                return SystemDirectory;
+                return;
             }
-
-            //var userName = await RunCommandInBush("logname");
-            var process = new Process
+            if (OperatingSystem.IsLinux())
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "bash",
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false
-                }
-            };
-            process.Start();
-            await process.StandardInput.WriteLineAsync("logname");
-            var userName = await process.StandardOutput.ReadLineAsync();
-            SystemDirectory = Path.Combine("/home", userName!);
-            return SystemDirectory;
+                var userName = UnixUserInfo.GetLoginName();
+                SystemDirectory = Path.Combine("/home", userName!);
+            }
         }
         catch (Exception e)
         {
@@ -116,37 +103,37 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
-            Directory.CreateDirectory(LogsDirectory);
-            Directory.CreateDirectory(TmpDirectory);
-
+            if (OperatingSystem.IsWindows())
+            {
+                Directory.CreateDirectory(LogsDirectory);
+                Directory.CreateDirectory(TmpDirectory);
+            }
             if (OperatingSystem.IsLinux())
             {
-                new Mono.Unix.UnixFileInfo(LogsDirectory).Create(FilePermissions.ALLPERMS);
-                new Mono.Unix.UnixFileInfo(TmpDirectory).Create(FilePermissions.ALLPERMS);
+                UserPasswd = Syscall.getpwnam(UnixUserInfo.GetLoginName());
+                Syscall.mkdir(RaoDirectory, FilePermissions.ALLPERMS);
+                Syscall.mkdir(LogsDirectory, FilePermissions.ALLPERMS);
+                Syscall.mkdir(TmpDirectory, FilePermissions.ALLPERMS);
+                Syscall.chown(RaoDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+                Syscall.chown(LogsDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+                Syscall.chown(TmpDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
             }
         }
-        catch (Exception e)
+        catch
         {
-            Console.WriteLine(e.Message);
-            await ShowMessage.Handle(ErrorMessages.Error2);
-            throw new Exception(ErrorMessages.Error2[0]);
+            // ignored
         }
+
         var fl = Directory.GetFiles(TmpDirectory, ".");
         foreach (var file in fl)
         {
             try
             {
                 File.Delete(file);
-                if (OperatingSystem.IsLinux())
-                {
-                    new Mono.Unix.UnixFileInfo(file).Delete();
-                }
             }
-            catch (Exception e)
+            catch
             {
-                //Console.WriteLine(e.Message);
-                //await ShowMessage.Handle(ErrorMessages.Error3);
-                //throw new Exception(ErrorMessages.Error3[0]);
+                // ignored
             }
         }
     }
@@ -180,7 +167,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 loadDbFile = true;
                 break;
             }
-            catch (Exception)
+            catch
             {
                 //ignored
             }
@@ -255,7 +242,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await item.SortAsync();
         }
 
-        await LocalReports.Reports_Collection.QuickSortAsync();
+        await LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
     }
 
     public static int GetNumberInOrder(IEnumerable lst)

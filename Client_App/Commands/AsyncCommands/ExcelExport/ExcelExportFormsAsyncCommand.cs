@@ -11,7 +11,6 @@ using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -230,7 +229,7 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
         var lst = new List<Report>();
         if (forSelectedOrg)
         {
-            IQueryable<Report> repCollection = selectedReports!.Report_Collection.AsQueryable();
+            var repCollection = selectedReports!.Report_Collection;
             var newItem = repCollection
                 .Where(x => x.FormNum_DB.Equals(param))
                 .OrderBy(x => param[0] == '1' ? StaticStringMethods.StringReverse(x.StartPeriod_DB) : x.Year_DB);

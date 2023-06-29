@@ -22,13 +22,13 @@
     <Content Include="Assets\logo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.10" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.10" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+    <PackageReference Include="Avalonia" Version="0.10.21" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.21" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <PackageReference Include="MessageBox.Avalonia" Version="1.7.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.14">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.19">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

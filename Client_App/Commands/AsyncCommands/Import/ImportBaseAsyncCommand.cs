@@ -23,7 +23,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected bool SkipNew;                 // Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
-    private protected bool atLeastOneImportDone;    // Не отменена хотя бы одна операция импорта файлов/организаций/форм
+    private protected bool AtLeastOneImportDone;    // Не отменена хотя бы одна операция импорта файлов/организаций/форм
 
     private protected bool IsFirstLogLine;          // Это первая строчка в логгере ?
     public int CurrentLogLine;                      // Порядковый номер добавляемой формы в логгере для текущей операции
@@ -64,7 +64,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 if (addToDB)
                 {
                     first.Report_Collection.Add(it);
-                    atLeastOneImportDone = true;
+                    AtLeastOneImportDone = true;
                 }
                 Act = "\t\t\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -82,7 +82,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 if (addToDB)
                 {
                     first.Report_Collection.Add(it);
-                    atLeastOneImportDone = true;
+                    AtLeastOneImportDone = true;
                 }
                 Act = "Сохранены оба (пересечение)";
                 LoggerImportDTO = new LoggerImportDTO
@@ -108,7 +108,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             case "Заменить" or "Заменять все формы":
                 first.Report_Collection.Remove(elem);
                 first.Report_Collection.Add(it);
-                atLeastOneImportDone = true;
+                AtLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
@@ -135,7 +135,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
                 it.Notes.AddRange<IKey>(0, elem.Notes);
                 first.Report_Collection.Add(it);
-                atLeastOneImportDone = true;
+                AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {

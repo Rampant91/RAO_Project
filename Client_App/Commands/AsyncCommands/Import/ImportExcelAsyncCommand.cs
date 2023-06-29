@@ -49,13 +49,12 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 ButtonDefinitions = new[]
                                 {
-                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                                    new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
                                 },
                                 ContentTitle = "Импорт из Excel",
                                 ContentHeader = "Уведомление",
-                                ContentMessage =
-                                    $"Не удалось импортировать данные из {SourceFile.FullName}." +
-                                    $"{Environment.NewLine}Не соответствует формат данных!",
+                                ContentMessage = $"Не удалось импортировать данные из {SourceFile.FullName}." +
+                                                 $"{Environment.NewLine}Не соответствует формат данных!",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -196,7 +195,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             SkipNew = false;
             SkipReplace = false;
             HasMultipleReport = answer.Length > 1;
-            atLeastOneImportDone = false;
+            AtLeastOneImportDone = false;
             if (baseReps.Report_Collection.Count != 0)
             {
                 switch (worksheet0.Name)
@@ -229,9 +228,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 ButtonDefinitions = new[]
                                 {
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                            new ButtonDefinition { Name = "Да для всех" },
-                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Да для всех" },
+                                    new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
                                 },
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
@@ -262,17 +261,16 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 ButtonDefinitions = new[]
                                 {
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
                                 },
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
-                                ContentMessage =
-                                    $"Будет добавлена новая организация ({repNumber})." +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                    $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
+                                                 $"{Environment.NewLine}" +
+                                                 $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                                 $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                                 $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -294,7 +292,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
                 : "ов";
-        if (atLeastOneImportDone)
+        if (AtLeastOneImportDone)
         {
             #region MessageImportDone
 
