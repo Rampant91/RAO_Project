@@ -246,11 +246,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         answ[0] = SelectedItems;
         answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
         answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-        var collection = answ[0] as IKeyCollection;
         var minColumn = Convert.ToInt32(answ[1]) + 1;
         var maxColumn = Convert.ToInt32(answ[2]) + 1;
         var _s = 0.0;
-        if (minColumn == maxColumn && collection != null)
+        if (minColumn == maxColumn && answ[0] is IKeyCollection collection)
         {
             foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
             {
@@ -569,7 +568,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region NowPage
-    public static readonly DirectProperty<DataGrid<T>, string> NowPageProperty =
+
+    private static readonly DirectProperty<DataGrid<T>, string> NowPageProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(NowPage),
             o => o.NowPage,
@@ -584,67 +584,69 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             try
             {
                 var val = Convert.ToInt32(value);
-                if (val != null)
+                if (val == null) return;
+                var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+                var maxPage = searchText == ""
+                    ? Items != null
+                        ? Items.Count % PageSize == 0
+                            ? Items.Count / PageSize
+                            : Items.Count / PageSize + 1
+                        : 1
+                    : _itemsWithSearch != null
+                        ? _itemsWithSearch.Count == 0
+                            ? 1
+                            : _itemsWithSearch.Count % PageSize == 0
+                                ? _itemsWithSearch.Count / PageSize
+                                : _itemsWithSearch.Count / PageSize + 1
+                        : 1;
+                if (val.ToString() == _nowPage) return;
+                if (val <= maxPage && val >= 1)
                 {
-                    var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                    var maxPage = searchText == ""
-                        ? Items != null
-                            ? Items.Count % PageSize == 0
-                                ? Items.Count / PageSize
-                                : Items.Count / PageSize + 1
-                            : 1
-                        : _itemsWithSearch != null
-                            ? _itemsWithSearch.Count == 0
-                                ? 1
-                                : _itemsWithSearch.Count % PageSize == 0
-                                    ? _itemsWithSearch.Count / PageSize
-                                    : _itemsWithSearch.Count / PageSize + 1
-                            : 1;
-                    if (val.ToString() != _nowPage)
+                    SetAndRaise(NowPageProperty, ref _nowPage, value);
+                    UpdateCells();
+                }
+                else
+                {
+                    if (val > maxPage)
                     {
-                        if (val <= maxPage && val >= 1)
+                        if (_nowPage != maxPage.ToString())
                         {
-                            SetAndRaise(NowPageProperty, ref _nowPage, value);
+                            SetAndRaise(NowPageProperty, ref _nowPage, maxPage.ToString());
                             UpdateCells();
                         }
-                        else
+                    }
+                    if (val < 1)
+                    {
+                        if (_nowPage != "1")
                         {
-                            if (val > maxPage)
-                            {
-                                if (_nowPage != maxPage.ToString())
-                                {
-                                    SetAndRaise(NowPageProperty, ref _nowPage, maxPage.ToString());
-                                    UpdateCells();
-                                }
-                            }
-                            if (val < 1)
-                            {
-                                if (_nowPage != "1")
-                                {
-                                    SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                                    UpdateCells();
-                                }
-                            }
+                            SetAndRaise(NowPageProperty, ref _nowPage, "1");
+                            UpdateCells();
                         }
                     }
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
     }
 
-    public void NowPageDown(object sender, RoutedEventArgs args)
+    private void NowPageDown(object sender, RoutedEventArgs args)
     {
         NowPage = (Convert.ToInt32(NowPage) - 1).ToString();
     }
-    public void NowPageUp(object sender, RoutedEventArgs args)
+
+    private void NowPageUp(object sender, RoutedEventArgs args)
     {
         NowPage = (Convert.ToInt32(NowPage) + 1).ToString();
     }
+
     #endregion
 
     #region CommandsList
-    public static readonly DirectProperty<DataGrid<T>, ObservableCollection<KeyCommand>> CommandsListProperty =
+
+    private static readonly DirectProperty<DataGrid<T>, ObservableCollection<KeyCommand>> CommandsListProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, ObservableCollection<KeyCommand>>(
             nameof(CommandsList),
             o => o.CommandsList,
@@ -719,27 +721,23 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         return null;
     }
 
-    private void ComandTapped(object sender, RoutedEventArgs args)
+    private void CommandTapped(object sender, RoutedEventArgs args)
     {
-        if (sender != null)
+        if (sender == null) return;
+        var selectItem = (string)((MenuItem)sender).Header;
+        if (selectItem == null) return;
+        var rt = CommandsList
+            .Where(item => item.IsContextMenuCommand && item.ContextMenuText.Contains(selectItem));
+        foreach (var item in rt)
         {
-            var selectItem = (string)((MenuItem)sender).Header;
-            if (selectItem != null)
+            item.DoCommand(GetParamByParamName(item));
+            if (item.ContextMenuText[0].Contains("Удалить форму"))
             {
-                var rt = CommandsList
-                    .Where(item => item.IsContextMenuCommand && item.ContextMenuText.Contains(selectItem));
-                foreach (var item in rt)
-                {
-                    item.DoCommand(GetParamByParamName(item));
-                    if (item.ContextMenuText[0].Contains("Удалить форму"))
-                    {
-                        SelectedItems = null;
-                    }
-                    if (item.IsUpdateCells)
-                    {
-                        UpdateCells();
-                    }
-                }
+                SelectedItems = null;
+            }
+            if (item.IsUpdateCells)
+            {
+                UpdateCells();
             }
         }
     }
@@ -802,7 +800,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     private StackPanel HeaderStackPanel { get; set; }
     private StackPanel CenterStackPanel { get; set; }
-    public DataGrid(string name = "")
+
+    protected DataGrid(string name = "")
     {
         this.Name = name;
         Focusable = true;
@@ -823,19 +822,17 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #region SetSelectedControls
     private void SetSelectedControls()
     {
-        if (Items != null && Items.Count != 0)
+        if (Items == null || Items.Count == 0) return;
+        if (ChooseMode == ChooseMode.Cell)
         {
-            if (ChooseMode == ChooseMode.Cell)
-            {
-                if (MultilineMode == MultilineMode.Multi) SetSelectedControls_CellMulti();
-                if (MultilineMode == MultilineMode.Single) SetSelectedControls_CellSingle();
-            }
+            if (MultilineMode == MultilineMode.Multi) SetSelectedControls_CellMulti();
+            if (MultilineMode == MultilineMode.Single) SetSelectedControls_CellSingle();
+        }
 
-            if (ChooseMode == ChooseMode.Line)
-            {
-                if (MultilineMode == MultilineMode.Multi) SetSelectedControls_LineMulti();
-                if (MultilineMode == MultilineMode.Single) SetSelectedControls_LineSingle();
-            }
+        if (ChooseMode == ChooseMode.Line)
+        {
+            if (MultilineMode == MultilineMode.Multi) SetSelectedControls_LineMulti();
+            if (MultilineMode == MultilineMode.Single) SetSelectedControls_LineSingle();
         }
     }
 
@@ -1038,7 +1035,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region DataGridPoiter
-    public bool DownFlag { get; set; }
+
     private int[] FirstPressedItem { get; set; } = new int[2];
     private int[] LastPressedItem { get; set; } = new int[2];
     private bool SetFirstPressed(int[] first)
@@ -1071,32 +1068,28 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         foreach (var item in Rows)
         {
             sumy += item.Bounds.Height;
-            if (mouse[0] <= sumy)
+            if (!(mouse[0] <= sumy)) continue;
+            if (mouse[0] >= 0)
             {
-                if (mouse[0] >= 0)
+                var sumx = 0.0;
+                foreach (var it in item.Children.Cast<Cell?>())
                 {
-                    var sumx = 0.0;
-                    foreach (var it in item.Children.Cast<Cell?>())
+                    sumx += it.Bounds.Width;
+                    if (!(mouse[1] <= sumx)) continue;
+                    if (mouse[1] >= 0)
                     {
-                        sumx += it.Bounds.Width;
-                        if (mouse[1] <= sumx)
-                        {
-                            if (mouse[1] >= 0)
-                            {
-                                tmp[0] = it.Row;
-                                tmp[1] = it.Column;
-                                flag = true;
-                                doFlag = true;
-                                break;
-                            }
-                            flag = true;
-                            break;
-                        }
+                        tmp[0] = it.Row;
+                        tmp[1] = it.Column;
+                        flag = true;
+                        doFlag = true;
+                        break;
                     }
-                    if (flag) break;
+                    flag = true;
+                    break;
                 }
-                else break;
+                if (flag) break;
             }
+            else break;
         }
         if (!doFlag)
         {
@@ -1111,33 +1104,21 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
         var doSetItemFlag = false;
 
-        if (paramKey is PointerUpdateKind.LeftButtonPressed or PointerUpdateKind.RightButtonPressed)
+        if (paramKey is not (PointerUpdateKind.LeftButtonPressed or PointerUpdateKind.RightButtonPressed)) return;
+        var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
+        if (paramKey == PointerUpdateKind.RightButtonPressed)
         {
-            var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
-            if (paramKey == PointerUpdateKind.RightButtonPressed)
+            var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+            var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+            var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+            if (paramRowColumn[0] <= minRow || paramRowColumn[0] >= maxRow)
             {
-                var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
-                var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-                var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                if (paramRowColumn[0] <= minRow || paramRowColumn[0] >= maxRow)
+                if (ChooseMode != ChooseMode.Line)
                 {
-                    if (ChooseMode != ChooseMode.Line)
+                    if (paramRowColumn[0] == minRow || paramRowColumn[0] == maxRow)
                     {
-                        if (paramRowColumn[0] == minRow || paramRowColumn[0] == maxRow)
-                        {
-                            if (paramRowColumn[1] < minColumn || paramRowColumn[1] > maxColumn)
-                            {
-                                doSetItemFlag = SetFirstPressed(paramRowColumn);
-                                if (doSetItemFlag)
-                                {
-                                    LastPressedItem[0] = FirstPressedItem[0];
-                                    LastPressedItem[1] = FirstPressedItem[1];
-                                }
-                                doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
-                            }
-                        }
-                        else
+                        if (paramRowColumn[1] < minColumn || paramRowColumn[1] > maxColumn)
                         {
                             doSetItemFlag = SetFirstPressed(paramRowColumn);
                             if (doSetItemFlag)
@@ -1159,60 +1140,68 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
                     }
                 }
-                if (FirstPressedItem[0] != -1)
+                else
                 {
-                    ContextMenu.Close();
-                    var tmp1 = (Cell)Rows
-                        .SelectMany(x => x.Children)
-                        .FirstOrDefault(item => ((Cell)item).Row == paramRowColumn[0]
-                                                && ((Cell)item).Column == paramRowColumn[1])!;
-                    ContextMenu.PlacementTarget = tmp1;
-                    ContextMenu.Open();
+                    doSetItemFlag = SetFirstPressed(paramRowColumn);
+                    if (doSetItemFlag)
+                    {
+                        LastPressedItem[0] = FirstPressedItem[0];
+                        LastPressedItem[1] = FirstPressedItem[1];
+                    }
+                    doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
                 }
             }
-            else
+            if (FirstPressedItem[0] != -1)
             {
                 ContextMenu.Close();
-                doSetItemFlag = SetFirstPressed(paramRowColumn);
-                if (doSetItemFlag)
-                {
-                    LastPressedItem[0] = FirstPressedItem[0];
-                    LastPressedItem[1] = FirstPressedItem[1];
-                }
-                doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
+                var tmp1 = (Cell)Rows
+                    .SelectMany(x => x.Children)
+                    .FirstOrDefault(item => ((Cell)item).Row == paramRowColumn[0]
+                                            && ((Cell)item).Column == paramRowColumn[1])!;
+                ContextMenu.PlacementTarget = tmp1;
+                ContextMenu.Open();
             }
-
+        }
+        else
+        {
+            ContextMenu.Close();
+            doSetItemFlag = SetFirstPressed(paramRowColumn);
             if (doSetItemFlag)
             {
-                SetSelectedControls();
-                if (paramKey == PointerUpdateKind.LeftButtonPressed)
+                LastPressedItem[0] = FirstPressedItem[0];
+                LastPressedItem[1] = FirstPressedItem[1];
+            }
+            doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
+        }
+
+        if (!doSetItemFlag) return;
+        {
+            SetSelectedControls();
+            if (paramKey != PointerUpdateKind.LeftButtonPressed) return;
+            var item = (Cell)SelectedCells.FirstOrDefault();
+            if (item?.Control is TextBox ctrl)
+            {
+                ctrl.Focus();
+                ctrl.SelectAll();
+                var num = 0;
+                if (ctrl.Text != null)
                 {
-                    var item = (Cell)SelectedCells.FirstOrDefault();
-                    if (item?.Control is TextBox ctrl)
-                    {
-                        ctrl.Focus();
-                        ctrl.SelectAll();
-                        var num = 0;
-                        if (ctrl.Text != null)
-                        {
-                            num = ctrl.Text.Length;
-                        }
-                        ctrl.CaretIndex = num - 1;
-                    }
+                    num = ctrl.Text.Length;
                 }
+                ctrl.CaretIndex = num - 1;
             }
         }
     }
 
     private void MouseDoublePressed(object sender, EventArgs args)
     {
-        if (FirstPressedItem[0] != -1)
+        if (FirstPressedItem[0] == -1) return;
+        var commands = _CommandsList
+            .Where(item => item.IsDoubleTappedCommand)
+            .ToList();
+        foreach (var item in commands)
         {
-            var commands = _CommandsList.Where(item => item.IsDoubleTappedCommand);
-            foreach (var item in commands)
-            {
-                item.DoCommand(GetParamByParamName(item));
-            }
+            item.DoCommand(GetParamByParamName(item));
         }
     }
 
@@ -1221,15 +1210,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
-        if (paramKey == PointerUpdateKind.LeftButtonReleased)
+        if (paramKey != PointerUpdateKind.LeftButtonReleased) return;
+        var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
+        if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
         {
-            var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
-            if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
-            {
-                LastPressedItem = paramRowColumn;
-                ScrollLeftRight = 0;
-                SetSelectedControls();
-            }
+            LastPressedItem = paramRowColumn;
+            ScrollLeftRight = 0;
+            SetSelectedControls();
         }
     }
     private void MouseMoved(object sender, PointerEventArgs args)
@@ -1237,24 +1224,20 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         var paramKey = args.GetCurrentPoint(this).Properties;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
-        if (paramKey.IsLeftButtonPressed)
+        if (!paramKey.IsLeftButtonPressed) return;
+        var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
+        if (LastPressedItem[0] == paramRowColumn[0] && LastPressedItem[1] == paramRowColumn[1]) return;
+        var pr = ((Panel)Content).Bounds.Width;
+        if (LastPressedItem[1] < paramRowColumn[1] && paramPos.X > pr / 4)
         {
-            var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
-            if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
-            {
-                var pr = ((Panel)Content).Bounds.Width;
-                if (LastPressedItem[1] < paramRowColumn[1] && paramPos.X > pr / 4)
-                {
-                    ScrollLeftRight += 100;
-                }
-                if (LastPressedItem[1] > paramRowColumn[1] && (paramPos.X < pr - 700 || paramPos.X < pr / 4))
-                {
-                    ScrollLeftRight -= 50;
-                }
-                LastPressedItem = paramRowColumn;
-                SetSelectedControls();
-            }
+            ScrollLeftRight += 100;
         }
+        if (LastPressedItem[1] > paramRowColumn[1] && (paramPos.X < pr - 700 || paramPos.X < pr / 4))
+        {
+            ScrollLeftRight -= 50;
+        }
+        LastPressedItem = paramRowColumn;
+        SetSelectedControls();
         //else
         //{
             //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
@@ -1268,9 +1251,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             //}
         //}
     }
+
     #endregion
 
     #region UpdateCells
+
     private void UpdateCells()
     {
         var count = 0;
@@ -1349,7 +1334,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             Rows[i - offset].IsVisible = false;
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
             var t = typeof(T)
@@ -1358,26 +1346,20 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             {
                 for (var i = 0; i < PageSize; i++)
                 {
-                    if (Rows[i].DataContext is IBaseColor baseColor)
+                    if (Rows[i].DataContext is not IBaseColor baseColor) continue;
+                    var _t = baseColor;
+                    if (_t == null) continue;
+                    var tmp2 = Rows
+                        .SelectMany(x => x.Children)
+                        .Where(item => ((Cell)item).Row == i)
+                        .ToList();
+                    var index = (int)_t.BaseColor;
+                    var color = IBaseColor.ColorTypeList[index];
+                    var solidColorBrush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+
+                    foreach (var item in tmp2.Cast<Cell?>())
                     {
-                        var _t = baseColor;
-                        if (_t != null)
-                        {
-
-                            var tmp2 = Rows
-                                .SelectMany(x => x.Children)
-                                .Where(item => ((Cell)item).Row == i)
-                                .ToList();
-                            var index = (int)_t.BaseColor;
-                            var color = IBaseColor.ColorTypeList[index];
-                            var solidColorBrush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
-
-                            foreach (var control in tmp2)
-                            {
-                                var item = (Cell)control;
-                                item.Background = solidColorBrush;
-                            }
-                        }
+                        item.Background = solidColorBrush;
                     }
                 }
             }
@@ -1536,7 +1518,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 case 1:
                 {
                     var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
-                    tmp.Tapped += ComandTapped;
+                    tmp.Tapped += CommandTapped;
                     lr.Add(tmp);
                     break;
                 }
@@ -1546,7 +1528,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     foreach (var it in item)
                     {
                         var tmp = new MenuItem { Header = it.ContextMenuText[1] };
-                        tmp.Tapped += ComandTapped;
+                        tmp.Tapped += CommandTapped;
                         inlr.Add(tmp);
                     }
                     lr.Add(new MenuItem { Header = item.Key, Items = inlr });
@@ -1558,195 +1540,163 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         ContextMenu = menu;
     }
 
-    List<ColumnDefinition> HeadersColumns = new();
-    int GridSplitterSize = 2;
+    readonly List<ColumnDefinition> HeadersColumns = new();
+    readonly int GridSplitterSize = 2;
     private void MakeHeaderInner(DataGridColumns ls)
     {
 
-        if (ls == null)
-        {
-            return;
-        }
-        else
-        {
-            var level = ls.Level;
+        if (ls == null) return;
 
-            Width = !IsAutoSizable 
-                ? ls.SizeCol 
-                : double.NaN;
-            HeadersColumns.Clear();
-            var tre = ls.GetLevel(level - 1);
-            for (var i = level - 1; i >= 1; i--)
+        var level = ls.Level;
+
+        Width = !IsAutoSizable 
+            ? ls.SizeCol 
+            : double.NaN;
+        HeadersColumns.Clear();
+        var tre = ls.GetLevel(level - 1);
+        for (var i = level - 1; i >= 1; i--)
+        {
+            Grid headerRow = new();
+            var count = 0;
+            foreach (var item in tre)
             {
-                Grid headerRow = new();
-                var count = 0;
-                foreach (var item in tre)
+                Binding b = new()
                 {
-                    Binding b = new()
-                    {
-                        Source = item,
-                        Path = "GridLength",
-                        Mode = BindingMode.TwoWay,
-                        Converter = new stringToGridLength_Converter()
-                    };
-                    var column = new ColumnDefinition()
-                    {
-                        [!ColumnDefinition.WidthProperty] = b
-                    };
-                    headerRow.ColumnDefinitions.Add(column);
+                    Source = item,
+                    Path = "GridLength",
+                    Mode = BindingMode.TwoWay,
+                    Converter = new stringToGridLength_Converter()
+                };
+                var column = new ColumnDefinition()
+                {
+                    [!ColumnDefinition.WidthProperty] = b
+                };
+                headerRow.ColumnDefinitions.Add(column);
 
-                    Cell cell = new()
-                    {
-                        [Grid.ColumnProperty] = count,
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        Height = i == 2 ? 40 : 25,
-                        BorderColor = new SolidColorBrush(Color.Parse("Gray")),
-                        Background = new SolidColorBrush(Color.Parse("White"))
-                    };
+                Cell cell = new()
+                {
+                    [Grid.ColumnProperty] = count,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Height = i == 2 ? 40 : 25,
+                    BorderColor = new SolidColorBrush(Color.Parse("Gray")),
+                    Background = new SolidColorBrush(Color.Parse("White"))
+                };
 
-                    TextBlock textBlock = new()
-                    {
-                        TextWrapping = TextWrapping.Wrap,
-                        Text = item.name.Contains("null") ? "" : item.name,
-                        TextAlignment = TextAlignment.Center,
-                        FontSize = 12,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Stretch
-                    };
+                TextBlock textBlock = new()
+                {
+                    TextWrapping = TextWrapping.Wrap,
+                    Text = item.name.Contains("null") ? "" : item.name,
+                    TextAlignment = TextAlignment.Center,
+                    FontSize = 12,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Stretch
+                };
 
-                    cell.Control = textBlock;
+                cell.Control = textBlock;
 
-                    headerRow.Children.Add(cell);
-                    if (count + 1 < tre.Count * 2 - 1)
+                headerRow.Children.Add(cell);
+                if (count + 1 < tre.Count * 2 - 1)
+                {
+                    headerRow.ColumnDefinitions.Add(new ColumnDefinition
                     {
-                        headerRow.ColumnDefinitions.Add(new ColumnDefinition
+                        Width = GridLength.Parse(GridSplitterSize.ToString())
+                    });
+                    if (i == 1 && IsColumnResize)
+                    {
+                        headerRow.Children.Add(new GridSplitter()
                         {
-                            Width = GridLength.Parse(GridSplitterSize.ToString())
+                            [Grid.ColumnProperty] = count + 1,
+                            ResizeDirection = GridResizeDirection.Columns,
+                            Background = new SolidColorBrush(Color.Parse("Gray")),
+                            ResizeBehavior = GridResizeBehavior.PreviousAndNext
                         });
-                        if (i == 1 && IsColumnResize)
-                        {
-                            headerRow.Children.Add(new GridSplitter()
-                            {
-                                [Grid.ColumnProperty] = count + 1,
-                                ResizeDirection = GridResizeDirection.Columns,
-                                Background = new SolidColorBrush(Color.Parse("Gray")),
-                                ResizeBehavior = GridResizeBehavior.PreviousAndNext
-                            });
-                            //HeaderRow.Children.Add(new GridSplitter()
-                            //{
-                            //    [Grid.ColumnProperty] = count + 2,
-                            //    ResizeDirection = GridResizeDirection.Columns,
-                            //    Background = new SolidColorBrush(Color.Parse("Gray")),
-                            //    ResizeBehavior = GridResizeBehavior.PreviousAndCurrent
-                            //});
-                        }
-                        count += 2;
+                        //HeaderRow.Children.Add(new GridSplitter()
+                        //{
+                        //    [Grid.ColumnProperty] = count + 2,
+                        //    ResizeDirection = GridResizeDirection.Columns,
+                        //    Background = new SolidColorBrush(Color.Parse("Gray")),
+                        //    ResizeBehavior = GridResizeBehavior.PreviousAndCurrent
+                        //});
                     }
-                    else
-                    {
-                        count++;
-                    }
-                    if (i == 1)
-                    {
-                        HeadersColumns.Add(column);
-                    }
-                }
-                HeaderStackPanel.Children.Add(headerRow);
-                if (i - 1 >= 1)
-                {
-                    tre = ls.GetLevel(i - 1);
+                    count += 2;
                 }
                 else
                 {
-                    break;
+                    count++;
+                }
+                if (i == 1)
+                {
+                    HeadersColumns.Add(column);
                 }
             }
+            HeaderStackPanel.Children.Add(headerRow);
+            if (i - 1 >= 1)
+            {
+                tre = ls.GetLevel(i - 1);
+            }
+            else
+                break;
         }
     }
 
     private void MakeCenterInner(DataGridColumns ls)
     {
-        if (ls == null)
-        {
-            return;
-        }
-        else
-        {
-            Rows.Clear();
-            var lst = ls.GetLevel(1);
+        if (ls == null) return;
 
-            for (var i = 0; i < PageSize; i++)
+        Rows.Clear();
+        var lst = ls.GetLevel(1);
+
+        for (var i = 0; i < PageSize; i++)
+        {
+            var column = 0;
+            var count = 0;
+            DataGridRow rowStackPanel = new() { Row = i };
+
+            foreach (var item in lst)
             {
-                var column = 0;
-                var count = 0;
-                DataGridRow rowStackPanel = new() { Row = i };
-
-                foreach (var item in lst)
+                Binding b = new()
                 {
-                    Binding b = new()
-                    {
-                        Source = HeadersColumns[column],
-                        Path = nameof(ColumnDefinition.Width)
-                    };
-                    var columnq = new ColumnDefinition { [!ColumnDefinition.WidthProperty] = b };
-                    rowStackPanel.ColumnDefinitions.Add(columnq);
+                    Source = HeadersColumns[column],
+                    Path = nameof(ColumnDefinition.Width)
+                };
+                var columnq = new ColumnDefinition { [!ColumnDefinition.WidthProperty] = b };
+                rowStackPanel.ColumnDefinitions.Add(columnq);
 
-                    Control textBox;
-                    Cell cell = new()
+                Control textBox;
+                Cell cell = new()
+                {
+                    [Grid.ColumnProperty] = count,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Row = i,
+                    Column = column,
+                    BorderColor = new SolidColorBrush(Color.Parse("Gray")),
+                    Background = new SolidColorBrush(Color.Parse("White"))
+                };
+                if (item.ChooseLine)
+                {
+                    cell.Tapped += ChooseAllRow;
+                }
+                if (IsReadable || item.Blocked || IsReadableSum)
+                {
+                    if (Sum || CommentСhangeable)
                     {
-                        [Grid.ColumnProperty] = count,
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        Row = i,
-                        Column = column,
-                        BorderColor = new SolidColorBrush(Color.Parse("Gray")),
-                        Background = new SolidColorBrush(Color.Parse("White"))
-                    };
-                    if (item.ChooseLine)
-                    {
-                        cell.Tapped += ChooseAllRow;
-                    }
-                    if (IsReadable || item.Blocked || IsReadableSum)
-                    {
-                        if (Sum || CommentСhangeable)
+                        var f22 = item.Binding is "PackQuantity" or "VolumeInPack" or "MassInPack" or "Comments";
+                        if (f22)
                         {
-                            var f22 = item.Binding is "PackQuantity" or "VolumeInPack" or "MassInPack" or "Comments";
-                            if (f22)
+                            textBox = new TextBox()
                             {
-                                textBox = new TextBox()
-                                {
-                                    [!DataContextProperty] = new Binding(item.Binding),
-                                    [!TextBox.TextProperty] = new Binding("Value"),
-                                    [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
-                                };
-                                ((TextBox)textBox).TextAlignment = TextAlignment.Left;
-                                textBox.VerticalAlignment = VerticalAlignment.Stretch;
-                                textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                                textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
-                                if (item.IsTextWrapping)
-                                {
-                                    ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
-                                    ((TextBox)textBox).AcceptsReturn = true;
-                                }
-                            }
-                            else
+                                [!DataContextProperty] = new Binding(item.Binding),
+                                [!TextBox.TextProperty] = new Binding("Value"),
+                                [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                            };
+                            ((TextBox)textBox).TextAlignment = TextAlignment.Left;
+                            textBox.VerticalAlignment = VerticalAlignment.Stretch;
+                            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+                            textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
+                            if (item.IsTextWrapping)
                             {
-                                textBox = new TextBlock()
-                                {
-                                    [!DataContextProperty] = new Binding(item.Binding),
-                                    [!TextBlock.TextProperty] = new Binding("Value"),
-                                    [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
-                                };
-
-                                if (item.Blocked)
-                                {
-                                    textBox[!BackgroundProperty] = cell[!Cell.ChooseColorProperty];
-                                }
-                                ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
-                                textBox.VerticalAlignment = VerticalAlignment.Center;
-                                textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                                ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
-                                textBox.Height = 30;
-                                textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
+                                ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
+                                ((TextBox)textBox).AcceptsReturn = true;
                             }
                         }
                         else
@@ -1772,44 +1722,64 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     }
                     else
                     {
-                        textBox = new TextBox()
+                        textBox = new TextBlock()
                         {
                             [!DataContextProperty] = new Binding(item.Binding),
-                            [!TextBox.TextProperty] = new Binding("Value"),
-                            [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                            [!TextBlock.TextProperty] = new Binding("Value"),
+                            [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                         };
-                        ((TextBox)textBox).TextAlignment = TextAlignment.Left;
-                        textBox.VerticalAlignment = VerticalAlignment.Stretch;
-                        textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                        textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
-                        if (item.IsTextWrapping)
+
+                        if (item.Blocked)
                         {
-                            ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
-                            ((TextBox)textBox).AcceptsReturn = true;
+                            textBox[!BackgroundProperty] = cell[!Cell.ChooseColorProperty];
                         }
+                        ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
+                        textBox.VerticalAlignment = VerticalAlignment.Center;
+                        textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+                        ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
+                        textBox.Height = 30;
+                        textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                     }
-
-                    cell.Control = textBox;
-
-                    rowStackPanel.Children.Add(cell);
-                    if (count + 1 < lst.Count * 2 - 1)
-                    {
-                        rowStackPanel.ColumnDefinitions.Add(new ColumnDefinition
-                        {
-                            Width = GridLength.Parse(GridSplitterSize.ToString())
-                        });
-                        count += 2;
-                    }
-                    else
-                    {
-                        count++;
-                    }
-                    column++;
                 }
-                rowStackPanel.IsVisible = false;
-                CenterStackPanel.Children.Add(rowStackPanel);
-                Rows.Add(rowStackPanel);
+                else
+                {
+                    textBox = new TextBox()
+                    {
+                        [!DataContextProperty] = new Binding(item.Binding),
+                        [!TextBox.TextProperty] = new Binding("Value"),
+                        [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                    };
+                    ((TextBox)textBox).TextAlignment = TextAlignment.Left;
+                    textBox.VerticalAlignment = VerticalAlignment.Stretch;
+                    textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
+                    if (item.IsTextWrapping)
+                    {
+                        ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
+                        ((TextBox)textBox).AcceptsReturn = true;
+                    }
+                }
+
+                cell.Control = textBox;
+
+                rowStackPanel.Children.Add(cell);
+                if (count + 1 < lst.Count * 2 - 1)
+                {
+                    rowStackPanel.ColumnDefinitions.Add(new ColumnDefinition
+                    {
+                        Width = GridLength.Parse(GridSplitterSize.ToString())
+                    });
+                    count += 2;
+                }
+                else
+                {
+                    count++;
+                }
+                column++;
             }
+            rowStackPanel.IsVisible = false;
+            CenterStackPanel.Children.Add(rowStackPanel);
+            Rows.Add(rowStackPanel);
         }
     }
 
@@ -1828,6 +1798,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private void MakeAll()
     {
         #region Main_<MainStackPanel>
+
         Panel mainPanel = new()
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -1840,9 +1811,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
         mainPanel.Children.Add(mainStackPanel);
+
         #endregion
 
         #region Search
+
         if (Search)
         {
             mainStackPanel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Parse("35") });
@@ -1876,9 +1849,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             };
             headerSearchStackPanel.Children.Add(searchTextBox);
         }
+
         #endregion
 
         #region Header
+
         mainStackPanel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         Border headerBorder = new()
         {
@@ -1918,9 +1893,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             HeaderStackPanel.Children.Add(headerStackPanel2);
         }
         headerPanel.Children.Add(HeaderStackPanel);
+
         #endregion
 
         #region Center
+
         mainStackPanel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Parse("*") });
         Border centerBorder = new()
         {
@@ -2007,6 +1984,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         #endregion
 
         #region MiddleFooter
+
         mainStackPanel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         Border middleFooterBorder = new()
         {
@@ -2089,6 +2067,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         #endregion
 
         #region Footer
+
         mainStackPanel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Parse("45") });
         Border footerBorder = new()
         {
@@ -2156,5 +2135,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
         Content = mainPanel;
     }
+
     #endregion
 }

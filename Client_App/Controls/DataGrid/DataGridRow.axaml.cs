@@ -8,7 +8,8 @@ namespace Client_App.Controls.DataGrid;
 public class DataGridRow : Grid
 {
     #region Row
-    public static readonly DirectProperty<DataGridRow, int> RowProperty =
+
+    private static readonly DirectProperty<DataGridRow, int> RowProperty =
         AvaloniaProperty.RegisterDirect<DataGridRow, int>(
             nameof(Row),
             o => o.Row,
@@ -20,6 +21,7 @@ public class DataGridRow : Grid
         get => _Row;
         set => SetAndRaise(RowProperty, ref _Row, value);
     }
+
     #endregion
 
     #region ChooseColor

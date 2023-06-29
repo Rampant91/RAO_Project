@@ -76,6 +76,7 @@ public class RowNumber : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyProp
     }
 
     #region INotifyPropertyChanged
+
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         if (PropertyChanged != null)
@@ -84,5 +85,6 @@ public class RowNumber : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyProp
         }
     }
     public event PropertyChangedEventHandler PropertyChanged;
+
     #endregion
 }

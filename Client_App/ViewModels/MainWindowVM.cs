@@ -13,7 +13,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -29,6 +28,8 @@ using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
+using Mono.Unix;
+using Mono.Unix.Native;
 
 namespace Client_App.ViewModels;
 
@@ -72,33 +73,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Init
 
-    private static async Task<string> GetSystemDirectory()
+    private static async Task GetSystemDirectory()
     {
         try
         {
             if (OperatingSystem.IsWindows())
             {
                 SystemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
-                return SystemDirectory;
+                return;
             }
-
-            //var userName = await RunCommandInBush("logname");
-            var process = new Process
+            if (OperatingSystem.IsLinux())
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "bash",
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false
-                }
-            };
-            process.Start();
-            await process.StandardInput.WriteLineAsync("logname");
-            var userName = await process.StandardOutput.ReadLineAsync();
-            SystemDirectory = Path.Combine("/home", userName!);
-            return SystemDirectory;
+                var userName = UnixUserInfo.GetLoginName();
+                SystemDirectory = Path.Combine("/home", userName!);
+            }
         }
         catch (Exception e)
         {
@@ -115,15 +103,27 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
-            Directory.CreateDirectory(LogsDirectory);
-            Directory.CreateDirectory(TmpDirectory);
+            if (OperatingSystem.IsWindows())
+            {
+                Directory.CreateDirectory(LogsDirectory);
+                Directory.CreateDirectory(TmpDirectory);
+            }
+            if (OperatingSystem.IsLinux())
+            {
+                UserPasswd = Syscall.getpwnam(UnixUserInfo.GetLoginName());
+                Syscall.mkdir(RaoDirectory, FilePermissions.ALLPERMS);
+                Syscall.mkdir(LogsDirectory, FilePermissions.ALLPERMS);
+                Syscall.mkdir(TmpDirectory, FilePermissions.ALLPERMS);
+                Syscall.chown(RaoDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+                Syscall.chown(LogsDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+                Syscall.chown(TmpDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+            }
         }
-        catch (Exception e)
+        catch
         {
-            Console.WriteLine(e.Message);
-            await ShowMessage.Handle(ErrorMessages.Error2);
-            throw new Exception(ErrorMessages.Error2[0]);
+            // ignored
         }
+
         var fl = Directory.GetFiles(TmpDirectory, ".");
         foreach (var file in fl)
         {
@@ -131,11 +131,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             {
                 File.Delete(file);
             }
-            catch (Exception e)
+            catch
             {
-                //Console.WriteLine(e.Message);
-                //await ShowMessage.Handle(ErrorMessages.Error3);
-                //throw new Exception(ErrorMessages.Error3[0]);
+                // ignored
             }
         }
     }
@@ -169,7 +167,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 loadDbFile = true;
                 break;
             }
-            catch (Exception)
+            catch
             {
                 //ignored
             }
@@ -244,7 +242,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await item.SortAsync();
         }
 
-        await LocalReports.Reports_Collection.QuickSortAsync();
+        await LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
     }
 
     public static int GetNumberInOrder(IEnumerable lst)
@@ -457,6 +455,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ChangeReports { get; set; }                 //  Изменить Формы организации (1.0 и 2.0)
     public ICommand DeleteForm { get; set; }                    //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                 //  Удалить выбранную организацию
+    public ICommand ExcelExportAll { get; set; }                //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
     public ICommand ExcelExportFormAnalysis { get; set; }       //  Выбранная форма -> Выгрузка Excel -> Для анализа
     public ICommand ExcelExportFormPrint { get; set; }          //  Выбранная форма -> Выгрузка Excel -> Для печати
     public ICommand ExcelExportForms { get; set; }              //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
@@ -466,7 +465,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportListOfOrgs { get; set; }         //  Excel -> Список организаций
     public ICommand ExcelExportPasWithoutRep { get; set; }      //  Excel -> Паспорта -> Паспорта без отчетов
     public ICommand ExcelExportRepWithoutPas { get; set; }      //  Excel -> Паспорта -> Отчеты без паспортов
-    public ICommand ExcelExportSelectedOrgAll { get; set; }     //  Excel -> Выбранная организация -> Все формы
     public ICommand ExportAllReports { get; set; }              //  Экспорт всех организаций организации в отдельные файлы .raodb
     public ICommand ExportForm { get; set; }                    //  Экспорт формы в файл .raodb
     public ICommand ExportReports { get; set; }                 //  Экспорт организации в файл .raodb
@@ -497,7 +495,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportListOfOrgs = new ExcelExportListOfOrgsAsyncCommand();
         ExcelExportPasWithoutRep = new ExcelExportPasWithoutRepAsyncCommand();
         ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
-        ExcelExportSelectedOrgAll = new ExcelExportSelectedOrgAllAsyncCommand();
+        ExcelExportAll = new ExcelExportAllAsyncCommand();
         ExportAllReports = new ExportAllReportsAsyncCommand();
         ExportForm = new ExportFormAsyncCommand();
         ExportReports = new ExportReportsAsyncCommand();

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
@@ -103,127 +101,80 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        if (OperatingSystem.IsWindows()) Worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров
+        if (OperatingSystem.IsWindows()) Worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров      
 
-        var listSortRep = new List<ReportForSort>();
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
-        {
-            var item = (Reports)key;
-            if (item.Master_DB.FormNum_DB.Split('.')[0] != "1") continue;
-            foreach (var key1 in item.Report_Collection)
-            {
-                var rep = (Report)key1;
-                var start = StaticStringMethods.StringReverse(rep.StartPeriod_DB);
-                var end = StaticStringMethods.StringReverse(rep.EndPeriod_DB);
-                if (!long.TryParse(start, out var startL) || !long.TryParse(end, out var endL)) continue;
-                listSortRep.Add(new ReportForSort
+        var listSortRep = MainWindowVM.LocalReports.Reports_Collection
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
+                              && DateTime.TryParse(rep.EndPeriod_DB, out _))
+                .Select(rep =>
                 {
-                    RegNoRep = item.Master_DB.RegNoRep.Value ?? "",
-                    OkpoRep = item.Master_DB.OkpoRep.Value ?? "",
-                    FormNum = rep.FormNum_DB,
-                    StartPeriod = startL,
-                    EndPeriod = endL,
-                    ShortYr = item.Master_DB.ShortJurLicoRep.Value
-                });
-            }
-        }
+                    if (true);
+                    var start = DateTime.Parse(rep.StartPeriod_DB);
+                    var end = DateTime.Parse(rep.EndPeriod_DB);
+                    return new ReportForSort
+                        {
+                            RegNoRep = reps.Master_DB.RegNoRep.Value ?? "",
+                            OkpoRep = reps.Master_DB.OkpoRep.Value ?? "",
+                            FormNum = rep.FormNum_DB,
+                            StartPeriod = start,
+                            EndPeriod = end,
+                            ShortYr = reps.Master_DB.ShortJurLicoRep.Value
+                        };
+                }))
+            .OrderBy(x => x.RegNoRep)
+            .ThenBy(x => x.FormNum)
+            .ThenBy(x => x.StartPeriod)
+            .ThenBy(x => x.EndPeriod)
+            .ToList();
 
-        var newGen = listSortRep
-            .GroupBy(x => x.RegNoRep)
-            .ToDictionary(gr => gr.Key, gr => gr
-                .ToList()
-                .GroupBy(x => x.FormNum)
-                .ToDictionary(gr => gr.Key, gr => gr
-                    .ToList()
-                    .OrderBy(elem => elem.EndPeriod)));
         var row = 2;
-        foreach (var grp in newGen)
+        for (var i = 0; i < listSortRep.Count; i++)
         {
-            foreach (var gr in grp.Value)
+            var rep = listSortRep[i];
+            var repStart = rep.StartPeriod;
+            var repEnd = rep.EndPeriod;
+            var listToCompare = listSortRep
+                .Skip(i + 1)
+                .Where(x => x.RegNoRep == rep.RegNoRep && x.OkpoRep == rep.OkpoRep && x.FormNum == rep.FormNum)
+                .ToList();
+            var isNext = true;
+            foreach (var repToCompare in listToCompare)
             {
-                var prevEnd = gr.Value.FirstOrDefault()?.EndPeriod;
-                var prevStart = gr.Value.FirstOrDefault()?.StartPeriod;
-                var newGr = gr.Value.Skip(1).ToList();
-                foreach (var g in newGr)
+                var repToCompareStart = repToCompare.StartPeriod;
+                var repToCompareEnd = repToCompare.EndPeriod;
+                var minEndDate = repEnd < repToCompareEnd
+                    ? repEnd
+                    : repToCompareEnd;
+                if (repStart < repToCompareEnd && repEnd > repToCompareStart)
                 {
-                    if (g.StartPeriod != prevEnd && g.StartPeriod != prevStart && g.EndPeriod != prevEnd)
-                    {
-                        if (g.StartPeriod < prevEnd)
-                        {
-                            var prevEndN = prevEnd.ToString()?.Length == 8
-                                ? prevEnd.ToString()
-                                : prevEnd == 0
-                                    ? "нет даты конца периода"
-                                    : prevEnd.ToString()?.Insert(6, "0");
-                            var prevStartN = prevStart.ToString().Length == 8
-                                ? prevStart.ToString()
-                                : prevStart == 0
-                                    ? "нет даты начала периода"
-                                    : prevStart.ToString()?.Insert(6, "0");
-                            var stPer = g.StartPeriod.ToString().Length == 8
-                                ? g.StartPeriod.ToString()
-                                : g.StartPeriod.ToString().Insert(6, "0");
-                            var endPer = g.EndPeriod.ToString().Length == 8
-                                ? g.EndPeriod.ToString()
-                                : g.EndPeriod.ToString().Insert(6, "0");
-                            Worksheet.Cells[row, 1].Value = g.RegNoRep;
-                            Worksheet.Cells[row, 2].Value = g.OkpoRep;
-                            Worksheet.Cells[row, 3].Value = g.ShortYr;
-                            Worksheet.Cells[row, 4].Value = g.FormNum;
-                            Worksheet.Cells[row, 5].Value = prevStartN.Equals("нет даты начала периода")
-                                ? prevStartN
-                                : $"{prevStartN[6..8]}.{prevStartN[4..6]}.{prevStartN[..4]}";
-                            Worksheet.Cells[row, 6].Value = prevEndN.Equals("нет даты конца периода")
-                                ? prevEndN
-                                : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
-                            Worksheet.Cells[row, 7].Value = $"{stPer[6..8]}.{stPer[4..6]}.{stPer[..4]}";
-                            Worksheet.Cells[row, 8].Value = $"{endPer[6..8]}.{endPer[4..6]}.{endPer[..4]}";
-                            Worksheet.Cells[row, 9].Value =
-                                $"{Worksheet.Cells[row, 7].Value}-{Worksheet.Cells[row, 6].Value}";
-                            Worksheet.Cells[row, 10].Value = "пересечение";
-                            row++;
-                        }
-                        else
-                        {
-                            var prevEndN = prevEnd?.ToString().Length == 8
-                                ? prevEnd.ToString()
-                                : prevEnd == 0
-                                    ? "нет даты конца периода"
-                                    : prevEnd?.ToString().Insert(6, "0");
-                            var prevStartN = prevStart?.ToString().Length == 8
-                                ? prevStart.ToString()
-                                : prevStart == 0
-                                    ? "нет даты начала периода"
-                                    : prevStart?.ToString().Insert(6, "0");
-                            var stPer = g.StartPeriod.ToString().Length == 8
-                                ? g.StartPeriod.ToString()
-                                : g.StartPeriod.ToString().Insert(6, "0");
-                            var endPer = g.EndPeriod.ToString().Length == 8
-                                ? g.EndPeriod.ToString()
-                                : g.EndPeriod.ToString().Insert(6, "0");
-                            Worksheet.Cells[row, 1].Value = g.RegNoRep;
-                            Worksheet.Cells[row, 2].Value = g.OkpoRep;
-                            Worksheet.Cells[row, 3].Value = g.ShortYr;
-                            Worksheet.Cells[row, 4].Value = g.FormNum;
-                            Worksheet.Cells[row, 5].Value = prevStartN.Equals("нет даты начала периода")
-                                ? prevStartN
-                                : $"{prevStartN[6..8]}.{prevStartN[4..6]}.{prevStartN[..4]}";
-                            Worksheet.Cells[row, 6].Value = prevEndN.Equals("нет даты конца периода")
-                                ? prevEndN
-                                : $"{prevEndN[6..8]}.{prevEndN[4..6]}.{prevEndN[..4]}";
-                            Worksheet.Cells[row, 7].Value = $"{stPer[6..8]}.{stPer[4..6]}.{stPer[..4]}";
-                            Worksheet.Cells[row, 8].Value =
-                                $"{endPer[6..8]}.{endPer[4..6]}.{endPer[..4]}";
-                            Worksheet.Cells[row, 9].Value =
-                                $"{Worksheet.Cells[row, 6].Value}-{Worksheet.Cells[row, 7].Value}";
-                            Worksheet.Cells[row, 10].Value = "разрыв";
-                            row++;
-                        }
-                    }
-
-                    prevEnd = g.EndPeriod;
-                    prevStart = g.StartPeriod;
+                    Worksheet.Cells[row, 1].Value = rep.RegNoRep;
+                    Worksheet.Cells[row, 2].Value = rep.OkpoRep;
+                    Worksheet.Cells[row, 3].Value = rep.ShortYr;
+                    Worksheet.Cells[row, 4].Value = rep.FormNum;
+                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
+                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
+                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
+                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
+                    Worksheet.Cells[row, 9].Value = $"{repToCompareStart.ToShortDateString()}-{minEndDate.ToShortDateString()}";
+                    Worksheet.Cells[row, 10].Value = "пересечение";
+                    row++;
                 }
+                else if (isNext && repEnd < repToCompareStart)
+                {
+                    Worksheet.Cells[row, 1].Value = rep.RegNoRep;
+                    Worksheet.Cells[row, 2].Value = rep.OkpoRep;
+                    Worksheet.Cells[row, 3].Value = rep.ShortYr;
+                    Worksheet.Cells[row, 4].Value = rep.FormNum;
+                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
+                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
+                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
+                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
+                    Worksheet.Cells[row, 9].Value = $"{repEnd.ToShortDateString()}-{repToCompareStart.ToShortDateString()}";
+                    Worksheet.Cells[row, 10].Value = "разрыв";
+                    row++;
+                }
+                isNext = false;
             }
         }
 

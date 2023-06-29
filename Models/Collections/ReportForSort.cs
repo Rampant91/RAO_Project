@@ -1,4 +1,6 @@
-﻿namespace Models.Collections;
+﻿using System;
+
+namespace Models.Collections;
 
 public class ReportForSort
 {
@@ -39,8 +41,8 @@ public class ReportForSort
     #endregion
 
     #region StartPeriod
-    private long _startPeriod;
-    public long StartPeriod
+    private DateTime _startPeriod;
+    public DateTime StartPeriod
     {
         get => _startPeriod;
         set
@@ -51,8 +53,8 @@ public class ReportForSort
     #endregion
 
     #region EndPeriod
-    private long _endPeriod;
-    public long EndPeriod
+    private DateTime _endPeriod;
+    public DateTime EndPeriod
     {
         get => _endPeriod;
         set

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views;
@@ -49,7 +50,7 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageRepsNotFound
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -62,7 +63,7 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(mainWindow);
+                .ShowDialog(mainWindow));
 
             #endregion
 
@@ -78,7 +79,7 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
 
                 #region MessageExcelExportFail
 
-                await MessageBox.Avalonia.MessageBoxManager
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -87,7 +88,7 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(mainWindow);
+                    .ShowDialog(mainWindow));
 
                 #endregion
 
@@ -228,9 +229,10 @@ public class ExcelExportFormsAsyncCommand : ExcelBaseAsyncCommand
         var lst = new List<Report>();
         if (forSelectedOrg)
         {
-            var newItem = selectedReports!.Report_Collection
+            var repCollection = selectedReports!.Report_Collection;
+            var newItem = repCollection
                 .Where(x => x.FormNum_DB.Equals(param))
-                .OrderBy(x => param[0] is '1' ? StaticStringMethods.StringReverse(x.StartPeriod_DB) : x.Year_DB);
+                .OrderBy(x => param[0] == '1' ? StaticStringMethods.StringReverse(x.StartPeriod_DB) : x.Year_DB);
             lst.AddRange(newItem);
         }
         else

@@ -6,7 +6,6 @@ using Client_App.Views;
 using System.Threading;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using MessageBox.Avalonia.Enums;
 
 namespace Client_App;
@@ -40,6 +39,7 @@ public class App : Application
                     })
                     .Show();
                 #endregion
+
                 Environment.Exit(0);
             }
             desktop.MainWindow = new OnStartProgressBar();

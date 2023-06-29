@@ -9,6 +9,7 @@ using MessageBox.Avalonia.Models;
 using OfficeOpenXml;
 using System.IO;
 using System.Threading;
+using Mono.Unix.Native;
 
 namespace Client_App.ViewModels;
 
@@ -16,7 +17,7 @@ public class BaseVM
 {
     internal static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
 
-    internal const string Version = @"1.2.2.11";
+    internal const string Version = @"1.2.2.12";
 
     internal static string DbFileName = "Local_0";
 
@@ -28,8 +29,10 @@ public class BaseVM
 
     internal static string TmpDirectory = "";
 
+    internal static Passwd? UserPasswd;
+
     //  Запускает баш скрипт с введенной командой
-    private protected async Task<string?> RunCommandInBush(string command)
+    private protected static string? RunCommandInBush(string command)
     {
         var process = new Process
         {
@@ -43,8 +46,8 @@ public class BaseVM
             }
         };
         process.Start();
-        await process.StandardInput.WriteLineAsync(command);
-        return await process.StandardOutput.ReadLineAsync();
+        process.StandardInput.WriteLineAsync(command);
+        return process.StandardOutput.ReadLine();
     }
 
     #region ExcelGetFullPath
@@ -86,7 +89,7 @@ public class BaseVM
         {
             case "Открыть временную копию":
                 {
-                    DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(SystemDirectory, "RAO"), "temp"));
+                    DirectoryInfo tmpFolder = new(Path.Combine(SystemDirectory, "RAO", "temp"));
                     var count = 0;
                     do
                     {

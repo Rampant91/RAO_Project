@@ -10,12 +10,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
-using Models.DTO;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Microsoft.Diagnostics.Runtime;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -52,13 +49,12 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 ButtonDefinitions = new[]
                                 {
-                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                                    new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
                                 },
                                 ContentTitle = "Импорт из Excel",
                                 ContentHeader = "Уведомление",
-                                ContentMessage =
-                                    $"Не удалось импортировать данные из {SourceFile.FullName}." +
-                                    $"{Environment.NewLine}Не соответствует формат данных!",
+                                ContentMessage = $"Не удалось импортировать данные из {SourceFile.FullName}." +
+                                                 $"{Environment.NewLine}Не соответствует формат данных!",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -199,6 +195,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             SkipNew = false;
             SkipReplace = false;
             HasMultipleReport = answer.Length > 1;
+            AtLeastOneImportDone = false;
             if (baseReps.Report_Collection.Count != 0)
             {
                 switch (worksheet0.Name)
@@ -231,9 +228,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 ButtonDefinitions = new[]
                                 {
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                            new ButtonDefinition { Name = "Да для всех" },
-                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Да для всех" },
+                                    new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
                                 },
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
@@ -264,17 +261,16 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 ButtonDefinitions = new[]
                                 {
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
                                 },
                                 ContentTitle = "Импорт из .raodb",
                                 ContentHeader = "Уведомление",
-                                ContentMessage =
-                                    $"Будет добавлена новая организация ({repNumber})." +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                    $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
+                                                 $"{Environment.NewLine}" +
+                                                 $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                                 $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                                 $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -288,15 +284,57 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                 #endregion
             }
+        }
 
-            var dbm = StaticConfiguration.DBModel;
-            await dbm.SaveChangesAsync();
+        await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+        await StaticConfiguration.DBModel.SaveChangesAsync();
+
+        var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
+                ? "а"
+                : "ов";
+        if (AtLeastOneImportDone)
+        {
+            #region MessageImportDone
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт из файл{suffix} .xlsx успешно завершен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+        }
+        else
+        {
+            #region MessageImportCancel
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт из файл{suffix} .raodb был отменен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
         }
     }
 
     #region Check Reps
 
-    private async Task<Reports> CheckReps(ExcelWorksheet worksheet0)
+    private static async Task<Reports> CheckReps(ExcelWorksheet worksheet0)
     {
         IEnumerable<Reports>? reps = worksheet0.Name switch
         {

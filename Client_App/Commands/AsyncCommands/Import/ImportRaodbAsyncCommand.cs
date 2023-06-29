@@ -33,6 +33,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
+        AtLeastOneImportDone = false;
 
         foreach (var res in answer) // Для каждого импортируемого файла
         {
@@ -69,6 +70,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 ProcessIfNoteOrder0(item);
 
                 ImpRepFormCount = item.Report_Collection.Count;
+                ImpRepFormNum = item.Master.FormNum_DB;
                 BaseRepsOkpo = item.Master.OkpoRep.Value;
                 BaseRepsRegNum = item.Master.RegNoRep.Value;
                 BaseRepsShortName = item.Master.ShortJurLicoRep.Value;
@@ -104,7 +106,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
+                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -136,7 +138,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({BaseRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
+                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -153,6 +155,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     if (an is "Добавить" or "Да для всех")
                     {
                         MainWindowVM.LocalReports.Reports_Collection.Add(item);
+                        AtLeastOneImportDone = true;
 
                         #region LoggerImport
 
@@ -201,25 +204,47 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
-        #region ImportDone
-
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
-            ? "а"
-            : "ов";
-        await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-            {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                ContentTitle = "Импорт из .raodb",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Импорт из файл{suffix} .raodb успешно завершен.",
-                MinWidth = 400,
-                MinHeight = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow);
+                ? "а"
+                : "ов";
+        if (AtLeastOneImportDone)
+        {
+            #region MessageImportDone
+            
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт из файл{suffix} .raodb успешно завершен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
 
-        #endregion
+            #endregion
+        }
+        else
+        {
+            #region MessageImportCancel
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт из файл{suffix} .raodb был отменен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+        }
     }
 
     #region FillEmptyRegNo

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -20,15 +21,29 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected ExcelWorksheet? Worksheet { get; set; }
+    private protected ExcelWorksheet Worksheet { get; set; }
 
-    private protected ExcelWorksheet? WorksheetPrim { get; set; }
+    private protected ExcelWorksheet WorksheetPrim { get; set; }
 
     private protected string ExportType;
 
+    public override async void Execute(object? parameter)
+    {
+        IsExecute = true;
+        try
+        {
+            await Task.Run(() => AsyncExecute(parameter));
+        }
+        catch (Exception e)
+        {
+            // ignored
+        }
+        IsExecute = false;
+    }
+
     #region ExcelExportNotes
 
-    private protected int ExcelExportNotes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
+    private protected static int ExcelExportNotes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
         List<Report> forms, bool printId = false)
     {
         foreach (var item in forms)
@@ -80,8 +95,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         #region MessageSaveOrOpenTemp
 
-        var res = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
                 ButtonDefinitions = new[]
                 {
@@ -95,7 +110,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow);
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 
@@ -106,7 +121,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             case "Открыть временную копию":
             {
-                DirectoryInfo tmpFolder = new(Path.Combine(Path.Combine(BaseVM.SystemDirectory, "RAO"), "temp"));
+                DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
                 var count = 0;
                 do
                 {
@@ -137,11 +152,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     {
                         File.Delete(fullPath!);
                     }
-                    catch (Exception)
+                    catch
                     {
                         #region MessageFailedToSaveFile
 
-                        await MessageBox.Avalonia.MessageBoxManager
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -155,7 +170,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow);
+                            .ShowDialog(Desktop.MainWindow));
 
                         #endregion
 
@@ -186,38 +201,30 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         foreach (var item in forms)
         {
-            var findReports = MainWindowVM.LocalReports.Reports_Collection
-                .Where(t => t.Report_Collection.Contains(item));
-            var reps = findReports.FirstOrDefault();
+            var reps = MainWindowVM.LocalReports.Reports_Collection
+                .Where(t => t.Report_Collection.Contains(item))
+                .FirstOrDefault();
             if (reps is null) continue;
-            IEnumerable<IKey> t = null;
+            IEnumerable<IKey> t;
             switch (param)
             {
                 case "2.1":
-                {
                     t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
                     if (item[param].ToList<IKey>().Any() && !t.Any())
                     {
                         t = item[param].ToList<IKey>();
                     }
-
                     break;
-                }
                 case "2.2":
-                {
                     t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
                     if (item[param].ToList<IKey>().Any() && !t.Any())
                     {
                         t = item[param].ToList<IKey>();
                     }
-
                     break;
-                }
-            }
-
-            if (param != "2.1" && param != "2.2")
-            {
-                t = item[param].ToList<IKey>();
+                default:
+                    t = item[param].ToList<IKey>();
+                    break;
             }
 
             var lst = t.Any()
@@ -226,7 +233,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             if (lst.Count <= 0) continue;
             var count = startRow;
             startRow--;
-            foreach (var it in lst.Where(it => it != null).OrderBy(x => x.Order))
+            lst = lst
+                .Where(it => it != null)
+                .OrderBy(x => x.Order)
+                .ToList();
+            foreach (var it in lst)
             {
                 switch (it)
                 {
@@ -340,12 +351,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintTitulExport
 
-    private protected void ExcelPrintTitleExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintTitleExport(string param, ExcelWorksheet worksheet, Report form)
     {
-        var findReports = MainWindowVM.LocalReports.Reports_Collection
-            .Where(t => t.Report_Collection.Contains(form));
-        var reps = findReports.FirstOrDefault();
-        var master = reps.Master_DB;
+        var master = MainWindowVM.LocalReports.Reports_Collection
+            .First(t => t.Report_Collection.Contains(form))
+            .Master_DB;
         if (param.Split('.')[0] == "2")
         {
             var frmYur = master.Rows20[0];
@@ -441,13 +451,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintSubMainExport
 
-    private protected void ExcelPrintSubMainExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintSubMainExport(string param, ExcelWorksheet worksheet, Report form)
     {
-        var findReports = MainWindowVM.LocalReports.Reports_Collection
-            .Where(t => t.Report_Collection.Contains(form));
-        var reps = findReports.FirstOrDefault();
-        var master = reps.Master_DB;
-
         if (param.Split('.')[0] == "1")
         {
             worksheet.Cells["G3"].Value = form.StartPeriod_DB;
@@ -515,7 +520,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintNotesExport
 
-    private protected void ExcelPrintNotesExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintNotesExport(string param, ExcelWorksheet worksheet, Report form)
     {
         var start = param is "2.8"
             ? 18
@@ -569,7 +574,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintRowsExport
 
-    private protected void ExcelPrintRowsExport(string param, ExcelWorksheet worksheet, Report form)
+    private protected static void ExcelPrintRowsExport(string param, ExcelWorksheet worksheet, Report form)
     {
         var start = param is "2.8"
             ? 14
@@ -692,7 +697,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             #region MessageFailedToSaveFile
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -704,7 +709,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -719,7 +724,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             #region MessageExcelExportComplete
 
-            var answer = await MessageBox.Avalonia.MessageBoxManager
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions = new[]
@@ -734,7 +739,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
