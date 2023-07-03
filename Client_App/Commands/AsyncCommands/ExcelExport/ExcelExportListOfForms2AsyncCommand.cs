@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -40,7 +41,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageRepsNotFound
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -53,7 +54,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -64,7 +65,8 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region MessageInputYearRange
 
-        var res = await MessageBox.Avalonia.MessageBoxManager
+        var res =
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxInputWindow(new MessageBoxInputParams
             {
                 ButtonDefinitions = new[]
@@ -79,7 +81,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow);
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 

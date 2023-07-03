@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
@@ -27,7 +28,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         {
             #region MessageFailedToLoadPassportUniqParam
 
-                await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
@@ -40,7 +41,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow);
+                    .ShowDialog(Desktop.MainWindow));
 
                 #endregion
 
