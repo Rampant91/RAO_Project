@@ -5,10 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -42,7 +45,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageRepsNotFound
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -55,7 +58,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -66,7 +69,8 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         
         #region MessageInputDateRange
 
-        var res = await MessageBox.Avalonia.MessageBoxManager
+        var res = 
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxInputWindow(new MessageBoxInputParams
             {
                 ButtonDefinitions = new[]
@@ -81,7 +85,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow);
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 
@@ -190,5 +194,48 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         Worksheet.View.FreezePanes(2, 1);
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+
+        //DateTime repEndDateTime;
+        //var row = 2;
+        //await using var db = StaticConfiguration.DBModel;
+        //try
+        //{
+        //    db.ReportsCollectionDbSet
+        //        .AsNoTracking()
+        //        .SelectMany(filterReps => filterReps.Report_Collection
+        //            .Where(x =>
+        //                x.FormNum_DB.StartsWith('1')
+        //                && startDateTime == DateTime.MinValue
+        //                && endDateTime == DateTime.MaxValue
+        //                && DateTime.TryParse(x.EndPeriod_DB, out repEndDateTime)
+        //                && repEndDateTime >= startDateTime
+        //                && repEndDateTime <= endDateTime)
+        //            .Select(rep => new
+        //            {
+        //                RegNoRep = filterReps.Master.RegNoRep.Value,
+        //                OKPO = filterReps.Master.OkpoRep.Value,
+        //                Report = rep
+        //            }))
+        //        .OrderBy(x => x.RegNoRep)
+        //        .ThenBy(x => x.Report.FormNum_DB)
+        //        .ThenBy(x => StringReverse(x.Report.StartPeriod_DB))
+        //        .ToList()
+        //        .ForEach(x =>
+        //        {
+        //            Worksheet.Cells[row, 1].Value = x.RegNoRep;
+        //            Worksheet.Cells[row, 2].Value = x.OKPO;
+        //            Worksheet.Cells[row, 3].Value = x.Report.FormNum_DB;
+        //            Worksheet.Cells[row, 4].Value = x.Report.StartPeriod_DB;
+        //            Worksheet.Cells[row, 5].Value = x.Report.EndPeriod_DB;
+        //            Worksheet.Cells[row, 6].Value = x.Report.CorrectionNumber_DB;
+        //            Worksheet.Cells[row, 7].Value = x.Report.Rows.Count;
+        //            Worksheet.Cells[row, 8].Value = InventoryCheck(x.Report).TrimStart();
+        //            row++;
+        //        });
+        //}
+        //catch (Exception e)
+        //{
+        //    //ignored
+        //}
     }
 }

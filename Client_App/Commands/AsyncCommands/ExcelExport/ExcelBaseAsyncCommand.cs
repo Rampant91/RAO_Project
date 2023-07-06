@@ -95,7 +95,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         #region MessageSaveOrOpenTemp
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var res =
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
                 ButtonDefinitions = new[]
@@ -202,8 +203,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         foreach (var item in forms)
         {
             var reps = MainWindowVM.LocalReports.Reports_Collection
-                .Where(t => t.Report_Collection.Contains(item))
-                .FirstOrDefault();
+                .FirstOrDefault(t => t.Report_Collection.Contains(item));
             if (reps is null) continue;
             IEnumerable<IKey> t;
             switch (param)
@@ -724,7 +724,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             #region MessageExcelExportComplete
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            var answer =
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions = new[]

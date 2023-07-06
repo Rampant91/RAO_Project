@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using DynamicData;
@@ -32,11 +33,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         {
             files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
         }
-        catch (Exception)
+        catch
         {
             #region MessageFailedToOpenPassportDirectory
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -49,7 +50,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -58,7 +59,8 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         #region MessageInputCategoryNums
 
-        var res = await MessageBox.Avalonia.MessageBoxManager
+        var res =
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxInputWindow(new MessageBoxInputParams
             {
                 ButtonDefinitions = new[]
@@ -71,7 +73,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow);
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 
@@ -82,11 +84,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             categories = Regex.Replace(res.Message, "[^\\d,]", "")
                 .Split(',').Select(short.Parse).Cast<short?>().ToList();
         }
-        catch (Exception)
+        catch
         {
             #region MessageInvalidCategoryNums
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -99,7 +101,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
