@@ -30,6 +30,7 @@ using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Mono.Unix;
 using Mono.Unix.Native;
+using System.Diagnostics;
 
 namespace Client_App.ViewModels;
 
@@ -73,20 +74,37 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Init
 
-    private static async Task GetSystemDirectory()
+    private async Task<string> GetSystemDirectory()
     {
         try
         {
             if (OperatingSystem.IsWindows())
             {
                 SystemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
-                return;
+                return SystemDirectory;
             }
-            if (OperatingSystem.IsLinux())
+            //if (OperatingSystem.IsLinux())
+            //{
+            //    var userName = UnixUserInfo.GetLoginName();
+            //    SystemDirectory = Path.Combine("/home", userName!);
+            //}
+            
+            var process = new Process
             {
-                var userName = UnixUserInfo.GetLoginName();
-                SystemDirectory = Path.Combine("/home", userName!);
-            }
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "bash",
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                }
+            };
+            process.Start();
+            process.StandardInput.WriteLine("logname");
+            var userName = process.StandardOutput.ReadLine();
+            SystemDirectory = Path.Combine("/home", userName!);
+            return SystemDirectory;
         }
         catch (Exception e)
         {
@@ -96,32 +114,34 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private static async Task ProcessRaoDirectory()
+    private async Task ProcessRaoDirectory()
     {
         try
         {
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
-            if (OperatingSystem.IsWindows())
+            //if (OperatingSystem.IsWindows())
             {
                 Directory.CreateDirectory(LogsDirectory);
                 Directory.CreateDirectory(TmpDirectory);
             }
-            if (OperatingSystem.IsLinux())
-            {
-                UserPasswd = Syscall.getpwnam(UnixUserInfo.GetLoginName());
-                Syscall.mkdir(RaoDirectory, FilePermissions.ALLPERMS);
-                Syscall.mkdir(LogsDirectory, FilePermissions.ALLPERMS);
-                Syscall.mkdir(TmpDirectory, FilePermissions.ALLPERMS);
-                Syscall.chown(RaoDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-                Syscall.chown(LogsDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-                Syscall.chown(TmpDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-            }
+            //if (OperatingSystem.IsLinux())
+            //{
+            //    UserPasswd = Syscall.getpwnam(UnixUserInfo.GetLoginName());
+            //    Syscall.mkdir(RaoDirectory, FilePermissions.ALLPERMS);
+            //    Syscall.mkdir(LogsDirectory, FilePermissions.ALLPERMS);
+            //    Syscall.mkdir(TmpDirectory, FilePermissions.ALLPERMS);
+            //    Syscall.chown(RaoDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+            //    Syscall.chown(LogsDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+            //    Syscall.chown(TmpDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
+            //}
         }
-        catch
+        catch (Exception e)
         {
-            // ignored
+            Console.WriteLine(e.Message);
+            await ShowMessage.Handle(ErrorMessages.Error2);
+            throw new Exception(ErrorMessages.Error2[0]);
         }
 
         var fl = Directory.GetFiles(TmpDirectory, ".");
