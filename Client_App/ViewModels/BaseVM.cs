@@ -9,7 +9,6 @@ using MessageBox.Avalonia.Models;
 using OfficeOpenXml;
 using System.IO;
 using System.Threading;
-using Mono.Unix.Native;
 
 namespace Client_App.ViewModels;
 
@@ -28,8 +27,6 @@ public class BaseVM
     internal static string RaoDirectory = "";
 
     internal static string TmpDirectory = "";
-
-    internal static Passwd? UserPasswd;
 
     //  Запускает баш скрипт с введенной командой
     private protected static string? RunCommandInBush(string command)

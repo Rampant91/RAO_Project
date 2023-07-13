@@ -28,8 +28,6 @@ using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
-using Mono.Unix;
-using Mono.Unix.Native;
 using System.Diagnostics;
 
 namespace Client_App.ViewModels;
@@ -121,21 +119,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
-            //if (OperatingSystem.IsWindows())
-            {
-                Directory.CreateDirectory(LogsDirectory);
-                Directory.CreateDirectory(TmpDirectory);
-            }
-            //if (OperatingSystem.IsLinux())
-            //{
-            //    UserPasswd = Syscall.getpwnam(UnixUserInfo.GetLoginName());
-            //    Syscall.mkdir(RaoDirectory, FilePermissions.ALLPERMS);
-            //    Syscall.mkdir(LogsDirectory, FilePermissions.ALLPERMS);
-            //    Syscall.mkdir(TmpDirectory, FilePermissions.ALLPERMS);
-            //    Syscall.chown(RaoDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-            //    Syscall.chown(LogsDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-            //    Syscall.chown(TmpDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-            //}
+            Directory.CreateDirectory(LogsDirectory);
+            Directory.CreateDirectory(TmpDirectory);
         }
         catch (Exception e)
         {
@@ -200,7 +185,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
-            await dbm.Database.MigrateAsync();
+            try
+            {
+                await dbm.Database.MigrateAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 
