@@ -5,6 +5,7 @@ using ReactiveUI;
 using System.Reactive.Linq;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
+using Client_App.Views;
 
 namespace Client_App.ViewModels;
 
@@ -30,7 +31,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         get => _OnStartProgressBar;
         set
         {
-            if (_OnStartProgressBar == value) return;
+            if (_OnStartProgressBar.Equals(value)) return;
             _OnStartProgressBar = value;
             OnPropertyChanged();
         }

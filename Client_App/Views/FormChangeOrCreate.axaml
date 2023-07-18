@@ -8,8 +8,11 @@
         x:Class="Client_App.Views.FormChangeOrCreate"
         xmlns:vm="using:Client_App.ViewModels"
         Icon="/Assets/logo.png"
-        Title="{Binding WindowHeader}">
-  <Panel x:Name="ChangingPanel">
+        Title="{Binding WindowHeader, Mode = OneWay}">
 
-  </Panel>
+    <Design.DataContext>
+        <vm:ChangeOrCreateVM/>
+    </Design.DataContext>
+
+    <Panel x:Name="ChangingPanel"/>
 </Window>

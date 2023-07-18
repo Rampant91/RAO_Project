@@ -23,6 +23,7 @@ namespace Client_App.ViewModels;
 public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 {
     private string WindowHeader { get; set; } = "default";
+
     public event PropertyChangedEventHandler PropertyChanged;
     internal void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {
@@ -30,6 +31,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
 
     #region FormType
+
     private string _FormType;
     public string FormType
     {
@@ -43,9 +45,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region IsCanSaveReportEnabled
+
     private bool _isCanSaveReportEnabled;
 
     public bool IsCanSaveReportEnabled
@@ -140,46 +144,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             {
                 _DBO = value;
                 NotifyPropertyChanged("DBO");
-            }
-        }
-    }
-    #endregion
-
-    #region Storage10
-    private Form10 _Storage10;
-    public Form10 Storage10
-    {
-        get
-        {
-            var count = Storage.Rows10.Count;
-            return Storage.Rows10[count - 1];
-        }
-        set
-        {
-            if (_Storage10 != value)
-            {
-                _Storage10 = value;
-                NotifyPropertyChanged("Storage10");
-            }
-        }
-    }
-    #endregion
-
-    #region Storage20
-    private Form20 _Storage20;
-    public Form20 Storage20
-    {
-        get
-        {
-            var count = Storage.Rows20.Count;
-            return Storage.Rows20[count - 1];
-        }
-        set
-        {
-            if (_Storage20 != value)
-            {
-                _Storage20 = value;
-                NotifyPropertyChanged("Storage20");
             }
         }
     }
