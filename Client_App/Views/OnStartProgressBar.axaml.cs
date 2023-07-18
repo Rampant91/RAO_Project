@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
@@ -9,7 +8,6 @@ using ReactiveUI;
 using Client_App.ViewModels;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Interfaces.BackgroundLoader;
-using System.Text.Json;
 
 namespace Client_App.Views;
 
@@ -24,6 +22,7 @@ public partial class OnStartProgressBar : ReactiveWindow<OnStartProgressBarVM>
         this.WhenActivated(d =>
         {
             d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync));
+            //SetWindowStartupLocationWorkaroundForLinux();
         });
     }
 
@@ -32,8 +31,9 @@ public partial class OnStartProgressBar : ReactiveWindow<OnStartProgressBarVM>
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow(interaction.Input);
-            
             desktop.MainWindow.Show();
+
+            //SetWindowStartupLocationWorkaroundForLinux();
 
             Close();
         }
@@ -43,8 +43,8 @@ public partial class OnStartProgressBar : ReactiveWindow<OnStartProgressBarVM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        SetWindowStartupLocationWorkaroundForLinux();
         DataContext = new OnStartProgressBarVM(new BackgroundLoader());
+        //SetWindowStartupLocationWorkaroundForLinux();
     }
 
     private void SetWindowStartupLocationWorkaroundForLinux()
