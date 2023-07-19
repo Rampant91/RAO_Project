@@ -961,7 +961,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1041,7 +1041,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1118,7 +1118,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1196,7 +1196,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
                     
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1275,7 +1275,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1356,7 +1356,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1440,7 +1440,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1529,7 +1529,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1614,7 +1614,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
@@ -1680,7 +1680,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -1756,7 +1756,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -1829,7 +1829,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -1895,7 +1895,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -1965,7 +1965,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -2028,7 +2028,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -2089,7 +2089,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -2148,7 +2148,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -2208,7 +2208,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -2266,7 +2266,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -2330,7 +2330,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
@@ -2392,7 +2392,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 #region Binding
 
                 Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.Rows20[0].ShortJurLico_DB;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
