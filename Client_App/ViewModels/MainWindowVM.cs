@@ -468,6 +468,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand DeleteForm { get; set; }                    //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                 //  Удалить выбранную организацию
     public ICommand ExcelExportAll { get; set; }                //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
+    public ICommand ExcelExportExecutors { get; set; }          //  Excel -> Список исполнителей
     public ICommand ExcelExportFormAnalysis { get; set; }       //  Выбранная форма -> Выгрузка Excel -> Для анализа
     public ICommand ExcelExportFormPrint { get; set; }          //  Выбранная форма -> Выгрузка Excel -> Для печати
     public ICommand ExcelExportForms { get; set; }              //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
@@ -498,6 +499,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangeReports = new ChangeReportsAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
+        ExcelExportExecutors = new ExcelExportAllAsyncCommand();
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
         ExcelExportFormPrint = new ExcelExportFormPrintAsyncCommand(); 
         ExcelExportForms = new ExcelExportFormsAsyncCommand();

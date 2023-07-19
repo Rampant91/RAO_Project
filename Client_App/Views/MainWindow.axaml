@@ -82,6 +82,7 @@
                         <MenuItem Header="Форма 2.12" Command="{Binding ExcelExportForms}" CommandParameter="Org2.12"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Все формы" Command="{Binding ExcelExportAll}" CommandParameter="SelectedOrg"/>
+                    <MenuItem Header="Все формы" Command="{Binding ExcelExportExecutors}" CommandParameter="Executors"/>
                 </MenuItem>
             </MenuItem>
         </Menu>

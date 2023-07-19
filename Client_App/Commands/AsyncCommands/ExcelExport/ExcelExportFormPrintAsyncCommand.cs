@@ -11,7 +11,7 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Выбранная форма->Выгрузка Excel->Для печати
+//  Выбранная форма -> Выгрузка Excel -> Для печати
 public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
