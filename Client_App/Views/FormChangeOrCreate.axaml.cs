@@ -16,13 +16,15 @@ using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Forms;
+using Client_App.Resources;
+using Client_App.ViewModels;
 
 namespace Client_App.Views;
 
-public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
+public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 {
     private readonly string _param = "";
-    public FormChangeOrCreate(ViewModels.ChangeOrCreateVM param)
+    public FormChangeOrCreate(ChangeOrCreateVM param)
     {
         _param = param.FormType;
         DataContext = param;
@@ -30,9 +32,13 @@ public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
 #if DEBUG
         this.AttachDevTools();
 #endif
-        this.WhenActivated(d => d(ViewModel!.ShowDialogIn.RegisterHandler(DoShowDialogAsync)));
-        this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-        this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
+        this.WhenActivated(d =>
+        {
+            var vm = (ChangeOrCreateVM)ViewModel;
+            d((vm!.ShowDialogIn.RegisterHandler(DoShowDialogAsync)));
+            d((vm.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+            d((vm.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
+        });
 
         Closing += OnStandartClosing;
             

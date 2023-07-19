@@ -17,7 +17,7 @@ using Models.Interfaces;
 
 namespace Client_App.Views;
 
-public class MainWindow : ReactiveWindow<MainWindowVM>
+public class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =

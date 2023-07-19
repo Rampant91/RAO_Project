@@ -12,7 +12,9 @@
         xmlns:vm="using:Client_App.ViewModels"
         Name="RowNumberIn"
         Icon="/Assets/logo.png"
-        Title="{Binding WindowHeader}">
+        Title="{Binding WindowHeader}"
+        WindowStartupLocation="CenterScreen">
+
     <Panel x:Name="NumberPanel">
         <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*">
             <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"

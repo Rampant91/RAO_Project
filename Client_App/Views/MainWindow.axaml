@@ -10,7 +10,9 @@
         Icon="/Assets/logo.png"
         Title="{Binding Current_Db}"
         x:Name="MainWindow"
-        Background="#ffffff">
+        Background="#ffffff"
+        WindowStartupLocation="CenterScreen">
+
     <DockPanel>
         <Menu Height="20" DockPanel.Dock="Top">
             <MenuItem Header="_Импорт" FontSize="14">

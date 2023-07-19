@@ -9,7 +9,8 @@
 		Width="300"
 		Height="30"
         x:Class="Client_App.Views.OnStartProgressBar"
-        SystemDecorations="None">
+        SystemDecorations="None"
+        WindowStartupLocation="CenterScreen">
 
     <Design.DataContext>
         <vm:OnStartProgressBarVM/>

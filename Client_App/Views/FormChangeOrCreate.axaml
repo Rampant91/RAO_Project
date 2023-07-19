@@ -8,7 +8,8 @@
         x:Class="Client_App.Views.FormChangeOrCreate"
         xmlns:vm="using:Client_App.ViewModels"
         Icon="/Assets/logo.png"
-        Title="{Binding WindowHeader, Mode = OneWay}">
+        Title="{Binding WindowHeader, Mode = OneWay}"
+        WindowStartupLocation="CenterScreen">
 
     <Design.DataContext>
         <vm:ChangeOrCreateVM/>
