@@ -332,6 +332,7 @@ public class Form22 : Form2, IBaseColor
             var rm = new RefBool(_StoragePlaceCode_Hidden_Get);
             Dictionary.Add(nameof(StoragePlaceCode_Hidden_Get), rm);
             return rm;
+
         }
         set
         {

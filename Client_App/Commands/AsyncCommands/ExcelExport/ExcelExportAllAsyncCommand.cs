@@ -31,6 +31,28 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         _isExecutorsList = parameter is "Executors";
         string fileName;
         var mainWindow = Desktop.MainWindow as MainWindow;
+
+        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0)
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
+                    MinHeight = 150,
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(mainWindow));
+
+            #endregion
+
+            return;
+        }
         if (_isSelectedOrg)
         {
             var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
@@ -145,7 +167,24 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
 
-    #region Headers
+    #region FillExecutors
+
+    private void FillExecutors(Report rep)
+    {
+        Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+        Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+        Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+        Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+        Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+        Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+        Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+        Worksheet.Cells[_currentRow, 8].Value = rep.FIOexecutor_DB;
+        Worksheet.Cells[_currentRow, 9].Value = rep.GradeExecutor_DB;
+        Worksheet.Cells[_currentRow, 10].Value = rep.ExecPhone_DB;
+        Worksheet.Cells[_currentRow, 11].Value = rep.ExecEmail_DB;
+    }
+
+    #endregion
 
     #region FillExportForms
 
@@ -218,761 +257,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 break;
         }
     }
-
-    #endregion
-
-    #region FillHeaders
-
-    private void FillHeaders(string formNum)
-    {
-        switch (formNum)
-        {
-            case "1.1":
-            {
-                #region Headers
-
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
-                Worksheet.Cells[1, 13].Value = "тип";
-                Worksheet.Cells[1, 14].Value = "радионуклиды";
-                Worksheet.Cells[1, 15].Value = "номер";
-                Worksheet.Cells[1, 16].Value = "количество, шт";
-                Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
-                Worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
-                Worksheet.Cells[1, 19].Value = "дата выпуска";
-                Worksheet.Cells[1, 20].Value = "категория";
-                Worksheet.Cells[1, 21].Value = "НСС, мес";
-                Worksheet.Cells[1, 22].Value = "код формы собственности";
-                Worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
-                Worksheet.Cells[1, 24].Value = "вид";
-                Worksheet.Cells[1, 25].Value = "номер";
-                Worksheet.Cells[1, 26].Value = "дата";
-                Worksheet.Cells[1, 27].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 28].Value = "перевозчика";
-                Worksheet.Cells[1, 29].Value = "наименование";
-                Worksheet.Cells[1, 30].Value = "тип";
-                Worksheet.Cells[1, 31].Value = "номер";
-                NotesHeaders1();
-
-                #endregion
-
-                break;
-            }
-            case "1.2":
-            {
-                #region Headers
-
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "номер паспорта";
-                Worksheet.Cells[1, 13].Value = "наименование";
-                Worksheet.Cells[1, 14].Value = "номер";
-                Worksheet.Cells[1, 15].Value = "масса объединенного урана, кг";
-                Worksheet.Cells[1, 16].Value = "код ОКПО изготовителя";
-                Worksheet.Cells[1, 17].Value = "дата выпуска";
-                Worksheet.Cells[1, 18].Value = "НСС, мес";
-                Worksheet.Cells[1, 19].Value = "код формы собственности";
-                Worksheet.Cells[1, 20].Value = "код ОКПО правообладателя";
-                Worksheet.Cells[1, 21].Value = "вид";
-                Worksheet.Cells[1, 22].Value = "номер";
-                Worksheet.Cells[1, 23].Value = "дата";
-                Worksheet.Cells[1, 24].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 25].Value = "перевозчика";
-                Worksheet.Cells[1, 26].Value = "наименование";
-                Worksheet.Cells[1, 27].Value = "тип";
-                Worksheet.Cells[1, 28].Value = "номер";
-                NotesHeaders1();
-
-                #endregion
-
-                break;
-            }
-            case "1.3":
-            {
-                #region Headers
-
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "номер паспорта";
-                Worksheet.Cells[1, 13].Value = "тип";
-                Worksheet.Cells[1, 14].Value = "радионуклиды";
-                Worksheet.Cells[1, 15].Value = "номер";
-                Worksheet.Cells[1, 16].Value = "активность, Бк";
-                Worksheet.Cells[1, 17].Value = "код ОКПО изготовителя";
-                Worksheet.Cells[1, 18].Value = "дата выпуска";
-                Worksheet.Cells[1, 19].Value = "агрегатное состояние";
-                Worksheet.Cells[1, 20].Value = "код формы собственности";
-                Worksheet.Cells[1, 21].Value = "код ОКПО правообладателя";
-                Worksheet.Cells[1, 22].Value = "вид";
-                Worksheet.Cells[1, 23].Value = "номер";
-                Worksheet.Cells[1, 24].Value = "дата";
-                Worksheet.Cells[1, 25].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 26].Value = "перевозчика";
-                Worksheet.Cells[1, 27].Value = "наименование";
-                Worksheet.Cells[1, 28].Value = "тип";
-                Worksheet.Cells[1, 29].Value = "номер";
-                NotesHeaders1();
-
-                #endregion
-
-                break;
-            }
-            case "1.4":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "номер паспорта";
-                Worksheet.Cells[1, 13].Value = "наименование";
-                Worksheet.Cells[1, 14].Value = "вид";
-                Worksheet.Cells[1, 15].Value = "радионуклиды";
-                Worksheet.Cells[1, 16].Value = "активность, Бк";
-                Worksheet.Cells[1, 17].Value = "дата измерения активности";
-                Worksheet.Cells[1, 18].Value = "объем, куб.м";
-                Worksheet.Cells[1, 19].Value = "масса, кг";
-                Worksheet.Cells[1, 20].Value = "агрегатное состояние";
-                Worksheet.Cells[1, 21].Value = "код формы собственности";
-                Worksheet.Cells[1, 22].Value = "код ОКПО правообладателя";
-                Worksheet.Cells[1, 23].Value = "вид";
-                Worksheet.Cells[1, 24].Value = "номер";
-                Worksheet.Cells[1, 25].Value = "дата";
-                Worksheet.Cells[1, 26].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 27].Value = "перевозчика";
-                Worksheet.Cells[1, 28].Value = "наименование";
-                Worksheet.Cells[1, 29].Value = "тип";
-                Worksheet.Cells[1, 30].Value = "номер";
-                NotesHeaders1(); 
-        
-                #endregion
-
-                break;
-            }
-            case "1.5":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата) Эри, акта определения характеристик ОЗИИ";
-                Worksheet.Cells[1, 13].Value = "тип";
-                Worksheet.Cells[1, 14].Value = "радионуклиды";
-                Worksheet.Cells[1, 15].Value = "номер";
-                Worksheet.Cells[1, 16].Value = "количество, шт";
-                Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
-                Worksheet.Cells[1, 18].Value = "дата выпуска";
-                Worksheet.Cells[1, 19].Value = "статус РАО";
-                Worksheet.Cells[1, 20].Value = "вид";
-                Worksheet.Cells[1, 21].Value = "номер";
-                Worksheet.Cells[1, 22].Value = "дата";
-                Worksheet.Cells[1, 23].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 24].Value = "перевозчика";
-                Worksheet.Cells[1, 25].Value = "наименование";
-                Worksheet.Cells[1, 26].Value = "тип";
-                Worksheet.Cells[1, 27].Value = "заводской номер";
-                Worksheet.Cells[1, 28].Value = "наименование";
-                Worksheet.Cells[1, 29].Value = "код";
-                Worksheet.Cells[1, 30].Value = "Код переработки / сортировки РАО";
-                Worksheet.Cells[1, 31].Value = "Субсидия, %";
-                Worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
-                NotesHeaders1(); 
-        
-                #endregion
-                
-                break;
-            }
-            case "1.6":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "Код РАО";
-                Worksheet.Cells[1, 13].Value = "Статус РАО";
-                Worksheet.Cells[1, 14].Value = "объем без упаковки, куб.";
-                Worksheet.Cells[1, 15].Value = "масса без упаковки";
-                Worksheet.Cells[1, 16].Value = "количество ОЗИИИ";
-                Worksheet.Cells[1, 17].Value = "Основные радионуклиды";
-                Worksheet.Cells[1, 18].Value = "тритий";
-                Worksheet.Cells[1, 19].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 20].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 21].Value = "трансурановые радионуклиды";
-                Worksheet.Cells[1, 22].Value = "Дата измерения активности";
-                Worksheet.Cells[1, 23].Value = "вид";
-                Worksheet.Cells[1, 24].Value = "номер";
-                Worksheet.Cells[1, 25].Value = "дата";
-                Worksheet.Cells[1, 26].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 27].Value = "перевозчика";
-                Worksheet.Cells[1, 28].Value = "наименование";
-                Worksheet.Cells[1, 29].Value = "код";
-                Worksheet.Cells[1, 30].Value = "Код переработки /";
-                Worksheet.Cells[1, 31].Value = "наименование";
-                Worksheet.Cells[1, 32].Value = "тип";
-                Worksheet.Cells[1, 33].Value = "номер упаковки";
-                Worksheet.Cells[1, 34].Value = "Субсидия, %";
-                Worksheet.Cells[1, 35].Value = "Номер мероприятия ФЦП";
-                NotesHeaders1(); 
-                
-                #endregion
-                
-                break;
-            }
-            case "1.7":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "наименование";
-                Worksheet.Cells[1, 13].Value = "тип";
-                Worksheet.Cells[1, 14].Value = "заводской номер";
-                Worksheet.Cells[1, 15].Value = "номер упаковки (идентификационный код)";
-                Worksheet.Cells[1, 16].Value = "дата формирования";
-                Worksheet.Cells[1, 17].Value = "номер паспорта";
-                Worksheet.Cells[1, 18].Value = "объем, куб.м";
-                Worksheet.Cells[1, 19].Value = "масса брутто, т";
-                Worksheet.Cells[1, 20].Value = "наименования радионуклида";
-                Worksheet.Cells[1, 21].Value = "удельная активность, Бк/г";
-                Worksheet.Cells[1, 22].Value = "вид";
-                Worksheet.Cells[1, 23].Value = "номер";
-                Worksheet.Cells[1, 24].Value = "дата";
-                Worksheet.Cells[1, 25].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 26].Value = "перевозчика";
-                Worksheet.Cells[1, 27].Value = "наименование";
-                Worksheet.Cells[1, 28].Value = "код";
-                Worksheet.Cells[1, 29].Value = "код";
-                Worksheet.Cells[1, 30].Value = "статус";
-                Worksheet.Cells[1, 31].Value = "объем без упаковки, куб.м";
-                Worksheet.Cells[1, 32].Value = "масса без упаковки (нетто), т";
-                Worksheet.Cells[1, 33].Value = "количество ОЗИИИ, шт";
-                Worksheet.Cells[1, 34].Value = "тритий";
-                Worksheet.Cells[1, 35].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 36].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 37].Value = "трансурановые радионуклиды";
-                Worksheet.Cells[1, 38].Value = "Код переработки/сортировки РАО";
-                Worksheet.Cells[1, 39].Value = "Субсидия, %";
-                Worksheet.Cells[1, 40].Value = "Номер мероприятия ФЦП";
-                NotesHeaders1(); 
-                
-                #endregion
-                
-                break;
-            }
-            case "1.8":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "индивидуальный номер (идентификационный код) партии ЖРО";
-                Worksheet.Cells[1, 13].Value = "номер паспорта";
-                Worksheet.Cells[1, 14].Value = "объем, куб.м";
-                Worksheet.Cells[1, 15].Value = "масса, т";
-                Worksheet.Cells[1, 16].Value = "солесодержание, г/л";
-                Worksheet.Cells[1, 17].Value = "наименование радионуклида";
-                Worksheet.Cells[1, 18].Value = "удельная активность, Бк/г";
-                Worksheet.Cells[1, 19].Value = "вид";
-                Worksheet.Cells[1, 20].Value = "номер";
-                Worksheet.Cells[1, 21].Value = "дата";
-                Worksheet.Cells[1, 22].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 23].Value = "перевозчика";
-                Worksheet.Cells[1, 24].Value = "наименование";
-                Worksheet.Cells[1, 25].Value = "код";
-                Worksheet.Cells[1, 26].Value = "код";
-                Worksheet.Cells[1, 27].Value = "статус";
-                Worksheet.Cells[1, 28].Value = "объем, куб.м";
-                Worksheet.Cells[1, 29].Value = "масса, т";
-                Worksheet.Cells[1, 30].Value = "тритий";
-                Worksheet.Cells[1, 31].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 32].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 33].Value = "трансурановые радионуклиды";
-                Worksheet.Cells[1, 34].Value = "Код переработки/сортировки РАО";
-                Worksheet.Cells[1, 35].Value = "Субсидия, %";
-                Worksheet.Cells[1, 36].Value = "Номер мероприятия ФЦП";
-                NotesHeaders1(); 
-                
-                #endregion
-
-                break;
-            }
-            case "1.9":
-            {
-                #region Headers
-
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "Количество строк";
-                Worksheet.Cells[1, 9].Value = "№ п/п";
-                Worksheet.Cells[1, 10].Value = "код";
-                Worksheet.Cells[1, 11].Value = "дата";
-                Worksheet.Cells[1, 12].Value = "вид";
-                Worksheet.Cells[1, 13].Value = "номер";
-                Worksheet.Cells[1, 14].Value = "дата";
-                Worksheet.Cells[1, 15].Value = "Код типа объектов учета";
-                Worksheet.Cells[1, 16].Value = "радионуклиды";
-                Worksheet.Cells[1, 17].Value = "активность, Бк"; 
-                NotesHeaders1();
-
-                #endregion
-                
-                break;
-            }
-            case "2.1":
-            {
-                #region Headers
-
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "мощность куб.м/год";
-                Worksheet.Cells[1, 10].Value = "количество часов работы за год";
-                Worksheet.Cells[1, 11].Value = "код РАО";
-                Worksheet.Cells[1, 12].Value = "статус РАО";
-                Worksheet.Cells[1, 13].Value = "куб.м";
-                Worksheet.Cells[1, 14].Value = "т";
-                Worksheet.Cells[1, 15].Value = "ОЗИИИ, шт";
-                Worksheet.Cells[1, 16].Value = "тритий";
-                Worksheet.Cells[1, 17].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 18].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 19].Value = "трансурановые радионуклиды";
-                Worksheet.Cells[1, 20].Value = "код РАО";
-                Worksheet.Cells[1, 21].Value = "статус РАО";
-                Worksheet.Cells[1, 22].Value = "куб.м";
-                Worksheet.Cells[1, 23].Value = "т";
-                Worksheet.Cells[1, 24].Value = "ОЗИИИ, шт";
-                Worksheet.Cells[1, 25].Value = "тритий";
-                Worksheet.Cells[1, 26].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 27].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 28].Value = "трансурановые радионуклиды";
-                NotesHeaders2(); 
-
-                #endregion
-
-                break;
-            }
-            case "2.2":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "наименование";
-                Worksheet.Cells[1, 10].Value = "тип";
-                Worksheet.Cells[1, 11].Value = "количество, шт";
-                Worksheet.Cells[1, 12].Value = "код РАО";
-                Worksheet.Cells[1, 13].Value = "статус РАО";
-                Worksheet.Cells[1, 14].Value = "РАО без упаковки";
-                Worksheet.Cells[1, 15].Value = "РАО с упаковкой";
-                Worksheet.Cells[1, 16].Value = "РАО без упаковки (нетто)";
-                Worksheet.Cells[1, 17].Value = "РАО с упаковкой (брутто)";
-                Worksheet.Cells[1, 18].Value = "Количество ОЗИИИ, шт";
-                Worksheet.Cells[1, 19].Value = "тритий";
-                Worksheet.Cells[1, 20].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 21].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 22].Value = "трансурановые радионуклиды";
-                Worksheet.Cells[1, 23].Value = "Основные радионуклиды";
-                Worksheet.Cells[1, 24].Value = "Субсидия, %";
-                Worksheet.Cells[1, 25].Value = "Номер мероприятия ФЦП";
-                NotesHeaders2(); 
-        
-                #endregion
-                
-                break;
-            }
-            case "2.3":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "проектный объем, куб.м";
-                Worksheet.Cells[1, 10].Value = "код РАО";
-                Worksheet.Cells[1, 11].Value = "объем, куб.м";
-                Worksheet.Cells[1, 12].Value = "масса, т";
-                Worksheet.Cells[1, 13].Value = "количество ОЗИИИ, шт";
-                Worksheet.Cells[1, 14].Value = "суммарная активность, Бк";
-                Worksheet.Cells[1, 15].Value = "номер";
-                Worksheet.Cells[1, 16].Value = "дата";
-                Worksheet.Cells[1, 17].Value = "срок действия";
-                Worksheet.Cells[1, 18].Value = "наименование документа";
-                NotesHeaders2(); 
-        
-                #endregion
-                
-                break;
-            }
-            case "2.4":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Код ОЯТ";
-                Worksheet.Cells[1, 8].Value = "Номер мероприятия ФЦП";
-                Worksheet.Cells[1, 9].Value = "масса образованного, т";
-                Worksheet.Cells[1, 10].Value = "количество образованного, шт";
-                Worksheet.Cells[1, 11].Value = "масса поступивших от сторонних, т";
-                Worksheet.Cells[1, 12].Value = "количество поступивших от сторонних, шт";
-                Worksheet.Cells[1, 13].Value = "масса импортированных от сторонних, т";
-                Worksheet.Cells[1, 14].Value = "количество импортированных от сторонних, шт";
-                Worksheet.Cells[1, 15].Value = "масса учтенных по другим причинам, т";
-                Worksheet.Cells[1, 16].Value = "количество учтенных по другим причинам, шт";
-                Worksheet.Cells[1, 17].Value = "масса переданных сторонним, т";
-                Worksheet.Cells[1, 18].Value = "количество переданных сторонним, шт";
-                Worksheet.Cells[1, 19].Value = "масса переработанных, т";
-                Worksheet.Cells[1, 20].Value = "количество переработанных, шт";
-                Worksheet.Cells[1, 21].Value = "масса снятия с учета, т";
-                Worksheet.Cells[1, 22].Value = "количество снятых с учета, шт";
-                NotesHeaders2();
-        
-                #endregion
-                
-                break;
-            }
-            case "2.5":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование, номер";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "код ОЯТ";
-                Worksheet.Cells[1, 10].Value = "номер мероприятия ФЦП";
-                Worksheet.Cells[1, 11].Value = "топливо (нетто)";
-                Worksheet.Cells[1, 12].Value = "ОТВС(ТВЭЛ, выемной части реактора) брутто";
-                Worksheet.Cells[1, 13].Value = "количество, шт";
-                Worksheet.Cells[1, 14].Value = "альфа-излучающих нуклидов";
-                Worksheet.Cells[1, 15].Value = "бета-, гамма-излучающих нуклидов";
-                NotesHeaders2(); 
-        
-                #endregion
-
-                break;
-            }
-            case "2.6":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Номер наблюдательной скважины";
-                Worksheet.Cells[1, 8].Value = "Наименование зоны контроля";
-                Worksheet.Cells[1, 9].Value = "Предполагаемый источник поступления радиоактивных веществ";
-                Worksheet.Cells[1, 10].Value =
-                    "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м";
-                Worksheet.Cells[1, 11].Value = "Глубина отбора проб, м";
-                Worksheet.Cells[1, 12].Value = "Наименование радионуклида";
-                Worksheet.Cells[1, 13].Value = "Среднегодовое содержание радионуклида, Бк/кг";
-                NotesHeaders2();
-
-                #endregion
-                
-                break;
-            }
-            case "2.7":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование, номер источника выбросов";
-                Worksheet.Cells[1, 8].Value = "Наименование радионуклида";
-                Worksheet.Cells[1, 9].Value = "разрешенный выброс за отчетный год";
-                Worksheet.Cells[1, 10].Value = "фактический выброс за отчетный год";
-                Worksheet.Cells[1, 11].Value = "фактический выброс за предыдущий год";
-                NotesHeaders2(); 
-        
-                #endregion
-
-                break;
-            }
-            case "2.8":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование, номер выпуска сточных вод";
-                Worksheet.Cells[1, 8].Value = "наименование";
-                Worksheet.Cells[1, 9].Value = "код типа документа";
-                Worksheet.Cells[1, 10].Value = "Наименование бассейнового округа";
-                Worksheet.Cells[1, 11].Value = "Допустимый объем водоотведения за год, тыс.куб.м";
-                Worksheet.Cells[1, 12].Value = "Отведено за отчетный период, тыс.куб.м";
-                NotesHeaders2();
-
-                #endregion
-                
-                break;
-            }
-            case "2.9":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование, номер выпуска сточных вод";
-                Worksheet.Cells[1, 8].Value = "Наименование радионуклида";
-                Worksheet.Cells[1, 9].Value = "допустимая";
-                Worksheet.Cells[1, 10].Value = "фактическая";
-                NotesHeaders2();
-
-                #endregion
-                
-                break;
-            }
-            case "2.10":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование показателя";
-                Worksheet.Cells[1, 8].Value = "Наименование участка";
-                Worksheet.Cells[1, 9].Value = "Кадастровый номер участка";
-                Worksheet.Cells[1, 10].Value = "Код участка";
-                Worksheet.Cells[1, 11].Value = "Площадь загрязненной территории, кв.м";
-                Worksheet.Cells[1, 12].Value = "средняя";
-                Worksheet.Cells[1, 13].Value = "максимальная";
-                Worksheet.Cells[1, 14].Value = "альфа-излучающие радионуклиды";
-                Worksheet.Cells[1, 15].Value = "бета-излучающие радионуклиды";
-                Worksheet.Cells[1, 16].Value = "Номер мероприятия ФЦП";
-                NotesHeaders2(); 
-        
-                #endregion
-                
-                break;
-            }
-            case "2.11":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование участка";
-                Worksheet.Cells[1, 8].Value = "Кадастровый номер участка";
-                Worksheet.Cells[1, 9].Value = "Код участка";
-                Worksheet.Cells[1, 10].Value = "Площадь загрязненной территории, кв.м";
-                Worksheet.Cells[1, 11].Value = "Наименование радионуклидов";
-                Worksheet.Cells[1, 12].Value = "земельный участок";
-                Worksheet.Cells[1, 13].Value = "жидкая фаза";
-                Worksheet.Cells[1, 14].Value = "донные отложения";
-                NotesHeaders2();
-
-                #endregion
-                
-                break;
-            }
-            case "2.12":
-            {
-                #region Headers
-        
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Код операции";
-                Worksheet.Cells[1, 8].Value = "Код типа объектов учета";
-                Worksheet.Cells[1, 9].Value = "радионуклиды";
-                Worksheet.Cells[1, 10].Value = "активность, Бк";
-                Worksheet.Cells[1, 11].Value = "ОКПО поставщика/получателя";
-                NotesHeaders2();
-
-                #endregion
-                
-                break;
-            }
-        }
-        if (OperatingSystem.IsWindows())
-        {
-            Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
-            WorksheetPrim.Cells.AutoFitColumns();
-        }
-        Worksheet.View.FreezePanes(2, 1);
-        WorksheetPrim.View.FreezePanes(2, 1);
-    }
-
-    private void FillExecutorsHeaders()
-    {
-        Worksheet.Cells[1, 1].Value = "Рег. №";
-        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-        Worksheet.Cells[1, 3].Value = "ОКПО";
-        Worksheet.Cells[1, 4].Value = "Форма";
-        Worksheet.Cells[1, 5].Value = "Дата начала периода";
-        Worksheet.Cells[1, 6].Value = "Дата конца периода";
-        Worksheet.Cells[1, 7].Value = "Номер корректировки";
-        Worksheet.Cells[1, 8].Value = "ФИО исполнителя";
-        Worksheet.Cells[1, 9].Value = "Должность";
-        Worksheet.Cells[1, 10].Value = "Телефон";
-        Worksheet.Cells[1, 11].Value = "Электронная почта";
-        if (OperatingSystem.IsWindows())
-        {
-            Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
-        }
-        Worksheet.View.FreezePanes(2, 1);
-    }
-
-    #endregion
-
-    #region NotesHeader
-
-    private void NotesHeaders1()
-    {
-        WorksheetPrim.Cells[1, 1].Value = "ОКПО";
-        WorksheetPrim.Cells[1, 2].Value = "Сокращенное наименование";
-        WorksheetPrim.Cells[1, 3].Value = "Рег. №";
-        WorksheetPrim.Cells[1, 4].Value = "Номер корректировки";
-        WorksheetPrim.Cells[1, 5].Value = "Дата начала периода";
-        WorksheetPrim.Cells[1, 6].Value = "Дата конца периода";
-        WorksheetPrim.Cells[1, 7].Value = "№ строки";
-        WorksheetPrim.Cells[1, 8].Value = "№ графы";
-        WorksheetPrim.Cells[1, 9].Value = "Пояснение";
-        WorksheetPrim.View.FreezePanes(2, 1);
-    }
-
-    private void NotesHeaders2()
-    {
-        WorksheetPrim.Cells[1, 1].Value = "ОКПО";
-        WorksheetPrim.Cells[1, 2].Value = "Сокращенное наименование";
-        WorksheetPrim.Cells[1, 3].Value = "Рег. №";
-        WorksheetPrim.Cells[1, 4].Value = "Номер корректировки";
-        WorksheetPrim.Cells[1, 5].Value = "Отчетный год";
-        WorksheetPrim.Cells[1, 6].Value = "№ строки";
-        WorksheetPrim.Cells[1, 7].Value = "№ графы";
-        WorksheetPrim.Cells[1, 8].Value = "Пояснение";
-        WorksheetPrim.View.FreezePanes(2, 1);
-    }
-
-    #endregion
 
     #endregion
 
@@ -1304,7 +588,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             foreach (var comment in repNotes)
             {
                 #region Binding
-                    
+
                 WorksheetPrim.Cells[_currentPrimRow, 1].Value = CurrentReports.Master.OkpoRep.Value;
                 WorksheetPrim.Cells[_currentPrimRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 WorksheetPrim.Cells[_currentPrimRow, 3].Value = CurrentReports.Master.RegNoRep.Value;
@@ -1313,8 +597,8 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 WorksheetPrim.Cells[_currentPrimRow, 6].Value = rep.EndPeriod_DB;
                 WorksheetPrim.Cells[_currentPrimRow, 7].Value = comment.RowNumber_DB;
                 WorksheetPrim.Cells[_currentPrimRow, 8].Value = comment.GraphNumber_DB;
-                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB; 
-                
+                WorksheetPrim.Cells[_currentPrimRow, 9].Value = comment.Comment_DB;
+
                 #endregion
 
                 _currentPrimRow++;
@@ -2636,21 +1920,763 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     #endregion
 
-    #region FillExecutors
+    #endregion
 
-    private void FillExecutors(Report rep)
+    #region Headers
+
+    #region FillExecutorsHeaders
+
+    private void FillExecutorsHeaders()
     {
-        Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-        Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
-        Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
-        Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
-        Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
-        Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
-        Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
-        Worksheet.Cells[_currentRow, 8].Value = rep.FIOexecutor_DB;
-        Worksheet.Cells[_currentRow, 9].Value = rep.GradeExecutor_DB;
-        Worksheet.Cells[_currentRow, 10].Value = rep.ExecPhone_DB;
-        Worksheet.Cells[_currentRow, 11].Value = rep.ExecEmail_DB;
+        Worksheet.Cells[1, 1].Value = "Рег. №";
+        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+        Worksheet.Cells[1, 3].Value = "ОКПО";
+        Worksheet.Cells[1, 4].Value = "Форма";
+        Worksheet.Cells[1, 5].Value = "Дата начала периода";
+        Worksheet.Cells[1, 6].Value = "Дата конца периода";
+        Worksheet.Cells[1, 7].Value = "Номер корректировки";
+        Worksheet.Cells[1, 8].Value = "ФИО исполнителя";
+        Worksheet.Cells[1, 9].Value = "Должность";
+        Worksheet.Cells[1, 10].Value = "Телефон";
+        Worksheet.Cells[1, 11].Value = "Электронная почта";
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
+        }
+        Worksheet.View.FreezePanes(2, 1);
+    }
+
+    #endregion
+
+    #region FillHeaders
+
+    private void FillHeaders(string formNum)
+    {
+        switch (formNum)
+        {
+            case "1.1":
+            {
+                #region Headers
+
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
+                Worksheet.Cells[1, 13].Value = "тип";
+                Worksheet.Cells[1, 14].Value = "радионуклиды";
+                Worksheet.Cells[1, 15].Value = "номер";
+                Worksheet.Cells[1, 16].Value = "количество, шт";
+                Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+                Worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
+                Worksheet.Cells[1, 19].Value = "дата выпуска";
+                Worksheet.Cells[1, 20].Value = "категория";
+                Worksheet.Cells[1, 21].Value = "НСС, мес";
+                Worksheet.Cells[1, 22].Value = "код формы собственности";
+                Worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
+                Worksheet.Cells[1, 24].Value = "вид";
+                Worksheet.Cells[1, 25].Value = "номер";
+                Worksheet.Cells[1, 26].Value = "дата";
+                Worksheet.Cells[1, 27].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 28].Value = "перевозчика";
+                Worksheet.Cells[1, 29].Value = "наименование";
+                Worksheet.Cells[1, 30].Value = "тип";
+                Worksheet.Cells[1, 31].Value = "номер";
+                NotesHeaders1();
+
+                #endregion
+
+                break;
+            }
+            case "1.2":
+            {
+                #region Headers
+
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "номер паспорта";
+                Worksheet.Cells[1, 13].Value = "наименование";
+                Worksheet.Cells[1, 14].Value = "номер";
+                Worksheet.Cells[1, 15].Value = "масса объединенного урана, кг";
+                Worksheet.Cells[1, 16].Value = "код ОКПО изготовителя";
+                Worksheet.Cells[1, 17].Value = "дата выпуска";
+                Worksheet.Cells[1, 18].Value = "НСС, мес";
+                Worksheet.Cells[1, 19].Value = "код формы собственности";
+                Worksheet.Cells[1, 20].Value = "код ОКПО правообладателя";
+                Worksheet.Cells[1, 21].Value = "вид";
+                Worksheet.Cells[1, 22].Value = "номер";
+                Worksheet.Cells[1, 23].Value = "дата";
+                Worksheet.Cells[1, 24].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 25].Value = "перевозчика";
+                Worksheet.Cells[1, 26].Value = "наименование";
+                Worksheet.Cells[1, 27].Value = "тип";
+                Worksheet.Cells[1, 28].Value = "номер";
+                NotesHeaders1();
+
+                #endregion
+
+                break;
+            }
+            case "1.3":
+            {
+                #region Headers
+
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "номер паспорта";
+                Worksheet.Cells[1, 13].Value = "тип";
+                Worksheet.Cells[1, 14].Value = "радионуклиды";
+                Worksheet.Cells[1, 15].Value = "номер";
+                Worksheet.Cells[1, 16].Value = "активность, Бк";
+                Worksheet.Cells[1, 17].Value = "код ОКПО изготовителя";
+                Worksheet.Cells[1, 18].Value = "дата выпуска";
+                Worksheet.Cells[1, 19].Value = "агрегатное состояние";
+                Worksheet.Cells[1, 20].Value = "код формы собственности";
+                Worksheet.Cells[1, 21].Value = "код ОКПО правообладателя";
+                Worksheet.Cells[1, 22].Value = "вид";
+                Worksheet.Cells[1, 23].Value = "номер";
+                Worksheet.Cells[1, 24].Value = "дата";
+                Worksheet.Cells[1, 25].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 26].Value = "перевозчика";
+                Worksheet.Cells[1, 27].Value = "наименование";
+                Worksheet.Cells[1, 28].Value = "тип";
+                Worksheet.Cells[1, 29].Value = "номер";
+                NotesHeaders1();
+
+                #endregion
+
+                break;
+            }
+            case "1.4":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "номер паспорта";
+                Worksheet.Cells[1, 13].Value = "наименование";
+                Worksheet.Cells[1, 14].Value = "вид";
+                Worksheet.Cells[1, 15].Value = "радионуклиды";
+                Worksheet.Cells[1, 16].Value = "активность, Бк";
+                Worksheet.Cells[1, 17].Value = "дата измерения активности";
+                Worksheet.Cells[1, 18].Value = "объем, куб.м";
+                Worksheet.Cells[1, 19].Value = "масса, кг";
+                Worksheet.Cells[1, 20].Value = "агрегатное состояние";
+                Worksheet.Cells[1, 21].Value = "код формы собственности";
+                Worksheet.Cells[1, 22].Value = "код ОКПО правообладателя";
+                Worksheet.Cells[1, 23].Value = "вид";
+                Worksheet.Cells[1, 24].Value = "номер";
+                Worksheet.Cells[1, 25].Value = "дата";
+                Worksheet.Cells[1, 26].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 27].Value = "перевозчика";
+                Worksheet.Cells[1, 28].Value = "наименование";
+                Worksheet.Cells[1, 29].Value = "тип";
+                Worksheet.Cells[1, 30].Value = "номер";
+                NotesHeaders1(); 
+        
+                #endregion
+
+                break;
+            }
+            case "1.5":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата) Эри, акта определения характеристик ОЗИИ";
+                Worksheet.Cells[1, 13].Value = "тип";
+                Worksheet.Cells[1, 14].Value = "радионуклиды";
+                Worksheet.Cells[1, 15].Value = "номер";
+                Worksheet.Cells[1, 16].Value = "количество, шт";
+                Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+                Worksheet.Cells[1, 18].Value = "дата выпуска";
+                Worksheet.Cells[1, 19].Value = "статус РАО";
+                Worksheet.Cells[1, 20].Value = "вид";
+                Worksheet.Cells[1, 21].Value = "номер";
+                Worksheet.Cells[1, 22].Value = "дата";
+                Worksheet.Cells[1, 23].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 24].Value = "перевозчика";
+                Worksheet.Cells[1, 25].Value = "наименование";
+                Worksheet.Cells[1, 26].Value = "тип";
+                Worksheet.Cells[1, 27].Value = "заводской номер";
+                Worksheet.Cells[1, 28].Value = "наименование";
+                Worksheet.Cells[1, 29].Value = "код";
+                Worksheet.Cells[1, 30].Value = "Код переработки / сортировки РАО";
+                Worksheet.Cells[1, 31].Value = "Субсидия, %";
+                Worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
+                NotesHeaders1(); 
+        
+                #endregion
+                
+                break;
+            }
+            case "1.6":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "Код РАО";
+                Worksheet.Cells[1, 13].Value = "Статус РАО";
+                Worksheet.Cells[1, 14].Value = "объем без упаковки, куб.";
+                Worksheet.Cells[1, 15].Value = "масса без упаковки";
+                Worksheet.Cells[1, 16].Value = "количество ОЗИИИ";
+                Worksheet.Cells[1, 17].Value = "Основные радионуклиды";
+                Worksheet.Cells[1, 18].Value = "тритий";
+                Worksheet.Cells[1, 19].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 20].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 21].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 22].Value = "Дата измерения активности";
+                Worksheet.Cells[1, 23].Value = "вид";
+                Worksheet.Cells[1, 24].Value = "номер";
+                Worksheet.Cells[1, 25].Value = "дата";
+                Worksheet.Cells[1, 26].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 27].Value = "перевозчика";
+                Worksheet.Cells[1, 28].Value = "наименование";
+                Worksheet.Cells[1, 29].Value = "код";
+                Worksheet.Cells[1, 30].Value = "Код переработки /";
+                Worksheet.Cells[1, 31].Value = "наименование";
+                Worksheet.Cells[1, 32].Value = "тип";
+                Worksheet.Cells[1, 33].Value = "номер упаковки";
+                Worksheet.Cells[1, 34].Value = "Субсидия, %";
+                Worksheet.Cells[1, 35].Value = "Номер мероприятия ФЦП";
+                NotesHeaders1(); 
+                
+                #endregion
+                
+                break;
+            }
+            case "1.7":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "наименование";
+                Worksheet.Cells[1, 13].Value = "тип";
+                Worksheet.Cells[1, 14].Value = "заводской номер";
+                Worksheet.Cells[1, 15].Value = "номер упаковки (идентификационный код)";
+                Worksheet.Cells[1, 16].Value = "дата формирования";
+                Worksheet.Cells[1, 17].Value = "номер паспорта";
+                Worksheet.Cells[1, 18].Value = "объем, куб.м";
+                Worksheet.Cells[1, 19].Value = "масса брутто, т";
+                Worksheet.Cells[1, 20].Value = "наименования радионуклида";
+                Worksheet.Cells[1, 21].Value = "удельная активность, Бк/г";
+                Worksheet.Cells[1, 22].Value = "вид";
+                Worksheet.Cells[1, 23].Value = "номер";
+                Worksheet.Cells[1, 24].Value = "дата";
+                Worksheet.Cells[1, 25].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 26].Value = "перевозчика";
+                Worksheet.Cells[1, 27].Value = "наименование";
+                Worksheet.Cells[1, 28].Value = "код";
+                Worksheet.Cells[1, 29].Value = "код";
+                Worksheet.Cells[1, 30].Value = "статус";
+                Worksheet.Cells[1, 31].Value = "объем без упаковки, куб.м";
+                Worksheet.Cells[1, 32].Value = "масса без упаковки (нетто), т";
+                Worksheet.Cells[1, 33].Value = "количество ОЗИИИ, шт";
+                Worksheet.Cells[1, 34].Value = "тритий";
+                Worksheet.Cells[1, 35].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 36].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 37].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 38].Value = "Код переработки/сортировки РАО";
+                Worksheet.Cells[1, 39].Value = "Субсидия, %";
+                Worksheet.Cells[1, 40].Value = "Номер мероприятия ФЦП";
+                NotesHeaders1(); 
+                
+                #endregion
+                
+                break;
+            }
+            case "1.8":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "индивидуальный номер (идентификационный код) партии ЖРО";
+                Worksheet.Cells[1, 13].Value = "номер паспорта";
+                Worksheet.Cells[1, 14].Value = "объем, куб.м";
+                Worksheet.Cells[1, 15].Value = "масса, т";
+                Worksheet.Cells[1, 16].Value = "солесодержание, г/л";
+                Worksheet.Cells[1, 17].Value = "наименование радионуклида";
+                Worksheet.Cells[1, 18].Value = "удельная активность, Бк/г";
+                Worksheet.Cells[1, 19].Value = "вид";
+                Worksheet.Cells[1, 20].Value = "номер";
+                Worksheet.Cells[1, 21].Value = "дата";
+                Worksheet.Cells[1, 22].Value = "поставщика или получателя";
+                Worksheet.Cells[1, 23].Value = "перевозчика";
+                Worksheet.Cells[1, 24].Value = "наименование";
+                Worksheet.Cells[1, 25].Value = "код";
+                Worksheet.Cells[1, 26].Value = "код";
+                Worksheet.Cells[1, 27].Value = "статус";
+                Worksheet.Cells[1, 28].Value = "объем, куб.м";
+                Worksheet.Cells[1, 29].Value = "масса, т";
+                Worksheet.Cells[1, 30].Value = "тритий";
+                Worksheet.Cells[1, 31].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 32].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 33].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 34].Value = "Код переработки/сортировки РАО";
+                Worksheet.Cells[1, 35].Value = "Субсидия, %";
+                Worksheet.Cells[1, 36].Value = "Номер мероприятия ФЦП";
+                NotesHeaders1(); 
+                
+                #endregion
+
+                break;
+            }
+            case "1.9":
+            {
+                #region Headers
+
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "Количество строк";
+                Worksheet.Cells[1, 9].Value = "№ п/п";
+                Worksheet.Cells[1, 10].Value = "код";
+                Worksheet.Cells[1, 11].Value = "дата";
+                Worksheet.Cells[1, 12].Value = "вид";
+                Worksheet.Cells[1, 13].Value = "номер";
+                Worksheet.Cells[1, 14].Value = "дата";
+                Worksheet.Cells[1, 15].Value = "Код типа объектов учета";
+                Worksheet.Cells[1, 16].Value = "радионуклиды";
+                Worksheet.Cells[1, 17].Value = "активность, Бк"; 
+                NotesHeaders1();
+
+                #endregion
+                
+                break;
+            }
+            case "2.1":
+            {
+                #region Headers
+
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "наименование";
+                Worksheet.Cells[1, 8].Value = "код";
+                Worksheet.Cells[1, 9].Value = "мощность куб.м/год";
+                Worksheet.Cells[1, 10].Value = "количество часов работы за год";
+                Worksheet.Cells[1, 11].Value = "код РАО";
+                Worksheet.Cells[1, 12].Value = "статус РАО";
+                Worksheet.Cells[1, 13].Value = "куб.м";
+                Worksheet.Cells[1, 14].Value = "т";
+                Worksheet.Cells[1, 15].Value = "ОЗИИИ, шт";
+                Worksheet.Cells[1, 16].Value = "тритий";
+                Worksheet.Cells[1, 17].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 18].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 19].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 20].Value = "код РАО";
+                Worksheet.Cells[1, 21].Value = "статус РАО";
+                Worksheet.Cells[1, 22].Value = "куб.м";
+                Worksheet.Cells[1, 23].Value = "т";
+                Worksheet.Cells[1, 24].Value = "ОЗИИИ, шт";
+                Worksheet.Cells[1, 25].Value = "тритий";
+                Worksheet.Cells[1, 26].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 27].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 28].Value = "трансурановые радионуклиды";
+                NotesHeaders2(); 
+
+                #endregion
+
+                break;
+            }
+            case "2.2":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "наименование";
+                Worksheet.Cells[1, 8].Value = "код";
+                Worksheet.Cells[1, 9].Value = "наименование";
+                Worksheet.Cells[1, 10].Value = "тип";
+                Worksheet.Cells[1, 11].Value = "количество, шт";
+                Worksheet.Cells[1, 12].Value = "код РАО";
+                Worksheet.Cells[1, 13].Value = "статус РАО";
+                Worksheet.Cells[1, 14].Value = "РАО без упаковки";
+                Worksheet.Cells[1, 15].Value = "РАО с упаковкой";
+                Worksheet.Cells[1, 16].Value = "РАО без упаковки (нетто)";
+                Worksheet.Cells[1, 17].Value = "РАО с упаковкой (брутто)";
+                Worksheet.Cells[1, 18].Value = "Количество ОЗИИИ, шт";
+                Worksheet.Cells[1, 19].Value = "тритий";
+                Worksheet.Cells[1, 20].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 21].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 22].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 23].Value = "Основные радионуклиды";
+                Worksheet.Cells[1, 24].Value = "Субсидия, %";
+                Worksheet.Cells[1, 25].Value = "Номер мероприятия ФЦП";
+                NotesHeaders2(); 
+        
+                #endregion
+                
+                break;
+            }
+            case "2.3":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "наименование";
+                Worksheet.Cells[1, 8].Value = "код";
+                Worksheet.Cells[1, 9].Value = "проектный объем, куб.м";
+                Worksheet.Cells[1, 10].Value = "код РАО";
+                Worksheet.Cells[1, 11].Value = "объем, куб.м";
+                Worksheet.Cells[1, 12].Value = "масса, т";
+                Worksheet.Cells[1, 13].Value = "количество ОЗИИИ, шт";
+                Worksheet.Cells[1, 14].Value = "суммарная активность, Бк";
+                Worksheet.Cells[1, 15].Value = "номер";
+                Worksheet.Cells[1, 16].Value = "дата";
+                Worksheet.Cells[1, 17].Value = "срок действия";
+                Worksheet.Cells[1, 18].Value = "наименование документа";
+                NotesHeaders2(); 
+        
+                #endregion
+                
+                break;
+            }
+            case "2.4":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Код ОЯТ";
+                Worksheet.Cells[1, 8].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 9].Value = "масса образованного, т";
+                Worksheet.Cells[1, 10].Value = "количество образованного, шт";
+                Worksheet.Cells[1, 11].Value = "масса поступивших от сторонних, т";
+                Worksheet.Cells[1, 12].Value = "количество поступивших от сторонних, шт";
+                Worksheet.Cells[1, 13].Value = "масса импортированных от сторонних, т";
+                Worksheet.Cells[1, 14].Value = "количество импортированных от сторонних, шт";
+                Worksheet.Cells[1, 15].Value = "масса учтенных по другим причинам, т";
+                Worksheet.Cells[1, 16].Value = "количество учтенных по другим причинам, шт";
+                Worksheet.Cells[1, 17].Value = "масса переданных сторонним, т";
+                Worksheet.Cells[1, 18].Value = "количество переданных сторонним, шт";
+                Worksheet.Cells[1, 19].Value = "масса переработанных, т";
+                Worksheet.Cells[1, 20].Value = "количество переработанных, шт";
+                Worksheet.Cells[1, 21].Value = "масса снятия с учета, т";
+                Worksheet.Cells[1, 22].Value = "количество снятых с учета, шт";
+                NotesHeaders2();
+        
+                #endregion
+                
+                break;
+            }
+            case "2.5":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "наименование, номер";
+                Worksheet.Cells[1, 8].Value = "код";
+                Worksheet.Cells[1, 9].Value = "код ОЯТ";
+                Worksheet.Cells[1, 10].Value = "номер мероприятия ФЦП";
+                Worksheet.Cells[1, 11].Value = "топливо (нетто)";
+                Worksheet.Cells[1, 12].Value = "ОТВС(ТВЭЛ, выемной части реактора) брутто";
+                Worksheet.Cells[1, 13].Value = "количество, шт";
+                Worksheet.Cells[1, 14].Value = "альфа-излучающих нуклидов";
+                Worksheet.Cells[1, 15].Value = "бета-, гамма-излучающих нуклидов";
+                NotesHeaders2(); 
+        
+                #endregion
+
+                break;
+            }
+            case "2.6":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Номер наблюдательной скважины";
+                Worksheet.Cells[1, 8].Value = "Наименование зоны контроля";
+                Worksheet.Cells[1, 9].Value = "Предполагаемый источник поступления радиоактивных веществ";
+                Worksheet.Cells[1, 10].Value =
+                    "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м";
+                Worksheet.Cells[1, 11].Value = "Глубина отбора проб, м";
+                Worksheet.Cells[1, 12].Value = "Наименование радионуклида";
+                Worksheet.Cells[1, 13].Value = "Среднегодовое содержание радионуклида, Бк/кг";
+                NotesHeaders2();
+
+                #endregion
+                
+                break;
+            }
+            case "2.7":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Наименование, номер источника выбросов";
+                Worksheet.Cells[1, 8].Value = "Наименование радионуклида";
+                Worksheet.Cells[1, 9].Value = "разрешенный выброс за отчетный год";
+                Worksheet.Cells[1, 10].Value = "фактический выброс за отчетный год";
+                Worksheet.Cells[1, 11].Value = "фактический выброс за предыдущий год";
+                NotesHeaders2(); 
+        
+                #endregion
+
+                break;
+            }
+            case "2.8":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Наименование, номер выпуска сточных вод";
+                Worksheet.Cells[1, 8].Value = "наименование";
+                Worksheet.Cells[1, 9].Value = "код типа документа";
+                Worksheet.Cells[1, 10].Value = "Наименование бассейнового округа";
+                Worksheet.Cells[1, 11].Value = "Допустимый объем водоотведения за год, тыс.куб.м";
+                Worksheet.Cells[1, 12].Value = "Отведено за отчетный период, тыс.куб.м";
+                NotesHeaders2();
+
+                #endregion
+                
+                break;
+            }
+            case "2.9":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Наименование, номер выпуска сточных вод";
+                Worksheet.Cells[1, 8].Value = "Наименование радионуклида";
+                Worksheet.Cells[1, 9].Value = "допустимая";
+                Worksheet.Cells[1, 10].Value = "фактическая";
+                NotesHeaders2();
+
+                #endregion
+                
+                break;
+            }
+            case "2.10":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Наименование показателя";
+                Worksheet.Cells[1, 8].Value = "Наименование участка";
+                Worksheet.Cells[1, 9].Value = "Кадастровый номер участка";
+                Worksheet.Cells[1, 10].Value = "Код участка";
+                Worksheet.Cells[1, 11].Value = "Площадь загрязненной территории, кв.м";
+                Worksheet.Cells[1, 12].Value = "средняя";
+                Worksheet.Cells[1, 13].Value = "максимальная";
+                Worksheet.Cells[1, 14].Value = "альфа-излучающие радионуклиды";
+                Worksheet.Cells[1, 15].Value = "бета-излучающие радионуклиды";
+                Worksheet.Cells[1, 16].Value = "Номер мероприятия ФЦП";
+                NotesHeaders2(); 
+        
+                #endregion
+                
+                break;
+            }
+            case "2.11":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Наименование участка";
+                Worksheet.Cells[1, 8].Value = "Кадастровый номер участка";
+                Worksheet.Cells[1, 9].Value = "Код участка";
+                Worksheet.Cells[1, 10].Value = "Площадь загрязненной территории, кв.м";
+                Worksheet.Cells[1, 11].Value = "Наименование радионуклидов";
+                Worksheet.Cells[1, 12].Value = "земельный участок";
+                Worksheet.Cells[1, 13].Value = "жидкая фаза";
+                Worksheet.Cells[1, 14].Value = "донные отложения";
+                NotesHeaders2();
+
+                #endregion
+                
+                break;
+            }
+            case "2.12":
+            {
+                #region Headers
+        
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "отчетный год";
+                Worksheet.Cells[1, 6].Value = "№ п/п";
+                Worksheet.Cells[1, 7].Value = "Код операции";
+                Worksheet.Cells[1, 8].Value = "Код типа объектов учета";
+                Worksheet.Cells[1, 9].Value = "радионуклиды";
+                Worksheet.Cells[1, 10].Value = "активность, Бк";
+                Worksheet.Cells[1, 11].Value = "ОКПО поставщика/получателя";
+                NotesHeaders2();
+
+                #endregion
+                
+                break;
+            }
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
+            WorksheetPrim.Cells.AutoFitColumns();
+        }
+        Worksheet.View.FreezePanes(2, 1);
+        WorksheetPrim.View.FreezePanes(2, 1);
+    }
+
+    #endregion
+
+    #region NotesHeader
+
+    private void NotesHeaders1()
+    {
+        WorksheetPrim.Cells[1, 1].Value = "ОКПО";
+        WorksheetPrim.Cells[1, 2].Value = "Сокращенное наименование";
+        WorksheetPrim.Cells[1, 3].Value = "Рег. №";
+        WorksheetPrim.Cells[1, 4].Value = "Номер корректировки";
+        WorksheetPrim.Cells[1, 5].Value = "Дата начала периода";
+        WorksheetPrim.Cells[1, 6].Value = "Дата конца периода";
+        WorksheetPrim.Cells[1, 7].Value = "№ строки";
+        WorksheetPrim.Cells[1, 8].Value = "№ графы";
+        WorksheetPrim.Cells[1, 9].Value = "Пояснение";
+        WorksheetPrim.View.FreezePanes(2, 1);
+    }
+
+    private void NotesHeaders2()
+    {
+        WorksheetPrim.Cells[1, 1].Value = "ОКПО";
+        WorksheetPrim.Cells[1, 2].Value = "Сокращенное наименование";
+        WorksheetPrim.Cells[1, 3].Value = "Рег. №";
+        WorksheetPrim.Cells[1, 4].Value = "Номер корректировки";
+        WorksheetPrim.Cells[1, 5].Value = "Отчетный год";
+        WorksheetPrim.Cells[1, 6].Value = "№ строки";
+        WorksheetPrim.Cells[1, 7].Value = "№ графы";
+        WorksheetPrim.Cells[1, 8].Value = "Пояснение";
+        WorksheetPrim.View.FreezePanes(2, 1);
     }
 
     #endregion

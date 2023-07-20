@@ -55,6 +55,7 @@
                     <MenuItem Header="Форма 2.12" Command="{Binding ExcelExportForms}" CommandParameter="2.12"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Все формы" Command="{Binding ExcelExportAll}"/>
+				<MenuItem Header="Список исполнителей" Command="{Binding ExcelExportAll}" CommandParameter="Executors"/>
                 <MenuItem Header="Выбранная организация">
                     <MenuItem Header="Формы 1">
                         <MenuItem Header="Форма 1.1" Command="{Binding ExcelExportForms}" CommandParameter="Org1.1"></MenuItem>
@@ -82,7 +83,6 @@
                         <MenuItem Header="Форма 2.12" Command="{Binding ExcelExportForms}" CommandParameter="Org2.12"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Все формы" Command="{Binding ExcelExportAll}" CommandParameter="SelectedOrg"/>
-                    <MenuItem Header="Все формы" Command="{Binding ExcelExportExecutors}" CommandParameter="Executors"/>
                 </MenuItem>
             </MenuItem>
         </Menu>
