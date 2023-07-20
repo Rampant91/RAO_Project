@@ -35,11 +35,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
 
-        foreach (var res in answer) // Для каждого импортируемого файла
+        foreach (var path in answer) // Для каждого импортируемого файла
         {
-            if (res == "") continue;
+            if (path == "") continue;
             var file = GetRaoFileName();
-            SourceFile = new FileInfo(res);
+            SourceFile = new FileInfo(path);
             SourceFile.CopyTo(file, true);
             var reportsCollection = await GetReportsFromDataBase(file);
 
