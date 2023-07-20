@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using System.ComponentModel;
 using Models.DBRealization;
 using ReactiveUI;
@@ -16,8 +15,8 @@ using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Forms;
-using Client_App.Resources;
 using Client_App.ViewModels;
+using MessageBox.Avalonia.Enums;
 
 namespace Client_App.Views;
 
@@ -3654,6 +3653,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
     #endregion
 
     #region DoShowDialog
+
     private async Task DoShowDialogAsync(InteractionContext<int, int> interaction)
     {
         RowNumberIn frm = new(interaction.Input);
@@ -3672,24 +3672,22 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
     {
         MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new()
         {
+            ButtonDefinitions = new List<ButtonDefinition>
+            {
+                new(){ Name = interaction.Input[1], Type = ButtonType.Default },
+                new(){ Name = interaction.Input[2], Type = ButtonType.Default }
+            },
             ContentHeader = "Уведомление",
             ContentMessage = interaction.Input[0],
             ContentTitle = "Уведомление",
             WindowStartupLocation = WindowStartupLocation.CenterScreen
         };
-        interaction.Input.RemoveAt(0);
-        par.ButtonDefinitions = interaction.Input
-            .Select(elem => new ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = elem
-            });
-        
-        var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-        var answ = await mssg.ShowDialog(this);
+        var msg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+        var answer = await msg.ShowDialog(this);
 
-        interaction.SetOutput(answ);
+        interaction.SetOutput(answer);
     }
+
     #endregion
 
     private void InitializeComponent()
