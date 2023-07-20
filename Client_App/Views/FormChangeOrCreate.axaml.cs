@@ -3670,22 +3670,21 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 
     private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
     {
-        MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new();
-        List<ButtonDefinition> lt = new();
-        par.ContentMessage = interaction.Input[0];
-        interaction.Input.RemoveAt(0);
-        foreach (var elem in interaction.Input) 
+        MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new()
         {
-            lt.Add(new ButtonDefinition
+            ContentHeader = "Уведомление",
+            ContentMessage = interaction.Input[0],
+            ContentTitle = "Уведомление",
+            WindowStartupLocation = WindowStartupLocation.CenterScreen
+        };
+        interaction.Input.RemoveAt(0);
+        par.ButtonDefinitions = interaction.Input
+            .Select(elem => new ButtonDefinition
             {
                 Type = MessageBox.Avalonia.Enums.ButtonType.Default,
                 Name = elem
             });
-
-        }
-        par.ButtonDefinitions = lt;
-        par.ContentTitle = "Уведомление";
-        par.ContentHeader = "Уведомление";
+        
         var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
         var answ = await mssg.ShowDialog(this);
 
