@@ -27,11 +27,13 @@
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.21" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.21" />
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="JsonSubTypes" Version="2.0.1" />
     <PackageReference Include="MessageBox.Avalonia" Version="1.7.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spravochniki\Spravochniki.csproj" />

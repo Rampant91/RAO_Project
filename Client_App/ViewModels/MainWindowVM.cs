@@ -483,6 +483,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExportReports { get; set; }                 //  Экспорт организации в файл .raodb
     public ICommand ExportReportsWithDateRange { get; set; }    //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
     public ICommand ImportExcel { get; set; }                   //  Импорт -> Из Excel
+    public ICommand ImportJson { get; set; }                    //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                   //  Импорт -> Из RAODB
     public ICommand SaveReports { get; set; }                   //  Сохраняет текущую базу, используется только для сохранения комментария формы
 
@@ -515,6 +516,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExportReports = new ExportReportsAsyncCommand();
         ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand(this);
         ImportExcel = new ImportExcelAsyncCommand();
+        ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
     }

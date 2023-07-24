@@ -1,5 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Client_App.Commands.AsyncCommands.Import
 {
@@ -8,12 +12,23 @@ namespace Client_App.Commands.AsyncCommands.Import
         public override async Task AsyncExecute(object? parameter)
         {
             string[] extensions = { "json", "JSON" };
-            var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
+            var answer = await GetSelectedFilesFromDialog("JSON", extensions);
             if (answer is null) return;
+
             foreach (var path in answer) // Для каждого импортируемого файла
             {
-                using FileStream fs = new(path, FileMode.OpenOrCreate);
-                //var orgsList = await JsonSerializer.DeserializeAsync<>(fs)
+                try
+                {
+                    var jsonString = await File.ReadAllTextAsync(path);
+                    var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+                    var jsonObject = JsonConvert.DeserializeObject<MyJsonModel>(jsonString, settings);
+                }
+                catch (Exception e)
+                {
+                    //ignore
+                }
+                
+
             }            
         }
     }
