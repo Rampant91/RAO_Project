@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Models.JSON;
 using Newtonsoft.Json;
 
 namespace Client_App.Commands.AsyncCommands.Import
@@ -20,7 +20,7 @@ namespace Client_App.Commands.AsyncCommands.Import
                 {
                     var jsonString = await File.ReadAllTextAsync(path);
                     var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-                    var jsonObject = JsonConvert.DeserializeObject<MyJsonModel2>(jsonString, settings);
+                    var jsonObject = JsonConvert.DeserializeObject<JsonModel>(jsonString, settings);
                 }
                 catch (Exception e)
                 {
