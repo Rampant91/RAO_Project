@@ -483,7 +483,7 @@
 
 //    [JsonProperty("CodRAO", NullValueHandling = NullValueHandling.Ignore)]
 //    public Q5? CodRao { get; set; }
-//} 
+//}
 //#endregion
 
 //#region Org
@@ -659,7 +659,7 @@
 
 //    [JsonProperty("TLFON", NullValueHandling = NullValueHandling.Ignore)]
 //    public string Tlfon { get; set; }
-//} 
+//}
 //#endregion
 
 //#region Voc
@@ -947,7 +947,7 @@
 
 //    [JsonProperty("c11", NullValueHandling = NullValueHandling.Ignore)]
 //    public string C11 { get; set; }
-//} 
+//}
 //#endregion
 
 //#region Enums
@@ -1151,7 +1151,7 @@
 
 //    public static implicit operator The7_Union(The7_Enum Enum) => new The7_Union { Enum = Enum };
 //    public static implicit operator The7_Union(long Integer) => new The7_Union { Integer = Integer };
-//} 
+//}
 //#endregion
 
 //#region Convertors
