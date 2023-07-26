@@ -11,6 +11,13 @@ public abstract class JsonForm
 {
     #region Properties
 
+    #region CorrectionNumber
+
+    [JsonProperty("adjustment_no")]
+    public byte CorrectionNumber { get; set; }
+
+    #endregion
+
     #region FormNum
 
     [JsonProperty("form_no")]
@@ -26,11 +33,32 @@ public abstract class JsonForm
 
     #endregion
 
+    #region StartPeriod
+
+    [JsonProperty("form_period_start")]
+    public string StartPeriod { get; set; }
+
+    #endregion
+
+    #region EndPeriod
+
+    [JsonProperty("form_period_end")]
+    public string EndPeriod { get; set; }
+
+    #endregion
+
+    #region ReportsId
+
+    [JsonProperty("author_id")]
+    public int ReportsId { get; set; }
+
+    #endregion
+
     #endregion
 
     #region ContractResolver
 
-    public class BaseSpecifiedConcreteClassConverter : DefaultContractResolver
+    public class JsonFormSpecifiedConcreteClassConverter : DefaultContractResolver
     {
         protected override JsonConverter ResolveContractConverter(Type objectType)
         {
@@ -48,7 +76,10 @@ public abstract class JsonForm
 
     public class BaseConverter : JsonConverter
     {
-        static JsonSerializerSettings SpecifiedSubclassConversion = new() { ContractResolver = new BaseSpecifiedConcreteClassConverter() };
+        private static JsonSerializerSettings SpecifiedSubclassConversion = new()
+        {
+            ContractResolver = new JsonFormSpecifiedConcreteClassConverter()
+        };
 
         public override bool CanConvert(Type objectType) => (objectType == typeof(JsonForm));
 
@@ -59,6 +90,13 @@ public abstract class JsonForm
             {
                 "form_1_1_2022" => JsonConvert.DeserializeObject<JsonForm11>(jo.ToString(), SpecifiedSubclassConversion),
                 "form_1_2_2022" => JsonConvert.DeserializeObject<JsonForm12>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_1_3_2022" => JsonConvert.DeserializeObject<JsonForm13>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_1_4_2022" => JsonConvert.DeserializeObject<JsonForm14>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_1_5_2022" => JsonConvert.DeserializeObject<JsonForm15>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_1_6_2022" => JsonConvert.DeserializeObject<JsonForm16>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_1_7_2022" => JsonConvert.DeserializeObject<JsonForm17>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_1_8_2022" => JsonConvert.DeserializeObject<JsonForm18>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_1_9_2022" => JsonConvert.DeserializeObject<JsonForm19>(jo.ToString(), SpecifiedSubclassConversion),
                 _ => throw new Exception()
             };
         }
@@ -100,6 +138,98 @@ public abstract class JsonForm
     }
 
     #endregion
+
+    #endregion
+}
+
+public abstract class JsonForm1 : JsonForm { }
+
+public class JsonForm11 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData11 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm12 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData12 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm13 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData13 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm14 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData14 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm15 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData15 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm16 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData16 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm17 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData17 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm18 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData18 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm19 : JsonForm1
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData19 TableData { get; set; }
 
     #endregion
 }

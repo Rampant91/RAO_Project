@@ -1,9 +1,15 @@
 ﻿using Newtonsoft.Json;
 
-namespace Models.JSON;
+namespace Models.JSON.TableDataMain;
 
-public class FormTableDataMainTable11 : FormTableDataMainTable
+public class TableDataMain11
 {
+    //"Сведения об операции", "код", "2"
+    [JsonProperty("OpCod")] public string OperationCode { get; set; }
+
+    //"Сведения об операции", "дата", "3"
+    [JsonProperty("OpDate")] public string OperationDate { get; set; }
+
     //"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "номер паспорта (сертификата)", "4"
     [JsonProperty("PaspN")] public string PassportNumber { get; set; }
 
@@ -39,6 +45,15 @@ public class FormTableDataMainTable11 : FormTableDataMainTable
 
     //"Право собственности на ЗРИ", "код ОКПО правообладателя", "15"
     [JsonProperty("Pravoobl")] public string Owner { get; set; }
+
+    //"Документ","вид", "16"
+    [JsonProperty("DocVid")] public string DocumentVid { get; set; }
+
+    //"Документ", "номер", "17"
+    [JsonProperty("DocN")] public string DocumentNumber { get; set; }
+
+    //"Документ", "дата", "18"
+    [JsonProperty("DocDate")] public string DocumentDate { get; set; }
 
     //"Код ОКПО", "поставщика или получателя", "19"
     [JsonProperty("OkpoPIP")] public string ProviderOrRecieverOKPO { get; set; }

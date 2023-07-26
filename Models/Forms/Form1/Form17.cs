@@ -79,6 +79,8 @@ public class Form17 : Form1
                  Quantity.HasErrors);
     }
 
+    #region Properties
+
     #region  Sum
     public bool Sum_DB { get; set; }
 
@@ -132,7 +134,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-4", "наименование","4")]
+    [FormProperty(true, "Сведения об упаковке", "null-4", "наименование", "4")]
     public RamAccess<string> PackName
     {
         get
@@ -194,7 +196,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-5", "тип", "5")]
+    [FormProperty(true, "Сведения об упаковке", "null-5", "тип", "5")]
     public RamAccess<string> PackType
     {
         get
@@ -251,7 +253,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-6", "заводской номер","6")]
+    [FormProperty(true, "Сведения об упаковке", "null-6", "заводской номер", "6")]
     public RamAccess<string> PackFactoryNumber
     {
         get
@@ -307,7 +309,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-7", "номер упаковки (идентификационный код)","7")]
+    [FormProperty(true, "Сведения об упаковке", "null-7", "номер упаковки (идентификационный код)", "7")]
     public RamAccess<string> PackNumber
     {
         get
@@ -364,7 +366,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-8", "дата формирования","8")]
+    [FormProperty(true, "Сведения об упаковке", "null-8", "дата формирования", "8")]
     public RamAccess<string> FormingDate
     {
         get
@@ -448,7 +450,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-9", "номер паспорта","9")]
+    [FormProperty(true, "Сведения об упаковке", "null-9", "номер паспорта", "9")]
     public RamAccess<string> PassportNumber
     {
         get
@@ -504,7 +506,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-10", "объем, куб. м","10")]
+    [FormProperty(true, "Сведения об упаковке", "null-10", "объем, куб. м", "10")]
     public RamAccess<string> Volume
     {
         get
@@ -563,7 +565,7 @@ public class Form17 : Form1
     private bool Volume_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value)||value.Value=="-")
+        if (string.IsNullOrEmpty(value.Value) || value.Value == "-")
         {
             return true;
         }
@@ -600,7 +602,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "null-11", "масса брутто, т","11")]
+    [FormProperty(true, "Сведения об упаковке", "null-11", "масса брутто, т", "11")]
     public RamAccess<string> Mass
     {
         get
@@ -686,7 +688,7 @@ public class Form17 : Form1
     #region Radionuclids
     public string Radionuclids_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "Радионуклидный состав", "наименование радионуклида","12")]
+    [FormProperty(true, "Сведения об упаковке", "Радионуклидный состав", "наименование радионуклида", "12")]
     public RamAccess<string> Radionuclids
     {
         get
@@ -748,7 +750,7 @@ public class Form17 : Form1
     #region SpecificActivity
     public string SpecificActivity_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения об упаковке", "Радионуклидный состав", "удельная активность, Бк/г", "13")]
+    [FormProperty(true, "Сведения об упаковке", "Радионуклидный состав", "удельная активность, Бк/г", "13")]
     public RamAccess<string> SpecificActivity
     {
         get
@@ -813,15 +815,15 @@ public class Form17 : Form1
                      NumberStyles.AllowExponent;
         try
         {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) 
-            { 
-                value.AddError("Число должно быть больше нуля"); 
+            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            {
+                value.AddError("Число должно быть больше нуля");
                 return false;
             }
         }
         catch
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
@@ -841,7 +843,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true, "null-17-18", "ОКПО","поставщика или получателя","17")]
+    [FormProperty(true, "null-17-18", "ОКПО", "поставщика или получателя", "17")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -929,7 +931,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true, "null-17-18", "ОКПО","перевозчика","18")]
+    [FormProperty(true, "null-17-18", "ОКПО", "перевозчика", "18")]
     public RamAccess<string> TransporterOKPO
     {
         get
@@ -1010,7 +1012,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true, "null-19-20", "Пункт хранения","наименование","19")]
+    [FormProperty(true, "null-19-20", "Пункт хранения", "наименование", "19")]
     public RamAccess<string> StoragePlaceName
     {
         get
@@ -1077,7 +1079,7 @@ public class Form17 : Form1
         }
     }
     [NotMapped]
-    [FormProperty(true, "null-19-20", "Пункт хранения","код","20")]
+    [FormProperty(true, "null-19-20", "Пункт хранения", "код", "20")]
     public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
     {
         get
@@ -1126,7 +1128,7 @@ public class Form17 : Form1
         //    value.AddError("Недопустимое значение"); return false;
         //}
         //return true;
-        if (String.IsNullOrEmpty(value.Value)|| value.Value == "-")
+        if (String.IsNullOrEmpty(value.Value) || value.Value == "-")
         {
             return true;
         }
@@ -1186,7 +1188,7 @@ public class Form17 : Form1
     #region CodeRAO
     public string CodeRAO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "null-21", "код","21")]
+    [FormProperty(true, "Сведения о РАО", "null-21", "код", "21")]
     public RamAccess<string> CodeRAO
     {
         get
@@ -1219,7 +1221,7 @@ public class Form17 : Form1
     private bool CodeRAO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             return true;
         }
@@ -1238,7 +1240,7 @@ public class Form17 : Form1
     #region StatusRAO
     public string StatusRAO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "null-22", "статус","22")]
+    [FormProperty(true, "Сведения о РАО", "null-22", "статус", "22")]
     public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
     {
         get
@@ -1306,7 +1308,7 @@ public class Form17 : Form1
     #region VolumeOutOfPack
     public string VolumeOutOfPack_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "null-23", "объем без упаковки, куб. м","23")]
+    [FormProperty(true, "Сведения о РАО", "null-23", "объем без упаковки, куб. м", "23")]
     public RamAccess<string> VolumeOutOfPack
     {
         get
@@ -1386,7 +1388,7 @@ public class Form17 : Form1
     #region MassOutOfPack
     public string MassOutOfPack_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "null-24", "масса без упаковки (нетто), т","24")]
+    [FormProperty(true, "Сведения о РАО", "null-24", "масса без упаковки (нетто), т", "24")]
     public RamAccess<string> MassOutOfPack
     {
         get
@@ -1464,7 +1466,7 @@ public class Form17 : Form1
     #region Quantity
     public string Quantity_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "null-25", "количество ОЗИИИ, шт","25")]
+    [FormProperty(true, "Сведения о РАО", "null-25", "количество ОЗИИИ, шт", "25")]
     public RamAccess<string> Quantity
     {
         get
@@ -1527,7 +1529,7 @@ public class Form17 : Form1
     #region TritiumActivity
     public string TritiumActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "Суммарная активность", "тритий","26")]
+    [FormProperty(true, "Сведения о РАО", "Суммарная активность", "тритий", "26")]
     public RamAccess<string> TritiumActivity
     {
         get
@@ -1581,7 +1583,7 @@ public class Form17 : Form1
     private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             return true;
         }
@@ -1611,7 +1613,7 @@ public class Form17 : Form1
     #region BetaGammaActivity
     public string BetaGammaActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "Суммарная активность", "бета-, гамма-излучающие радионуклиды (исключая тритий)","27")]
+    [FormProperty(true, "Сведения о РАО", "Суммарная активность", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "27")]
     public RamAccess<string> BetaGammaActivity
     {
         get
@@ -1662,7 +1664,7 @@ public class Form17 : Form1
     private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             return true;
         }
@@ -1692,7 +1694,7 @@ public class Form17 : Form1
     #region AlphaActivity
     public string AlphaActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "Суммарная активность", "альфа-излучающие радионуклиды (исключая трансурановые)","28")]
+    [FormProperty(true, "Сведения о РАО", "Суммарная активность", "альфа-излучающие радионуклиды (исключая трансурановые)", "28")]
     public RamAccess<string> AlphaActivity
     {
         get
@@ -1743,7 +1745,7 @@ public class Form17 : Form1
     private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             return true;
         }
@@ -1773,7 +1775,7 @@ public class Form17 : Form1
     #region TransuraniumActivity
     public string TransuraniumActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "Суммарная активность", "трансурановые радионуклиды","29")]
+    [FormProperty(true, "Сведения о РАО", "Суммарная активность", "трансурановые радионуклиды", "29")]
     public RamAccess<string> TransuraniumActivity
     {
         get
@@ -1824,7 +1826,7 @@ public class Form17 : Form1
     private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             return true;
         }
@@ -1845,7 +1847,7 @@ public class Form17 : Form1
         }
         catch
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
@@ -1855,7 +1857,7 @@ public class Form17 : Form1
     #region RefineOrSortRAOCode
     public string RefineOrSortRAOCode_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о РАО", "null-30", "Код переработки/сортировки РАО","30")]
+    [FormProperty(true, "Сведения о РАО", "null-30", "Код переработки/сортировки РАО", "30")]
     public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
     {
         get
@@ -1906,7 +1908,7 @@ public class Form17 : Form1
     #region Subsidy
     public string Subsidy_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-31-1", "null-31-2","Субсидия, %","31")]
+    [FormProperty(true, "null-31-1", "null-31-2", "Субсидия, %", "31")]
     public RamAccess<string> Subsidy // 0<number<=100 or empty.
     {
         get
@@ -1960,9 +1962,10 @@ public class Form17 : Form1
     #endregion
 
     #region FcpNumber
+
     public string FcpNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-32_1", "null-32_2","Номер мероприятия ФЦП","32")]
+    [FormProperty(true, "null-32_1", "null-32_2", "Номер мероприятия ФЦП", "32")]
     public RamAccess<string> FcpNumber
     {
         get
@@ -1995,6 +1998,9 @@ public class Form17 : Form1
         value.ClearErrors();
         return true;
     }
+
+    #endregion 
+
     #endregion
 
     protected override bool OperationCode_Validation(RamAccess<string> value)//OK
