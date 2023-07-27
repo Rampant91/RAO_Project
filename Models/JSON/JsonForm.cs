@@ -6,7 +6,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Models.JSON;
 
-[JsonConverter(typeof(BaseConverter))]
+[JsonConverter(typeof(JavaFormConverter))]
 public abstract class JsonForm
 {
     #region Properties
@@ -23,6 +23,13 @@ public abstract class JsonForm
     [JsonProperty("form_no")]
     [JsonConverter(typeof(FormNumConverter))]
     public string FormNum { get; set; }
+
+    #endregion
+
+    #region RegNoRep
+
+    [JsonProperty("kod_org")]
+    public string RegNoRep { get; set; }
 
     #endregion
 
@@ -74,7 +81,7 @@ public abstract class JsonForm
 
     #region BaseConverter
 
-    public class BaseConverter : JsonConverter
+    public class JavaFormConverter : JsonConverter
     {
         private static JsonSerializerSettings SpecifiedSubclassConversion = new()
         {
@@ -142,7 +149,11 @@ public abstract class JsonForm
     #endregion
 }
 
-public abstract class JsonForm1 : JsonForm { }
+public abstract class JsonForm1 : JsonForm
+{
+    [JsonProperty("form_main_data")]
+    public ExecutorData ExecutorData { get; set; }
+}
 
 public class JsonForm11 : JsonForm1
 {

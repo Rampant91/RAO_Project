@@ -42,7 +42,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         {
             ObserveAll();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             //ignored
         }

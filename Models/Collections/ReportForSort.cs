@@ -5,72 +5,34 @@ namespace Models.Collections;
 public class ReportForSort
 {
     #region RegNoRep
-    private string _regNoRep;
-    public string RegNoRep
-    {
-        get => _regNoRep;
-        set
-        {
-            _regNoRep = value;
-        }
-    }
+
+    public string RegNoRep { get; set; }
+
     #endregion
 
     #region OkpoRep
-    private string _okpoRep;
-    public string OkpoRep
-    {
-        get => _okpoRep;
-        set
-        {
-            _okpoRep = value;
-        }
-    }
+
+    public string OkpoRep { get; set; }
+
     #endregion
 
     #region FormNum
-    private string _formNum;
-    public string FormNum
-    {
-        get => _formNum;
-        set 
-        {
-            _formNum = value;
-        }
-    }
+
+    public string FormNum { get; set; }
+
     #endregion
 
     #region StartPeriod
-    private DateTime _startPeriod;
-    public DateTime StartPeriod
-    {
-        get => _startPeriod;
-        set
-        {
-            _startPeriod = value;
-        }
-    }
+
+    public DateTime StartPeriod { get; set; }
+
     #endregion
 
     #region EndPeriod
-    private DateTime _endPeriod;
-    public DateTime EndPeriod
-    {
-        get => _endPeriod;
-        set
-        {
-            _endPeriod = value;
-        }
-    }
+
+    public DateTime EndPeriod { get; set; }
+
     #endregion
 
-    private string _shortYr;
-    public string ShortYr
-    {
-        get => _shortYr;
-        set
-        {
-            _shortYr = value;
-        }
-    }
+    public string ShortYr { get; set; }
 }

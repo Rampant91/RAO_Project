@@ -17,7 +17,7 @@ using Models.Interfaces;
 
 namespace Models.Collections;
 
-public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColumn
+public class Report : IKey, IDataGridColumn
 {
     //ExportDate
     public enum Forms
@@ -285,7 +285,6 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         OnPropertyChanged(nameof(ShortJurLicoRep));
     }
     #endregion
-
 
     #region  Forms10
     ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
@@ -741,7 +740,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             FormNum_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool FormNum_Validation(RamAccess<string> value)
+    private static bool FormNum_Validation(RamAccess<string> value)
     {
         return true;
     }
@@ -778,7 +777,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             IsCorrection_DB = ((RamAccess<bool>)value).Value;
         }
     }
-    private bool IsCorrection_Validation(RamAccess<bool> value)
+    private static bool IsCorrection_Validation(RamAccess<bool> value)
     {
         return true;
     }
@@ -815,7 +814,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             CorrectionNumber_DB = ((RamAccess<byte>)value).Value;
         }
     }
-    private bool CorrectionNumber_Validation(RamAccess<byte> value)
+    private static bool CorrectionNumber_Validation(RamAccess<byte> value)
     {
         value.ClearErrors();
         return true;
@@ -853,7 +852,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             FIOexecutor_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool FIOexecutor_Validation(RamAccess<string> value)
+    private static bool FIOexecutor_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -891,7 +890,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             GradeExecutor_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool GradeExecutor_Validation(RamAccess<string> value)
+    private static bool GradeExecutor_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -929,7 +928,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ExecPhone_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool ExecPhone_Validation(RamAccess<string> value)
+    private static bool ExecPhone_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -967,7 +966,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ExecEmail_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool ExecEmail_Validation(RamAccess<string> value)
+    private static bool ExecEmail_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1014,7 +1013,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             NumberInOrder_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool NumberInOrder_Validation(RamAccess<string> value)
+    private static bool NumberInOrder_Validation(RamAccess<string> value)
     {
         return true;
     }
@@ -1051,7 +1050,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             Comments_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool Comments_Validation(RamAccess<string> value)
+    private static bool Comments_Validation(RamAccess<string> value)
     {
         return true;
     }
@@ -1077,7 +1076,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region PermissionNumber_28 
-    public string PermissionNumber_28_DB { get; set; } = "";[NotMapped]
+    public string PermissionNumber_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Номер разрешительного документа")]
     public RamAccess<string> PermissionNumber_28
     {
@@ -1101,14 +1101,14 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
     }
 
-    private void PermissionNumber_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionNumber_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PermissionNumber_28_DB = ((RamAccess<string>)Value).Value;
+            PermissionNumber_28_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool PermissionNumber_28_Validation(RamAccess<string> value)
+    private static bool PermissionNumber_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -1116,7 +1116,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region PermissionIssueDate_28
-    public string PermissionIssueDate_28_DB { get; set; } = "";[NotMapped]
+    public string PermissionIssueDate_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> PermissionIssueDate_28
     {
@@ -1150,7 +1151,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
         PermissionIssueDate_28_DB = tmp;
     }
-    private bool PermissionIssueDate_28_Validation(RamAccess<string> value)
+    private static bool PermissionIssueDate_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1180,7 +1181,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region PermissionDocumentName_28 
-    public string PermissionDocumentName_28_DB { get; set; } = "";[NotMapped]
+    public string PermissionDocumentName_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Наименование разрешительного документа")]
     public RamAccess<string> PermissionDocumentName_28
     {
@@ -1210,7 +1212,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
     }
 
-    private bool PermissionDocumentName_28_Validation(RamAccess<string> value)
+    private static bool PermissionDocumentName_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors(); 
         return true;
@@ -1218,7 +1220,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ValidBegin_28
-    public string ValidBegin_28_DB { get; set; } = "";[NotMapped]
+    public string ValidBegin_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Действует с")]
     public RamAccess<string> ValidBegin_28
     {
@@ -1254,7 +1257,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ValidBegin_28_DB = tmp;
         }
     }
-    private bool ValidBegin_28_Validation(RamAccess<string> value)
+    private static bool ValidBegin_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1285,7 +1288,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ValidThru_28
-    public string ValidThru_28_DB { get; set; } = "";[NotMapped]
+    public string ValidThru_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru_28
     {
@@ -1319,7 +1323,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         ValidThru_28_DB = tmp;
     }
 
-    private bool ValidThru_28_Validation(RamAccess<string> value)
+    private static bool ValidThru_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1350,7 +1354,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region PermissionNumber1_28 
-    public string PermissionNumber1_28_DB { get; set; } = "";[NotMapped]
+    public string PermissionNumber1_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Номер разрешительного документа")]
     public RamAccess<string> PermissionNumber1_28
     {
@@ -1380,7 +1385,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
     }
 
-    private bool PermissionNumber1_28_Validation(RamAccess<string> value)
+    private static bool PermissionNumber1_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -1388,15 +1393,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region PermissionIssueDate1_28 
-    public string PermissionIssueDate1_28_DB { get; set; } = "";[NotMapped]
+    public string PermissionIssueDate1_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> PermissionIssueDate1_28
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionIssueDate1_28)))
+            if (Dictionary.TryGetValue(nameof(PermissionIssueDate1_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)]).Value = PermissionIssueDate1_28_DB;
+                ((RamAccess<string>)value).Value = PermissionIssueDate1_28_DB;
             }
             else
             {
@@ -1423,7 +1429,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
         PermissionIssueDate1_28_DB = tmp;
     }
-    private bool PermissionIssueDate1_28_Validation(RamAccess<string> value)
+    private static bool PermissionIssueDate1_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1460,9 +1466,9 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionDocumentName1_28)))
+            if (Dictionary.TryGetValue(nameof(PermissionDocumentName1_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)]).Value = PermissionDocumentName1_28_DB;
+                ((RamAccess<string>)value).Value = PermissionDocumentName1_28_DB;
             }
             else
             {
@@ -1479,14 +1485,14 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
     }
 
-    private void PermissionDocumentName1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionDocumentName1_28ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PermissionDocumentName1_28_DB = ((RamAccess<string>)Value).Value;
+            PermissionDocumentName1_28_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool PermissionDocumentName1_28_Validation(RamAccess<string> value)
+    private static bool PermissionDocumentName1_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -1494,15 +1500,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ValidBegin1_28
-    public string ValidBegin1_28_DB { get; set; } = "";[NotMapped]
+    public string ValidBegin1_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Действует с")]
     public RamAccess<string> ValidBegin1_28
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidBegin1_28)))
+            if (Dictionary.TryGetValue(nameof(ValidBegin1_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidBegin1_28)]).Value = ValidBegin1_28_DB;
+                ((RamAccess<string>)value).Value = ValidBegin1_28_DB;
             }
             else
             {
@@ -1530,7 +1537,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
         ValidBegin1_28_DB = tmp;
     }
-    private bool ValidBegin1_28_Validation(RamAccess<string> value)
+    private static bool ValidBegin1_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1561,15 +1568,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ValidThru1_28 
-    public string ValidThru1_28_DB { get; set; } = "";[NotMapped]
+    public string ValidThru1_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru1_28
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidThru1_28)))
+            if (Dictionary.TryGetValue(nameof(ValidThru1_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidThru1_28)]).Value = ValidThru1_28_DB;
+                ((RamAccess<string>)value).Value = ValidThru1_28_DB;
             }
             else
             {
@@ -1596,7 +1604,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
         ValidThru1_28_DB = tmp;
     }
-    private bool ValidThru1_28_Validation(RamAccess<string> value)
+    private static bool ValidThru1_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1627,15 +1635,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ContractNumber_28 
-    public string ContractNumber_28_DB { get; set; } = "";[NotMapped]
+    public string ContractNumber_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Номер договора на передачу сточных вод")]
     public RamAccess<string> ContractNumber_28
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ContractNumber_28)))
+            if (Dictionary.TryGetValue(nameof(ContractNumber_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ContractNumber_28)]).Value = ContractNumber_28_DB;
+                ((RamAccess<string>)value).Value = ContractNumber_28_DB;
             }
             else
             {
@@ -1659,7 +1668,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ContractNumber_28_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool ContractNumber_28_Validation(RamAccess<string> value)
+    private static bool ContractNumber_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -1667,15 +1676,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ContractIssueDate2_28
-    public string ContractIssueDate2_28_DB { get; set; } = "";[NotMapped]
+    public string ContractIssueDate2_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> ContractIssueDate2_28
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ContractIssueDate2_28)))
+            if (Dictionary.TryGetValue(nameof(ContractIssueDate2_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)]).Value = ContractIssueDate2_28_DB;
+                ((RamAccess<string>)value).Value = ContractIssueDate2_28_DB;
             }
             else
             {
@@ -1699,7 +1709,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         ContractIssueDate2_28_DB = tmp;
     }
 
-    private bool ContractIssueDate2_28_Validation(RamAccess<string> value)
+    private static bool ContractIssueDate2_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1736,9 +1746,9 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(OrganisationReciever_28)))
+            if (Dictionary.TryGetValue(nameof(OrganisationReciever_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)]).Value = OrganisationReciever_28_DB;
+                ((RamAccess<string>)value).Value = OrganisationReciever_28_DB;
             }
             else
             {
@@ -1771,15 +1781,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ValidBegin2_28
-    public string ValidBegin2_28_DB { get; set; } = "";[NotMapped]
+    public string ValidBegin2_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Действует с")]
     public RamAccess<string> ValidBegin2_28
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidBegin2_28)))
+            if (Dictionary.TryGetValue(nameof(ValidBegin2_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidBegin2_28)]).Value = ValidBegin2_28_DB;
+                ((RamAccess<string>)value).Value = ValidBegin2_28_DB;
             }
             else
             {
@@ -1806,7 +1817,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
         ValidBegin2_28_DB = tmp;
     }
-    private bool ValidBegin2_28_Validation(RamAccess<string> value)
+    private static bool ValidBegin2_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1837,15 +1848,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region ValidThru2_28
-    public string ValidThru2_28_DB { get; set; } = "";[NotMapped]
+    public string ValidThru2_28_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru2_28
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidThru2_28)))
+            if (Dictionary.TryGetValue(nameof(ValidThru2_28), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidThru2_28)]).Value = ValidThru2_28_DB;
+                ((RamAccess<string>)value).Value = ValidThru2_28_DB;
             }
             else
             {
@@ -1875,7 +1887,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ValidThru2_28_DB = tmp;
         }
     }
-    private bool ValidThru2_28_Validation(RamAccess<string> value)
+    private static bool ValidThru2_28_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -1905,15 +1917,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region  PermissionNumber27
-    public string PermissionNumber27_DB { get; set; } = "";[NotMapped]
+    public string PermissionNumber27_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Номер разрешительного документа")]
     public RamAccess<string> PermissionNumber27
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionNumber27)))
+            if (Dictionary.TryGetValue(nameof(PermissionNumber27), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionNumber27)]).Value = PermissionNumber27_DB;
+                ((RamAccess<string>)value).Value = PermissionNumber27_DB;
             }
             else
             {
@@ -1937,7 +1950,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             PermissionNumber27_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool PermissionNumber27_Validation(RamAccess<string> value)
+    private static bool PermissionNumber27_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -1945,15 +1958,16 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region  PermissionIssueDate27
-    public string PermissionIssueDate27_DB { get; set; } = "";[NotMapped]
+    public string PermissionIssueDate27_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Дата выпуска разрешительного документа")]
     public RamAccess<string> PermissionIssueDate27
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionIssueDate27)))
+            if (Dictionary.TryGetValue(nameof(PermissionIssueDate27), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)]).Value = PermissionIssueDate27_DB;
+                ((RamAccess<string>)value).Value = PermissionIssueDate27_DB;
             }
             else
             {
@@ -1980,7 +1994,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
         }
         PermissionIssueDate27_DB = tmp;
     }
-    private bool PermissionIssueDate27_Validation(RamAccess<string> value)
+    private static bool PermissionIssueDate27_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -2008,7 +2022,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region  PermissionDocumentName27
-    public string PermissionDocumentName27_DB { get; set; } = "";[NotMapped]
+    public string PermissionDocumentName27_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Наименование разрешительного документа")]
     public RamAccess<string> PermissionDocumentName27
     {
@@ -2033,14 +2048,14 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     }
 
 
-    private void PermissionDocumentName27ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PermissionDocumentName27ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PermissionDocumentName27_DB = ((RamAccess<string>)Value).Value;
+            PermissionDocumentName27_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool PermissionDocumentName27_Validation(RamAccess<string> value)
+    private static bool PermissionDocumentName27_Validation(RamAccess<string> value)
     {
         value.ClearErrors(); return true;
     }
@@ -2085,7 +2100,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ValidBegin27_DB = tmp;
         }
     }
-    private bool ValidBegin27_Validation(RamAccess<string> value)
+    private static bool ValidBegin27_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -2115,7 +2130,8 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     #endregion
 
     #region  ValidThru27
-    public string ValidThru27_DB { get; set; } = "";[NotMapped]
+    public string ValidThru27_DB { get; set; } = "";
+    [NotMapped]
     [FormProperty(true,"Действует по")]
     public RamAccess<string> ValidThru27
     {
@@ -2140,11 +2156,11 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
     }
 
 
-    private void ValidThru27ValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ValidThru27ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            var tmp = ((RamAccess<string>)Value).Value;
+            var tmp = ((RamAccess<string>)value).Value;
             Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b.IsMatch(tmp))
             {
@@ -2153,7 +2169,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ValidThru27_DB = tmp;
         }
     }
-    private bool ValidThru27_Validation(RamAccess<string> value)
+    private static bool ValidThru27_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -2256,15 +2272,15 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             OnPropertyChanged(nameof(Year));
         }
     }
-    private void YearValueChanged(object Value, PropertyChangedEventArgs args)
+    private void YearValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            var k = ((RamAccess<string>)Value).Value;
+            var k = ((RamAccess<string>)value).Value;
             Year_DB = k;
         }
     }
-    private bool Year_Validation(RamAccess<string> value)
+    private static bool Year_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (value.Value == null)
@@ -2328,7 +2344,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             StartPeriod_DB = tmp;
         }
     }
-    private bool StartPeriod_Validation(RamAccess<string> value)
+    private static bool StartPeriod_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -2468,7 +2484,7 @@ public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColu
             ExportDate_DB = ((RamAccess<string>)Value).Value;
         }
     }
-    private bool ExportDate_Validation(RamAccess<string> value)
+    private static bool ExportDate_Validation(RamAccess<string> value)
     {
         return true;
     }

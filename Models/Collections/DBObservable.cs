@@ -65,7 +65,7 @@ public class DBObservable : INotifyPropertyChanged
     }
     #endregion
 
-    private bool Reports_Collection_Validation(DbSet<Reports> value)
+    private static bool Reports_Collection_Validation(DbSet<Reports> value)
     {
         return true;
     }
