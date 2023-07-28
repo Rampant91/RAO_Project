@@ -3,13 +3,23 @@ using System;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
+using JsonConverter = Newtonsoft.Json.JsonConverter;
+using JsonConverterAttribute = Newtonsoft.Json.JsonConverterAttribute;
 
 namespace Models.JSON;
 
-[JsonConverter(typeof(JavaFormConverter))]
+[JsonConverter(typeof(JsonFormConverter))]
 public abstract class JsonForm
 {
     #region Properties
+
+    #region Comments
+
+    [JsonProperty("form_comment")]
+    public CommentText CommentText { get; set; }
+
+    #endregion
 
     #region CorrectionNumber
 
@@ -23,6 +33,20 @@ public abstract class JsonForm
     [JsonProperty("form_no")]
     [JsonConverter(typeof(FormNumConverter))]
     public string FormNum { get; set; }
+
+    #endregion
+
+    #region ExportDate
+
+    [JsonProperty("form_export_ts")]
+    public string ExportDate { get; set; }
+
+    #endregion
+
+    #region Notes
+
+    [JsonProperty("form_remarks")]
+    public NotesMainTable NotesMainTable { get; set; }
 
     #endregion
 
@@ -79,16 +103,19 @@ public abstract class JsonForm
 
     #region Convertors
 
-    #region BaseConverter
+    #region JsonFormConverter
 
-    public class JavaFormConverter : JsonConverter
+    public class JsonFormConverter : JsonConverter
     {
         private static JsonSerializerSettings SpecifiedSubclassConversion = new()
         {
             ContractResolver = new JsonFormSpecifiedConcreteClassConverter()
         };
 
-        public override bool CanConvert(Type objectType) => (objectType == typeof(JsonForm));
+        public override bool CanConvert(Type objectType)
+        {
+            return (objectType == typeof(JsonForm));
+        }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
@@ -104,7 +131,7 @@ public abstract class JsonForm
                 "form_1_7_2022" => JsonConvert.DeserializeObject<JsonForm17>(jo.ToString(), SpecifiedSubclassConversion),
                 "form_1_8_2022" => JsonConvert.DeserializeObject<JsonForm18>(jo.ToString(), SpecifiedSubclassConversion),
                 "form_1_9_2022" => JsonConvert.DeserializeObject<JsonForm19>(jo.ToString(), SpecifiedSubclassConversion),
-                _ => throw new Exception()
+                _ => null
             };
         }
 
@@ -148,6 +175,54 @@ public abstract class JsonForm
 
     #endregion
 }
+
+public class CommentText
+{
+    [JsonProperty("text")]
+    public string Comments { get; set; }
+}
+
+#region Note
+
+public class NotesMainTable
+{
+    [JsonProperty("main_table")]
+    public IList<Note> Notes { get; set; }
+}
+
+public class Note
+{
+    [JsonProperty("value")]
+    public NoteValue NoteValue { get; set; }
+
+    [JsonProperty("pointer")]
+    public NotePointer NotePointer { get; set; }
+}
+
+public class NoteValue
+{
+    [JsonProperty("date")]
+    public string Date { get; set; }
+
+    [JsonProperty("text")]
+    public string Text { get; set; }
+
+    [JsonProperty("user")]
+    public string User { get; set; }
+}
+
+public class NotePointer
+{
+    [JsonProperty("row")]
+    public int Row { get; set; }
+
+    [JsonProperty("col_name")]
+    public string ColName { get; set; }
+}
+
+#endregion
+
+#region JsonForm1
 
 public abstract class JsonForm1 : JsonForm
 {
@@ -244,3 +319,5 @@ public class JsonForm19 : JsonForm1
 
     #endregion
 }
+
+#endregion
