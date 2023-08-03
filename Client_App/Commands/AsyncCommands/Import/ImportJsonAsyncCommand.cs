@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Models.JSON;
@@ -20,7 +21,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             {
                 var jsonString = await File.ReadAllTextAsync(path);
                 var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-                var jsonObject = JsonConvert.DeserializeObject<JsonModel>(jsonString, settings);
+                var jsonObject = JsonConvert.DeserializeObject<JsonOrgsModel>(jsonString, settings);
             }
             catch (Exception e)
             {
