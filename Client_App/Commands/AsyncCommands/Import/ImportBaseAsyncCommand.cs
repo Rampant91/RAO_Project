@@ -681,6 +681,19 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
         BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
 
+        await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ContentTitle = "Импорт из .raodb",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Начало ProcessIfHasReports21",
+                MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow);
+
         var listImpRep = new List<Report>();
         if (impReps != null)
         {

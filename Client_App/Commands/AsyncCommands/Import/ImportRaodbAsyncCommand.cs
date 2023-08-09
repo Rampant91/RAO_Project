@@ -85,6 +85,18 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 }
                 else if (first11 == null && first21 == null)
                 {
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Импорт из .raodb",
+                            ContentHeader = "Уведомление",
+                            ContentMessage = "Перед добавлением новой организации",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow);
                     #region AddNewOrg
 
                     var an = "Добавить";
