@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using Client_App.Interfaces.Logger;
 using Models.DTO;
 using Models.Interfaces;
+using Client_App.ViewModels;
+using System.Linq;
+using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -162,6 +165,158 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 break;
             case "Отменить импорт формы":
                 break;
+        }
+    }
+
+    #endregion
+
+    #region FillEmptyRegNo
+
+    private protected static void FillEmptyRegNo(ref Reports? reps)
+    {
+        if (reps is null) return;
+        if (reps.Master.Rows10.Count >= 2)
+        {
+            if (reps.Master.Rows10[0].RegNo_DB is "" && reps.Master.Rows10[1].RegNo_DB is not "" && reps.Master.Rows10[0].Okpo_DB is not "")
+            {
+                reps.Master.Rows10[0].RegNo_DB = reps.Master.Rows10[1].RegNo_DB;
+            }
+            if (reps.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" && reps.Master.Rows10[1].Okpo_DB is not "")
+            {
+                reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
+            }
+        }
+        if (reps.Master.Rows20.Count >= 2)
+        {
+            if (reps.Master.Rows20[0].RegNo_DB is "" && reps.Master.Rows20[1].RegNo_DB is not "" && reps.Master.Rows20[0].Okpo_DB is not "")
+            {
+                reps.Master.Rows20[0].RegNo_DB = reps.Master.Rows20[1].RegNo_DB;
+            }
+            if (reps.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" && reps.Master.Rows20[1].Okpo_DB is not "")
+            {
+                reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
+            }
+        }
+    }
+
+    #endregion
+
+    #region GetReports11FromLocalEqual
+
+    private protected static Reports? GetReports11FromLocalEqual(Reports item)
+    {
+        try
+        {
+            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is not "1.0")
+            {
+                return null;
+            }
+
+            return MainWindowVM.LocalReports.Reports_Collection10
+                       .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB != ""
+                           && t.Master.Rows10[1].RegNo_DB == "")
+
+                   ?? MainWindowVM.LocalReports
+                       .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                       .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           item.Master.Rows10[1].Okpo_DB != ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+                           && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB != ""
+                           && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region GetReports21FromLocalEqual
+
+    private protected static Reports? GetReports21FromLocalEqual(Reports item)
+    {
+        try
+        {
+            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            {
+                return null;
+            }
+
+            return MainWindowVM.LocalReports.Reports_Collection20
+                       .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB != ""
+                           && t.Master.Rows20[1].RegNo_DB == "")
+
+                   ?? MainWindowVM.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                       .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           item.Master.Rows20[1].Okpo_DB != ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+                           && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB != ""
+                           && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB);
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -1054,6 +1209,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         }
 
         await baseReps.SortAsync();
+    }
+
+    #endregion
+
+    #region ProcessIfNoteOrder0
+
+    private protected static void ProcessIfNoteOrder0(Reports item)
+    {
+        foreach (var key in item.Report_Collection)
+        {
+            var form = (Report)key;
+            foreach (var key1 in form.Notes)
+            {
+                var note = (Note)key1;
+                if (note.Order == 0)
+                {
+                    note.Order = MainWindowVM.GetNumberInOrder(form.Notes);
+                }
+            }
+        }
     }
 
     #endregion
