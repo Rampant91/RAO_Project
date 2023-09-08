@@ -493,7 +493,7 @@ public class Form14 : Form1
                 }
                 try
                 {
-                    var value2 = Convert.ToDouble(value1);
+                    var value2 = Convert.ToDouble(value1, CultureInfo.InvariantCulture);
                     value1 = $"{value2:0.######################################################e+00}";
                 }
                 catch (Exception ex)
