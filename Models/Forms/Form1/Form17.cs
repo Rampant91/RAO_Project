@@ -648,16 +648,16 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
-                {
-                    if (double.TryParse(value1, NumberStyles.Any, CultureInfo.InvariantCulture, out var value2))
+                //try
+                //{
+                    if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var value2))
                     {
                         value1 = $"{value2:0.######################################################e+00}";
                     }
                     //var value2 = Convert.ToDouble(value1);
                     //value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception) { }
+                //}
+                //catch (Exception) { }
             }
             Mass_DB = value1;
         }
