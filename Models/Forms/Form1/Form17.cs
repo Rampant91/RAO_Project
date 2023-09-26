@@ -550,12 +550,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             Volume_DB = value1;
         }
@@ -629,34 +627,30 @@ public class Form17 : Form1
             }
         }
     }
-    private void MassValueChanged(object Value, PropertyChangedEventArgs args)
+    private void MassValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    Mass_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception) { }
+                Mass_DB = value1;
+                return;
             }
-            Mass_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        Mass_DB = value1;
     }
-    private bool Mass_Validation(RamAccess<string> value)//TODO
+    private static bool Mass_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value) || value.Value == "-")
@@ -786,12 +780,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             SpecificActivity_DB = value1;
         }
@@ -1347,12 +1339,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             VolumeOutOfPack_DB = value1;
         }
@@ -1424,12 +1414,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             MassOutOfPack_DB = value1;
         }
@@ -1568,12 +1556,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             TritiumActivity_DB = value1;
         }
@@ -1649,12 +1635,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             BetaGammaActivity_DB = value1;
         }
@@ -1730,12 +1714,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             AlphaActivity_DB = value1;
         }
@@ -1811,12 +1793,10 @@ public class Form17 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception) { }
             }
             TransuraniumActivity_DB = value1;
         }

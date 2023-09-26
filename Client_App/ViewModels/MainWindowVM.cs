@@ -72,7 +72,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region Init
 
-    private async Task<string> GetSystemDirectory()
+    private static async Task<string> GetSystemDirectory()
     {
         try
         {
@@ -81,28 +81,33 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
                 SystemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
                 return SystemDirectory;
             }
+
             //if (OperatingSystem.IsLinux())
             //{
             //    var userName = UnixUserInfo.GetLoginName();
             //    SystemDirectory = Path.Combine("/home", userName!);
             //}
-            
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "bash",
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false
-                }
-            };
-            process.Start();
-            process.StandardInput.WriteLine("logname");
-            var userName = process.StandardOutput.ReadLine();
-            SystemDirectory = Path.Combine("/home", userName!);
+
+            var userName = Environment.UserName;
+            SystemDirectory = Path.Combine("/home", userName);
             return SystemDirectory;
+
+            //var process = new Process
+            //{
+            //    StartInfo = new ProcessStartInfo
+            //    {
+            //        FileName = "bash",
+            //        RedirectStandardInput = true,
+            //        RedirectStandardOutput = true,
+            //        RedirectStandardError = true,
+            //        UseShellExecute = false
+            //    }
+            //};
+            //process.Start();
+            //process.StandardInput.WriteLine("logname");
+            //var userName = process.StandardOutput.ReadLine();
+            //SystemDirectory = Path.Combine("/home", userName!);
+            //return SystemDirectory;
         }
         catch (Exception e)
         {
@@ -112,7 +117,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private async Task ProcessRaoDirectory()
+    private static async Task ProcessRaoDirectory()
     {
         try
         {

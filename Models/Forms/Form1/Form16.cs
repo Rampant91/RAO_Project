@@ -307,13 +307,10 @@ public class Form16 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception ex)
-                { }
             }
             Volume_DB = value1;
         }
@@ -401,13 +398,10 @@ public class Form16 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception ex)
-                { }
             }
             Mass_DB = value1;
         }
@@ -556,13 +550,10 @@ public class Form16 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception ex)
-                { }
             }
             TritiumActivity_DB = value1;
         }
@@ -650,13 +641,10 @@ public class Form16 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception ex)
-                { }
             }
             BetaGammaActivity_DB = value1;
         }
@@ -744,13 +732,10 @@ public class Form16 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception ex)
-                { }
             }
             AlphaActivity_DB = value1;
         }
@@ -838,13 +823,10 @@ public class Form16 : Form1
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                try
+                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
                 {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
+                    value1 = $"{doubleValue:0.######################################################e+00}";
                 }
-                catch (Exception ex)
-                { }
             }
             TransuraniumActivity_DB = value1;
         }
