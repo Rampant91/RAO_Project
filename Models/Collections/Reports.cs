@@ -12,7 +12,7 @@ using Models.Interfaces;
 
 namespace Models.Collections;
 
-public class Reports : IKey,INumberInOrder,IDataGridColumn
+public class Reports : IKey, IDataGridColumn
 {
     [NotMapped]
     public long Order
@@ -55,10 +55,7 @@ public class Reports : IKey,INumberInOrder,IDataGridColumn
     [NotMapped]
     public Report Master
     {
-        get
-        {
-            return Master_DB;
-        }
+        get => Master_DB;
         set
         {
             Master_DB = value;
@@ -70,10 +67,7 @@ public class Reports : IKey,INumberInOrder,IDataGridColumn
 
     public ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
     {
-        get
-        {
-            return Report_Collection_DB;
-        }
+        get => Report_Collection_DB;
         set
         {
             Report_Collection_DB = value;
@@ -111,12 +105,12 @@ public class Reports : IKey,INumberInOrder,IDataGridColumn
         }
     }
 
-    private bool Master_Validation(RamAccess<Report> value)
+    private static bool Master_Validation(RamAccess<Report> value)
     {
         return true;
     }
 
-    private bool Report_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Report>> value)
+    private static bool Report_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Report>> value)
     {
         return true;
     }
@@ -124,16 +118,16 @@ public class Reports : IKey,INumberInOrder,IDataGridColumn
     //Property Changed
     public void OnPropertyChanged([CallerMemberName] string prop = "")
     {
-        if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
     //Property Changed
 
     #region IExcel
-    public int ExcelRow(ExcelWorksheet worksheet,int Row, int Column, bool transpose = true, string SumNumber = "")
+    public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         throw new NotImplementedException();
     }
-    public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+    public int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose=true)
     {
         throw new NotImplementedException();
     }
@@ -146,10 +140,10 @@ public class Reports : IKey,INumberInOrder,IDataGridColumn
         regNoR.SizeCol = 50;
         regNoR.Binding = $"{nameof(Master)}.{nameof(Report.RegNoRep)}";
 
-        var ShortJurLicoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        ShortJurLicoR.SizeCol = 603;
-        ShortJurLicoR.Binding = $"{nameof(Master)}.{nameof(Report.ShortJurLicoRep)}";
-        regNoR += ShortJurLicoR;
+        var shortJurLicoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        shortJurLicoR.SizeCol = 603;
+        shortJurLicoR.Binding = $"{nameof(Master)}.{nameof(Report.ShortJurLicoRep)}";
+        regNoR += shortJurLicoR;
 
         var okpoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
         okpoR.SizeCol = 102;
@@ -159,7 +153,7 @@ public class Reports : IKey,INumberInOrder,IDataGridColumn
         return regNoR;
     }
 
-    public void ExcelGetRow(ExcelWorksheet worksheet, int Row)
+    public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         throw new NotImplementedException();
     }

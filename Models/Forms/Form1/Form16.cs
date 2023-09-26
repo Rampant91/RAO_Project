@@ -442,6 +442,70 @@ public class Form16 : Form1
     }
     #endregion
 
+    #region QuantityOZIII
+    public string QuantityOZIII_DB { get; set; }
+    [NotMapped]
+    [FormProperty(true, "null-8","Количество ОЗИИИ, шт","8")]
+    public RamAccess<string> QuantityOZIII
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(QuantityOZIII)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
+                return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
+            }
+            else
+            {
+                var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
+                rm.PropertyChanged += QuantityOZIIIValueChanged;
+                Dictionary.Add(nameof(QuantityOZIII), rm);
+                return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
+            }
+        }
+        set
+        {
+            QuantityOZIII_DB = value.Value;
+            OnPropertyChanged(nameof(QuantityOZIII));
+        }
+    }// positive int.
+
+    private void QuantityOZIIIValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            QuantityOZIII_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool QuantityOZIII_Validation(RamAccess<string> value)//Ready
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (value.Value.Equals("-"))
+        {
+            return true;
+        }
+        try
+        {
+            if (int.Parse(value.Value) <= 0)
+            {
+                value.AddError("Число должно быть больше нуля");
+                return false;
+            }
+        }
+        catch (Exception)
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        return true;
+    }
+    #endregion
+
     #region MainRadionuclids
     public string MainRadionuclids_DB { get; set; } = "";
     [NotMapped]
@@ -942,70 +1006,6 @@ public class Form16 : Form1
     }
     #endregion
 
-    #region QuantityOZIII
-    public string QuantityOZIII_DB { get; set; }
-    [NotMapped]
-    [FormProperty(true, "null-8","Количество ОЗИИИ, шт","8")]
-    public RamAccess<string> QuantityOZIII
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(QuantityOZIII)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
-            }
-            else
-            {
-                var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
-                rm.PropertyChanged += QuantityOZIIIValueChanged;
-                Dictionary.Add(nameof(QuantityOZIII), rm);
-                return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
-            }
-        }
-        set
-        {
-            QuantityOZIII_DB = value.Value;
-            OnPropertyChanged(nameof(QuantityOZIII));
-        }
-    }// positive int.
-
-    private void QuantityOZIIIValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            QuantityOZIII_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool QuantityOZIII_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("-"))
-        {
-            return true;
-        }
-        try
-        {
-            if (int.Parse(value.Value) <= 0)
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
-        }
-        catch (Exception)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
-    #endregion
-
     #region ProviderOrRecieverOKPO
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
     [NotMapped]
@@ -1158,6 +1158,217 @@ public class Form16 : Form1
         if (!mask.IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
+        }
+        return true;
+    }
+    #endregion
+
+    #region StoragePlaceName
+    public string StoragePlaceName_DB { get; set; } = "";
+    [NotMapped]
+    [FormProperty(true,"Пункт хранения", "наименование","20")]
+    public RamAccess<string> StoragePlaceName
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
+                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
+            }
+            else
+            {
+                var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
+                rm.PropertyChanged += StoragePlaceNameValueChanged;
+                Dictionary.Add(nameof(StoragePlaceName), rm);
+                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
+            }
+        }
+        set
+        {
+            StoragePlaceName_DB = value.Value;
+            OnPropertyChanged(nameof(StoragePlaceName));
+        }
+    }
+    private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        //var a = new List<string>();//here binds spr
+        //if (a.Contains(value.Value))
+        //    return true;
+        //value.AddError("Недопустимое значение");
+        //return false;
+        return true;
+    }
+    #endregion
+
+    #region StoragePlaceCode
+    public string StoragePlaceCode_DB { get; set; } = "";
+    [NotMapped]
+    [FormProperty(true,"Пункт хранения", "код","21")]
+    public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
+                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
+            }
+            else
+            {
+                var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
+                rm.PropertyChanged += StoragePlaceCodeValueChanged;
+                Dictionary.Add(nameof(StoragePlaceCode), rm);
+                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
+            }
+        }
+        set
+        {
+            StoragePlaceCode_DB = value.Value;
+            OnPropertyChanged(nameof(StoragePlaceCode));
+        }
+    }//if change this change validation
+
+    private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        //var lst = new List<string>();//HERE binds spr
+        //if (!lst.Contains(value.Value))
+        //{
+        //    value.AddError("Недопустимое значение");
+        //    return false;
+        //}
+        //return true;
+        if (value.Value == "-") return true;
+        Regex a = new("^[0-9]{8}$");
+        if (!a.IsMatch(value.Value))
+        {
+            value.AddError("Недопустимое значение"); return false;
+        }
+        var tmp = value.Value;
+        if (tmp.Length == 8)
+        {
+            Regex a0 = new("^[1-9]");
+            if (!a0.IsMatch(tmp.Substring(0, 1)))
+            {
+                value.AddError($"Недопустимый вид пункта - {tmp.Substring(0, 1)}");
+            }
+            Regex a1 = new("^[1-3]");
+            if (!a1.IsMatch(tmp.Substring(1, 1)))
+            {
+                value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
+            }
+            Regex a2 = new("^[1-2]");
+            if (!a2.IsMatch(tmp.Substring(2, 1)))
+            {
+                value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
+            }
+            Regex a3 = new("^[1-59]");
+            if (!a3.IsMatch(tmp.Substring(3, 1)))
+            {
+                value.AddError($"Недопустимая зона нахождения пунтка - {tmp.Substring(3, 1)}");
+            }
+            Regex a4 = new("^[0-4]");
+            if (!a4.IsMatch(tmp.Substring(4, 1)))
+            {
+                value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
+            }
+            Regex a5 = new("^[1-49]");
+            if (!a5.IsMatch(tmp.Substring(5, 1)))
+            {
+                value.AddError(
+                    $"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
+            }
+            Regex a67 = new("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}");
+            if (!a67.IsMatch(tmp.Substring(6, 2)))
+            {
+                value.AddError($"Недопустимоый код типа РАО - {tmp.Substring(6, 2)}");
+            }
+            if (value.HasErrors)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    #endregion
+
+    #region RefineOrSortRAOCode
+    public string RefineOrSortRAOCode_DB { get; set; } = "";
+    [NotMapped]
+    [FormProperty(true, "null-22","Код переработки / сортировки РАО","22")]
+    public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(RefineOrSortRAOCode)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(RefineOrSortRAOCode)]).Value = RefineOrSortRAOCode_DB;
+                return (RamAccess<string>)Dictionary[nameof(RefineOrSortRAOCode)];
+            }
+            else
+            {
+                var rm = new RamAccess<string>(RefineOrSortRAOCode_Validation, RefineOrSortRAOCode_DB);
+                rm.PropertyChanged += RefineOrSortRAOCodeValueChanged;
+                Dictionary.Add(nameof(RefineOrSortRAOCode), rm);
+                return (RamAccess<string>)Dictionary[nameof(RefineOrSortRAOCode)];
+            }
+        }
+        set
+        {
+            RefineOrSortRAOCode_DB = value.Value;
+            OnPropertyChanged(nameof(RefineOrSortRAOCode));
+        }
+    }//If change this change validation
+
+    private void RefineOrSortRAOCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            RefineOrSortRAOCode_DB = ((RamAccess<string>)Value).Value;
+        }
+    }
+    private bool RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (value.Value.Equals("-"))
+        {
+            return true;
+        }
+        if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
         }
         return true;
     }
@@ -1321,161 +1532,6 @@ public class Form16 : Form1
     }
     #endregion
 
-    #region StoragePlaceName
-    public string StoragePlaceName_DB { get; set; } = "";
-    [NotMapped]
-    [FormProperty(true,"Пункт хранения", "наименование","20")]
-    public RamAccess<string> StoragePlaceName
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
-            }
-            else
-            {
-                var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
-                rm.PropertyChanged += StoragePlaceNameValueChanged;
-                Dictionary.Add(nameof(StoragePlaceName), rm);
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
-            }
-        }
-        set
-        {
-            StoragePlaceName_DB = value.Value;
-            OnPropertyChanged(nameof(StoragePlaceName));
-        }
-    }
-    private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        //var a = new List<string>();//here binds spr
-        //if (a.Contains(value.Value))
-        //    return true;
-        //value.AddError("Недопустимое значение");
-        //return false;
-        return true;
-    }
-    #endregion
-
-    #region StoragePlaceCode
-    public string StoragePlaceCode_DB { get; set; } = "";
-    [NotMapped]
-    [FormProperty(true,"Пункт хранения", "код","21")]
-    public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
-            }
-            else
-            {
-                var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
-                rm.PropertyChanged += StoragePlaceCodeValueChanged;
-                Dictionary.Add(nameof(StoragePlaceCode), rm);
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
-            }
-        }
-        set
-        {
-            StoragePlaceCode_DB = value.Value;
-            OnPropertyChanged(nameof(StoragePlaceCode));
-        }
-    }//if change this change validation
-
-    private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        //var lst = new List<string>();//HERE binds spr
-        //if (!lst.Contains(value.Value))
-        //{
-        //    value.AddError("Недопустимое значение");
-        //    return false;
-        //}
-        //return true;
-        if (value.Value == "-") return true;
-        Regex a = new("^[0-9]{8}$");
-        if (!a.IsMatch(value.Value))
-        {
-            value.AddError("Недопустимое значение"); return false;
-        }
-        var tmp = value.Value;
-        if (tmp.Length == 8)
-        {
-            Regex a0 = new("^[1-9]");
-            if (!a0.IsMatch(tmp.Substring(0, 1)))
-            {
-                value.AddError($"Недопустимый вид пункта - {tmp.Substring(0, 1)}");
-            }
-            Regex a1 = new("^[1-3]");
-            if (!a1.IsMatch(tmp.Substring(1, 1)))
-            {
-                value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
-            }
-            Regex a2 = new("^[1-2]");
-            if (!a2.IsMatch(tmp.Substring(2, 1)))
-            {
-                value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
-            }
-            Regex a3 = new("^[1-59]");
-            if (!a3.IsMatch(tmp.Substring(3, 1)))
-            {
-                value.AddError($"Недопустимая зона нахождения пунтка - {tmp.Substring(3, 1)}");
-            }
-            Regex a4 = new("^[0-4]");
-            if (!a4.IsMatch(tmp.Substring(4, 1)))
-            {
-                value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
-            }
-            Regex a5 = new("^[1-49]");
-            if (!a5.IsMatch(tmp.Substring(5, 1)))
-            {
-                value.AddError(
-                    $"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
-            }
-            Regex a67 = new("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}");
-            if (!a67.IsMatch(tmp.Substring(6, 2)))
-            {
-                value.AddError($"Недопустимоый код типа РАО - {tmp.Substring(6, 2)}");
-            }
-            if (value.HasErrors)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    #endregion
-
     #region Subsidy
     public string Subsidy_DB { get; set; } = "";
     [NotMapped]
@@ -1576,62 +1632,6 @@ public class Form16 : Form1
     private bool FcpNumber_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors(); return true;
-    }
-    #endregion
-
-    #region RefineOrSortRAOCode
-    public string RefineOrSortRAOCode_DB { get; set; } = "";
-    [NotMapped]
-    [FormProperty(true, "null-22","Код переработки / сортировки РАО","22")]
-    public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(RefineOrSortRAOCode)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(RefineOrSortRAOCode)]).Value = RefineOrSortRAOCode_DB;
-                return (RamAccess<string>)Dictionary[nameof(RefineOrSortRAOCode)];
-            }
-            else
-            {
-                var rm = new RamAccess<string>(RefineOrSortRAOCode_Validation, RefineOrSortRAOCode_DB);
-                rm.PropertyChanged += RefineOrSortRAOCodeValueChanged;
-                Dictionary.Add(nameof(RefineOrSortRAOCode), rm);
-                return (RamAccess<string>)Dictionary[nameof(RefineOrSortRAOCode)];
-            }
-        }
-        set
-        {
-            RefineOrSortRAOCode_DB = value.Value;
-            OnPropertyChanged(nameof(RefineOrSortRAOCode));
-        }
-    }//If change this change validation
-
-    private void RefineOrSortRAOCodeValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            RefineOrSortRAOCode_DB = ((RamAccess<string>)Value).Value;
-        }
-    }
-    private bool RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("-"))
-        {
-            return true;
-        }
-        if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
     }
     #endregion
 

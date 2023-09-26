@@ -39,10 +39,13 @@ public class Form19 : Form1
                  Radionuclids.HasErrors);
     }
 
+    #region Properties
+
     #region CodeTypeAccObject
+
     public short? CodeTypeAccObject_DB { get; private set; }
     [NotMapped]
-    [FormProperty(true, "null-7","Код типа объектов учета","7")]
+    [FormProperty(true, "null-7", "Код типа объектов учета", "7")]
     public RamAccess<short?> CodeTypeAccObject
     {
         get
@@ -91,9 +94,10 @@ public class Form19 : Form1
     #endregion
 
     #region Radionuclids
+
     public string Radionuclids_DB { get; private set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения о радиоактивных веществах","радионуклиды","8")]
+    [FormProperty(true, "Сведения о радиоактивных веществах", "радионуклиды", "8")]
     public RamAccess<string> Radionuclids
     {
         get
@@ -153,9 +157,10 @@ public class Form19 : Form1
     #endregion
 
     #region Activity
+
     public string Activity_DB { get; private set; }
     [NotMapped]
-    [FormProperty(true,"Сведения о радиоактивных веществах","активность, Бк","9")]
+    [FormProperty(true, "Сведения о радиоактивных веществах", "активность, Бк", "9")]
     public RamAccess<string> Activity
     {
         get
@@ -223,11 +228,14 @@ public class Form19 : Form1
         }
         catch
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
+
+    #endregion
+
     #endregion
 
     protected override bool OperationCode_Validation(RamAccess<string> value)//OK

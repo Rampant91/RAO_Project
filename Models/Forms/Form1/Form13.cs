@@ -381,6 +381,79 @@ public class Form13 : Form1
     }
     #endregion
 
+    #region CreatorOKPO
+    public string CreatorOKPO_DB { get; set; } = "";
+    [NotMapped]
+    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "код ОКПО изготовителя","9")]
+    public RamAccess<string> CreatorOKPO
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(CreatorOKPO)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(CreatorOKPO)]).Value = CreatorOKPO_DB;
+                return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
+            }
+            else
+            {
+                var rm = new RamAccess<string>(CreatorOKPO_Validation, CreatorOKPO_DB);
+                rm.PropertyChanged += CreatorOKPOValueChanged;
+                Dictionary.Add(nameof(CreatorOKPO), rm);
+                return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
+            }
+        }
+        set
+        {
+            CreatorOKPO_DB = value.Value;
+            OnPropertyChanged(nameof(CreatorOKPO));
+        }
+    }//If change this change validation
+
+    private void CreatorOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            var value1 = ((RamAccess<string>)Value).Value;
+            if (value1 != null)
+                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+                {
+                    value1 = value1.ToUpper();
+                }
+            CreatorOKPO_DB = value1;
+        }
+    }
+    private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        {
+            return true;
+        }
+        if (value.Value.Equals("прим."))
+        {
+            //if ((CreatorOKPONote.Value == null) || CreatorOKPONote.Value.Equals(""))
+            //    value.AddError( "Заполните примечание");
+            return true;
+        }
+        if (value.Value.Length != 8 && value.Value.Length != 14)
+        {
+            value.AddError("Недопустимое значение"); return false;
+
+        }
+        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+        if (!mask.IsMatch(value.Value))
+        {
+            value.AddError("Недопустимое значение"); return false;
+        }
+        return true;
+    }
+    #endregion
+
     #region CreationDate
     public string CreationDate_DB { get; set; } = "";
     [NotMapped]
@@ -453,79 +526,6 @@ public class Form13 : Form1
         {
             value.AddError("Недопустимое значение");
             return false;
-        }
-        return true;
-    }
-    #endregion
-
-    #region CreatorOKPO
-    public string CreatorOKPO_DB { get; set; } = "";
-    [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на открытый радионуклидный источник", "код ОКПО изготовителя","9")]
-    public RamAccess<string> CreatorOKPO
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(CreatorOKPO)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(CreatorOKPO)]).Value = CreatorOKPO_DB;
-                return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
-            }
-            else
-            {
-                var rm = new RamAccess<string>(CreatorOKPO_Validation, CreatorOKPO_DB);
-                rm.PropertyChanged += CreatorOKPOValueChanged;
-                Dictionary.Add(nameof(CreatorOKPO), rm);
-                return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
-            }
-        }
-        set
-        {
-            CreatorOKPO_DB = value.Value;
-            OnPropertyChanged(nameof(CreatorOKPO));
-        }
-    }//If change this change validation
-
-    private void CreatorOKPOValueChanged(object Value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            CreatorOKPO_DB = value1;
-        }
-    }
-    private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
-        {
-            return true;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            //if ((CreatorOKPONote.Value == null) || CreatorOKPONote.Value.Equals(""))
-            //    value.AddError( "Заполните примечание");
-            return true;
-        }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
-        {
-            value.AddError("Недопустимое значение"); return false;
-
-        }
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
-        {
-            value.AddError("Недопустимое значение"); return false;
         }
         return true;
     }
@@ -709,7 +709,7 @@ public class Form13 : Form1
     #region ProviderOrRecieverOKPO
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Код ОКПО", "поставщика или получателя","16")]
+    [FormProperty(true,"Код ОКПО", "поставщика или получателя","17")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -798,7 +798,7 @@ public class Form13 : Form1
     #region TransporterOKPO
     public string TransporterOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Код ОКПО", "перевозчика","17")]
+    [FormProperty(true,"Код ОКПО", "перевозчика","18")]
     public RamAccess<string> TransporterOKPO
     {
         get
@@ -878,7 +878,7 @@ public class Form13 : Form1
     #region PackName
     public string PackName_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "наименование","18")]
+    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "наименование","19")]
     public RamAccess<string> PackName
     {
         get
@@ -930,7 +930,7 @@ public class Form13 : Form1
     #region PackType
     public string PackType_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "тип","19")]
+    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "тип","20")]
     public RamAccess<string> PackType
     {
         get
@@ -983,7 +983,7 @@ public class Form13 : Form1
     #region PackNumber
     public string PackNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "номер","20")]
+    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "номер","21")]
     public RamAccess<string> PackNumber
     {
         get
