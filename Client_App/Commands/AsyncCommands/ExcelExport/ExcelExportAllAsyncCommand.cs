@@ -356,7 +356,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null)
-            .OrderBy(x => x.StartPeriod_DB)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
         foreach (var rep in repList)
         {
@@ -441,7 +441,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null)
-            .OrderBy(x => x.StartPeriod_DB)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
         foreach (var rep in repList)
         {
@@ -527,7 +527,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null)
-            .OrderBy(x => x.StartPeriod_DB)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
         foreach (var rep in repList)
         {
@@ -614,7 +614,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
-            .OrderBy(x => x.StartPeriod_DB)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
         foreach (var rep in repList)
         {
@@ -703,7 +703,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null)
-            .OrderBy(x => x.StartPeriod_DB)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
         foreach (var rep in repList)
         {
@@ -795,7 +795,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null)
-            .OrderBy(x => x.StartPeriod_DB)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
         foreach (var rep in repList)
         {
@@ -892,7 +892,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var form = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null)
-            .OrderBy(x => x.StartPeriod_DB)
+            .OrderBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
         foreach (var rep in form)
         {
