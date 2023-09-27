@@ -139,7 +139,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
     #region Init
     private void Form1Init(in Panel panel)
     {
-        var dataContext = (ViewModels.ChangeOrCreateVM)DataContext;
+        var dataContext = (ChangeOrCreateVM)DataContext;
         switch (_param)
         {
             case "1.0":
@@ -1678,7 +1678,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 
     private void Form2Init(in Panel panel)
     {
-        var dataContext = (ViewModels.ChangeOrCreateVM)DataContext;
+        var dataContext = (ChangeOrCreateVM)DataContext;
         switch (_param)
         {
             case "2.0":

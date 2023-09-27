@@ -13,15 +13,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Client_App.ViewModels;
 using Client_App.VisualRealization.Converters;
 
 namespace Client_App.Controls.DataGrid;
 
 #region DataGridEnums
+
 public enum ChooseMode
 {
     Cell = 0,
@@ -33,6 +32,7 @@ public enum MultilineMode
     Multi = 0,
     Single
 }
+
 #endregion
 
 public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGridColumn, new()
@@ -599,6 +599,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 ? _itemsWithSearch.Count / PageSize
                                 : _itemsWithSearch.Count / PageSize + 1
                         : 1;
+                if (maxPage == 0) maxPage = 1;
                 if (val.ToString() == _nowPage) return;
                 if (val <= maxPage && val >= 1)
                 {
@@ -796,7 +797,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
-    private List<DataGridRow> Rows { get; set; } = new();
+    private List<DataGridRow> Rows { get; } = new();
 
     private StackPanel HeaderStackPanel { get; set; }
     private StackPanel CenterStackPanel { get; set; }
@@ -1034,32 +1035,39 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
+    //Всё что касается работы с мышью
     #region DataGridPoiter
 
-    private int[] FirstPressedItem { get; set; } = new int[2];
+    private int[] FirstPressedItem { get; } = new int[2];
     private int[] LastPressedItem { get; set; } = new int[2];
-    private bool SetFirstPressed(int[] first)
+
+    #region SetFirstPressed
+
+    private bool SetFirstPressed(IReadOnlyList<int> first)
     {
-        if (FirstPressedItem[0] != first[0] || FirstPressedItem[1] != first[1])
-        {
-            FirstPressedItem[0] = first[0];
-            FirstPressedItem[1] = first[1];
-            return true;
-        }
-        return false;
-    }
-    private bool SetLastPressed(int[] last)
-    {
-        if (LastPressedItem[0] != last[0] || LastPressedItem[1] != last[1])
-        {
-            LastPressedItem[0] = last[0];
-            LastPressedItem[1] = last[1];
-            return true;
-        }
-        return false;
+        if (FirstPressedItem[0] == first[0] && FirstPressedItem[1] == first[1]) return false;
+        FirstPressedItem[0] = first[0];
+        FirstPressedItem[1] = first[1];
+        return true;
     }
 
-    private int[] FindMousePress(double[] mouse)
+    #endregion
+
+    #region SetLastPressed
+
+    private bool SetLastPressed(IReadOnlyList<int> last)
+    {
+        if (LastPressedItem[0] == last[0] && LastPressedItem[1] == last[1]) return false;
+        LastPressedItem[0] = last[0];
+        LastPressedItem[1] = last[1];
+        return true;
+    }
+
+    #endregion
+
+    #region FindMousePressed
+
+    private int[] FindMousePress(IReadOnlyList<double> mouse)
     {
         var tmp = new int[2];
         var sumy = 0.0;
@@ -1098,6 +1106,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
         return tmp;
     }
+
+    #endregion
+
+    #region MousePressed
+    
     private void MousePressed(object sender, PointerPressedEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
@@ -1193,6 +1206,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
 
+    #endregion
+
+    #region MouseDoublePressed
+    
     private void MouseDoublePressed(object sender, EventArgs args)
     {
         if (FirstPressedItem[0] == -1) return;
@@ -1205,6 +1222,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
 
+    #endregion
+
+    #region MouseReleased
+    
     private void MouseReleased(object sender, PointerReleasedEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
@@ -1219,6 +1240,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             SetSelectedControls();
         }
     }
+
+    #endregion
+
+    #region MouseMoved
+    
     private void MouseMoved(object sender, PointerEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties;
@@ -1240,17 +1266,19 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         SetSelectedControls();
         //else
         //{
-            //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
-            //if (paramPos.X > 100)
-            //{
-            //    FixedContentN += 20;
-            //}
-            //if (paramPos.X < 0)
-            //{
-            //    FixedContentN -= 20;
-            //}
+        //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+        //if (paramPos.X > 100)
+        //{
+        //    FixedContentN += 20;
+        //}
+        //if (paramPos.X < 0)
+        //{
+        //    FixedContentN -= 20;
+        //}
         //}
     }
+
+    #endregion
 
     #endregion
 
