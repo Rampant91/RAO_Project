@@ -96,7 +96,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         var row = 2;
         foreach (var reps in lst)
         {
-            if (checkedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
+            if (checkedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep) != null)
             {
                 row--;
 
