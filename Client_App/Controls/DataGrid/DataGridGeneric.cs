@@ -616,13 +616,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             UpdateCells();
                         }
                     }
-                    if (val < 1)
+                    if (val < 1 && _nowPage != "1")
                     {
-                        if (_nowPage != "1")
-                        {
-                            SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                            UpdateCells();
-                        }
+                        SetAndRaise(NowPageProperty, ref _nowPage, "1");
+                        UpdateCells();
                     }
                 }
             }
