@@ -1,17 +1,14 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using Avalonia.Interactivity;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Client_App.Resources;
 using Client_App.ViewModels;
-using ReactiveUI;
 
 namespace Client_App.Views;
 
-public class RowNumber : ReactiveWindow<ChangeOrCreateVM>,INotifyPropertyChanged
+public class RowNumber : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
 {
     #region Number
     public static readonly DirectProperty<RowNumber, string> NumberProperty =

@@ -24,7 +24,7 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
                     new ButtonDefinition { Name = "Да" },
                     new ButtonDefinition { Name = "Нет" }
                 },
-                ContentTitle = "Выгрузка в Excel",
+                ContentTitle = "Уведомление",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Вы действительно хотите удалить организацию?",
                 MinWidth = 400,

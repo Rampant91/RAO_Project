@@ -16,7 +16,6 @@ using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Forms;
-using Client_App.Resources;
 using Client_App.ViewModels;
 
 namespace Client_App.Views;
@@ -60,7 +59,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         if (Answ == null)
         {
             flag = false;
-            var tmp = DataContext as ViewModels.ChangeOrCreateVM;
+            var tmp = DataContext as ChangeOrCreateVM;
             Answ = tmp.ShowMessageT.Handle(new List<string> { "Сохранить?", "Да", "Нет" }).GetAwaiter();
             Answ.Subscribe(async x =>
             {

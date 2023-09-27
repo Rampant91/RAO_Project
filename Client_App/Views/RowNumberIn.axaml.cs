@@ -8,7 +8,7 @@ using Client_App.ViewModels;
 
 namespace Client_App.Views;
 
-public class RowNumberIn : BaseWindow<ChangeOrCreateVM>,INotifyPropertyChanged
+public class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
 {
     #region Number1
     public static readonly DirectProperty<RowNumberIn, string> NumberProperty1 =
