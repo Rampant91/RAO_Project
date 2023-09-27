@@ -1074,7 +1074,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var sumx = 0.0;
                 foreach (var it in item.Children.Cast<Cell?>())
                 {
-                    sumx += it.Bounds.Width;
+                    sumx += it.Bounds.Width + 2;    //плюс 2 добавил опытным путем, чтобы выделялась правильная ячейка
                     if (!(mouse[1] <= sumx)) continue;
                     if (mouse[1] >= 0)
                     {
