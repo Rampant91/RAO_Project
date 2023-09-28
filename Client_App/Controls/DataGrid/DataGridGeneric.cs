@@ -16,6 +16,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Client_App.VisualRealization.Converters;
+using ReactiveUI;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -81,6 +82,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             //if (value != null && value.Count != 0)    Убирает сброс выбранной организации при перелистывании страниц и поиске
             {
                 SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+                ReportStringCount = "0";
                 if (Sum) SumColumn = "0";
             }
         }
@@ -565,6 +567,42 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
     #endregion
+
+    #region ReportStringCount
+
+    public static readonly DirectProperty<DataGrid<T>, string> ReportStringCountProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+            nameof(ReportStringCount),
+            o => o.ReportStringCount,
+            (o, v) => o.ReportStringCount = v);
+
+    private string _ReportStringCount = "0";
+    public string ReportStringCount
+    {
+        get => _ReportStringCount;
+        set
+        {
+            if (SelectedItems != null)
+            {
+                var countR = 0;
+                foreach (var item in SelectedItems)
+                {
+                    if (item is Report reps)
+                    {
+                        countR = reps.Rows.Count;
+                    }
+                    else
+                    {
+                        countR = 0;
+                    }
+                }
+                SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
+            }
+        }
+    }
+
+    #endregion
+
     #endregion
 
     #region NowPage
@@ -1397,6 +1435,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         //NowPage = "0";
         PageCount = "0";
         ItemsCount = "0";
+
     }
     #endregion
 
@@ -2066,7 +2105,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Orientation = Orientation.Horizontal
         };
         middleFooterStackPanel2.Children.Add(new TextBlock 
-            { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+            { Text = ShowAllReport ? "Кол-во строчек:" : "Кол-во отчетов", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
         middleFooterStackPanel2.Children.Add(new TextBlock
         {
             [!TextBox.TextProperty] = this[!ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
@@ -2085,6 +2124,21 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             middleFooterStackPanelR.Children.Add(new TextBlock
             {
                 [!TextBox.TextProperty] = this[!ReportCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+            });
+            middleFooterStackPanel2.Children.Add(middleFooterStackPanelR);
+        }
+        else
+        {
+            StackPanel middleFooterStackPanelR = new()
+            {
+                [!MarginProperty] = this[!FixedContentProperty],
+                Orientation = Orientation.Horizontal
+            };
+            middleFooterStackPanelR.Children.Add(new TextBlock
+                { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+            middleFooterStackPanelR.Children.Add(new TextBlock
+            {
+                [!TextBox.TextProperty] = this[!ReportStringCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
             });
             middleFooterStackPanel2.Children.Add(middleFooterStackPanelR);
         }
