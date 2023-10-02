@@ -955,7 +955,7 @@ public class Report : IKey, IDataGridColumn
         }
         set
         {
-            ExecEmail_DB = value.Value;
+            ExecEmail_DB = value.Value.Replace(" ", string.Empty);
             OnPropertyChanged();
         }
     }
@@ -963,7 +963,7 @@ public class Report : IKey, IDataGridColumn
     {
         if (args.PropertyName == "Value")
         {
-            ExecEmail_DB = ((RamAccess<string>)value).Value;
+            ExecEmail_DB = ((RamAccess<string>)value).Value.Replace(" ", string.Empty);
         }
     }
     private static bool ExecEmail_Validation(RamAccess<string> value)
@@ -972,6 +972,18 @@ public class Report : IKey, IDataGridColumn
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
+            return false;
+        }
+
+        var forbiddenSymbols = new[] { '<', '>', '(', ')', '[', ']', ',', ';', ':', '\\', '/', '"', '*' };
+        if (forbiddenSymbols.Any(value.Value.Contains))
+        {
+            value.AddError("поле содержит запрещенные символы <>()[],;:\\/*\"");
+            return false;
+        }
+        if (value.Value.Contains(' '))
+        {
+            value.AddError("поле содержит пробелы");
             return false;
         }
         Regex regex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
