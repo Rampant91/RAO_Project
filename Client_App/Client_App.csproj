@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86</Platforms>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <AssemblyVersion>1.2.2.13</AssemblyVersion>
-    <FileVersion>1.2.2.13</FileVersion>
-    <Version>1.2.2.13</Version>
+    <AssemblyVersion>1.2.2.14</AssemblyVersion>
+    <FileVersion>1.2.2.14</FileVersion>
+    <Version>1.2.2.14</Version>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
