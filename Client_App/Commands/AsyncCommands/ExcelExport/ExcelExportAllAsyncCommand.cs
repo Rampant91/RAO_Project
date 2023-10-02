@@ -86,7 +86,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             ExportType = "Выбранная организация_Все формы";
             var regNum = RemoveForbiddenChars(CurrentReports.Master.RegNoRep.Value);
             var okpo = RemoveForbiddenChars(CurrentReports.Master.OkpoRep.Value);
-            fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.DbFileName}_{BaseVM.Version}";
+            fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
         }
         else if (_isExecutorsList)
         {
