@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Avalonia.Controls;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
@@ -27,6 +29,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = { "json", "JSON" };
         var answer = await GetSelectedFilesFromDialog("JSON", extensions);
         if (answer is null) return;
+        var countReadFiles = answer.Length;
         SkipNewOrg = false;
         SkipInter = false;
         SkipLess = false;
@@ -34,17 +37,23 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
-
-        foreach (var path in answer) // Для каждого импортируемого файла
+        
+        foreach (var path in answer) // Для каждого импортируемого файла JSON
         {
             try
             {
-                var jsonString = await File.ReadAllTextAsync(path);
+                if (path == "") continue;
+                var file = GetRaoFileName();
+                SourceFile = new FileInfo(path);
+                SourceFile.CopyTo(file, true);
+                var jsonString = await File.ReadAllTextAsync(file);
                 var jsonObject = JsonConvert.DeserializeObject<JsonModel>(jsonString)!;
+                List<Reports> reportsJsonCollection = new();
+                List<Reports> reportsJsonCollectionEdited = new();
 
-                foreach (var reps in jsonObject.Orgs)
+                foreach (var reps in jsonObject.Orgs)   // Для каждой организации в файле (получаем лист импортируемых организаций)
                 {
-                    #region GetBaseReps
+                    #region GetImpRepsAndAddToRepsCollection
 
                     string formNumReps;
                     if (jsonObject.Forms.Any(form => form.FormNum.StartsWith('1')))
@@ -62,7 +71,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     var ty2 = (Form10)FormCreator.Create(formNumReps);
                     ty2.NumberInOrder_DB = 2;
 
-                    var baseReps = new Reports
+                    var impReps = new Reports
                     {
                         Master_DB = new Report
                         {
@@ -75,48 +84,48 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                             #region Bindings
 
-                            baseReps.Master_DB.Rows10.Add(ty1);
-                            baseReps.Master_DB.Rows10.Add(ty2);
+                            impReps.Master_DB.Rows10.Add(ty1);
+                            impReps.Master_DB.Rows10.Add(ty2);
 
-                            baseReps.Master_DB.Rows10[0].RegNo_DB = reps[0].RegNo;
-                            baseReps.Master_DB.Rows10[0].OrganUprav_DB = reps[0].OrganUprav;
+                            impReps.Master_DB.Rows10[0].RegNo_DB = reps[0].RegNo;
+                            impReps.Master_DB.Rows10[0].OrganUprav_DB = reps[0].OrganUprav;
 
-                            baseReps.Master_DB.Rows10[0].SubjectRF_DB = reps[0].SubjectRF;
-                            baseReps.Master_DB.Rows10[0].JurLico_DB = reps[0].JurLico;
-                            baseReps.Master_DB.Rows10[0].ShortJurLico_DB = reps[0].ShortJurLico;
-                            baseReps.Master_DB.Rows10[0].JurLicoAddress_DB = reps[0].JurLicoAddress;
-                            baseReps.Master_DB.Rows10[0].JurLicoFactAddress_DB = reps[0].JurLicoFactAddress;
-                            baseReps.Master_DB.Rows10[0].GradeFIO_DB = reps[0].GradeFIO;
-                            baseReps.Master_DB.Rows10[0].Telephone_DB = reps[0].Telephone;
-                            baseReps.Master_DB.Rows10[0].Fax_DB = reps[0].Fax;
-                            baseReps.Master_DB.Rows10[0].Email_DB = reps[0].Email;
-                            baseReps.Master_DB.Rows10[0].Okpo_DB = reps[0].Okpo;
-                            baseReps.Master_DB.Rows10[0].Okved_DB = reps[0].Okved;
-                            baseReps.Master_DB.Rows10[0].Okogu_DB = reps[0].Okogu;
-                            baseReps.Master_DB.Rows10[0].Oktmo_DB = reps[0].Oktmo;
-                            baseReps.Master_DB.Rows10[0].Inn_DB = reps[0].Inn;
-                            baseReps.Master_DB.Rows10[0].Kpp_DB = reps[0].Kpp;
-                            baseReps.Master_DB.Rows10[0].Okopf_DB = reps[0].Okopf;
-                            baseReps.Master_DB.Rows10[0].Okfs_DB = reps[0].Okfs;
+                            impReps.Master_DB.Rows10[0].SubjectRF_DB = reps[0].SubjectRF;
+                            impReps.Master_DB.Rows10[0].JurLico_DB = reps[0].JurLico;
+                            impReps.Master_DB.Rows10[0].ShortJurLico_DB = reps[0].ShortJurLico;
+                            impReps.Master_DB.Rows10[0].JurLicoAddress_DB = reps[0].JurLicoAddress;
+                            impReps.Master_DB.Rows10[0].JurLicoFactAddress_DB = reps[0].JurLicoFactAddress;
+                            impReps.Master_DB.Rows10[0].GradeFIO_DB = reps[0].GradeFIO;
+                            impReps.Master_DB.Rows10[0].Telephone_DB = reps[0].Telephone;
+                            impReps.Master_DB.Rows10[0].Fax_DB = reps[0].Fax;
+                            impReps.Master_DB.Rows10[0].Email_DB = reps[0].Email;
+                            impReps.Master_DB.Rows10[0].Okpo_DB = reps[0].Okpo;
+                            impReps.Master_DB.Rows10[0].Okved_DB = reps[0].Okved;
+                            impReps.Master_DB.Rows10[0].Okogu_DB = reps[0].Okogu;
+                            impReps.Master_DB.Rows10[0].Oktmo_DB = reps[0].Oktmo;
+                            impReps.Master_DB.Rows10[0].Inn_DB = reps[0].Inn;
+                            impReps.Master_DB.Rows10[0].Kpp_DB = reps[0].Kpp;
+                            impReps.Master_DB.Rows10[0].Okopf_DB = reps[0].Okopf;
+                            impReps.Master_DB.Rows10[0].Okfs_DB = reps[0].Okfs;
                             if (reps.Length > 1)
                             {
-                                baseReps.Master_DB.Rows10[1].SubjectRF_DB = reps[1].SubjectRF;
-                                baseReps.Master_DB.Rows10[1].JurLico_DB = reps[1].JurLico;
-                                baseReps.Master_DB.Rows10[1].ShortJurLico_DB = reps[1].ShortJurLico;
-                                baseReps.Master_DB.Rows10[1].JurLicoAddress_DB = reps[1].JurLicoAddress;
-                                baseReps.Master_DB.Rows10[1].GradeFIO_DB = reps[1].GradeFIO;
-                                baseReps.Master_DB.Rows10[1].Telephone_DB = reps[1].Telephone;
-                                baseReps.Master_DB.Rows10[1].Fax_DB = reps[1].Fax;
-                                baseReps.Master_DB.Rows10[1].Email_DB = reps[1].Email;
-                                baseReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
-                                baseReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
-                                baseReps.Master_DB.Rows10[1].Okved_DB = reps[1].Okved;
-                                baseReps.Master_DB.Rows10[1].Okogu_DB = reps[1].Okogu;
-                                baseReps.Master_DB.Rows10[1].Oktmo_DB = reps[1].Oktmo;
-                                baseReps.Master_DB.Rows10[1].Inn_DB = reps[1].Inn;
-                                baseReps.Master_DB.Rows10[1].Kpp_DB = reps[1].Kpp;
-                                baseReps.Master_DB.Rows10[1].Okopf_DB = reps[1].Okopf;
-                                baseReps.Master_DB.Rows10[1].Okfs_DB = reps[1].Okfs;
+                                impReps.Master_DB.Rows10[1].SubjectRF_DB = reps[1].SubjectRF;
+                                impReps.Master_DB.Rows10[1].JurLico_DB = reps[1].JurLico;
+                                impReps.Master_DB.Rows10[1].ShortJurLico_DB = reps[1].ShortJurLico;
+                                impReps.Master_DB.Rows10[1].JurLicoAddress_DB = reps[1].JurLicoAddress;
+                                impReps.Master_DB.Rows10[1].GradeFIO_DB = reps[1].GradeFIO;
+                                impReps.Master_DB.Rows10[1].Telephone_DB = reps[1].Telephone;
+                                impReps.Master_DB.Rows10[1].Fax_DB = reps[1].Fax;
+                                impReps.Master_DB.Rows10[1].Email_DB = reps[1].Email;
+                                impReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
+                                impReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
+                                impReps.Master_DB.Rows10[1].Okved_DB = reps[1].Okved;
+                                impReps.Master_DB.Rows10[1].Okogu_DB = reps[1].Okogu;
+                                impReps.Master_DB.Rows10[1].Oktmo_DB = reps[1].Oktmo;
+                                impReps.Master_DB.Rows10[1].Inn_DB = reps[1].Inn;
+                                impReps.Master_DB.Rows10[1].Kpp_DB = reps[1].Kpp;
+                                impReps.Master_DB.Rows10[1].Okopf_DB = reps[1].Okopf;
+                                impReps.Master_DB.Rows10[1].Okfs_DB = reps[1].Okfs;
                             }
 
                             #endregion
@@ -126,49 +135,180 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                             #region Bindings
 
-                            baseReps.Master_DB.Rows20.Add(ty1);
-                            baseReps.Master_DB.Rows20.Add(ty2);
+                            impReps.Master_DB.Rows20.Add(ty1);
+                            impReps.Master_DB.Rows20.Add(ty2);
 
                             #endregion
 
                             break;
-                    } 
+                    }
+
+                    reportsJsonCollection.Add(impReps);
+
+                    #endregion
+                }
+
+                foreach (var rep in jsonObject.Forms.Where(rep => rep is not null)) // Для каждой формы, добавляем её к соответствующей организации в листе
+                {
+                    #region GetImpFormsAndAddToRepsCollection
+
+                    var currentOrg = reportsJsonCollection.FirstOrDefault(reps => reps.Id == rep.ReportsId);
+                    if (currentOrg is null) continue;
+                    var numberInOrder = 1;
+
+                    switch (rep.FormNum)
+                    {
+                        #region Form11
+
+                        case "1.1":
+                        {
+                            var forms11List = new ObservableCollectionWithItemPropertyChanged<Form11>();
+                            var repForm = rep as JsonForm11;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки в форме
+                            {
+                                var curForm = new Form11
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    PassportNumber_DB = form.PassportNumber,
+                                    Type_DB = form.Type,
+                                    Radionuclids_DB = form.Radionuclids,
+                                    FactoryNumber_DB = form.Radionuclids,
+                                    Quantity_DB = int.TryParse(form.Quantity, out var intValue) ? intValue : null,
+                                    Activity_DB = form.Activity,
+                                    CreationDate_DB = form.CreationDate,
+                                    CreatorOKPO_DB = form.CreatorOKPO,
+                                    Category_DB = short.TryParse(form.Category, out var shortValue) ? shortValue : null,
+                                    SignedServicePeriod_DB = float.TryParse(form.SignedServicePeriod, out var floatValue)
+                                        ? floatValue
+                                        : null,
+                                    PropertyCode_DB = byte.TryParse(form.PropertyCode, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    Owner_DB = form.Owner,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    PackName_DB = form.PackName,
+                                    PackType_DB = form.PackType,
+                                    PackNumber_DB = form.PackNumber
+                                };
+                                forms11List.Add(curForm);
+                            }
+                            currentOrg.Master_DB.Rows11.Add(forms11List);
+                            break;
+                        }
+
+                        #endregion
+
+                        #region Form12
+                        
+                        case "1.2":
+                        {
+                            var forms12List = new ObservableCollectionWithItemPropertyChanged<Form12>();
+                            var repForm = rep as JsonForm12;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки в форме
+                            {
+                                var curForm = new Form12
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    PassportNumber_DB = form.PassportNumber,
+                                    NameIOU_DB = form.NameIOU,
+                                    FactoryNumber_DB = form.FactoryNumber,
+                                    Mass_DB = form.Mass,
+                                    CreatorOKPO_DB = form.CreatorOKPO,
+                                    CreationDate_DB = form.CreationDate,
+                                    SignedServicePeriod_DB = form.SignedServicePeriod,
+                                    PropertyCode_DB = byte.TryParse(form.SignedServicePeriod, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    Owner_DB = form.Owner,
+                                    DocumentVid_DB = byte.TryParse(form.DocumentVid, out byteValue)
+                                        ? byteValue
+                                        : null,
+                                    DocumentNumber_DB = form.DocumentNumber,
+                                    DocumentDate_DB = form.DocumentDate,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    PackName_DB = form.PackName,
+                                    PackType_DB = form.PackType,
+                                    PackNumber_DB = form.PackNumber
+                                };
+                                forms12List.Add(curForm);
+                            }
+                            currentOrg.Master_DB.Rows12.Add(forms12List);
+                            break;
+                        } 
+                            
+                        #endregion
+
+
+                    }
 
                     #endregion
 
-                    foreach (var form in jsonObject.Forms
-                                 .Where(form => form.RegNoRep == reps[0].RegNo))
-                    {
-                        MainWindowVM.LocalReports.Reports_Collection10.Add(new Report()
+                    reportsJsonCollectionEdited.Add(currentOrg);
+                }
+
+
+
+
+
+
+                if (reportsJsonCollection.Count == 0)
+                {
+                    #region MessageFailedToReadFile
+
+                    await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
-                             
-                        });
-                    }
+                            ButtonDefinitions = ButtonEnum.Ok,
+                            ContentTitle = "Импорт из .raodb",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось прочесть файл {path}," +
+                                $"{Environment.NewLine}файл поврежден или не содержит данных.",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow); 
 
-                    //MainWindowVM.LocalReports.Reports_Collection.Add(baseReps);  //TODO вынеси за foreach
+                    #endregion
 
-                    var first11 = GetReports11FromLocalEqual(baseReps);
-                    var first21 = GetReports21FromLocalEqual(baseReps);
-                    FillEmptyRegNo(ref first11);
-                    FillEmptyRegNo(ref first21);
-                    baseReps.CleanIds();
-                    ProcessIfNoteOrder0(baseReps);
+                    countReadFiles--;
+                    continue;
+                }
+                if (!HasMultipleReport)
+                {
+                    HasMultipleReport = reportsJsonCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
+                }
 
-                    ImpRepFormCount = baseReps.Report_Collection.Count;
-                    ImpRepFormNum = baseReps.Master.FormNum_DB;
-                    BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
-                    BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
-                    BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
+                foreach (var impReps in reportsJsonCollection)
+                {
+                    var baseReps11 = GetReports11FromLocalEqual(impReps);
+                    var baseReps21 = GetReports21FromLocalEqual(impReps);
+                    FillEmptyRegNo(ref baseReps11);
+                    FillEmptyRegNo(ref baseReps21);
+                    impReps.CleanIds();
+                    ProcessIfNoteOrder0(impReps);
 
-                    if (first11 != null)    
+                    ImpRepFormCount = impReps.Report_Collection.Count;
+                    ImpRepFormNum = impReps.Master.FormNum_DB;
+                    BaseRepsOkpo = impReps.Master.OkpoRep.Value;
+                    BaseRepsRegNum = impReps.Master.RegNoRep.Value;
+                    BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
+
+                    if (baseReps11 != null)
                     {
-                        await ProcessIfHasReports11(first11, baseReps);
+                        await ProcessIfHasReports11(baseReps11, impReps);
                     }
-                    else if (first21 != null)
+                    else if (baseReps21 != null)
                     {
-                        await ProcessIfHasReports21(first21, baseReps);
+                        await ProcessIfHasReports21(baseReps21, impReps);
                     }
-                    else if (first11 == null && first21 == null)
+                    else if (baseReps11 == null && baseReps21 == null)
                     {
                         #region AddNewOrg
 
@@ -239,29 +379,32 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                         if (an is "Добавить" or "Да для всех")
                         {
-                            MainWindowVM.LocalReports.Reports_Collection.Add(baseReps);
+                            MainWindowVM.LocalReports.Reports_Collection.Add(impReps);
                             AtLeastOneImportDone = true;
 
                             #region LoggerImport
 
-                            var sortedRepList = baseReps.Report_Collection
-                                                .OrderBy(x => x.FormNum_DB)
-                                                .ThenBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB))
-                                                .ToList();
+                            var sortedRepList = impReps.Report_Collection
+                                .OrderBy(x => x.FormNum_DB)
+                                .ThenBy(x => StaticStringMethods.StringReverse(x.StartPeriod_DB))
+                                .ToList();
                             foreach (var rep in sortedRepList)
                             {
                                 ImpRepCorNum = rep.CorrectionNumber_DB;
-                                ImpRepFormCount = rep.Rows.Count;
+                                ImpRepFormCount = rep.Rows11.Count + rep.Rows12.Count + rep.Rows13.Count + rep.Rows14.Count + rep.Rows15.Count + rep.Rows16.Count + rep.Rows17.Count + rep.Rows18.Count + rep.Rows19.Count;
                                 ImpRepFormNum = rep.FormNum_DB;
                                 ImpRepStartPeriod = rep.StartPeriod_DB;
                                 ImpRepEndPeriod = rep.EndPeriod_DB;
                                 Act = "\t\t\t";
                                 LoggerImportDTO = new LoggerImportDTO
                                 {
-                                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine,
+                                    EndPeriod = ImpRepEndPeriod,
+                                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum,
+                                    StartPeriod = ImpRepStartPeriod,
                                     Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName,
+                                    Year = ImpRepYear
                                 };
                                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                                 IsFirstLogLine = false;
@@ -282,5 +425,47 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         }    
         await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
+
+        var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
+            ? "а"
+            : "ов";
+        if (AtLeastOneImportDone)
+        {
+            #region MessageImportDone
+            
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт {countReadFiles} из {answer.Length} файл{suffix} .raodb успешно завершен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+        }
+        else
+        {
+            #region MessageImportCancel
+
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Импорт из {answer.Length} файл{suffix} .raodb был отменен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+        }
     }
 }

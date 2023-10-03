@@ -20,6 +20,7 @@ public class JsonModel
 
 public class JsonReports
 {
+    public int Id { get; set; }
     public string RegNo { get; set; }
     public string OrganUprav { get; set; }
     public string SubjectRF { get; set; }
@@ -81,6 +82,7 @@ public class JsonOrgConverter : JsonConverter
                 {
                     new()
                     {
+                        Id = org.Value[0]["record_id"],
                         RegNo = org.Value[0]["KOD_ORG"],
                         OrganUprav = org.Value[0]["KOD_IAE"],
                         SubjectRF = org.Value[0]["KOD_SRF"],
@@ -103,6 +105,7 @@ public class JsonOrgConverter : JsonConverter
                     },
                     new()
                     {
+                        Id = org.Value[1]["record_id"],
                         RegNo = org.Value[1]["KOD_ORG"],
                         OrganUprav = org.Value[1]["KOD_IAE"],
                         SubjectRF = org.Value[1]["KOD_SRF"],
@@ -128,6 +131,7 @@ public class JsonOrgConverter : JsonConverter
                 {
                     new()
                     {
+                        Id = org.Value[0]["record_id"],
                         RegNo = org.Value[0]["KOD_ORG"],
                         OrganUprav = org.Value[0]["KOD_IAE"],
                         SubjectRF = org.Value[0]["KOD_SRF"],

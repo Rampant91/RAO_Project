@@ -270,22 +270,6 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         }
     }
 
-    #region GetRaoFileName
-
-    private static string GetRaoFileName()
-    {
-        var count = 0;
-        string? file;
-        do
-        {
-            file = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
-        } while (File.Exists(file));
-
-        return file;
-    }
-
-    #endregion
-
     #region GetReportsFromDataBase
 
     private static async Task<List<Reports>> GetReportsFromDataBase(string file)

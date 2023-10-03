@@ -407,63 +407,6 @@ public class Form11 : Form1
     }
     #endregion
 
-    #region CreationDate
-    public string CreationDate_DB { get; set; } = "";
-    [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "дата выпуска", "11")]
-    public RamAccess<string> CreationDate
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(CreationDate)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(CreationDate)]).Value = CreationDate_DB;
-                return (RamAccess<string>)Dictionary[nameof(CreationDate)];
-            }
-            var rm = new RamAccess<string>(CreationDate_Validation, CreationDate_DB);
-            rm.PropertyChanged += CreationDateValueChanged;
-            Dictionary.Add(nameof(CreationDate), rm);
-            return (RamAccess<string>)Dictionary[nameof(CreationDate)];
-        }
-        set
-        {
-            CreationDate_DB = value.Value;
-            OnPropertyChanged(nameof(CreationDate));
-        }
-    }
-    private void CreationDateValueChanged(object value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName != "Value") return;
-        var date = ((RamAccess<string>)value).Value;
-        CreationDate_DB = DateTime.TryParse(date, out var dateTime)
-            ? dateTime.ToShortDateString()
-            : date;
-    }
-    private bool CreationDate_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            //if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
-            //    value.AddError("Заполните примечание");
-            return false;
-        }
-        var tmp = value.Value;
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        
-        return true;
-    }
-    #endregion
-
     #region CreatorOKPO
     public string CreatorOKPO_DB { get; set; }
     [NotMapped]
@@ -522,6 +465,63 @@ public class Form11 : Form1
             value.AddError("Недопустимое значение"); 
             return false;
         }
+        return true;
+    }
+    #endregion
+
+    #region CreationDate
+    public string CreationDate_DB { get; set; } = "";
+    [NotMapped]
+    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "дата выпуска", "11")]
+    public RamAccess<string> CreationDate
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(CreationDate)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(CreationDate)]).Value = CreationDate_DB;
+                return (RamAccess<string>)Dictionary[nameof(CreationDate)];
+            }
+            var rm = new RamAccess<string>(CreationDate_Validation, CreationDate_DB);
+            rm.PropertyChanged += CreationDateValueChanged;
+            Dictionary.Add(nameof(CreationDate), rm);
+            return (RamAccess<string>)Dictionary[nameof(CreationDate)];
+        }
+        set
+        {
+            CreationDate_DB = value.Value;
+            OnPropertyChanged(nameof(CreationDate));
+        }
+    }
+    private void CreationDateValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var date = ((RamAccess<string>)value).Value;
+        CreationDate_DB = DateTime.TryParse(date, out var dateTime)
+            ? dateTime.ToShortDateString()
+            : date;
+    }
+    private bool CreationDate_Validation(RamAccess<string> value)//Ready
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (value.Value.Equals("прим."))
+        {
+            //if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
+            //    value.AddError("Заполните примечание");
+            return false;
+        }
+        var tmp = value.Value;
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        
         return true;
     }
     #endregion

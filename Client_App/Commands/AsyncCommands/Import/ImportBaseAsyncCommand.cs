@@ -201,6 +201,22 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
+    #region GetRaoFileName
+
+    private protected static string GetRaoFileName()
+    {
+        var count = 0;
+        string? file;
+        do
+        {
+            file = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
+        } while (File.Exists(file));
+
+        return file;
+    }
+
+    #endregion
+
     #region GetReports11FromLocalEqual
 
     private protected static Reports? GetReports11FromLocalEqual(Reports item)
