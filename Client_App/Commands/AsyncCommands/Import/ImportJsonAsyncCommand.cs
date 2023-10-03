@@ -17,6 +17,7 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
+using System.Diagnostics;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -49,7 +50,6 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 var jsonString = await File.ReadAllTextAsync(file);
                 var jsonObject = JsonConvert.DeserializeObject<JsonModel>(jsonString)!;
                 List<Reports> reportsJsonCollection = new();
-                List<Reports> reportsJsonCollectionEdited = new();
 
                 foreach (var reps in jsonObject.Orgs)   // Для каждой организации в файле (получаем лист импортируемых организаций)
                 {
@@ -76,12 +76,13 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         Master_DB = new Report
                         {
                             FormNum_DB = formNumReps
-                        }
+                        },
+                        Id = reps[0].Id
                     };
                     switch (formNumReps)
                     {
                         case "1.0":
-
+                        {
                             #region Bindings
 
                             impReps.Master_DB.Rows10.Add(ty1);
@@ -131,8 +132,10 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             #endregion
 
                             break;
-                        case "2.0": //TODO bind data 
+                        }
 
+                        case "2.0": //TODO bind data 
+                        {
                             #region Bindings
 
                             impReps.Master_DB.Rows20.Add(ty1);
@@ -141,6 +144,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             #endregion
 
                             break;
+                        }
                     }
 
                     reportsJsonCollection.Add(impReps);
@@ -148,12 +152,41 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     #endregion
                 }
 
-                foreach (var rep in jsonObject.Forms.Where(rep => rep is not null)) // Для каждой формы, добавляем её к соответствующей организации в листе
+                foreach (var rep in jsonObject.Forms.Where(rep => rep is not null)) // Для каждого отчета, добавляем её к соответствующей организации в листе
                 {
                     #region GetImpFormsAndAddToRepsCollection
 
                     var currentOrg = reportsJsonCollection.FirstOrDefault(reps => reps.Id == rep.ReportsId);
                     if (currentOrg is null) continue;
+
+                    #region GetCreationTime
+                    
+                    var timeCreate = new List<string>()
+                    {
+                        SourceFile.CreationTime.Day.ToString(),
+                        SourceFile.CreationTime.Month.ToString(),
+                        SourceFile.CreationTime.Year.ToString()
+                    };
+                    if (timeCreate[0].Length == 1)
+                    {
+                        timeCreate[0] = $"0{timeCreate[0]}";
+                    }
+
+                    if (timeCreate[1].Length == 1)
+                    {
+                        timeCreate[1] = $"0{timeCreate[1]}";
+                    }
+
+                    #endregion
+
+                    var impRep = new Report
+                    {
+                        FormNum_DB = rep.FormNum,
+                        ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}",
+                        CorrectionNumber_DB = rep.CorrectionNumber,
+                        StartPeriod_DB = rep.StartPeriod,
+                        EndPeriod_DB = rep.EndPeriod
+                    };
                     var numberInOrder = 1;
 
                     switch (rep.FormNum)
@@ -162,9 +195,14 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                         case "1.1":
                         {
-                            var forms11List = new ObservableCollectionWithItemPropertyChanged<Form11>();
-                            var repForm = rep as JsonForm11;
-                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки в форме
+                            var formsList11 = new ObservableCollectionWithItemPropertyChanged<Form11>();
+                            var repForm = (JsonForm11)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
                                 var curForm = new Form11
                                 {
@@ -193,9 +231,10 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                     PackType_DB = form.PackType,
                                     PackNumber_DB = form.PackNumber
                                 };
-                                forms11List.Add(curForm);
+                                //formsList11.Add(curForm);
+                                impRep.Rows11.Add(curForm);
                             }
-                            currentOrg.Master_DB.Rows11.Add(forms11List);
+                            //impRep.Rows11.Add(formsList11);
                             break;
                         }
 
@@ -243,13 +282,10 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         } 
                             
                         #endregion
-
-
                     }
+                    currentOrg.Report_Collection.Add(impRep);
 
                     #endregion
-
-                    reportsJsonCollectionEdited.Add(currentOrg);
                 }
 
 
