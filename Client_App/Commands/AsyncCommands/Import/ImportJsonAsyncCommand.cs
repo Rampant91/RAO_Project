@@ -204,7 +204,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                var curForm = new Form11
+                                impRep.Rows11.Add( new Form11
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -230,11 +230,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                     PackName_DB = form.PackName,
                                     PackType_DB = form.PackType,
                                     PackNumber_DB = form.PackNumber
-                                };
-                                //formsList11.Add(curForm);
-                                impRep.Rows11.Add(curForm);
+                                });
                             }
-                            //impRep.Rows11.Add(formsList11);
                             break;
                         }
 
@@ -287,11 +284,6 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                     #endregion
                 }
-
-
-
-
-
 
                 if (reportsJsonCollection.Count == 0)
                 {
