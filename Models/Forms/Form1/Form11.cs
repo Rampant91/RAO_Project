@@ -16,12 +16,18 @@ namespace Models.Forms.Form1;
 [Form_Class("Форма 1.1: Сведения о ЗРИ")]
 public class Form11 : Form1
 {
+    #region Constructor
+    
     public Form11()
     {
         FormNum.Value = "1.1";
         Validate_all();
     }
-    public bool _autoRN;
+
+    #endregion
+
+    #region Validation
+    
     private void Validate_all()
     {
         Activity_Validation(Activity);
@@ -42,6 +48,7 @@ public class Form11 : Form1
         TransporterOKPO_Validation(TransporterOKPO);
         Type_Validation(Type);
     }
+
     public override bool Object_Validation()
     {
         return !(Activity.HasErrors ||
@@ -63,10 +70,56 @@ public class Form11 : Form1
                  Type.HasErrors);
     }
 
+    protected override bool DocumentNumber_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        if (value.Value == "прим.")
+        {
+            //if ((DocumentNumberNote.Value == null) || DocumentNumberNote.Value.Equals(""))
+            //    value.AddError("Заполните примечание");
+            return true;
+        }
+        if (string.IsNullOrEmpty(value.Value))//ok
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        return true;
+    }
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value == null)
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55"
+            or "56" or "57" or "59" or "76")
+        {
+            value.AddError("Код операции не может быть использован для РВ");
+            return false;
+        }
+        return true;
+    } 
+    
+    #endregion
+
+    #region Properties
+
+    public bool AutoRn;
+
     #region PassportNumber
+
     public string PassportNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "номер паспорта (сертификата)", "4")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "номер паспорта (сертификата)", "4")]
     public RamAccess<string> PassportNumber
     {
         get
@@ -87,6 +140,7 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(PassportNumber));
         }
     }
+
     private void PassportNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -94,7 +148,8 @@ public class Form11 : Form1
             PassportNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
-    protected bool PassportNumber_Validation(RamAccess<string> value)//Ready
+
+    protected static bool PassportNumber_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -104,12 +159,14 @@ public class Form11 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region Type
+
     public string Type_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "тип", "5")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "тип", "5")]
     public RamAccess<string> Type
     {
         get
@@ -130,11 +187,12 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(Type));
         }
     }
-    private void TypeValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void TypeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Type_DB = ((RamAccess<string>)Value).Value;
+            Type_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -146,20 +204,24 @@ public class Form11 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
+        var a = Spravochniks.SprTypesToRadionuclids
+            .Where(item => item.Item1 == value.Value)
+            .Select(item => item.Item2);
         if (string.IsNullOrEmpty(Radionuclids.Value) && a.Count() == 1)
         {
-            _autoRN = true;
+            AutoRn = true;
             Radionuclids.Value = a.First();
         }
         return true;
     }
+
     #endregion
 
     #region Radionuclids
+
     public string Radionuclids_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "радионуклиды", "6")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "радионуклиды", "6")]
     public RamAccess<string> Radionuclids
     {
         get
@@ -180,19 +242,21 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(Radionuclids));
         }
     }
-    private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void RadionuclidsValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Radionuclids_DB = ((RamAccess<string>)Value).Value;
+            Radionuclids_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool Radionuclids_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (_autoRN)
+        if (AutoRn)
         {
-            _autoRN = false;
+            AutoRn = false;
             return true;
         }
         if (string.IsNullOrEmpty(value.Value))
@@ -213,7 +277,7 @@ public class Form11 : Form1
         foreach (var nucl in nuclids)
         {
             var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-            if (tmp.Count() == 0)
+            if (!tmp.Any())
                 flag = false;
         }
         if (!flag)
@@ -223,12 +287,14 @@ public class Form11 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region FactoryNumber
+
     public string FactoryNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "номер", "7")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "номер", "7")]
     public RamAccess<string> FactoryNumber
     {
         get
@@ -249,11 +315,12 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(FactoryNumber));
         }
     }
-    private void FactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void FactoryNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            FactoryNumber_DB = ((RamAccess<string>)Value).Value;
+            FactoryNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -267,12 +334,14 @@ public class Form11 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region Quantity
+
     public int? Quantity_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "количество, шт", "8")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "количество, шт", "8")]
     public RamAccess<int?> Quantity
     {
         get
@@ -293,13 +362,15 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(Quantity));
         }
     }
-    private void QuantityValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void QuantityValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Quantity_DB = ((RamAccess<int?>)Value).Value;
+            Quantity_DB = ((RamAccess<int?>)value).Value;
         }
     }
+
     private bool Quantity_Validation(RamAccess<int?> value)//Ready
     {
         value.ClearErrors();
@@ -315,12 +386,14 @@ public class Form11 : Form1
                 return true;
         }
     }
+
     #endregion
 
     #region Activity
+
     public string Activity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "суммарная активность, Бк", "9")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "суммарная активность, Бк", "9")]
     public RamAccess<string> Activity
     {
         get
@@ -341,10 +414,11 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(Activity));
         }
     }
-    private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void ActivityValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
             value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
@@ -389,11 +463,11 @@ public class Form11 : Form1
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
         try
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) 
-            { 
+            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            {
                 value.AddError("Число должно быть больше нуля");
                 return false;
             }
@@ -405,12 +479,14 @@ public class Form11 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region CreatorOKPO
+
     public string CreatorOKPO_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "код ОКПО изготовителя", "10")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "код ОКПО изготовителя", "10")]
     public RamAccess<string> CreatorOKPO
     {
         get
@@ -431,16 +507,18 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(CreatorOKPO));
         }
     }
-    private void CreatorOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void CreatorOKPOValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null && Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
             value1 = value1.ToUpper();
         }
         CreatorOKPO_DB = value1;
     }
+
     private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -462,17 +540,19 @@ public class Form11 : Form1
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
         if (value.Value.Length != 8 && value.Value.Length != 14 || !mask.IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
+
     #endregion
 
     #region CreationDate
+
     public string CreationDate_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "дата выпуска", "11")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "дата выпуска", "11")]
     public RamAccess<string> CreationDate
     {
         get
@@ -493,6 +573,7 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(CreationDate));
         }
     }
+
     private void CreationDateValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
@@ -501,6 +582,7 @@ public class Form11 : Form1
             ? dateTime.ToShortDateString()
             : date;
     }
+
     private bool CreationDate_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -521,15 +603,16 @@ public class Form11 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        
+
         return true;
     }
     #endregion
-        
+
     #region Category
+
     public short? Category_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "категория", "12")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "категория", "12")]
     public RamAccess<short?> Category
     {
         get
@@ -550,6 +633,7 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(Category));
         }
     }
+
     private void CategoryValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -557,6 +641,7 @@ public class Form11 : Form1
             Category_DB = ((RamAccess<short?>)value).Value;
         }
     }
+
     private bool Category_Validation(RamAccess<short?> value)//TODO
     {
         value.ClearErrors();
@@ -572,12 +657,14 @@ public class Form11 : Form1
                 return true;
         }
     }
+
     #endregion
 
     #region SignedServicePeriod
+
     public float? SignedServicePeriod_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "НСС, мес", "13")]
+    [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "НСС, мес", "13")]
     public RamAccess<float?> SignedServicePeriod
     {
         get
@@ -621,12 +708,14 @@ public class Form11 : Form1
                 return true;
         }
     }
+
     #endregion
 
     #region PropertyCode
+
     public byte? PropertyCode_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Право собственности на ЗРИ", "код формы собственности", "14")]
+    [FormProperty(true, "Право собственности на ЗРИ", "код формы собственности", "14")]
     public RamAccess<byte?> PropertyCode
     {
         get
@@ -647,13 +736,15 @@ public class Form11 : Form1
             OnPropertyChanged(nameof(PropertyCode));
         }
     }
-    private void PropertyCodeValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void PropertyCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PropertyCode_DB = ((RamAccess<byte?>)Value).Value;
+            PropertyCode_DB = ((RamAccess<byte?>)value).Value;
         }
     }
+
     private bool PropertyCode_Validation(RamAccess<byte?> value)//Ready
     {
         value.ClearErrors();
@@ -664,17 +755,19 @@ public class Form11 : Form1
         }
         if (value.Value is not (>= 1 and <= 9))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
+
     #endregion
 
     #region Owner
+
     public string Owner_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Право собственности на ЗРИ", "код ОКПО правообладателя", "15")]
+    [FormProperty(true, "Право собственности на ЗРИ", "код ОКПО правообладателя", "15")]
     public RamAccess<string> Owner
     {
         get
@@ -696,18 +789,17 @@ public class Form11 : Form1
         }
     }
     //if change this change validation
+
     private void OwnerValueChanged(object Value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            Owner_DB = value1;
-        }
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)Value).Value;
+        if (value1 != null)
+            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+            {
+                value1 = value1.ToUpper();
+            }
+        Owner_DB = value1;
     }
     private bool Owner_Validation(RamAccess<string> value)//Ready
     {
@@ -732,17 +824,19 @@ public class Form11 : Form1
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
         if (value.Value.Length is not (8 or 14) || !mask.IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
+
     #endregion
 
     #region ProviderOrRecieverOKPO
+
     public string ProviderOrRecieverOKPO_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Код ОКПО", "поставщика или получателя", "19")]
+    [FormProperty(true, "Код ОКПО", "поставщика или получателя", "19")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -766,17 +860,16 @@ public class Form11 : Form1
 
     private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            ProviderOrRecieverOKPO_DB = value1;
-        }
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)Value).Value;
+        if (value1 != null)
+            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+            {
+                value1 = value1.ToUpper();
+            }
+        ProviderOrRecieverOKPO_DB = value1;
     }
+
     private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -798,19 +891,21 @@ public class Form11 : Form1
             return true;
         }
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (value.Value.Length is not(8 or 14) || !mask.IsMatch(value.Value))
+        if (value.Value.Length is not (8 or 14) || !mask.IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
+
     #endregion
 
     #region TransporterOKPO
+
     public string TransporterOKPO_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Код ОКПО", "перевозчика", "20")]
+    [FormProperty(true, "Код ОКПО", "перевозчика", "20")]
     public RamAccess<string> TransporterOKPO
     {
         get
@@ -833,16 +928,17 @@ public class Form11 : Form1
         }
     }
 
-    private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+    private void TransporterOKPOValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null && Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
             value1 = value1.ToUpper();
         }
         TransporterOKPO_DB = value1;
     }
+
     private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -867,17 +963,19 @@ public class Form11 : Form1
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
         if (value.Value.Length is not (8 or 14) || !mask.IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
+
     #endregion
 
     #region PackName
+
     public string PackName_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "наименование", "21")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "наименование", "21")]
     public RamAccess<string> PackName
     {
         get
@@ -899,13 +997,14 @@ public class Form11 : Form1
         }
     }
 
-    private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PackNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PackName_DB = ((RamAccess<string>)Value).Value;
+            PackName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool PackName_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -922,12 +1021,14 @@ public class Form11 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region PackType
+
     public string PackType_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "тип", "22")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "тип", "22")]
     public RamAccess<string> PackType
     {
         get
@@ -949,13 +1050,15 @@ public class Form11 : Form1
         }
     }
     //If change this change validation
-    private void PackTypeValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void PackTypeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PackType_DB = ((RamAccess<string>)Value).Value;
+            PackType_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool PackType_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -972,12 +1075,14 @@ public class Form11 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region PackNumber
+
     public string PackNumber_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "номер", "23")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "номер", "23")]
     public RamAccess<string> PackNumber
     {
         get
@@ -999,13 +1104,15 @@ public class Form11 : Form1
         }
     }
     //If change this change validation
-    private void PackNumberValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void PackNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PackNumber_DB = ((RamAccess<string>)Value).Value;
+            PackNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool PackNumber_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -1022,47 +1129,10 @@ public class Form11 : Form1
         }
         return true;
     }
+
+    #endregion 
+
     #endregion
-
-    protected override bool DocumentNumber_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        if (value.Value == "прим.")
-        {
-            //if ((DocumentNumberNote.Value == null) || DocumentNumberNote.Value.Equals(""))
-            //    value.AddError("Заполните примечание");
-            return true;
-        }
-        if (string.IsNullOrEmpty(value.Value))//ok
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        return true;
-    }
-
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value == null)
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55"
-            or "56" or "57" or "59" or "76")
-        {
-            value.AddError("Код операции не может быть использован для РВ");
-            return false;
-        }
-        return true;
-    }
-
 
     #region IExcel
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
@@ -1089,6 +1159,7 @@ public class Form11 : Form1
         PackType_DB = Convert.ToString(worksheet.Cells[row, 22].Value);
         PackNumber_DB = Convert.ToString(worksheet.Cells[row, 23].Value);
     }
+
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpose);
@@ -1118,6 +1189,7 @@ public class Form11 : Form1
 
         return 24;
     }
+
     public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
         var cnt = Form1.ExcelHeader(worksheet, row, column, transpose);
@@ -1147,10 +1219,12 @@ public class Form11 : Form1
 
         return 24;
     }
+
     #endregion
 
     #region IDataGridColumn
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns == null)
@@ -1321,5 +1395,6 @@ public class Form11 : Form1
         }
         return _DataGridColumns;
     }
+
     #endregion
 }

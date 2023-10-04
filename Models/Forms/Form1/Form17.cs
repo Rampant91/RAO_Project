@@ -15,11 +15,18 @@ namespace Models.Forms.Form1;
 [Form_Class("Форма 1.7: Сведения о твердых кондиционированных РАО")]
 public class Form17 : Form1
 {
-    public Form17() : base()
+    #region Constructor
+    
+    public Form17()
     {
         FormNum.Value = "1.7";
         Validate_all();
     }
+
+    #endregion
+
+    #region Validation
+
     private void Validate_all()
     {
         CodeRAO_Validation(CodeRAO);
@@ -49,35 +56,117 @@ public class Form17 : Form1
         SpecificActivity_Validation(SpecificActivity);
         Quantity_Validation(Quantity);
     }
+
     public override bool Object_Validation()
     {
-        return !(CodeRAO.HasErrors||
-                 PackName.HasErrors||
-                 PackNumber.HasErrors||
-                 PackFactoryNumber.HasErrors||
-                 PackType.HasErrors||
-                 Volume.HasErrors||
-                 Mass.HasErrors||
-                 Radionuclids.HasErrors||
-                 ProviderOrRecieverOKPO.HasErrors||
-                 TransporterOKPO.HasErrors||
-                 TritiumActivity.HasErrors||
-                 BetaGammaActivity.HasErrors||
-                 AlphaActivity.HasErrors||
-                 TransuraniumActivity.HasErrors||
-                 FormingDate.HasErrors||
-                 PassportNumber.HasErrors||
-                 RefineOrSortRAOCode.HasErrors||
-                 Subsidy.HasErrors||
-                 FcpNumber.HasErrors||
-                 StatusRAO.HasErrors||
-                 VolumeOutOfPack.HasErrors||
-                 MassOutOfPack.HasErrors||
-                 StoragePlaceName.HasErrors||
-                 StoragePlaceCode.HasErrors||
-                 SpecificActivity.HasErrors||
+        return !(CodeRAO.HasErrors ||
+                 PackName.HasErrors ||
+                 PackNumber.HasErrors ||
+                 PackFactoryNumber.HasErrors ||
+                 PackType.HasErrors ||
+                 Volume.HasErrors ||
+                 Mass.HasErrors ||
+                 Radionuclids.HasErrors ||
+                 ProviderOrRecieverOKPO.HasErrors ||
+                 TransporterOKPO.HasErrors ||
+                 TritiumActivity.HasErrors ||
+                 BetaGammaActivity.HasErrors ||
+                 AlphaActivity.HasErrors ||
+                 TransuraniumActivity.HasErrors ||
+                 FormingDate.HasErrors ||
+                 PassportNumber.HasErrors ||
+                 RefineOrSortRAOCode.HasErrors ||
+                 Subsidy.HasErrors ||
+                 FcpNumber.HasErrors ||
+                 StatusRAO.HasErrors ||
+                 VolumeOutOfPack.HasErrors ||
+                 MassOutOfPack.HasErrors ||
+                 StoragePlaceName.HasErrors ||
+                 StoragePlaceCode.HasErrors ||
+                 SpecificActivity.HasErrors ||
                  Quantity.HasErrors);
     }
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value is null or "-")
+        {
+            return true;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
+            || !byte.TryParse(value.Value, out var byteValue)
+            || byteValue is not (1 or 10 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68
+                or 97 or 98 or 99))
+        {
+            value.AddError("Код операции не может быть использован в форме 1.7");
+            return false;
+        }
+
+        return true;
+    }
+
+    protected override bool DocumentNumber_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors(); return true;
+    }
+
+    protected override bool DocumentVid_Validation(RamAccess<byte?> value)
+    {
+        value.ClearErrors();
+        if (Spravochniks.SprDocumentVidName.Any())
+        {
+            return false;
+        }
+        value.AddError("Недопустимое значение");
+        return true;
+    }
+
+    protected override bool DocumentDate_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        if (value.Value is null or "" or "-")
+        {
+            return true;
+        }
+        var tmp = value.Value;
+        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+        if (b.IsMatch(tmp))
+        {
+            tmp = tmp.Insert(6, "20");
+        }
+        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+        if (!a.IsMatch(tmp))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        try { DateTimeOffset.Parse(tmp); }
+        catch (Exception)
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        var ab = OperationCode.Value is "51" or "52";
+        var c = OperationCode.Value == "68";
+        var d = OperationCode.Value is "18" or "55";
+        if (ab || c || d)
+        {
+            if (!tmp.Equals(OperationDate))
+            {
+                //value.AddError("Заполните примечание");// to do note handling
+                return true;
+            }
+        }
+        return true;
+    }
+
+    #endregion
 
     #region Properties
 
@@ -1982,82 +2071,6 @@ public class Form17 : Form1
     #endregion 
 
     #endregion
-
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value is null or "-")
-        {
-            return true;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
-            || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is not (1 or 10 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68
-                or 97 or 98 or 99))
-        {
-            value.AddError("Код операции не может быть использован в форме 1.7");
-            return false;
-        }
-
-        return true;
-    }
-    protected override bool DocumentNumber_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors(); return true;
-    }
-    protected override bool DocumentVid_Validation(RamAccess<byte?> value)
-    {
-        value.ClearErrors();
-        if (Spravochniks.SprDocumentVidName.Any())
-        {
-            return false;
-        }
-        value.AddError("Недопустимое значение");
-        return true;
-    }
-    protected override bool DocumentDate_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        if(value.Value is null or "" or "-")
-        {
-            return true;
-        }
-        var tmp = value.Value;
-        Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b.IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        try { DateTimeOffset.Parse(tmp); }
-        catch (Exception)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        var ab = OperationCode.Value is "51" or "52";
-        var c =  OperationCode.Value == "68";
-        var d =  OperationCode.Value is "18" or "55";
-        if (ab || c || d)
-        {
-            if (!tmp.Equals(OperationDate))
-            {
-                //value.AddError("Заполните примечание");// to do note handling
-                return true;
-            }
-        }
-        return true;
-    }
 
     #region IExcel
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)

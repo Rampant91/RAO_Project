@@ -18,6 +18,7 @@ using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
 using System.Diagnostics;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -195,13 +196,11 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                         case "1.1":
                         {
-                            var formsList11 = new ObservableCollectionWithItemPropertyChanged<Form11>();
                             var repForm = (JsonForm11)rep;
                             impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
                             impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
                             impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
                             impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
-
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
                                 impRep.Rows11.Add( new Form11
@@ -241,11 +240,14 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         
                         case "1.2":
                         {
-                            var forms12List = new ObservableCollectionWithItemPropertyChanged<Form12>();
-                            var repForm = rep as JsonForm12;
-                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки в форме
+                            var repForm = (JsonForm12)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                var curForm = new Form12
+                                impRep.Rows11.Add(new Form12
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -271,13 +273,259 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                     PackName_DB = form.PackName,
                                     PackType_DB = form.PackType,
                                     PackNumber_DB = form.PackNumber
-                                };
-                                forms12List.Add(curForm);
+                                });
                             }
-                            currentOrg.Master_DB.Rows12.Add(forms12List);
                             break;
-                        } 
+                        }
+
+                            #endregion
+
+                        #region Form13
                             
+                        case "1.3":
+                        {
+                            var repForm = (JsonForm13)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
+                            {
+                                impRep.Rows11.Add(new Form13
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    PassportNumber_DB = form.PassportNumber,
+                                    Type_DB = form.Type,
+                                    Radionuclids_DB = form.Radionuclids,
+                                    FactoryNumber_DB = form.FactoryNumber,
+                                    Activity_DB = form.Activity,
+                                    CreatorOKPO_DB = form.CreatorOKPO,
+                                    CreationDate_DB = form.CreationDate,
+                                    AggregateState_DB = byte.TryParse(form.AggregateState, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    PropertyCode_DB = byte.TryParse(form.PropertyCode, out byteValue)
+                                        ? byteValue
+                                        : null,
+                                    Owner_DB = form.Owner,
+                                    DocumentVid_DB = byte.TryParse(form.DocumentVid, out byteValue)
+                                        ? byteValue
+                                        : null,
+                                    DocumentNumber_DB = form.DocumentNumber,
+                                    DocumentDate_DB = form.DocumentDate,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    PackName_DB = form.PackName,
+                                    PackType_DB = form.PackType,
+                                    PackNumber_DB = form.PackNumber
+                                });
+                            }
+                            break;
+                        }
+
+                        #endregion
+
+                        #region Form14
+                            
+                        case "1.4":
+                        {
+                            var repForm = (JsonForm14)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
+                            {
+                                impRep.Rows11.Add(new Form14
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    PassportNumber_DB = form.PassportNumber,
+                                    Name_DB = form.Name,
+                                    Sort_DB = byte.TryParse(form.Sort, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    Radionuclids_DB = form.Radionuclids,
+                                    Activity_DB = form.Activity,
+                                    ActivityMeasurementDate_DB = form.ActivityMeasurementDate,
+                                    Volume_DB = form.Volume,
+                                    Mass_DB = form.Mass,
+                                    AggregateState_DB = byte.TryParse(form.AggregateState, out byteValue)
+                                        ? byteValue
+                                        : null,
+                                    PropertyCode_DB = byte.TryParse(form.PropertyCode, out byteValue)
+                                        ? byteValue
+                                        : null,
+                                    Owner_DB = form.Owner,
+                                    DocumentVid_DB = byte.TryParse(form.DocumentVid, out byteValue)
+                                        ? byteValue
+                                        : null,
+                                    DocumentNumber_DB = form.DocumentNumber,
+                                    DocumentDate_DB = form.DocumentDate,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    PackName_DB = form.PackName,
+                                    PackType_DB = form.PackType,
+                                    PackNumber_DB = form.PackNumber
+                                });
+                            }
+                            break;
+                        }
+
+                        #endregion
+
+                        #region Form15
+                            
+                        case "1.5":
+                        {
+                            var repForm = (JsonForm15)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
+                            {
+                                impRep.Rows11.Add(new Form15
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    PassportNumber_DB = form.PassportNumber,
+                                    Type_DB = form.Type,
+                                    Radionuclids_DB = form.Radionuclids,
+                                    FactoryNumber_DB = form.FactoryNumber,
+                                    Quantity_DB = int.TryParse(form.Quantity, out var intValue)
+                                        ? intValue
+                                        : null,
+                                    Activity_DB = form.Activity,
+                                    CreationDate_DB = form.CreationDate,
+                                    StatusRAO_DB = form.StatusRAO,
+                                    DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    DocumentNumber_DB = form.DocumentNumber,
+                                    DocumentDate_DB = form.DocumentDate,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    PackName_DB = form.PackName,
+                                    PackType_DB = form.PackType,
+                                    PackNumber_DB = form.PackNumber,
+                                    StoragePlaceName_DB = form.StoragePlaceName,
+                                    StoragePlaceCode_DB = form.StoragePlaceCode,
+                                    RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
+                                    Subsidy_DB = form.Subsidy,
+                                    FcpNumber_DB = form.FcpNumber
+                                });
+                            }
+                            break;
+                        }
+
+                        #endregion
+
+                        #region Form16
+                            
+                        case "1.6":
+                        {
+                            var repForm = (JsonForm16)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
+                            {
+                                impRep.Rows11.Add(new Form16
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    CodeRAO_DB = form.CodeRAO,
+                                    StatusRAO_DB = form.StatusRAO,
+                                    Volume_DB = form.Volume,
+                                    Mass_DB = form.Mass,
+                                    QuantityOZIII_DB = form.QuantityOZIII,
+                                    MainRadionuclids_DB = form.MainRadionuclids,
+                                    TritiumActivity_DB = form.TritiumActivity,
+                                    BetaGammaActivity_DB = form.BetaGammaActivity,
+                                    AlphaActivity_DB = form.AlphaActivity,
+                                    TransuraniumActivity_DB = form.TransuraniumActivity,
+                                    ActivityMeasurementDate_DB = form.ActivityMeasurementDate,
+                                    DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    DocumentNumber_DB = form.DocumentNumber,
+                                    DocumentDate_DB = form.DocumentDate,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    StoragePlaceName_DB = form.StoragePlaceName,
+                                    StoragePlaceCode_DB = form.StoragePlaceCode,
+                                    RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
+                                    PackName_DB = form.PackName,
+                                    PackType_DB = form.PackType,
+                                    PackNumber_DB = form.PackNumber,
+                                    Subsidy_DB = form.Subsidy,
+                                    FcpNumber_DB = form.FcpNumber
+                                });
+                            }
+                            break;
+                        }
+
+                        #endregion
+
+                        #region Form17
+                            
+                        case "1.7":
+                        {
+                            var repForm = (JsonForm17)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
+                            {
+                                impRep.Rows11.Add(new Form17
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    PackName_DB = form.PackName,
+                                    PackType_DB = form.PackType,
+                                    PackFactoryNumber_DB = form.PackFactoryNumber,
+                                    PackNumber_DB = form.PackNumber,
+                                    FormingDate_DB = form.FormingDate,
+                                    PassportNumber_DB = form.PassportNumber,
+                                    Volume_DB = form.Volume,
+                                    Mass_DB = form.Mass,
+                                    Radionuclids_DB = form.Radionuclids,
+                                    SpecificActivity_DB = form.SpecificActivity,
+                                    DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    DocumentNumber_DB = form.DocumentNumber,
+                                    DocumentDate_DB = form.DocumentDate,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    StoragePlaceName_DB = form.StoragePlaceName,
+                                    StoragePlaceCode_DB = form.StoragePlaceCode,
+                                    CodeRAO_DB = form.CodeRAO,
+                                    StatusRAO_DB = form.StatusRAO,
+                                    VolumeOutOfPack_DB = form.VolumeOutOfPack,
+                                    MassOutOfPack_DB = form.MassOutOfPack,
+                                    Quantity_DB = form.Quantity,
+                                    TritiumActivity_DB = form.TritiumActivity,
+                                    BetaGammaActivity_DB = form.BetaGammaActivity,
+                                    AlphaActivity_DB = form.AlphaActivity,
+                                    TransuraniumActivity_DB = form.TransuraniumActivity,
+                                    RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
+                                    Subsidy_DB = form.Subsidy,
+                                    FcpNumber_DB = form.FcpNumber
+                                });
+                            }
+                            break;
+                        }
+
                         #endregion
                     }
                     currentOrg.Report_Collection.Add(impRep);

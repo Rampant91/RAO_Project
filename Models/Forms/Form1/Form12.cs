@@ -16,11 +16,18 @@ namespace Models.Forms.Form1;
 [Form_Class("Форма 1.2: Сведения об изделиях из обедненного урана")]
 public class Form12 : Form1
 {
-    public Form12() : base()
+    #region Constructor
+    
+    public Form12()
     {
         FormNum.Value = "1.2";
         Validate_all();
     }
+
+    #endregion
+
+    #region Validation
+    
     private void Validate_all()
     {
         CreationDate_Validation(CreationDate);
@@ -39,7 +46,7 @@ public class Form12 : Form1
         NameIOU_Validation(NameIOU);
     }
 
-    [FormProperty(true,"Форма")]
+    [FormProperty(true, "Форма")]
     public override bool Object_Validation()
     {
         return !(CreationDate.HasErrors ||
@@ -58,10 +65,52 @@ public class Form12 : Form1
                  NameIOU.HasErrors);
     }
 
+    protected override bool DocumentNumber_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        if (value.Value == "прим.")
+        {
+            //if ((DocumentNumberNote == null) || DocumentNumberNote.Equals(""))
+            //    value.AddError( "Заполните примечание");//to do note handling
+            return true;
+        }
+        if (string.IsNullOrEmpty(value.Value))//ok
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        return true;
+    }
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value == null)
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55" or "56" or "57" or "59" or "76")
+        {
+            value.AddError("Код операции не может быть использован для РВ");
+            return false;
+        }
+        return true;
+    }
+
+    #endregion
+
+    #region Properties
+
     #region PassportNumber
     public string PassportNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на изделие из обедненного урана", "номер паспорта", "4")]
+    [FormProperty(true, "Сведения из паспорта на изделие из обедненного урана", "номер паспорта", "4")]
     public RamAccess<string> PassportNumber
     {
         get
@@ -71,27 +120,26 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(PassportNumber)]).Value = PassportNumber_DB;
                 return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
-                rm.PropertyChanged += PassportNumberValueChanged;
-                Dictionary.Add(nameof(PassportNumber), rm);
-                return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
-            }
-        } set
+            var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
+            rm.PropertyChanged += PassportNumberValueChanged;
+            Dictionary.Add(nameof(PassportNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
+        }
+        set
         {
             PassportNumber_DB = value.Value; OnPropertyChanged(nameof(PassportNumber));
         }
     }
 
 
-    private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PassportNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PassportNumber_DB = ((RamAccess<string>)Value).Value;
+            PassportNumber_DB = ((RamAccess<string>)value).Value;
         }
-    } 
+    }
+
     private bool PassportNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -113,7 +161,7 @@ public class Form12 : Form1
     #region NameIOU
     public string NameIOU_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на изделие из обедненного урана", "наименование", "5")]
+    [FormProperty(true, "Сведения из паспорта на изделие из обедненного урана", "наименование", "5")]
     public RamAccess<string> NameIOU
     {
         get
@@ -123,27 +171,26 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(NameIOU)]).Value = NameIOU_DB;
                 return (RamAccess<string>)Dictionary[nameof(NameIOU)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(NameIOU_Validation, NameIOU_DB);
-                rm.PropertyChanged += NameIOUValueChanged;
-                Dictionary.Add(nameof(NameIOU), rm);
-                return (RamAccess<string>)Dictionary[nameof(NameIOU)];
-            }
-        } set
+
+            var rm = new RamAccess<string>(NameIOU_Validation, NameIOU_DB);
+            rm.PropertyChanged += NameIOUValueChanged;
+            Dictionary.Add(nameof(NameIOU), rm);
+            return (RamAccess<string>)Dictionary[nameof(NameIOU)];
+        }
+        set
         {
             NameIOU_DB = value.Value; OnPropertyChanged(nameof(NameIOU));
         }
     }
 
-
-    private void NameIOUValueChanged(object Value, PropertyChangedEventArgs args)
+    private void NameIOUValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            NameIOU_DB = ((RamAccess<string>)Value).Value;
+            NameIOU_DB = ((RamAccess<string>)value).Value;
         }
-    } 
+    }
+
     private bool NameIOU_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -154,12 +201,13 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region FactoryNumber
     public string FactoryNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на изделие из обедненного урана", "номер", "6")]
+    [FormProperty(true, "Сведения из паспорта на изделие из обедненного урана", "номер", "6")]
     public RamAccess<string> FactoryNumber
     {
         get
@@ -169,27 +217,26 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(FactoryNumber)]).Value = FactoryNumber_DB;
                 return (RamAccess<string>)Dictionary[nameof(FactoryNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(FactoryNumber_Validation, FactoryNumber_DB);
-                rm.PropertyChanged += FactoryNumberValueChanged;
-                Dictionary.Add(nameof(FactoryNumber), rm);
-                return (RamAccess<string>)Dictionary[nameof(FactoryNumber)];
-            }
-        } set
+            var rm = new RamAccess<string>(FactoryNumber_Validation, FactoryNumber_DB);
+            rm.PropertyChanged += FactoryNumberValueChanged;
+            Dictionary.Add(nameof(FactoryNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(FactoryNumber)];
+        }
+        set
         {
             FactoryNumber_DB = value.Value;
             OnPropertyChanged(nameof(FactoryNumber));
         }
     }
 
-    private void FactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void FactoryNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            FactoryNumber_DB = ((RamAccess<string>)Value).Value;
+            FactoryNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool FactoryNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -200,12 +247,13 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region Mass
     public string Mass_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на изделие из обедненного урана", "масса обедненного урана, кг", "7")]
+    [FormProperty(true, "Сведения из паспорта на изделие из обедненного урана", "масса обедненного урана, кг", "7")]
     public RamAccess<string> Mass
     {
         get
@@ -215,43 +263,41 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(Mass)]).Value = Mass_DB;
                 return (RamAccess<string>)Dictionary[nameof(Mass)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
-                rm.PropertyChanged += MassValueChanged;
-                Dictionary.Add(nameof(Mass), rm);
-                return (RamAccess<string>)Dictionary[nameof(Mass)];
-            }
-        } set
+            var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
+            rm.PropertyChanged += MassValueChanged;
+            Dictionary.Add(nameof(Mass), rm);
+            return (RamAccess<string>)Dictionary[nameof(Mass)];
+        }
+        set
         {
             Mass_DB = value.Value; OnPropertyChanged(nameof(Mass));
         }
     }
-    private void MassValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void MassValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    Mass_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-                {
-                    value1 = $"{doubleValue:0.######################################################e+00}";
-                }
+                Mass_DB = value1;
+                return;
             }
-            Mass_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        Mass_DB = value1;
     }
+
     private bool Mass_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -276,11 +322,14 @@ public class Form12 : Form1
             tmp = tmp.Remove(len - 1, 1);
             tmp = tmp.Remove(0, 1);
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
         try
         {
-            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            {
+                value.AddError("Число должно быть больше нуля"); 
+                return false;
+            }
         }
         catch
         {
@@ -289,12 +338,14 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region CreatorOKPO
+
     public string CreatorOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на изделие из обедненного урана", "код ОКПО изготовителя", "8")]
+    [FormProperty(true, "Сведения из паспорта на изделие из обедненного урана", "код ОКПО изготовителя", "8")]
     public RamAccess<string> CreatorOKPO
     {
         get
@@ -304,34 +355,30 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(CreatorOKPO)]).Value = CreatorOKPO_DB;
                 return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(CreatorOKPO_Validation, CreatorOKPO_DB);
-                rm.PropertyChanged += CreatorOKPOValueChanged;
-                Dictionary.Add(nameof(CreatorOKPO), rm);
-                return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
-            }
-        } set
+            var rm = new RamAccess<string>(CreatorOKPO_Validation, CreatorOKPO_DB);
+            rm.PropertyChanged += CreatorOKPOValueChanged;
+            Dictionary.Add(nameof(CreatorOKPO), rm);
+            return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
+        }
+        set
         {
             CreatorOKPO_DB = value.Value; OnPropertyChanged(nameof(CreatorOKPO));
         }
     }
     //If change this change validation
 
-    private void CreatorOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CreatorOKPOValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            CreatorOKPO_DB = value1;
-        }
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
+            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+            {
+                value1 = value1.ToUpper();
+            }
+        CreatorOKPO_DB = value1;
     }
-        
+
     private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -363,12 +410,14 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region CreationDate
+
     public string CreationDate_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на изделие из обедненного урана", "дата выпуска", "9")]
+    [FormProperty(true, "Сведения из паспорта на изделие из обедненного урана", "дата выпуска", "9")]
     public RamAccess<string> CreationDate
     {
         get
@@ -378,36 +427,33 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(CreationDate)]).Value = CreationDate_DB;
                 return (RamAccess<string>)Dictionary[nameof(CreationDate)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(CreationDate_Validation, CreationDate_DB);
-                rm.PropertyChanged += CreationDateValueChanged;
-                Dictionary.Add(nameof(CreationDate), rm);
-                return (RamAccess<string>)Dictionary[nameof(CreationDate)];
-            }
-        } set
+            var rm = new RamAccess<string>(CreationDate_Validation, CreationDate_DB);
+            rm.PropertyChanged += CreationDateValueChanged;
+            Dictionary.Add(nameof(CreationDate), rm);
+            return (RamAccess<string>)Dictionary[nameof(CreationDate)];
+        }
+        set
         {
             CreationDate_DB = value.Value; OnPropertyChanged(nameof(CreationDate));
         }
     }
     //If change this change validation
 
-    private void CreationDateValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CreationDateValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        if (!tmp.Equals("прим."))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            if (!tmp.Equals("прим."))
+            Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
             {
-                Regex b = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-                if (b.IsMatch(tmp))
-                {
-                    tmp = tmp.Insert(6, "20");
-                }
+                tmp = tmp.Insert(6, "20");
             }
-            CreationDate_DB = tmp;
         }
+        CreationDate_DB = tmp;
     }
+
     private bool CreationDate_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -442,12 +488,14 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region SignedServicePeriod
+
     public string SignedServicePeriod_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения из паспорта на изделие из обедненного урана", "НСС, мес", "10")]
+    [FormProperty(true, "Сведения из паспорта на изделие из обедненного урана", "НСС, мес", "10")]
     public RamAccess<string> SignedServicePeriod
     {
         get
@@ -457,13 +505,10 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(SignedServicePeriod)]).Value = SignedServicePeriod_DB;
                 return (RamAccess<string>)Dictionary[nameof(SignedServicePeriod)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
-                rm.PropertyChanged += SignedServicePeriodValueChanged;
-                Dictionary.Add(nameof(SignedServicePeriod), rm);
-                return (RamAccess<string>)Dictionary[nameof(SignedServicePeriod)];
-            }
+            var rm = new RamAccess<string>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
+            rm.PropertyChanged += SignedServicePeriodValueChanged;
+            Dictionary.Add(nameof(SignedServicePeriod), rm);
+            return (RamAccess<string>)Dictionary[nameof(SignedServicePeriod)];
         }
         set
         {
@@ -471,13 +516,14 @@ public class Form12 : Form1
         }
     }
 
-    private void SignedServicePeriodValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SignedServicePeriodValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            SignedServicePeriod_DB = ((RamAccess<string>)Value).Value;
+            SignedServicePeriod_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool SignedServicePeriod_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -496,16 +542,18 @@ public class Form12 : Form1
         }
         catch
         {
-
+            // ignored
         }
+
         return true;
     }
+
     #endregion
 
     #region PropertyCode
     public byte? PropertyCode_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Право собственности на ИОУ","код формы собственности", "11")]
+    [FormProperty(true, "Право собственности на ИОУ", "код формы собственности", "11")]
     public RamAccess<byte?> PropertyCode
     {
         get
@@ -515,26 +563,26 @@ public class Form12 : Form1
                 ((RamAccess<byte?>)Dictionary[nameof(PropertyCode)]).Value = PropertyCode_DB;
                 return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
             }
-            else
-            {
-                var rm = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
-                rm.PropertyChanged += PropertyCodeValueChanged;
-                Dictionary.Add(nameof(PropertyCode), rm);
-                return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
-            }
-        } set
+            var rm = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
+            rm.PropertyChanged += PropertyCodeValueChanged;
+            Dictionary.Add(nameof(PropertyCode), rm);
+            return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
+        }
+        set
         {
             PropertyCode_DB = value.Value;
             OnPropertyChanged(nameof(PropertyCode));
         }
     }
-    private void PropertyCodeValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void PropertyCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PropertyCode_DB = ((RamAccess<byte?>)Value).Value;
+            PropertyCode_DB = ((RamAccess<byte?>)value).Value;
         }
     }
+
     private bool PropertyCode_Validation(RamAccess<byte?> value)//Ready
     {
         value.ClearErrors();
@@ -547,18 +595,20 @@ public class Form12 : Form1
         //{
         //    value.AddError( "Поле не заполнено");
         //}
-        if (!(value.Value >= 1 && value.Value <= 9))
+        if (value.Value is not (>= 1 and <= 9))
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение"); 
+            return false;
         }
         return true;
     }
+
     #endregion
 
     #region Owner
     public string Owner_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Право собственности на ИОУ", "код ОКПО правообладателя", "12")]
+    [FormProperty(true, "Право собственности на ИОУ", "код ОКПО правообладателя", "12")]
     public RamAccess<string> Owner
     {
         get
@@ -568,32 +618,30 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(Owner)]).Value = Owner_DB;
                 return (RamAccess<string>)Dictionary[nameof(Owner)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Owner_Validation, Owner_DB);
-                rm.PropertyChanged += OwnerValueChanged;
-                Dictionary.Add(nameof(Owner), rm);
-                return (RamAccess<string>)Dictionary[nameof(Owner)];
-            }
-        } set
+            var rm = new RamAccess<string>(Owner_Validation, Owner_DB);
+            rm.PropertyChanged += OwnerValueChanged;
+            Dictionary.Add(nameof(Owner), rm);
+            return (RamAccess<string>)Dictionary[nameof(Owner)];
+        }
+        set
         {
-            Owner_DB = value.Value; OnPropertyChanged(nameof(Owner));
+            Owner_DB = value.Value; 
+            OnPropertyChanged(nameof(Owner));
         }
     }
     //if change this change validation
-    private void OwnerValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OwnerValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            Owner_DB = value1;
-        }
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
+            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+            {
+                value1 = value1.ToUpper();
+            }
+        Owner_DB = value1;
     }
+
     private bool Owner_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -624,12 +672,13 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region ProviderOrRecieverOKPO
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Код ОКПО","поставщика или получателя", "16")]
+    [FormProperty(true, "Код ОКПО", "поставщика или получателя", "16")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -639,30 +688,27 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
                 return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-                rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
-                Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
-                return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
-            }
-        } set
+            var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+            rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+            Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
+            return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+        }
+        set
         {
-            ProviderOrRecieverOKPO_DB = value.Value; OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
+            ProviderOrRecieverOKPO_DB = value.Value;
+            OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
         }
     }
-    private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ProviderOrRecieverOKPOValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            ProviderOrRecieverOKPO_DB = value1;
-        }
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
+            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+            {
+                value1 = value1.ToUpper();
+            }
+        ProviderOrRecieverOKPO_DB = value1;
     }
     private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
     {
@@ -706,12 +752,13 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region TransporterOKPO
     public string TransporterOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Код ОКПО", "перевозчика", "17")]
+    [FormProperty(true, "Код ОКПО", "перевозчика", "17")]
     public RamAccess<string> TransporterOKPO
     {
         get
@@ -721,31 +768,30 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(TransporterOKPO)]).Value = TransporterOKPO_DB;
                 return (RamAccess<string>)Dictionary[nameof(TransporterOKPO)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
-                rm.PropertyChanged += TransporterOKPOValueChanged;
-                Dictionary.Add(nameof(TransporterOKPO), rm);
-                return (RamAccess<string>)Dictionary[nameof(TransporterOKPO)];
-            }
-        } set
+            var rm = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
+            rm.PropertyChanged += TransporterOKPOValueChanged;
+            Dictionary.Add(nameof(TransporterOKPO), rm);
+            return (RamAccess<string>)Dictionary[nameof(TransporterOKPO)];
+        }
+        set
         {
-            TransporterOKPO_DB = value.Value; OnPropertyChanged(nameof(TransporterOKPO));
+            TransporterOKPO_DB = value.Value; 
+            OnPropertyChanged(nameof(TransporterOKPO));
         }
     }
-    private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void TransporterOKPOValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            TransporterOKPO_DB = value1;
-        }
-    } 
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
+            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+            {
+                value1 = value1.ToUpper();
+            }
+        TransporterOKPO_DB = value1;
+    }
+
     private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -784,12 +830,14 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region PackName
+
     public string PackName_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка","наименование", "18")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "наименование", "18")]
     public RamAccess<string> PackName
     {
         get
@@ -799,26 +847,25 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(PackName)]).Value = PackName_DB;
                 return (RamAccess<string>)Dictionary[nameof(PackName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
-                rm.PropertyChanged += PackNameValueChanged;
-                Dictionary.Add(nameof(PackName), rm);
-                return (RamAccess<string>)Dictionary[nameof(PackName)];
-            }
-        } set
+            var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
+            rm.PropertyChanged += PackNameValueChanged;
+            Dictionary.Add(nameof(PackName), rm);
+            return (RamAccess<string>)Dictionary[nameof(PackName)];
+        }
+        set
         {
             PackName_DB = value.Value; OnPropertyChanged(nameof(PackName));
         }
     }
 
-    private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PackNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PackName_DB = ((RamAccess<string>)Value).Value;
+            PackName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool PackName_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -835,12 +882,13 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region PackType
     public string PackType_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "тип", "19")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "тип", "19")]
     public RamAccess<string> PackType
     {
         get
@@ -850,27 +898,27 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(PackType)]).Value = PackType_DB;
                 return (RamAccess<string>)Dictionary[nameof(PackType)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
-                rm.PropertyChanged += PackTypeValueChanged;
-                Dictionary.Add(nameof(PackType), rm);
-                return (RamAccess<string>)Dictionary[nameof(PackType)];
-            }
-        } set
+
+            var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
+            rm.PropertyChanged += PackTypeValueChanged;
+            Dictionary.Add(nameof(PackType), rm);
+            return (RamAccess<string>)Dictionary[nameof(PackType)];
+        }
+        set
         {
             PackType_DB = value.Value; OnPropertyChanged(nameof(PackType));
         }
     }
     //If change this change validation
 
-    private void PackTypeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PackTypeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PackType_DB = ((RamAccess<string>)Value).Value;
+            PackType_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool PackType_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -887,12 +935,13 @@ public class Form12 : Form1
         }
         return true;
     }
+
     #endregion
 
     #region PackNumber
     public string PackNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "номер", "20")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "номер", "20")]
     public RamAccess<string> PackNumber
     {
         get
@@ -902,27 +951,27 @@ public class Form12 : Form1
                 ((RamAccess<string>)Dictionary[nameof(PackNumber)]).Value = PackNumber_DB;
                 return (RamAccess<string>)Dictionary[nameof(PackNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
-                rm.PropertyChanged += PackNumberValueChanged;
-                Dictionary.Add(nameof(PackNumber), rm);
-                return (RamAccess<string>)Dictionary[nameof(PackNumber)];
-            }
-        } set
+            var rm = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
+            rm.PropertyChanged += PackNumberValueChanged;
+            Dictionary.Add(nameof(PackNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(PackNumber)];
+        }
+        set
         {
             PackNumber_DB = value.Value;
             OnPropertyChanged(nameof(PackNumber));
         }
     }
     //If change this change validation
-    private void PackNumberValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void PackNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PackNumber_DB = ((RamAccess<string>)Value).Value;
+            PackNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool PackNumber_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -939,46 +988,13 @@ public class Form12 : Form1
         }
         return true;
     }
+
+    #endregion 
+
     #endregion
 
-    protected override bool DocumentNumber_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        if (value.Value == "прим.")
-        {
-            //if ((DocumentNumberNote == null) || DocumentNumberNote.Equals(""))
-            //    value.AddError( "Заполните примечание");//to do note handling
-            return true;
-        }
-        if (string.IsNullOrEmpty(value.Value))//ok
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        return true;
-    }
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value == null)
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if(value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55" or "56" or "57" or "59" or "76")
-        {
-            value.AddError("Код операции не может быть использован для РВ");
-            return false;
-        }
-        return true;
-    }
-
     #region IExcel
+
     public void ExcelGetRow(ExcelWorksheet worksheet, int row) 
     {
         base.ExcelGetRow(worksheet, row);
@@ -1054,9 +1070,11 @@ public class Form12 : Form1
         
         return 17;
     }
+
     #endregion
 
     #region IDataGridColumn
+
     public override DataGridColumns GetColumnStructure(string param)
     {
         #region NumberInOrder (1)
@@ -1202,5 +1220,6 @@ public class Form12 : Form1
 
         return NumberInOrderR;
     }
+
     #endregion
 }

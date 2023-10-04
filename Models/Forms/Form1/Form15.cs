@@ -16,12 +16,18 @@ namespace Models.Forms.Form1;
 [Form_Class("Форма 1.5: Сведения о РАО в виде отработавших ЗРИ")]
 public class Form15 : Form1
 {
-    public Form15() : base()
+    #region Constructor
+    
+    public Form15()
     {
         FormNum.Value = "1.5";
         Validate_all();
     }
-    public bool _autoRN;
+
+    #endregion
+
+    #region Validation
+
     private void Validate_all()
     {
         Type_Validation(Type);
@@ -43,32 +49,72 @@ public class Form15 : Form1
         StoragePlaceName_Validation(StoragePlaceName);
         StoragePlaceCode_Validation(StoragePlaceCode);
     }
+
     public override bool Object_Validation()
     {
-        return !(Type.HasErrors||
-                 PackName.HasErrors||
-                 PackNumber.HasErrors||
-                 PackType.HasErrors||
-                 PassportNumber.HasErrors||
-                 FactoryNumber.HasErrors||
-                 ProviderOrRecieverOKPO.HasErrors||
-                 TransporterOKPO.HasErrors||
-                 Activity.HasErrors||
-                 Radionuclids.HasErrors||
-                 Quantity.HasErrors||
-                 CreationDate.HasErrors||
-                 Subsidy.HasErrors||
-                 FcpNumber.HasErrors||
-                 StatusRAO.HasErrors||
-                 RefineOrSortRAOCode.HasErrors||
-                 StoragePlaceName.HasErrors||
+        return !(Type.HasErrors ||
+                 PackName.HasErrors ||
+                 PackNumber.HasErrors ||
+                 PackType.HasErrors ||
+                 PassportNumber.HasErrors ||
+                 FactoryNumber.HasErrors ||
+                 ProviderOrRecieverOKPO.HasErrors ||
+                 TransporterOKPO.HasErrors ||
+                 Activity.HasErrors ||
+                 Radionuclids.HasErrors ||
+                 Quantity.HasErrors ||
+                 CreationDate.HasErrors ||
+                 Subsidy.HasErrors ||
+                 FcpNumber.HasErrors ||
+                 StatusRAO.HasErrors ||
+                 RefineOrSortRAOCode.HasErrors ||
+                 StoragePlaceName.HasErrors ||
                  StoragePlaceCode.HasErrors);
     }
+
+    protected override bool DocumentNumber_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))//ok
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        return true;
+    }
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value == null)
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (value.Value is "15" or "17" or "46" or "47" or "53" or "54" or "58" or "61"
+            or "62" or "65" or "66" or "67" or "81" or "82" or "83" or "85" or "86" or "87")
+        {
+            value.AddError("Код операции не может быть использован для РАО");
+            return false;
+        }
+        return true;
+    }
+
+    #endregion
+
+    #region Properties
+    
+    public bool _autoRN;
 
     #region PassportNumber
     public string PassportNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ","4")]
+    [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ", "4")]
     public RamAccess<string> PassportNumber
     {
         get
@@ -102,7 +148,7 @@ public class Form15 : Form1
     private bool PassportNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -120,7 +166,7 @@ public class Form15 : Form1
     #region Type
     public string Type_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "тип","5")]
+    [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "тип", "5")]
     public RamAccess<string> Type
     {
         get
@@ -176,7 +222,7 @@ public class Form15 : Form1
     #region Radionuclids
     public string Radionuclids_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "радионуклиды","6")]
+    [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "радионуклиды", "6")]
     public RamAccess<string> Radionuclids
     {
         get
@@ -190,7 +236,7 @@ public class Form15 : Form1
             {
                 var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
                 rm.PropertyChanged += RadionuclidsValueChanged;
-                Dictionary.Add(nameof(Radionuclids),rm);
+                Dictionary.Add(nameof(Radionuclids), rm);
                 return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
             }
         }
@@ -200,7 +246,7 @@ public class Form15 : Form1
             OnPropertyChanged(nameof(Radionuclids));
         }
     }//If change this change validation
-        
+
     private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -245,7 +291,7 @@ public class Form15 : Form1
     #region FactoryNumber
     public string FactoryNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "номер","7")]
+    [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "номер", "7")]
     public RamAccess<string> FactoryNumber
     {
         get
@@ -279,7 +325,7 @@ public class Form15 : Form1
     private bool FactoryNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -291,7 +337,7 @@ public class Form15 : Form1
     #region Quantity
     public int? Quantity_DB { get; set; }
     [NotMapped]
-    [FormProperty(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "количество, шт","8")]
+    [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "количество, шт", "8")]
     public RamAccess<int?> Quantity
     {
         get
@@ -343,7 +389,7 @@ public class Form15 : Form1
     #region Activity
     public string Activity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "суммарная активность, Бк","9")]
+    [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "суммарная активность, Бк", "9")]
     public RamAccess<string> Activity
     {
         get
@@ -430,7 +476,7 @@ public class Form15 : Form1
     #region CreationDate
     public string CreationDate_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "дата выпуска","10")]
+    [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "дата выпуска", "10")]
     public RamAccess<string> CreationDate
     {
         get
@@ -471,7 +517,7 @@ public class Form15 : Form1
     private bool CreationDate_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -501,7 +547,7 @@ public class Form15 : Form1
     #region StatusRAO
     public string StatusRAO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"null-11","Статус РАО","11")]
+    [FormProperty(true, "null-11", "Статус РАО", "11")]
     public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
     {
         get
@@ -575,7 +621,7 @@ public class Form15 : Form1
     #region ProviderOrRecieverOKPO
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Код ОКПО","поставщика или получателя","15")]
+    [FormProperty(true, "Код ОКПО", "поставщика или получателя", "15")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -627,7 +673,7 @@ public class Form15 : Form1
         if (OperationCode.Value != null)
         {
             var tmp = short.Parse(OperationCode.Value);
-            if (tmp is 1 or >= 10 and <= 14 or 16 or 18 or >= 41 and <= 45 or 48 or 49 
+            if (tmp is 1 or >= 10 and <= 14 or 16 or 18 or >= 41 and <= 45 or 48 or 49
                 or 51 or 52 or >= 55 and <= 57 or 59 or 68 or >= 71 and <= 73 or 75 or 76)
             {
                 //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
@@ -637,7 +683,7 @@ public class Form15 : Form1
         Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
         if (value.Value.Length != 8 && value.Value.Length != 14 || !mask.IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
@@ -647,7 +693,7 @@ public class Form15 : Form1
     #region TransporterOKPO
     public string TransporterOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Код ОКПО", "перевозчика","16")]
+    [FormProperty(true, "Код ОКПО", "перевозчика", "16")]
     public RamAccess<string> TransporterOKPO
     {
         get
@@ -712,11 +758,11 @@ public class Form15 : Form1
         return true;
     }
     #endregion
-         
+
     #region PackName
     public string PackName_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "наименование","17")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "наименование", "17")]
     public RamAccess<string> PackName
     {
         get
@@ -762,7 +808,7 @@ public class Form15 : Form1
     #region PackType
     public string PackType_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "тип","18")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "тип", "18")]
     public RamAccess<string> PackType
     {
         get
@@ -815,7 +861,7 @@ public class Form15 : Form1
     #region PackNumber
     public string PackNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Прибор (установка), УКТ или иная упаковка", "заводской номер","19")]
+    [FormProperty(true, "Прибор (установка), УКТ или иная упаковка", "заводской номер", "19")]
     public RamAccess<string> PackNumber
     {
         get
@@ -862,7 +908,7 @@ public class Form15 : Form1
     #region StoragePlaceName
     public string StoragePlaceName_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Пункт хранения", "наименование","20")]
+    [FormProperty(true, "Пункт хранения", "наименование", "20")]
     public RamAccess<string> StoragePlaceName
     {
         get
@@ -916,7 +962,7 @@ public class Form15 : Form1
     #region StoragePlaceCode
     public string StoragePlaceCode_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Пункт хранения", "код","21")]
+    [FormProperty(true, "Пункт хранения", "код", "21")]
     public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
     {
         get
@@ -951,7 +997,7 @@ public class Form15 : Form1
     private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -1070,7 +1116,7 @@ public class Form15 : Form1
     #region Subsidy
     public string Subsidy_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"null-23","Субсидия, %","23")]
+    [FormProperty(true, "null-23", "Субсидия, %", "23")]
     public RamAccess<string> Subsidy // 0<number<=100 or empty.
     {
         get
@@ -1133,7 +1179,7 @@ public class Form15 : Form1
     #region FcpNumber
     public string FcpNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"null-24","Номер мероприятия ФЦП","24")]
+    [FormProperty(true, "null-24", "Номер мероприятия ФЦП", "24")]
     public RamAccess<string> FcpNumber
     {
         get
@@ -1169,40 +1215,10 @@ public class Form15 : Form1
         value.ClearErrors();
         return true;
     }
+
+    #endregion 
+
     #endregion
-
-    protected override bool DocumentNumber_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))//ok
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        return true;
-    }
-
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value == null)
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (value.Value is "15" or "17" or "46" or "47" or "53" or "54" or "58" or "61" 
-            or "62" or "65" or "66" or "67" or "81" or "82" or "83" or "85" or "86" or "87")
-        {
-            value.AddError("Код операции не может быть использован для РАО");
-            return false;
-        }
-        return true;
-    }
 
     #region IExcel
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)

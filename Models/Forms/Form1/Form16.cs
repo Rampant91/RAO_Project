@@ -15,12 +15,18 @@ namespace Models.Forms.Form1;
 [Form_Class("Форма 1.6: Сведения о некондиционированных РАО")]
 public class Form16 : Form1
 {
-    public Form16() : base()
+    #region Contructor
+    
+    public Form16()
     {
         FormNum.Value = "1.6";
         Validate_all();
     }
 
+    #endregion
+
+    #region Validation
+    
     private void Validate_all()
     {
         CodeRAO_Validation(CodeRAO);
@@ -46,36 +52,76 @@ public class Form16 : Form1
         StoragePlaceCode_Validation(StoragePlaceCode);
     }
 
-    [FormProperty(true,"Форма")]
+    [FormProperty(true, "Форма")]
     public override bool Object_Validation()
     {
-        return !(CodeRAO.HasErrors||
-                 PackName.HasErrors||
-                 PackNumber.HasErrors||
-                 PackType.HasErrors||
-                 Volume.HasErrors||
-                 Mass.HasErrors||
-                 ActivityMeasurementDate.HasErrors||
-                 ProviderOrRecieverOKPO.HasErrors||
-                 TransporterOKPO.HasErrors||
-                 TritiumActivity.HasErrors||
-                 BetaGammaActivity.HasErrors||
-                 AlphaActivity.HasErrors||
-                 TransuraniumActivity.HasErrors||
-                 MainRadionuclids.HasErrors||
-                 QuantityOZIII.HasErrors||
-                 RefineOrSortRAOCode.HasErrors||
-                 Subsidy.HasErrors||
-                 FcpNumber.HasErrors||
-                 StatusRAO.HasErrors||
-                 StoragePlaceName.HasErrors||
+        return !(CodeRAO.HasErrors ||
+                 PackName.HasErrors ||
+                 PackNumber.HasErrors ||
+                 PackType.HasErrors ||
+                 Volume.HasErrors ||
+                 Mass.HasErrors ||
+                 ActivityMeasurementDate.HasErrors ||
+                 ProviderOrRecieverOKPO.HasErrors ||
+                 TransporterOKPO.HasErrors ||
+                 TritiumActivity.HasErrors ||
+                 BetaGammaActivity.HasErrors ||
+                 AlphaActivity.HasErrors ||
+                 TransuraniumActivity.HasErrors ||
+                 MainRadionuclids.HasErrors ||
+                 QuantityOZIII.HasErrors ||
+                 RefineOrSortRAOCode.HasErrors ||
+                 Subsidy.HasErrors ||
+                 FcpNumber.HasErrors ||
+                 StatusRAO.HasErrors ||
+                 StoragePlaceName.HasErrors ||
                  StoragePlaceCode.HasErrors);
     }
+
+    protected override bool DocumentNumber_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))//ok
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        return true;
+    }
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value == null)
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
+            || !byte.TryParse(value.Value, out var byteValue)
+            || byteValue is (15 or 17 or 46 or 47 or 53 or 54 or 58 or 61 or 62 or 65 or 66 or 67 or 81
+                or 82 or 83 or 85 or 86 or 87))
+        {
+            value.AddError("Код операции не может быть использован в форме 1.6");
+            return false;
+        }
+
+        return true;
+    }
+
+    #endregion
+
+    #region Properties
 
     #region CodeRAO
     public string CodeRAO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-4","Код РАО","4")]
+    [FormProperty(true, "null-4", "Код РАО", "4")]
     public RamAccess<string> CodeRAO
     {
         get
@@ -176,7 +222,7 @@ public class Form16 : Form1
             {
                 value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
             }
-            if (value.HasErrors) 
+            if (value.HasErrors)
             {
                 return false;
             }
@@ -188,7 +234,7 @@ public class Form16 : Form1
     #region StatusRAO
     public string StatusRAO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-5","Статус РАО","5")]
+    [FormProperty(true, "null-5", "Статус РАО", "5")]
     public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
     {
         get
@@ -266,7 +312,7 @@ public class Form16 : Form1
     #region Volume
     public string Volume_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Количество", "объем без упаковки, куб. м","6")]
+    [FormProperty(true, "Количество", "объем без упаковки, куб. м", "6")]
     public RamAccess<string> Volume
     {
         get
@@ -357,7 +403,7 @@ public class Form16 : Form1
     #region Mass
     public string Mass_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Количество", "масса без упаковки (нетто), т","7")]
+    [FormProperty(true, "Количество", "масса без упаковки (нетто), т", "7")]
     public RamAccess<string> Mass
     {
         get
@@ -445,7 +491,7 @@ public class Form16 : Form1
     #region QuantityOZIII
     public string QuantityOZIII_DB { get; set; }
     [NotMapped]
-    [FormProperty(true, "null-8","Количество ОЗИИИ, шт","8")]
+    [FormProperty(true, "null-8", "Количество ОЗИИИ, шт", "8")]
     public RamAccess<string> QuantityOZIII
     {
         get
@@ -509,7 +555,7 @@ public class Form16 : Form1
     #region MainRadionuclids
     public string MainRadionuclids_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-9","Основные радионуклиды","9")]
+    [FormProperty(true, "null-9", "Основные радионуклиды", "9")]
     public RamAccess<string> MainRadionuclids
     {
         get
@@ -573,7 +619,7 @@ public class Form16 : Form1
     #region TritiumActivity
     public string TritiumActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Суммарная активность, Бк", "тритий","10")]
+    [FormProperty(true, "Суммарная активность, Бк", "тритий", "10")]
     public RamAccess<string> TritiumActivity
     {
         get
@@ -625,7 +671,7 @@ public class Form16 : Form1
     private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -664,7 +710,7 @@ public class Form16 : Form1
     #region BetaGammaActivity
     public string BetaGammaActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Суммарная активность, Бк","бета-, гамма-излучающие радионуклиды (исключая тритий)","11")]
+    [FormProperty(true, "Суммарная активность, Бк", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "11")]
     public RamAccess<string> BetaGammaActivity
     {
         get
@@ -716,7 +762,7 @@ public class Form16 : Form1
     private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -755,7 +801,7 @@ public class Form16 : Form1
     #region AlphaActivity
     public string AlphaActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Суммарная активность, Бк","альфа-излучающие радионуклиды (исключая трансурановые)","12")]
+    [FormProperty(true, "Суммарная активность, Бк", "альфа-излучающие радионуклиды (исключая трансурановые)", "12")]
     public RamAccess<string> AlphaActivity
     {
         get
@@ -807,7 +853,7 @@ public class Form16 : Form1
     private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -846,7 +892,7 @@ public class Form16 : Form1
     #region TransuraniumActivity
     public string TransuraniumActivity_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Суммарная активность, Бк","трансурановые радионуклиды","13")]
+    [FormProperty(true, "Суммарная активность, Бк", "трансурановые радионуклиды", "13")]
     public RamAccess<string> TransuraniumActivity
     {
         get
@@ -898,7 +944,7 @@ public class Form16 : Form1
     private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -937,7 +983,7 @@ public class Form16 : Form1
     #region ActivityMeasurementDate
     public string ActivityMeasurementDate_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-14","Дата измерения активности","14")]
+    [FormProperty(true, "null-14", "Дата измерения активности", "14")]
 
     public virtual RamAccess<string> ActivityMeasurementDate
     {
@@ -1009,7 +1055,7 @@ public class Form16 : Form1
     #region ProviderOrRecieverOKPO
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"ОКПО", "поставщика или получателя","18")]
+    [FormProperty(true, "ОКПО", "поставщика или получателя", "18")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -1059,8 +1105,8 @@ public class Form16 : Form1
                 }
             }
             catch
-            { 
-                
+            {
+
             }
         }
     }
@@ -1097,7 +1143,7 @@ public class Form16 : Form1
     #region TransporterOKPO
     public string TransporterOKPO_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"ОКПО", "перевозчика","19")]
+    [FormProperty(true, "ОКПО", "перевозчика", "19")]
     public RamAccess<string> TransporterOKPO
     {
         get
@@ -1166,7 +1212,7 @@ public class Form16 : Form1
     #region StoragePlaceName
     public string StoragePlaceName_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Пункт хранения", "наименование","20")]
+    [FormProperty(true, "Пункт хранения", "наименование", "20")]
     public RamAccess<string> StoragePlaceName
     {
         get
@@ -1217,7 +1263,7 @@ public class Form16 : Form1
     #region StoragePlaceCode
     public string StoragePlaceCode_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"Пункт хранения", "код","21")]
+    [FormProperty(true, "Пункт хранения", "код", "21")]
     public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
     {
         get
@@ -1321,7 +1367,7 @@ public class Form16 : Form1
     #region RefineOrSortRAOCode
     public string RefineOrSortRAOCode_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-22","Код переработки / сортировки РАО","22")]
+    [FormProperty(true, "null-22", "Код переработки / сортировки РАО", "22")]
     public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
     {
         get
@@ -1377,7 +1423,7 @@ public class Form16 : Form1
     #region PackName
     public string PackName_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"УКТ, упаковка или иная учетная единица", "наименование","23")]
+    [FormProperty(true, "УКТ, упаковка или иная учетная единица", "наименование", "23")]
     public RamAccess<string> PackName
     {
         get
@@ -1429,7 +1475,7 @@ public class Form16 : Form1
     #region PackType
     public string PackType_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"УКТ, упаковка или иная учетная единица", "тип","24")]
+    [FormProperty(true, "УКТ, упаковка или иная учетная единица", "тип", "24")]
     public RamAccess<string> PackType
     {
         get
@@ -1482,7 +1528,7 @@ public class Form16 : Form1
     #region PackNumber
     public string PackNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true,"УКТ, упаковка или иная учетная единица", "номер упаковки","25")]
+    [FormProperty(true, "УКТ, упаковка или иная учетная единица", "номер упаковки", "25")]
     public RamAccess<string> PackNumber
     {
         get
@@ -1535,7 +1581,7 @@ public class Form16 : Form1
     #region Subsidy
     public string Subsidy_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-26","Субсидия, %","26")]
+    [FormProperty(true, "null-26", "Субсидия, %", "26")]
     public RamAccess<string> Subsidy // 0<number<=100 or empty.
     {
         get
@@ -1598,7 +1644,7 @@ public class Form16 : Form1
     #region FcpNumber
     public string FcpNumber_DB { get; set; } = "";
     [NotMapped]
-    [FormProperty(true, "null-27","Номер мероприятия ФЦП","27")]
+    [FormProperty(true, "null-27", "Номер мероприятия ФЦП", "27")]
     public RamAccess<string> FcpNumber
     {
         get
@@ -1633,43 +1679,9 @@ public class Form16 : Form1
     {
         value.ClearErrors(); return true;
     }
+
     #endregion
-
-    protected override bool DocumentNumber_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))//ok
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        return true;
-    }
-
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value == null)
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
-            || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is (15 or 17 or 46 or 47 or 53 or 54 or 58 or 61 or 62 or 65 or 66 or 67 or 81
-                or 82 or 83 or 85 or 86 or 87))
-        {
-            value.AddError("Код операции не может быть использован в форме 1.6");
-            return false;
-        }
-
-        return true;
-    }
+    #endregion
 
     #region IExcel
 
