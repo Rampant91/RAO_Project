@@ -2127,7 +2127,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             });
             middleFooterStackPanel2.Children.Add(middleFooterStackPanelR);
         }
-        else
+        else if (Type is nameof(Report))
         {
             StackPanel middleFooterStackPanelR = new()
             {

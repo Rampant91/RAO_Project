@@ -93,8 +93,7 @@ public class Form18 : Form1
         }
         if (!new Regex(@"^\d{2}$").IsMatch(value.Value)
             || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is not (1 or 10 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68
-                or 97 or 98 or 99))
+            || byteValue is not (1 or 10 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68 or 97 or 98 or 99))
         {
             value.AddError("Код операции не может быть использован в форме 1.8");
             return false;
@@ -132,19 +131,11 @@ public class Form18 : Form1
             return true;
         }
         var tmp = value.Value;
-        Regex b1 = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b1.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        try { DateTimeOffset.Parse(tmp); }
-        catch (Exception)
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -154,7 +145,7 @@ public class Form18 : Form1
         var d = OperationCode.Value is "18" or "51";
         if (b || c || d)
         {
-            if (!tmp.Equals(OperationDate))
+            if (!tmp.Equals(OperationDate.Value))
             {
                 //value.AddError("Заполните примечание");//to do note handling
                 return true;
@@ -430,17 +421,14 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
-        }
-        catch (Exception)
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -533,17 +521,14 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
-        }
-        catch (Exception)
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -632,17 +617,14 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
-        }
-        catch
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -780,17 +762,14 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
-        }
-        catch
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -873,8 +852,7 @@ public class Form18 : Form1
         {
             value.AddError("Недопустимое значение"); return false;
         }
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
+        if (!new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
@@ -956,8 +934,7 @@ public class Form18 : Form1
         {
             value.AddError("Недопустимое значение"); return false;
         }
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
+        if (!new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
@@ -1099,53 +1076,42 @@ public class Form18 : Form1
         //}
         //return true;
         if (value.Value == "-") return true;
-        Regex a = new("^[0-9]{8}$");
-        if (!a.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{8}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
         var tmp = value.Value;
         if (tmp.Length != 8) return true;
-        Regex a0 = new("^[1-9]");
-        if (!a0.IsMatch(tmp[..1]))
+        if (!new Regex("^[1-9]").IsMatch(tmp[..1]))
         {
             value.AddError($"Недопустимый вид пункта - {tmp[..1]}");
         }
-        Regex a1 = new("^[1-3]");
-        if (!a1.IsMatch(tmp.Substring(1, 1)))
+        if (!new Regex("^[1-3]").IsMatch(tmp.Substring(1, 1)))
         {
             value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
         }
-        Regex a2 = new("^[1-2]");
-        if (!a2.IsMatch(tmp.Substring(2, 1)))
+        if (!new Regex("^[1-2]").IsMatch(tmp.Substring(2, 1)))
         {
             value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
         }
-        Regex a3 = new("^[1-59]");
-        if (!a3.IsMatch(tmp.Substring(3, 1)))
+        if (!new Regex("^[1-59]").IsMatch(tmp.Substring(3, 1)))
         {
             value.AddError($"Недопустимая зона нахождения пункта - {tmp.Substring(3, 1)}");
         }
-        Regex a4 = new("^[0-4]");
-        if (!a4.IsMatch(tmp.Substring(4, 1)))
+        if (!new Regex("^[0-4]").IsMatch(tmp.Substring(4, 1)))
         {
             value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
         }
-        Regex a5 = new("^[1-49]");
-        if (!a5.IsMatch(tmp.Substring(5, 1)))
+        if (!new Regex("^[1-49]").IsMatch(tmp.Substring(5, 1)))
         {
             value.AddError($"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
         }
-        Regex a67 = new("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}");
-        if (!a67.IsMatch(tmp.Substring(6, 2)))
+        if (!new Regex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}")
+                .IsMatch(tmp.Substring(6, 2)))
         {
             value.AddError($"Недопустимый код типа РАО - {tmp.Substring(6, 2)}");
         }
-        if (value.HasErrors)
-        {
-            return false;
-        }
-        return true;
+        return !value.HasErrors;
     }
 
     #endregion
@@ -1194,8 +1160,7 @@ public class Form18 : Form1
         }
         var tmp = value.Value.ToLower();
         tmp = tmp.Replace("х", "x");
-        Regex a = new("^[0-9x+]{11}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9x+]{11}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1249,17 +1214,7 @@ public class Form18 : Form1
         }
         if (value.Value.Length == 1)
         {
-            try
-            {
-                var tmp = int.Parse(value.Value);
-                if (tmp < 1 || (tmp > 4 && tmp != 6 && tmp != 9))
-                {
-                    value.AddError("Недопустимое значение"); 
-                    return false;
-                }
-                return true;
-            }
-            catch (Exception)
+            if (!int.TryParse(value.Value, out var intValue) || intValue < 1 || (intValue > 4 && intValue != 6 && intValue != 9))
             {
                 value.AddError("Недопустимое значение"); 
                 return false;
@@ -1270,8 +1225,7 @@ public class Form18 : Form1
             value.AddError("Недопустимое значение"); 
             return false;
         }
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
+        if (!new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); 
             return false;
@@ -1345,17 +1299,15 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (doubleValue <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
         }
         return true;
     }
@@ -1426,17 +1378,14 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
-        }
-        catch
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1512,17 +1461,15 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) 
-            { 
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (doubleValue <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
         }
         return true;
     }
@@ -1597,17 +1544,15 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (doubleValue <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
         }
         return true;
     }
@@ -1682,17 +1627,15 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); 
-                return false;
-            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (doubleValue <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
         }
         return true;
     }
@@ -1767,17 +1710,15 @@ public class Form18 : Form1
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        try
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (doubleValue <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
         }
         return true;
     }
@@ -1886,24 +1827,11 @@ public class Form18 : Form1
     private static bool Subsidy_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
         {
             return true;
         }
-        if (value.Value.Equals("-"))
-        {
-            return true;
-        }
-        try
-        {
-            var tmp = int.Parse(value.Value);
-            if (tmp is not (>= 0 and <= 100))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-        }
-        catch
+        if (!int.TryParse(value.Value, out var intValue) || intValue is not (>= 0 and <= 100))
         {
             value.AddError("Недопустимое значение");
             return false;
