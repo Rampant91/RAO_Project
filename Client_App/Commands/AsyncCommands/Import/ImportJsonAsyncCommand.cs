@@ -17,8 +17,6 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
-using System.Diagnostics;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -247,7 +245,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                impRep.Rows11.Add(new Form12
+                                impRep.Rows12.Add(new Form12
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -291,7 +289,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                impRep.Rows11.Add(new Form13
+                                impRep.Rows13.Add(new Form13
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -338,7 +336,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                impRep.Rows11.Add(new Form14
+                                impRep.Rows14.Add(new Form14
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -388,7 +386,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                impRep.Rows11.Add(new Form15
+                                impRep.Rows15.Add(new Form15
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -436,7 +434,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                impRep.Rows11.Add(new Form16
+                                impRep.Rows16.Add(new Form16
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -485,7 +483,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
                             foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
                             {
-                                impRep.Rows11.Add(new Form17
+                                impRep.Rows17.Add(new Form17
                                 {
                                     NumberInOrder_DB = numberInOrder++,
                                     OperationCode_DB = form.OperationCode,
@@ -514,6 +512,56 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                     VolumeOutOfPack_DB = form.VolumeOutOfPack,
                                     MassOutOfPack_DB = form.MassOutOfPack,
                                     Quantity_DB = form.Quantity,
+                                    TritiumActivity_DB = form.TritiumActivity,
+                                    BetaGammaActivity_DB = form.BetaGammaActivity,
+                                    AlphaActivity_DB = form.AlphaActivity,
+                                    TransuraniumActivity_DB = form.TransuraniumActivity,
+                                    RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
+                                    Subsidy_DB = form.Subsidy,
+                                    FcpNumber_DB = form.FcpNumber
+                                });
+                            }
+                            break;
+                        }
+
+                        #endregion
+
+                        #region Form18
+                            
+                        case "1.8":
+                        {
+                            var repForm = (JsonForm18)rep;
+                            impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                            impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                            impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                            impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                            foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
+                            {
+                                impRep.Rows18.Add(new Form18
+                                {
+                                    NumberInOrder_DB = numberInOrder++,
+                                    OperationCode_DB = form.OperationCode,
+                                    OperationDate_DB = form.OperationDate,
+                                    IndividualNumberZHRO_DB = form.IndividualNumberZHRO,
+                                    PassportNumber_DB = form.PassportNumber,
+                                    Volume6_DB = form.Volume6,
+                                    Mass7_DB = form.Mass7,
+                                    SaltConcentration_DB = form.SaltConcentration,
+                                    Radionuclids_DB = form.Radionuclids,
+                                    SpecificActivity_DB = form.SpecificActivity,
+                                    DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
+                                        ? byteValue
+                                        : null,
+                                    DocumentNumber_DB = form.DocumentNumber,
+                                    DocumentDate_DB = form.DocumentDate,
+                                    ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
+                                    TransporterOKPO_DB = form.TransporterOKPO,
+                                    StoragePlaceName_DB = form.StoragePlaceName,
+                                    StoragePlaceCode_DB = form.StoragePlaceCode,
+                                    CodeRAO_DB = form.CodeRAO,
+                                    StatusRAO_DB = form.StatusRAO,
+                                    Volume20_DB = form.Volume20,
+                                    Mass21_DB = form.Mass21,
                                     TritiumActivity_DB = form.TritiumActivity,
                                     BetaGammaActivity_DB = form.BetaGammaActivity,
                                     AlphaActivity_DB = form.AlphaActivity,
@@ -694,7 +742,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //ignore
             }
