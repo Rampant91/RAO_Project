@@ -337,14 +337,13 @@ public class Form16 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var tmp = value1;
-        var len = tmp.Length;
-        if (tmp[0] == '(' && tmp[len - 1] == ')')
+        var len = value1.Length;
+        if (value1[0] == '(' && value1[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
+            value1 = value1.Remove(len - 1, 1).Remove(0, 1);
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -423,15 +422,13 @@ public class Form16 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var tmp = value1;
-        var len = tmp.Length;
-        if (tmp[0] == '(' && tmp[len - 1] == ')')
+        var len = value1.Length;
+        if (value1[0] == '(' && value1[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            value1 = value1.Remove(len - 1, 1).Remove(0, 1);
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -646,15 +643,13 @@ public class Form16 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var tmp = value1;
-        var len = tmp.Length;
-        if (tmp[0] == '(' && tmp[len - 1] == ')')
+        var len = value1.Length;
+        if (value1[0] == '(' && value1[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            value1 = value1.Remove(len - 1, 1).Remove(0, 1);
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -737,15 +732,13 @@ public class Form16 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var tmp = value1;
-        var len = tmp.Length;
-        if (tmp[0] == '(' && tmp[len - 1] == ')')
+        var len = value1.Length;
+        if (value1[0] == '(' && value1[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            value1 = value1.Remove(len - 1, 1).Remove(0, 1);
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -828,14 +821,13 @@ public class Form16 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var tmp = value1;
-        var len = tmp.Length;
-        if (tmp[0] == '(' && tmp[len - 1] == ')')
+        var len = value1.Length;
+        if (value1[0] == '(' && value1[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
+            value1 = value1.Remove(len - 1, 1).Remove(0, 1);
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -918,15 +910,13 @@ public class Form16 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var tmp = value1;
-        var len = tmp.Length;
-        if (tmp[0] == '(' && tmp[len - 1] == ')')
+        var len = value1.Length;
+        if (value1[0] == '(' && value1[len - 1] == ')')
         {
-            tmp = tmp.Remove(len - 1, 1);
-            tmp = tmp.Remove(0, 1);
+            value1 = value1.Remove(len - 1, 1).Remove(0, 1);
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
