@@ -164,7 +164,8 @@ public class Form17 : Form1
 
     #region  Sum
 
-    private bool Sum_DB { get; set; }
+    // ReSharper disable once MemberCanBePrivate.Global - не делай private, сломается выгрузка форм 1.7
+    public bool Sum_DB { get; set; }
 
     [NotMapped]
     public RamAccess<bool> Sum

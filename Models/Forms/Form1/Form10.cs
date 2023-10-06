@@ -14,15 +14,26 @@ namespace Models.Forms.Form1;
 [Form_Class("Форма 1.0: Титульный лист организации")]
 public class Form10 : Form
 {
+    #region Constructor
+    
     public Form10()
     {
         FormNum.Value = "1.0";
     }
 
+    #endregion
+
+    #region PropertyChanged
+    
     protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
     {
         OnPropertyChanged(args.PropertyName);
     }
+
+    #endregion
+
+    #region Validation
+
     public override bool Object_Validation()
     {
         return !(Okfs.HasErrors ||
@@ -45,6 +56,10 @@ public class Form10 : Form
                  Fax.HasErrors ||
                  Email.HasErrors);
     }
+
+    #endregion
+
+    #region Properties
 
     #region RegNo
 
@@ -99,7 +114,6 @@ public class Form10 : Form
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
 
@@ -120,7 +134,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(OrganUprav)]).Value = OrganUprav_DB;
                 return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
             }
-
             var rm = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
             rm.PropertyChanged += OrganUpravValueChanged;
             Dictionary.Add(nameof(OrganUprav), rm);
@@ -164,7 +177,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(SubjectRF)]).Value = SubjectRF_DB;
                 return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
             }
-
             var rm = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
             rm.PropertyChanged += SubjectRFValueChanged;
             Dictionary.Add(nameof(SubjectRF), rm);
@@ -208,7 +220,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(JurLico)]).Value = JurLico_DB;
                 return (RamAccess<string>)Dictionary[nameof(JurLico)];
             }
-
             var rm = new RamAccess<string>(JurLico_Validation, JurLico_DB);
             rm.PropertyChanged += JurLicoValueChanged;
             Dictionary.Add(nameof(JurLico), rm);
@@ -252,7 +263,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(ShortJurLico)]).ValueWithOutHandlerAndPropChanged = ShortJurLico_DB;
                 return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
             }
-
             var rm = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
             rm.PropertyChanged += ShortJurLicoValueChanged;
             Dictionary.Add(nameof(ShortJurLico), rm);
@@ -296,7 +306,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(JurLicoAddress)]).Value = JurLicoAddress_DB;
                 return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
             }
-
             var rm = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
             rm.PropertyChanged += JurLicoAddressValueChanged;
             Dictionary.Add(nameof(JurLicoAddress), rm);
@@ -341,7 +350,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)]).Value = JurLicoFactAddress_DB;
                 return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
             }
-
             var rm = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
             rm.PropertyChanged += JurLicoFactAddressValueChanged;
             Dictionary.Add(nameof(JurLicoFactAddress), rm);
@@ -385,7 +393,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(GradeFIO)]).Value = GradeFIO_DB;
                 return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
             }
-
             var rm = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
             rm.PropertyChanged += GradeFIOValueChanged;
             Dictionary.Add(nameof(GradeFIO), rm);
@@ -429,7 +436,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Telephone)]).Value = Telephone_DB;
                 return (RamAccess<string>)Dictionary[nameof(Telephone)];
             }
-
             var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
             rm.PropertyChanged += TelephoneValueChanged;
             Dictionary.Add(nameof(Telephone), rm);
@@ -473,7 +479,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Fax)]).Value = Fax_DB;
                 return (RamAccess<string>)Dictionary[nameof(Fax)];
             }
-
             var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
             rm.PropertyChanged += FaxValueChanged;
             Dictionary.Add(nameof(Fax), rm);
@@ -517,7 +522,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Email)]).Value = Email_DB;
                 return (RamAccess<string>)Dictionary[nameof(Email)];
             }
-
             var rm = new RamAccess<string>(Email_Validation, Email_DB);
             rm.PropertyChanged += EmailValueChanged;
             Dictionary.Add(nameof(Email), rm);
@@ -561,7 +565,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okpo)]).ValueWithOutHandlerAndPropChanged = Okpo_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okpo)];
             }
-
             var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
             rm.PropertyChanged += OkpoValueChanged;
             Dictionary.Add(nameof(Okpo), rm);
@@ -590,20 +593,12 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-
-        if (value.Value.Length != 8 && value.Value.Length != 14)
+        if (value.Value.Length != 8 && value.Value.Length != 14
+            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-
         return true;
     }
 
@@ -624,7 +619,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okved)]).Value = Okved_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okved)];
             }
-
             var rm = new RamAccess<string>(Okved_Validation, Okved_DB);
             rm.PropertyChanged += OkvedValueChanged;
             Dictionary.Add(nameof(Okved), rm);
@@ -653,8 +647,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        Regex ex = new(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$");
-        if (!ex.IsMatch(value.Value))
+        if (!new Regex(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -708,14 +701,11 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-
-        Regex ex = new("^[0-9]{7}$");
-        if (!ex.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{7}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
 
@@ -736,7 +726,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Oktmo)]).Value = Oktmo_DB;
                 return (RamAccess<string>)Dictionary[nameof(Oktmo)];
             }
-
             var rm = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
             rm.PropertyChanged += OktmoValueChanged;
             Dictionary.Add(nameof(Oktmo), rm);
@@ -765,13 +754,11 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-
         if (!new Regex("^[0-9]{11}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
 
@@ -792,7 +779,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Inn)]).Value = Inn_DB;
                 return (RamAccess<string>)Dictionary[nameof(Inn)];
             }
-
             var rm = new RamAccess<string>(Inn_Validation, Inn_DB);
             rm.PropertyChanged += InnValueChanged;
             Dictionary.Add(nameof(Inn), rm);
@@ -821,13 +807,11 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-
         if (!new Regex("^[0-9]{10}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
 
@@ -848,7 +832,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Kpp)]).Value = Kpp_DB;
                 return (RamAccess<string>)Dictionary[nameof(Kpp)];
             }
-
             var rm = new RamAccess<string>(Kpp_Validation, Kpp_DB);
             rm.PropertyChanged += KppValueChanged;
             Dictionary.Add(nameof(Kpp), rm);
@@ -877,13 +860,11 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-
         if (!new Regex("^[0-9]{9}$|-").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
 
@@ -904,7 +885,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okopf)]).Value = Okopf_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okopf)];
             }
-
             var rm = new RamAccess<string>(Okopf_Validation, Okopf_DB);
             rm.PropertyChanged += OkopfValueChanged;
             Dictionary.Add(nameof(Okopf), rm);
@@ -933,13 +913,11 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-
         if (!new Regex("^[0-9]{5}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
 
@@ -960,7 +938,6 @@ public class Form10 : Form
                 ((RamAccess<string>)Dictionary[nameof(Okfs)]).Value = Okfs_DB;
                 return (RamAccess<string>)Dictionary[nameof(Okfs)];
             }
-
             var rm = new RamAccess<string>(Okfs_Validation, Okfs_DB);
             rm.PropertyChanged += OkfsValueChanged;
             Dictionary.Add(nameof(Okfs), rm);
@@ -989,26 +966,27 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-
         if (!new Regex("^[0-9]{2}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-
         return true;
     }
+
+    #endregion 
 
     #endregion
 
     #region ParseInnerText
-    private string ParseInnerText(string text)
+    private static string ParseInnerText(string text)
     {
         return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
     }
     #endregion
 
     #region IExcel
+
     public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         throw new NotImplementedException();

@@ -14,11 +14,13 @@ namespace Models.Forms;
 public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IDataGridColumn
 {
     public int Id { get; set; }
+
     [NotMapped]
     protected Dictionary<string, RamAccess> Dictionary { get; set; } = new();
 
     #region FormNum
     public string FormNum_DB { get; set; } = "";
+
     [NotMapped]
     [Attributes.FormProperty(true,"Форма")]
     public RamAccess<string> FormNum
@@ -30,7 +32,6 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
                 ((RamAccess<string>)Dictionary[nameof(FormNum)]).Value = FormNum_DB;
                 return (RamAccess<string>)Dictionary[nameof(FormNum)];
             }
-
             var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
             rm.PropertyChanged += FormNumValueChanged;
             Dictionary.Add(nameof(FormNum), rm);
@@ -42,6 +43,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             OnPropertyChanged(nameof(FormNum));
         }
     }
+
     private void FormNumValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -49,11 +51,13 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             FormNum_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool FormNum_Validation(RamAccess<string> value)//Ready
+
+    private static bool FormNum_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
     [NotMapped]
@@ -69,7 +73,8 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
         }
     }
 
-    #region NumberInOrder
+    #region NumberInOrder (1)
+
     public int NumberInOrder_DB { get; set; }
 
     [NotMapped]
@@ -94,6 +99,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             OnPropertyChanged();
         }
     }
+
     private void NumberInOrderValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -101,15 +107,19 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             NumberInOrder_DB = ((RamAccess<int>)value).Value;
         }
     }
-    private bool NumberInOrder_Validation(RamAccess<int> value)//Ready
+
+    private static bool NumberInOrder_Validation(RamAccess<int> value)//Ready
     {
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
     #region NumberOfFields
+
     public int NumberOfFields_DB { get; set; }
+
     [NotMapped]
     [Attributes.FormProperty(true,"Число полей")]
     public RamAccess<int> NumberOfFields
@@ -132,6 +142,7 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             OnPropertyChanged();
         }
     }
+
     private void NumberOfFieldsValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -139,12 +150,14 @@ public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IData
             NumberOfFields_DB = ((RamAccess<int>)value).Value;
         }
     }
-    private bool NumberOfFields_Validation(RamAccess<int> value)
+
+    private static bool NumberOfFields_Validation(RamAccess<int> value)
     {
         value.ClearErrors();
         return true;
 
     }
+
     #endregion
 
     #region For_Validation
