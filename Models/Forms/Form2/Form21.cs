@@ -17,15 +17,18 @@ namespace Models.Forms.Form2;
 public class Form21 : Form2, IBaseColor
 {
     #region Constructor
+
     public Form21()
     {
         FormNum.Value = "2.1";
         //NumberOfFields.Value = 24;
         Validate_all();
     }
+
     #endregion
 
     #region Validation
+
     private void Validate_all()
     {
         MachinePower_Validation(MachinePower);
@@ -51,6 +54,7 @@ public class Form21 : Form2, IBaseColor
         CodeRAOout_Validation(CodeRAOout);
         StatusRAOout_Validation(StatusRAOout);
     }
+
     public override bool Object_Validation()
     {
         return !(MachinePower.HasErrors ||
@@ -76,9 +80,13 @@ public class Form21 : Form2, IBaseColor
                  CodeRAOout.HasErrors ||
                  StatusRAOout.HasErrors);
     } 
+    
     #endregion
 
+    #region Properties
+
     #region BaseColor
+
     public ColorType _BaseColor { get; set; } = ColorType.None;
     [NotMapped]
     public ColorType BaseColor {
@@ -91,9 +99,11 @@ public class Form21 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     #endregion
 
     #region Sum
+
     public bool Sum_DB { get; set; }
 
     [NotMapped]
@@ -125,9 +135,11 @@ public class Form21 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
+    
     #endregion
 
     #region SumGroup
+
     public bool SumGroup_DB { get; set; }
 
     [NotMapped]
@@ -159,11 +171,11 @@ public class Form21 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
+    
     #endregion
 
-    #region Columns
+    #region NumberInOrder (1)
 
-    #region NumberInOrder_1
     public string NumberInOrderSum_DB { get; set; } = "";
 
     [NotMapped]
@@ -192,23 +204,29 @@ public class Form21 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
-    private void NumberInOrderSumValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void NumberInOrderSumValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            NumberInOrderSum_DB = ((RamAccess<string>)Value).Value;
+            NumberInOrderSum_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool NumberInOrderSum_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
         return true;
     }
+    
     #endregion
 
-    #region RefineMachineName_2
+    #region RefineMachineName (2)
+
     public string RefineMachineName_DB { get; set; } = "";
+
     public bool _RefineMachineName_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool RefineMachineName_Hidden_Get
     {
@@ -231,7 +249,9 @@ public class Form21 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     public bool _RefineMachineName_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool RefineMachineName_Hidden_Set
     {
@@ -293,11 +313,15 @@ public class Form21 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
-    #region MachineCode_3
+    #region MachineCode (3)
+
     public byte? MachineCode_DB { get; set; }
+
     public bool _MachineCode_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool MachineCode_Hidden_Get
     {
@@ -320,7 +344,9 @@ public class Form21 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     public bool _MachineCode_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool MachineCode_Hidden_Set
     {
@@ -400,10 +426,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region MachinePower_4
+    #region MachinePower (4)
+
     public bool _MachinePower_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool MachinePower_Hidden_Get
     {
@@ -426,7 +455,9 @@ public class Form21 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     public bool _MachinePower_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool MachinePower_Hidden_Set
     {
@@ -451,6 +482,7 @@ public class Form21 : Form2, IBaseColor
     }
 
     public string MachinePower_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Установки переработки", "мощность, куб. м/год", "4")]
     public RamAccess<string> MachinePower
@@ -534,11 +566,15 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region NumberOfHoursPerYear_5
+    #region NumberOfHoursPerYear (5)
+
     public string NumberOfHoursPerYear_DB { get; set; } = "";
+
     public bool _NumberOfHoursPerYear_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool NumberOfHoursPerYear_Hidden_Get
     {
@@ -561,7 +597,9 @@ public class Form21 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     public bool _NumberOfHoursPerYear_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool NumberOfHoursPerYear_Hidden_Set
     {
@@ -643,7 +681,6 @@ public class Form21 : Form2, IBaseColor
         if (value.Value.Equals("прим.") || value.Value.Equals("0"))
         {
             return true;
-            //TODO
         }
         var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
         if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
@@ -668,11 +705,15 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region CodeRAOIn_6
+    #region CodeRAOIn (6)
+
     public string CodeRAOIn_DB { get; set; } = "";
+
     public bool CodeRAOIn_Hidden_Priv { get; set; }
+
     [NotMapped]
     public bool CodeRAOIn_Hidden
     {
@@ -725,67 +766,66 @@ public class Form21 : Form2, IBaseColor
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmp.Length == 11)
+        if (tmp.Length != 11) return true;
+        if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
         {
-            if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
-            {
-                value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
-            }
-            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
-            {
-                value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
-            }
-            if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
-            {
-                value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
-            {
-                value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
-            {
-                value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
-            }
-            if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
-            {
-                value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
-            }
-            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
-            {
-                value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
-            }
-            if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
-            {
-                value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
-            }
-            Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
-            if (!a89.IsMatch(tmp.Substring(8, 2)))
-            {
-                value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
-            {
-                value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
-            }
-            if (value.HasErrors)
-            {
-                return false;
-            }
+            value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
         }
-        return true;
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
+        {
+            value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
+        }
+        if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
+        {
+            value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
+        {
+            value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
+        {
+            value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
+        }
+        if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
+        {
+            value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
+        }
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
+        {
+            value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
+        }
+        if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
+        {
+            value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
+        }
+        if (!new Regex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}")
+                .IsMatch(tmp.Substring(8, 2)))
+        {
+            value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
+        {
+            value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
+        }
+        return !value.HasErrors;
     }
+
     #endregion
 
-    #region  StatusRAOIn_7
+    #region  StatusRAOIn (7)
+
     public string StatusRAOIn_DB { get; set; } = "";
+
     public bool StatusRAOIn_Hidden_Priv { get; set; }
+
     [NotMapped]
     public bool StatusRAOIn_Hidden
     {
         get => StatusRAOIn_Hidden_Priv;
         set => StatusRAOIn_Hidden_Priv = value;
     }
+
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "статус РАО", "7")]
     public RamAccess<string> StatusRAOIn  //1 cyfer or OKPO.
@@ -848,10 +888,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region VolumeIn_8
+    #region VolumeIn (8)
+
     public string VolumeIn_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "куб. м", "8")]
     public RamAccess<string> VolumeIn//SUMMARIZABLE
@@ -934,10 +977,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region MassIn_9
+    #region MassIn (9)
+
     public string MassIn_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "т", "9")]
     public RamAccess<string> MassIn//SUMMARIZABLE
@@ -984,6 +1030,7 @@ public class Form21 : Form2, IBaseColor
         }
         MassIn_DB = value1;
     }
+
     private bool MassIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1019,10 +1066,14 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region QuantityIn_10
-    public string QuantityIn_DB { get; set; } = ""; [NotMapped]
+    #region QuantityIn (10)
+
+    public string QuantityIn_DB { get; set; } = "";
+
+    [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт", "10")]
     public RamAccess<string> QuantityIn//SUMMARIZABLE
     {
@@ -1079,10 +1130,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region TritiumActivityIn_11
+    #region TritiumActivityIn (11)
+
     public string TritiumActivityIn_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "тритий", "11")]
     public RamAccess<string> TritiumActivityIn//SUMMARIZABLE
@@ -1160,10 +1214,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region BetaGammaActivityIn_12
+    #region BetaGammaActivityIn (12)
+
     public string BetaGammaActivityIn_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "12")]
     public RamAccess<string> BetaGammaActivityIn//SUMMARIZABLE
@@ -1210,6 +1267,7 @@ public class Form21 : Form2, IBaseColor
         }
         BetaGammaActivityIn_DB = value1;
     }
+
     private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1240,10 +1298,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region AlphaActivityIn_13
+    #region AlphaActivityIn (13)
+
     public string AlphaActivityIn_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)", "13")]
     public RamAccess<string> AlphaActivityIn//SUMMARIZABLE
@@ -1321,10 +1382,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region TransuraniumActivityIn_14
+    #region TransuraniumActivityIn (14)
+
     public string TransuraniumActivityIn_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды", "14")]
     public RamAccess<string> TransuraniumActivityIn//SUMMARIZABLE
@@ -1402,11 +1466,15 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region CodeRAOout_15
+    #region CodeRAOout (15)
+
     public string CodeRAOout_DB { get; set; } = "";
+
     public bool CodeRAOout_Hidden_Priv { get; set; }
+
     [NotMapped]
     public bool CodeRAOout_Hidden
     {
@@ -1459,61 +1527,60 @@ public class Form21 : Form2, IBaseColor
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmp.Length == 11)
+
+        if (tmp.Length != 11) return true;
+        if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
         {
-            if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
-            {
-                value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
-            }
-            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
-            {
-                value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
-            }
-            if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
-            {
-                value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
-            {
-                value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
-            {
-                value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
-            }
-            if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
-            {
-                value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
-            }
-            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
-            {
-                value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
-            }
-            if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
-            {
-                value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
-            }
-            Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
-            if (!a89.IsMatch(tmp.Substring(8, 2)))
-            {
-                value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
-            {
-                value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
-            }
-            if (value.HasErrors)
-            {
-                return false;
-            }
+            value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
         }
-        return true;
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
+        {
+            value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
+        }
+        if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
+        {
+            value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
+        {
+            value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
+        {
+            value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
+        }
+        if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
+        {
+            value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
+        }
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
+        {
+            value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
+        }
+        if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
+        {
+            value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
+        }
+        if (!new Regex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}")
+                .IsMatch(tmp.Substring(8, 2)))
+        {
+            value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
+        {
+            value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
+        }
+        return !value.HasErrors;
     }
+
     #endregion
 
-    #region StatusRAOout_16
+    #region StatusRAOout (16)
+
     public string StatusRAOout_DB { get; set; } = "";
+
     public bool StatusRAOout_Hidden_Priv { get; set; }
+
     [NotMapped]
     public bool StatusRAOout_Hidden
     {
@@ -1557,6 +1624,7 @@ public class Form21 : Form2, IBaseColor
             StatusRAOout_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -1566,7 +1634,8 @@ public class Form21 : Form2, IBaseColor
         }
         if (value.Value.Length == 1)
         {
-            if (!int.TryParse(value.Value, out var tmpInt) || tmpInt > 4 && tmpInt != 6 && tmpInt != 9)
+            if (!int.TryParse(value.Value, out var tmpInt)
+                || tmpInt > 4 && tmpInt != 6 && tmpInt != 9)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1581,10 +1650,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region VolumeOut_17
+    #region VolumeOut (17)
+
     public string VolumeOut_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "куб. м", "17")]
     public RamAccess<string> VolumeOut//SUMMARIZABLE
@@ -1667,10 +1739,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region MassOut_18
+    #region MassOut (18)
+
     public string MassOut_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "т", "18")]
     public RamAccess<string> MassOut//SUMMARIZABLE
@@ -1753,10 +1828,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region QuantityOZIIIout_19
+    #region QuantityOZIIIout (19)
+
     public string QuantityOZIIIout_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт", "19")]
     public RamAccess<string> QuantityOZIIIout//SUMMARIZABLE
@@ -1819,10 +1897,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region TritiumActivityOut_20
+    #region TritiumActivityOut (20)
+
     public string TritiumActivityOut_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "тритий", "20")]
     public RamAccess<string> TritiumActivityOut//SUMMARIZABLE
@@ -1905,10 +1986,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region BetaGammaActivityOut_21
+    #region BetaGammaActivityOut (21)
+
     public string BetaGammaActivityOut_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "21")]
     public RamAccess<string> BetaGammaActivityOut//SUMMARIZABLE
@@ -1991,10 +2075,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region AlphaActivityOut_22
+    #region AlphaActivityOut (22)
+
     public string AlphaActivityOut_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "альфа-излучающие радионуклиды (исключая трансурановые)", "22")]
     public RamAccess<string> AlphaActivityOut //SUMMARIZABLE
@@ -2077,10 +2164,13 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region TransuraniumActivityOut_23
+    #region TransuraniumActivityOut (23)
+
     public string TransuraniumActivityOut_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "трансурановые радионуклиды", "23")]
     public RamAccess<string> TransuraniumActivityOut//SUMMARIZABLE
@@ -2167,16 +2257,20 @@ public class Form21 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion 
 
     #endregion
 
     #region IExcel
+
     public new void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
         RefineMachineName.Value = Convert.ToString(worksheet.Cells[row, 2].Value);
-        MachineCode.Value = byte.TryParse(worksheet.Cells[row, 3].Value.ToString(), out var byteVal) ? byteVal : null;
+        MachineCode.Value = byte.TryParse(worksheet.Cells[row, 3].Value.ToString(), out var byteVal)
+            ? byteVal
+            : null;
         MachinePower.Value = ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
         NumberOfHoursPerYear.Value = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
         CodeRAOIn_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
@@ -2258,18 +2352,24 @@ public class Form21 : Form2, IBaseColor
         worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Form2.Form21,Models")?.GetProperty(nameof(TransuraniumActivityOut))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
         return 22;
     }
+
     #endregion
 
     #region IDataGridColumn
+
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns != null) return _DataGridColumns;
 
         #region NumberInOrder (1)
+
         var numberInOrderR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(NumberInOrderSum))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(NumberInOrderSum))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD();
         if (numberInOrderR != null)
         {
@@ -2278,12 +2378,16 @@ public class Form21 : Form2, IBaseColor
             numberInOrderR.Blocked = true;
             numberInOrderR.ChooseLine = true;
         }
+
         #endregion
 
         #region RefineMachineName (2)
+
         var refineMachineNameR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(RefineMachineName))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(RefineMachineName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (refineMachineNameR != null)
         {
@@ -2291,12 +2395,16 @@ public class Form21 : Form2, IBaseColor
             refineMachineNameR.Binding = nameof(RefineMachineName);
             numberInOrderR += refineMachineNameR;
         }
+
         #endregion
 
         #region MachineCode (3)
+
         var machineCodeR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MachineCode))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(MachineCode))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (machineCodeR != null)
         {
@@ -2304,12 +2412,16 @@ public class Form21 : Form2, IBaseColor
             machineCodeR.Binding = nameof(MachineCode);
             numberInOrderR += machineCodeR;
         }
+
         #endregion
 
         #region MachinePower (4)
+
         var machinePowerR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MachinePower))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(MachinePower))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (machinePowerR != null)
         {
@@ -2317,12 +2429,16 @@ public class Form21 : Form2, IBaseColor
             machinePowerR.Binding = nameof(MachinePower);
             numberInOrderR += machinePowerR;
         }
+
         #endregion
 
         #region NumberOfHoursPerYear (5)
+
         var numberOfHoursPerYearR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(NumberOfHoursPerYear))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(NumberOfHoursPerYear))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (numberOfHoursPerYearR != null)
         {
@@ -2330,12 +2446,16 @@ public class Form21 : Form2, IBaseColor
             numberOfHoursPerYearR.Binding = nameof(NumberOfHoursPerYear);
             numberInOrderR += numberOfHoursPerYearR;
         }
+
         #endregion
 
         #region CodeRAOIn (6)
+
         var codeRaoInR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(CodeRAOIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (codeRaoInR != null)
         {
@@ -2343,12 +2463,16 @@ public class Form21 : Form2, IBaseColor
             codeRaoInR.Binding = nameof(CodeRAOIn);
             numberInOrderR += codeRaoInR;
         }
+
         #endregion
 
         #region StatusRAOIn (7)
+
         var statusRaoInR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(StatusRAOIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (statusRaoInR != null)
         {
@@ -2356,12 +2480,16 @@ public class Form21 : Form2, IBaseColor
             statusRaoInR.Binding = nameof(StatusRAOIn);
             numberInOrderR += statusRaoInR;
         }
+
         #endregion
 
         #region VolumeIn (8)
+
         var volumeInR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(VolumeIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (volumeInR != null)
         {
@@ -2369,12 +2497,16 @@ public class Form21 : Form2, IBaseColor
             volumeInR.Binding = nameof(VolumeIn);
             numberInOrderR += volumeInR;
         }
+
         #endregion
 
         #region MassIn (9)
+
         var massInR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MassIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(MassIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (massInR != null)
         {
@@ -2382,12 +2514,16 @@ public class Form21 : Form2, IBaseColor
             massInR.Binding = nameof(MassIn);
             numberInOrderR += massInR;
         }
+
         #endregion
 
         #region QuantityIn (10)
+
         var quantityInR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(QuantityIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (quantityInR != null)
         {
@@ -2395,12 +2531,16 @@ public class Form21 : Form2, IBaseColor
             quantityInR.Binding = nameof(QuantityIn);
             numberInOrderR += quantityInR;
         }
+
         #endregion
 
         #region TritiumActivityIn (11)
+
         var tritiumActivityInR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(TritiumActivityIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (tritiumActivityInR != null)
         {
@@ -2408,12 +2548,16 @@ public class Form21 : Form2, IBaseColor
             tritiumActivityInR.Binding = nameof(TritiumActivityIn);
             numberInOrderR += tritiumActivityInR;
         }
+
         #endregion
 
         #region BetaGammaActivityIn (12)
+
         var betaGammaActivityInR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(BetaGammaActivityIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (betaGammaActivityInR != null)
         {
@@ -2421,12 +2565,16 @@ public class Form21 : Form2, IBaseColor
             betaGammaActivityInR.Binding = nameof(BetaGammaActivityIn);
             numberInOrderR += betaGammaActivityInR;
         }
+
         #endregion
 
         #region AlphaActivity (13)
+
         var alphaActivityR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(AlphaActivityIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (alphaActivityR != null)
         {
@@ -2434,12 +2582,16 @@ public class Form21 : Form2, IBaseColor
             alphaActivityR.Binding = nameof(AlphaActivityIn);
             numberInOrderR += alphaActivityR;
         }
+
         #endregion
 
         #region TransuraniumActivity (14)
+
         var transuraniumActivityR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityIn))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(TransuraniumActivityIn))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (transuraniumActivityR != null)
         {
@@ -2447,12 +2599,16 @@ public class Form21 : Form2, IBaseColor
             transuraniumActivityR.Binding = nameof(TransuraniumActivityIn);
             numberInOrderR += transuraniumActivityR;
         }
+
         #endregion
 
         #region CodeRAOout (15)
+
         var codeRaoOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(CodeRAOout))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(CodeRAOout))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (codeRaoOutR != null)
         {
@@ -2460,12 +2616,16 @@ public class Form21 : Form2, IBaseColor
             codeRaoOutR.Binding = nameof(CodeRAOout);
             numberInOrderR += codeRaoOutR;
         }
+
         #endregion
 
         #region StatusRAOout (16)
+
         var statusRaoOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(StatusRAOout))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(StatusRAOout))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (statusRaoOutR != null)
         {
@@ -2473,12 +2633,16 @@ public class Form21 : Form2, IBaseColor
             statusRaoOutR.Binding = nameof(StatusRAOout);
             numberInOrderR += statusRaoOutR;
         }
+
         #endregion
 
         #region VolumeOut (17)
+
         var volumeOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(VolumeOut))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(VolumeOut))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (volumeOutR != null)
         {
@@ -2486,12 +2650,16 @@ public class Form21 : Form2, IBaseColor
             volumeOutR.Binding = nameof(VolumeOut);
             numberInOrderR += volumeOutR;
         }
+
         #endregion
 
         #region MassOut (18)
+
         var massOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(MassOut))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(MassOut))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (massOutR != null)
         {
@@ -2499,12 +2667,16 @@ public class Form21 : Form2, IBaseColor
             massOutR.Binding = nameof(MassOut);
             numberInOrderR += massOutR;
         }
+
         #endregion
 
         #region QuantityOZIIIout (19)
+
         var quantityOziiiOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(QuantityOZIIIout))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(QuantityOZIIIout))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (quantityOziiiOutR != null)
         {
@@ -2512,12 +2684,16 @@ public class Form21 : Form2, IBaseColor
             quantityOziiiOutR.Binding = nameof(QuantityOZIIIout);
             numberInOrderR += quantityOziiiOutR;
         }
+
         #endregion
 
         #region TritiumActivityOut (20)
+
         var tritiumActivityOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TritiumActivityOut))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(TritiumActivityOut))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (tritiumActivityOutR != null)
         {
@@ -2525,12 +2701,16 @@ public class Form21 : Form2, IBaseColor
             tritiumActivityOutR.Binding = nameof(TritiumActivityOut);
             numberInOrderR += tritiumActivityOutR;
         }
+
         #endregion
 
         #region BetaGammaActivityOut (21)
+
         var betaGammaActivityOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(BetaGammaActivityOut))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(BetaGammaActivityOut))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (betaGammaActivityOutR != null)
         {
@@ -2538,12 +2718,16 @@ public class Form21 : Form2, IBaseColor
             betaGammaActivityOutR.Binding = nameof(BetaGammaActivityOut);
             numberInOrderR += betaGammaActivityOutR;
         }
+
         #endregion
 
         #region AlphaActivityOut (22)
+
         var alphaActivityOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(AlphaActivityOut))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(AlphaActivityOut))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (alphaActivityOutR != null)
         {
@@ -2551,12 +2735,16 @@ public class Form21 : Form2, IBaseColor
             alphaActivityOutR.Binding = nameof(AlphaActivityOut);
             numberInOrderR += alphaActivityOutR;
         }
+
         #endregion
 
         #region TransuraniumActivityOut (23)
+
         var transuraniumActivityOutR =
-            ((FormPropertyAttribute)typeof(Form21).GetProperty(nameof(TransuraniumActivityOut))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form21)
+                .GetProperty(nameof(TransuraniumActivityOut))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         if (transuraniumActivityOutR != null)
         {
@@ -2564,11 +2752,13 @@ public class Form21 : Form2, IBaseColor
             transuraniumActivityOutR.Binding = nameof(TransuraniumActivityOut);
             numberInOrderR += transuraniumActivityOutR;
         }
+
         #endregion
 
         _DataGridColumns = numberInOrderR;
 
         return _DataGridColumns;
     }
+    
     #endregion
 }

@@ -202,6 +202,16 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
+                    Key = Avalonia.Input.Key.Insert,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = false,
+                    ParamName = "Copy",
+                    ContextMenuText = new[] { "Копировать                                               Ctrl+Ins" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new KeyCommand
+                {
                     Key = Avalonia.Input.Key.V,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,

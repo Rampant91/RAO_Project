@@ -223,7 +223,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     {
         try
         {
-            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is not "1.0")
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is not "1.0")
+            if (item.Master_DB.FormNum_DB is not "1.0")
             {
                 return null;
             }
@@ -284,7 +285,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     {
         try
         {
-            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            if (item.Master_DB.FormNum_DB is not "2.0")
             {
                 return null;
             }
@@ -851,19 +853,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
         BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
         BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
-
-        await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-            {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                ContentTitle = "Импорт из .raodb",
-                ContentHeader = "Уведомление",
-                ContentMessage = "Начало ProcessIfHasReports21",
-                MinWidth = 400,
-                MinHeight = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow);
 
         var listImpRep = new List<Report>();
         if (impReps != null)

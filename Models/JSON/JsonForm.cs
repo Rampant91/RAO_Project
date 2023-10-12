@@ -78,6 +78,13 @@ public abstract class JsonForm
 
     #endregion
 
+    #region Year
+
+    [JsonProperty("reporting_year")]
+    public string Year { get; set; }
+
+    #endregion
+
     #region ReportsId
 
     [JsonProperty("author_id")]
@@ -131,6 +138,18 @@ public abstract class JsonForm
                 "form_1_7_2022" => JsonConvert.DeserializeObject<JsonForm17>(jo.ToString(), SpecifiedSubclassConversion),
                 "form_1_8_2022" => JsonConvert.DeserializeObject<JsonForm18>(jo.ToString(), SpecifiedSubclassConversion),
                 "form_1_9_2022" => JsonConvert.DeserializeObject<JsonForm19>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_2_1_2022" => JsonConvert.DeserializeObject<JsonForm21>(jo.ToString(), SpecifiedSubclassConversion),
+                "form_2_2_2022" => JsonConvert.DeserializeObject<JsonForm22>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_3_2022" => JsonConvert.DeserializeObject<JsonForm23>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_4_2022" => JsonConvert.DeserializeObject<JsonForm24>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_5_2022" => JsonConvert.DeserializeObject<JsonForm25>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_6_2022" => JsonConvert.DeserializeObject<JsonForm26>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_7_2022" => JsonConvert.DeserializeObject<JsonForm27>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_8_2022" => JsonConvert.DeserializeObject<JsonForm28>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_9_2022" => JsonConvert.DeserializeObject<JsonForm29>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_10_2022" => JsonConvert.DeserializeObject<JsonForm210>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_11_2022" => JsonConvert.DeserializeObject<JsonForm211>(jo.ToString(), SpecifiedSubclassConversion),
+                //"form_2_12_2022" => JsonConvert.DeserializeObject<JsonForm212>(jo.ToString(), SpecifiedSubclassConversion),
                 _ => null
             };
         }
@@ -147,7 +166,7 @@ public abstract class JsonForm
 
     #region FormNumConverter
 
-    public class FormNumConverter : JsonConverter
+    private class FormNumConverter : JsonConverter
     {
         public override bool CanConvert(Type t) => t == typeof(string);
 
@@ -156,7 +175,7 @@ public abstract class JsonForm
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader) ?? throw new Exception("Cannot deserialize type string");
             Regex reg;
-            if ((reg = new Regex("^form_([1-2])_([0-9])_2022$")).IsMatch(value))
+            if ((reg = new Regex("^form_([1-2])_([0-9](?:(?<=1)[0-2])?)_2022$")).IsMatch(value))
             {
                 var matches = Regex.Matches(value, reg.ToString());
                 return $"{matches[0].Groups[1]}.{matches[0].Groups[2]}";
@@ -214,7 +233,7 @@ public class NoteValue
 public class NotePointer
 {
     [JsonProperty("row")]
-    public int Row { get; set; }
+    public string Row { get; set; }
 
     [JsonProperty("col_name")]
     public string ColName { get; set; }
@@ -316,6 +335,136 @@ public class JsonForm19 : JsonForm1
 
     [JsonProperty("form_table_data")]
     public TableData19 TableData { get; set; }
+
+    #endregion
+}
+
+#endregion
+
+#region JsonForm2
+
+public abstract class JsonForm2 : JsonForm
+{
+    [JsonProperty("form_main_data")]
+    public ExecutorData ExecutorData { get; set; }
+}
+
+public class JsonForm21 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData21 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm22 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData22 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm23 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData23 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm24 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData24 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm25 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData25 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm26 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData26 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm27 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData27 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm28 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData28 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm29 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData29 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm210 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData210 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm211 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData211 TableData { get; set; }
+
+    #endregion
+}
+
+public class JsonForm212 : JsonForm2
+{
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableData212 TableData { get; set; }
 
     #endregion
 }

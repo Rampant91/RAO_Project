@@ -122,7 +122,7 @@ public class Form19 : Form1
 
     #region CodeTypeAccObject (7)
 
-    public short? CodeTypeAccObject_DB { get; private set; }
+    public short? CodeTypeAccObject_DB { get; set; }
 
     [NotMapped]
     [FormProperty(true, "null-7", "Код типа объектов учета", "7")]
@@ -175,7 +175,7 @@ public class Form19 : Form1
 
     #region Radionuclids (8)
 
-    public string Radionuclids_DB { get; private set; } = "";
+    public string Radionuclids_DB { get; set; } = "";
 
     [NotMapped]
     [FormProperty(true, "Сведения о радиоактивных веществах", "радионуклиды", "8")]
@@ -238,7 +238,7 @@ public class Form19 : Form1
 
     #region Activity (9)
 
-    public string Activity_DB { get; private set; }
+    public string Activity_DB { get; set; }
 
     [NotMapped]
     [FormProperty(true, "Сведения о радиоактивных веществах", "активность, Бк", "9")]
