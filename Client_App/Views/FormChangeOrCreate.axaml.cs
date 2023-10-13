@@ -20,7 +20,7 @@ using Client_App.ViewModels;
 
 namespace Client_App.Views;
 
-public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
+public partial class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 {
     private readonly string _param = "";
     public FormChangeOrCreate(ChangeOrCreateVM param)
@@ -28,9 +28,6 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         _param = param.FormType;
         DataContext = param;
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
         this.WhenActivated(d =>
         {
             var vm = (ChangeOrCreateVM)ViewModel;
@@ -46,9 +43,6 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
     public FormChangeOrCreate()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; }
@@ -3700,9 +3694,4 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         interaction.SetOutput(answ);
     }
     #endregion
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

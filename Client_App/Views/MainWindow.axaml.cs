@@ -17,7 +17,7 @@ using Models.Interfaces;
 
 namespace Client_App.Views;
 
-public class MainWindow : BaseWindow<MainWindowVM>
+public partial class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
@@ -52,15 +52,8 @@ public class MainWindow : BaseWindow<MainWindowVM>
     private void Init()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
         this.WhenActivated(d => d(MainWindowVM.ShowDialog.RegisterHandler(DoShowDialogAsync)));
         this.WhenActivated(d => d(MainWindowVM.ShowMessage.RegisterHandler(DoShowDialogAsyncT)));
-    }
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
     }
     #endregion
 
@@ -98,7 +91,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
         base.OnOpened(e);
         ShowInit();
     }
-    protected override void OnClosing(CancelEventArgs e)
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         base.OnClosing(e);
     }

@@ -5,17 +5,27 @@ using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid;
 
-public class Cell : UserControl
+public partial class Cell : UserControl
 {
     public Cell()
     {
         InitializeComponent();
+        if (Control != null)
+        {
+            var t = (Panel)((Border)Content).Child;
+            t.Children.Add(Control);
+        }
     }
 
-    public Cell(IControl ctrl)
+    public Cell(Control ctrl)
     {
         Control = ctrl;
         InitializeComponent();
+        if (Control != null)
+        {
+            var t = (Panel)((Border)Content).Child;
+            t.Children.Add(Control);
+        }
     }
 
     #region BorderColor
@@ -90,8 +100,8 @@ public class Cell : UserControl
     #endregion
 
     #region Control
-    IControl _Control;
-    public IControl Control 
+    Control _Control;
+    public Control Control 
     {
         get => _Control;
         set 
@@ -106,15 +116,4 @@ public class Cell : UserControl
         } 
     }
     #endregion
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-
-        if (Control != null)
-        {
-            var t = (Panel)((Border)Content).Child;
-            t.Children.Add(Control);
-        }
-    }
 }

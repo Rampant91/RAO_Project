@@ -5,7 +5,7 @@ using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid;
 
-public class DataGridRow : Grid
+public partial class DataGridRow : Grid
 {
     #region Row
 
@@ -81,10 +81,5 @@ public class DataGridRow : Grid
     public DataGridRow()
     {
         InitializeComponent();
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
     }
 }

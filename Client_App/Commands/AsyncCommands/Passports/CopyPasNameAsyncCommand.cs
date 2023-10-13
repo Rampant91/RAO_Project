@@ -49,6 +49,6 @@ internal class CopyPasNameAsyncCommand : BaseAsyncCommand
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, "\\s+", "");
-        await Application.Current.Clipboard.SetTextAsync(uniqPasName);
+        await Desktop.MainWindow.Clipboard.SetTextAsync(uniqPasName);
     }
 }

@@ -114,7 +114,7 @@ internal class CopyRowsAsyncCommand : BaseAsyncCommand
             textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1) + "\n";
         }
         textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1);
-        if (Application.Current.Clipboard is { } clip)
+        if (Desktop.MainWindow.Clipboard is { } clip)
         {
             var currentClipboard = "";
             // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract

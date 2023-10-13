@@ -3,7 +3,7 @@ using Models.Collections;
 
 namespace Client_App.Controls.DataGrid.DataGrids;
 
-public class DataGridReport : DataGrid<Report>
+public partial class DataGridReport : DataGrid<Report>
 {
     public DataGridReport()
     {
@@ -14,9 +14,5 @@ public class DataGridReport : DataGrid<Report>
     {
         InitializeComponent();
         Init();
-    }
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
     }
 }

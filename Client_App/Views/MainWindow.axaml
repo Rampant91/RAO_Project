@@ -9,7 +9,7 @@
         x:Class="Client_App.Views.MainWindow"
         Icon="/Assets/logo.png"
         Title="{Binding Current_Db}"
-        x:Name="MainWindow"
+        x:Name="MainWindowView"
         Background="#ffffff"
         WindowStartupLocation="CenterScreen">
 

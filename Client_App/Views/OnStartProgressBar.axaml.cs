@@ -17,9 +17,7 @@ public partial class OnStartProgressBar : BaseWindow<OnStartProgressBarVM>
     public OnStartProgressBar()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
+        DataContext = new OnStartProgressBarVM(new BackgroundLoader());
         this.WhenActivated(d =>
         {
             var vm = (OnStartProgressBarVM)ViewModel;
@@ -36,11 +34,5 @@ public partial class OnStartProgressBar : BaseWindow<OnStartProgressBarVM>
             Close();
         }
         interaction.SetOutput(null);
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-        DataContext = new OnStartProgressBarVM(new BackgroundLoader());
     }
 }

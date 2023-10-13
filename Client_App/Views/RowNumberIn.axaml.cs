@@ -8,7 +8,7 @@ using Client_App.ViewModels;
 
 namespace Client_App.Views;
 
-public class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
+public partial class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
 {
     #region Number1
     public static readonly DirectProperty<RowNumberIn, string> NumberProperty1 =
@@ -82,37 +82,29 @@ public class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
     public RowNumberIn()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
+        var item = this.Get<TextBox>("MainTextBox");
+        item.SelectAll();
+        item.AttachedToVisualTree += (s, e) => item.Focus();
     }
 
     public RowNumberIn(int num)
     {
         Number1 = num.ToString();
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
+        var item = this.Get<TextBox>("MainTextBox");
+        item.SelectAll();
+        item.AttachedToVisualTree += (s, e) => item.Focus();
     }
     #endregion
 
     bool flag;
-    protected override void OnClosing(CancelEventArgs e)
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         if(!flag)
         {
             _Number2 = "0";
         }
         base.OnClosing(e);
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-        var item = this.Get<TextBox>("MainTextBox");
-        item.SelectAll();
-        item.AttachedToVisualTree += (s, e) => item.Focus();
     }
 
     private void OnButtonClick(object sender, RoutedEventArgs e)

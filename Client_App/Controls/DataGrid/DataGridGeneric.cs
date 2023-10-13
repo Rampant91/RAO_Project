@@ -757,7 +757,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         return null;
     }
 
-    private void CommandTapped(object sender, RoutedEventArgs args)
+    private void CommandTapped(object? sender, EventArgs tappedEventArgs)
     {
         if (sender == null) return;
         var selectItem = (string)((MenuItem)sender).Header;
@@ -1595,12 +1595,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         tmp.Tapped += CommandTapped;
                         inlr.Add(tmp);
                     }
-                    lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                    lr.Add(new MenuItem { Header = item.Key, ItemsSource = inlr });
                     break;
                 }
             }
         }
-        menu.Items = lr;
+        menu.ItemsSource = lr;
         ContextMenu = menu;
     }
 
@@ -2023,9 +2023,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Content = centerPanel
             };
 
-            bar[!RangeBase.MaximumProperty] = centerScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
+            bar[!RangeBase.MaximumProperty] = centerScrollViewer[!ScrollViewer.ScrollBarMaximumProperty];
 
-            centerScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
+            centerScrollViewer[!ScrollViewer.VerticalSnapPointsAlignmentProperty] = b;
             centerCanvas.Children.Add(centerScrollViewer);
 
             pnl.Children.Add(centerCanvas);

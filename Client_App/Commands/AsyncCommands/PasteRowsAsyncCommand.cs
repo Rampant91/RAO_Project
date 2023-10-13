@@ -7,6 +7,7 @@ using Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia;
 
@@ -27,7 +28,7 @@ internal class PasteRowsAsyncCommand : BaseAsyncCommand
             minColumn++;
         }
 
-        if (Application.Current.Clipboard is not { } clip) return;
+        if (Desktop.MainWindow.Clipboard is not { } clip) return;
 
         var text = await clip.GetTextAsync();
         var rowsText = ParseInnerTextRows(text);

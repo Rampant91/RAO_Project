@@ -4,7 +4,7 @@ using Models.Forms.Form1;
 
 namespace Client_App.Controls.DataGrid.DataGrids;
 
-public class DataGridForm12 : DataGrid<Form12>
+public partial class DataGridForm12 : DataGrid<Form12>
 {
     public DataGridForm12()
     {
@@ -15,9 +15,5 @@ public class DataGridForm12 : DataGrid<Form12>
     {
         InitializeComponent();
         Init();
-    }
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
     }
 }

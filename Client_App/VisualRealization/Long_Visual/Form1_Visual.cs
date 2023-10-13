@@ -471,7 +471,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm11.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -695,7 +695,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm12.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm12.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -920,7 +920,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm13.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm13.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -1145,7 +1145,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm14.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm14.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -1370,7 +1370,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm15.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm15.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -1595,7 +1595,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm16.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm16.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -1821,7 +1821,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm17.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm17.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -2046,7 +2046,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm18.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm18.ScrollLeftRightProperty];
 
         Binding b = new()
         {
@@ -2272,7 +2272,7 @@ public class Form1_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm19.ScrollLeftRightProperty];
+        vw[!ScrollViewer.WidthProperty] = grd[!DataGridForm19.ScrollLeftRightProperty];
 
         Binding b = new()
         {
