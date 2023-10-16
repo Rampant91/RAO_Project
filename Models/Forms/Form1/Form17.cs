@@ -209,7 +209,8 @@ public class Form17 : Form1
 
     public string PackName_DB { get; set; } = "";
 
-    private bool PackName_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool PackName_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool PackName_Hidden
@@ -275,7 +276,8 @@ public class Form17 : Form1
 
     public string PackType_DB { get; set; } = "";
 
-    private bool PackType_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool PackType_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool PackType_Hidden
@@ -335,7 +337,8 @@ public class Form17 : Form1
 
     public string PackFactoryNumber_DB { get; set; } = "";
 
-    private bool PackFactoryNumber_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool PackFactoryNumber_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool PackFactoryNumber_Hidden
@@ -395,7 +398,8 @@ public class Form17 : Form1
 
     public string PackNumber_DB { get; set; } = "";
 
-    private bool PackNumber_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool PackNumber_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool PackNumber_Hidden
@@ -455,7 +459,8 @@ public class Form17 : Form1
 
     public string FormingDate_DB { get; set; } = "";
 
-    private bool FormingDate_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool FormingDate_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool FormingDate_Hidden
@@ -534,7 +539,8 @@ public class Form17 : Form1
 
     public string PassportNumber_DB { get; set; } = "";
 
-    private bool PassportNumber_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool PassportNumber_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool PassportNumber_Hidden
@@ -594,7 +600,8 @@ public class Form17 : Form1
 
     public string Volume_DB { get; set; } = "";
 
-    private bool Volume_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool Volume_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool Volume_Hidden
@@ -690,7 +697,8 @@ public class Form17 : Form1
 
     public string Mass_DB { get; set; } = "";
 
-    private bool Mass_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool Mass_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool Mass_Hidden
@@ -932,7 +940,8 @@ public class Form17 : Form1
 
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
 
-    private bool ProviderOrRecieverOKPO_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool ProviderOrRecieverOKPO_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool ProviderOrRecieverOKPO_Hidden
@@ -1020,7 +1029,8 @@ public class Form17 : Form1
 
     public string TransporterOKPO_DB { get; set; } = "";
 
-    private bool TransporterOKPO_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool TransporterOKPO_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool TransporterOKPO_Hidden
@@ -1104,7 +1114,8 @@ public class Form17 : Form1
 
     public string StoragePlaceName_DB { get; set; } = "";
 
-    private bool StoragePlaceName_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool StoragePlaceName_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool StoragePlaceName_Hidden
@@ -1174,7 +1185,8 @@ public class Form17 : Form1
 
     public string StoragePlaceCode_DB { get; set; } = "";
 
-    private bool StoragePlaceCode_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool StoragePlaceCode_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool StoragePlaceCode_Hidden

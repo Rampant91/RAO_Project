@@ -34,7 +34,8 @@ public abstract class Form1 : Form
 
     public string OperationCode_DB { get; set; } = "";
 
-    private bool OperationCode_Hidden_Priv { get; set; }
+    //  нельзя делать private
+    public bool OperationCode_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool OperationCode_Hidden
@@ -92,7 +93,8 @@ public abstract class Form1 : Form
 
     public string OperationDate_DB { get; set; } = "";
 
-    private bool OperationDate_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool OperationDate_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool OperationDate_Hidden
@@ -165,7 +167,8 @@ public abstract class Form1 : Form
 
     public byte? DocumentVid_DB { get; set; }
 
-    private bool DocumentVid_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool DocumentVid_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool DocumentVid_Hidden
@@ -235,6 +238,7 @@ public abstract class Form1 : Form
 
     public string DocumentNumber_DB { get; set; } = "";
 
+    //нельзя делать private
     public bool DocumentNumber_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -294,16 +298,14 @@ public abstract class Form1 : Form
 
     public string DocumentDate_DB { get; set; } = "";
 
-    private bool DocumentDate_Hidden_Priv { get; set; }
+    //нельзя делать private
+    public bool DocumentDate_Hidden_Priv { get; set; }
 
     [NotMapped]
     public bool DocumentDate_Hidden
     {
         get => DocumentDate_Hidden_Priv;
-        set
-        {
-            DocumentDate_Hidden_Priv = value;
-        }
+        set => DocumentDate_Hidden_Priv = value;
     }
 
     [NotMapped]
