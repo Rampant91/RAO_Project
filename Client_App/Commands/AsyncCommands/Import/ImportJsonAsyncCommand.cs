@@ -752,6 +752,39 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                         #endregion
 
+                        #region Form23
+
+                        case "2.3":
+                            {
+                                var repForm = (JsonForm23)rep;
+                                impRep.GradeExecutor_DB = repForm.ExecutorData.GradeExecutor;
+                                impRep.FIOexecutor_DB = repForm.ExecutorData.FIOexecutor;
+                                impRep.ExecPhone_DB = repForm.ExecutorData.ExecPhone;
+                                impRep.ExecEmail_DB = repForm.ExecutorData.ExecEmail;
+                                foreach (var form in repForm.TableData.TableData)   // Для каждой строчки формы
+                                {
+                                    impRep.Rows23.Add(new Form23
+                                    {
+                                        NumberInOrder_DB = numberInOrder++,
+                                        StoragePlaceName_DB = form.StoragePlaceName,
+                                        StoragePlaceCode_DB = form.StoragePlaceCode,
+                                        ProjectVolume_DB = form.ProjectVolume,
+                                        CodeRAO_DB = form.CodeRAO,
+                                        Volume_DB = form.Volume,
+                                        Mass_DB = form.Mass,
+                                        QuantityOZIII_DB = form.QuantityOZIII,
+                                        SummaryActivity_DB = form.SummaryActivity,
+                                        DocumentNumber_DB = form.DocumentNumber,
+                                        DocumentDate_DB = form.DocumentDate,
+                                        ExpirationDate_DB = form.ExpirationDate,
+                                        DocumentName_DB = form.DocumentName
+                                    });
+                                }
+                                break;
+                            }
+
+                        #endregion
+
                         #endregion
                     }
                     currentOrg.Report_Collection.Add(impRep);
@@ -949,6 +982,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 : "й";
 
         #endregion
+
         if (AtLeastOneImportDone)
         {
             #region MessageImportDone
