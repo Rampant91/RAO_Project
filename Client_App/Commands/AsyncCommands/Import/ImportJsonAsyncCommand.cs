@@ -928,6 +928,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
 
+        #region Suffix
+
         var suffix1 = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
             ? "а"
             : "ов";
@@ -945,6 +947,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
               || countNewReps.ToString().EndsWith('4') && !countNewReps.ToString().EndsWith("14")
                 ? "и"
                 : "й";
+
+        #endregion
         if (AtLeastOneImportDone)
         {
             #region MessageImportDone

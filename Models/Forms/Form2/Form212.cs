@@ -16,12 +16,19 @@ namespace Models.Forms.Form2;
 [Form_Class("Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ")]
 public class Form212 : Form2
 {
-    public Form212() : base()
+    #region Constrctor
+    
+    public Form212()
     {
         FormNum.Value = "2.12";
         //NumberOfFields.Value = 8;
         Validate_all();
     }
+
+    #endregion
+
+    #region Validation
+    
     private void Validate_all()
     {
         Radionuclids_Validation(Radionuclids);
@@ -31,20 +38,26 @@ public class Form212 : Form2
         ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
     }
 
-    [FormProperty(true,"Форма")]
+    [FormProperty(true, "Форма")]
     public override bool Object_Validation()
     {
-        return !(Radionuclids.HasErrors||
-                 OperationCode.HasErrors||
-                 ObjectTypeCode.HasErrors||
-                 Activity.HasErrors||
+        return !(Radionuclids.HasErrors ||
+                 OperationCode.HasErrors ||
+                 ObjectTypeCode.HasErrors ||
+                 Activity.HasErrors ||
                  ProviderOrRecieverOKPO.HasErrors);
     }
 
-    #region  OperationCode
+    #endregion
+
+    #region Properties
+    
+    #region  OperationCode (2)
+
     public short? OperationCode_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"null-2","Код операции","2")]
+    [FormProperty(true, "null-2", "Код операции", "2")]
     public RamAccess<short?> OperationCode
     {
         get
@@ -54,13 +67,10 @@ public class Form212 : Form2
                 ((RamAccess<short?>)Dictionary[nameof(OperationCode)]).Value = OperationCode_DB;
                 return (RamAccess<short?>)Dictionary[nameof(OperationCode)];
             }
-            else
-            {
-                var rm = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
-                rm.PropertyChanged += OperationCodeValueChanged;
-                Dictionary.Add(nameof(OperationCode), rm);
-                return (RamAccess<short?>)Dictionary[nameof(OperationCode)];
-            }
+            var rm = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
+            rm.PropertyChanged += OperationCodeValueChanged;
+            Dictionary.Add(nameof(OperationCode), rm);
+            return (RamAccess<short?>)Dictionary[nameof(OperationCode)];
         }
         set
         {
@@ -69,11 +79,11 @@ public class Form212 : Form2
         }
     }
 
-    private void OperationCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void OperationCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            OperationCode_DB = ((RamAccess<short?>)Value).Value;
+            OperationCode_DB = ((RamAccess<short?>)value).Value;
         }
     }
 
@@ -92,13 +102,15 @@ public class Form212 : Form2
         }
         return true;
     }
-    //OperationCode property
+
     #endregion
 
-    #region 
+    #region ObjectTypeCode (3)
+
     public short? ObjectTypeCode_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"null-3","Код типа объектов учета","3")]
+    [FormProperty(true, "null-3", "Код типа объектов учета", "3")]
     public RamAccess<short?> ObjectTypeCode
     {
         get
@@ -108,13 +120,10 @@ public class Form212 : Form2
                 ((RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)]).Value = ObjectTypeCode_DB;
                 return (RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)];
             }
-            else
-            {
-                var rm = new RamAccess<short?>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
-                rm.PropertyChanged += ObjectTypeCodeValueChanged;
-                Dictionary.Add(nameof(ObjectTypeCode), rm);
-                return (RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)];
-            }
+            var rm = new RamAccess<short?>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
+            rm.PropertyChanged += ObjectTypeCodeValueChanged;
+            Dictionary.Add(nameof(ObjectTypeCode), rm);
+            return (RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)];
         }
         set
         {
@@ -124,13 +133,14 @@ public class Form212 : Form2
     }
     //2 digit code
 
-    private void ObjectTypeCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ObjectTypeCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ObjectTypeCode_DB = ((RamAccess<short?>)Value).Value;
+            ObjectTypeCode_DB = ((RamAccess<short?>)value).Value;
         }
     }
+
     private bool ObjectTypeCode_Validation(RamAccess<short?> value)//TODO
     {
         value.ClearErrors();
@@ -146,13 +156,15 @@ public class Form212 : Form2
         }
         return true;
     }
-    //ObjectTypeCode property
+
     #endregion
 
-    #region  Radionuclids
+    #region  Radionuclids (4)
+
     public string Radionuclids_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Сведения о радионуклидных источниках", "радионуклиды","4")]
+    [FormProperty(true, "Сведения о радионуклидных источниках", "радионуклиды", "4")]
     public RamAccess<string> Radionuclids
     {
         get
@@ -162,13 +174,10 @@ public class Form212 : Form2
                 ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
                 return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
-                rm.PropertyChanged += RadionuclidsValueChanged;
-                Dictionary.Add(nameof(Radionuclids), rm);
-                return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
-            }
+            var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
+            rm.PropertyChanged += RadionuclidsValueChanged;
+            Dictionary.Add(nameof(Radionuclids), rm);
+            return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
         }
         set
         {
@@ -178,13 +187,14 @@ public class Form212 : Form2
     }
     //If change this change validation
 
-    private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
+    private void RadionuclidsValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            Radionuclids_DB = ((RamAccess<string>)Value).Value;
+            Radionuclids_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool Radionuclids_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -201,8 +211,10 @@ public class Form212 : Form2
         var flag = true;
         foreach (var nucl in nuclids)
         {
-            var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-            if (!tmp.Any())
+            if (!Spravochniks.SprRadionuclids
+                    .Where(item => nucl == item.Item1)
+                    .Select(item => item.Item1)
+                    .Any())
                 flag = false;
         }
         if (!flag)
@@ -212,13 +224,15 @@ public class Form212 : Form2
         }
         return true;
     }
-    //Radionuclids property
+
     #endregion
 
-    #region  Activity
+    #region  Activity (5)
+
     public string Activity_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"Сведения о радионуклидных источниках", "активность, Бк","5")]
+    [FormProperty(true, "Сведения о радионуклидных источниках", "активность, Бк", "5")]
     public RamAccess<string> Activity
     {
         get
@@ -228,13 +242,10 @@ public class Form212 : Form2
                 ((RamAccess<string>)Dictionary[nameof(Activity)]).Value = Activity_DB;
                 return (RamAccess<string>)Dictionary[nameof(Activity)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
-                rm.PropertyChanged += ActivityValueChanged;
-                Dictionary.Add(nameof(Activity), rm);
-                return (RamAccess<string>)Dictionary[nameof(Activity)];
-            }
+            var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
+            rm.PropertyChanged += ActivityValueChanged;
+            Dictionary.Add(nameof(Activity), rm);
+            return (RamAccess<string>)Dictionary[nameof(Activity)];
         }
         set
         {
@@ -243,36 +254,34 @@ public class Form212 : Form2
         }
     }
 
-
-    private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ActivityValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    Activity_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-                {
-                    value1 = $"{doubleValue:0.######################################################e+00}";
-                }
+                Activity_DB = value1;
+                return;
             }
-            Activity_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        Activity_DB = value1;
     }
+
     private bool Activity_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (value.Value==null)
+        if (value.Value == null)
         {
             value.AddError("Поле не заполнено");
             return false;
@@ -282,26 +291,28 @@ public class Form212 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //Activity property
+
     #endregion
 
-    #region  ProviderOrRecieverOKPO
+    #region  ProviderOrRecieverOKPO (6)
+
     public string ProviderOrRecieverOKPO_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"null-4","ОКПО поставщика/получателя","6")]
+    [FormProperty(true, "null-4", "ОКПО поставщика/получателя", "6")]
     public RamAccess<string> ProviderOrRecieverOKPO
     {
         get
@@ -311,13 +322,10 @@ public class Form212 : Form2
                 ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
                 return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-                rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
-                Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
-                return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
-            }
+            var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+            rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+            Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
+            return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
         }
         set
         {
@@ -326,20 +334,18 @@ public class Form212 : Form2
         }
     }
 
-
-    private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ProviderOrRecieverOKPOValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
-                if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-                {
-                    value1 = value1.ToUpper();
-                }
-            ProviderOrRecieverOKPO_DB = value1;
-        }
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
+            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
+            {
+                value1 = value1.ToUpper();
+            }
+        ProviderOrRecieverOKPO_DB = value1;
     }
+
     private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -348,29 +354,25 @@ public class Form212 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
         {
             return true;
         }
-        if (value.Value.Equals("Минобороны"))
+        if (value.Value.Length != 8 && value.Value.Length != 14
+            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
-            return true;
-        }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
-        {
-            value.AddError("Недопустимое значение"); return false;
-        }
-        Regex mask = new("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-        if (!mask.IsMatch(value.Value))
-        {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение");
+            return false;
         }
         return true;
     }
-    //ProviderOrRecieverOKPO property
+
+    #endregion 
+
     #endregion
 
     #region IExcel
+
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
@@ -411,60 +413,118 @@ public class Form212 : Form2
         
         return 5;
     }
+
     #endregion
 
     #region IDataGridColumn
+
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns != null) return _DataGridColumns;
 
         #region NumberInOrder (1)
-        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        NumberInOrderR.SetSizeColToAllLevels(50);
-        NumberInOrderR.Binding = nameof(NumberInOrder);
-        NumberInOrderR.Blocked = true;
-        NumberInOrderR.ChooseLine = true;
+
+        var numberInOrderR = ((FormPropertyAttribute)typeof(Form)
+                .GetProperty(nameof(NumberInOrder))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD();
+        if (numberInOrderR != null)
+        {
+            numberInOrderR.SetSizeColToAllLevels(50);
+            numberInOrderR.Binding = nameof(NumberInOrder);
+            numberInOrderR.Blocked = true;
+            numberInOrderR.ChooseLine = true;
+        }
+        
         #endregion
 
         #region OperationCode (2)
-        var OperationCodeR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        OperationCodeR.SetSizeColToAllLevels(100);
-        OperationCodeR.Binding = nameof(OperationCode);
-        NumberInOrderR += OperationCodeR;
+
+        var operationCodeR = ((FormPropertyAttribute)typeof(Form212)
+                .GetProperty(nameof(OperationCode))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (operationCodeR != null)
+        {
+            operationCodeR.SetSizeColToAllLevels(100);
+            operationCodeR.Binding = nameof(OperationCode);
+            numberInOrderR += operationCodeR;
+        }
+
         #endregion
 
         #region ObjectTypeCode (3)
-        var ObjectTypeCodeR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(ObjectTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        ObjectTypeCodeR.SetSizeColToAllLevels(193);
-        ObjectTypeCodeR.Binding = nameof(ObjectTypeCode);
-        NumberInOrderR += ObjectTypeCodeR;
+
+        var objectTypeCodeR = ((FormPropertyAttribute)typeof(Form212)
+                .GetProperty(nameof(ObjectTypeCode))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (objectTypeCodeR != null)
+        {
+            objectTypeCodeR.SetSizeColToAllLevels(193);
+            objectTypeCodeR.Binding = nameof(ObjectTypeCode);
+            numberInOrderR += objectTypeCodeR;
+        }
+
         #endregion
 
         #region Radionuclids (4)
-        var RadionuclidsR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        RadionuclidsR.SetSizeColToAllLevels(145);
-        RadionuclidsR.Binding = nameof(Radionuclids);
-        NumberInOrderR += RadionuclidsR;
+
+        var radionuclidsR = ((FormPropertyAttribute)typeof(Form212)
+                .GetProperty(nameof(Radionuclids))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (radionuclidsR != null)
+        {
+            radionuclidsR.SetSizeColToAllLevels(145);
+            radionuclidsR.Binding = nameof(Radionuclids);
+            numberInOrderR += radionuclidsR;
+        }
+
         #endregion
 
         #region Activity (5)
-        var ActivityR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(Activity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        ActivityR.SetSizeColToAllLevels(108);
-        ActivityR.Binding = nameof(Activity);
-        NumberInOrderR += ActivityR;
+
+        var activityR = ((FormPropertyAttribute)typeof(Form212)
+                .GetProperty(nameof(Activity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (activityR != null)
+        {
+            activityR.SetSizeColToAllLevels(108);
+            activityR.Binding = nameof(Activity);
+            numberInOrderR += activityR;
+        }
+
         #endregion
 
         #region ProviderOrRecieverOKPO (6)
-        var ProviderOrRecieverOKPOR = ((FormPropertyAttribute)typeof(Form212).GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        ProviderOrRecieverOKPOR.SetSizeColToAllLevels(193);
-        ProviderOrRecieverOKPOR.Binding = nameof(ProviderOrRecieverOKPO);
-        NumberInOrderR += ProviderOrRecieverOKPOR;
+
+        var providerOrRecieverOkpoR = ((FormPropertyAttribute)typeof(Form212)
+                .GetProperty(nameof(ProviderOrRecieverOKPO))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (providerOrRecieverOkpoR != null)
+        {
+            providerOrRecieverOkpoR.SetSizeColToAllLevels(193);
+            providerOrRecieverOkpoR.Binding = nameof(ProviderOrRecieverOKPO);
+            numberInOrderR += providerOrRecieverOkpoR;
+        }
+
         #endregion
 
-        _DataGridColumns = NumberInOrderR;
+        _DataGridColumns = numberInOrderR;
 
         return _DataGridColumns;
     }
+
     #endregion
 }

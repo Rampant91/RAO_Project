@@ -15,12 +15,19 @@ namespace Models.Forms.Form2;
 [Form_Class("Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения")]
 public class Form23 : Form2
 {
-    public Form23() : base()
+    #region Constructor
+
+    public Form23()
     {
         FormNum.Value = "2.3";
         //NumberOfFields.Value = 17;
         Validate_all();
     }
+
+    #endregion
+
+    #region Validation
+    
     private void Validate_all()
     {
         StoragePlaceName_Validation(StoragePlaceName);
@@ -37,27 +44,33 @@ public class Form23 : Form2
         DocumentDate_Validation(DocumentDate);
     }
 
-    [FormProperty(true,"Форма")]
+    [FormProperty(true, "Форма")]
     public override bool Object_Validation()
     {
-        return !(StoragePlaceName.HasErrors||
-                 StoragePlaceCode.HasErrors||
-                 ProjectVolume.HasErrors||
-                 CodeRAO.HasErrors||
-                 Volume.HasErrors||
-                 Mass.HasErrors||
-                 SummaryActivity.HasErrors||
-                 QuantityOZIII.HasErrors||
-                 DocumentNumber.HasErrors||
-                 ExpirationDate.HasErrors||
-                 DocumentName.HasErrors||
+        return !(StoragePlaceName.HasErrors ||
+                 StoragePlaceCode.HasErrors ||
+                 ProjectVolume.HasErrors ||
+                 CodeRAO.HasErrors ||
+                 Volume.HasErrors ||
+                 Mass.HasErrors ||
+                 SummaryActivity.HasErrors ||
+                 QuantityOZIII.HasErrors ||
+                 DocumentNumber.HasErrors ||
+                 ExpirationDate.HasErrors ||
+                 DocumentName.HasErrors ||
                  DocumentDate.HasErrors);
     }
 
-    #region  StoragePlaceName
+    #endregion
+
+    #region Properties
+    
+    #region  StoragePlaceName (2)
+
     public string StoragePlaceName_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Пункт хранения РАО","наименование","2")]
+    [FormProperty(true, "Пункт хранения РАО", "наименование", "2")]
     public RamAccess<string> StoragePlaceName
     {
         get
@@ -67,13 +80,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
                 return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
-                rm.PropertyChanged += StoragePlaceNameValueChanged;
-                Dictionary.Add(nameof(StoragePlaceName), rm);
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
-            }
+            var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
+            rm.PropertyChanged += StoragePlaceNameValueChanged;
+            Dictionary.Add(nameof(StoragePlaceName), rm);
+            return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
         }
         set
         {
@@ -83,13 +93,14 @@ public class Form23 : Form2
     }
     //If change this change validation
 
-    private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void StoragePlaceNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
+            StoragePlaceName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -107,12 +118,15 @@ public class Form23 : Form2
         return true;
     }
     //StoragePlaceName property
+
     #endregion
 
-    #region  StoragePlaceCode
+    #region  StoragePlaceCode (3)
+
     public string StoragePlaceCode_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Пункт хранения РАО","код","3")]
+    [FormProperty(true, "Пункт хранения РАО", "код", "3")]
     public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
     {
         get
@@ -122,13 +136,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
                 return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
-                rm.PropertyChanged += StoragePlaceCodeValueChanged;
-                Dictionary.Add(nameof(StoragePlaceCode), rm);
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
-            }
+            var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
+            rm.PropertyChanged += StoragePlaceCodeValueChanged;
+            Dictionary.Add(nameof(StoragePlaceCode), rm);
+            return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
         }
         set
         {
@@ -138,13 +149,14 @@ public class Form23 : Form2
     }
     //if change this change validation
 
-    private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void StoragePlaceCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
+            StoragePlaceCode_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -160,68 +172,56 @@ public class Form23 : Form2
         //List<string> spr = new List<string>();//here binds spr
         //if (!spr.Contains(value.Value))
         //{
-        //    value.AddError("Недопустиое значение");
+        //    value.AddError("Недопустимое значение");
         //    return false;
         //}
         //return true;
-        Regex a = new("^[0-9]{8}$");
-        if (!a.IsMatch(value.Value))
+        if (!new Regex("^[0-9]{8}$").IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
         var tmp = value.Value;
-        if (tmp.Length == 8)
+        if (tmp.Length != 8) return true;
+        if (!new Regex("^[1-9]").IsMatch(tmp[..1]))
         {
-            Regex a0 = new("^[1-9]");
-            if (!a0.IsMatch(tmp.Substring(0, 1)))
-            {
-                value.AddError($"Недопустимый вид пункта - {tmp.Substring(0, 1)}");
-            }
-            Regex a1 = new("^[1-3]");
-            if (!a1.IsMatch(tmp.Substring(1, 1)))
-            {
-                value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
-            }
-            Regex a2 = new("^[1-2]");
-            if (!a2.IsMatch(tmp.Substring(2, 1)))
-            {
-                value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
-            }
-            Regex a3 = new("^[1-59]");
-            if (!a3.IsMatch(tmp.Substring(3, 1)))
-            {
-                value.AddError($"Недопустимая зона нахождения пунтка - {tmp.Substring(3, 1)}");
-            }
-            Regex a4 = new("^[0-4]");
-            if (!a4.IsMatch(tmp.Substring(4, 1)))
-            {
-                value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
-            }
-            Regex a5 = new("^[1-49]");
-            if (!a5.IsMatch(tmp.Substring(5, 1)))
-            {
-                value.AddError(
-                    $"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
-            }
-            Regex a67 = new("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}");
-            if (!a67.IsMatch(tmp.Substring(6, 2)))
-            {
-                value.AddError($"Недопустимоый код типа РАО - {tmp.Substring(6, 2)}");
-            }
-            if (value.HasErrors)
-            {
-                return false;
-            }
+            value.AddError($"Недопустимый вид пункта - {tmp[..1]}");
         }
-        return true;
+        if (!new Regex("^[1-3]").IsMatch(tmp.Substring(1, 1)))
+        {
+            value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
+        }
+        if (!new Regex("^[1-2]").IsMatch(tmp.Substring(2, 1)))
+        {
+            value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
+        }
+        if (!new Regex("^[1-59]").IsMatch(tmp.Substring(3, 1)))
+        {
+            value.AddError($"Недопустимая зона нахождения пункта - {tmp.Substring(3, 1)}");
+        }
+        if (!new Regex("^[0-4]").IsMatch(tmp.Substring(4, 1)))
+        {
+            value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
+        }
+        if (!new Regex("^[1-49]").IsMatch(tmp.Substring(5, 1)))
+        {
+            value.AddError($"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
+        }
+        if (!new Regex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}")
+                .IsMatch(tmp.Substring(6, 2)))
+        {
+            value.AddError($"Недопустимый код типа РАО - {tmp.Substring(6, 2)}");
+        }
+        return !value.HasErrors;
     }
-    //StoragePlaceCode property
+
     #endregion
 
-    #region  ProjectVolume
+    #region  ProjectVolume (4)
+
     public string ProjectVolume_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Пункт хранения РАО","проектный объем, куб. м","4")]
+    [FormProperty(true, "Пункт хранения РАО", "проектный объем, куб. м", "4")]
     public RamAccess<string> ProjectVolume
     {
         get
@@ -231,13 +231,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(ProjectVolume)]).Value = ProjectVolume_DB;
                 return (RamAccess<string>)Dictionary[nameof(ProjectVolume)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ProjectVolume_Validation, ProjectVolume_DB);
-                rm.PropertyChanged += ProjectVolumeValueChanged;
-                Dictionary.Add(nameof(ProjectVolume), rm);
-                return (RamAccess<string>)Dictionary[nameof(ProjectVolume)];
-            }
+            var rm = new RamAccess<string>(ProjectVolume_Validation, ProjectVolume_DB);
+            rm.PropertyChanged += ProjectVolumeValueChanged;
+            Dictionary.Add(nameof(ProjectVolume), rm);
+            return (RamAccess<string>)Dictionary[nameof(ProjectVolume)];
         }
         set
         {
@@ -246,32 +243,30 @@ public class Form23 : Form2
         }
     }
 
-
-    private void ProjectVolumeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ProjectVolumeValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    ProjectVolume_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-                {
-                    value1 = $"{doubleValue:0.######################################################e+00}";
-                }
+                ProjectVolume_DB = value1;
+                return;
             }
-            ProjectVolume_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        ProjectVolume_DB = value1;
     }
+
     private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -289,25 +284,28 @@ public class Form23 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
+        if (doubleValue <= 0)
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
         }
         return true;
     }
-    //ProjectVolume property
+
     #endregion
 
-    #region  CodeRAO
+    #region CodeRAO (5)
+
     public string CodeRAO_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Разрешено к размещению", "код РАО","5")]
+    [FormProperty(true, "Разрешено к размещению", "код РАО", "5")]
     public RamAccess<string> CodeRAO
     {
         get
@@ -317,13 +315,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(CodeRAO)]).Value = CodeRAO_DB;
                 return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
-                rm.PropertyChanged += CodeRAOValueChanged;
-                Dictionary.Add(nameof(CodeRAO), rm);
-                return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
-            }
+            var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
+            rm.PropertyChanged += CodeRAOValueChanged;
+            Dictionary.Add(nameof(CodeRAO), rm);
+            return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
         }
         set
         {
@@ -332,16 +327,14 @@ public class Form23 : Form2
         }
     }
 
-
-    private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CodeRAOValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            var tmp = ((RamAccess<string>)Value).Value.ToLower();
-            tmp = tmp.Replace("х", "x");
-            CodeRAO_DB = tmp;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value.ToLower();
+        tmp = tmp.Replace("х", "x");
+        CodeRAO_DB = tmp;
     }
+
     private bool CodeRAO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -352,78 +345,64 @@ public class Form23 : Form2
         }
         var tmp = value.Value.ToLower();
         tmp = tmp.Replace("х", "x");
-        Regex a = new("^[0-9x+]{11}$");
-        if (!a.IsMatch(tmp))
+        if (!new Regex("^[0-9x+]{11}$").IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmp.Length == 11)
+        if (tmp.Length != 11) return true;
+        if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
         {
-            Regex a0 = new("^[1-3x+]");
-            if (!a0.IsMatch(tmp.Substring(0, 1)))
-            {
-                value.AddError($"Недопустимое агрегатное состояние - {tmp.Substring(0, 1)}");
-            }
-            Regex a1 = new("^[0-49x+]");
-            if (!a1.IsMatch(tmp.Substring(1, 1)))
-            {
-                value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
-            }
-            Regex a2 = new("^[0-6x+]");
-            if (!a2.IsMatch(tmp.Substring(2, 1)))
-            {
-                value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
-            }
-            Regex a3 = new("^[12x+]");
-            if (!a3.IsMatch(tmp.Substring(3, 1)))
-            {
-                value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
-            }
-            Regex a4 = new("^[12x+]");
-            if (!a4.IsMatch(tmp.Substring(4, 1)))
-            {
-                value.AddError($"Недопустимоый период полураспада - {tmp.Substring(4, 1)}");
-            }
-            Regex a5 = new("^[0-3x+]");
-            if (!a5.IsMatch(tmp.Substring(5, 1)))
-            {
-                value.AddError($"Недопустимоый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
-            }
-            Regex a6 = new("^[0-49x+]");
-            if (!a6.IsMatch(tmp.Substring(6, 1)))
-            {
-                value.AddError($"Недопустимоый способ переработки - {tmp.Substring(6, 1)}");
-            }
-            Regex a7 = new("^[0-79x+]");
-            if (!a7.IsMatch(tmp.Substring(7, 1)))
-            {
-                value.AddError($"Недопустимоый класс РАО - {tmp.Substring(7, 1)}");
-            }
-            Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
-            if (!a89.IsMatch(tmp.Substring(8, 2)))
-            {
-                value.AddError($"Недопустимоый код типа РАО - {tmp.Substring(8, 2)}");
-            }
-            Regex a10 = new("^[12x+]");
-            if (!a7.IsMatch(tmp.Substring(10, 1)))
-            {
-                value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
-            }
-            if (value.HasErrors)
-            {
-                return false;
-            }
+            value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
         }
-        return true;
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
+        {
+            value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
+        }
+        if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
+        {
+            value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
+        {
+            value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
+        {
+            value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
+        }
+        if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
+        {
+            value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
+        }
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
+        {
+            value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
+        }
+        if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
+        {
+            value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
+        }
+        if (!new Regex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}")
+                .IsMatch(tmp.Substring(8, 2)))
+        {
+            value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
+        {
+            value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
+        }
+        return !value.HasErrors;
     }
-    //CodeRAO property
+
     #endregion
 
-    #region  Volume
+    #region  Volume (6)
+
     public string Volume_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"Разрешено к размещению", "объем, куб. м","6")]
+    [FormProperty(true, "Разрешено к размещению", "объем, куб. м", "6")]
     public RamAccess<string> Volume
     {
         get
@@ -433,13 +412,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(Volume)]).Value = Volume_DB;
                 return (RamAccess<string>)Dictionary[nameof(Volume)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
-                rm.PropertyChanged += VolumeValueChanged;
-                Dictionary.Add(nameof(Volume), rm);
-                return (RamAccess<string>)Dictionary[nameof(Volume)];
-            }
+            var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
+            rm.PropertyChanged += VolumeValueChanged;
+            Dictionary.Add(nameof(Volume), rm);
+            return (RamAccess<string>)Dictionary[nameof(Volume)];
         }
         set
         {
@@ -448,32 +424,30 @@ public class Form23 : Form2
         }
     }
 
-
-    private void VolumeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void VolumeValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    Volume_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-                {
-                    value1 = $"{doubleValue:0.######################################################e+00}";
-                }
+                Volume_DB = value1;
+                return;
             }
-            Volume_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        Volume_DB = value1;
     }
+
     private bool Volume_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -486,26 +460,28 @@ public class Form23 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //Volume property
+
     #endregion
 
-    #region  Mass
+    #region  Mass (7)
+
     public string Mass_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"Разрешено к размещению","масса, т","7")]
+    [FormProperty(true, "Разрешено к размещению", "масса, т", "7")]
     public RamAccess<string> Mass
     {
         get
@@ -515,13 +491,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(Mass)]).Value = Mass_DB;
                 return (RamAccess<string>)Dictionary[nameof(Mass)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
-                rm.PropertyChanged += MassValueChanged;
-                Dictionary.Add(nameof(Mass), rm);
-                return (RamAccess<string>)Dictionary[nameof(Mass)];
-            }
+            var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
+            rm.PropertyChanged += MassValueChanged;
+            Dictionary.Add(nameof(Mass), rm);
+            return (RamAccess<string>)Dictionary[nameof(Mass)];
         }
         set
         {
@@ -530,32 +503,30 @@ public class Form23 : Form2
         }
     }
 
-
-    private void MassValueChanged(object Value, PropertyChangedEventArgs args)
+    private void MassValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    Mass_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-                {
-                    value1 = $"{doubleValue:0.######################################################e+00}";
-                }
+                Mass_DB = value1;
+                return;
             }
-            Mass_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        Mass_DB = value1;
     }
+
     private bool Mass_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -572,26 +543,28 @@ public class Form23 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //Mass Property
+
     #endregion
 
-    #region  QuantityOZIII
+    #region  QuantityOZIII (8)
+
     public string QuantityOZIII_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"Разрешено к размещению","количество ОЗИИИ, шт","8")]
+    [FormProperty(true, "Разрешено к размещению", "количество ОЗИИИ, шт", "8")]
     public RamAccess<string> QuantityOZIII
     {
         get
@@ -601,13 +574,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
                 return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
-                rm.PropertyChanged += QuantityOZIIIValueChanged;
-                Dictionary.Add(nameof(QuantityOZIII), rm);
-                return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
-            }
+            var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
+            rm.PropertyChanged += QuantityOZIIIValueChanged;
+            Dictionary.Add(nameof(QuantityOZIII), rm);
+            return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
         }
         set
         {
@@ -617,13 +587,14 @@ public class Form23 : Form2
     }
     // positive int.
 
-    private void QuantityOZIIIValueChanged(object Value, PropertyChangedEventArgs args)
+    private void QuantityOZIIIValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIII_DB = ((RamAccess<string>)Value).Value;
+            QuantityOZIII_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool QuantityOZIII_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -636,28 +607,27 @@ public class Form23 : Form2
         {
             return true;
         }
-        try
-        {
-            if (int.Parse(value.Value) <= 0)
-            {
-                value.AddError("Число должно быть больше нуля");
-                return false;
-            }
-        }
-        catch (Exception)
+        if (!int.TryParse(value.Value, out var intValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (intValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //QuantityOZIII property
+
     #endregion
 
-    #region  SummaryActivity
+    #region  SummaryActivity (9)
+
     public string SummaryActivity_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"Разрешено к размещению","суммарная активность, Бк","9")]
+    [FormProperty(true, "Разрешено к размещению", "суммарная активность, Бк", "9")]
     public RamAccess<string> SummaryActivity
     {
         get
@@ -667,13 +637,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(SummaryActivity)]).Value = SummaryActivity_DB;
                 return (RamAccess<string>)Dictionary[nameof(SummaryActivity)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(SummaryActivity_Validation, SummaryActivity_DB);
-                rm.PropertyChanged += SummaryActivityValueChanged;
-                Dictionary.Add(nameof(SummaryActivity), rm);
-                return (RamAccess<string>)Dictionary[nameof(SummaryActivity)];
-            }
+            var rm = new RamAccess<string>(SummaryActivity_Validation, SummaryActivity_DB);
+            rm.PropertyChanged += SummaryActivityValueChanged;
+            Dictionary.Add(nameof(SummaryActivity), rm);
+            return (RamAccess<string>)Dictionary[nameof(SummaryActivity)];
         }
         set
         {
@@ -682,32 +649,30 @@ public class Form23 : Form2
         }
     }
 
-
-    private void SummaryActivityValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SummaryActivityValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    SummaryActivity_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-                {
-                    value1 = $"{doubleValue:0.######################################################e+00}";
-                }
+                SummaryActivity_DB = value1;
+                return;
             }
-            SummaryActivity_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        SummaryActivity_DB = value1;
     }
+
     private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -724,26 +689,28 @@ public class Form23 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //SummaryActivity property
+
     #endregion
 
-    #region  DocumentNumber
+    #region  DocumentNumber (10)
+
     public string DocumentNumber_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Наименование и реквизиты документа на размещение РАО","номер","10")]
+    [FormProperty(true, "Наименование и реквизиты документа на размещение РАО", "номер", "10")]
     public RamAccess<string> DocumentNumber
     {
         get
@@ -753,13 +720,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(DocumentNumber)]).Value = DocumentNumber_DB;
                 return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
-                rm.PropertyChanged += DocumentNumberValueChanged;
-                Dictionary.Add(nameof(DocumentNumber), rm);
-                return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
-            }
+            var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
+            rm.PropertyChanged += DocumentNumberValueChanged;
+            Dictionary.Add(nameof(DocumentNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
         }
         set
         {
@@ -768,14 +732,14 @@ public class Form23 : Form2
         }
     }
 
-
-    private void DocumentNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void DocumentNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            DocumentNumber_DB = ((RamAccess<string>)Value).Value;
+            DocumentNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -786,13 +750,15 @@ public class Form23 : Form2
         }
         return true;
     }
-    //DocumentNumber property
+
     #endregion
 
-    #region DocumentDate 
+    #region DocumentDate (11)
+
     public string DocumentDate_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Наименование и реквизиты документа на размещение РАО","дата","11")]
+    [FormProperty(true, "Наименование и реквизиты документа на размещение РАО", "дата", "11")]
     public RamAccess<string> DocumentDate
     {
         get
@@ -802,13 +768,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(DocumentDate)]).Value = DocumentDate_DB;
                 return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
-                rm.PropertyChanged += DocumentDateValueChanged;
-                Dictionary.Add(nameof(DocumentDate), rm);
-                return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
-            }
+            var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
+            rm.PropertyChanged += DocumentDateValueChanged;
+            Dictionary.Add(nameof(DocumentDate), rm);
+            return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
         }
         set
         {
@@ -818,11 +781,11 @@ public class Form23 : Form2
     }
     //if change this change validation
 
-    private void DocumentDateValueChanged(object Value, PropertyChangedEventArgs args)
+    private void DocumentDateValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            var tmp = ((RamAccess<string>)Value).Value;
+            var tmp = ((RamAccess<string>)value).Value;
             Regex b1 = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b1.IsMatch(tmp))
             {
@@ -831,41 +794,36 @@ public class Form23 : Form2
             DocumentDate_DB = tmp;
         }
     }
+
     private bool DocumentDate_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
         var tmp = value.Value;
-        Regex b1 = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b1.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        try { DateTimeOffset.Parse(tmp); }
-        catch (Exception)
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
-    //DocumentDate property
+
     #endregion
 
-    #region  ExpirationDate
+    #region  ExpirationDate (12)
+
     public string ExpirationDate_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Наименование и реквизиты документа на размещение РАО","срок действия","12")]
+    [FormProperty(true, "Наименование и реквизиты документа на размещение РАО", "срок действия", "12")]
     public RamAccess<string> ExpirationDate
     {
         get
@@ -875,13 +833,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(ExpirationDate)]).Value = ExpirationDate_DB;
                 return (RamAccess<string>)Dictionary[nameof(ExpirationDate)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ExpirationDate_Validation, ExpirationDate_DB);
-                rm.PropertyChanged += ExpirationDateValueChanged;
-                Dictionary.Add(nameof(ExpirationDate), rm);
-                return (RamAccess<string>)Dictionary[nameof(ExpirationDate)];
-            }
+            var rm = new RamAccess<string>(ExpirationDate_Validation, ExpirationDate_DB);
+            rm.PropertyChanged += ExpirationDateValueChanged;
+            Dictionary.Add(nameof(ExpirationDate), rm);
+            return (RamAccess<string>)Dictionary[nameof(ExpirationDate)];
         }
         set
         {
@@ -890,55 +845,46 @@ public class Form23 : Form2
         }
     }
 
-
-    private void ExpirationDateValueChanged(object Value, PropertyChangedEventArgs args)
+    private void ExpirationDateValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value;
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
-            var tmp = ((RamAccess<string>)Value).Value;
-            Regex b1 = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b1.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            ExpirationDate_DB = tmp;
+            tmp = tmp.Insert(6, "20");
         }
+        ExpirationDate_DB = tmp;
     }
+
     private bool ExpirationDate_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if(string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
         var tmp = value.Value;
-        Regex b1 = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-        if (b1.IsMatch(tmp))
+        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        Regex a = new("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-        if (!a.IsMatch(tmp))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        try { DateTimeOffset.Parse(tmp); }
-        catch (Exception)
+        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
-    //ExpirationDate property
+
     #endregion
 
-    #region  DocumentName
+    #region  DocumentName (13)
+
     public string DocumentName_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Наименование и реквизиты документа на размещение РАО","наименование документа","13")]
+    [FormProperty(true, "Наименование и реквизиты документа на размещение РАО", "наименование документа", "13")]
     public RamAccess<string> DocumentName
     {
         get
@@ -948,13 +894,10 @@ public class Form23 : Form2
                 ((RamAccess<string>)Dictionary[nameof(DocumentName)]).Value = DocumentName_DB;
                 return (RamAccess<string>)Dictionary[nameof(DocumentName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(DocumentName_Validation, DocumentName_DB);
-                rm.PropertyChanged += DocumentNameValueChanged;
-                Dictionary.Add(nameof(DocumentName), rm);
-                return (RamAccess<string>)Dictionary[nameof(DocumentName)];
-            }
+            var rm = new RamAccess<string>(DocumentName_Validation, DocumentName_DB);
+            rm.PropertyChanged += DocumentNameValueChanged;
+            Dictionary.Add(nameof(DocumentName), rm);
+            return (RamAccess<string>)Dictionary[nameof(DocumentName)];
         }
         set
         {
@@ -963,14 +906,14 @@ public class Form23 : Form2
         }
     }
 
-
-    private void DocumentNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void DocumentNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            DocumentName_DB = ((RamAccess<string>)Value).Value;
+            DocumentName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool DocumentName_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -981,7 +924,9 @@ public class Form23 : Form2
         }
         return true;
     }
-    //DocumentName property
+
+    #endregion 
+    
     #endregion
 
     #region IExcel
@@ -1050,106 +995,206 @@ public class Form23 : Form2
     #endregion
 
     #region IDataGridColumn
+
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns != null) return _DataGridColumns;
 
         #region NumberInOrder (1)
-        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        NumberInOrderR.SetSizeColToAllLevels(50);
-        NumberInOrderR.Binding = nameof(NumberInOrder);
-        NumberInOrderR.Blocked = true;
-        NumberInOrderR.ChooseLine = true;
+
+        var numberInOrderR = ((FormPropertyAttribute)typeof(Form)
+                .GetProperty(nameof(NumberInOrder))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD();
+        if (numberInOrderR != null)
+        {
+            numberInOrderR.SetSizeColToAllLevels(50);
+            numberInOrderR.Binding = nameof(NumberInOrder);
+            numberInOrderR.Blocked = true;
+            numberInOrderR.ChooseLine = true;
+        }
+        
         #endregion
 
         #region StoragePlaceName (2)
-        var StoragePlaceNameR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        StoragePlaceNameR.SetSizeColToAllLevels(163);
-        StoragePlaceNameR.Binding = nameof(StoragePlaceName);
-        NumberInOrderR += StoragePlaceNameR;
+
+        var storagePlaceNameR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(StoragePlaceName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (storagePlaceNameR != null)
+        {
+            storagePlaceNameR.SetSizeColToAllLevels(163);
+            storagePlaceNameR.Binding = nameof(StoragePlaceName);
+            numberInOrderR += storagePlaceNameR;
+        }
+
         #endregion
 
         #region StoragePlaceCode (3)
-        var StoragePlaceCodeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        StoragePlaceCodeR.SetSizeColToAllLevels(88);
-        StoragePlaceCodeR.Binding = nameof(StoragePlaceCode);
-        NumberInOrderR += StoragePlaceCodeR;
+
+        var storagePlaceCodeR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(StoragePlaceCode))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (storagePlaceCodeR != null)
+        {
+            storagePlaceCodeR.SetSizeColToAllLevels(88);
+            storagePlaceCodeR.Binding = nameof(StoragePlaceCode);
+            numberInOrderR += storagePlaceCodeR;
+        }
+
         #endregion
 
         #region ProjectVolume (4)
-        var ProjectVolumeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(ProjectVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        ProjectVolumeR.SetSizeColToAllLevels(133);
-        ProjectVolumeR.Binding = nameof(ProjectVolume);
-        NumberInOrderR += ProjectVolumeR;
+
+        var projectVolumeR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(ProjectVolume))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (projectVolumeR != null)
+        {
+            projectVolumeR.SetSizeColToAllLevels(133);
+            projectVolumeR.Binding = nameof(ProjectVolume);
+            numberInOrderR += projectVolumeR;
+        }
+
         #endregion
 
         #region CodeRAO (5)
-        var CodeRAOR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        CodeRAOR.SetSizeColToAllLevels(88);
-        CodeRAOR.Binding = nameof(CodeRAO);
-        NumberInOrderR += CodeRAOR;
+
+        var codeRaoR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(CodeRAO))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (codeRaoR != null)
+        {
+            codeRaoR.SetSizeColToAllLevels(88);
+            codeRaoR.Binding = nameof(CodeRAO);
+            numberInOrderR += codeRaoR;
+        }
+
         #endregion
 
         #region Volume (6)
-        var VolumeR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(Volume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        VolumeR.SetSizeColToAllLevels(163);
-        VolumeR.Binding = nameof(Volume);
-        NumberInOrderR += VolumeR;
+
+        var volumeR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(Volume))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (volumeR != null)
+        {
+            volumeR.SetSizeColToAllLevels(163);
+            volumeR.Binding = nameof(Volume);
+            numberInOrderR += volumeR;
+        }
+
         #endregion
 
         #region Mass (7)
-        var MassR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(Mass)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        MassR.SetSizeColToAllLevels(123);
-        MassR.Binding = nameof(Mass);
-        NumberInOrderR += MassR;
+
+        var massR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(Mass))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (massR != null)
+        {
+            massR.SetSizeColToAllLevels(123);
+            massR.Binding = nameof(Mass);
+            numberInOrderR += massR;
+        }
+
         #endregion
 
         #region QuantityOZIII (8)
-        var QuantityOZIIIR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        QuantityOZIIIR.SetSizeColToAllLevels(123);
-        QuantityOZIIIR.Binding = nameof(QuantityOZIII);
-        NumberInOrderR += QuantityOZIIIR;
+
+        var quantityOziiiR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(QuantityOZIII))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        quantityOziiiR.SetSizeColToAllLevels(123);
+        quantityOziiiR.Binding = nameof(QuantityOZIII);
+        numberInOrderR += quantityOziiiR;
+        
         #endregion
 
         #region SummaryActivity (9)
-        var SummaryActivityR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(SummaryActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        SummaryActivityR.SetSizeColToAllLevels(163);
-        SummaryActivityR.Binding = nameof(SummaryActivity);
-        NumberInOrderR += SummaryActivityR;
+
+        var summaryActivityR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(SummaryActivity))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD(numberInOrderR);
+        summaryActivityR.SetSizeColToAllLevels(163);
+        summaryActivityR.Binding = nameof(SummaryActivity);
+        numberInOrderR += summaryActivityR;
+        
         #endregion
 
         #region DocumentNumber (10)
-        var DocumentNumberR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        DocumentNumberR.SetSizeColToAllLevels(103);
-        DocumentNumberR.Binding = nameof(DocumentNumber);
-        NumberInOrderR += DocumentNumberR;
+
+        var documentNumberR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(DocumentNumber))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD(numberInOrderR);
+        documentNumberR.SetSizeColToAllLevels(103);
+        documentNumberR.Binding = nameof(DocumentNumber);
+        numberInOrderR += documentNumberR;
+        
         #endregion
 
         #region DocumentDate (11)
-        var DocumentDateR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        DocumentDateR.SetSizeColToAllLevels(88);
-        DocumentDateR.Binding = nameof(DocumentDate);
-        NumberInOrderR += DocumentDateR;
+
+        var documentDateR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(DocumentDate))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD(numberInOrderR);
+        documentDateR.SetSizeColToAllLevels(88);
+        documentDateR.Binding = nameof(DocumentDate);
+        numberInOrderR += documentDateR;
+        
         #endregion
 
         #region ExpirationDate (12)
-        var ExpirationDateR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(ExpirationDate)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        ExpirationDateR.SetSizeColToAllLevels(163);
-        ExpirationDateR.Binding = nameof(ExpirationDate);
-        NumberInOrderR += ExpirationDateR;
+        var expirationDateR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(ExpirationDate))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD(numberInOrderR);
+        expirationDateR.SetSizeColToAllLevels(163);
+        expirationDateR.Binding = nameof(ExpirationDate);
+        numberInOrderR += expirationDateR;
         #endregion
 
         #region DocumentName (13)
-        var DocumentNameR = ((FormPropertyAttribute)typeof(Form23).GetProperty(nameof(DocumentName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        DocumentNameR.SetSizeColToAllLevels(163);
-        DocumentNameR.Binding = nameof(DocumentName);
-        NumberInOrderR += DocumentNameR;
+
+        var documentNameR = ((FormPropertyAttribute)typeof(Form23)
+                .GetProperty(nameof(DocumentName))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD(numberInOrderR);
+        documentNameR.SetSizeColToAllLevels(163);
+        documentNameR.Binding = nameof(DocumentName);
+        numberInOrderR += documentNameR;
+        
         #endregion
 
-        _DataGridColumns = NumberInOrderR;
+        _DataGridColumns = numberInOrderR;
 
         return _DataGridColumns;
     }
+
     #endregion
 }

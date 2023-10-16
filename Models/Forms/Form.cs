@@ -11,7 +11,7 @@ using OfficeOpenXml;
 
 namespace Models.Forms;
 
-public abstract class Form : INotifyPropertyChanged, IKey, INumberInOrder, IDataGridColumn
+public abstract class Form : IKey, IDataGridColumn
 {
     public int Id { get; set; }
 
