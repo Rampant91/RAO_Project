@@ -371,10 +371,10 @@ public class Form210 : Form2
         }
     }
 
-    private void AvgGammaRaysDosePowerValueChanged(object Value, PropertyChangedEventArgs args)
+    private void AvgGammaRaysDosePowerValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
             value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
@@ -614,10 +614,10 @@ public class Form210 : Form2
         }
     }
 
-    private void WasteDensityBetaValueChanged(object Value, PropertyChangedEventArgs args)
+    private void WasteDensityBetaValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
             value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
@@ -670,7 +670,7 @@ public class Form210 : Form2
 
     #endregion
 
-    #region  FcpNumber (19)
+    #region  FcpNumber (11)
 
     public string FcpNumber_DB { get; set; } = "";
 

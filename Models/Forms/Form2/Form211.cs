@@ -381,10 +381,10 @@ public class Form211 : Form2
         }
     }
 
-    private void SpecificActivityOfPlotValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SpecificActivityOfPlotValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
             value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
