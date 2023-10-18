@@ -16,30 +16,28 @@ internal class DeleteFormAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        var answer = await MainWindowVM.ShowMessage.Handle(new List<string>
+            { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
+        if (answer is "Да")
         {
-            var answer = await MainWindowVM.ShowMessage.Handle(new List<string>
-                { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
-            if (answer is "Да")
+            var mainWindow = Desktop.MainWindow as MainWindow;
+            if (mainWindow.SelectedReports.Count() != 0)
             {
-                var mainWindow = Desktop.MainWindow as MainWindow;
-                if (mainWindow.SelectedReports.Count() != 0)
+                var selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
+                var selectedReportsFirst = mainWindow.SelectedReports.First() as Reports;
+                if (parameter is IEnumerable param)
                 {
-                    var selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
-                    var selectedReportsFirst = mainWindow.SelectedReports.First() as Reports;
-                    if (parameter is IEnumerable param)
+
+                    foreach (var item in param)
                     {
-
-                        foreach (var item in param)
-                        {
-                            selectedReportsFirst.Report_Collection.Remove((Report)item);
-                        }
+                        selectedReportsFirst.Report_Collection.Remove((Report)item);
                     }
-
-                    mainWindow.SelectedReports = selectedReports;
                 }
 
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                mainWindow.SelectedReports = selectedReports;
             }
+
+            await StaticConfiguration.DBModel.SaveChangesAsync();
         }
     }
 }
