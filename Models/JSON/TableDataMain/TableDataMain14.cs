@@ -55,13 +55,16 @@ public class TableDataMain14
     public string Owner { get; set; }
 
     //"Документ","вид", "15"
-    [JsonProperty("DocVid")] public string DocumentVid { get; set; }
+    [JsonProperty("DocVid")] 
+    public string DocumentVid { get; set; }
 
     //"Документ", "номер", "16"
-    [JsonProperty("DocN")] public string DocumentNumber { get; set; }
+    [JsonProperty("DocN")] 
+    public string DocumentNumber { get; set; }
 
     //"Документ", "дата", "17"
-    [JsonProperty("DocDate")] public string DocumentDate { get; set; }
+    [JsonProperty("DocDate")] 
+    public string DocumentDate { get; set; }
 
     //"Код ОКПО", "поставщика или получателя", "18"
     [JsonProperty("OkpoPIP")]

@@ -12,12 +12,15 @@ using OfficeOpenXml;
 
 namespace Models.Forms;
 
-public class Note : IKey, INumberInOrder, IDataGridColumn
+public class Note : IKey, IDataGridColumn
 {
+    #region Constructor
+    
     public Note()
     {
         Init();
     }
+
     public Note(string rowNumber, string graphNumber, string comment)
     {
         RowNumber.Value = rowNumber;
@@ -25,12 +28,7 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
         Comment.Value = comment;
         Init();
     }
-    protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
-    {
-        OnPropertyChanged(args.PropertyName);
-    }
-    [NotMapped]
-    Dictionary<string, RamAccess> Dictionary { get; set; } = new();
+
     public void Init()
     {
         RowNumber_Validation(RowNumber);
@@ -38,13 +36,21 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
         Comment_Validation(Comment);
     }
 
+    #endregion
+
+    [NotMapped]
+    Dictionary<string, RamAccess> Dictionary { get; set; } = new();
+
     public int Id { get; set; }
 
     public void SetOrder(long index) { }
+
     public long Order { get;set; }
 
-    #region RowNUmber
+    #region RowNumber
+
     public string? RowNumber_DB { get; set; }
+
     [NotMapped]
     [FormProperty(false, "№ строки", "1")]
 #nullable enable
@@ -57,13 +63,10 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
                 ((RamAccess<string?>)Dictionary[nameof(RowNumber)]).Value = RowNumber_DB;
                 return (RamAccess<string?>)Dictionary[nameof(RowNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
-                rm.PropertyChanged += RowNumberValueChanged;
-                Dictionary.Add(nameof(RowNumber), rm);
-                return (RamAccess<string?>)Dictionary[nameof(RowNumber)];
-            }
+            var rm = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
+            rm.PropertyChanged += RowNumberValueChanged;
+            Dictionary.Add(nameof(RowNumber), rm);
+            return (RamAccess<string?>)Dictionary[nameof(RowNumber)];
         }
         set
         {
@@ -71,6 +74,7 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             OnPropertyChanged(nameof(RowNumber));
         }
     }
+
     private void RowNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -78,15 +82,19 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             RowNumber_DB = ((RamAccess<string?>)value).Value;
         }
     }
-    private bool RowNumber_Validation(RamAccess<string?> value)
+
+    private static bool RowNumber_Validation(RamAccess<string?> value)
     {
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
     #region GraphNumber
+
     public string? GraphNumber_DB { get; set; }
+
     [NotMapped]
     [FormProperty(false, "№ графы", "2")]
 #nullable enable
@@ -99,13 +107,10 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
                 ((RamAccess<string?>)Dictionary[nameof(GraphNumber)]).Value = GraphNumber_DB;
                 return (RamAccess<string?>)Dictionary[nameof(GraphNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
-                rm.PropertyChanged += GraphNumberValueChanged;
-                Dictionary.Add(nameof(GraphNumber), rm);
-                return (RamAccess<string?>)Dictionary[nameof(GraphNumber)];
-            }
+            var rm = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
+            rm.PropertyChanged += GraphNumberValueChanged;
+            Dictionary.Add(nameof(GraphNumber), rm);
+            return (RamAccess<string?>)Dictionary[nameof(GraphNumber)];
         }
         set
         {
@@ -113,6 +118,7 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             OnPropertyChanged(nameof(GraphNumber));
         }
     }
+
     private void GraphNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -120,15 +126,19 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             GraphNumber_DB = ((RamAccess<string?>)value).Value;
         }
     }
-    private bool GraphNumber_Validation(RamAccess<string?> value)
+
+    private static bool GraphNumber_Validation(RamAccess<string?> value)
     {
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
     #region Comment
+
     public string? Comment_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(false, "Пояснение", "3")]
     public RamAccess<string> Comment
@@ -140,13 +150,10 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
                 ((RamAccess<string>)Dictionary[nameof(Comment)]).Value = Comment_DB;
                 return (RamAccess<string>)Dictionary[nameof(Comment)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(Comment_Validation, Comment_DB);
-                rm.PropertyChanged += CommentValueChanged;
-                Dictionary.Add(nameof(Comment), rm);
-                return (RamAccess<string>)Dictionary[nameof(Comment)];
-            }
+            var rm = new RamAccess<string>(Comment_Validation, Comment_DB);
+            rm.PropertyChanged += CommentValueChanged;
+            Dictionary.Add(nameof(Comment), rm);
+            return (RamAccess<string>)Dictionary[nameof(Comment)];
         }
         set
         {
@@ -154,6 +161,7 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             OnPropertyChanged(nameof(Comment));
         }
     }
+
     private void CommentValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
@@ -161,21 +169,21 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             Comment_DB = ((RamAccess<string>)value).Value;
         }
     }
-    private bool Comment_Validation(RamAccess<string> value)
+
+    private static bool Comment_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
     //Для валидации
-    public bool Object_Validation()
-    {
-        return true;
-    }
+    //public bool Object_Validation() => true;
     //Для валидации
 
-    //Property Changed
+    #region PropertyChanged
+    
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         if (PropertyChanged != null)
@@ -183,15 +191,25 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
             PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
+
     public event PropertyChangedEventHandler PropertyChanged;
-    //Property Changed
+
+    protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+    {
+        OnPropertyChanged(args.PropertyName);
+    }
+
+    #endregion
+
     #region IExcel
+
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         RowNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
         GraphNumber_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
         Comment_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
     }
+
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         worksheet.Cells[row + 0, column + 0].Value = RowNumber_DB;
@@ -200,35 +218,49 @@ public class Note : IKey, INumberInOrder, IDataGridColumn
         return 3;
     }
 
-    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        worksheet.Cells[row + 0, column + 0].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[row + (!transpon ? 1 : 0), column + (transpon ? 1 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
-        worksheet.Cells[row + (!transpon ? 2 : 0), column + (transpon ? 2 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0];
+        worksheet.Cells[row + 0, column + 0].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Note,Models")?.GetProperty(nameof(RowNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First()!).Names[0];
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Note,Models")?.GetProperty(nameof(GraphNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First()!).Names[0];
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Note,Models")?.GetProperty(nameof(Comment))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First()!).Names[0];
         return 3;
     }
+
     #endregion
 
     #region IDataGridColumn
+
     public DataGridColumns GetColumnStructure(string param = "")
     {
-
-        var RowNumberN = ((FormPropertyAttribute)typeof(Note).GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        RowNumberN.SizeCol = 100;
-        RowNumberN.Binding = nameof(RowNumber);
+        var rowNumberN = ((FormPropertyAttribute)typeof(Note)
+                .GetProperty(nameof(RowNumber))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault()!)
+            .GetDataColumnStructureD();
+        rowNumberN.SizeCol = 100;
+        rowNumberN.Binding = nameof(RowNumber);
             
-        var GraphNumberN = ((FormPropertyAttribute)typeof(Note).GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        GraphNumberN.SizeCol = 100;
-        GraphNumberN.Binding = nameof(GraphNumber);
-        RowNumberN += GraphNumberN;
+        var graphNumberN = ((FormPropertyAttribute)typeof(Note)
+                .GetProperty(nameof(GraphNumber))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault()!)
+            .GetDataColumnStructureD();
+        graphNumberN.SizeCol = 100;
+        graphNumberN.Binding = nameof(GraphNumber);
+        rowNumberN += graphNumberN;
 
-        var CommentN = ((FormPropertyAttribute)typeof(Note).GetProperty(nameof(Comment)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        CommentN.SizeCol = 660;
-        CommentN.Binding = nameof(Comment);
-        CommentN.IsTextWrapping = true;
-        RowNumberN += CommentN;
+        var commentN = ((FormPropertyAttribute)typeof(Note)
+                .GetProperty(nameof(Comment))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault()!)
+            .GetDataColumnStructureD();
+        commentN.SizeCol = 660;
+        commentN.Binding = nameof(Comment);
+        commentN.IsTextWrapping = true;
+        rowNumberN += commentN;
 
-        return RowNumberN;
+        return rowNumberN;
     }
+
     #endregion
 }

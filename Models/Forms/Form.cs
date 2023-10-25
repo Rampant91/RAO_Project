@@ -192,6 +192,8 @@ public abstract class Form : IKey, IDataGridColumn
 
     #region Convert
 
+    #region ConvertFromExcel
+
     private protected static string ConvertFromExcelDate(object value)
     {
         var strValue = Convert.ToString(value);
@@ -218,6 +220,10 @@ public abstract class Form : IKey, IDataGridColumn
             : strValue;
     }
 
+    #endregion
+
+    #region ConvertToExcel
+    
     private protected static object ConvertToExcelDate(string value)
     {
         return value is null or "" or "-"
@@ -251,6 +257,8 @@ public abstract class Form : IKey, IDataGridColumn
             ? "-"
             : value;
     }
+
+    #endregion
 
     private static string ReplaceE(string numberE)
     {

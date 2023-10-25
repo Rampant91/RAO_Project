@@ -12,6 +12,13 @@ namespace Models.JSON;
 [JsonConverter(typeof(JsonFormConverter))]
 public abstract class JsonForm
 {
+    #region ExecutorDataTable
+
+    [JsonProperty("form_main_data")]
+    public ExecutorData ExecutorData { get; set; }
+
+    #endregion
+
     #region Properties
 
     #region Comments
@@ -27,6 +34,8 @@ public abstract class JsonForm
     public byte CorrectionNumber { get; set; }
 
     #endregion
+
+    
 
     #region FormNum
 
@@ -245,8 +254,7 @@ public class NotePointer
 
 public abstract class JsonForm1 : JsonForm
 {
-    [JsonProperty("form_main_data")]
-    public ExecutorData ExecutorData { get; set; }
+    
 }
 
 public class JsonForm11 : JsonForm1

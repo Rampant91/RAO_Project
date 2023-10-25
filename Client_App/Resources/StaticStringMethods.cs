@@ -6,6 +6,8 @@ namespace Client_App.Resources;
 
 internal static class StaticStringMethods
 {
+    #region ComparePasParam
+    
     internal static bool ComparePasParam(string? nameDb, string? namePas)
     {
         if (nameDb == null || namePas == null)
@@ -21,12 +23,20 @@ internal static class StaticStringMethods
                || TranslateToRus(nameDb).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
     }
 
+    #endregion
+
+    #region ConvertDateToYear
+
     internal static string ConvertDateToYear(string? date)
     {
-        return DateTime.TryParse(date, out var dateTime) 
+        return DateTime.TryParse(date, out var dateTime)
             ? dateTime.Year.ToString()
             : "0000";
     }
+
+    #endregion
+
+    #region ConvertPrimToDash
 
     internal static string ConvertPrimToDash(string? num)
     {
@@ -46,12 +56,20 @@ internal static class StaticStringMethods
         return num;
     }
 
+    #endregion
+
+    #region RemoveForbiddenChars
+
     internal static string RemoveForbiddenChars(string str)
     {
         str = str.Replace(Environment.NewLine, "").Trim();
         str = Regex.Replace(str, "[\\\\/:*?\"<>|]", "");
         return str;
     }
+
+    #endregion
+
+    #region StringDateReverse
 
     internal static string StringDateReverse(string date)
     {
@@ -66,12 +84,20 @@ internal static class StaticStringMethods
         return string.Join("", charArray);
     }
 
+    #endregion
+
+    #region StringReverse
+
     internal static string StringReverse(string str)
     {
         var charArray = str.Replace("_", "0").Replace("/", ".").Split(".");
         Array.Reverse(charArray);
         return string.Join("", charArray);
     }
+
+    #endregion
+
+    #region TranslateToEng
 
     internal static string TranslateToEng(string pasName)
     {
@@ -105,6 +131,10 @@ internal static class StaticStringMethods
         }
         return newPasName;
     }
+    
+    #endregion
+
+    #region TranslateToRus
 
     internal static string TranslateToRus(string pasName)
     {
@@ -137,5 +167,7 @@ internal static class StaticStringMethods
             else newPasName += ch;
         }
         return newPasName;
-    }
+    } 
+
+    #endregion
 }

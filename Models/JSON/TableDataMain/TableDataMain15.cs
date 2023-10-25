@@ -5,10 +5,12 @@ namespace Models.JSON.TableDataMain;
 public class TableDataMain15
 {
     //"Сведения об операции", "код", "2"
-    [JsonProperty("OpCod")] public string OperationCode { get; set; }
+    [JsonProperty("OpCod")] 
+    public string OperationCode { get; set; }
 
     //"Сведения об операции", "дата", "3"
-    [JsonProperty("OpDate")] public string OperationDate { get; set; }
+    [JsonProperty("OpDate")] 
+    public string OperationDate { get; set; }
 
     //"Сведения об отработавших закрытых источниках ионизирующего излучения", "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ", "4"
     [JsonProperty("PaspN")]
@@ -43,22 +45,28 @@ public class TableDataMain15
     public string StatusRAO { get; set; }
 
     //"Документ","вид", "12"
-    [JsonProperty("DocVid")] public string DocumentVid { get; set; }
+    [JsonProperty("DocVid")] 
+    public string DocumentVid { get; set; }
 
     //"Документ", "номер", "13"
-    [JsonProperty("DocN")] public string DocumentNumber { get; set; }
+    [JsonProperty("DocN")] 
+    public string DocumentNumber { get; set; }
 
     //"Документ", "дата", "14"
-    [JsonProperty("DocDate")] public string DocumentDate { get; set; }
+    [JsonProperty("DocDate")] 
+    public string DocumentDate { get; set; }
 
     //"Код ОКПО","поставщика или получателя", "15"
-    [JsonProperty("OkpoPIP")] public string ProviderOrRecieverOKPO { get; set; }
+    [JsonProperty("OkpoPIP")] 
+    public string ProviderOrRecieverOKPO { get; set; }
 
     //"Код ОКПО", "перевозчика", "16"
-    [JsonProperty("OkpoPrv")] public string TransporterOKPO { get; set; }
+    [JsonProperty("OkpoPrv")] 
+    public string TransporterOKPO { get; set; }
 
     //"Прибор (установка), УКТ или иная упаковка", "наименование","17"
-    [JsonProperty("PrName")] public string PackName { get; set; }
+    [JsonProperty("PrName")] 
+    public string PackName { get; set; }
 
     //"Прибор (установка), УКТ или иная упаковка", "тип", "18"
     [JsonProperty("UktPrTyp")]

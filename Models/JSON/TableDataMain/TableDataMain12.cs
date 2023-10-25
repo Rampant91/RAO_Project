@@ -5,10 +5,12 @@ namespace Models.JSON.TableDataMain;
 public class TableDataMain12
 {
     //"Сведения об операции", "код", "2"
-    [JsonProperty("OpCod")] public string OperationCode { get; set; }
+    [JsonProperty("OpCod")]
+    public string OperationCode { get; set; }
 
     //"Сведения об операции", "дата", "3"
-    [JsonProperty("OpDate")] public string OperationDate { get; set; }
+    [JsonProperty("OpDate")]
+    public string OperationDate { get; set; }
 
     //"Сведения из паспорта на изделие из обедненного урана", "номер паспорта", "4"
     [JsonProperty("PaspN")]
@@ -47,13 +49,16 @@ public class TableDataMain12
     public string Owner { get; set; }
 
     //"Документ","вид", "13"
-    [JsonProperty("DocVid")] public string DocumentVid { get; set; }
+    [JsonProperty("DocVid")]
+    public string DocumentVid { get; set; }
 
     //"Документ", "номер", "14"
-    [JsonProperty("DocN")] public string DocumentNumber { get; set; }
+    [JsonProperty("DocN")]
+    public string DocumentNumber { get; set; }
 
     //"Документ", "дата", "15"
-    [JsonProperty("DocDate")] public string DocumentDate { get; set; }
+    [JsonProperty("DocDate")]
+    public string DocumentDate { get; set; }
 
     //"Код ОКПО","поставщика или получателя", "16"
     [JsonProperty("OkpoPIP")]
