@@ -1,13 +1,15 @@
-﻿using Models.JSON.TableDataMain;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using Models.JSON.TableDataMain;
 
 namespace Models.JSON;
 
-//public abstract class TableData
-//{
 
-//}
+public abstract class TableDataA
+{
+    [JsonProperty("main_table")]
+    public abstract IList<TableDataMain.TableDataMain> TableData { get; set; }
+}
 
 public class TableData11
 {

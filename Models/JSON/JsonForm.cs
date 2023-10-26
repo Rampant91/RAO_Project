@@ -35,8 +35,6 @@ public abstract class JsonForm
 
     #endregion
 
-    
-
     #region FormNum
 
     [JsonProperty("form_no")]
