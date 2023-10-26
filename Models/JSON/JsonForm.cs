@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
+using Models.JSON.TableDataMain;
 using JsonConverter = Newtonsoft.Json.JsonConverter;
 using JsonConverterAttribute = Newtonsoft.Json.JsonConverterAttribute;
 
@@ -16,6 +17,13 @@ public abstract class JsonForm
 
     [JsonProperty("form_main_data")]
     public ExecutorData ExecutorData { get; set; }
+
+    #endregion
+
+    #region TableData
+
+    [JsonProperty("form_table_data")]
+    public TableDataA TableData { get; set; }
 
     #endregion
 
@@ -109,6 +117,8 @@ public abstract class JsonForm
         {
             if (typeof(JsonForm).IsAssignableFrom(objectType) && !objectType.IsAbstract)
                 return null; // pretend TableSortRuleConvert is not specified (thus avoiding a stack overflow)
+            if (typeof(TableDataMain.TableDataMain).IsAssignableFrom(objectType) && !objectType.IsAbstract)
+                return null; // pretend TableSortRuleConvert is not specified (thus avoiding a stack overflow)
             return base.ResolveContractConverter(objectType);
         }
     }
@@ -134,31 +144,40 @@ public abstract class JsonForm
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var jo = JObject.Load(reader);
-            return jo["form_no"].Value<string>() switch
+            switch (jo["form_no"]!.Value<string>())
             {
-                "form_1_1_2022" => JsonConvert.DeserializeObject<JsonForm11>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_2_2022" => JsonConvert.DeserializeObject<JsonForm12>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_3_2022" => JsonConvert.DeserializeObject<JsonForm13>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_4_2022" => JsonConvert.DeserializeObject<JsonForm14>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_5_2022" => JsonConvert.DeserializeObject<JsonForm15>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_6_2022" => JsonConvert.DeserializeObject<JsonForm16>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_7_2022" => JsonConvert.DeserializeObject<JsonForm17>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_8_2022" => JsonConvert.DeserializeObject<JsonForm18>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_1_9_2022" => JsonConvert.DeserializeObject<JsonForm19>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_1_2022" => JsonConvert.DeserializeObject<JsonForm21>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_2_2022" => JsonConvert.DeserializeObject<JsonForm22>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_3_2022" => JsonConvert.DeserializeObject<JsonForm23>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_4_2022" => JsonConvert.DeserializeObject<JsonForm24>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_5_2022" => JsonConvert.DeserializeObject<JsonForm25>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_6_2022" => JsonConvert.DeserializeObject<JsonForm26>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_7_2022" => JsonConvert.DeserializeObject<JsonForm27>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_8_2022" => JsonConvert.DeserializeObject<JsonForm28>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_9_2022" => JsonConvert.DeserializeObject<JsonForm29>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_10_2022" => JsonConvert.DeserializeObject<JsonForm210>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_11_2022" => JsonConvert.DeserializeObject<JsonForm211>(jo.ToString(), SpecifiedSubclassConversion),
-                "form_2_12_2022" => JsonConvert.DeserializeObject<JsonForm212>(jo.ToString(), SpecifiedSubclassConversion),
-                _ => null
-            };
+                case "form_1_1_2022":
+                {
+                    var jsonForm = JsonConvert.DeserializeObject<JsonForm11>(jo.ToString(), SpecifiedSubclassConversion);
+                    jsonForm.TableData.TableData.Clear();
+                    foreach (var tableDataMain in jo["form_table_data"]!["main_table"]!.ToObject<List<TableDataMain11>>(serializer))
+                    {
+                        jsonForm.TableData.TableData.Add(tableDataMain);
+                    }
+                    return jsonForm;
+                }
+                case "form_1_2_2022":
+                {
+                    var jsonForm = JsonConvert.DeserializeObject<JsonForm12>(jo.ToString(), SpecifiedSubclassConversion);
+                    jsonForm.TableData.TableData.Clear();
+                    foreach (var tableDataMain in jo["form_table_data"]!["main_table"]!.ToObject<List<TableDataMain12>>(serializer))
+                    {
+                        jsonForm.TableData.TableData.Add(tableDataMain);
+                    }
+                    return jsonForm;
+                }
+                case "form_1_3_2022":
+                {
+                    var jsonForm = JsonConvert.DeserializeObject<JsonForm13>(jo.ToString(), SpecifiedSubclassConversion);
+                    jsonForm.TableData.TableData.Clear();
+                    foreach (var tableDataMain in jo["form_table_data"]!["main_table"]!.ToObject<List<TableDataMain13>>(serializer))
+                    {
+                        jsonForm.TableData.TableData.Add(tableDataMain);
+                    }
+                    return jsonForm;
+                }
+                default: return null;
+            }
         }
 
         public override bool CanWrite => false;
@@ -194,8 +213,9 @@ public abstract class JsonForm
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
+
         }
-    }
+}
 
     #endregion
 
@@ -257,92 +277,38 @@ public abstract class JsonForm1 : JsonForm
 
 public class JsonForm11 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData11 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm12 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData12 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm13 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData13 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm14 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData14 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm15 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData15 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm16 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData16 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm17 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData17 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm18 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData18 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm19 : JsonForm1
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData19 TableData { get; set; }
-
-    #endregion
 }
 
 #endregion
@@ -351,128 +317,54 @@ public class JsonForm19 : JsonForm1
 
 public abstract class JsonForm2 : JsonForm
 {
-    [JsonProperty("form_main_data")]
-    public ExecutorData ExecutorData { get; set; }
 }
 
 public class JsonForm21 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData21 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm22 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData22 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm23 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData23 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm24 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData24 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm25 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData25 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm26 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData26 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm27 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData27 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm28 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData28 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm29 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData29 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm210 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData210 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm211 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData211 TableData { get; set; }
-
-    #endregion
 }
 
 public class JsonForm212 : JsonForm2
 {
-    #region TableData
-
-    [JsonProperty("form_table_data")]
-    public TableData212 TableData { get; set; }
-
-    #endregion
 }
 
 #endregion

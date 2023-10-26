@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain210
+public class TableDataMain210 : TableDataMain
 {
     //"null-2", "Наименование показателя", "2"
     [JsonProperty("g2")] public string IndicatorName { get; set; }

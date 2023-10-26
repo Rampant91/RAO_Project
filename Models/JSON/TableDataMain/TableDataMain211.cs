@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain211
+public class TableDataMain211 : TableDataMain
 {
     //"null-1", "null-2", "Наименование участка", "2"
     [JsonProperty("g2")] public string PlotName { get; set; }

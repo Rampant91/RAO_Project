@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain29
+public class TableDataMain29 : TableDataMain
 {
     //"null-2", "Наименование, номер выпуска сточных вод", "2"
     [JsonProperty("g2")] public string WasteSourceName { get; set; }

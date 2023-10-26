@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain12
+public class TableDataMain12 : TableDataMain
 {
     //"Сведения об операции", "код", "2"
     [JsonProperty("OpCod")]

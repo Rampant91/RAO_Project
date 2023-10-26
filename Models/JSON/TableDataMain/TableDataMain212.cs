@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain212
+public class TableDataMain212 : TableDataMain
 {
     //"null-2", "Код операции", "2"
     [JsonProperty("g2")] public string OperationCode { get; set; }
