@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain21 : TableDataMain
+public class TableDataMain21 : TableData
 {
     //"Установки переработки", "наименование", "2"
     [JsonProperty("g2")] public string RefineMachineName { get; set; }

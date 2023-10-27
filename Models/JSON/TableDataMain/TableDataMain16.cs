@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain16 : TableDataMain
+public class TableDataMain16 : TableData
 {
     //"Сведения об операции", "код", "2"
     [JsonProperty("OpCod")] public string OperationCode { get; set; }
@@ -11,36 +11,28 @@ public class TableDataMain16 : TableDataMain
     [JsonProperty("OpDate")] public string OperationDate { get; set; }
 
     //"null-4","Код РАО", "4"
-    [JsonProperty("RAOCod")]
-    public string CodeRAO { get; set; }
+    [JsonProperty("RAOCod")] public string CodeRAO { get; set; }
 
     //"null-5","Статус РАО", "5"
-    [JsonProperty("BCod")]
-    public string StatusRAO { get; set; }
+    [JsonProperty("BCod")] public string StatusRAO { get; set; }
 
     //"Количество", "объем без упаковки, куб. м", "6"
-    [JsonProperty("Kbm")]
-    public string Volume { get; set; }
+    [JsonProperty("Kbm")] public string Volume { get; set; }
 
     //"Количество", "масса без упаковки (нетто), т", "7"
-    [JsonProperty("Tonne")]
-    public string Mass { get; set; }
+    [JsonProperty("Tonne")] public string Mass { get; set; }
 
     //"null-8","Количество ОЗИИИ, шт", "8"
-    [JsonProperty("Sht")]
-    public string QuantityOZIII { get; set; }
+    [JsonProperty("Sht")] public string QuantityOZIII { get; set; }
 
     //"null-9","Основные радионуклиды", "9"
-    [JsonProperty("RAOCodMax")]
-    public string MainRadionuclids { get; set; }
+    [JsonProperty("RAOCodMax")] public string MainRadionuclids { get; set; }
 
     //"Суммарная активность, Бк", "тритий", "10"
-    [JsonProperty("ActTR")]
-    public string TritiumActivity { get; set; }
+    [JsonProperty("ActTR")] public string TritiumActivity { get; set; }
 
     //"Суммарная активность, Бк","бета-, гамма-излучающие радионуклиды (исключая тритий)", "11"
-    [JsonProperty("ActBG")]
-    public string BetaGammaActivity { get; set; }
+    [JsonProperty("ActBG")] public string BetaGammaActivity { get; set; }
 
     //"Суммарная активность, Бк","альфа-излучающие радионуклиды (исключая трансурановые)", "12"
     [JsonProperty("ActA")] public string AlphaActivity { get; set; }
@@ -64,38 +56,29 @@ public class TableDataMain16 : TableDataMain
     [JsonProperty("OkpoPIP")] public string ProviderOrRecieverOKPO { get; set; }
 
     //"ОКПО", "перевозчика","19"
-    [JsonProperty("OkpoPrv")]
-    public string TransporterOKPO { get; set; }
+    [JsonProperty("OkpoPrv")] public string TransporterOKPO { get; set; }
 
     //"Пункт хранения", "наименование","20"
-    [JsonProperty("PH_Name")]
-    public string StoragePlaceName { get; set; }
+    [JsonProperty("PH_Name")] public string StoragePlaceName { get; set; }
 
     //"Пункт хранения", "код","21"
-    [JsonProperty("PH_Cod")]
-    public string StoragePlaceCode { get; set; }
+    [JsonProperty("PH_Cod")] public string StoragePlaceCode { get; set; }
 
     //"null-22", "Код переработки / сортировки РАО", "22"
-    [JsonProperty("UpCod")]
-    public string RefineOrSortRAOCode { get; set; }
+    [JsonProperty("UpCod")] public string RefineOrSortRAOCode { get; set; }
 
     //"УКТ, упаковка или иная учетная единица", "наименование", "23"
-    [JsonProperty("PrName")]
-    public string PackName { get; set; }
+    [JsonProperty("PrName")] public string PackName { get; set; }
 
     //"УКТ, упаковка или иная учетная единица", "тип", "24"
-    [JsonProperty("UktPrTyp")]
-    public string PackType { get; set; }
+    [JsonProperty("UktPrTyp")] public string PackType { get; set; }
 
     //"УКТ, упаковка или иная учетная единица", "номер упаковки", "25"
-    [JsonProperty("UktPrN")]
-    public string PackNumber { get; set; }
+    [JsonProperty("UktPrN")] public string PackNumber { get; set; }
 
     //"null-26","Субсидия, %", "26"
-    [JsonProperty("Subsid")]
-    public string Subsidy { get; set; }
+    [JsonProperty("Subsid")] public string Subsidy { get; set; }
 
     //"null-27","Номер мероприятия ФЦП", "27"
-    [JsonProperty("FCP")]
-    public string FcpNumber { get; set; }
+    [JsonProperty("FCP")] public string FcpNumber { get; set; }
 }

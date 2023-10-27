@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain26 : TableDataMain
+public class TableDataMain26 : TableData
 {
     //"null-1", "Номер наблюдательной скважины", "2"
     [JsonProperty("num_s")] public string ObservedSourceNumber { get; set; }

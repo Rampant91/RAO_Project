@@ -223,25 +223,23 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                     var impRep = new Report
                     {
+                        CorrectionNumber_DB = rep.CorrectionNumber,
                         FormNum_DB = rep.FormNum,
+                        GradeExecutor_DB = Convert.ToString(rep.ExecutorData.GradeExecutor),
+                        FIOexecutor_DB = Convert.ToString(rep.ExecutorData.FIOexecutor),
+                        ExecPhone_DB = Convert.ToString(rep.ExecutorData.ExecPhone),
+                        ExecEmail_DB = Convert.ToString(rep.ExecutorData.ExecEmail),
                         ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}",
-                        CorrectionNumber_DB = rep.CorrectionNumber
+                        StartPeriod_DB = DateTime.TryParse(rep.StartPeriod, out var dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : rep.StartPeriod,
+                        EndPeriod_DB = DateTime.TryParse(rep.EndPeriod, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : rep.EndPeriod,
+                        Year_DB = rep.Year,
                     };
-                    if (impRep.FormNum_DB.StartsWith('1'))
-                    {
-                        impRep.StartPeriod_DB = DateTime.TryParse(rep.StartPeriod, out var dateTimeValue)
-                            ? dateTimeValue.ToShortDateString()
-                            : rep.StartPeriod;
-                        impRep.EndPeriod_DB = DateTime.TryParse(rep.EndPeriod, out dateTimeValue)
-                            ? dateTimeValue.ToShortDateString()
-                            : rep.StartPeriod;
-                    }
-                    else if (impRep.FormNum_DB.StartsWith('2'))
-                    {
-                        impRep.Year_DB = rep.Year;
-                    }
 
-                    BindData(rep, impRep);
+                    BindData(rep, impRep);  //bind all forms data
 
                     var noteOrder = 1;
                     foreach (var note in rep.NotesMainTable.Notes)
@@ -416,7 +414,11 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             foreach (var rep in sortedRepList)
                             {
                                 ImpRepCorNum = rep.CorrectionNumber_DB;
-                                ImpRepFormCount = rep.Rows11.Count + rep.Rows12.Count + rep.Rows13.Count + rep.Rows14.Count + rep.Rows15.Count + rep.Rows16.Count + rep.Rows17.Count + rep.Rows18.Count + rep.Rows19.Count;
+                                ImpRepFormCount = rep.Rows11.Count + rep.Rows12.Count + rep.Rows13.Count + rep.Rows14.Count + rep.Rows15.Count
+                                                  + rep.Rows16.Count + rep.Rows17.Count + rep.Rows18.Count + rep.Rows19.Count + rep.Rows21.Count
+                                                  + rep.Rows22.Count + rep.Rows23.Count + rep.Rows24.Count + rep.Rows25.Count + rep.Rows26.Count
+                                                  + rep.Rows27.Count + rep.Rows28.Count + rep.Rows29.Count+ rep.Rows210.Count + rep.Rows211.Count
+                                                  + rep.Rows212.Count;
                                 ImpRepFormNum = rep.FormNum_DB;
                                 ImpRepStartPeriod = rep.StartPeriod_DB;
                                 ImpRepEndPeriod = rep.EndPeriod_DB;

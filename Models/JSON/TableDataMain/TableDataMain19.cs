@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain19 : TableDataMain
+public class TableDataMain19 : TableData
 {
     //"Сведения об операции", "код", "2"
     [JsonProperty("g2")] public string OperationCode { get; set; }
@@ -20,14 +20,11 @@ public class TableDataMain19 : TableDataMain
     [JsonProperty("g6")] public string DocumentDate { get; set; }
 
     //"null-7", "Код типа объектов учета", "7"
-    [JsonProperty("g7")]
-    public string CodeTypeAccObject { get; set; }
+    [JsonProperty("g7")] public string CodeTypeAccObject { get; set; }
 
     //"Сведения о радиоактивных веществах", "радионуклиды", "8"
-    [JsonProperty("g8")]
-    public string Radionuclids { get; set; }
+    [JsonProperty("g8")] public string Radionuclids { get; set; }
 
     //"Сведения о радиоактивных веществах", "активность, Бк", "9"
-    [JsonProperty("g9")]
-    public string Activity { get; set; }
+    [JsonProperty("g9")] public string Activity { get; set; }
 }

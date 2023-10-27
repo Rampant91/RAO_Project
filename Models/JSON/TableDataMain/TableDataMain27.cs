@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain27 : TableDataMain
+public class TableDataMain27 : TableData
 {
     //"null-2", "Наименование, номер источника выбросов", "2"
     [JsonProperty("g2")] public string ObservedSourceNumber { get; set; }

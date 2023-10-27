@@ -2,7 +2,7 @@
 
 namespace Models.JSON.TableDataMain;
 
-public class TableDataMain23 : TableDataMain
+public class TableDataMain23 : TableData
 {
     //"Пункт хранения РАО", "наименование", "2"
     [JsonProperty("g2")] public string StoragePlaceName { get; set; }
