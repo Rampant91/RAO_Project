@@ -4,8 +4,8 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
+using Models.JSON.ExecutorData;
 using Models.JSON.TableDataMain;
-using Models.JSON.TopTableData;
 using JsonConverter = Newtonsoft.Json.JsonConverter;
 using JsonConverterAttribute = Newtonsoft.Json.JsonConverterAttribute;
 
@@ -17,7 +17,7 @@ public abstract class JsonForm
     #region ExecutorDataTable
 
     [JsonProperty("form_main_data")]
-    public ExecutorData ExecutorData { get; set; }
+    public ExecutorData.ExecutorData ExecutorData { get; set; }
 
     #endregion
 
@@ -294,6 +294,7 @@ public abstract class JsonForm
                     {
                         jsonForm.FormTable.TableData.Add(tableDataMain);
                     }
+                    jsonForm.ExecutorData = jo["form_main_data"]!.ToObject<ExecutorData26>(serializer);
                     return jsonForm;
                 }
                 case "form_2_7_2022":
@@ -304,6 +305,7 @@ public abstract class JsonForm
                     {
                         jsonForm.FormTable.TableData.Add(tableDataMain);
                     }
+                    jsonForm.ExecutorData = jo["form_main_data"]!.ToObject<ExecutorData27>(serializer);
                     return jsonForm;
                 }
                 case "form_2_8_2022":
@@ -314,10 +316,7 @@ public abstract class JsonForm
                     {
                         jsonForm.FormTable.TableData.Add(tableDataMain);
                     }
-
-                    var topFormData = jo["form_main_data"]!.ToObject<ExecutorData28>(serializer);
-                    jsonForm.ExecutorData = topFormData;
-
+                    jsonForm.ExecutorData = jo["form_main_data"]!.ToObject<ExecutorData28>(serializer);
                     return jsonForm;
                 }
                 case "form_2_9_2022":
@@ -392,12 +391,12 @@ public abstract class JsonForm
             }
             throw new Exception("Cannot deserialize type string");
         }
+
         public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
-
         }
 }
 

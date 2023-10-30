@@ -15,7 +15,7 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
-using Models.JSON.TopTableData;
+using Models.JSON.ExecutorData;
 using ReactiveUI;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
 using static Client_App.Resources.StaticStringMethods;
@@ -84,61 +84,61 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     switch (formNumReps)
                     {
                         case "1.0":
+                        {
+                            #region Bindings
+
+                            impReps.Master_DB.Rows10.Add(ty1);
+                            impReps.Master_DB.Rows10.Add(ty2);
+
+                            impReps.Master_DB.Rows10[0].RegNo_DB = reps[0].RegNo;
+                            impReps.Master_DB.Rows10[0].OrganUprav_DB = reps[0].OrganUprav;
+                            impReps.Master_DB.Rows10[0].SubjectRF_DB = reps[0].SubjectRF;
+                            impReps.Master_DB.Rows10[0].JurLico_DB = reps[0].JurLico;
+                            impReps.Master_DB.Rows10[0].ShortJurLico_DB = reps[0].ShortJurLico;
+                            impReps.Master_DB.Rows10[0].JurLicoAddress_DB = reps[0].JurLicoAddress;
+                            impReps.Master_DB.Rows10[0].JurLicoFactAddress_DB = reps[0].JurLicoFactAddress;
+                            impReps.Master_DB.Rows10[0].GradeFIO_DB = reps[0].GradeFIO;
+                            impReps.Master_DB.Rows10[0].Telephone_DB = reps[0].Telephone;
+                            impReps.Master_DB.Rows10[0].Fax_DB = reps[0].Fax;
+                            impReps.Master_DB.Rows10[0].Email_DB = reps[0].Email;
+                            impReps.Master_DB.Rows10[0].Okpo_DB = reps[0].Okpo;
+                            impReps.Master_DB.Rows10[0].Okved_DB = reps[0].Okved;
+                            impReps.Master_DB.Rows10[0].Okogu_DB = reps[0].Okogu;
+                            impReps.Master_DB.Rows10[0].Oktmo_DB = reps[0].Oktmo;
+                            impReps.Master_DB.Rows10[0].Inn_DB = reps[0].Inn;
+                            impReps.Master_DB.Rows10[0].Kpp_DB = reps[0].Kpp;
+                            impReps.Master_DB.Rows10[0].Okopf_DB = reps[0].Okopf;
+                            impReps.Master_DB.Rows10[0].Okfs_DB = reps[0].Okfs;
+                            if (reps.Length > 1)
                             {
-                                #region Bindings
-
-                                impReps.Master_DB.Rows10.Add(ty1);
-                                impReps.Master_DB.Rows10.Add(ty2);
-
-                                impReps.Master_DB.Rows10[0].RegNo_DB = reps[0].RegNo;
-                                impReps.Master_DB.Rows10[0].OrganUprav_DB = reps[0].OrganUprav;
-                                impReps.Master_DB.Rows10[0].SubjectRF_DB = reps[0].SubjectRF;
-                                impReps.Master_DB.Rows10[0].JurLico_DB = reps[0].JurLico;
-                                impReps.Master_DB.Rows10[0].ShortJurLico_DB = reps[0].ShortJurLico;
-                                impReps.Master_DB.Rows10[0].JurLicoAddress_DB = reps[0].JurLicoAddress;
-                                impReps.Master_DB.Rows10[0].JurLicoFactAddress_DB = reps[0].JurLicoFactAddress;
-                                impReps.Master_DB.Rows10[0].GradeFIO_DB = reps[0].GradeFIO;
-                                impReps.Master_DB.Rows10[0].Telephone_DB = reps[0].Telephone;
-                                impReps.Master_DB.Rows10[0].Fax_DB = reps[0].Fax;
-                                impReps.Master_DB.Rows10[0].Email_DB = reps[0].Email;
-                                impReps.Master_DB.Rows10[0].Okpo_DB = reps[0].Okpo;
-                                impReps.Master_DB.Rows10[0].Okved_DB = reps[0].Okved;
-                                impReps.Master_DB.Rows10[0].Okogu_DB = reps[0].Okogu;
-                                impReps.Master_DB.Rows10[0].Oktmo_DB = reps[0].Oktmo;
-                                impReps.Master_DB.Rows10[0].Inn_DB = reps[0].Inn;
-                                impReps.Master_DB.Rows10[0].Kpp_DB = reps[0].Kpp;
-                                impReps.Master_DB.Rows10[0].Okopf_DB = reps[0].Okopf;
-                                impReps.Master_DB.Rows10[0].Okfs_DB = reps[0].Okfs;
-                                if (reps.Length > 1)
-                                {
-                                    impReps.Master_DB.Rows10[1].RegNo_DB = reps[1].RegNo;
-                                    impReps.Master_DB.Rows10[1].OrganUprav_DB = reps[1].OrganUprav;
-                                    impReps.Master_DB.Rows10[1].SubjectRF_DB = reps[1].SubjectRF;
-                                    impReps.Master_DB.Rows10[1].JurLico_DB = reps[1].JurLico;
-                                    impReps.Master_DB.Rows10[1].ShortJurLico_DB = reps[1].ShortJurLico;
-                                    impReps.Master_DB.Rows10[1].JurLicoAddress_DB = reps[1].JurLicoAddress;
-                                    impReps.Master_DB.Rows10[1].GradeFIO_DB = reps[1].GradeFIO;
-                                    impReps.Master_DB.Rows10[1].Telephone_DB = reps[1].Telephone;
-                                    impReps.Master_DB.Rows10[1].Fax_DB = reps[1].Fax;
-                                    impReps.Master_DB.Rows10[1].Email_DB = reps[1].Email;
-                                    impReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
-                                    impReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
-                                    impReps.Master_DB.Rows10[1].Okved_DB = reps[1].Okved;
-                                    impReps.Master_DB.Rows10[1].Okogu_DB = reps[1].Okogu;
-                                    impReps.Master_DB.Rows10[1].Oktmo_DB = reps[1].Oktmo;
-                                    impReps.Master_DB.Rows10[1].Inn_DB = reps[1].Inn;
-                                    impReps.Master_DB.Rows10[1].Kpp_DB = reps[1].Kpp;
-                                    impReps.Master_DB.Rows10[1].Okopf_DB = reps[1].Okopf;
-                                    impReps.Master_DB.Rows10[1].Okfs_DB = reps[1].Okfs;
-                                }
-
-                                #endregion
-
-                                break;
+                                impReps.Master_DB.Rows10[1].RegNo_DB = reps[1].RegNo;
+                                impReps.Master_DB.Rows10[1].OrganUprav_DB = reps[1].OrganUprav;
+                                impReps.Master_DB.Rows10[1].SubjectRF_DB = reps[1].SubjectRF;
+                                impReps.Master_DB.Rows10[1].JurLico_DB = reps[1].JurLico;
+                                impReps.Master_DB.Rows10[1].ShortJurLico_DB = reps[1].ShortJurLico;
+                                impReps.Master_DB.Rows10[1].JurLicoAddress_DB = reps[1].JurLicoAddress;
+                                impReps.Master_DB.Rows10[1].GradeFIO_DB = reps[1].GradeFIO;
+                                impReps.Master_DB.Rows10[1].Telephone_DB = reps[1].Telephone;
+                                impReps.Master_DB.Rows10[1].Fax_DB = reps[1].Fax;
+                                impReps.Master_DB.Rows10[1].Email_DB = reps[1].Email;
+                                impReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
+                                impReps.Master_DB.Rows10[1].Okpo_DB = reps[1].Okpo;
+                                impReps.Master_DB.Rows10[1].Okved_DB = reps[1].Okved;
+                                impReps.Master_DB.Rows10[1].Okogu_DB = reps[1].Okogu;
+                                impReps.Master_DB.Rows10[1].Oktmo_DB = reps[1].Oktmo;
+                                impReps.Master_DB.Rows10[1].Inn_DB = reps[1].Inn;
+                                impReps.Master_DB.Rows10[1].Kpp_DB = reps[1].Kpp;
+                                impReps.Master_DB.Rows10[1].Okopf_DB = reps[1].Okopf;
+                                impReps.Master_DB.Rows10[1].Okfs_DB = reps[1].Okfs;
                             }
+
+                            #endregion
+
+                            break;
+                        }
                         case "2.0":
-                            {
-                                #region Bindings
+                        {
+                            #region Bindings
 
                                 impReps.Master_DB.Rows20.Add(ty1);
                                 impReps.Master_DB.Rows20.Add(ty2);
@@ -187,8 +187,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                                 #endregion
 
-                                break;
-                            }
+                            break;
+                        }
                     }
 
                     reportsJsonCollection.Add(impReps);
@@ -227,10 +227,10 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     {
                         CorrectionNumber_DB = rep.CorrectionNumber,
                         FormNum_DB = rep.FormNum,
-                        GradeExecutor_DB = Convert.ToString(rep.ExecutorData.GradeExecutor),
-                        FIOexecutor_DB = Convert.ToString(rep.ExecutorData.FIOexecutor),
-                        ExecPhone_DB = Convert.ToString(rep.ExecutorData.ExecPhone),
-                        ExecEmail_DB = Convert.ToString(rep.ExecutorData.ExecEmail),
+                        GradeExecutor_DB = Convert.ToString(rep.ExecutorData?.GradeExecutor as object),
+                        FIOexecutor_DB = Convert.ToString(rep.ExecutorData?.FIOexecutor as object),
+                        ExecPhone_DB = Convert.ToString(rep.ExecutorData?.ExecPhone as object),
+                        ExecEmail_DB = Convert.ToString(rep.ExecutorData?.ExecEmail as object),
                         ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}",
                         StartPeriod_DB = DateTime.TryParse(rep.StartPeriod, out var dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
@@ -238,29 +238,11 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         EndPeriod_DB = DateTime.TryParse(rep.EndPeriod, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
                             : string.Empty,
-                        Year_DB = rep.Year,
+                        Year_DB = Convert.ToString(rep.Year)
                     };
-                    if (impRep.FormNum_DB is "2.8")
-                    {
-                        var executorData28 = (ExecutorData28)rep.ExecutorData;
-                        impRep.PermissionNumber_28_DB = executorData28.PermissionNumber_28;
-                        impRep.PermissionIssueDate_28_DB = executorData28.PermissionIssueDate_28;
-                        impRep.ValidBegin_28_DB = executorData28.ValidBegin_28;
-                        impRep.ValidThru_28_DB = executorData28.ValidThru_28;
-                        impRep.PermissionDocumentName_28_DB = executorData28.PermissionDocumentName_28;
-                        impRep.PermissionNumber1_28_DB = executorData28.PermissionNumber1_28;
-                        impRep.PermissionIssueDate1_28_DB = executorData28.PermissionIssueDate1_28;
-                        impRep.ValidBegin1_28_DB = executorData28.ValidBegin1_28;
-                        impRep.ValidThru1_28_DB = executorData28.ValidThru1_28;
-                        impRep.PermissionDocumentName1_28_DB = executorData28.PermissionDocumentName1_28;
-                        impRep.ContractNumber_28_DB = executorData28.ContractNumber_28;
-                        impRep.ContractIssueDate2_28_DB = executorData28.ContractIssueDate2_28;
-                        impRep.ValidBegin2_28_DB = executorData28.ValidBegin2_28;
-                        impRep.ValidThru2_28_DB = executorData28.ValidThru2_28;
-                        impRep.OrganisationReciever_28_DB = executorData28.OrganisationReciever_28;
-                    }
 
-                    BindData(rep, impRep);  //bind all forms data to Report
+                    BindFormTopSpecificData(rep, impRep); //bind data from form top table to Report
+                    BindFormTableData(rep, impRep);  //bind all forms data to Report
 
                     var noteOrder = 1;
                     foreach (var note in rep.NotesMainTable.Notes)

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Models.JSON.TopTableData;
+namespace Models.JSON.ExecutorData;
 
 public class ExecutorData28 : ExecutorData
 {

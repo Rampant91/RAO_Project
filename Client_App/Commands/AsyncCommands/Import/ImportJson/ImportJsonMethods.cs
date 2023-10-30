@@ -3,15 +3,16 @@ using Models.Collections;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.JSON;
+using Models.JSON.ExecutorData;
 using Models.JSON.TableDataMain;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
 public static class ImportJsonMethods
 {
-    #region BindData
+    #region BindFormTableData
 
-    public static void BindData(JsonForm rep, Report impRep)
+    public static void BindFormTableData(JsonForm rep, Report impRep)
     {
         var numberInOrder = 1;
         switch (rep.FormNum)
@@ -824,6 +825,93 @@ public static class ImportJsonMethods
 
             #endregion
 
+            #endregion
+        }
+    }
+
+    #endregion
+
+    #region BindFormTopSpecificData
+
+    internal static void BindFormTopSpecificData(JsonForm rep, Report impRep)
+    {
+        switch (impRep.FormNum_DB) 
+        {
+            #region 2.6
+        
+            case "2.6":
+            {
+                var executorData26 = (ExecutorData26?)rep.ExecutorData;
+                impRep.SourcesQuantity26_DB = int.TryParse(executorData26?.SourcesQuantity26, out var intValue)
+                    ? intValue
+                    : null;
+                break;
+            }
+        
+            #endregion
+        
+            #region 2.7
+        
+            case "2.7":
+            {
+                var executorData27 = (ExecutorData27?)rep.ExecutorData;
+                impRep.PermissionNumber27_DB = Convert.ToString(executorData27?.PermissionNumber27);
+                impRep.PermissionIssueDate27_DB = DateTime.TryParse(executorData27?.PermissionIssueDate27, out var dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData27?.PermissionIssueDate27);
+                impRep.ValidBegin27_DB = DateTime.TryParse(executorData27?.ValidBegin27, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData27?.ValidBegin27);
+                impRep.ValidThru27_DB = DateTime.TryParse(executorData27?.ValidThru27, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData27?.ValidThru27);
+                impRep.PermissionDocumentName27_DB = Convert.ToString(executorData27?.PermissionDocumentName27);
+                break;
+            }
+        
+            #endregion
+        
+            #region 2.8
+            
+            case "2.8":
+            {
+                var executorData28 = (ExecutorData28?)rep.ExecutorData;
+                impRep.PermissionNumber_28_DB = Convert.ToString(executorData28?.PermissionNumber_28);
+                impRep.PermissionIssueDate_28_DB = DateTime.TryParse(executorData28?.PermissionIssueDate_28, out var dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.PermissionIssueDate_28);
+                impRep.ValidBegin_28_DB = DateTime.TryParse(executorData28?.ValidBegin_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.ValidBegin_28);
+                impRep.ValidThru_28_DB = DateTime.TryParse(executorData28?.ValidThru_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.ValidThru_28);
+                impRep.PermissionDocumentName_28_DB = Convert.ToString(executorData28?.PermissionDocumentName_28);
+                impRep.PermissionNumber1_28_DB = Convert.ToString(executorData28?.PermissionNumber1_28);
+                impRep.PermissionIssueDate1_28_DB = DateTime.TryParse(executorData28?.PermissionIssueDate1_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.PermissionIssueDate1_28);
+                impRep.ValidBegin1_28_DB = DateTime.TryParse(executorData28?.ValidBegin1_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.ValidBegin1_28);
+                impRep.ValidThru1_28_DB = DateTime.TryParse(executorData28?.ValidThru1_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.ValidThru1_28);
+                impRep.PermissionDocumentName1_28_DB = Convert.ToString(executorData28?.PermissionDocumentName1_28);
+                impRep.ContractNumber_28_DB = Convert.ToString(executorData28?.ContractNumber_28);
+                impRep.ContractIssueDate2_28_DB = DateTime.TryParse(executorData28?.ContractIssueDate2_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.ContractIssueDate2_28);
+                impRep.ValidBegin2_28_DB = DateTime.TryParse(executorData28?.ValidBegin2_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.ValidBegin2_28);
+                impRep.ValidThru2_28_DB = DateTime.TryParse(executorData28?.ValidThru2_28, out dateTimeValue)
+                    ? dateTimeValue.ToShortDateString()
+                    : Convert.ToString(executorData28?.ValidThru2_28);
+                impRep.OrganisationReciever_28_DB = Convert.ToString(executorData28?.OrganisationReciever_28);
+                break;
+            }
+        
             #endregion
         }
     }

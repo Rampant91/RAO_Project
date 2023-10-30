@@ -17,7 +17,7 @@ public class TableDataMain26 : TableData
     [JsonProperty("rust")] public string DistanceToWasteSource { get; set; }
 
     //"null-1", "Глубина отбора проб, м", "6"
-    [JsonProperty("g1")] public string TestDepth { get; set; }
+    [JsonProperty("gl")] public string TestDepth { get; set; }
 
     //"null-1", "Наименование радионуклида", "7"
     [JsonProperty("nuk")] public string RadionuclidName { get; set; }

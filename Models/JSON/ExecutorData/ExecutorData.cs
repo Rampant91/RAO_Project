@@ -1,13 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using System;
 
-namespace Models.JSON.TopTableData;
+namespace Models.JSON.ExecutorData;
 
 [JsonConverter(typeof(ExecutorDataConverter))]
 public class ExecutorData
 {
+    #region Properties
+    
     [JsonProperty("email")]
     public string ExecEmail { get; set; }
 
@@ -19,6 +21,8 @@ public class ExecutorData
 
     [JsonProperty("full_name")]
     public string FIOexecutor { get; set; }
+
+    #endregion
 
     #region ContractResolver
 
@@ -34,7 +38,7 @@ public class ExecutorData
 
     #endregion
 
-    #region TableDataConverter
+    #region ExecutorDataConverter
 
     private class ExecutorDataConverter : JsonConverter
     {
@@ -51,10 +55,11 @@ public class ExecutorData
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var jo = JObject.Load(reader);
-
             return objectType.Name switch
             {
                 "ExecutorData" => JsonConvert.DeserializeObject<ExecutorData>(jo.ToString(), SpecifiedSubclassConversion),
+                "ExecutorData26" => JsonConvert.DeserializeObject<ExecutorData26>(jo.ToString(), SpecifiedSubclassConversion),
+                "ExecutorData27" => JsonConvert.DeserializeObject<ExecutorData27>(jo.ToString(), SpecifiedSubclassConversion),
                 "ExecutorData28" => JsonConvert.DeserializeObject<ExecutorData28>(jo.ToString(), SpecifiedSubclassConversion),
                 _ => null
             };

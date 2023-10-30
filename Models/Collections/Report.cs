@@ -609,6 +609,7 @@ public class Report : IKey, IDataGridColumn
     #region FormData27
 
     #region  PermissionNumber27
+
     public string PermissionNumber27_DB { get; set; } = "";
 
     [NotMapped]
@@ -715,48 +716,6 @@ public class Report : IKey, IDataGridColumn
             return false;
         }
         return true;
-    }
-
-    #endregion
-
-    #region  PermissionDocumentName27
-
-    public string PermissionDocumentName27_DB { get; set; } = "";
-
-    [NotMapped]
-    [FormProperty(true, "Наименование разрешительного документа")]
-    public RamAccess<string> PermissionDocumentName27
-    {
-        get
-        {
-            if (Dictionary.ContainsKey(nameof(PermissionDocumentName27)))
-            {
-                ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)]).Value = PermissionDocumentName27_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
-            }
-            var rm = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
-            rm.PropertyChanged += PermissionDocumentName27ValueChanged;
-            Dictionary.Add(nameof(PermissionDocumentName27), rm);
-            return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
-        }
-        set
-        {
-            PermissionDocumentName27_DB = value.Value;
-            OnPropertyChanged(nameof(PermissionDocumentName27));
-        }
-    }
-
-    private void PermissionDocumentName27ValueChanged(object value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == "Value")
-        {
-            PermissionDocumentName27_DB = ((RamAccess<string>)value).Value;
-        }
-    }
-
-    private static bool PermissionDocumentName27_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors(); return true;
     }
 
     #endregion
@@ -885,6 +844,48 @@ public class Report : IKey, IDataGridColumn
 
     #endregion
 
+    #region  PermissionDocumentName27
+
+    public string PermissionDocumentName27_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Наименование разрешительного документа")]
+    public RamAccess<string> PermissionDocumentName27
+    {
+        get
+        {
+            if (Dictionary.ContainsKey(nameof(PermissionDocumentName27)))
+            {
+                ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)]).Value = PermissionDocumentName27_DB;
+                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
+            }
+            var rm = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
+            rm.PropertyChanged += PermissionDocumentName27ValueChanged;
+            Dictionary.Add(nameof(PermissionDocumentName27), rm);
+            return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
+        }
+        set
+        {
+            PermissionDocumentName27_DB = value.Value;
+            OnPropertyChanged(nameof(PermissionDocumentName27));
+        }
+    }
+
+    private void PermissionDocumentName27ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == "Value")
+        {
+            PermissionDocumentName27_DB = ((RamAccess<string>)value).Value;
+        }
+    }
+
+    private static bool PermissionDocumentName27_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors(); return true;
+    }
+
+    #endregion
+
     #endregion
 
     #region FormData28
@@ -918,7 +919,7 @@ public class Report : IKey, IDataGridColumn
         }
     }
 
-    private void PermissionNumber_28ValueChanged(object value, PropertyChangedEventArgs args)
+    private void PermissionNumber_28ValueChanged(object value, PropertyChangedEventArgs args) 
     {
         if (args.PropertyName == "Value")
         {

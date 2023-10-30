@@ -20,6 +20,7 @@ namespace Client_App.Views;
 public class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
+
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
         AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(
             nameof(SelectedReports),
@@ -31,11 +32,9 @@ public class MainWindow : BaseWindow<MainWindowVM>
     public IEnumerable<IKey> SelectedReports
     {
         get => _selectedReports;
-        set
-        {
-            if (value != null) SetAndRaise(SelectedReportsProperty, ref _selectedReports, value);
-        }
+        set => SetAndRaise(SelectedReportsProperty, ref _selectedReports, value); // убрал if (value != null) 
     }
+
     #endregion
 
     #region Contructures
