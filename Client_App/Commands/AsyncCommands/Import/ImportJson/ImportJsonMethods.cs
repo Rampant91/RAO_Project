@@ -85,35 +85,35 @@ public static class ImportJsonMethods
                     impRep.Rows12.Add(new Form12
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
                         OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.OperationDate,
-                        PassportNumber_DB = form.PassportNumber,
-                        NameIOU_DB = form.NameIOU,
-                        FactoryNumber_DB = form.FactoryNumber,
-                        Mass_DB = form.Mass,
-                        CreatorOKPO_DB = form.CreatorOKPO,
+                            : Convert.ToString(form.OperationDate),
+                        PassportNumber_DB = Convert.ToString(form.PassportNumber),
+                        NameIOU_DB = Convert.ToString(form.NameIOU),
+                        FactoryNumber_DB = Convert.ToString(form.FactoryNumber),
+                        Mass_DB = Convert.ToString(form.Mass),
+                        CreatorOKPO_DB = Convert.ToString(form.CreatorOKPO),
                         CreationDate_DB = DateTime.TryParse(form.CreationDate, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.CreationDate,
-                        SignedServicePeriod_DB = form.SignedServicePeriod,
+                            : Convert.ToString(form.CreationDate),
+                        SignedServicePeriod_DB = Convert.ToString(form.SignedServicePeriod),
                         PropertyCode_DB = byte.TryParse(form.PropertyCode, out var byteValue)
                             ? byteValue
                             : null,
-                        Owner_DB = form.Owner,
+                        Owner_DB = Convert.ToString(form.Owner),
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
                         DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.DocumentDate,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
-                        TransporterOKPO_DB = form.TransporterOKPO,
-                        PackName_DB = form.PackName,
-                        PackType_DB = form.PackType,
-                        PackNumber_DB = form.PackNumber
+                            : Convert.ToString(form.DocumentDate),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO),
+                        TransporterOKPO_DB = Convert.ToString(form.TransporterOKPO),
+                        PackName_DB = Convert.ToString(form.PackName),
+                        PackType_DB = Convert.ToString(form.PackType),
+                        PackNumber_DB = Convert.ToString(form.PackNumber)
                     });
                 }
                 break;
@@ -132,38 +132,38 @@ public static class ImportJsonMethods
                     impRep.Rows13.Add(new Form13
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
                         OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.OperationDate,
-                        PassportNumber_DB = form.PassportNumber,
-                        Type_DB = form.Type,
-                        Radionuclids_DB = form.Radionuclids,
-                        FactoryNumber_DB = form.FactoryNumber,
-                        Activity_DB = form.Activity,
-                        CreatorOKPO_DB = form.CreatorOKPO,
+                            : Convert.ToString(form.OperationDate),
+                        PassportNumber_DB = Convert.ToString(form.PassportNumber),
+                        Type_DB = Convert.ToString(form.Type),
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        FactoryNumber_DB = Convert.ToString(form.FactoryNumber),
+                        Activity_DB = Convert.ToString(form.Activity),
+                        CreatorOKPO_DB = Convert.ToString(form.CreatorOKPO),
                         CreationDate_DB = DateTime.TryParse(form.CreationDate, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.CreationDate,
+                            : Convert.ToString(form.CreationDate),
                         AggregateState_DB = byte.TryParse(form.AggregateState, out var byteValue)
                             ? byteValue
                             : null,
                         PropertyCode_DB = byte.TryParse(form.PropertyCode, out byteValue)
                             ? byteValue
                             : null,
-                        Owner_DB = form.Owner,
+                        Owner_DB = Convert.ToString(form.Owner),
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
                         DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.DocumentDate,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
-                        TransporterOKPO_DB = form.TransporterOKPO,
-                        PackName_DB = form.PackName,
-                        PackType_DB = form.PackType,
-                        PackNumber_DB = form.PackNumber
+                            : Convert.ToString(form.DocumentDate),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO),
+                        TransporterOKPO_DB = Convert.ToString(form.TransporterOKPO),
+                        PackName_DB = Convert.ToString(form.PackName),
+                        PackType_DB = Convert.ToString(form.PackType),
+                        PackNumber_DB = Convert.ToString(form.PackNumber)
                     });
                 }
                 break;
@@ -182,22 +182,22 @@ public static class ImportJsonMethods
                     impRep.Rows14.Add(new Form14
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
                         OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.OperationDate,
-                        PassportNumber_DB = form.PassportNumber,
-                        Name_DB = form.Name,
+                            : Convert.ToString(form.OperationDate),
+                        PassportNumber_DB = Convert.ToString(form.PassportNumber),
+                        Name_DB = Convert.ToString(form.Name),
                         Sort_DB = byte.TryParse(form.Sort, out var byteValue)
                             ? byteValue
                             : null,
-                        Radionuclids_DB = form.Radionuclids,
-                        Activity_DB = form.Activity,
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        Activity_DB = Convert.ToString(form.Activity),
                         ActivityMeasurementDate_DB = DateTime.TryParse(form.ActivityMeasurementDate, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.ActivityMeasurementDate,
-                        Volume_DB = form.Volume,
-                        Mass_DB = form.Mass,
+                            : Convert.ToString(form.ActivityMeasurementDate),
+                        Volume_DB = Convert.ToString(form.Volume),
+                        Mass_DB = Convert.ToString(form.Mass),
                         AggregateState_DB = byte.TryParse(form.AggregateState, out byteValue)
                             ? byteValue
                             : null,
@@ -208,15 +208,15 @@ public static class ImportJsonMethods
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
                         DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : form.DocumentDate,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
-                        TransporterOKPO_DB = form.TransporterOKPO,
-                        PackName_DB = form.PackName,
-                        PackType_DB = form.PackType,
-                        PackNumber_DB = form.PackNumber
+                            : Convert.ToString(form.DocumentDate),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO),
+                        TransporterOKPO_DB = Convert.ToString(form.TransporterOKPO),
+                        PackName_DB = Convert.ToString(form.PackName),
+                        PackType_DB = Convert.ToString(form.PackType),
+                        PackNumber_DB = Convert.ToString(form.PackNumber)
                     });
                 }
                 break;
@@ -235,33 +235,39 @@ public static class ImportJsonMethods
                     impRep.Rows15.Add(new Form15
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
-                        OperationDate_DB = form.OperationDate,
-                        PassportNumber_DB = form.PassportNumber,
-                        Type_DB = form.Type,
-                        Radionuclids_DB = form.Radionuclids,
-                        FactoryNumber_DB = form.FactoryNumber,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
+                        OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.OperationDate),
+                        PassportNumber_DB = Convert.ToString(form.PassportNumber),
+                        Type_DB = Convert.ToString(form.Type),
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        FactoryNumber_DB = Convert.ToString(form.FactoryNumber),
                         Quantity_DB = int.TryParse(form.Quantity, out var intValue)
                             ? intValue
                             : null,
-                        Activity_DB = form.Activity,
-                        CreationDate_DB = form.CreationDate,
-                        StatusRAO_DB = form.StatusRAO,
+                        Activity_DB = Convert.ToString(form.Activity),
+                        CreationDate_DB = DateTime.TryParse(form.CreationDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.CreationDate),
+                        StatusRAO_DB = Convert.ToString(form.StatusRAO),
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
-                        DocumentDate_DB = form.DocumentDate,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
-                        TransporterOKPO_DB = form.TransporterOKPO,
-                        PackName_DB = form.PackName,
-                        PackType_DB = form.PackType,
-                        PackNumber_DB = form.PackNumber,
-                        StoragePlaceName_DB = form.StoragePlaceName,
-                        StoragePlaceCode_DB = form.StoragePlaceCode,
-                        RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
-                        Subsidy_DB = form.Subsidy,
-                        FcpNumber_DB = form.FcpNumber
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
+                        DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.DocumentDate),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO),
+                        TransporterOKPO_DB = Convert.ToString(form.TransporterOKPO),
+                        PackName_DB = Convert.ToString(form.PackName),
+                        PackType_DB = Convert.ToString(form.PackType),
+                        PackNumber_DB = Convert.ToString(form.PackNumber),
+                        StoragePlaceName_DB = Convert.ToString(form.StoragePlaceName),
+                        StoragePlaceCode_DB = Convert.ToString(form.StoragePlaceCode),
+                        RefineOrSortRAOCode_DB = Convert.ToString(form.RefineOrSortRAOCode),
+                        Subsidy_DB = Convert.ToString(form.Subsidy),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber)
                     });
                 }
                 break;
@@ -280,34 +286,40 @@ public static class ImportJsonMethods
                     impRep.Rows16.Add(new Form16
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
-                        OperationDate_DB = form.OperationDate,
-                        CodeRAO_DB = form.CodeRAO,
-                        StatusRAO_DB = form.StatusRAO,
-                        Volume_DB = form.Volume,
-                        Mass_DB = form.Mass,
-                        QuantityOZIII_DB = form.QuantityOZIII,
-                        MainRadionuclids_DB = form.MainRadionuclids,
-                        TritiumActivity_DB = form.TritiumActivity,
-                        BetaGammaActivity_DB = form.BetaGammaActivity,
-                        AlphaActivity_DB = form.AlphaActivity,
-                        TransuraniumActivity_DB = form.TransuraniumActivity,
-                        ActivityMeasurementDate_DB = form.ActivityMeasurementDate,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
+                        OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.OperationDate),
+                        CodeRAO_DB = Convert.ToString(form.CodeRAO),
+                        StatusRAO_DB = Convert.ToString(form.StatusRAO),
+                        Volume_DB = Convert.ToString(form.Volume),
+                        Mass_DB = Convert.ToString(form.Mass),
+                        QuantityOZIII_DB = Convert.ToString(form.QuantityOZIII),
+                        MainRadionuclids_DB = Convert.ToString(form.MainRadionuclids),
+                        TritiumActivity_DB = Convert.ToString(form.TritiumActivity),
+                        BetaGammaActivity_DB = Convert.ToString(form.BetaGammaActivity),
+                        AlphaActivity_DB = Convert.ToString(form.AlphaActivity),
+                        TransuraniumActivity_DB = Convert.ToString(form.TransuraniumActivity),
+                        ActivityMeasurementDate_DB = DateTime.TryParse(form.ActivityMeasurementDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.ActivityMeasurementDate),
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
-                        DocumentDate_DB = form.DocumentDate,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
-                        TransporterOKPO_DB = form.TransporterOKPO,
-                        StoragePlaceName_DB = form.StoragePlaceName,
-                        StoragePlaceCode_DB = form.StoragePlaceCode,
-                        RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
-                        PackName_DB = form.PackName,
-                        PackType_DB = form.PackType,
-                        PackNumber_DB = form.PackNumber,
-                        Subsidy_DB = form.Subsidy,
-                        FcpNumber_DB = form.FcpNumber
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
+                        DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.DocumentDate),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO),
+                        TransporterOKPO_DB = Convert.ToString(form.TransporterOKPO),
+                        StoragePlaceName_DB = Convert.ToString(form.StoragePlaceName),
+                        StoragePlaceCode_DB = Convert.ToString(form.StoragePlaceCode),
+                        RefineOrSortRAOCode_DB = Convert.ToString(form.RefineOrSortRAOCode),
+                        PackName_DB = Convert.ToString(form.PackName),
+                        PackType_DB = Convert.ToString(form.PackType),
+                        PackNumber_DB = Convert.ToString(form.PackNumber),
+                        Subsidy_DB = Convert.ToString(form.Subsidy),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber)
                     });
                 }
                 break;
@@ -326,39 +338,45 @@ public static class ImportJsonMethods
                     impRep.Rows17.Add(new Form17
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
-                        OperationDate_DB = form.OperationDate,
-                        PackName_DB = form.PackName,
-                        PackType_DB = form.PackType,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
+                        OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.OperationDate),
+                        PackName_DB = Convert.ToString(form.PackName),
+                        PackType_DB = Convert.ToString(form.PackType),
                         PackFactoryNumber_DB = form.PackFactoryNumber,
                         PackNumber_DB = form.PackNumber,
-                        FormingDate_DB = form.FormingDate,
-                        PassportNumber_DB = form.PassportNumber,
-                        Volume_DB = form.Volume,
-                        Mass_DB = form.Mass,
-                        Radionuclids_DB = form.Radionuclids,
-                        SpecificActivity_DB = form.SpecificActivity,
+                        FormingDate_DB = DateTime.TryParse(form.FormingDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.FormingDate),
+                        PassportNumber_DB = Convert.ToString(form.PassportNumber),
+                        Volume_DB = Convert.ToString(form.Volume),
+                        Mass_DB = Convert.ToString(form.Mass),
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        SpecificActivity_DB = Convert.ToString(form.SpecificActivity),
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
-                        DocumentDate_DB = form.DocumentDate,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
-                        TransporterOKPO_DB = form.TransporterOKPO,
-                        StoragePlaceName_DB = form.StoragePlaceName,
-                        StoragePlaceCode_DB = form.StoragePlaceCode,
-                        CodeRAO_DB = form.CodeRAO,
-                        StatusRAO_DB = form.StatusRAO,
-                        VolumeOutOfPack_DB = form.VolumeOutOfPack,
-                        MassOutOfPack_DB = form.MassOutOfPack,
-                        Quantity_DB = form.Quantity,
-                        TritiumActivity_DB = form.TritiumActivity,
-                        BetaGammaActivity_DB = form.BetaGammaActivity,
-                        AlphaActivity_DB = form.AlphaActivity,
-                        TransuraniumActivity_DB = form.TransuraniumActivity,
-                        RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
-                        Subsidy_DB = form.Subsidy,
-                        FcpNumber_DB = form.FcpNumber
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
+                        DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.DocumentDate),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO),
+                        TransporterOKPO_DB = Convert.ToString(form.TransporterOKPO),
+                        StoragePlaceName_DB = Convert.ToString(form.StoragePlaceName),
+                        StoragePlaceCode_DB = Convert.ToString(form.StoragePlaceCode),
+                        CodeRAO_DB = Convert.ToString(form.CodeRAO),
+                        StatusRAO_DB = Convert.ToString(form.StatusRAO),
+                        VolumeOutOfPack_DB = Convert.ToString(form.VolumeOutOfPack),
+                        MassOutOfPack_DB = Convert.ToString(form.MassOutOfPack),
+                        Quantity_DB = Convert.ToString(form.Quantity),
+                        TritiumActivity_DB = Convert.ToString(form.TritiumActivity),
+                        BetaGammaActivity_DB = Convert.ToString(form.BetaGammaActivity),
+                        AlphaActivity_DB = Convert.ToString(form.AlphaActivity),
+                        TransuraniumActivity_DB = Convert.ToString(form.TransuraniumActivity),
+                        RefineOrSortRAOCode_DB = Convert.ToString(form.RefineOrSortRAOCode),
+                        Subsidy_DB = Convert.ToString(form.Subsidy),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber)
                     });
                 }
                 break;
@@ -377,35 +395,39 @@ public static class ImportJsonMethods
                     impRep.Rows18.Add(new Form18
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
-                        OperationDate_DB = form.OperationDate,
-                        IndividualNumberZHRO_DB = form.IndividualNumberZHRO,
-                        PassportNumber_DB = form.PassportNumber,
-                        Volume6_DB = form.Volume6,
-                        Mass7_DB = form.Mass7,
-                        SaltConcentration_DB = form.SaltConcentration,
-                        Radionuclids_DB = form.Radionuclids,
-                        SpecificActivity_DB = form.SpecificActivity,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
+                        OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.OperationDate),
+                        IndividualNumberZHRO_DB = Convert.ToString(form.IndividualNumberZHRO),
+                        PassportNumber_DB = Convert.ToString(form.PassportNumber),
+                        Volume6_DB = Convert.ToString(form.Volume6),
+                        Mass7_DB = Convert.ToString(form.Mass7),
+                        SaltConcentration_DB = Convert.ToString(form.SaltConcentration),
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        SpecificActivity_DB = Convert.ToString(form.SpecificActivity),
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
-                        DocumentDate_DB = form.DocumentDate,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO,
-                        TransporterOKPO_DB = form.TransporterOKPO,
-                        StoragePlaceName_DB = form.StoragePlaceName,
-                        StoragePlaceCode_DB = form.StoragePlaceCode,
-                        CodeRAO_DB = form.CodeRAO,
-                        StatusRAO_DB = form.StatusRAO,
-                        Volume20_DB = form.Volume20,
-                        Mass21_DB = form.Mass21,
-                        TritiumActivity_DB = form.TritiumActivity,
-                        BetaGammaActivity_DB = form.BetaGammaActivity,
-                        AlphaActivity_DB = form.AlphaActivity,
-                        TransuraniumActivity_DB = form.TransuraniumActivity,
-                        RefineOrSortRAOCode_DB = form.RefineOrSortRAOCode,
-                        Subsidy_DB = form.Subsidy,
-                        FcpNumber_DB = form.FcpNumber
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
+                        DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.DocumentDate),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO),
+                        TransporterOKPO_DB = Convert.ToString(form.TransporterOKPO),
+                        StoragePlaceName_DB = Convert.ToString(form.StoragePlaceName),
+                        StoragePlaceCode_DB = Convert.ToString(form.StoragePlaceCode),
+                        CodeRAO_DB = Convert.ToString(form.CodeRAO),
+                        StatusRAO_DB = Convert.ToString(form.StatusRAO),
+                        Volume20_DB = Convert.ToString(form.Volume20),
+                        Mass21_DB = Convert.ToString(form.Mass21),
+                        TritiumActivity_DB = Convert.ToString(form.TritiumActivity),
+                        BetaGammaActivity_DB = Convert.ToString(form.BetaGammaActivity),
+                        AlphaActivity_DB = Convert.ToString(form.AlphaActivity),
+                        TransuraniumActivity_DB = Convert.ToString(form.TransuraniumActivity),
+                        RefineOrSortRAOCode_DB = Convert.ToString(form.RefineOrSortRAOCode),
+                        Subsidy_DB = Convert.ToString(form.Subsidy),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber)
                     });
                 }
                 break;
@@ -424,18 +446,22 @@ public static class ImportJsonMethods
                     impRep.Rows19.Add(new Form19
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        OperationCode_DB = form.OperationCode,
-                        OperationDate_DB = form.OperationDate,
+                        OperationCode_DB = Convert.ToString(form.OperationCode),
+                        OperationDate_DB = DateTime.TryParse(form.OperationDate, out var dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.OperationDate),
                         DocumentVid_DB = byte.TryParse(form.DocumentVid, out var byteValue)
                             ? byteValue
                             : null,
-                        DocumentNumber_DB = form.DocumentNumber,
-                        DocumentDate_DB = form.DocumentDate,
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
+                        DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.DocumentDate),
                         CodeTypeAccObject_DB = short.TryParse(form.CodeTypeAccObject, out var shortValue)
                             ? shortValue
                             : null,
-                        Radionuclids_DB = form.Radionuclids,
-                        Activity_DB = form.Activity
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        Activity_DB = Convert.ToString(form.Activity)
                     });
                 }
                 break;
@@ -458,30 +484,30 @@ public static class ImportJsonMethods
                     impRep.Rows21.Add(new Form21
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        RefineMachineName_DB = form.RefineMachineName,
+                        RefineMachineName_DB = Convert.ToString(form.RefineMachineName),
                         MachineCode_DB = byte.TryParse(form.MachineCode, out var byteValue)
                             ? byteValue
                             : null,
-                        MachinePower_DB = form.MachinePower,
-                        NumberOfHoursPerYear_DB = form.NumberOfHoursPerYear,
-                        CodeRAOIn_DB = form.CodeRAOIn,
-                        StatusRAOIn_DB = form.StatusRAOIn,
-                        VolumeIn_DB = form.VolumeIn,
-                        MassIn_DB = form.MassIn,
-                        QuantityIn_DB = form.QuantityIn,
-                        TritiumActivityIn_DB = form.TritiumActivityIn,
-                        BetaGammaActivityIn_DB = form.BetaGammaActivityIn,
-                        AlphaActivityIn_DB = form.AlphaActivityIn,
-                        TransuraniumActivityIn_DB = form.TransuraniumActivityIn,
-                        CodeRAOout_DB = form.CodeRAOout,
-                        StatusRAOout_DB = form.StatusRAOout,
-                        VolumeOut_DB = form.VolumeOut,
-                        MassOut_DB = form.MassOut,
-                        QuantityOZIIIout_DB = form.QuantityOZIIIout,
-                        TritiumActivityOut_DB = form.TritiumActivityOut,
-                        BetaGammaActivityOut_DB = form.BetaGammaActivityOut,
-                        AlphaActivityOut_DB = form.AlphaActivityOut,
-                        TransuraniumActivityOut_DB = form.TransuraniumActivityOut
+                        MachinePower_DB = Convert.ToString(form.MachinePower),
+                        NumberOfHoursPerYear_DB = Convert.ToString(form.NumberOfHoursPerYear),
+                        CodeRAOIn_DB = Convert.ToString(form.CodeRAOIn),
+                        StatusRAOIn_DB = Convert.ToString(form.StatusRAOIn),
+                        VolumeIn_DB = Convert.ToString(form.VolumeIn),
+                        MassIn_DB = Convert.ToString(form.MassIn),
+                        QuantityIn_DB = Convert.ToString(form.QuantityIn),
+                        TritiumActivityIn_DB = Convert.ToString(form.TritiumActivityIn),
+                        BetaGammaActivityIn_DB = Convert.ToString(form.BetaGammaActivityIn),
+                        AlphaActivityIn_DB = Convert.ToString(form.AlphaActivityIn),
+                        TransuraniumActivityIn_DB = Convert.ToString(form.TransuraniumActivityIn),
+                        CodeRAOout_DB = Convert.ToString(form.CodeRAOout),
+                        StatusRAOout_DB = Convert.ToString(form.StatusRAOout),
+                        VolumeOut_DB = Convert.ToString(form.VolumeOut),
+                        MassOut_DB = Convert.ToString(form.MassOut),
+                        QuantityOZIIIout_DB = Convert.ToString(form.QuantityOZIIIout),
+                        TritiumActivityOut_DB = Convert.ToString(form.TritiumActivityOut),
+                        BetaGammaActivityOut_DB = Convert.ToString(form.BetaGammaActivityOut),
+                        AlphaActivityOut_DB = Convert.ToString(form.AlphaActivityOut),
+                        TransuraniumActivityOut_DB = Convert.ToString(form.TransuraniumActivityOut)
                     });
                 }
                 break;
@@ -500,25 +526,25 @@ public static class ImportJsonMethods
                     impRep.Rows22.Add(new Form22
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        StoragePlaceName_DB = form.StoragePlaceName,
-                        StoragePlaceCode_DB = form.StoragePlaceCode,
-                        PackName_DB = form.PackName,
-                        PackType_DB = form.PackType,
-                        PackQuantity_DB = form.PackQuantity,
-                        CodeRAO_DB = form.CodeRAO,
-                        StatusRAO_DB = form.StatusRAO,
-                        VolumeOutOfPack_DB = form.VolumeOutOfPack,
-                        VolumeInPack_DB = form.VolumeInPack,
-                        MassOutOfPack_DB = form.MassOutOfPack,
-                        MassInPack_DB = form.MassInPack,
-                        QuantityOZIII_DB = form.QuantityOZIII,
-                        TritiumActivity_DB = form.TritiumActivity,
-                        BetaGammaActivity_DB = form.BetaGammaActivity,
-                        AlphaActivity_DB = form.AlphaActivity,
-                        TransuraniumActivity_DB = form.TransuraniumActivity,
-                        MainRadionuclids_DB = form.MainRadionuclids,
-                        Subsidy_DB = form.Subsidy,
-                        FcpNumber_DB = form.FcpNumber
+                        StoragePlaceName_DB = Convert.ToString(form.StoragePlaceName),
+                        StoragePlaceCode_DB = Convert.ToString(form.StoragePlaceCode),
+                        PackName_DB = Convert.ToString(form.PackName),
+                        PackType_DB = Convert.ToString(form.PackType),
+                        PackQuantity_DB = Convert.ToString(form.PackQuantity),
+                        CodeRAO_DB = Convert.ToString(form.CodeRAO),
+                        StatusRAO_DB = Convert.ToString(form.StatusRAO),
+                        VolumeOutOfPack_DB = Convert.ToString(form.VolumeOutOfPack),
+                        VolumeInPack_DB = Convert.ToString(form.VolumeInPack),
+                        MassOutOfPack_DB = Convert.ToString(form.MassOutOfPack),
+                        MassInPack_DB = Convert.ToString(form.MassInPack),
+                        QuantityOZIII_DB = Convert.ToString(form.QuantityOZIII),
+                        TritiumActivity_DB = Convert.ToString(form.TritiumActivity),
+                        BetaGammaActivity_DB = Convert.ToString(form.BetaGammaActivity),
+                        AlphaActivity_DB = Convert.ToString(form.AlphaActivity),
+                        TransuraniumActivity_DB = Convert.ToString(form.TransuraniumActivity),
+                        MainRadionuclids_DB = Convert.ToString(form.MainRadionuclids),
+                        Subsidy_DB = Convert.ToString(form.Subsidy),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber)
                     });
                 }
                 break;
@@ -537,18 +563,22 @@ public static class ImportJsonMethods
                     impRep.Rows23.Add(new Form23
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        StoragePlaceName_DB = form.StoragePlaceName,
-                        StoragePlaceCode_DB = form.StoragePlaceCode,
-                        ProjectVolume_DB = form.ProjectVolume,
-                        CodeRAO_DB = form.CodeRAO,
-                        Volume_DB = form.Volume,
-                        Mass_DB = form.Mass,
-                        QuantityOZIII_DB = form.QuantityOZIII,
-                        SummaryActivity_DB = form.SummaryActivity,
-                        DocumentNumber_DB = form.DocumentNumber,
-                        DocumentDate_DB = form.DocumentDate,
-                        ExpirationDate_DB = form.ExpirationDate,
-                        DocumentName_DB = form.DocumentName
+                        StoragePlaceName_DB = Convert.ToString(form.StoragePlaceName),
+                        StoragePlaceCode_DB = Convert.ToString(form.StoragePlaceCode),
+                        ProjectVolume_DB = Convert.ToString(form.ProjectVolume),
+                        CodeRAO_DB = Convert.ToString(form.CodeRAO),
+                        Volume_DB = Convert.ToString(form.Volume),
+                        Mass_DB = Convert.ToString(form.Mass),
+                        QuantityOZIII_DB = Convert.ToString(form.QuantityOZIII),
+                        SummaryActivity_DB = Convert.ToString(form.SummaryActivity),
+                        DocumentNumber_DB = Convert.ToString(form.DocumentNumber),
+                        DocumentDate_DB = DateTime.TryParse(form.DocumentDate, out var dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.DocumentDate),
+                        ExpirationDate_DB = DateTime.TryParse(form.ExpirationDate, out dateTimeValue)
+                            ? dateTimeValue.ToShortDateString()
+                            : Convert.ToString(form.ExpirationDate),
+                        DocumentName_DB = Convert.ToString(form.DocumentName)
                     });
                 }
                 break;
@@ -567,22 +597,22 @@ public static class ImportJsonMethods
                     impRep.Rows24.Add(new Form24
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        CodeOYAT_DB = form.CodeOYAT,
-                        FcpNumber_DB = form.FcpNumber,
-                        MassCreated_DB = form.MassCreated,
-                        QuantityCreated_DB = form.QuantityCreated,
-                        MassFromAnothers_DB = form.MassFromAnothers,
-                        QuantityFromAnothers_DB = form.QuantityFromAnothers,
-                        MassFromAnothersImported_DB = form.MassFromAnothersImported,
-                        QuantityFromAnothersImported_DB = form.QuantityFromAnothersImported,
-                        MassAnotherReasons_DB = form.MassAnotherReasons,
-                        QuantityAnotherReasons_DB = form.QuantityAnotherReasons,
-                        MassTransferredToAnother_DB = form.MassTransferredToAnother,
-                        QuantityTransferredToAnother_DB = form.QuantityTransferredToAnother,
-                        MassRefined_DB = form.MassRefined,
-                        QuantityRefined_DB = form.QuantityRefined,
-                        MassRemovedFromAccount_DB = form.MassRemovedFromAccount,
-                        QuantityRemovedFromAccount_DB = form.QuantityRemovedFromAccount
+                        CodeOYAT_DB = Convert.ToString(form.CodeOYAT),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber),
+                        MassCreated_DB = Convert.ToString(form.MassCreated),
+                        QuantityCreated_DB = Convert.ToString(form.QuantityCreated),
+                        MassFromAnothers_DB = Convert.ToString(form.MassFromAnothers),
+                        QuantityFromAnothers_DB = Convert.ToString(form.QuantityFromAnothers),
+                        MassFromAnothersImported_DB = Convert.ToString(form.MassFromAnothersImported),
+                        QuantityFromAnothersImported_DB = Convert.ToString(form.QuantityFromAnothersImported),
+                        MassAnotherReasons_DB = Convert.ToString(form.MassAnotherReasons),
+                        QuantityAnotherReasons_DB = Convert.ToString(form.QuantityAnotherReasons),
+                        MassTransferredToAnother_DB = Convert.ToString(form.MassTransferredToAnother),
+                        QuantityTransferredToAnother_DB = Convert.ToString(form.QuantityTransferredToAnother),
+                        MassRefined_DB = Convert.ToString(form.MassRefined),
+                        QuantityRefined_DB = Convert.ToString(form.QuantityRefined),
+                        MassRemovedFromAccount_DB = Convert.ToString(form.MassRemovedFromAccount),
+                        QuantityRemovedFromAccount_DB = Convert.ToString(form.QuantityRemovedFromAccount)
                     });
                 }
                 break;
@@ -601,17 +631,17 @@ public static class ImportJsonMethods
                     impRep.Rows25.Add(new Form25
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        StoragePlaceName_DB = form.StoragePlaceName,
-                        StoragePlaceCode_DB = form.StoragePlaceCode,
-                        CodeOYAT_DB = form.CodeOYAT,
-                        FcpNumber_DB = form.FcpNumber,
-                        FuelMass_DB = form.FuelMass,
-                        CellMass_DB = form.CellMass,
+                        StoragePlaceName_DB = Convert.ToString(form.StoragePlaceName),
+                        StoragePlaceCode_DB = Convert.ToString(form.StoragePlaceCode),
+                        CodeOYAT_DB = Convert.ToString(form.CodeOYAT),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber),
+                        FuelMass_DB = Convert.ToString(form.FuelMass),
+                        CellMass_DB = Convert.ToString(form.CellMass),
                         Quantity_DB = int.TryParse(form.Quantity, out var intValue)
                             ? intValue
                             : null,
-                        AlphaActivity_DB = form.AlphaActivity,
-                        BetaGammaActivity_DB = form.BetaGammaActivity
+                        AlphaActivity_DB = Convert.ToString(form.AlphaActivity),
+                        BetaGammaActivity_DB = Convert.ToString(form.BetaGammaActivity)
                     });
                 }
                 break;
@@ -630,13 +660,13 @@ public static class ImportJsonMethods
                     impRep.Rows26.Add(new Form26
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        ObservedSourceNumber_DB = form.ObservedSourceNumber,
-                        ControlledAreaName_DB = form.ControlledAreaName,
-                        SupposedWasteSource_DB = form.SupposedWasteSource,
-                        DistanceToWasteSource_DB = form.DistanceToWasteSource,
-                        TestDepth_DB = form.TestDepth,
-                        RadionuclidName_DB = form.RadionuclidName,
-                        AverageYearConcentration_DB = form.AverageYearConcentration
+                        ObservedSourceNumber_DB = Convert.ToString(form.ObservedSourceNumber),
+                        ControlledAreaName_DB = Convert.ToString(form.ControlledAreaName),
+                        SupposedWasteSource_DB = Convert.ToString(form.SupposedWasteSource),
+                        DistanceToWasteSource_DB = Convert.ToString(form.DistanceToWasteSource),
+                        TestDepth_DB = Convert.ToString(form.TestDepth),
+                        RadionuclidName_DB = Convert.ToString(form.RadionuclidName),
+                        AverageYearConcentration_DB = Convert.ToString(form.AverageYearConcentration)
                     });
                 }
                 break;
@@ -655,11 +685,11 @@ public static class ImportJsonMethods
                     impRep.Rows27.Add(new Form27
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        ObservedSourceNumber_DB = form.ObservedSourceNumber,
-                        RadionuclidName_DB = form.RadionuclidName,
-                        AllowedWasteValue_DB = form.AllowedWasteValue,
-                        FactedWasteValue_DB = form.FactedWasteValue,
-                        WasteOutbreakPreviousYear_DB = form.WasteOutbreakPreviousYear
+                        ObservedSourceNumber_DB = Convert.ToString(form.ObservedSourceNumber),
+                        RadionuclidName_DB = Convert.ToString(form.RadionuclidName),
+                        AllowedWasteValue_DB = Convert.ToString(form.AllowedWasteValue),
+                        FactedWasteValue_DB = Convert.ToString(form.FactedWasteValue),
+                        WasteOutbreakPreviousYear_DB = Convert.ToString(form.WasteOutbreakPreviousYear)
                     });
                 }
                 break;
@@ -678,12 +708,12 @@ public static class ImportJsonMethods
                     impRep.Rows28.Add(new Form28
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        WasteSourceName_DB = form.WasteSourceName,
-                        WasteRecieverName_DB = form.WasteRecieverName,
-                        RecieverTypeCode_DB = form.RecieverTypeCode,
-                        PoolDistrictName_DB = form.PoolDistrictName,
-                        AllowedWasteRemovalVolume_DB = form.AllowedWasteRemovalVolume,
-                        RemovedWasteVolume_DB = form.RemovedWasteVolume
+                        WasteSourceName_DB = Convert.ToString(form.WasteSourceName),
+                        WasteRecieverName_DB = Convert.ToString(form.WasteRecieverName),
+                        RecieverTypeCode_DB = Convert.ToString(form.RecieverTypeCode),
+                        PoolDistrictName_DB = Convert.ToString(form.PoolDistrictName),
+                        AllowedWasteRemovalVolume_DB = Convert.ToString(form.AllowedWasteRemovalVolume),
+                        RemovedWasteVolume_DB = Convert.ToString(form.RemovedWasteVolume)
                     });
                 }
                 break;
@@ -702,10 +732,10 @@ public static class ImportJsonMethods
                     impRep.Rows29.Add(new Form29
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        WasteSourceName_DB = form.WasteSourceName,
-                        RadionuclidName_DB = form.RadionuclidName,
-                        AllowedActivity_DB = form.AllowedActivity,
-                        FactedActivity_DB = form.FactedActivity
+                        WasteSourceName_DB = Convert.ToString(form.WasteSourceName),
+                        RadionuclidName_DB = Convert.ToString(form.RadionuclidName),
+                        AllowedActivity_DB = Convert.ToString(form.AllowedActivity),
+                        FactedActivity_DB = Convert.ToString(form.FactedActivity)
                     });
                 }
                 break;
@@ -724,16 +754,16 @@ public static class ImportJsonMethods
                     impRep.Rows210.Add(new Form210
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        IndicatorName_DB = form.IndicatorName,
-                        PlotName_DB = form.PlotName,
-                        PlotKadastrNumber_DB = form.PlotKadastrNumber,
-                        PlotCode_DB = form.PlotCode,
-                        InfectedArea_DB = form.InfectedArea,
-                        AvgGammaRaysDosePower_DB = form.AvgGammaRaysDosePower,
-                        MaxGammaRaysDosePower_DB = form.MaxGammaRaysDosePower,
-                        WasteDensityAlpha_DB = form.WasteDensityAlpha,
-                        WasteDensityBeta_DB = form.WasteDensityBeta,
-                        FcpNumber_DB = form.FcpNumber
+                        IndicatorName_DB = Convert.ToString(form.IndicatorName),
+                        PlotName_DB = Convert.ToString(form.PlotName),
+                        PlotKadastrNumber_DB = Convert.ToString(form.PlotKadastrNumber),
+                        PlotCode_DB = Convert.ToString(form.PlotCode),
+                        InfectedArea_DB = Convert.ToString(form.InfectedArea),
+                        AvgGammaRaysDosePower_DB = Convert.ToString(form.AvgGammaRaysDosePower),
+                        MaxGammaRaysDosePower_DB = Convert.ToString(form.MaxGammaRaysDosePower),
+                        WasteDensityAlpha_DB = Convert.ToString(form.WasteDensityAlpha),
+                        WasteDensityBeta_DB = Convert.ToString(form.WasteDensityBeta),
+                        FcpNumber_DB = Convert.ToString(form.FcpNumber)
                     });
                 }
                 break;
@@ -752,14 +782,14 @@ public static class ImportJsonMethods
                     impRep.Rows211.Add(new Form211
                     {
                         NumberInOrder_DB = numberInOrder++,
-                        PlotName_DB = form.PlotName,
-                        PlotKadastrNumber_DB = form.PlotKadastrNumber,
-                        PlotCode_DB = form.PlotCode,
-                        InfectedArea_DB = form.InfectedArea,
-                        Radionuclids_DB = form.Radionuclids,
-                        SpecificActivityOfPlot_DB = form.SpecificActivityOfPlot,
-                        SpecificActivityOfLiquidPart_DB = form.SpecificActivityOfLiquidPart,
-                        SpecificActivityOfDensePart_DB = form.SpecificActivityOfDensePart
+                        PlotName_DB = Convert.ToString(form.PlotName),
+                        PlotKadastrNumber_DB = Convert.ToString(form.PlotKadastrNumber),
+                        PlotCode_DB = Convert.ToString(form.PlotCode),
+                        InfectedArea_DB = Convert.ToString(form.InfectedArea),
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        SpecificActivityOfPlot_DB = Convert.ToString(form.SpecificActivityOfPlot),
+                        SpecificActivityOfLiquidPart_DB = Convert.ToString(form.SpecificActivityOfLiquidPart),
+                        SpecificActivityOfDensePart_DB = Convert.ToString(form.SpecificActivityOfDensePart)
                     });
                 }
                 break;
@@ -784,9 +814,9 @@ public static class ImportJsonMethods
                         ObjectTypeCode_DB = short.TryParse(form.ObjectTypeCode, out shortValue)
                             ? shortValue
                             : null,
-                        Radionuclids_DB = form.Radionuclids,
-                        Activity_DB = form.Activity,
-                        ProviderOrRecieverOKPO_DB = form.ProviderOrRecieverOKPO
+                        Radionuclids_DB = Convert.ToString(form.Radionuclids),
+                        Activity_DB = Convert.ToString(form.Activity),
+                        ProviderOrRecieverOKPO_DB = Convert.ToString(form.ProviderOrRecieverOKPO)
                     });
                 }
                 break;

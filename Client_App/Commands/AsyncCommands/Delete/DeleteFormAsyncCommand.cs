@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
 using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
@@ -17,8 +20,21 @@ internal class DeleteFormAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         {
-            var answer = await MainWindowVM.ShowMessage.Handle(new List<string>
-                { "Вы действительно хотите удалить отчет?", "Уведомление", "Да", "Нет" });
+            var answer = await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = new[]
+                    {
+                        new ButtonDefinition { Name = "Да", IsDefault = true},
+                        new ButtonDefinition { Name = "Нет", IsCancel = false}
+                    },
+                    ContentTitle = "Уведомление",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Вы действительно хотите удалить отчет?",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow);
             if (answer is "Да")
             {
                 var mainWindow = Desktop.MainWindow as MainWindow;

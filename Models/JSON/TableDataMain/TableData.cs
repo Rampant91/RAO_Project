@@ -26,7 +26,7 @@ public abstract class TableData
 
     private class TableDataConverter : JsonConverter
     {
-        private static JsonSerializerSettings SpecifiedSubclassConversion = new()
+        private static readonly JsonSerializerSettings SpecifiedSubclassConversion = new()
         {
             ContractResolver = new TableDataSpecifiedConcreteClassConverter()
         };

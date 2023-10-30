@@ -15,6 +15,8 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
+using Models.JSON.TopTableData;
+using ReactiveUI;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -232,14 +234,33 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         ExportDate_DB = $"{timeCreate[0]}.{timeCreate[1]}.{timeCreate[2]}",
                         StartPeriod_DB = DateTime.TryParse(rep.StartPeriod, out var dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : rep.StartPeriod,
+                            : string.Empty,
                         EndPeriod_DB = DateTime.TryParse(rep.EndPeriod, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
-                            : rep.EndPeriod,
+                            : string.Empty,
                         Year_DB = rep.Year,
                     };
+                    if (impRep.FormNum_DB is "2.8")
+                    {
+                        var executorData28 = (ExecutorData28)rep.ExecutorData;
+                        impRep.PermissionNumber_28_DB = executorData28.PermissionNumber_28;
+                        impRep.PermissionIssueDate_28_DB = executorData28.PermissionIssueDate_28;
+                        impRep.ValidBegin_28_DB = executorData28.ValidBegin_28;
+                        impRep.ValidThru_28_DB = executorData28.ValidThru_28;
+                        impRep.PermissionDocumentName_28_DB = executorData28.PermissionDocumentName_28;
+                        impRep.PermissionNumber1_28_DB = executorData28.PermissionNumber1_28;
+                        impRep.PermissionIssueDate1_28_DB = executorData28.PermissionIssueDate1_28;
+                        impRep.ValidBegin1_28_DB = executorData28.ValidBegin1_28;
+                        impRep.ValidThru1_28_DB = executorData28.ValidThru1_28;
+                        impRep.PermissionDocumentName1_28_DB = executorData28.PermissionDocumentName1_28;
+                        impRep.ContractNumber_28_DB = executorData28.ContractNumber_28;
+                        impRep.ContractIssueDate2_28_DB = executorData28.ContractIssueDate2_28;
+                        impRep.ValidBegin2_28_DB = executorData28.ValidBegin2_28;
+                        impRep.ValidThru2_28_DB = executorData28.ValidThru2_28;
+                        impRep.OrganisationReciever_28_DB = executorData28.OrganisationReciever_28;
+                    }
 
-                    BindData(rep, impRep);  //bind all forms data
+                    BindData(rep, impRep);  //bind all forms data to Report
 
                     var noteOrder = 1;
                     foreach (var note in rep.NotesMainTable.Notes)

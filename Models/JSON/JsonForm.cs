@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using Models.JSON.TableDataMain;
+using Models.JSON.TopTableData;
 using JsonConverter = Newtonsoft.Json.JsonConverter;
 using JsonConverterAttribute = Newtonsoft.Json.JsonConverterAttribute;
 
@@ -129,7 +130,7 @@ public abstract class JsonForm
 
     private class JsonFormConverter : JsonConverter
     {
-        private static JsonSerializerSettings SpecifiedSubclassConversion = new()
+        private static readonly JsonSerializerSettings SpecifiedSubclassConversion = new()
         {
             ContractResolver = new JsonFormSpecifiedConcreteClassConverter()
         };
@@ -152,6 +153,7 @@ public abstract class JsonForm
                     {
                         jsonForm.FormTable.TableData.Add(tableDataMain);
                     }
+
                     return jsonForm;
                 }
                 case "form_1_2_2022":
@@ -312,6 +314,10 @@ public abstract class JsonForm
                     {
                         jsonForm.FormTable.TableData.Add(tableDataMain);
                     }
+
+                    var topFormData = jo["form_main_data"]!.ToObject<ExecutorData28>(serializer);
+                    jsonForm.ExecutorData = topFormData;
+
                     return jsonForm;
                 }
                 case "form_2_9_2022":
