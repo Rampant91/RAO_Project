@@ -1202,7 +1202,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (FirstPressedItem[0] != -1)
             {
                 ContextMenu.Close();
-                ContextMenu.Background = Brushes.BurlyWood;
                 var tmp1 = (Cell)Rows
                     .SelectMany(x => x.Children)
                     .FirstOrDefault(item => ((Cell)item).Row == paramRowColumn[0]

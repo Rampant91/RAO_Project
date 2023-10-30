@@ -1,4 +1,5 @@
-﻿using Client_App.ViewModels;
+﻿using System.Collections.Generic;
+using Client_App.ViewModels;
 using Client_App.Views;
 using Models.Collections;
 using System.Reactive.Linq;
@@ -15,10 +16,11 @@ internal class AddReportsAsyncCommand : BaseAsyncCommand
         if (parameter is string par)
         {
             var mainWindow = Desktop.MainWindow as MainWindow;
-            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
             ChangeOrCreateVM frm = new(par, MainWindowVM.LocalReports);
             await MainWindowVM.ShowDialog.Handle(frm);
-            mainWindow.SelectedReports = tmp;
+            mainWindow.SelectedReports = mainWindow.SelectedReports is null
+                ? new ObservableCollectionWithItemPropertyChanged<IKey>()
+                : new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
             await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
         }
     }
