@@ -9,9 +9,7 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
-using Models.DBRealization;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 

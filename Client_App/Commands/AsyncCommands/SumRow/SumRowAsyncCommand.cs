@@ -15,7 +15,9 @@ namespace Client_App.Commands.AsyncCommands.SumRow;
 internal class SumRowAsyncCommand : BaseAsyncCommand
 {
     private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
+
     private Report Storage => _ChangeOrCreateViewModel.Storage;
+
     private bool IsSum
     {
         set => _ChangeOrCreateViewModel.isSum = value;
@@ -25,6 +27,17 @@ internal class SumRowAsyncCommand : BaseAsyncCommand
     {
         _ChangeOrCreateViewModel = changeOrCreateViewModel;
     }
+
+    #region SumRow
+    
+    public async void SumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        await AsyncExecute(null).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region AsyncExecute
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -41,12 +54,11 @@ internal class SumRowAsyncCommand : BaseAsyncCommand
         }
     }
 
-    public async void SumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
-    {
-        await AsyncExecute(null);
-    }
+    #endregion
 
-    public async Task Sum21()
+    #region Sum21
+
+    private async Task Sum21()
     {
         var tItems = Storage.Rows21
             .GroupBy(x => x.RefineMachineName_DB
@@ -218,7 +230,11 @@ internal class SumRowAsyncCommand : BaseAsyncCommand
         Storage.Rows21.AddRange(lst);
     }
 
-    public async Task Sum22()
+    #endregion
+
+    #region Sum22
+
+    private async Task Sum22()
     {
         var tItems = Storage.Rows22
             .GroupBy(x => x.StoragePlaceName_DB
@@ -365,73 +381,66 @@ internal class SumRowAsyncCommand : BaseAsyncCommand
         Storage.Rows22.AddRange(lst);
     }
 
+    #endregion
+
+    #region StringToNumber
+
     private static double StringToNumber(string num)
     {
-        if (num != null)
+        if (num == null) return 0;
+        num = num.Replace(" ", "");
+        var len = num.Length;
+        if (len >= 1)
         {
-            var tmp = num;
-            tmp.Replace(" ", "");
-            var len = tmp.Length;
-            if (len >= 1)
+            if (len > 2)
             {
-                if (len > 2)
+                if (num[0] == '(' && num[len - 1] == ')')
                 {
-                    if (tmp[0] == '(' && tmp[len - 1] == ')')
-                    {
-                        tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
-                    }
-                }
-                if (len == 1)
-                {
-                    tmp = tmp.Replace("-", "0");
-                }
-
-                tmp = tmp.Replace(",", ".");
-                try
-                {
-                    return double.Parse(tmp, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"));
-                }
-                catch
-                {
-                    return 0;
+                    num = num.Remove(len - 1, 1).Remove(0, 1);
                 }
             }
+            if (len == 1)
+            {
+                num = num.Replace("-", "0");
+            }
+            num = num.Replace(",", ".");
+            return double.TryParse(num, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue)
+                ? doubleValue
+                : 0;
         }
         return 0;
     }
+
+    #endregion
+
+    #region StringToNumberInt
 
     private static int StringToNumberInt(string num)
     {
-        if (num != null)
+        if (num == null) return 0;
+        num = num.Replace(" ", "");
+        var len = num.Length;
+        if (len >= 1)
         {
-            var tmp = num;
-            tmp.Replace(" ", "");
-            var len = tmp.Length;
-            if (len >= 1)
+            if (len > 2)
             {
-                if (len > 2)
+                if (num[0] == '(' && num[len - 1] == ')')
                 {
-                    if (tmp[0] == '(' && tmp[len - 1] == ')')
-                    {
-                        tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
-                    }
-                }
-                if (len == 1)
-                {
-                    tmp = tmp.Replace("-", "0");
-                }
-
-                tmp = tmp.Replace(",", ".");
-                try
-                {
-                    return int.Parse(tmp, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"));
-                }
-                catch
-                {
-                    return 0;
+                    num = num.Remove(len - 1, 1).Remove(0, 1);
                 }
             }
+            if (len == 1)
+            {
+                num = num.Replace("-", "0");
+            }
+
+            num = num.Replace(",", ".");
+            return int.TryParse(num, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"), out var intValue)
+                ? intValue
+                : 0;
         }
         return 0;
     }
+
+    #endregion
 }
