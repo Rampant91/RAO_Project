@@ -420,7 +420,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                 ImpRepFormCount = rep.Rows11.Count + rep.Rows12.Count + rep.Rows13.Count + rep.Rows14.Count + rep.Rows15.Count
                                                   + rep.Rows16.Count + rep.Rows17.Count + rep.Rows18.Count + rep.Rows19.Count + rep.Rows21.Count
                                                   + rep.Rows22.Count + rep.Rows23.Count + rep.Rows24.Count + rep.Rows25.Count + rep.Rows26.Count
-                                                  + rep.Rows27.Count + rep.Rows28.Count + rep.Rows29.Count+ rep.Rows210.Count + rep.Rows211.Count
+                                                  + rep.Rows27.Count + rep.Rows28.Count + rep.Rows29.Count + rep.Rows210.Count + rep.Rows211.Count
                                                   + rep.Rows212.Count;
                                 ImpRepFormNum = rep.FormNum_DB;
                                 ImpRepStartPeriod = rep.StartPeriod_DB;

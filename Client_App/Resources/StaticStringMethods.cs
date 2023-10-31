@@ -88,8 +88,9 @@ internal static class StaticStringMethods
 
     #region StringReverse
 
-    internal static string StringReverse(string str)
+    internal static string? StringReverse(string? str)
     {
+        if (str is null) return null;
         var charArray = str.Replace("_", "0").Replace("/", ".").Split(".");
         Array.Reverse(charArray);
         return string.Join("", charArray);
