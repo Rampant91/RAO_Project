@@ -174,7 +174,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #region Constructor
 
-    //  При изменении формы или организации
+    #region ChangeFormOrOrg
+    
     public ChangeOrCreateVM(string param, in Report rep, Reports reps, DBObservable localReports)
     {
         Storage = rep;
@@ -187,7 +188,10 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         Init();
     }
 
-    //  При добавлении новой формы
+    #endregion
+
+    #region AddNewForm
+    
     public ChangeOrCreateVM(string param, in Reports reps)
     {
         Storage = new Report { FormNum_DB = param };
@@ -195,83 +199,88 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         switch (param)
         {
             case "1.0":
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows10.Add(ty1);
-                Storage.Rows10.Add(ty2);
-                break;
-            }
-            case "2.0":
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows20.Add(ty1);
-                Storage.Rows20.Add(ty2);
-                break;
-            }
-            default:
-            {
-                if (param.StartsWith('1') || param.StartsWith('2'))
                 {
-                    try
-                    {
-                        var ty = reps.Report_Collection
-                            .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
-                            .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
-                            .Select(t => t.EndPeriod_DB)
-                            .LastOrDefault();
-                        FormType = param;
-                        Storage.StartPeriod.Value = ty;
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                    var ty1 = (Form10)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form10)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows10.Add(ty1);
+                    Storage.Rows10.Add(ty2);
+                    break;
                 }
-                break;
-            }
+            case "2.0":
+                {
+                    var ty1 = (Form20)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form20)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows20.Add(ty1);
+                    Storage.Rows20.Add(ty2);
+                    break;
+                }
+            default:
+                {
+                    if (param.StartsWith('1') || param.StartsWith('2'))
+                    {
+                        try
+                        {
+                            var ty = reps.Report_Collection
+                                .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
+                                .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
+                                .Select(t => t.EndPeriod_DB)
+                                .LastOrDefault();
+                            FormType = param;
+                            Storage.StartPeriod.Value = ty;
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+                    }
+                    break;
+                }
         }
         Storages = reps;
         FormType = param;
         Init();
     }
 
-    //  При добавлении новой организации
+    #endregion
+
+    #region AddNewOrg
+    
     public ChangeOrCreateVM(string param, in DBObservable reps)
     {
         Storage = new Report { FormNum_DB = param };
         switch (param)
         {
             case "1.0":
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows10.Add(ty1);
-                Storage.Rows10.Add(ty2);
-                break;
-            }
+                {
+                    var ty1 = (Form10)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form10)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows10.Add(ty1);
+                    Storage.Rows10.Add(ty2);
+                    break;
+                }
             case "2.0":
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows20.Add(ty1);
-                Storage.Rows20.Add(ty2);
-                break;
-            }
+                {
+                    var ty1 = (Form20)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form20)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows20.Add(ty1);
+                    Storage.Rows20.Add(ty2);
+                    break;
+                }
         }
         FormType = param;
         DBO = reps;
         Init();
     }
+
+    #endregion
 
     #endregion
 
