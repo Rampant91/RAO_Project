@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
@@ -178,10 +179,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     
     public ChangeOrCreateVM(string param, in Report rep, Reports reps, DBObservable localReports)
     {
+        var id = rep.Id;
         Storage = rep;
         Storages = reps;
         FormType = param;
         LocalReports = localReports;
+        Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReport(id, this));
+        myTask.Wait();
         var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
         var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
         isSum = sumR21 > 0 || sumR22 > 0;

@@ -541,7 +541,9 @@ namespace Client_App.DBAPIFactory
                 if (!CheckType(typeof(T))) return false;
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
-                var rep = await db.ReportCollectionDbSet.Where(x => x.Id == id).FirstOrDefaultAsync(ReportsStorage.cancellationToken);
+                var rep = await db.ReportCollectionDbSet
+                    .Where(x => x.Id == id)
+                    .FirstOrDefaultAsync(ReportsStorage.cancellationToken);
                 if (rep != null)
                 {
                     db.ReportCollectionDbSet.Remove(rep);
