@@ -32,16 +32,17 @@ public static class ReportsStorage
     public static async Task GetReport(int id, ChangeOrCreateVM? viewModel)
     {
         Report? rep;
-        var reps = MainWindowVM.LocalReports.Reports_Collection
+        var reps = LocalReports.Reports_Collection
             .FirstOrDefault(reports => reports.Report_Collection
                 .Any(report => report.Id == Convert.ToInt32(id)));
         var checkedRep = reps.Report_Collection.FirstOrDefault(x => x.Id == Convert.ToInt32(id));
         if (checkedRep.Rows == null || checkedRep.Rows.Count == 0)
         {
-            //var api = new EssenceMethods.APIFactory<Report>();
+            var api = new EssenceMethods.APIFactory<Report>();
             rep = await api.GetAsync(Convert.ToInt32(id));
+            checkedRep.Rows11 = rep.Rows11;
             reps.Report_Collection.Remove(checkedRep);
-            reps.Report_Collection.Add(rep);
+            reps.Report_Collection.Add(checkedRep);
         }
         else
             rep = checkedRep;

@@ -32,7 +32,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         string fileName;
         var mainWindow = Desktop.MainWindow as MainWindow;
 
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0)
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
         {
             #region MessageExcelExportFail
 
@@ -122,7 +122,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
         var repsList = new List<Reports>();
-        var orderedReportsCollection = MainWindowVM.LocalReports.Reports_Collection
+        var orderedReportsCollection = ReportsStorage.LocalReports.Reports_Collection
                 .OrderBy(x => x.Master.RegNoRep.Value)
                 .ToList();
         if (_isSelectedOrg)

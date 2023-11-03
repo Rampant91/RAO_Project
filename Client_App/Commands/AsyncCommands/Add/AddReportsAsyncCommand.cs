@@ -16,12 +16,12 @@ internal class AddReportsAsyncCommand : BaseAsyncCommand
         if (parameter is string par)
         {
             var mainWindow = Desktop.MainWindow as MainWindow;
-            ChangeOrCreateVM frm = new(par, MainWindowVM.LocalReports);
+            ChangeOrCreateVM frm = new(par, ReportsStorage.LocalReports);
             await MainWindowVM.ShowDialog.Handle(frm);
             mainWindow.SelectedReports = mainWindow.SelectedReports is null
                 ? new ObservableCollectionWithItemPropertyChanged<IKey>()
                 : new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
-            await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+            await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         }
     }
 }

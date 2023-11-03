@@ -49,7 +49,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         foreach (var item in forms)
         {
-            var findReports = MainWindowVM.LocalReports.Reports_Collection
+            var findReports = ReportsStorage.LocalReports.Reports_Collection
                 .Where(t => t.Report_Collection.Contains(item));
             var reps = findReports.FirstOrDefault();
             if (reps == null) continue;
@@ -204,7 +204,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         foreach (var item in forms)
         {
-            var reps = MainWindowVM.LocalReports.Reports_Collection
+            var reps = ReportsStorage.LocalReports.Reports_Collection
                 .FirstOrDefault(t => t.Report_Collection.Contains(item));
             if (reps is null) continue;
             IEnumerable<IKey> t;
@@ -355,7 +355,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     private protected static void ExcelPrintTitleExport(string param, ExcelWorksheet worksheet, Report form)
     {
-        var master = MainWindowVM.LocalReports.Reports_Collection
+        var master = ReportsStorage.LocalReports.Reports_Collection
             .First(t => t.Report_Collection.Contains(form))
             .Master_DB;
         if (param.Split('.')[0] == "2")

@@ -53,23 +53,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region LocalReports
-
-    private static DBObservable _localReports = new();
-    public static DBObservable LocalReports
-    {
-        get => _localReports;
-        set
-        {
-            if (_localReports != value)
-            {
-                _localReports = value;
-            }
-        }
-    }
-
-    #endregion
-
     #region Init
 
     private static async Task<string> GetSystemDirectory()
@@ -217,7 +200,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     private static async Task ProcessDataBaseFillNullOrder()
     {
-        foreach (var key in LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             foreach (var key1 in item.Report_Collection)
@@ -236,7 +219,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await item.SortAsync();
         }
 
-        await LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
+        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
     }
 
     public static int GetNumberInOrder(IEnumerable lst)
@@ -405,20 +388,20 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
         OnStartProgressBar = 85;
-        LocalReports = dbm.DBObservableDbSet.Local.First();
+        ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
         await ProcessDataBaseFillNullOrder();
 
         onStartProgressBarVm.LoadStatus = "Сохранение";
         OnStartProgressBar = 90;
         await dbm.SaveChangesAsync();
-        LocalReports.PropertyChanged += Local_ReportsChanged;
+        ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
         OnStartProgressBar = 100;
     }
 
     private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
     {
-        OnPropertyChanged(nameof(LocalReports));
+        OnPropertyChanged(nameof(ReportsStorage.LocalReports));
     }
 
     #endregion

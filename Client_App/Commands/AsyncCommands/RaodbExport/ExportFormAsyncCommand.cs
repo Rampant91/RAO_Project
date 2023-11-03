@@ -48,7 +48,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
 
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
-        var reps = MainWindowVM.LocalReports.Reports_Collection
+        var reps = ReportsStorage.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         if (reps is null) return;
 

@@ -10,6 +10,6 @@ internal class SaveReportsAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         await StaticConfiguration.DBModel.SaveChangesAsync();
-        await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
     }
 }

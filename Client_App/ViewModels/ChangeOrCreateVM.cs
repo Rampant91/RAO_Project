@@ -18,6 +18,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
+using Models.DBRealization;
 
 namespace Client_App.ViewModels;
 
@@ -180,12 +181,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ChangeOrCreateVM(string param, in Report rep, Reports reps, DBObservable localReports)
     {
         var id = rep.Id;
-        Storage = rep;
-        Storages = reps;
-        FormType = param;
+        
         LocalReports = localReports;
         Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReport(id, this));
         myTask.Wait();
+        Storage = rep;
+        Storages = reps;
+        FormType = param;
         var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
         var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
         isSum = sumR21 > 0 || sumR22 > 0;

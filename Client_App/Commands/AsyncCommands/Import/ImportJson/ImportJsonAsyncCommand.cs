@@ -404,7 +404,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         }
                         if (an is "Добавить" or "Да для всех")
                         {
-                            MainWindowVM.LocalReports.Reports_Collection.Add(impReps);
+                            ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
                             countNewReps++;
                             AtLeastOneImportDone = true;
 
@@ -459,7 +459,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 //ignore
             }
         }
-        await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
 
         #region Suffix

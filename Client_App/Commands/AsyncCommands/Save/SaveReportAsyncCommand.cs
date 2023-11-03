@@ -1,4 +1,5 @@
-﻿using Client_App.ViewModels;
+﻿using System.Linq;
+using Client_App.ViewModels;
 using Models.Collections;
 using Models.DBRealization;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ internal class SaveReportAsyncCommand : BaseAsyncCommand
             _ChangeOrCreateViewModel.DBO.Reports_Collection.Add(tmp);
             _ChangeOrCreateViewModel.DBO = null;
         }
-        else if (Storages != null && FormType is not ("1.0" or "2.0") && !Storages.Report_Collection.Contains(Storage))
+        else if (Storages != null && FormType is not ("1.0" or "2.0") && Storages.Report_Collection.All(rep => rep.Id != Storage.Id))
         {
             Storages.Report_Collection.Add(Storage);
         }
@@ -59,7 +60,7 @@ internal class SaveReportAsyncCommand : BaseAsyncCommand
         var dbm = StaticConfiguration.DBModel;
         try
         {
-            await dbm.SaveChangesAsync();
+            dbm.SaveChanges();  // Была багуля, при async версии метода не сохраняет БД с 1 раза, приходилось вызывать метод 2 раза.
             _ChangeOrCreateViewModel.IsCanSaveReportEnabled = false;
         }
         catch

@@ -15,7 +15,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         var cts = new CancellationTokenSource();
         ExportType = "Список организаций";
         
@@ -42,7 +42,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
 
         #region Headers
@@ -87,7 +87,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         var lst = new List<Reports>();
         var checkedLst = new List<Reports>();
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             lst.Add(item);
