@@ -50,7 +50,7 @@ namespace Client_App.DBAPIFactory
                 if (!CheckType(typeof(T))) return null;
                 using var db = new DBModel(StaticConfiguration.DBPath);
                 db.Database.Migrate();
-                return db.ReportCollectionDbSet.Where(x => x.Id == id).OrderBy(x => x.Order)
+                return db.ReportCollectionDbSet.AsNoTracking().Where(x => x.Id == id).OrderBy(x => x.Order)
                     .Include(x => x.Rows10)
                     .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
@@ -140,7 +140,7 @@ namespace Client_App.DBAPIFactory
                 {
                     await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
                     IQueryable<Report> dbQ = db.ReportCollectionDbSet;
-                    tmp = await dbQ.Where(x => x.Id == id)
+                    tmp = await dbQ.AsNoTracking().Where(x => x.Id == id)
                         .Include(x => x.Rows10)
                         .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                         .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))

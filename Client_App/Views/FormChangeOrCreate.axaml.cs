@@ -75,6 +75,10 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                         dbm.Restore();
                         await dbm.LoadTablesAsync();
                         await dbm.SaveChangesAsync();
+                        //var changedReports = MainWindowVM.LocalReports.Reports_Collection.FirstOrDefault(reps => reps.Id == tmp.Storages.Id);
+                        //var changedReport = changedReports.Report_Collection.FirstOrDefault(rep => rep.Id == tmp.Storage.Id);
+                        //var c = tmp.Storage[tmp.FormType];
+
 
                         var lst = tmp.Storage[tmp.FormType];
 
