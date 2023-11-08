@@ -40,7 +40,7 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
         {
             foreach (var item in param)
             {
-                MainWindowVM.LocalReports.Reports_Collection.Remove((Reports)item);
+                ReportsStorage.LocalReports.Reports_Collection.Remove((Reports)item);
             }
         }
         await StaticConfiguration.DBModel.SaveChangesAsync();

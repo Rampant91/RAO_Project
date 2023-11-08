@@ -26,7 +26,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region ReportsCountCheck
 
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -130,7 +130,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
 
         #region Headers
@@ -147,7 +147,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var lst = new List<Reports>();
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")

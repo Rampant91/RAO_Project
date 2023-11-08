@@ -23,7 +23,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         #region ReportsCountCheck
 
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -83,7 +83,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
 
         Worksheet = excelPackage.Workbook.Worksheets.Add("Разрывы и пересечения");
 
@@ -104,7 +104,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         if (OperatingSystem.IsWindows()) Worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров      
 
-        var listSortRep = MainWindowVM.LocalReports.Reports_Collection
+        var listSortRep = ReportsStorage.LocalReports.Reports_Collection
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
                               && DateTime.TryParse(rep.EndPeriod_DB, out _))

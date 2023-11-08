@@ -171,7 +171,7 @@ namespace Client_App.DBAPIFactory
                 {
                     ServiceExtension.LoggerManager.Error(ex.Message);
                 }
-
+                await db.SaveChangesAsync();
                 return tmp;
             }
             #endregion

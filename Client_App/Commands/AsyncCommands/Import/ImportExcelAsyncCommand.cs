@@ -286,7 +286,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
@@ -338,10 +338,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     {
         IEnumerable<Reports>? reps = worksheet0.Name switch
         {
-            "1.0" => MainWindowVM.LocalReports.Reports_Collection10
+            "1.0" => ReportsStorage.LocalReports.Reports_Collection10
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB),
-            "2.0" => MainWindowVM.LocalReports.Reports_Collection20
+            "2.0" => ReportsStorage.LocalReports.Reports_Collection20
                 .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
                             Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB),
             _ => null
@@ -382,7 +382,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         }
 
         GetDataTitleReps(newRepsFromExcel, worksheet0);
-        MainWindowVM.LocalReports.Reports_Collection.Add(newRepsFromExcel);
+        ReportsStorage.LocalReports.Reports_Collection.Add(newRepsFromExcel);
         return newRepsFromExcel;
     }
 

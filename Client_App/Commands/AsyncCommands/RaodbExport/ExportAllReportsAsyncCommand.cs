@@ -21,7 +21,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         string? answer;
-        if (MainWindowVM.LocalReports.Reports_Collection.Count > 10)
+        if (ReportsStorage.LocalReports.Reports_Collection.Count > 10)
         {
             #region ExportDoneMessage
 
@@ -36,8 +36,8 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Уведомление",
                     ContentMessage =
-                        $"Текущая база содержит {MainWindowVM.LocalReports.Reports_Collection.Count} форм организаций," +
-                        $"{Environment.NewLine}выгрузка займет примерно {MainWindowVM.LocalReports.Reports_Collection.Count / 20} минут",
+                        $"Текущая база содержит {ReportsStorage.LocalReports.Reports_Collection.Count} форм организаций," +
+                        $"{Environment.NewLine}выгрузка займет примерно {ReportsStorage.LocalReports.Reports_Collection.Count / 20} минут",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
@@ -51,7 +51,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
         if (string.IsNullOrEmpty(folderPath)) return;
 
         var po = new ParallelOptions();
-        Parallel.ForEach(MainWindowVM.LocalReports.Reports_Collection, async exportOrg =>
+        Parallel.ForEach(ReportsStorage.LocalReports.Reports_Collection, async exportOrg =>
         {
             await Task.Run(async () =>
             {

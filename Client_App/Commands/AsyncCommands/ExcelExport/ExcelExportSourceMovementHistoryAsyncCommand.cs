@@ -112,7 +112,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         #endregion
 
         var lastRow = 1;
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection10)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
         {
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
@@ -272,7 +272,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         #endregion
 
         lastRow = 1;
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection10)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
         {
             var reps = (Reports)key;
             var form15 = reps.Report_Collection

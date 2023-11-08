@@ -177,7 +177,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                     if (an is "Добавить" or "Да для всех")
                     {
-                        MainWindowVM.LocalReports.Reports_Collection.Add(item);
+                        ReportsStorage.LocalReports.Reports_Collection.Add(item);
                         AtLeastOneImportDone = true;
 
                         #region LoggerImport
@@ -224,7 +224,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")

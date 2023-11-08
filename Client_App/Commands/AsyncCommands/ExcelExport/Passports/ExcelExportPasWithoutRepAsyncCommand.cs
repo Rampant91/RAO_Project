@@ -144,7 +144,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection10)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
         {
             var reps = (Reports)key;
             var form11 = reps.Report_Collection
