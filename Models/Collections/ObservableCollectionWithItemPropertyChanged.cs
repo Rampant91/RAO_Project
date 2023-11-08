@@ -155,6 +155,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     private bool CheckForSort()
     {
+        if (Items.Contains(null)) return false;
         var count = 1;
         var flag = true;
         foreach(var item in Items)
