@@ -16,6 +16,7 @@ using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Forms;
 using Client_App.ViewModels;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Client_App.Views;
 
@@ -54,9 +55,9 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 
     private void OnStandardClosing(object sender, CancelEventArgs args)
     {
-        bool flag;
+        if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges()) return;
         if (Answ != null) return;
-        flag = false;
+        var flag = false;
         var tmp = DataContext as ChangeOrCreateVM;
         Answ = tmp.ShowMessageT.Handle(new List<string> { "Сохранить?", "Да", "Нет" }).GetAwaiter();
         Answ.Subscribe(async x =>

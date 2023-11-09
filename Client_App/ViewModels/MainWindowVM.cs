@@ -276,9 +276,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var dbm = StaticConfiguration.DBModel;
 
         #region LoadTables
-        onStartProgressBarVm.LoadStatus = "Загрузка примечаний";
-        OnStartProgressBar = 22;
-        await dbm.notes.LoadAsync();
+
+        //onStartProgressBarVm.LoadStatus = "Загрузка примечаний";
+        //OnStartProgressBar = 22;
+        //await dbm.notes.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
         OnStartProgressBar = 24;
@@ -396,6 +397,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
         }
         await dbm.DBObservableDbSet.LoadAsync(); 
+
         #endregion
 
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
