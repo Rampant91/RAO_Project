@@ -69,19 +69,14 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     return;
                 case "Нет":
                 {
+                    var a = ReportsStorage.LocalReports;
                     flag = true;
                     var dbm = StaticConfiguration.DBModel;
                     dbm.Restore();
-                    await dbm.LoadTablesAsync();
                     await dbm.SaveChangesAsync();
-                    //var changedReports = MainWindowVM.LocalReports.Reports_Collection.FirstOrDefault(reps => reps.Id == tmp.Storages.Id);
-                    //var changedReport = changedReports.Report_Collection.FirstOrDefault(rep => rep.Id == tmp.Storage.Id);
-                    //var c = tmp.Storage[tmp.FormType];
-
 
                     var lst = tmp.Storage[tmp.FormType];
 
-                    //tmp.Storage.Rows11.GetEnumerator();
                     foreach (var key in lst)
                     {
                         var item = (Form)key;
@@ -96,7 +91,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     {
                         tmp.Storage.Notes.Remove(item);
                     }
-
+                    
                     if (tmp.FormType is not "1.0" and not "2.0")
                     {
                         if (tmp.FormType.Split('.')[0] == "1")

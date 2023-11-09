@@ -38,43 +38,21 @@ public static class ReportsStorage
         Report? newRep;
         var reps = LocalReports.Reports_Collection
             .FirstOrDefault(reports => reports.Report_Collection
-                .Any(report => report.Id == Convert.ToInt32(id)));
-        var checkedRep = reps.Report_Collection.FirstOrDefault(x => x.Id == Convert.ToInt32(id));
-        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
+                .Any(report => report.Id == Convert.ToInt32(id)));  //организация в локальном хранилище
+        var checkedRep = reps.Report_Collection.FirstOrDefault(x => x.Id == Convert.ToInt32(id));   //отчет в локальном хранилище
+        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)) //если в отчете нет форм
         {
-            //var api = new EssenceMethods.APIFactory<Report>();
-            //var forms = newRep.Rows11;
-            //await using var db = new DBModel(StaticConfiguration.DBPath);
-            
-            
-            
-            //oldRep.Rows.Remove(forms);
-            //oldRep.Rows.Add(forms);
-
-            
-            
-            //var oldRep = reps.Report_Collection.First(report => report.Id == newRep.Id);
-
-            //StaticConfiguration.DBModel.ReportCollectionDbSet.Local.Remove(oldRep);
-            //StaticConfiguration.DBModel.ReportCollectionDbSet.Local.Add(newRep);
-            //StaticConfiguration.DBModel.ReportCollectionDbSet.Local.OrderBy(x => x.Id);
-            
-            //await StaticConfiguration.DBModel.SaveChangesAsync();
-
-            //StaticConfiguration.DBModel.Attach(newRep);
-            //StaticConfiguration.DBModel.Entry(newRep).State = EntityState.Detached;
-
-            newRep = await api.GetAsync(Convert.ToInt32(id));
-
             var db = StaticConfiguration.DBModel;
+            newRep = await api.GetAsync(Convert.ToInt32(id));   //загружаем отчет из БД
             var local = db.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(id));
             if (local != null)
             {
-                db.Entry(local).State = EntityState.Detached;
+                db.Entry(local).State = EntityState.Detached;   //убираем отчет из локального хранилища из отслеживания
             }
-            db.Entry(newRep).State = EntityState.Modified;
-            await db.SaveChangesAsync();
-            reps.Report_Collection.Replace(checkedRep, newRep);
+            db.Set<Report>().Attach(newRep);    //добавляем новый отчет в отслеживание
+            //db.Entry(newRep).State = EntityState.Modified;  //устанавливаем флаг, что этот отчет был изменен и требует перезаписи в БД
+            //await db.SaveChangesAsync();
+            reps.Report_Collection.Replace(checkedRep, newRep); //заменяем отчет в локальном хранилище на тот, в котором загружены формы
         }
         else
             newRep = checkedRep;

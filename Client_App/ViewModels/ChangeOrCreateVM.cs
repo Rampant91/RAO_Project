@@ -184,14 +184,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReport(id, this));
         myTask.Wait();
 
-        Storages = ReportsStorage.LocalReports.Reports_Collection.First(reports => reports.Id == reps.Id);
-        Storage = Storages.Report_Collection.First(report => report.Id == id);
+        //Storages = ReportsStorage.LocalReports.Reports_Collection.First(reports => reports.Id == reps.Id);
+        //Storage = Storages.Report_Collection.First(report => report.Id == id);
         FormType = param;
         LocalReports = ReportsStorage.LocalReports;
         var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
         var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
         isSum = sumR21 > 0 || sumR22 > 0;
         Init();
+        StaticConfiguration.DBModel.SaveChanges();
         
         //if (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)
         //{
