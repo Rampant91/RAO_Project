@@ -18,7 +18,7 @@ internal class ChangeReportsAsyncCommand : BaseAsyncCommand
             var t = Desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
             var rep = (Reports)obj;
-            var frm = new ChangeOrCreateVM(rep.Master.FormNum.Value, rep.Master, rep, ReportsStorage.LocalReports);
+            var frm = new ChangeOrCreateVM(rep.Master.FormNum.Value, rep.Master);
             await MainWindowVM.ShowDialog.Handle(frm);
 
             //Local_Reports.Reports_Collection.Sorted = false;

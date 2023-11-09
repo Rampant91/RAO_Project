@@ -178,14 +178,19 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #region ChangeFormOrOrg
     
-    public ChangeOrCreateVM(string param, in Report rep, Reports reps, DBObservable localReports)
+    public ChangeOrCreateVM(string param, in Report rep)
     {
-        var id = rep.Id;
-        Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReport(id, this));
-        myTask.Wait();
-
-        //Storages = ReportsStorage.LocalReports.Reports_Collection.First(reports => reports.Id == reps.Id);
-        //Storage = Storages.Report_Collection.First(report => report.Id == id);
+        if (rep.FormNum_DB is "1.0" or "2.0")
+        {
+            Storage = rep;
+        }
+        else
+        {
+            var id = rep.Id;
+            Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReport(id, this));  //при открытии формы загружаем все формы из БД
+            myTask.Wait();
+        }
+        
         FormType = param;
         LocalReports = ReportsStorage.LocalReports;
         var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
@@ -193,17 +198,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         isSum = sumR21 > 0 || sumR22 > 0;
         Init();
         StaticConfiguration.DBModel.SaveChanges();
-        
-        //if (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)
-        //{
-        //    StaticConfiguration.DBModel.SaveChanges();
-        //}
     }
 
     #endregion
 
     #region AddNewForm
-    
+
     public ChangeOrCreateVM(string param, in Reports reps)
     {
         Storage = new Report { FormNum_DB = param };
@@ -341,7 +341,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ShowMessageT = new Interaction<List<string>, string>();
         if (!isSum)
         {
-            Storage.Sort();
+            //Storage.Sort();
         }
     }
 }

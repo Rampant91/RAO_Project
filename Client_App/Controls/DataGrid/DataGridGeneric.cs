@@ -16,7 +16,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Client_App.VisualRealization.Converters;
-using ReactiveUI;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -39,6 +40,7 @@ public enum MultilineMode
 public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGridColumn, new()
 {
     #region Items
+
     public static readonly DirectProperty<DataGrid<T>, IKeyCollection> ItemsProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, IKeyCollection>(
             nameof(Items),
@@ -64,9 +66,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region SelectedItems
+
     public static readonly DirectProperty<DataGrid<T>, IKeyCollection> SelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, IKeyCollection>(
             nameof(SelectedItems),
@@ -87,9 +91,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region SelectedCells
+
     public static readonly DirectProperty<DataGrid<T>, IList<Control>> SelectedCellsProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, IList<Control>>(
             nameof(SelectedCells),
@@ -109,9 +115,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             UpdateCells();
         }
     }
+
     #endregion
 
     #region Type
+
     public static readonly DirectProperty<DataGrid<T>, string> TypeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(Type),
@@ -122,9 +130,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => typeof(T).Name;
         set { }
     }
+
     #endregion
 
     #region CommentСhangeable
+
     public static readonly DirectProperty<DataGrid<T>, bool> CommentСhangeableProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(CommentСhangeable),
@@ -141,9 +151,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region Comment
+
     public static readonly DirectProperty<DataGrid<T>, string> CommentProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(Comment),
@@ -162,9 +174,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region Search
+
     public static readonly DirectProperty<DataGrid<T>, bool> SearchProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(Search),
@@ -184,9 +198,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region Sum
+
     public static readonly DirectProperty<DataGrid<T>, bool> SumProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(Sum),
@@ -203,9 +219,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region ShowAllReport
+
     public static readonly DirectProperty<DataGrid<T>, bool> ShowAllReportProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(ShowAllReport),
@@ -222,9 +240,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             //Init();
         }
     }
+
     #endregion
 
     #region SumColumn
+
     public static readonly DirectProperty<DataGrid<T>, string> SumColumnProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(SumColumn),
@@ -300,9 +320,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
         return _s.ToString();
     }
+
     #endregion
 
     #region ChooseMode
+
     public static readonly StyledProperty<ChooseMode> ChooseModeProperty =
         AvaloniaProperty.Register<DataGrid<T>, ChooseMode>(nameof(ChooseMode));
 
@@ -311,9 +333,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => GetValue(ChooseModeProperty);
         set => SetValue(ChooseModeProperty, value);
     }
+
     #endregion
 
     #region MultilineMode
+
     public static readonly StyledProperty<MultilineMode> MultilineModeProperty =
         AvaloniaProperty.Register<DataGrid<T>, MultilineMode>(nameof(MultilineMode));
     public MultilineMode MultilineMode
@@ -321,6 +345,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => GetValue(MultilineModeProperty);
         set => SetValue(MultilineModeProperty, value);
     }
+
     #endregion
 
     #region ChooseColor
@@ -334,6 +359,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region Pagination
+
     public static readonly DirectProperty<DataGrid<T>, bool> PaginationProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(Pagination),
@@ -350,9 +376,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             UpdateCells();
         }
     }
+
     #endregion
 
     #region IsReadable
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsReadableProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsReadable),
@@ -369,9 +397,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region IsAutoSizable
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsAutoSizableProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsAutoSizable),
@@ -388,9 +418,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region IsReadableSum
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsReadableSumProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsReadableSum),
@@ -407,9 +439,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region IsColumnResize
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsColumnResizeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsColumnResize),
@@ -426,9 +460,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region PageSize
+
     public static readonly DirectProperty<DataGrid<T>, int> PageSizeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, int>(
             nameof(PageSize),
@@ -445,9 +481,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region FixedContent
+
     public static readonly DirectProperty<DataGrid<T>, Thickness> FixedContentProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, Thickness>(
             nameof(FixedContent),
@@ -460,9 +498,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _FixedContent;
         set => SetAndRaise(FixedContentProperty, ref _FixedContent, value);
     }
+
     #endregion
 
     #region ScrollLeftRight
+
     public static readonly DirectProperty<DataGrid<T>, int> ScrollLeftRightProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, int>(
             nameof(ScrollLeftRight),
@@ -475,10 +515,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _ScrollLeftRight;
         set => SetAndRaise(ScrollLeftRightProperty, ref _ScrollLeftRight, value);
     }
+
     #endregion
 
     #region Count
+
     #region ItemsCount
+
     public static readonly DirectProperty<DataGrid<T>, string> ItemsCountProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(ItemsCount),
@@ -503,9 +546,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region PageCount
+
     public static readonly DirectProperty<DataGrid<T>, string> PageCountProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(PageCount),
@@ -538,9 +583,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             SetAndRaise(PageCountProperty, ref _PageCount, pageCount.ToString());
         }
     }
+
     #endregion
 
     #region ReportCount
+
     public static readonly DirectProperty<DataGrid<T>, string> ReportCountProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(ReportCount),
@@ -566,6 +613,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region ReportStringCount
@@ -582,22 +630,19 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _ReportStringCount;
         set
         {
-            if (SelectedItems != null)
+            if (SelectedItems is null || SelectedItems.Count == 0)
             {
-                var countR = 0;
-                foreach (var item in SelectedItems)
+                if (ReportStringCountProperty is not "0")
                 {
-                    if (item is Report reps)
-                    {
-                        countR = reps.Rows.Count;
-                    }
-                    else
-                    {
-                        countR = 0;
-                    }
+                    SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, "0");
                 }
-                SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
+                return;
             }
+
+            var rep = SelectedItems.Get<Report>(0);
+            if (rep is null) return;
+            var countR = GetRowsCount(rep);
+            SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
         }
     }
 
@@ -777,6 +822,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region Columns
@@ -1069,7 +1115,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
     #endregion
-
+    
     //Всё что касается работы с мышью
     #region DataGridPoiter
 
@@ -1440,97 +1486,109 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region KeyDown
+
     private void OnDataGridKeyDown(object sender, KeyEventArgs args)
     {
-        if (args.Key == Key.Left)
+        switch (args.Key)
         {
-            LastPressedItem[1] = LastPressedItem[1] == 1 
-                ? LastPressedItem[1] 
-                : LastPressedItem[1] - 1;
-            if (args.KeyModifiers != KeyModifiers.Shift)
+            case Key.Left:
             {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                LastPressedItem[1] = LastPressedItem[1] == 1 
+                    ? LastPressedItem[1] 
+                    : LastPressedItem[1] - 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    num = ctrl.Text.Length;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
-                ctrl.CaretIndex = num - 1;
-            }
-        }
-        if (args.Key == Key.Right)
-        {
-            if (LastPressedItem[1] != Rows[0].Children.Count - 1)
-                LastPressedItem[1]++;
-            if (args.KeyModifiers != KeyModifiers.Shift)
-            {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
                 {
-                    num = ctrl.Text.Length;
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
                 }
-                ctrl.CaretIndex = num - 1;
+
+                break;
             }
-        }
-        if (args.Key == Key.Down)
-        {
-            LastPressedItem[0] = LastPressedItem[0] == Rows.Count - 1 || LastPressedItem[0] == Items.Count - 1 ? LastPressedItem[0] : LastPressedItem[0] + 1;
-            if (args.KeyModifiers != KeyModifiers.Shift)
+            case Key.Right:
             {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                if (LastPressedItem[1] != Rows[0].Children.Count - 1)
+                    LastPressedItem[1]++;
+                if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    num = ctrl.Text.Length;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
-                ctrl.CaretIndex = num - 1;
-            }
-        }
-        if (args.Key == Key.Up)
-        {
-            LastPressedItem[0] = LastPressedItem[0] == 0 ? LastPressedItem[0] : LastPressedItem[0] - 1;
-            if (args.KeyModifiers != KeyModifiers.Shift)
-            {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
                 {
-                    num = ctrl.Text.Length;
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
                 }
-                ctrl.CaretIndex = num - 1;
+
+                break;
+            }
+            case Key.Down:
+            {
+                LastPressedItem[0] = LastPressedItem[0] == Rows.Count - 1 || LastPressedItem[0] == Items.Count - 1 ? LastPressedItem[0] : LastPressedItem[0] + 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
+                }
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
+                {
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
+                }
+
+                break;
+            }
+            case Key.Up:
+            {
+                LastPressedItem[0] = LastPressedItem[0] == 0 ? LastPressedItem[0] : LastPressedItem[0] - 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
+                }
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
+                {
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
+                }
+
+                break;
             }
         }
 
@@ -1546,6 +1604,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
 
     }
+
     #endregion
 
     #region Init
@@ -2213,6 +2272,186 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         #endregion
 
         Content = mainPanel;
+    }
+
+    #endregion
+
+    #region GetFormsCount
+
+    private static int GetRowsCount(Report rep)
+    {
+        return rep.FormNum_DB switch
+            {
+                "1.1" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows11)
+                    .SelectMany(x => x.Rows11)
+                    .Count(),
+                "1.2" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows12)
+                    .SelectMany(x => x.Rows12)
+                    .Count(),
+                "1.3" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows13)
+                    .SelectMany(x => x.Rows13)
+                    .Count(),
+                "1.4" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows14)
+                    .SelectMany(x => x.Rows14)
+                    .Count(),
+                "1.5" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows15)
+                    .SelectMany(x => x.Rows15)
+                    .Count(),
+                "1.6" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows16)
+                    .SelectMany(x => x.Rows16)
+                    .Count(),
+                "1.7" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows17)
+                    .SelectMany(x => x.Rows17)
+                    .Count(),
+                "1.8" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows18)
+                    .SelectMany(x => x.Rows18)
+                    .Count(),
+                "1.9" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows19)
+                    .SelectMany(x => x.Rows19)
+                    .Count(),
+                "2.1" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows21)
+                    .SelectMany(x => x.Rows21)
+                    .Count(),
+                "2.2" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows22)
+                    .SelectMany(x => x.Rows22)
+                    .Count(),
+                "2.3" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows23)
+                    .SelectMany(x => x.Rows23)
+                    .Count(),
+                "2.4" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows24)
+                    .SelectMany(x => x.Rows24)
+                    .Count(),
+                "2.5" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows25)
+                    .SelectMany(x => x.Rows25)
+                    .Count(),
+                "2.6" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows26)
+                    .SelectMany(x => x.Rows26)
+                    .Count(),
+                "2.7" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows27)
+                    .SelectMany(x => x.Rows27)
+                    .Count(),
+                "2.8" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows28)
+                    .SelectMany(x => x.Rows28)
+                    .Count(),
+                "2.9" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows29)
+                    .SelectMany(x => x.Rows29)
+                    .Count(),
+                "2.10" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows210)
+                    .SelectMany(x => x.Rows210)
+                    .Count(),
+                "2.11" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows211)
+                    .SelectMany(x => x.Rows211)
+                    .Count(),
+                "2.12" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => report.Id == rep.Id)
+                    .Include(x => x.Rows212)
+                    .SelectMany(x => x.Rows212)
+                    .Count(),
+                _ => 0
+            };
     }
 
     #endregion

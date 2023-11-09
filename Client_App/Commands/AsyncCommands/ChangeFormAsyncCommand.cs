@@ -24,7 +24,7 @@ internal class ChangeFormAsyncCommand : BaseAsyncCommand
             var tre = ReportsStorage.LocalReports.Reports_Collection
                 .FirstOrDefault(i => i.Report_Collection.Contains(rep));
             var numForm = rep.FormNum.Value;
-            var frm = new ChangeOrCreateVM(numForm, rep, tre, ReportsStorage.LocalReports);
+            var frm = new ChangeOrCreateVM(numForm, rep);
             switch (numForm)
             {
                 case "2.1":
