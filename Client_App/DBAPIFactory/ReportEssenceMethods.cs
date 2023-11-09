@@ -6,6 +6,7 @@ using Client_App.Interfaces.Logger;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms.Form1;
 
 namespace Client_App.DBAPIFactory
 {
@@ -139,8 +140,9 @@ namespace Client_App.DBAPIFactory
                 try
                 {
                     await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
-                    IQueryable<Report> dbQ = db.ReportCollectionDbSet;
-                    tmp = await dbQ.AsNoTracking().Where(x => x.Id == id)
+                    tmp = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .Where(x => x.Id == id)
                         .Include(x => x.Rows10)
                         .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                         .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
@@ -171,7 +173,7 @@ namespace Client_App.DBAPIFactory
                 {
                     ServiceExtension.LoggerManager.Error(ex.Message);
                 }
-                await db.SaveChangesAsync();
+
                 return tmp;
             }
             #endregion

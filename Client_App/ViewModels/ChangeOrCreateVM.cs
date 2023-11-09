@@ -183,24 +183,20 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var id = rep.Id;
         Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReport(id, this));
         myTask.Wait();
-        var a = ReportsStorage.LocalReports;
-        //Storage = rep;
-        //Storages = reps;
+
+        Storages = ReportsStorage.LocalReports.Reports_Collection.First(reports => reports.Id == reps.Id);
+        Storage = Storages.Report_Collection.First(report => report.Id == id);
         FormType = param;
-        LocalReports = localReports;
-        
+        LocalReports = ReportsStorage.LocalReports;
         var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
         var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
         isSum = sumR21 > 0 || sumR22 > 0;
         Init();
-        var reps2 = ReportsStorage.LocalReports.Reports_Collection
-            .FirstOrDefault(reports => reports.Report_Collection
-                .Any(report => report.Id == Convert.ToInt32(id)));
-        var checkedRep = reps2.Report_Collection.FirstOrDefault(x => x.Id == Convert.ToInt32(id));
-        if (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)
-        {
-            StaticConfiguration.DBModel.SaveChanges();
-        }
+        
+        //if (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)
+        //{
+        //    StaticConfiguration.DBModel.SaveChanges();
+        //}
     }
 
     #endregion
@@ -344,7 +340,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ShowMessageT = new Interaction<List<string>, string>();
         if (!isSum)
         {
-            //Storage.Sort();
+            Storage.Sort();
         }
     }
 }

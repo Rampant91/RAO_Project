@@ -5,9 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.DBAPIFactory;
 using Client_App.ViewModels;
+using DynamicData;
+using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
-using ReactiveUI;
 
 namespace Client_App;
 
@@ -35,24 +36,45 @@ public static class ReportsStorage
     public static async Task GetReport(int id, ChangeOrCreateVM? viewModel)
     {
         Report? newRep;
-        var reps = ReportsStorage.LocalReports.Reports_Collection
+        var reps = LocalReports.Reports_Collection
             .FirstOrDefault(reports => reports.Report_Collection
                 .Any(report => report.Id == Convert.ToInt32(id)));
         var checkedRep = reps.Report_Collection.FirstOrDefault(x => x.Id == Convert.ToInt32(id));
-        if (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)
+        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
         {
             //var api = new EssenceMethods.APIFactory<Report>();
-            newRep = await api.GetAsync(Convert.ToInt32(id));
             //var forms = newRep.Rows11;
             //await using var db = new DBModel(StaticConfiguration.DBPath);
             
-            //var oldRep = reps.Report_Collection.First(report => report.Id == newRep.Id);
+            
             
             //oldRep.Rows.Remove(forms);
             //oldRep.Rows.Add(forms);
 
-            reps.Report_Collection.Remove(checkedRep);
-            reps.Report_Collection.Add(newRep);
+            
+            
+            //var oldRep = reps.Report_Collection.First(report => report.Id == newRep.Id);
+
+            //StaticConfiguration.DBModel.ReportCollectionDbSet.Local.Remove(oldRep);
+            //StaticConfiguration.DBModel.ReportCollectionDbSet.Local.Add(newRep);
+            //StaticConfiguration.DBModel.ReportCollectionDbSet.Local.OrderBy(x => x.Id);
+            
+            //await StaticConfiguration.DBModel.SaveChangesAsync();
+
+            //StaticConfiguration.DBModel.Attach(newRep);
+            //StaticConfiguration.DBModel.Entry(newRep).State = EntityState.Detached;
+
+            newRep = await api.GetAsync(Convert.ToInt32(id));
+
+            var db = StaticConfiguration.DBModel;
+            var local = db.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(id));
+            if (local != null)
+            {
+                db.Entry(local).State = EntityState.Detached;
+            }
+            db.Entry(newRep).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+            reps.Report_Collection.Replace(checkedRep, newRep);
         }
         else
             newRep = checkedRep;
