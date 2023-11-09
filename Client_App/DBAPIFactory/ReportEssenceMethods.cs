@@ -142,6 +142,7 @@ namespace Client_App.DBAPIFactory
                     await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
                     tmp = await db.ReportCollectionDbSet
                         .AsNoTracking()
+                        .AsSplitQuery()
                         .Where(x => x.Id == id)
                         .Include(x => x.Rows10)
                         .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
