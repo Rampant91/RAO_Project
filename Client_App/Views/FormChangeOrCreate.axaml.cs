@@ -16,7 +16,6 @@ using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Forms;
 using Client_App.ViewModels;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Client_App.Views;
 
