@@ -66,6 +66,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
             {
                 case "Да":
                     flag = true;
+                    await StaticConfiguration.DBModel.SaveChangesAsync();
                     await new SaveReportAsyncCommand(tmp).AsyncExecute(null);
                     return;
                 case "Нет":
