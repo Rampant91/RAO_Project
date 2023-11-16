@@ -281,9 +281,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         //OnStartProgressBar = 22;
         //await dbm.notes.LoadAsync();
 
-        //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
-        //OnStartProgressBar = 24;
-        //await dbm.form_10.LoadAsync();
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
+        OnStartProgressBar = 24;
+        await dbm.form_10.LoadAsync();
 
         //onStartProgressBarVm.LoadStatus = "Загрузка форм 1.1";
         //OnStartProgressBar = 26;
