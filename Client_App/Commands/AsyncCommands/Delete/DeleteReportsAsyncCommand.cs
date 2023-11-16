@@ -3,7 +3,6 @@ using Models.DBRealization;
 using System.Collections;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 
@@ -14,7 +13,7 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        #region MessageExcelExportComplete
+        #region MessageDeleteReports
 
         var answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
@@ -40,10 +39,12 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
         {
             foreach (var item in param)
             {
+                var rep = item as Reports;
+                rep?.Report_Collection.Clear();
                 ReportsStorage.LocalReports.Reports_Collection.Remove((Reports)item);
             }
         }
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+        await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
         //await Local_Reports.Reports_Collection.QuickSortAsync();
     }
 }

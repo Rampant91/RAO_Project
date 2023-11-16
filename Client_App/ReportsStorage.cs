@@ -43,7 +43,6 @@ public static class ReportsStorage
         var checkedRep = db.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(id));   //отчет в локальном хранилище
         if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)) //если в отчете нет форм
         {
-            
             newRep = await api.GetAsync(Convert.ToInt32(id));   //загружаем отчет из БД
             db.Entry(checkedRep).State = EntityState.Detached; //убираем отчет из локального хранилища из отслеживания
             db.Set<Report>().Attach(newRep);    //добавляем новый отчет в отслеживание

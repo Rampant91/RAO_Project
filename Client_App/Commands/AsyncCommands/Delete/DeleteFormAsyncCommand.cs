@@ -20,25 +20,30 @@ internal class DeleteFormAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         {
+            #region MessageDeleteReport
+
             var answer = await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions = new[]
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
+                        ButtonDefinitions = new[]
+                        {
                         new ButtonDefinition { Name = "Да", IsDefault = true},
                         new ButtonDefinition { Name = "Нет", IsCancel = false}
-                    },
-                    ContentTitle = "Уведомление",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = "Вы действительно хотите удалить отчет?",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow);
+                        },
+                        ContentTitle = "Уведомление",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "Вы действительно хотите удалить отчет?",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow);
+
+            #endregion
+
             if (answer is "Да")
             {
                 var mainWindow = Desktop.MainWindow as MainWindow;
-                if (mainWindow.SelectedReports.Count() != 0)
+                if (mainWindow!.SelectedReports.Any())
                 {
                     var selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
                     var selectedReportsFirst = mainWindow.SelectedReports.First() as Reports;
