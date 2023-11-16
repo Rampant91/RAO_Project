@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -604,85 +603,129 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
 
         var count = start;
-        foreach (var it in form[param])
-        {
-            switch (it)
-            {
-                case Form11 form11:
-                    form11.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form12 form12:
-                    form12.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form13 form13:
-                    form13.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form14 form14:
-                    form14.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form15 form15:
-                    form15.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form16 form16:
-                    form16.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form17 form17:
-                    form17.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form18 form18:
-                    form18.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form19 form19:
-                    form19.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form21 form21:
-                    form21.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form22 form22:
-                    form22.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form23 form23:
-                    form23.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form24 form24:
-                    form24.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form25 form25:
-                    form25.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form26 form26:
-                    form26.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form27 form27:
-                    form27.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form28 form28:
-                    form28.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form29 form29:
-                    form29.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form210 form210:
-                    form210.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form211 form211:
-                    form211.ExcelRow(worksheet, count, 1);
-                    break;
-                case Form212 form212:
-                    form212.ExcelRow(worksheet, count, 1);
-                    break;
-            }
 
-            count++;
+        #region 2.1 with Sum
+
+        if (param is "2.1" && form[param].ToList<Form21>().Any(form21 => form21.Sum_DB))
+        {
+            var forms21 = form[param]
+                .ToList<Form21>()
+                .GroupBy(x => x.RefineMachineName_DB
+                              + x.MachineCode_DB
+                              + x.MachinePower_DB
+                              + x.NumberOfHoursPerYear_DB)
+                .OrderBy(x => x.Count())
+                .Select(group => group
+                    .OrderBy(x => x.Order))
+                .SelectMany(x => x.ToArray())
+                .ToArray();
+            foreach (var formWithSum in forms21)
+            {
+                formWithSum.ExcelRow(worksheet, count, 1, sumNumber: formWithSum.NumberInOrderSum_DB);
+                count++;
+            }
         }
-        //var new_number = 1;
-        //var row = 10;
-        //while (worksheet.Cells[row, 1].Value != null)
-        //{
-        //    worksheet.Cells[row, 1].Value = new_number;
-        //    new_number++;
-        //    row++;
-        //}
+
+        #endregion
+
+        #region 2.2 with Sum
+
+        if (param is "2.2" && form[param].ToList<Form22>().Any(form22 => form22.Sum_DB))
+        {
+            var forms22 = form[param]
+                .ToList<Form22>()
+                .GroupBy(x => x.StoragePlaceName_DB
+                              + x.StoragePlaceCode_DB
+                              + x.PackName_DB
+                              + x.PackType_DB)
+                .OrderBy(x => x.Count())
+                .Select(group => group
+                    .OrderBy(x => x.Order))
+                .SelectMany(x => x.ToArray())
+                .ToArray();
+            foreach (var formWithSum in forms22)
+            {
+                formWithSum.ExcelRow(worksheet, count, 1, sumNumber: formWithSum.NumberInOrderSum_DB);
+                count++;
+            }
+        }
+
+        #endregion
+
+        else
+        {
+            foreach (var it in form[param])
+            {
+                switch (it)
+                {
+                    case Form11 form11:
+                        form11.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form12 form12:
+                        form12.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form13 form13:
+                        form13.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form14 form14:
+                        form14.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form15 form15:
+                        form15.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form16 form16:
+                        form16.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form17 form17:
+                        form17.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form18 form18:
+                        form18.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form19 form19:
+                        form19.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form21 form21:
+                        form21.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form22 form22:
+                        form22.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form23 form23:
+                        form23.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form24 form24:
+                        form24.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form25 form25:
+                        form25.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form26 form26:
+                        form26.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form27 form27:
+                        form27.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form28 form28:
+                        form28.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form29 form29:
+                        form29.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form210 form210:
+                        form210.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form211 form211:
+                        form211.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form212 form212:
+                        form212.ExcelRow(worksheet, count, 1);
+                        break;
+                }
+
+                count++;
+            }
+        }
     }
 
     #endregion
