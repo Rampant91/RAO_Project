@@ -21,6 +21,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExportType = "Для печати";
 
         var exportForm = (Report)forms.First();
+        exportForm = await ReportsStorage.GetReport(exportForm.Id);
         var orgWithExportForm = ReportsStorage.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         var formNum = RemoveForbiddenChars(exportForm.FormNum_DB);

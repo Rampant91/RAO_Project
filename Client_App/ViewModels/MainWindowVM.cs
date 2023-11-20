@@ -388,7 +388,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
         OnStartProgressBar = 74;
         await dbm.ReportsCollectionDbSet.LoadAsync();
-
+        var A = ReportsStorage.LocalReports.Reports_Collection;
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
         OnStartProgressBar = 76;
         if (!dbm.DBObservableDbSet.Any())
@@ -407,6 +407,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
         OnStartProgressBar = 85;
         ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
+
         await ProcessDataBaseFillNullOrder();
 
         onStartProgressBarVm.LoadStatus = "Сохранение";

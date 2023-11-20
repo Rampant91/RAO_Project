@@ -85,10 +85,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
                 }
 
-                var first11 = GetReports11FromLocalEqual(item);
-                var first21 = GetReports21FromLocalEqual(item);
-                FillEmptyRegNo(ref first11);
-                FillEmptyRegNo(ref first21);
+                var baseReps11 = GetReports11FromLocalEqual(item);
+                var baseReps21 = GetReports21FromLocalEqual(item);
+                FillEmptyRegNo(ref baseReps11);
+                FillEmptyRegNo(ref baseReps21);
                 item.CleanIds();
                 ProcessIfNoteOrder0(item);
 
@@ -98,15 +98,23 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 BaseRepsRegNum = item.Master.RegNoRep.Value;
                 BaseRepsShortName = item.Master.ShortJurLicoRep.Value;
 
-                if (first11 != null)
+                if (baseReps11 != null)
                 {
-                    await ProcessIfHasReports11(first11, item);
+                    foreach (var report in baseReps11.Report_Collection)
+                    {
+                        await ReportsStorage.GetReport(report.Id);
+                    }
+                    await ProcessIfHasReports11(baseReps11, item);
                 }
-                else if (first21 != null)
+                else if (baseReps21 != null)
                 {
-                    await ProcessIfHasReports21(first21, item);
+                    foreach (var report in baseReps21.Report_Collection)
+                    {
+                        await ReportsStorage.GetReport(report.Id);
+                    }
+                    await ProcessIfHasReports21(baseReps21, item);
                 }
-                else if (first11 == null && first21 == null)
+                else if (baseReps11 == null && baseReps21 == null)
                 {
                     #region AddNewOrg
 

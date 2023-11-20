@@ -197,6 +197,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             AtLeastOneImportDone = false;
             if (baseReps.Report_Collection.Count != 0)
             {
+                foreach (var report in baseReps.Report_Collection)
+                {
+                    await ReportsStorage.GetReport(report.Id);
+                }
                 switch (worksheet0.Name)
                 {
                     case "1.0":

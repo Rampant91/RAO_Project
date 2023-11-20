@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using Client_App.VisualRealization.Converters;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
+using Models.Forms;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -641,7 +642,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
             var rep = SelectedItems.Get<Report>(0);
             if (rep is null) return;
-            var countR = GetRowsCount(rep);
+            var countR = ReportsStorage.GetReportRowsCount(rep);
             SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
         }
     }
@@ -2277,183 +2278,5 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     #endregion
 
-    #region GetFormsCount
-
-    private static int GetRowsCount(Report rep)
-    {
-        return rep.FormNum_DB switch
-            {
-                "1.1" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows11)
-                    .SelectMany(x => x.Rows11)
-                    .Count(),
-                "1.2" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows12)
-                    .SelectMany(x => x.Rows12)
-                    .Count(),
-                "1.3" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows13)
-                    .SelectMany(x => x.Rows13)
-                    .Count(),
-                "1.4" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows14)
-                    .SelectMany(x => x.Rows14)
-                    .Count(),
-                "1.5" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows15)
-                    .SelectMany(x => x.Rows15)
-                    .Count(),
-                "1.6" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows16)
-                    .SelectMany(x => x.Rows16)
-                    .Count(),
-                "1.7" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows17)
-                    .SelectMany(x => x.Rows17)
-                    .Count(),
-                "1.8" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows18)
-                    .SelectMany(x => x.Rows18)
-                    .Count(),
-                "1.9" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows19)
-                    .SelectMany(x => x.Rows19)
-                    .Count(),
-                "2.1" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows21)
-                    .SelectMany(x => x.Rows21)
-                    .Count(),
-                "2.2" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows22)
-                    .SelectMany(x => x.Rows22)
-                    .Count(),
-                "2.3" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows23)
-                    .SelectMany(x => x.Rows23)
-                    .Count(),
-                "2.4" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows24)
-                    .SelectMany(x => x.Rows24)
-                    .Count(),
-                "2.5" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows25)
-                    .SelectMany(x => x.Rows25)
-                    .Count(),
-                "2.6" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows26)
-                    .SelectMany(x => x.Rows26)
-                    .Count(),
-                "2.7" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows27)
-                    .SelectMany(x => x.Rows27)
-                    .Count(),
-                "2.8" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows28)
-                    .SelectMany(x => x.Rows28)
-                    .Count(),
-                "2.9" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows29)
-                    .SelectMany(x => x.Rows29)
-                    .Count(),
-                "2.10" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows210)
-                    .SelectMany(x => x.Rows210)
-                    .Count(),
-                "2.11" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows211)
-                    .SelectMany(x => x.Rows211)
-                    .Count(),
-                "2.12" => StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(report => report.Id == rep.Id)
-                    .Include(x => x.Rows212)
-                    .SelectMany(x => x.Rows212)
-                    .Count(),
-                _ => 0
-            };
-    }
-
-    #endregion
+    
 }

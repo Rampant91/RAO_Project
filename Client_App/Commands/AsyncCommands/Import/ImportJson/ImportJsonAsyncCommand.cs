@@ -325,10 +325,18 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                     if (baseReps11 != null)
                     {
+                        foreach (var report in baseReps11.Report_Collection)
+                        {
+                            await ReportsStorage.GetReport(report.Id);
+                        }
                         await ProcessIfHasReports11(baseReps11, impReps);
                     }
                     else if (baseReps21 != null)
                     {
+                        foreach (var report in baseReps21.Report_Collection)
+                        {
+                            await ReportsStorage.GetReport(report.Id);
+                        }
                         await ProcessIfHasReports21(baseReps21, impReps);
                     }
                     else if (baseReps11 == null && baseReps21 == null)
@@ -459,7 +467,6 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 //ignore
             }
         }
-        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
 
         #region Suffix

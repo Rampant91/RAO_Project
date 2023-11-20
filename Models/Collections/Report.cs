@@ -2900,7 +2900,7 @@ public class Report : IKey, IDataGridColumn
 
     #endregion
 
-    #region SoirtAsync
+    #region SortAsync
     
     public async Task SortAsync()
     {

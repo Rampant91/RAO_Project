@@ -1,13 +1,9 @@
 ﻿using Client_App.Views;
 using Models.Collections;
 using Models.DBRealization;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Interfaces;
@@ -40,27 +36,25 @@ internal class DeleteFormAsyncCommand : BaseAsyncCommand
 
             #endregion
 
-            if (answer is "Да")
+            if (answer is not "Да") return;
+
+            await using var db = StaticConfiguration.DBModel;
+            var mainWindow = Desktop.MainWindow as MainWindow;
+            if (mainWindow!.SelectedReports.Any())
             {
-                var mainWindow = Desktop.MainWindow as MainWindow;
-                if (mainWindow!.SelectedReports.Any())
+                var selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
+                var selectedReportsFirst = mainWindow.SelectedReports.First() as Reports;
+                var param = parameter as System.Collections.Generic.IEnumerable<Report>;
+                var repToRemove = param.First();
+                foreach (var form in repToRemove.Rows)
                 {
-                    var selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
-                    var selectedReportsFirst = mainWindow.SelectedReports.First() as Reports;
-                    if (parameter is IEnumerable param)
-                    {
-
-                        foreach (var item in param)
-                        {
-                            selectedReportsFirst.Report_Collection.Remove((Report)item);
-                        }
-                    }
-
-                    mainWindow.SelectedReports = selectedReports;
+                    db.Remove(form);
                 }
-
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                db.Remove(repToRemove);
+                selectedReportsFirst.Report_Collection.Remove(repToRemove);
+                mainWindow.SelectedReports = selectedReports;
             }
+            await StaticConfiguration.DBModel.SaveChangesAsync();
         }
     }
 }

@@ -12,7 +12,10 @@ using Models.DTO;
 using Models.Interfaces;
 using Client_App.ViewModels;
 using System.Linq;
+using DynamicData;
+using Models.DBRealization;
 using Models.Forms;
+using ReactiveUI;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -59,32 +62,48 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region CheckAnswer
 
-    private protected async Task CheckAnswer(string an, Reports first, Report? elem = null, Report? it = null, bool addToDB = true)
+    private protected async Task CheckAnswer(string an, Reports reps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
     {
         switch (an)
         {
+            #region Add
+
             case "Да" or "Да для всех" or "Добавить":
                 if (addToDB)
                 {
-                    first.Report_Collection.Add(it);
+                    reps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
                 Act = "\t\t\t";
                 LoggerImportDTO = new LoggerImportDTO
-                    {
-                        Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                        FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                        Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                        ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
-                    };
+                {
+                    Act = Act,
+                    CorNum = ImpRepCorNum,
+                    CurrentLogLine = CurrentLogLine,
+                    EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount,
+                    FormNum = ImpRepFormNum,
+                    StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo,
+                    OperationDate = OperationDate,
+                    RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName,
+                    SourceFileFullPath = SourceFile!.FullName,
+                    Year = ImpRepYear
+                };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
+
+            #endregion
+
+            #region SaveBoth
+            
             case "Сохранить оба":
                 if (addToDB)
                 {
-                    first.Report_Collection.Add(it);
+                    reps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
                 Act = "Сохранены оба (пересечение)";
@@ -104,13 +123,17 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     SourceFileFullPath = SourceFile!.FullName,
                     Year = ImpRepYear
                 };
-                ServiceExtension.LoggerManager.Import(LoggerImportDTO); 
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
+
+            #endregion
+
+            #region Replace
+            
             case "Заменить" or "Заменять все формы":
-                first.Report_Collection.Remove(elem);
-                first.Report_Collection.Add(it);
+                reps.Report_Collection.Replace(oldReport, newReport);
                 AtLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -133,11 +156,16 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
-            case "Дополнить" when it != null && elem != null:
-                first.Report_Collection.Remove(elem);
-                it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
-                it.Notes.AddRange<IKey>(0, elem.Notes);
-                first.Report_Collection.Add(it);
+
+            #endregion
+
+            #region Supplement
+            
+            case "Дополнить" when newReport != null && oldReport != null:
+                reps.Report_Collection.Remove(oldReport);
+                newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
+                newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
+                reps.Report_Collection.Add(newReport);
                 AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -160,11 +188,23 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
+
+            #endregion
+
+            #region CancelForAll
+            
             case "Отменить для всех пересечений":
                 SkipInter = true;
-                break;
+                break; 
+
+            #endregion
+
+            #region Cancel
+
             case "Отменить импорт формы":
-                break;
+                break; 
+
+            #endregion
         }
     }
 
@@ -358,13 +398,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region InventoryCheck
 
-    private protected static string InventoryCheck(Report? rep)
+    private static string InventoryCheck(Report? rep)
     {
         if (rep is null)
         {
             return "";
         }
-
         var countCode10 = 0;
         foreach (var key in rep.Rows)
         {
@@ -373,7 +412,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 countCode10++;
             }
         }
-
         return countCode10 == rep.Rows.Count
             ? " (ИНВ)"
             : countCode10 > 0
