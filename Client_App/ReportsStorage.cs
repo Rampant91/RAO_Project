@@ -252,6 +252,9 @@ public static class ReportsStorage
             return "";
         }
         var formsIds = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(x => x.Rows11)
             .First(x => x.Id == rep.Id).Rows11
             .Select(x => x.Id)
             .ToArray();
