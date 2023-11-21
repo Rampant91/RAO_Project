@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -94,14 +95,18 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
         }
 
         var org = (Reports)param.First();
-        var repInRange = org.Report_Collection.Where(rep =>
+        var repInRange = org.Report_Collection
+            .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
+                          && DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
+                          && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
+            .ToArray();
+        List<Report> repInRangeWithForms = new();
+        foreach (var rep in repInRange)
         {
-            if (!DateTime.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
-                || !DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)) return false;
-            return startDateTime <= repEndDateTime && endDateTime >= repStartDateTime;
-        });
+            repInRangeWithForms.Add(await ReportsStorage.GetReportAsync(rep.Id));
+        }
         Reports exportOrg = new() { Master = org.Master };
-        exportOrg.Report_Collection.AddRange(repInRange);
+        exportOrg.Report_Collection.AddRange(repInRangeWithForms);
 
         if (_MainWindowViewModel.ExportReports.CanExecute(null))
             _MainWindowViewModel.ExportReports.Execute(exportOrg);

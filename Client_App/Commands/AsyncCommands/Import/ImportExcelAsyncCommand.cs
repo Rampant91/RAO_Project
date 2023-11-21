@@ -199,7 +199,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             {
                 foreach (var report in baseReps.Report_Collection)
                 {
-                    await ReportsStorage.GetReport(report.Id);
+                    await ReportsStorage.GetReportAsync(report.Id);
                 }
                 switch (worksheet0.Name)
                 {

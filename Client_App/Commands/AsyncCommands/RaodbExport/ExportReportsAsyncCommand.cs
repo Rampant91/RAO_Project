@@ -30,16 +30,14 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         switch (parameter)
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
+                foreach (var item in param)
                 {
-                    foreach (var item in param)
-                    {
-                        ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
-                    }
-                    fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-                    exportOrg = (Reports)param.First();
-                    await StaticConfiguration.DBModel.SaveChangesAsync();
-                    break;
+                    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
                 }
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+                exportOrg = (Reports)param.First();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+                break;
             case Reports reps:
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
@@ -48,6 +46,12 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 break;
             default:
                 return;
+        }
+
+        foreach (var key in exportOrg.Report_Collection)
+        {
+            var rep = (Report)key;
+            await ReportsStorage.GetReportAsync(rep.Id);
         }
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");

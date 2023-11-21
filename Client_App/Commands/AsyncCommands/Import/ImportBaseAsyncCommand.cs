@@ -13,6 +13,7 @@ using Models.Interfaces;
 using Client_App.ViewModels;
 using System.Linq;
 using DynamicData;
+using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
 using ReactiveUI;
@@ -134,6 +135,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             
             case "Заменить" or "Заменять все формы":
                 reps.Report_Collection.Replace(oldReport, newReport);
+                StaticConfiguration.DBModel.Remove(oldReport!);
                 AtLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -162,10 +164,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Supplement
             
             case "Дополнить" when newReport != null && oldReport != null:
-                reps.Report_Collection.Remove(oldReport);
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
-                reps.Report_Collection.Add(newReport);
+                reps.Report_Collection.Replace(oldReport, newReport);
+                StaticConfiguration.DBModel.Remove(oldReport);
                 AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -601,7 +603,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             .ShowDialog(Desktop.MainWindow);
 
                         #endregion
-
                         await CheckAnswer(res, baseReps, baseRep, impRep);
                         break;
                     }

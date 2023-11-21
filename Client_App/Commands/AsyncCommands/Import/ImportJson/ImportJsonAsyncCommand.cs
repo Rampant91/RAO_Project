@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
 using Models.Collections;
 using Models.Forms;
 using Models.JSON;
@@ -15,7 +14,6 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
-using Models.JSON.ExecutorData;
 using ReactiveUI;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
 using static Client_App.Resources.StaticStringMethods;
@@ -327,7 +325,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     {
                         foreach (var report in baseReps11.Report_Collection)
                         {
-                            await ReportsStorage.GetReport(report.Id);
+                            await ReportsStorage.GetReportAsync(report.Id);
                         }
                         await ProcessIfHasReports11(baseReps11, impReps);
                     }
@@ -335,7 +333,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     {
                         foreach (var report in baseReps21.Report_Collection)
                         {
-                            await ReportsStorage.GetReport(report.Id);
+                            await ReportsStorage.GetReportAsync(report.Id);
                         }
                         await ProcessIfHasReports21(baseReps21, impReps);
                     }

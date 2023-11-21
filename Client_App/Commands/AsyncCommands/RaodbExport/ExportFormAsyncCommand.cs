@@ -39,6 +39,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
         var exportForm = (Report)param.First();
+        exportForm = await ReportsStorage.GetReportAsync(exportForm.Id);
 
         var dtDay = dt.Day.ToString();
         var dtMonth = dt.Month.ToString();

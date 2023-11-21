@@ -187,7 +187,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         else
         {
             var id = rep.Id;
-            Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReport(id, this));  //при открытии формы загружаем все формы из БД
+            Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReportAsync(id, this));  //при открытии формы загружаем все формы из БД
             myTask.Wait();
         }
         

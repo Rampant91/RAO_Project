@@ -33,7 +33,7 @@ public static class ReportsStorage
 
     #region GetReport
 
-    public static async Task<Report> GetReport(int id, ChangeOrCreateVM? viewModel = null)
+    public static async Task<Report> GetReportAsync(int id, ChangeOrCreateVM? viewModel = null)
     {
         Report? newRep;
         var db = StaticConfiguration.DBModel;

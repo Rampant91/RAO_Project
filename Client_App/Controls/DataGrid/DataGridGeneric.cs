@@ -535,16 +535,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _ItemsCount;
         set
         {
-            if (Items != null)
-            {
-                var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                var val = searchText == "" 
-                    ? Items.Count 
-                    : _itemsWithSearch != null 
-                        ? _itemsWithSearch.Count 
-                        : 0;
-                SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
-            }
+            if (Items == null) return;
+            var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+            var val = searchText == "" 
+                ? Items.Count 
+                : _itemsWithSearch != null 
+                    ? _itemsWithSearch.Count 
+                    : 0;
+            SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
         }
     }
 
@@ -601,17 +599,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _ReportCount;
         set
         {
-            if (Items != null)
+            if (Items == null) return;
+            var countR = 0;
+            var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+            foreach (var item in searchText != "" && _itemsWithSearch != null ? _itemsWithSearch : Items)
             {
-                var countR = 0;
-                var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                foreach (var item in searchText != "" && _itemsWithSearch != null ? _itemsWithSearch : Items)
-                {
-                    var reps = (Reports)item;
-                    countR += reps.Report_Collection.Count;
-                }
-                SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
+                var reps = (Reports)item;
+                countR += reps.Report_Collection.Count;
             }
+            SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
         }
     }
 

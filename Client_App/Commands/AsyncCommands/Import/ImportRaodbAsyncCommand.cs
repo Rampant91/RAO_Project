@@ -102,7 +102,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 {
                     foreach (var report in baseReps11.Report_Collection)
                     {
-                        await ReportsStorage.GetReport(report.Id);
+                        await ReportsStorage.GetReportAsync(report.Id);
                     }
                     await ProcessIfHasReports11(baseReps11, item);
                 }
@@ -110,7 +110,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 {
                     foreach (var report in baseReps21.Report_Collection)
                     {
-                        await ReportsStorage.GetReport(report.Id);
+                        await ReportsStorage.GetReportAsync(report.Id);
                     }
                     await ProcessIfHasReports21(baseReps21, item);
                 }
