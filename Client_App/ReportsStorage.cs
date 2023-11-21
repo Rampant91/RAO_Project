@@ -242,4 +242,27 @@ public static class ReportsStorage
     }
 
     #endregion
+    
+    #region InventoryCheck
+
+    public static string InventoryCheck(Report? rep)
+    {
+        if (rep is null)
+        {
+            return "";
+        }
+        var formsIds = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .First(x => x.Id == rep.Id).Rows11
+            .Select(x => x.Id)
+            .ToArray();
+        var countCode10 = StaticConfiguration.DBModel.form_11
+            .Count(x => formsIds.Contains(x.Id) && x.OperationCode_DB == "10");
+        return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
+            ? " (ИНВ)"
+            : countCode10 > 0
+                ? " (инв)"
+                : "";
+    }
+
+    #endregion
 }

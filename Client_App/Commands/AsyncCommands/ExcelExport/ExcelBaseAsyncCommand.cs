@@ -802,19 +802,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     private protected static string InventoryCheck(Report? rep)
     {
-        if (rep is null)
-        {
-            return "";
-        }
+        if (rep is null) return "";
 
-        var countCode10 = 0;
-        foreach (var key in rep.Rows)
-        {
-            if (key is Form1 { OperationCode_DB: "10" })
-            {
-                countCode10++;
-            }
-        }
+        var countCode10 = rep.Rows11.Count(x => x.OperationCode_DB == "10");
 
         return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
             ? " (ИНВ)"

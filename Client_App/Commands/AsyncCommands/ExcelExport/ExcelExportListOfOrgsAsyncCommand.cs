@@ -42,7 +42,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;  //Добавь сообщение
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
 
         #region Headers
@@ -87,16 +87,13 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         var lst = new List<Reports>();
         var checkedLst = new List<Reports>();
-        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
-        {
-            var item = (Reports)key;
-            lst.Add(item);
-        }
+        lst.AddRange(ReportsStorage.LocalReports.Reports_Collection);
 
         var row = 2;
         foreach (var reps in lst)
         {
-            if (checkedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep) != null)
+            if (checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
+                                    && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep))
             {
                 row--;
 

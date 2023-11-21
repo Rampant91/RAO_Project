@@ -16,9 +16,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Client_App.VisualRealization.Converters;
-using Microsoft.EntityFrameworkCore;
-using Models.DBRealization;
-using Models.Forms;
 
 namespace Client_App.Controls.DataGrid;
 
