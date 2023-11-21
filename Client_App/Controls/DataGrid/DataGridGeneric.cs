@@ -57,10 +57,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             if (value != null)
             {
-                if (_items != value)
-                {
-                    NowPage = "1";
-                }
+                //if (_items != value)
+                //{
+                //    NowPage = "1";
+                //}
                 SetAndRaise(ItemsProperty, ref _items, value);
                 UpdateCells();
                 SetSelectedControls();
