@@ -9,7 +9,9 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -170,12 +172,37 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             .OrderBy(x => x.FormNum_DB)
             .ThenBy(x => StringReverse(x.StartPeriod_DB))
             .ToList();
-        List<Report> repListWithForms = new();
-        foreach (var rep in repList.Where(rep => rep != null))
-        {
-            repListWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
-        }
-        foreach (var rep in repListWithForms)
+            var repListWithForms = await StaticConfiguration.DBModel.ReportCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .OrderBy(x => x.Order)
+                .Include(x => x.Rows10).Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Notes.OrderBy(x => x.Order))
+                .ToListAsync(cancellationToken: cts.Token);
+
+            foreach (var rep in repListWithForms)
         {
             Worksheet.Cells[row, 1].Value = rep.Rows10[0].RegNo_DB;  //reps.Master.RegNoRep.Value;
             Worksheet.Cells[row, 2].Value = rep.Rows10[0].Okpo_DB;    //reps.Master.OkpoRep.Value;
