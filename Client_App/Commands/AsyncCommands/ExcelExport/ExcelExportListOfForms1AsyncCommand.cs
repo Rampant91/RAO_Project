@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -12,6 +13,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -163,59 +165,37 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
             .ToList();
 
-        var repListWithForms = await StaticConfiguration.DBModel.ReportCollectionDbSet
+        var repListWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .OrderBy(x => x.Order)
-            .Include(x => x.Rows10).Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Notes.OrderBy(x => x.Order))
-            .ToListAsync(cancellationToken: cts.Token);
-
-        repListWithForms = repListWithForms
-            .Where(rep =>
-            {
-                if (startDateTime == DateTime.MinValue && endDateTime == DateTime.MaxValue) return true;
-                if (!DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)) return false;
-                return repEndDateTime >= startDateTime && repEndDateTime <= endDateTime;
-            })
-            .OrderBy(x => x.FormNum_DB)
-            .ThenBy(x => StringReverse(x.StartPeriod_DB))
+            .Include(x => x.Rows11)
+            .Select(x => new Tuple<int, int, int>(x.Id, x.Rows.Count, x.Rows11.Count(x => x.OperationCode_DB == "10")))
             .ToList();
 
-        foreach (var rep in repListWithForms)
-        {
-            Worksheet.Cells[row, 1].Value = rep.Rows10[0].RegNo_DB;  //reps.Master.RegNoRep.Value;
-            Worksheet.Cells[row, 2].Value = rep.Rows10[0].Okpo_DB;    //reps.Master.OkpoRep.Value;
-            Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-            Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
-            Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
-            Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-            Worksheet.Cells[row, 7].Value = rep.Rows.Count;
-            Worksheet.Cells[row, 8].Value = InventoryCheck(rep).TrimStart();
-            row++;
-        }
+        //repListWithForms = repListWithForms
+        //    .Where(rep =>
+        //    {
+        //        if (startDateTime == DateTime.MinValue && endDateTime == DateTime.MaxValue) return true;
+        //        if (!DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)) return false;
+        //        return repEndDateTime >= startDateTime && repEndDateTime <= endDateTime;
+        //    })
+        //    .OrderBy(x => x.FormNum_DB)
+        //    .ThenBy(x => StringReverse(x.StartPeriod_DB))
+        //    .ToList();
+
+        //foreach (var rep in repListWithForms)
+        //{
+        //    Worksheet.Cells[row, 1].Value = rep.Rows10[0].RegNo_DB;  //reps.Master.RegNoRep.Value;
+        //    Worksheet.Cells[row, 2].Value = rep.Rows10[0].Okpo_DB;    //reps.Master.OkpoRep.Value;
+        //    Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
+        //    Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
+        //    Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
+        //    Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
+        //    Worksheet.Cells[row, 7].Value = rep.Rows.Count;
+        //    Worksheet.Cells[row, 8].Value = InventoryCheck(rep).TrimStart();
+        //    row++;
+        //}
 
         //foreach (var reps in repsList)
         //{
