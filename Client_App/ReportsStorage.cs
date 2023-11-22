@@ -254,12 +254,18 @@ public static class ReportsStorage
         var formsIds = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.Id == rep.Id)
             .Include(x => x.Rows11)
             .First(x => x.Id == rep.Id).Rows11
             .Select(x => x.Id)
             .ToArray();
         var countCode10 = StaticConfiguration.DBModel.form_11
-            .Count(x => formsIds.Contains(x.Id) && x.OperationCode_DB == "10");
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => formsIds.Contains(x.Id))
+            .Count(x => x.OperationCode_DB == "10");
         return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
             ? " (ИНВ)"
             : countCode10 > 0
