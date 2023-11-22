@@ -14,7 +14,7 @@ namespace Client_App;
 
 public static class ReportsStorage
 {
-    private static EssenceMethods.APIFactory<Report> api => new();
+    public static EssenceMethods.APIFactory<Report> Api => new();
     public static CancellationTokenSource _cancellationTokenSource = new();
     public static CancellationToken cancellationToken = _cancellationTokenSource.Token;
 
@@ -43,7 +43,7 @@ public static class ReportsStorage
         var checkedRep = db.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(id));   //отчет в локальном хранилище
         if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)) //если в отчете нет форм
         {
-            newRep = await api.GetAsync(Convert.ToInt32(id));   //загружаем отчет из БД
+            newRep = await Api.GetAsync(Convert.ToInt32(id));   //загружаем отчет из БД
             db.Entry(checkedRep).State = EntityState.Detached; //убираем отчет из локального хранилища из отслеживания
             db.Set<Report>().Attach(newRep);    //добавляем новый отчет в отслеживание
             //db.Entry(newRep).State = EntityState.Modified;  //устанавливаем флаг, что этот отчет был изменен и требует перезаписи в БД
@@ -258,13 +258,12 @@ public static class ReportsStorage
             .Where(x => x.Id == rep.Id)
             .Include(x => x.Rows11)
             .First(x => x.Id == rep.Id).Rows11
-            .Select(x => x.Id)
-            .ToArray();
+            .Select(x => x.Id);
         var countCode10 = StaticConfiguration.DBModel.form_11
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => formsIds.Contains(x.Id))
+            .Where(x => x.Id >= formsIds.Min() && x.Id <= formsIds.Max())
             .Count(x => x.OperationCode_DB == "10");
         return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
             ? " (ИНВ)"
