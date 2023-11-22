@@ -800,13 +800,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region InventoryCheck
 
-    private protected static string InventoryCheck(Report? rep)
+    private protected static string InventoryCheck(int repRowsCount, int countCode10)
     {
-        if (rep is null) return "";
-
-        var countCode10 = rep.Rows11.Count(x => x.OperationCode_DB == "10");
-
-        return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
+        return countCode10 == repRowsCount && repRowsCount > 0
             ? " (ИНВ)"
             : countCode10 > 0
                 ? " (инв)"

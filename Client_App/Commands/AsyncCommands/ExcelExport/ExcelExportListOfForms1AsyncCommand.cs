@@ -15,6 +15,7 @@ using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -180,14 +181,18 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
             .ToList();
 
-        var repListWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var repIdCountOpCodeDictionary = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.1")
             .Include(x => x.Rows11).ThenInclude(x => x.OperationCode_DB)
+            //.ToDictionary(rep => rep.Id,
+            //    rep => new Tuple<int, int>(rep.Rows11.Count, rep.Rows11
+            //        .Count(form11 => form11.OperationCode_DB == "10")));
             .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
             .ToList();
+            
 
 
         //repListWithForms = repListWithForms
@@ -215,15 +220,17 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 .ToList();
             foreach(var rep in repList)
             {
-                Worksheet.Cells[row, 1].Value = rep.Rows10[0].RegNo_DB;  //reps.Master.RegNoRep.Value;
-            Worksheet.Cells[row, 2].Value = rep.Rows10[0].Okpo_DB;    //reps.Master.OkpoRep.Value;
-            Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-            Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
-            Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
-            Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-            Worksheet.Cells[row, 7].Value = rep.Rows.Count;
-            Worksheet.Cells[row, 8].Value = InventoryCheck(rep).TrimStart();
-            row++;
+                var tuple = repIdCountOpCodeDictionary.Find(x => x.Item1 == rep.Id)
+                            ?? new Tuple<int, int, int>(rep.Id, 0, 0);
+                Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
+                Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
+                Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
+                Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[row, 7].Value = tuple.Item2;
+                Worksheet.Cells[row, 8].Value = InventoryCheck(tuple.Item2, tuple.Item3).TrimStart();
+                row++;
             }
         }
 
