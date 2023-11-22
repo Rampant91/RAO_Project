@@ -160,34 +160,34 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
+        //var row = 2;
+        //var repsList = lst
+        //    .OrderBy(x => x.Master_DB.RegNoRep.Value)
+        //    .ToList();
+
+        //var repListWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Where(x => x.FormNum_DB == "1.1")
+        //    .Include(x => x.Rows11).ThenInclude(x => x.OperationCode_DB)
+        //    .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
+        //    .ToList();
+
+        DateTime repEndDateTime;
         var row = 2;
         var repsList = lst
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
             .ToList();
-        List<Tuple<int,int,int>> repListWithForms = new();
 
-        try
-        {
-            repListWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
-               .AsNoTracking()
-               .AsSplitQuery()
-               .AsQueryable()
-               .Where(x => x.FormNum_DB == "1.1")
-               .Include(x => x.Rows11)
-               .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
-               .ToList();
-        }
-        catch(Exception e)
-        {
-            //repListWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
-            //    .AsNoTracking()
-            //    .AsSplitQuery()
-            //    .AsQueryable()
-            //    .Where(x => x.FormNum_DB == "1.1")
-            //    .Include(x => x.Rows11)
-            //    .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
-            //    .ToList();
-        }
+        var repListWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11).ThenInclude(x => x.OperationCode_DB)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
+            .ToList();
 
 
         //repListWithForms = repListWithForms
