@@ -186,7 +186,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.1")
-            .Include(x => x.Rows11).ThenInclude(x => x.OperationCode_DB)
+            .Include(x => x.Rows11)
             //.ToDictionary(rep => rep.Id,
             //    rep => new Tuple<int, int>(rep.Rows11.Count, rep.Rows11
             //        .Count(form11 => form11.OperationCode_DB == "10")));
