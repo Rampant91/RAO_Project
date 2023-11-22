@@ -169,8 +169,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.Rows11)
-            .Select(x => new Tuple<int, int, int>(x.Id, x.Rows.Count, x.Rows11.Count(x => x.OperationCode_DB == "10")))
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11).ThenInclude(x => x.OperationCode_DB)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
             .ToList();
 
         //repListWithForms = repListWithForms
