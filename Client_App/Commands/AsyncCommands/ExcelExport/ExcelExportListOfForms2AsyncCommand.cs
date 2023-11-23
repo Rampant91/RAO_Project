@@ -169,120 +169,159 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region GetDataFormDB
 
-        #region Tuple11
+        #region Tuple21
 
-        var tuple11 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple21 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.1")
-            .Include(x => x.Rows11)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows11.Count))
+            .Where(x => x.FormNum_DB == "2.1")
+            .Include(x => x.Rows21)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows21.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple12
+        #region Tuple22
 
-        var tuple12 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple22 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.2")
-            .Include(x => x.Rows12)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows12.Count))
+            .Where(x => x.FormNum_DB == "2.2")
+            .Include(x => x.Rows22)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows22.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple13
+        #region Tuple23
 
-        var tuple13 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple23 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.3")
-            .Include(x => x.Rows13)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows13.Count))
+            .Where(x => x.FormNum_DB == "2.3")
+            .Include(x => x.Rows23)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows23.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple14
+        #region Tuple24
 
-        var tuple14 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple24 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.4")
-            .Include(x => x.Rows14)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows14.Count))
+            .Where(x => x.FormNum_DB == "2.4")
+            .Include(x => x.Rows24)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows24.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple15
+        #region Tuple25
 
-        var tuple15 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple25 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.5")
-            .Include(x => x.Rows15)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows15.Count))
+            .Where(x => x.FormNum_DB == "2.5")
+            .Include(x => x.Rows25)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows25.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple16
+        #region Tuple26
 
-        var tuple16 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple26 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.6")
-            .Include(x => x.Rows16)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows16.Count))
+            .Where(x => x.FormNum_DB == "2.6")
+            .Include(x => x.Rows26)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows26.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple17
+        #region Tuple27
 
-        var tuple17 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple27 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.7")
-            .Include(x => x.Rows17)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows17.Count))
+            .Where(x => x.FormNum_DB == "2.7")
+            .Include(x => x.Rows27)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows27.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple18
+        #region Tuple28
 
-        var tuple18 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple28 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.8")
-            .Include(x => x.Rows18)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows18.Count))
+            .Where(x => x.FormNum_DB == "2.8")
+            .Include(x => x.Rows28)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows28.Count))
             .ToList();
 
         #endregion
 
-        #region Tuple19
+        #region Tuple29
 
-        var tuple19 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple29 = StaticConfiguration.DBModel.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.9")
-            .Include(x => x.Rows19)
-            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows19.Count))
-            .ToList(); 
+            .Where(x => x.FormNum_DB == "2.9")
+            .Include(x => x.Rows29)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows29.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple210
+
+        var tuple210 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "2.10")
+            .Include(x => x.Rows210)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows210.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple211
+
+        var tuple211 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "2.11")
+            .Include(x => x.Rows211)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows211.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple212
+
+        var tuple212 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "2.12")
+            .Include(x => x.Rows212)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows212.Count))
+            .ToList();
 
         #endregion
 
@@ -304,15 +343,18 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             {
                 var tupleList = rep.FormNum_DB switch
                 {
-                    "1.1" => tuple11,
-                    "1.2" => tuple12,
-                    "1.3" => tuple13,
-                    "1.4" => tuple14,
-                    "1.5" => tuple15,
-                    "1.6" => tuple16,
-                    "1.7" => tuple17,
-                    "1.8" => tuple18,
-                    "1.9" => tuple19
+                    "2.1" => tuple21,
+                    "2.2" => tuple22,
+                    "2.3" => tuple23,
+                    "2.4" => tuple24,
+                    "2.5" => tuple25,
+                    "2.6" => tuple26,
+                    "2.7" => tuple27,
+                    "2.8" => tuple28,
+                    "2.9" => tuple29,
+                    "2.10" => tuple210,
+                    "2.11" => tuple211,
+                    "2.12" => tuple212,
                 };
                 var tuple = tupleList.Find(x => x.Item1 == rep.Id) ?? new Tuple<int,int>(rep.Id, 0);
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
