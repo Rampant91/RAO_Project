@@ -149,7 +149,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
             if (_isExecutorsList)
             {
-                FillExecutorsHeaders();
+                FillExecutorsHeaders(formNum[0]);
             }
             else
             {
@@ -171,17 +171,34 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     private void FillExecutors(Report rep)
     {
-        Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-        Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
-        Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
-        Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
-        Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
-        Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
-        Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
-        Worksheet.Cells[_currentRow, 8].Value = rep.FIOexecutor_DB;
-        Worksheet.Cells[_currentRow, 9].Value = rep.GradeExecutor_DB;
-        Worksheet.Cells[_currentRow, 10].Value = rep.ExecPhone_DB;
-        Worksheet.Cells[_currentRow, 11].Value = rep.ExecEmail_DB;
+        switch (rep.FormNum_DB[0])
+        {
+            case '1':
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.FIOexecutor_DB;
+                Worksheet.Cells[_currentRow, 9].Value = rep.GradeExecutor_DB;
+                Worksheet.Cells[_currentRow, 10].Value = rep.ExecPhone_DB;
+                Worksheet.Cells[_currentRow, 11].Value = rep.ExecEmail_DB;
+                break;
+            case '2':
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
+                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
+                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
+                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.FIOexecutor_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.GradeExecutor_DB;
+                Worksheet.Cells[_currentRow, 9].Value = rep.ExecPhone_DB;
+                Worksheet.Cells[_currentRow, 10].Value = rep.ExecEmail_DB;
+                break;
+        }
     }
 
     #endregion
@@ -1883,19 +1900,36 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region FillExecutorsHeaders
 
-    private void FillExecutorsHeaders()
+    private void FillExecutorsHeaders(char formNum)
     {
-        Worksheet.Cells[1, 1].Value = "Рег. №";
-        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-        Worksheet.Cells[1, 3].Value = "ОКПО";
-        Worksheet.Cells[1, 4].Value = "Форма";
-        Worksheet.Cells[1, 5].Value = "Дата начала периода";
-        Worksheet.Cells[1, 6].Value = "Дата конца периода";
-        Worksheet.Cells[1, 7].Value = "Номер корректировки";
-        Worksheet.Cells[1, 8].Value = "ФИО исполнителя";
-        Worksheet.Cells[1, 9].Value = "Должность";
-        Worksheet.Cells[1, 10].Value = "Телефон";
-        Worksheet.Cells[1, 11].Value = "Электронная почта";
+        switch (formNum)
+        {
+            case '1':
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Дата начала периода";
+                Worksheet.Cells[1, 6].Value = "Дата конца периода";
+                Worksheet.Cells[1, 7].Value = "Номер корректировки";
+                Worksheet.Cells[1, 8].Value = "ФИО исполнителя";
+                Worksheet.Cells[1, 9].Value = "Должность";
+                Worksheet.Cells[1, 10].Value = "Телефон";
+                Worksheet.Cells[1, 11].Value = "Электронная почта";
+                break;
+            case '2':
+                Worksheet.Cells[1, 1].Value = "Рег. №";
+                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 3].Value = "ОКПО";
+                Worksheet.Cells[1, 4].Value = "Форма";
+                Worksheet.Cells[1, 5].Value = "Отчетный год";
+                Worksheet.Cells[1, 6].Value = "Номер корректировки";
+                Worksheet.Cells[1, 7].Value = "ФИО исполнителя";
+                Worksheet.Cells[1, 8].Value = "Должность";
+                Worksheet.Cells[1, 9].Value = "Телефон";
+                Worksheet.Cells[1, 10].Value = "Электронная почта";
+                break;
+        }
         if (OperatingSystem.IsWindows())
         {
             Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
