@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -13,9 +12,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Forms;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -161,7 +158,6 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
-        DateTime repEndDateTime;
         var row = 2;
         var repsList = lst
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
@@ -321,12 +317,11 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
                 Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
                 Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[row, 7].Value = tuple.Item2;
+                Worksheet.Cells[row, 7].Value = tuple.Item2; 
                 Worksheet.Cells[row, 8].Value = InventoryCheck(tuple.Item2, tuple.Item3).TrimStart();
                 row++;
             }
         }
-        
         if (OperatingSystem.IsWindows())
         {
             Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров

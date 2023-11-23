@@ -9,7 +9,9 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -164,6 +166,128 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         var repsList = lst
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
             .ToList();
+
+        #region GetDataFormDB
+
+        #region Tuple11
+
+        var tuple11 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows11.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple12
+
+        var tuple12 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.2")
+            .Include(x => x.Rows12)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows12.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple13
+
+        var tuple13 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.3")
+            .Include(x => x.Rows13)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows13.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple14
+
+        var tuple14 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.4")
+            .Include(x => x.Rows14)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows14.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple15
+
+        var tuple15 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.5")
+            .Include(x => x.Rows15)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows15.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple16
+
+        var tuple16 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.6")
+            .Include(x => x.Rows16)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows16.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple17
+
+        var tuple17 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.7")
+            .Include(x => x.Rows17)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows17.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple18
+
+        var tuple18 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.8")
+            .Include(x => x.Rows18)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows18.Count))
+            .ToList();
+
+        #endregion
+
+        #region Tuple19
+
+        var tuple19 = StaticConfiguration.DBModel.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.9")
+            .Include(x => x.Rows19)
+            .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows19.Count))
+            .ToList(); 
+
+        #endregion
+
+        #endregion
+
         foreach (var reps in repsList)
         {
             var repList = reps.Report_Collection
@@ -178,12 +302,25 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                 .ToList();
             foreach (var rep in repList)
             {
+                var tupleList = rep.FormNum_DB switch
+                {
+                    "1.1" => tuple11,
+                    "1.2" => tuple12,
+                    "1.3" => tuple13,
+                    "1.4" => tuple14,
+                    "1.5" => tuple15,
+                    "1.6" => tuple16,
+                    "1.7" => tuple17,
+                    "1.8" => tuple18,
+                    "1.9" => tuple19
+                };
+                var tuple = tupleList.Find(x => x.Item1 == rep.Id) ?? new Tuple<int,int>(rep.Id, 0);
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
                 Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
                 Worksheet.Cells[row, 4].Value = rep.Year_DB;
                 Worksheet.Cells[row, 5].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[row, 6].Value = rep.Rows.Count;
+                Worksheet.Cells[row, 6].Value = tuple.Item2;
                 row++;
             }
         }
