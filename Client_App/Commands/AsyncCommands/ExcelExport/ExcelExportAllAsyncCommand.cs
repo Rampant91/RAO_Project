@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.DBAPIFactory;
 using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
@@ -161,43 +160,35 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 FillHeaders(formNum);
             }
 
-            var api = new EssenceMethods.APIFactory<Reports>();
-            List<Reports> repListQ = null;
-
-            await Task.Factory.StartNew(async () => repListQ = await api.GetAllAsync());
-            
-            var repsWithRows = new ObservableCollectionWithItemPropertyChanged<Reports>(repListQ)
-                .Where(x => x.Master_DB.FormNum_DB.Equals("1.0"));
-
-            foreach (var reps in repsWithRows)
+            foreach (var reps in repsList)
             {
-                //var repsWithForms = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                //    .AsNoTracking()
-                //    .AsSplitQuery()
-                //    .AsQueryable()
-                //    .Where(reports => reports.Id == reps.Id)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows10)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows11)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows12)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows13)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows14)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows15)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows16)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows17)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows18)
-                //    .Include(x => x.Report_Collection)
-                //    .ThenInclude(x => x.Rows19)
-                //    .FirstOrDefault();
-                //if (repsWithForms is null) continue;
+                if (!_isExecutorsList)
+                {
+                    List<int> repIds = new();
+                    foreach (var key in reps.Report_Collection)
+                    {
+                        var rep = (Report)key;
+                        repIds.Add(rep.Id);
+                    }
+
+                    var repsWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(report => repIds.Contains(report.Id))
+                        .Include(x => x.Rows11)
+                        .Include(x => x.Rows12)
+                        .Include(x => x.Rows13)
+                        .Include(x => x.Rows14)
+                        .Include(x => x.Rows15)
+                        .Include(x => x.Rows16)
+                        .Include(x => x.Rows17)
+                        .Include(x => x.Rows18)
+                        .Include(x => x.Rows19)
+                        .Include(x => x.Notes);
+                    reps.Report_Collection.Clear();
+                    reps.Report_Collection.AddRange(repsWithForms);
+                }
                 CurrentReports = reps;
                 FillExportForms(formNum);
             }
