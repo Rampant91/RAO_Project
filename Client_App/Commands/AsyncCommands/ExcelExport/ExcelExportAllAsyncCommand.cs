@@ -9,7 +9,9 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -157,9 +159,36 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
                 WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
                 FillHeaders(formNum);
             }
+
             foreach (var reps in repsList)
             {
-                CurrentReports = reps;
+                var repsWithForms = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Where(reports => reports.Id == reps.Id)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows10)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows20)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows11)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows12)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows13)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows14)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows15)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows16)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows17)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows18)
+                    .Include(x => x.Report_Collection)
+                    .ThenInclude(x => x.Rows19)
+                    .FirstOrDefault();
+                if (repsWithForms is null) continue;
+                CurrentReports = _isExecutorsList ? reps : repsWithForms;
                 FillExportForms(formNum);
             }
         }
