@@ -161,20 +161,6 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
-        //var row = 2;
-        //var repsList = lst
-        //    .OrderBy(x => x.Master_DB.RegNoRep.Value)
-        //    .ToList();
-
-        //var repListWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Where(x => x.FormNum_DB == "1.1")
-        //    .Include(x => x.Rows11).ThenInclude(x => x.OperationCode_DB)
-        //    .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
-        //    .ToList();
-
         DateTime repEndDateTime;
         var row = 2;
         var repsList = lst
@@ -302,22 +288,6 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-
-        //.ToDictionary(rep => rep.Id,
-        //    rep => new Tuple<int, int>(rep.Rows11.Count, rep.Rows11
-        //        .Count(form11 => form11.OperationCode_DB == "10")));
-
-        //repListWithForms = repListWithForms
-        //    .Where(rep =>
-        //    {
-        //        if (startDateTime == DateTime.MinValue && endDateTime == DateTime.MaxValue) return true;
-        //        if (!DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)) return false;
-        //        return repEndDateTime >= startDateTime && repEndDateTime <= endDateTime;
-        //    })
-        //    .OrderBy(x => x.FormNum_DB)
-        //    .ThenBy(x => StringReverse(x.StartPeriod_DB))
-        //    .ToList();
-
         foreach (var reps in repsList)
         {
             var repList = reps.Report_Collection
@@ -356,32 +326,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 row++;
             }
         }
-
-        //foreach (var reps in repsList)
-        //{
-        //    var repList = reps.Report_Collection
-        //        .Where(x =>
-        //        {
-        //            if (startDateTime == DateTime.MinValue && endDateTime == DateTime.MaxValue) return true;
-        //            if (!DateTime.TryParse(x.EndPeriod_DB, out var repEndDateTime)) return false;
-        //            return repEndDateTime >= startDateTime && repEndDateTime <= endDateTime;
-        //        })
-        //        .OrderBy(x => x.FormNum_DB)
-        //        .ThenBy(x => StringReverse(x.StartPeriod_DB))
-        //        .ToList();
-        //    foreach (var rep in repList)
-        //    {
-        //        Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-        //        Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
-        //        Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-        //        Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
-        //        Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
-        //        Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-        //        Worksheet.Cells[row, 7].Value = ReportsStorage.GetReportRowsCount(rep);
-        //        Worksheet.Cells[row, 8].Value = ReportsStorage.InventoryCheck(rep).TrimStart();
-        //        row++;
-        //    }
-        //}
+        
         if (OperatingSystem.IsWindows())
         {
             Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
@@ -389,48 +334,5 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         Worksheet.View.FreezePanes(2, 1);
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
-
-        //DateTime repEndDateTime;
-        //var row = 2;
-        //await using var db = StaticConfiguration.DBModel;
-        //try
-        //{
-        //    db.ReportsCollectionDbSet
-        //        .AsNoTracking()
-        //        .SelectMany(filterReps => filterReps.Report_Collection
-        //            .Where(x =>
-        //                x.FormNum_DB.StartsWith('1')
-        //                && startDateTime == DateTime.MinValue
-        //                && endDateTime == DateTime.MaxValue
-        //                && DateTime.TryParse(x.EndPeriod_DB, out repEndDateTime)
-        //                && repEndDateTime >= startDateTime
-        //                && repEndDateTime <= endDateTime)
-        //            .Select(rep => new
-        //            {
-        //                RegNoRep = filterReps.Master.RegNoRep.Value,
-        //                OKPO = filterReps.Master.OkpoRep.Value,
-        //                Report = rep
-        //            }))
-        //        .OrderBy(x => x.RegNoRep)
-        //        .ThenBy(x => x.Report.FormNum_DB)
-        //        .ThenBy(x => StringReverse(x.Report.StartPeriod_DB))
-        //        .ToList()
-        //        .ForEach(x =>
-        //        {
-        //            Worksheet.Cells[row, 1].Value = x.RegNoRep;
-        //            Worksheet.Cells[row, 2].Value = x.OKPO;
-        //            Worksheet.Cells[row, 3].Value = x.Report.FormNum_DB;
-        //            Worksheet.Cells[row, 4].Value = x.Report.StartPeriod_DB;
-        //            Worksheet.Cells[row, 5].Value = x.Report.EndPeriod_DB;
-        //            Worksheet.Cells[row, 6].Value = x.Report.CorrectionNumber_DB;
-        //            Worksheet.Cells[row, 7].Value = x.Report.Rows.Count;
-        //            Worksheet.Cells[row, 8].Value = InventoryCheck(x.Report).TrimStart();
-        //            row++;
-        //        });
-        //}
-        //catch (Exception e)
-        //{
-        //    //ignored
-        //}
     }
 }
