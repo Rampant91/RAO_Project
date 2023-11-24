@@ -108,6 +108,21 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
+
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        await dbReadOnly.Database.MigrateAsync(cancellationToken: cts.Token);
+
+
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
@@ -122,8 +137,8 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         {
             repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection.OrderBy(x => x.Master_DB.RegNoRep.Value));
         }
-        HashSet<string> formNums = new();
 
+        HashSet<string> formNums = new();
         foreach (var rep in repsList
                      .SelectMany(reps => reps.Report_Collection)
                      .OrderBy(x => byte.Parse(x.FormNum_DB.Split('.')[0]))
@@ -140,7 +155,7 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         }
         foreach (var reps in repsList)
         {
-            var repsWithRows = StaticConfiguration.DBModel.ReportsCollectionDbSet
+            var repsWithRows = dbReadOnly.ReportsCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()

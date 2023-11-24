@@ -9,7 +9,7 @@ using Models.Forms.Form2;
 
 namespace Models.DBRealization;
 
-public class DataContext:DbContext
+public class DataContext : DbContext
 {
     public string _path { get; set; }
     public DataContext(string Path = "")

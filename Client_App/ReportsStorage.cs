@@ -67,9 +67,10 @@ public static class ReportsStorage
 
     public static int GetReportRowsCount(Report rep)
     {
+        using var db = StaticConfiguration.DBModel;
         return rep.FormNum_DB switch
             {
-                "1.1" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.1" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -77,7 +78,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows11)
                     .SelectMany(x => x.Rows11)
                     .Count(),
-                "1.2" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.2" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -85,7 +86,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows12)
                     .SelectMany(x => x.Rows12)
                     .Count(),
-                "1.3" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.3" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -93,7 +94,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows13)
                     .SelectMany(x => x.Rows13)
                     .Count(),
-                "1.4" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.4" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -101,7 +102,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows14)
                     .SelectMany(x => x.Rows14)
                     .Count(),
-                "1.5" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.5" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -109,7 +110,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows15)
                     .SelectMany(x => x.Rows15)
                     .Count(),
-                "1.6" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.6" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -117,7 +118,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows16)
                     .SelectMany(x => x.Rows16)
                     .Count(),
-                "1.7" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.7" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -125,7 +126,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows17)
                     .SelectMany(x => x.Rows17)
                     .Count(),
-                "1.8" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.8" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -133,7 +134,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows18)
                     .SelectMany(x => x.Rows18)
                     .Count(),
-                "1.9" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "1.9" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -141,7 +142,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows19)
                     .SelectMany(x => x.Rows19)
                     .Count(),
-                "2.1" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.1" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -149,7 +150,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows21)
                     .SelectMany(x => x.Rows21)
                     .Count(),
-                "2.2" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.2" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -157,7 +158,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows22)
                     .SelectMany(x => x.Rows22)
                     .Count(),
-                "2.3" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.3" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -165,7 +166,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows23)
                     .SelectMany(x => x.Rows23)
                     .Count(),
-                "2.4" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.4" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -173,7 +174,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows24)
                     .SelectMany(x => x.Rows24)
                     .Count(),
-                "2.5" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.5" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -181,7 +182,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows25)
                     .SelectMany(x => x.Rows25)
                     .Count(),
-                "2.6" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.6" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -189,7 +190,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows26)
                     .SelectMany(x => x.Rows26)
                     .Count(),
-                "2.7" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.7" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -197,7 +198,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows27)
                     .SelectMany(x => x.Rows27)
                     .Count(),
-                "2.8" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.8" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -205,7 +206,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows28)
                     .SelectMany(x => x.Rows28)
                     .Count(),
-                "2.9" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.9" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -213,7 +214,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows29)
                     .SelectMany(x => x.Rows29)
                     .Count(),
-                "2.10" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.10" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -221,7 +222,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows210)
                     .SelectMany(x => x.Rows210)
                     .Count(),
-                "2.11" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.11" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -229,7 +230,7 @@ public static class ReportsStorage
                     .Include(x => x.Rows211)
                     .SelectMany(x => x.Rows211)
                     .Count(),
-                "2.12" => StaticConfiguration.DBModel.ReportCollectionDbSet
+                "2.12" => db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -243,34 +244,34 @@ public static class ReportsStorage
 
     #endregion
     
-    #region InventoryCheck
+    //#region InventoryCheck
 
-    public static string InventoryCheck(Report? rep)
-    {
-        if (rep is null)
-        {
-            return "";
-        }
-        var formsIds = StaticConfiguration.DBModel.ReportCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Where(x => x.Id == rep.Id)
-            .Include(x => x.Rows11)
-            .First(x => x.Id == rep.Id).Rows11
-            .Select(x => x.Id);
-        var countCode10 = StaticConfiguration.DBModel.form_11
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Where(x => x.Id >= formsIds.Min() && x.Id <= formsIds.Max())
-            .Count(x => x.OperationCode_DB == "10");
-        return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
-            ? " (ИНВ)"
-            : countCode10 > 0
-                ? " (инв)"
-                : "";
-    }
+    //public static string InventoryCheck(Report? rep)
+    //{
+    //    if (rep is null)
+    //    {
+    //        return "";
+    //    }
+    //    var formsIds = StaticConfiguration.DBModel.ReportCollectionDbSet
+    //        .AsNoTracking()
+    //        .AsSplitQuery()
+    //        .AsQueryable()
+    //        .Where(x => x.Id == rep.Id)
+    //        .Include(x => x.Rows11)
+    //        .First(x => x.Id == rep.Id).Rows11
+    //        .Select(x => x.Id);
+    //    var countCode10 = StaticConfiguration.DBModel.form_11
+    //        .AsNoTracking()
+    //        .AsSplitQuery()
+    //        .AsQueryable()
+    //        .Where(x => x.Id >= formsIds.Min() && x.Id <= formsIds.Max())
+    //        .Count(x => x.OperationCode_DB == "10");
+    //    return countCode10 == rep.Rows.Count && rep.Rows.Count > 0
+    //        ? " (ИНВ)"
+    //        : countCode10 > 0
+    //            ? " (инв)"
+    //            : "";
+    //}
 
-    #endregion
+    //#endregion
 }
