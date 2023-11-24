@@ -140,33 +140,41 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         }
         foreach (var reps in repsList)
         {
-            var repsWithRows = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == reps.Id)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                .First();
-            foreach (var formNum in formNums)
+            try
             {
-                _currentRow = 2;
-                _currentPrimRow = 2;
-                CurrentReports = repsWithRows;
-                Worksheet = excelPackage.Workbook.Worksheets[$"Форма {formNum}"];
-                WorksheetPrim = excelPackage.Workbook.Worksheets[$"Примечания {formNum}"];
-                FillExportForms(formNum);
+                var repsWithRows = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsNoTrackingWithIdentityResolution()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(x => x.Id == reps.Id)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                    .First();
+                foreach (var formNum in formNums)
+                {
+                    CurrentReports = repsWithRows;
+                    Worksheet = excelPackage.Workbook.Worksheets[$"Форма {formNum}"];
+                    WorksheetPrim = excelPackage.Workbook.Worksheets[$"Примечания {formNum}"];
+                    _currentRow = Worksheet.Dimension.End.Row + 1;
+                    _currentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
+                    FillExportForms(formNum);
+                }
             }
+            catch (Exception e)
+            {
+
+            }
+            
         }
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
