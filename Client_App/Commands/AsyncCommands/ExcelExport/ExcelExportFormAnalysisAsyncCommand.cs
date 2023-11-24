@@ -25,6 +25,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         ExportType = "Для анализа";
 
         var exportForm = (Report)forms.First();
+        exportForm = await ReportsStorage.GetReportAsync(exportForm.Id);
         var orgWithExportForm = ReportsStorage.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         var formNum = RemoveForbiddenChars(exportForm.FormNum_DB);
