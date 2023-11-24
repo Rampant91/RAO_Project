@@ -52,17 +52,13 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            return;
-        }
-        finally
-        {
             cts.Dispose();
+            return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return; 
 
-        
         var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Excel", $"{formNum}.xlsx");
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));

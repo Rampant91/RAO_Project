@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="df65eefb-e2ab-4908-b1fe-ee1f75d8f438" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/AsyncCommands/Delete/DeleteFormAsyncCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/AsyncCommands/Delete/DeleteFormAsyncCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/AsyncCommands/Delete/DeleteReportsAsyncCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/AsyncCommands/Delete/DeleteReportsAsyncCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/AsyncCommands/ExcelExport/ExcelExportAllAsyncCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/AsyncCommands/ExcelExport/ExcelExportAllAsyncCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/AsyncCommands/ExcelExport/ExcelExportListOfForms1AsyncCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/AsyncCommands/ExcelExport/ExcelExportListOfForms1AsyncCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ReportsStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ReportsStorage.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

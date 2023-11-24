@@ -67,7 +67,7 @@ public static class ReportsStorage
 
     public static int GetReportRowsCount(Report rep)
     {
-        using var db = StaticConfiguration.DBModel;
+        var db = StaticConfiguration.DBModel;
         return rep.FormNum_DB switch
             {
                 "1.1" => db.ReportCollectionDbSet

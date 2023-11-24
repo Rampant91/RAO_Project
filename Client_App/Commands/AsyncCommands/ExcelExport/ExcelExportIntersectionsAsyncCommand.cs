@@ -69,11 +69,8 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            return;
-        }
-        finally
-        {
             cts.Dispose();
+            return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;

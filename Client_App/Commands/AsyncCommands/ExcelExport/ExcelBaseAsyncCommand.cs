@@ -204,7 +204,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         foreach (var item in forms)
         {
             var reps = ReportsStorage.LocalReports.Reports_Collection
-                .FirstOrDefault(t => t.Report_Collection.Contains(item));
+                .FirstOrDefault(t => t.Report_Collection.Any(x => x.Id == item.Id));
+                    //t.Report_Collection.Contains(item));
             if (reps is null) continue;
             IEnumerable<IKey> t;
             switch (param)

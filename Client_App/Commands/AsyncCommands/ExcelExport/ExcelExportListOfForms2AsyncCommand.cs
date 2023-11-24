@@ -133,6 +133,18 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            File.Delete(dbReadOnlyPath);
+            File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
+
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
@@ -167,11 +179,13 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
             .ToList();
 
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+
         #region GetDataFormDB
 
         #region Tuple21
 
-        var tuple21 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple21 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -184,7 +198,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple22
 
-        var tuple22 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple22 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -197,7 +211,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple23
 
-        var tuple23 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple23 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -210,7 +224,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple24
 
-        var tuple24 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple24 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -223,7 +237,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple25
 
-        var tuple25 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple25 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -236,7 +250,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple26
 
-        var tuple26 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple26 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -249,7 +263,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple27
 
-        var tuple27 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple27 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -262,7 +276,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple28
 
-        var tuple28 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple28 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -275,7 +289,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple29
 
-        var tuple29 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple29 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -288,7 +302,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple210
 
-        var tuple210 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple210 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -301,7 +315,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple211
 
-        var tuple211 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple211 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -314,7 +328,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple212
 
-        var tuple212 = StaticConfiguration.DBModel.ReportCollectionDbSet
+        var tuple212 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
