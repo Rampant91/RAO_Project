@@ -17,20 +17,18 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Все формы & Excel -> Выбранная организация -> Все формы & Excel -> Список исполнителей
+//  Excel -> Все формы & Excel -> Выбранная организация -> Все формы
 public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 {
     private Reports CurrentReports;
     private int _currentRow;
     private int _currentPrimRow;
-    private bool _isExecutorsList;
     private bool _isSelectedOrg;
 
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
         _isSelectedOrg = parameter is "SelectedOrg";
-        _isExecutorsList = parameter is "Executors";
         string fileName;
         var mainWindow = Desktop.MainWindow as MainWindow;
 
@@ -90,17 +88,12 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             var okpo = RemoveForbiddenChars(CurrentReports.Master.OkpoRep.Value);
             fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
         }
-        else if (_isExecutorsList)
-        {
-            ExportType = "Список исполнителей";
-            fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
-        }
         else
         {
             ExportType = "Все формы";
             fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
         }
-        
+
         (string fullPath, bool openTemp) result;
         try
         {
@@ -149,46 +142,36 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
         {
             _currentRow = 2;
             Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
-            if (_isExecutorsList)
-            {
-                FillExecutorsHeaders(formNum[0]);
-            }
-            else
-            {
-                _currentPrimRow = 2;
-                WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
-                FillHeaders(formNum);
-            }
+            _currentPrimRow = 2;
+            WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
+            FillHeaders(formNum);
 
             foreach (var reps in repsList)
             {
-                if (!_isExecutorsList)
+                List<int> repIds = new();
+                foreach (var key in reps.Report_Collection)
                 {
-                    List<int> repIds = new();
-                    foreach (var key in reps.Report_Collection)
-                    {
-                        var rep = (Report)key;
-                        repIds.Add(rep.Id);
-                    }
-
-                    var repsWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(report => repIds.Contains(report.Id))
-                        .Include(x => x.Rows11)
-                        .Include(x => x.Rows12)
-                        .Include(x => x.Rows13)
-                        .Include(x => x.Rows14)
-                        .Include(x => x.Rows15)
-                        .Include(x => x.Rows16)
-                        .Include(x => x.Rows17)
-                        .Include(x => x.Rows18)
-                        .Include(x => x.Rows19)
-                        .Include(x => x.Notes);
-                    reps.Report_Collection.Clear();
-                    reps.Report_Collection.AddRange(repsWithForms);
+                    var rep = (Report)key;
+                    repIds.Add(rep.Id);
                 }
+
+                var repsWithForms = StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(report => repIds.Contains(report.Id))
+                    .Include(x => x.Rows11)
+                    .Include(x => x.Rows12)
+                    .Include(x => x.Rows13)
+                    .Include(x => x.Rows14)
+                    .Include(x => x.Rows15)
+                    .Include(x => x.Rows16)
+                    .Include(x => x.Rows17)
+                    .Include(x => x.Rows18)
+                    .Include(x => x.Rows19)
+                    .Include(x => x.Notes);
+                reps.Report_Collection.Clear();
+                reps.Report_Collection.AddRange(repsWithForms);
                 CurrentReports = reps;
                 FillExportForms(formNum);
             }
@@ -196,42 +179,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
-
-    #region FillExecutors
-
-    private void FillExecutors(Report rep)
-    {
-        switch (rep.FormNum_DB[0])
-        {
-            case '1':
-                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
-                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
-                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
-                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
-                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
-                Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[_currentRow, 8].Value = rep.FIOexecutor_DB;
-                Worksheet.Cells[_currentRow, 9].Value = rep.GradeExecutor_DB;
-                Worksheet.Cells[_currentRow, 10].Value = rep.ExecPhone_DB;
-                Worksheet.Cells[_currentRow, 11].Value = rep.ExecEmail_DB;
-                break;
-            case '2':
-                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.RegNoRep.Value;
-                Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
-                Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
-                Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
-                Worksheet.Cells[_currentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[_currentRow, 6].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[_currentRow, 7].Value = rep.FIOexecutor_DB;
-                Worksheet.Cells[_currentRow, 8].Value = rep.GradeExecutor_DB;
-                Worksheet.Cells[_currentRow, 9].Value = rep.ExecPhone_DB;
-                Worksheet.Cells[_currentRow, 10].Value = rep.ExecEmail_DB;
-                break;
-        }
-    }
-
-    #endregion
 
     #region FillExportForms
 
@@ -319,12 +266,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows11
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -404,12 +345,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows12
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -487,12 +422,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows13
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -571,12 +500,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var repSort = rep.Rows14
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -656,12 +579,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows15
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -743,12 +660,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows16
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -833,12 +744,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows17
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -928,12 +833,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in form)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows18
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1019,12 +918,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows19
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1091,12 +984,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows21
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1173,12 +1060,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows22
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1252,12 +1133,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows23
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1324,12 +1199,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows24
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1400,12 +1269,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows25
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1469,12 +1332,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows26
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1536,12 +1393,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows27
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1601,12 +1452,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var repSort = rep.Rows28
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1667,12 +1512,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows29
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1731,12 +1570,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows210
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1801,12 +1634,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows211
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1869,12 +1696,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
         foreach (var rep in repList)
         {
-            if (_isExecutorsList)
-            {
-                FillExecutors(rep);
-                _currentRow++;
-                continue;
-            }
             var forms = rep.Rows212
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
@@ -1927,47 +1748,6 @@ public class ExcelExportAllAsyncCommand : ExcelBaseAsyncCommand
     #endregion
 
     #region Headers
-
-    #region FillExecutorsHeaders
-
-    private void FillExecutorsHeaders(char formNum)
-    {
-        switch (formNum)
-        {
-            case '1':
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Дата начала периода";
-                Worksheet.Cells[1, 6].Value = "Дата конца периода";
-                Worksheet.Cells[1, 7].Value = "Номер корректировки";
-                Worksheet.Cells[1, 8].Value = "ФИО исполнителя";
-                Worksheet.Cells[1, 9].Value = "Должность";
-                Worksheet.Cells[1, 10].Value = "Телефон";
-                Worksheet.Cells[1, 11].Value = "Электронная почта";
-                break;
-            case '2':
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Форма";
-                Worksheet.Cells[1, 5].Value = "Отчетный год";
-                Worksheet.Cells[1, 6].Value = "Номер корректировки";
-                Worksheet.Cells[1, 7].Value = "ФИО исполнителя";
-                Worksheet.Cells[1, 8].Value = "Должность";
-                Worksheet.Cells[1, 9].Value = "Телефон";
-                Worksheet.Cells[1, 10].Value = "Электронная почта";
-                break;
-        }
-        if (OperatingSystem.IsWindows())
-        {
-            Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
-        }
-        Worksheet.View.FreezePanes(2, 1);
-    }
-
-    #endregion
 
     #region FillHeaders
 

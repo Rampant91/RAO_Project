@@ -9,8 +9,6 @@ using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Client_App;
 
@@ -32,22 +30,6 @@ public static class ReportsStorage
             }
         }
     }
-
-    #region GetAllReports
-
-    public static async Task GetAllReports()
-        {
-            var api = new EssenceMethods.APIFactory<Reports>();
-            List<Reports> repListQ = null;
-
-            var myTask = Task.Factory.StartNew(async () => repListQ = await api.GetAllAsync());
-            
-            var reps = new ObservableCollectionWithItemPropertyChanged<Reports>(repListQ)
-                .Where(x => x.Master_DB.FormNum_DB.Equals("1.0"));
-
-        }
-
-    #endregion
 
     #region GetReport
 

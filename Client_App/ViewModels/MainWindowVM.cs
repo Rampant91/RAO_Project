@@ -484,7 +484,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangeReports = new ChangeReportsAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
-        ExcelExportExecutors = new ExcelExportAllAsyncCommand();
+        ExcelExportExecutors = new ExcelExportExecutorsAsyncCommand();
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
         ExcelExportFormPrint = new ExcelExportFormPrintAsyncCommand(); 
         ExcelExportForms = new ExcelExportFormsAsyncCommand();
