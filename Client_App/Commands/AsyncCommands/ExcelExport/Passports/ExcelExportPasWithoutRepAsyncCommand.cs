@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
@@ -180,7 +182,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 }))
             .ToListAsync(cancellationToken: cts.Token);
 
-        var lockMe = new object(); 
+        ConcurrentBag<FileInfo> filesToRemove = new();
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
         await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, cts) =>
         {
@@ -192,13 +194,15 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
             if (flag)
             {
-                lock (lockMe)
-                {
-                    files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-                }
+                filesToRemove.Add(files.First(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+                //files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
             }
             return default;
         });
+        foreach (var fileToRemove in filesToRemove.ToArray())
+        {
+            files.Remove(fileToRemove);
+        }
 
         //foreach (var pasParam in pasUniqParam)
         //{
