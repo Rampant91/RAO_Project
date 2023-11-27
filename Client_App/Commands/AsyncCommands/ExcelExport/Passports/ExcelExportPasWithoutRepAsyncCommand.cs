@@ -8,16 +8,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Resources;
 using Client_App.ViewModels;
-using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
@@ -184,54 +182,35 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         ConcurrentBag<FileInfo> filesToRemove = new();
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
-        await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, cts) =>
+        try
         {
-            var flag = forms11.Any(form11 =>
-                StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
-                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
-                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
-            if (flag)
+            await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
             {
-                filesToRemove.Add(files.First(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-                //files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-            }
-            return default;
-        });
+                var flag = forms11.Any(form11 =>
+                    ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                    && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
+                    && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
+                    && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                    && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
+                if (flag)
+                {
+                    filesToRemove.Add(files.First(file =>
+                        file.Name.Remove(file.Name.Length - 4) ==
+                        $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+                }
+                return default;
+            });
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
+        
         foreach (var fileToRemove in filesToRemove.ToArray())
         {
             files.Remove(fileToRemove);
         }
-
-        //foreach (var pasParam in pasUniqParam)
-        //{
-        //    var flag = forms11.Any(form11 =>
-        //        StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-        //        && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
-        //        && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
-        //        && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-        //        && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
-        //    if (flag)
-        //    {
-        //        files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-        //    }
-        //}
-        
-
-        //foreach (var form11 in forms11)
-        //{
-        //    foreach (var pasParam in pasUniqParam.Where(pasParam =>
-        //                 StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-        //                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
-        //                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
-        //                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-        //                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
-        //    {
-        //        files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-        //        break;
-        //    }
-        //}
 
         var currentRow = 2;
         foreach (var file in files)
