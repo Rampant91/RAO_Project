@@ -14,6 +14,7 @@ using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
+using Models.DTO;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -167,17 +168,25 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             .Include(x => x.Rows11)
             .SelectMany(x => x.Rows11
                 .Where(y => (y.OperationCode_DB == "11" || y.OperationCode_DB == "85")
-                            && categories.Contains(y.Category_DB)))
+                            && categories.Contains(y.Category_DB))
+                .Select(form11 => new Form11DTO
+                {
+                    CreatorOKPO = form11.CreatorOKPO_DB,
+                    Type = form11.Type_DB,
+                    CreationDate = form11.CreationDate_DB,
+                    PassportNumber = form11.PassportNumber_DB,
+                    FactoryNumber = form11.FactoryNumber_DB
+                }))
             .ToListAsync(cancellationToken: cts.Token);
 
         foreach (var form11 in forms11)
         {
             foreach (var pasParam in pasUniqParam.Where(pasParam =>
-                         StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO_DB), pasParam[0])
-                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type_DB), pasParam[1])
-                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate_DB), pasParam[2])
-                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber_DB), pasParam[3])
-                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber_DB), pasParam[4])))
+                         StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
             {
                 files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
                 break;
