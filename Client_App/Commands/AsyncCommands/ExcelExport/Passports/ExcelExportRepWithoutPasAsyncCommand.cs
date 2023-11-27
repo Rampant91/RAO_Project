@@ -185,71 +185,86 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             .ToListAsync(cancellationToken: cts.Token);
 
         var currentRow = 2;
-        foreach (var form11 in forms11)
+
+        foreach (var pasParam in pasUniqParam)
         {
-            var findPasFile = false;
-            foreach (var pasParam in pasUniqParam)
-            {
-                if (StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
-                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
-                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]))
-                {
-                    findPasFile = true;
-                    break;
-                }
-            }
-
-            if (!findPasFile)
+            var form = forms11.FirstOrDefault(form11 =>
+                StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0]) 
+                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
+                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
+                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
+            if (form is not null)
             {
 
-                #region BindingCells
-
-                Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                Worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                Worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                Worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB is null or "" or "-"
-                    ? "-"
-                    : double.TryParse(repForm.Activity_DB.Replace("е", "E")
-                        .Replace("Е", "E").Replace("e", "E")
-                        .Replace("(", "").Replace(")", "")
-                        .Replace(".", ","), out var doubleValue)
-                        ? doubleValue
-                        : repForm.Activity_DB;
-                Worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
-                Worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
-                Worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
-                Worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
-                Worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
-                Worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
-                Worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
-                Worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
-                Worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
-
-                #endregion
-
-                currentRow++;
             }
+            
         }
+        //foreach (var form11 in forms11)
+        //{
+        //    var findPasFile = false;
+        //    foreach (var pasParam in pasUniqParam)
+        //    {
+        //        if (StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+        //            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
+        //            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
+        //            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+        //            && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]))
+        //        {
+        //            findPasFile = true;
+        //            break;
+        //        }
+        //    }
+
+        //    if (!findPasFile)
+        //    {
+
+        //        #region BindingCells
+
+        //        Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
+        //        Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+        //        Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
+        //        Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
+        //        Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+        //        Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+        //        Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
+        //        Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
+        //        Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
+        //        Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
+        //        Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
+        //        Worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
+        //        Worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
+        //        Worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
+        //        Worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
+        //        Worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
+        //        Worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB is null or "" or "-"
+        //            ? "-"
+        //            : double.TryParse(repForm.Activity_DB.Replace("е", "E")
+        //                .Replace("Е", "E").Replace("e", "E")
+        //                .Replace("(", "").Replace(")", "")
+        //                .Replace(".", ","), out var doubleValue)
+        //                ? doubleValue
+        //                : repForm.Activity_DB;
+        //        Worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
+        //        Worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
+        //        Worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
+        //        Worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
+        //        Worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
+        //        Worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
+        //        Worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
+        //        Worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
+        //        Worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
+        //        Worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+        //        Worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
+        //        Worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
+        //        Worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
+        //        Worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+
+        //        #endregion
+
+        //        currentRow++;
+        //    }
+        //}
 
 
         foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
