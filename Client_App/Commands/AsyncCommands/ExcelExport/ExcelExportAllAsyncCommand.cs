@@ -114,6 +114,23 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         }
         catch
         {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Выгрузка не выполнена, поскольку в данный момент выполняется другая выгрузка."
+                                     + $"{Environment.NewLine}Дождитесь окончания предыдущей операции выгрузки и повторите попытку.",
+                    MinHeight = 150,
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(mainWindow));
+
+            #endregion
             cts.Dispose();
             return;
         }

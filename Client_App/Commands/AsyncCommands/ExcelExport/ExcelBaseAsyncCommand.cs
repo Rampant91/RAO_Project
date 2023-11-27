@@ -27,9 +27,27 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     private protected string ExportType;
 
+    private bool _isExcelExecute;
+
+    public bool IsExcelExecute
+    {
+        get => _isExcelExecute;
+        set
+        {
+            _isExcelExecute = value;
+            OnCanExecuteChanged();
+        }
+    }
+
+    public override bool CanExecute(object? parameter)
+    {
+        return !_isExcelExecute;
+    }
+
     public override async void Execute(object? parameter)
     {
         IsExecute = true;
+        IsExcelExecute = true;
         try
         {
             await Task.Run(() => AsyncExecute(parameter));
@@ -39,6 +57,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             // ignored
         }
         IsExecute = false;
+        IsExcelExecute = false;
     }
 
     #region ExcelExportNotes
