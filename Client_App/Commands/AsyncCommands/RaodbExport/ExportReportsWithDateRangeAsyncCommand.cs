@@ -103,7 +103,7 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
         List<Report> repInRangeWithForms = new();
         foreach (var rep in repInRange)
         {
-            repInRangeWithForms.Add(await ReportsStorage.GetReportAsync(rep.Id));
+            repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
         }
         Reports exportOrg = new() { Master = org.Master };
         exportOrg.Report_Collection.AddRange(repInRangeWithForms);

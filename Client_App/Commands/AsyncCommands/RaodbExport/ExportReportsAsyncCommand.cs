@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -48,11 +49,14 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 return;
         }
 
+        List<Report> repList = new();
         foreach (var key in exportOrg.Report_Collection)
         {
             var rep = (Report)key;
-            await ReportsStorage.GetReportAsync(rep.Id);
+            repList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
         }
+        exportOrg.Report_Collection.Clear();
+        exportOrg.Report_Collection.AddRangeNoChange(repList);
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +

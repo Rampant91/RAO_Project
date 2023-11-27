@@ -12,8 +12,8 @@ using Client_App.ViewModels;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Models.Collections;
-using Models.Forms.Form1;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -114,15 +114,28 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
+            cts.Dispose();
             return;
         }
-        finally
-        {
-            cts.Dispose();
-        }
+        
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
+            {
+                File.Delete(dbReadOnlyPath);
+                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+            }
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -144,30 +157,30 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-        foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
+
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        var forms11 = await dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11)
+            .SelectMany(x => x.Rows11
+                .Where(y => (y.OperationCode_DB == "11" || y.OperationCode_DB == "85")
+                            && categories.Contains(y.Category_DB)))
+            .ToListAsync(cancellationToken: cts.Token);
+
+        foreach (var form11 in forms11)
         {
-            var reps = (Reports)key;
-            var form11 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
-                .ToList();
-            foreach (var rep in form11)
+            foreach (var pasParam in pasUniqParam.Where(pasParam =>
+                         StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO_DB), pasParam[0])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type_DB), pasParam[1])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate_DB), pasParam[2])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber_DB), pasParam[3])
+                         && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber_DB), pasParam[4])))
             {
-                List<Form11> repPas = rep.Rows11
-                    .Where(x => x.OperationCode_DB is "11" or "85" && categories.Contains(x.Category_DB))
-                    .ToList();
-                foreach (var repForm in repPas)
-                {
-                    foreach (var pasParam in pasUniqParam.Where(pasParam =>
-                                 StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.Type_DB), pasParam[1])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
-                    {
-                        files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-                        break;
-                    }
-                }
+                files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+                break;
             }
         }
 
