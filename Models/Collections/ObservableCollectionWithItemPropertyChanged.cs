@@ -84,26 +84,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         base.OnCollectionChanged(e);
     }
 
-    ////метод для обмена элементов массива
-    //private void Swap(int index1, int index2)
-    //{
-    //    (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
-    //}
-    //private int Partition(int minIndex, int maxIndex)
-    //{
-    //    var pivot = minIndex - 1;
-    //    for (var i = minIndex; i < maxIndex; i++)
-    //    {
-    //        if (Items[i].Order >= Items[maxIndex].Order) continue;
-    //        pivot++;
-    //        Swap(pivot, i);
-    //    }
-    //    pivot++;
-    //    Swap(pivot, maxIndex);
-    //    return pivot;
-    //}
-
-    //private void QuickSort(int minIndex, int maxIndex)
+    //private void QuickSort(int minIndex, int maxIndex)    //Рекурсия на коллекция более 15000 объектов переполняет стэк
     //{
     //    while (minIndex < maxIndex)
     //    {
@@ -162,17 +143,10 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
     public void QuickSort()
     {
         if (Sorted) return;
-        try
-        {
-            if (CheckForSort()) return;
-            QuickSort(0, Items.Count - 1);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            Sorted = true;
-        }
-        catch
-        {
-            // ignored
-        }
+        if (CheckForSort()) return;
+        QuickSort(0, Items.Count - 1);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        Sorted = true;
     }
 
     public async Task QuickSortAsync()
