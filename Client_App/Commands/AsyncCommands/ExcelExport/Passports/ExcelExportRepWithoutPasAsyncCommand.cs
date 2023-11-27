@@ -9,9 +9,13 @@ using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
+using Models.DTO;
 using Models.Forms.Form1;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
@@ -54,15 +58,28 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
+            cts.Dispose();
             return;
         }
-        finally
-        {
-            cts.Dispose();
-        }
+        
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
+            {
+                File.Delete(dbReadOnlyPath);
+                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+            }
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -145,7 +162,96 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
+
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        var forms11 = await dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11)
+            .SelectMany(x => x.Rows11
+                .Where(y => (y.OperationCode_DB == "11" || y.OperationCode_DB == "85")
+                            && (y.Category_DB == 1 || y.Category_DB == 2 || y.Category_DB == 3))
+                .Select(form11 => new Form11DTO
+                {
+                    Id = form11.Id,
+                    CreatorOKPO = form11.CreatorOKPO_DB,
+                    Type = form11.Type_DB,
+                    CreationDate = form11.CreationDate_DB,
+                    PassportNumber = form11.PassportNumber_DB,
+                    FactoryNumber = form11.FactoryNumber_DB
+                }))
+            .ToListAsync(cancellationToken: cts.Token);
+
         var currentRow = 2;
+        foreach (var form11 in forms11)
+        {
+            var findPasFile = false;
+            foreach (var pasParam in pasUniqParam)
+            {
+                if (StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.Type), pasParam[1])
+                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(form11.CreationDate), pasParam[2])
+                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                    && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]))
+                {
+                    findPasFile = true;
+                    break;
+                }
+            }
+
+            if (!findPasFile)
+            {
+
+                #region BindingCells
+
+                Worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
+                Worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
+                Worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
+                Worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
+                Worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
+                Worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
+                Worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
+                Worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
+                Worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
+                Worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
+                Worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
+                Worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
+                Worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
+                Worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB is null or "" or "-"
+                    ? "-"
+                    : double.TryParse(repForm.Activity_DB.Replace("е", "E")
+                        .Replace("Е", "E").Replace("e", "E")
+                        .Replace("(", "").Replace(")", "")
+                        .Replace(".", ","), out var doubleValue)
+                        ? doubleValue
+                        : repForm.Activity_DB;
+                Worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
+                Worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
+                Worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
+                Worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
+                Worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
+                Worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
+                Worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
+                Worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
+                Worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
+                Worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
+                Worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
+                Worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
+                Worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+
+                #endregion
+
+                currentRow++;
+            }
+        }
+
+
         foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
         {
             var reps = (Reports)key;

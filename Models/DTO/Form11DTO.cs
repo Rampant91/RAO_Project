@@ -8,6 +8,8 @@ namespace Models.DTO;
 
 public  class Form11DTO
 {
+    public int Id { get; set; }
+
     public string PassportNumber { get; set; }
 
     public string Type { get; set; }
