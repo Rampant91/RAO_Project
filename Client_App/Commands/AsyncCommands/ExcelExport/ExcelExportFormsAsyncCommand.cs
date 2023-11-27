@@ -74,7 +74,7 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
 
         #endregion
         
-        var selectedReports = (Reports?)mainWindow?.SelectedReports.FirstOrDefault();
+        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
         switch (forSelectedOrg)
         {
             case true when selectedReports is null:
