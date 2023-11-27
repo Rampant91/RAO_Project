@@ -18,7 +18,11 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
+using DynamicData;
+using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System.Threading;
 
 namespace Client_App.ViewModels;
 
@@ -187,7 +191,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         else
         {
             var id = rep.Id;
-            Task myTask = Task.Factory.StartNew(async () => await ReportsStorage.GetReportAsync(id, this));  //при открытии формы загружаем все формы из БД
+            while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
+            Task myTask = Task.Factory.StartNew(() => ReportsStorage.GetReportAsync(id, this));  //при открытии формы загружаем все формы из БД
             myTask.Wait();
         }
         

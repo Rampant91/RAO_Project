@@ -12,11 +12,12 @@ public static class StaticConfiguration
     }
     public static DBModel DBModel;
 
-    public static bool IsFileLocked()
+    public static bool IsFileLocked(string fullPath)
     {
+        fullPath ??= DBPath;
         try
         {
-            using var stream = new FileInfo(_dbPath).Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            using var stream = new FileInfo(fullPath).Open(FileMode.Open, FileAccess.Read, FileShare.None);
             stream.Close();
         }
         catch (IOException)

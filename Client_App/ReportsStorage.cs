@@ -68,7 +68,7 @@ public static class ReportsStorage
 
     public static int GetReportRowsCount(Report rep)
     {
-        while (StaticConfiguration.IsFileLocked()) Thread.Sleep(50);
+        while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
         var db = StaticConfiguration.DBModel;
         return rep.FormNum_DB switch
             {
