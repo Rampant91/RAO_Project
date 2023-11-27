@@ -180,6 +180,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 }))
             .ToListAsync(cancellationToken: cts.Token);
 
+        var lockMe = new object(); 
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
         await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, cts) =>
         {
@@ -191,7 +192,10 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
             if (flag)
             {
-                files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+                lock (lockMe)
+                {
+                    files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+                }
             }
             return default;
         });
