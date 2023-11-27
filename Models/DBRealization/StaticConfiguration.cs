@@ -20,10 +20,6 @@ public static class StaticConfiguration
             using var stream = new FileInfo(fullPath).Open(FileMode.Open, FileAccess.Read, FileShare.None);
             stream.Close();
         }
-        catch (FileNotFoundException)
-        {
-            return false;
-        }
         catch (IOException)
         {
             return true;
