@@ -84,11 +84,62 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         base.OnCollectionChanged(e);
     }
 
-    //метод для обмена элементов массива
-    private void Swap(int index1, int index2)
+    ////метод для обмена элементов массива
+    //private void Swap(int index1, int index2)
+    //{
+    //    (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
+    //}
+    //private int Partition(int minIndex, int maxIndex)
+    //{
+    //    var pivot = minIndex - 1;
+    //    for (var i = minIndex; i < maxIndex; i++)
+    //    {
+    //        if (Items[i].Order >= Items[maxIndex].Order) continue;
+    //        pivot++;
+    //        Swap(pivot, i);
+    //    }
+    //    pivot++;
+    //    Swap(pivot, maxIndex);
+    //    return pivot;
+    //}
+
+    //private void QuickSort(int minIndex, int maxIndex)
+    //{
+    //    while (minIndex < maxIndex)
+    //    {
+    //        var pivotIndex = Partition(minIndex, maxIndex);
+    //        QuickSort(minIndex, pivotIndex - 1);
+    //        minIndex = pivotIndex + 1;
+    //    }
+    //}
+
+    private void QuickSort(int minIndex, int maxIndex)
     {
-        (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
+        var stack = new Stack<(int, int)>();
+        stack.Push((minIndex, maxIndex));
+
+        while (stack.Count > 0)
+        {
+            var (left, right) = stack.Pop();
+
+            while (left < right)
+            {
+                var pivotIndex = Partition(left, right);
+
+                if (pivotIndex - left < right - pivotIndex)
+                {
+                    stack.Push((pivotIndex + 1, right));
+                    right = pivotIndex - 1;
+                }
+                else
+                {
+                    stack.Push((left, pivotIndex - 1));
+                    left = pivotIndex + 1;
+                }
+            }
+        }
     }
+
     private int Partition(int minIndex, int maxIndex)
     {
         var pivot = minIndex - 1;
@@ -103,18 +154,9 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         return pivot;
     }
 
-    private void QuickSort(int minIndex, int maxIndex)
+    private void Swap(int index1, int index2)
     {
-        while (true)
-        {
-            if (minIndex >= maxIndex)
-            {
-                return;
-            }
-            var pivotIndex = Partition(minIndex, maxIndex);
-            QuickSort(minIndex, pivotIndex - 1);
-            minIndex = pivotIndex + 1;
-        }
+        (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
     }
 
     public void QuickSort()
