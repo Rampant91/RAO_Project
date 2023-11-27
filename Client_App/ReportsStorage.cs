@@ -1,5 +1,6 @@
 ﻿using Models.Collections;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,6 +68,7 @@ public static class ReportsStorage
 
     public static int GetReportRowsCount(Report rep)
     {
+        while (StaticConfiguration.IsFileLocked()) Thread.Sleep(50);
         var db = StaticConfiguration.DBModel;
         return rep.FormNum_DB switch
             {
