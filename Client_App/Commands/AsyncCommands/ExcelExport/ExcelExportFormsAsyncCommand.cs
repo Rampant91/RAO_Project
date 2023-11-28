@@ -32,53 +32,13 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
         string fileName;
 
         var forSelectedOrg = parameter.ToString()!.Contains("Org");
+        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
         var param = Regex.Replace(parameter.ToString()!, "[^\\d.]", "");
 
-        #region CheckReportsCount
-
-        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
-        {
-            var reps = (Reports)key;
-            foreach (var key1 in reps.Report_Collection)
-            {
-                var rep = (Report)key1;
-                if (rep.FormNum_DB.StartsWith(param))
-                {
-                    findRep++;
-                }
-            }
-        }
-        if (findRep == 0)
-        {
-            #region MessageRepsNotFound
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        $"Не удалось совершить выгрузку форм {param}," +
-                        $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей базе.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(mainWindow));
-
-            #endregion
-
-            return;
-        }
-
-        #endregion
-        
-        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
         switch (forSelectedOrg)
         {
             case true when selectedReports is null:
-
+            {
                 #region MessageExcelExportFail
 
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -95,6 +55,33 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
                 #endregion
 
                 return;
+            }
+            case true when selectedReports.Report_Collection.All(rep => rep.FormNum_DB != param):
+            case false when !ReportsStorage.LocalReports.Reports_Collection
+                .Any(reps => reps.Report_Collection
+                    .Any(rep => rep.FormNum_DB == param)):
+            {
+                #region MessageRepsNotFound
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            $"Не удалось совершить выгрузку форм {param}," +
+                            $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей базе.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(mainWindow));
+
+                #endregion
+
+                return;
+            }
             case true:
             {
                 ExportType = $"Выбранная организация_Формы {param}";
@@ -104,11 +91,12 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
                 break;
             }
             default:
+            {
                 ExportType = $"Формы {param}";
                 fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
                 break;
+            }
         }
-
         (string fullPath, bool openTemp) result;
         try
         {
