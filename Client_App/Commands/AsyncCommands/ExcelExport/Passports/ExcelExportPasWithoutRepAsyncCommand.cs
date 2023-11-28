@@ -169,9 +169,8 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             .SelectMany(x => x.Rows11
                 .Where(y => (y.OperationCode_DB == "11" || y.OperationCode_DB == "85")
                             && categories.Contains(y.Category_DB))
-                .Select(form11 => new Form11DTO
+                .Select(form11 => new Form11ShortDTO
                 {
-                    Id = form11.Id,
                     CreatorOKPO = form11.CreatorOKPO_DB,
                     Type = form11.Type_DB,
                     CreationDate = form11.CreationDate_DB,

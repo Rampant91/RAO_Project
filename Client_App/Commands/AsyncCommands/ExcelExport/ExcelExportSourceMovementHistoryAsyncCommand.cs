@@ -9,7 +9,10 @@ using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
+using Models.DTO;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -56,15 +59,27 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         }
         catch
         {
-            return;
-        }
-        finally
-        {
             cts.Dispose();
+            return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
+            {
+                File.Delete(dbReadOnlyPath);
+                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+            }
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -110,6 +125,56 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         worksheet.Cells[1, 31].Value = "номер";
 
         #endregion
+
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        var dtoList = dbReadOnly.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+            .ToArray()
+            .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == "1.1")
+                    .SelectMany(rep => rep.Rows11
+                        .Where(form11 => ComparePasParam(form11.PassportNumber_DB, pasNum)
+                                         && ComparePasParam(form11.FactoryNumber_DB, factoryNum))
+                        .Select(form11 => new Form11DTO
+                        {
+                            RegNoRep = reps.Master.RegNoRep.Value,
+                            ShortJurLico = reps.Master.ShortJurLicoRep.Value,
+                            OkpoRep = reps.Master.OkpoRep.Value,
+                            FormNum = rep.FormNum_DB,
+                            StartPeriod = rep.StartPeriod_DB,
+                            EndPeriod = rep.EndPeriod_DB,
+                            CorrectionNumber = rep.CorrectionNumber_DB,
+                            RowCount = rep.Rows11.Count,
+                            NumberInOrder = form11.NumberInOrder_DB,
+                            OperationCode = form11.OperationCode_DB,
+                            OperationDate = form11.OperationDate_DB,
+                            PassportNumber = form11.PassportNumber_DB,
+                            Type = form11.Type_DB,
+                            Radionuclids = form11.Radionuclids_DB,
+                            FactoryNumber = form11.FactoryNumber_DB,
+                            Activity = form11.Activity_DB,
+                            Quantity = form11.Quantity_DB,
+                            CreatorOKPO = form11.CreatorOKPO_DB,
+                            CreationDate = form11.CreationDate_DB,
+                            Category = form11.Category_DB,
+                            SignedServicePeriod = form11.SignedServicePeriod_DB,
+                            PropertyCode = form11.PropertyCode_DB,
+                            Owner = form11.Owner_DB,
+                            DocumentVid = form11.DocumentVid_DB,
+                            DocumentNumber = form11.DocumentNumber_DB,
+                            DocumentDate = form11.DocumentDate_DB,
+                            ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
+                            TransporterOKPO = form11.TransporterOKPO_DB,
+                            PackName = form11.PackName_DB,
+                            PackType = form11.PackType_DB,
+                            PackNumber = form11.PackNumber_DB
+                        })))
+                .ToList();
 
         var lastRow = 1;
         foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)

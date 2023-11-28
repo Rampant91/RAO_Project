@@ -174,7 +174,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                     .Where(rep => rep.FormNum_DB == "1.1")
                     .SelectMany(rep => rep.Rows11
                         .Where(form11 => form11.OperationCode_DB is "11" or "85" && form11.Category_DB is 1 or 2 or 3)
-                        .Select(form11 => new PasWithoutRepDTO
+                        .Select(form11 => new Form11DTO
                         {
                             RegNoRep = reps.Master.RegNoRep.Value,
                             ShortJurLico = reps.Master.ShortJurLicoRep.Value,
@@ -212,8 +212,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
         
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
-
-        ConcurrentBag<PasWithoutRepDTO> dtoToExcelThreadSafe = new();
+        ConcurrentBag<Form11DTO> dtoToExcelThreadSafe = new();
         await Parallel.ForEachAsync(dtoList, parallelOptions, (dto, token) =>
         {
             var findPasFile = pasUniqParam.Any(pasParam =>
