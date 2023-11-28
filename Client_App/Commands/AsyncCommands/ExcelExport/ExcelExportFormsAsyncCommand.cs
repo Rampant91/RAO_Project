@@ -179,8 +179,8 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
         else
         {
             repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection
-                .Where(x => x.Report_Collection
-                    .Any(x => x.FormNum_DB == param)));
+                .Where(reps => reps.Report_Collection
+                    .Any(rep => rep.FormNum_DB == param)));
         }
 
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
