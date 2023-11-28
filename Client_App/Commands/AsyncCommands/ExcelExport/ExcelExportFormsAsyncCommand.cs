@@ -14,7 +14,6 @@ using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
@@ -162,78 +161,8 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
         masterHeaderLength += t;
         masterHeaderLength--;
 
-        #region BindingsExcelHeaders
 
-        switch (param)
-        {
-            case "1.1":
-                Form11.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.2":
-                Form12.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.3":
-                Form13.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.4":
-                Form14.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.5":
-                Form15.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.6":
-                Form16.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.7":
-                Form17.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.8":
-                Form18.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "1.9":
-                Form19.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.1":
-                Form21.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.2":
-                Form22.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.3":
-                Form23.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.4":
-                Form24.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.5":
-                Form25.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.6":
-                Form26.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.7":
-                Form27.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.8":
-                Form28.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.9":
-                Form29.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.10":
-                Form210.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.11":
-                Form211.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-            case "2.12":
-                Form212.ExcelHeader(Worksheet, 1, masterHeaderLength + 1);
-                break;
-        }
-        Note.ExcelHeader(WorksheetPrim, 1, masterHeaderLength + 1);
-
-        #endregion
-
+        FillHeaders(param);
         if (OperatingSystem.IsWindows())
         {
             Worksheet.Cells.AutoFitColumns();
