@@ -17,6 +17,7 @@ using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -161,7 +162,6 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
         masterHeaderLength += t;
         masterHeaderLength--;
 
-
         FillHeaders(param);
         if (OperatingSystem.IsWindows())
         {
@@ -170,7 +170,6 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
         }
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        var lst = new List<Report>();
 
         var repsList = new List<Reports>();
         if (forSelectedOrg)
@@ -179,10 +178,13 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
         }
         else
         {
-            repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection);
+            repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection
+                .Where(x => x.Report_Collection
+                    .Any(x => x.FormNum_DB == param)));
         }
 
-        foreach (var reps in repsList)
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        await Parallel.ForEachAsync(repsList, parallelOptions, (reps, token) =>
         {
             var repsWithRows = param switch
             {
@@ -492,7 +494,320 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
             CurrentRow = Worksheet.Dimension.End.Row + 1;
             CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
             FillExportForms(param);
-        }
+            return default;
+        });
+
+        //foreach (var reps in repsList)
+        //{
+        //    var repsWithRows = param switch
+        //    {
+        //        #region GetForms1FromDb
+
+        //        #region 1.1
+
+        //        "1.1" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.2
+
+        //        "1.2" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.3
+
+        //        "1.3" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.4
+
+        //        "1.4" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.5
+
+        //        "1.5" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.6
+
+        //        "1.6" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.7
+
+        //        "1.7" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.8
+
+        //        "1.8" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 1.9
+
+        //        "1.9" => dbReadOnly.ReportsCollectionDbSet
+        //            .AsNoTracking()
+        //            .AsSplitQuery()
+        //            .AsQueryable()
+        //            .Where(x => x.Id == reps.Id)
+        //            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //            .First(),
+
+        //        #endregion
+
+        //        #endregion
+
+        //        #region GetForms2FromDb
+
+        //        #region 2.1
+
+        //        "2.1" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.2
+
+        //        "2.2" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.3
+
+        //        "2.3" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.4
+
+        //        "2.4" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.5
+
+        //        "2.5" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.6
+
+        //        "2.6" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.7
+
+        //        "2.7" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.8
+
+        //        "2.8" => dbReadOnly.ReportsCollectionDbSet
+        //                    .AsNoTracking()
+        //                    .AsSplitQuery()
+        //                    .AsQueryable()
+        //                    .Where(x => x.Id == reps.Id)
+        //                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
+        //                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //                    .First(),
+
+        //        #endregion
+
+        //        #region 2.9
+
+        //        "2.9" => dbReadOnly.ReportsCollectionDbSet
+        //            .AsNoTracking()
+        //            .AsSplitQuery()
+        //            .AsQueryable()
+        //            .Where(x => x.Id == reps.Id)
+        //            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //            .First(),
+
+        //        #endregion
+
+        //        #region 2.10
+
+        //        "2.10" => dbReadOnly.ReportsCollectionDbSet
+        //            .AsNoTracking()
+        //            .AsSplitQuery()
+        //            .AsQueryable()
+        //            .Where(x => x.Id == reps.Id)
+        //            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //            .First(),
+
+        //        #endregion
+
+        //        #region 2.11
+
+        //        "2.11" => dbReadOnly.ReportsCollectionDbSet
+        //            .AsNoTracking()
+        //            .AsSplitQuery()
+        //            .AsQueryable()
+        //            .Where(x => x.Id == reps.Id)
+        //            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //            .First(),
+
+        //        #endregion
+
+        //        #region 2.12
+
+        //        "2.12" => dbReadOnly.ReportsCollectionDbSet
+        //            .AsNoTracking()
+        //            .AsSplitQuery()
+        //            .AsQueryable()
+        //            .Where(x => x.Id == reps.Id)
+        //            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
+        //            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+        //            .First()
+
+        //        #endregion
+
+        //        #endregion
+        //    };
+        //    CurrentReports = repsWithRows;
+        //    CurrentRow = Worksheet.Dimension.End.Row + 1;
+        //    CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
+        //    FillExportForms(param);
+        //}
 
         Worksheet.View.FreezePanes(2, 1);
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
