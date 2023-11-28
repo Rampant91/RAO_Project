@@ -17,7 +17,6 @@ using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
