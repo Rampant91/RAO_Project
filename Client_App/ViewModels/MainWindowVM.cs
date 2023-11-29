@@ -120,6 +120,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             dbm.DBObservableDbSet.Add(new DBObservable());
             dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
         }
+
         await dbm.DBObservableDbSet.LoadAsync();
 
         #endregion

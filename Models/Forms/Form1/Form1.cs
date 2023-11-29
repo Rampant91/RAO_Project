@@ -17,7 +17,7 @@ public abstract class Form1 : Form
 
     [NotMapped]
     public bool flag = false;
-
+    
     protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
     {
         OnPropertyChanged(args.PropertyName);

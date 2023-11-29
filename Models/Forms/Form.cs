@@ -15,6 +15,10 @@ public abstract class Form : IKey, IDataGridColumn
 {
     public int Id { get; set; }
 
+    public int ReportId { get; set; }
+
+    public Report Report { get; set; }
+
     [NotMapped]
     protected Dictionary<string, RamAccess> Dictionary { get; set; } = new();
 

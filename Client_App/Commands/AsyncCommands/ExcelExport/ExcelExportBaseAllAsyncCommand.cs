@@ -104,6 +104,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 .ToList();
             foreach (var repForm in forms)
             {
+
                 #region Binding
 
                 Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
