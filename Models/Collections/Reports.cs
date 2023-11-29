@@ -50,6 +50,11 @@ public class Reports : IKey, IDataGridColumn
         Report_Collection.CollectionChanged += CollectionChanged;
     }
 
+    public int Id { get; set; }
+
+    public int Master_DBId { get; set; }
+
+    [ForeignKey(nameof(Master_DBId))]
     public Report Master_DB { get; set; }
 
     [NotMapped]
@@ -85,8 +90,6 @@ public class Reports : IKey, IDataGridColumn
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-
-    public int Id { get; set; }
 
     public void SetOrder(long index) { }
 

@@ -17,6 +17,7 @@ public abstract class Form : IKey, IDataGridColumn
 
     public int ReportId { get; set; }
 
+    [ForeignKey(nameof(ReportId))]
     public Report Report { get; set; }
 
     [NotMapped]

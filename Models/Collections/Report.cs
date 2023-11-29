@@ -171,6 +171,16 @@ public class Report : IKey, IDataGridColumn
 
     #endregion
 
+    //public int Master_DBid { get; set; }
+
+    //[ForeignKey(nameof(Master_DBid))]
+    //public Report Master_DB { get; set; }
+
+    public int ReportsId { get; set; }
+
+    [ForeignKey(nameof(ReportsId))]
+    public Reports Reports { get; set; }
+
     #region Order
     
     public void SetOrder(long index) { }

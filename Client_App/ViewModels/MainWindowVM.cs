@@ -96,32 +96,43 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         var dbm = StaticConfiguration.DBModel;
 
         #region LoadTables
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
-        OnStartProgressBar = 24;
-        await dbm.form_10.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
-        OnStartProgressBar = 45;
-        await dbm.form_20.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
-        OnStartProgressBar = 72;
-        await dbm.ReportCollectionDbSet.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
-        OnStartProgressBar = 74;
-        await dbm.ReportsCollectionDbSet.LoadAsync();
-        var A = ReportsStorage.LocalReports.Reports_Collection;
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
-        OnStartProgressBar = 76;
-        if (!dbm.DBObservableDbSet.Any())
+        try
         {
-            dbm.DBObservableDbSet.Add(new DBObservable());
-            dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
-        }
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
+            OnStartProgressBar = 24;
+            await dbm.form_10.LoadAsync();
+        
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 1.1";
+            OnStartProgressBar = 24;
+            await dbm.form_11.LoadAsync();
+        
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
+            OnStartProgressBar = 45;
+            await dbm.form_20.LoadAsync();
 
-        await dbm.DBObservableDbSet.LoadAsync();
+            onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
+            OnStartProgressBar = 72;
+            await dbm.ReportCollectionDbSet.LoadAsync();
+
+            onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
+            OnStartProgressBar = 74;
+            await dbm.ReportsCollectionDbSet.LoadAsync();
+            var A = ReportsStorage.LocalReports.Reports_Collection;
+            onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
+            OnStartProgressBar = 76;
+            if (!dbm.DBObservableDbSet.Any())
+            {
+                dbm.DBObservableDbSet.Add(new DBObservable());
+                dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
+            }
+
+            await dbm.DBObservableDbSet.LoadAsync();
+
+        }
+        catch (Exception ex)
+        {
+
+        }
 
         #endregion
 

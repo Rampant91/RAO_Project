@@ -43,30 +43,89 @@ public class DataContext : DbContext
             .ToTable("DBObservable_DbSet");
 
         modelBuilder.Entity<Reports>()
+            .HasOne(reports => reports.Master_DB)
+            .WithMany()
+            .HasForeignKey(report => report.Master_DBId);
+        modelBuilder.Entity<Reports>()
             .ToTable("ReportsCollection_DbSet");
+
+        modelBuilder.Entity<Report>()
+            .HasOne(report => report.Reports)
+            .WithMany(reports => reports.Report_Collection)
+            .HasForeignKey(report => report.ReportsId);
         modelBuilder.Entity<Report>()
             .ToTable("ReportCollection_DbSet");
+
         modelBuilder.Entity<Note>()
             .ToTable("notes");
 
         modelBuilder.Entity<Form10>()
+            .HasOne(form10 => form10.Report)
+            .WithMany(report => report.Rows10)
+            .HasForeignKey(form10 => form10.ReportId);
+        modelBuilder.Entity<Form10>()
             .ToTable("form_10");
+
+        modelBuilder.Entity<Form11>()
+            .HasOne(form11 => form11.Report)
+            .WithMany(report => report.Rows11)
+            .HasForeignKey(form11 => form11.ReportId);
         modelBuilder.Entity<Form11>()
             .ToTable("form_11");
+
+        modelBuilder.Entity<Form12>()
+            .HasOne(form12 => form12.Report)
+            .WithMany(report => report.Rows12)
+            .HasForeignKey(form12 => form12.ReportId);
         modelBuilder.Entity<Form12>()
             .ToTable("form_12");
+
+        modelBuilder.Entity<Form13>()
+            .HasOne(form13 => form13.Report)
+            .WithMany(report => report.Rows13)
+            .HasForeignKey(form13 => form13.ReportId);
         modelBuilder.Entity<Form13>()
             .ToTable("form_13");
+
+        modelBuilder.Entity<Form14>()
+            .HasOne(form14 => form14.Report)
+            .WithMany(report => report.Rows14)
+            .HasForeignKey(form14 => form14.ReportId);
         modelBuilder.Entity<Form14>()
             .ToTable("form_14");
+
+        modelBuilder.Entity<Form15>()
+            .HasOne(form15 => form15.Report)
+            .WithMany(report => report.Rows15)
+            .HasForeignKey(form11 => form11.ReportId);
         modelBuilder.Entity<Form15>()
             .ToTable("form_15");
+
+        modelBuilder.Entity<Form16>()
+            .HasOne(form16 => form16.Report)
+            .WithMany(report => report.Rows16)
+            .HasForeignKey(form11 => form11.ReportId);
         modelBuilder.Entity<Form16>()
             .ToTable("form_16");
+
+        modelBuilder.Entity<Form17>()
+            .HasOne(form17 => form17.Report)
+            .WithMany(report => report.Rows17)
+            .HasForeignKey(form17 => form17.ReportId);
         modelBuilder.Entity<Form17>()
             .ToTable("form_17");
+
+        modelBuilder.Entity<Form18>()
+            .HasOne(form18 => form18.Report)
+            .WithMany(report => report.Rows18)
+            .HasForeignKey(form18 => form18.ReportId);
         modelBuilder.Entity<Form18>()
             .ToTable("form_18");
+
+        modelBuilder.Entity<Form19>()
+            .HasOne(form19 => form19.Report)
+            .WithMany(report => report.Rows19)
+            .HasForeignKey(form19 => form19.ReportId);
         modelBuilder.Entity<Form19>()
             .ToTable("form_19");
 
