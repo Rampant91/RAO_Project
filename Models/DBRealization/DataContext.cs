@@ -43,18 +43,21 @@ public class DataContext : DbContext
             .ToTable("DBObservable_DbSet");
 
         modelBuilder.Entity<Reports>()
+            .ToTable("ReportsCollection_DbSet");
+        modelBuilder.Entity<Reports>()
+            .HasMany(reports => reports.Report_Collection)
+            .WithOne(report => report.Reports);
+        modelBuilder.Entity<Reports>()
             .HasOne(reports => reports.Master_DB)
             .WithMany()
             .HasForeignKey(report => report.Master_DBId);
-        modelBuilder.Entity<Reports>()
-            .ToTable("ReportsCollection_DbSet");
 
+        modelBuilder.Entity<Report>()
+            .ToTable("ReportCollection_DbSet");
         modelBuilder.Entity<Report>()
             .HasOne(report => report.Reports)
             .WithMany(reports => reports.Report_Collection)
             .HasForeignKey(report => report.ReportsId);
-        modelBuilder.Entity<Report>()
-            .ToTable("ReportCollection_DbSet");
 
         modelBuilder.Entity<Note>()
             .ToTable("notes");
