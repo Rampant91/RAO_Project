@@ -16,6 +16,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Client_App.VisualRealization.Converters;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -2159,7 +2162,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Orientation = Orientation.Horizontal
         };
         middleFooterStackPanel2.Children.Add(new TextBlock 
-            { Text = ShowAllReport ? "Кол-во строчек:" : "Кол-во отчетов", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+            {
+                Text = Type is nameof(Form11) or nameof(Form12) or nameof(Form13) or nameof(Form14) or nameof(Form15)
+                           or nameof(Form16) or nameof(Form17) or nameof(Form18) or nameof(Form19) or nameof(Form21)
+                           or nameof(Form22) or nameof(Form23) or nameof(Form24) or nameof(Form25) or nameof(Form26)
+                           or nameof(Form27) or nameof(Form28) or nameof(Form29) or nameof(Form210) or nameof(Form211)
+                           or nameof(Form212) or nameof(Note) || ShowAllReport
+                    ? "Кол-во строчек:"
+                    : "Кол-во отчетов",
+                Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+            });
         middleFooterStackPanel2.Children.Add(new TextBlock
         {
             [!TextBox.TextProperty] = this[!ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
@@ -2174,7 +2186,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Orientation = Orientation.Horizontal
             };
             middleFooterStackPanelR.Children.Add(new TextBlock
-                { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+                { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во отчетов у всех организаций (верхняя таблица)
             middleFooterStackPanelR.Children.Add(new TextBlock
             {
                 [!TextBox.TextProperty] = this[!ReportCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
@@ -2189,7 +2201,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Orientation = Orientation.Horizontal
             };
             middleFooterStackPanelR.Children.Add(new TextBlock
-                { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+                { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во строчек в отчете (нижняя таблица)
             middleFooterStackPanelR.Children.Add(new TextBlock
             {
                 [!TextBox.TextProperty] = this[!ReportStringCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
