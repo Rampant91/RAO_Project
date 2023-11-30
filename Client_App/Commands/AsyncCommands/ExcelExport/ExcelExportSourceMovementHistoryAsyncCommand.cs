@@ -10,7 +10,6 @@ using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using Microsoft.EntityFrameworkCore;
-using Models.Collections;
 using Models.DBRealization;
 using Models.DTO;
 using OfficeOpenXml;
@@ -127,7 +126,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         #endregion
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        var dtoList = dbReadOnly.ReportsCollectionDbSet
+        var dto11List = dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -177,109 +176,94 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                 .ToList();
 
         var lastRow = 1;
-        foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
+        foreach (var dto in dto11List)
         {
-            var reps = (Reports)key;
-            var form11 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
-                .ToList();
-            foreach (var rep in form11)
+            if (lastRow == 1)
             {
-                var repPas = rep.Rows11
-                    .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum)
-                                && ComparePasParam(x.FactoryNumber_DB, factoryNum))
-                    .ToList();
-                foreach (var repForm in repPas)
-                {
-                    if (lastRow == 1)
-                    {
-                        #region BindingCells
+                #region BindingCells
 
-                        worksheet.Cells[2, 1].Value = reps.Master.RegNoRep.Value;
-                        worksheet.Cells[2, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                        worksheet.Cells[2, 3].Value = reps.Master.OkpoRep.Value;
-                        worksheet.Cells[2, 4].Value = rep.FormNum_DB;
-                        worksheet.Cells[2, 5].Value = rep.StartPeriod_DB;
-                        worksheet.Cells[2, 6].Value = rep.EndPeriod_DB;
-                        worksheet.Cells[2, 7].Value = rep.CorrectionNumber_DB;
-                        worksheet.Cells[2, 8].Value = rep.Rows.Count;
-                        worksheet.Cells[2, 9].Value = repForm.NumberInOrder_DB;
-                        worksheet.Cells[2, 10].Value = repForm.OperationCode_DB;
-                        worksheet.Cells[2, 11].Value = repForm.OperationDate_DB;
-                        worksheet.Cells[2, 12].Value = repForm.PassportNumber_DB;
-                        worksheet.Cells[2, 13].Value = repForm.Type_DB;
-                        worksheet.Cells[2, 14].Value = repForm.Radionuclids_DB;
-                        worksheet.Cells[2, 15].Value = repForm.FactoryNumber_DB;
-                        worksheet.Cells[2, 16].Value = repForm.Quantity_DB;
-                        worksheet.Cells[2, 17].Value = repForm.Activity_DB;
-                        worksheet.Cells[2, 18].Value = repForm.CreatorOKPO_DB;
-                        worksheet.Cells[2, 19].Value = repForm.CreationDate_DB;
-                        worksheet.Cells[2, 20].Value = repForm.Category_DB;
-                        worksheet.Cells[2, 21].Value = repForm.SignedServicePeriod_DB;
-                        worksheet.Cells[2, 22].Value = repForm.PropertyCode_DB;
-                        worksheet.Cells[2, 23].Value = repForm.Owner_DB;
-                        worksheet.Cells[2, 24].Value = repForm.DocumentVid_DB;
-                        worksheet.Cells[2, 25].Value = repForm.DocumentNumber_DB;
-                        worksheet.Cells[2, 26].Value = repForm.DocumentDate_DB;
-                        worksheet.Cells[2, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                        worksheet.Cells[2, 28].Value = repForm.TransporterOKPO_DB;
-                        worksheet.Cells[2, 29].Value = repForm.PackName_DB;
-                        worksheet.Cells[2, 30].Value = repForm.PackType_DB;
-                        worksheet.Cells[2, 31].Value = repForm.PackNumber_DB;
-                        
-                        #endregion
+                Worksheet.Cells[2, 1].Value = dto.RegNoRep;
+                Worksheet.Cells[2, 2].Value = dto.ShortJurLico;
+                Worksheet.Cells[2, 3].Value = dto.OkpoRep;
+                Worksheet.Cells[2, 4].Value = dto.FormNum;
+                Worksheet.Cells[2, 5].Value = dto.StartPeriod;
+                Worksheet.Cells[2, 6].Value = dto.EndPeriod;
+                Worksheet.Cells[2, 7].Value = dto.CorrectionNumber;
+                Worksheet.Cells[2, 8].Value = dto.RowCount;
+                Worksheet.Cells[2, 9].Value = dto.NumberInOrder;
+                Worksheet.Cells[2, 10].Value = dto.OperationCode;
+                Worksheet.Cells[2, 11].Value = dto.OperationDate;
+                Worksheet.Cells[2, 12].Value = dto.PassportNumber;
+                Worksheet.Cells[2, 13].Value = dto.Type;
+                Worksheet.Cells[2, 14].Value = dto.Radionuclids;
+                Worksheet.Cells[2, 15].Value = dto.FactoryNumber;
+                Worksheet.Cells[2, 16].Value = dto.Quantity;
+                Worksheet.Cells[2, 17].Value = dto.Activity;
+                Worksheet.Cells[2, 18].Value = dto.CreatorOKPO;
+                Worksheet.Cells[2, 19].Value = dto.CreationDate;
+                Worksheet.Cells[2, 20].Value = dto.Category;
+                Worksheet.Cells[2, 21].Value = dto.SignedServicePeriod;
+                Worksheet.Cells[2, 22].Value = dto.PropertyCode;
+                Worksheet.Cells[2, 23].Value = dto.Owner;
+                Worksheet.Cells[2, 24].Value = dto.DocumentVid;
+                Worksheet.Cells[2, 25].Value = dto.DocumentNumber;
+                Worksheet.Cells[2, 26].Value = dto.DocumentDate;
+                Worksheet.Cells[2, 27].Value = dto.ProviderOrRecieverOKPO;
+                Worksheet.Cells[2, 28].Value = dto.TransporterOKPO;
+                Worksheet.Cells[2, 29].Value = dto.PackName;
+                Worksheet.Cells[2, 30].Value = dto.PackType;
+                Worksheet.Cells[2, 31].Value = dto.PackNumber;
 
-                        lastRow++;
-                        continue;
-                    }
-                    for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
-                    {
-                        if (new CustomStringDateComparer(StringComparer.CurrentCulture)
-                                .Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
-                        {
-                            worksheet.InsertRow(currentRow, 1);
+                #endregion
 
-                            #region BindingCells
+                lastRow++;
+                continue;
+            }
+            for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
+            {
+                if (new CustomStringDateComparer(StringComparer.CurrentCulture)
+                        .Compare(dto.OperationDate, (string)worksheet.Cells[currentRow, 11].Value) >= 0) continue;
 
-                            worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                            worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                            worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                            worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                            worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                            worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                            worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                            worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                            worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                            worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                            worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                            worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                            worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                            worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                            worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                            worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                            worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
-                            worksheet.Cells[currentRow, 18].Value = repForm.CreatorOKPO_DB;
-                            worksheet.Cells[currentRow, 19].Value = repForm.CreationDate_DB;
-                            worksheet.Cells[currentRow, 20].Value = repForm.Category_DB;
-                            worksheet.Cells[currentRow, 21].Value = repForm.SignedServicePeriod_DB;
-                            worksheet.Cells[currentRow, 22].Value = repForm.PropertyCode_DB;
-                            worksheet.Cells[currentRow, 23].Value = repForm.Owner_DB;
-                            worksheet.Cells[currentRow, 24].Value = repForm.DocumentVid_DB;
-                            worksheet.Cells[currentRow, 25].Value = repForm.DocumentNumber_DB;
-                            worksheet.Cells[currentRow, 26].Value = repForm.DocumentDate_DB;
-                            worksheet.Cells[currentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                            worksheet.Cells[currentRow, 28].Value = repForm.TransporterOKPO_DB;
-                            worksheet.Cells[currentRow, 29].Value = repForm.PackName_DB;
-                            worksheet.Cells[currentRow, 30].Value = repForm.PackType_DB;
-                            worksheet.Cells[currentRow, 31].Value = repForm.PackNumber_DB;
+                worksheet.InsertRow(currentRow, 1);
 
-                            #endregion
+                #region BindingCells
 
-                            lastRow++;
-                            break;
-                        }
-                    }
-                }
+                worksheet.Cells[currentRow, 1].Value = dto.RegNoRep;
+                worksheet.Cells[currentRow, 2].Value = dto.ShortJurLico;
+                worksheet.Cells[currentRow, 3].Value = dto.OkpoRep;
+                worksheet.Cells[currentRow, 4].Value = dto.FormNum;
+                worksheet.Cells[currentRow, 5].Value = dto.StartPeriod;
+                worksheet.Cells[currentRow, 6].Value = dto.EndPeriod;
+                worksheet.Cells[currentRow, 7].Value = dto.CorrectionNumber;
+                worksheet.Cells[currentRow, 8].Value = dto.RowCount;
+                worksheet.Cells[currentRow, 9].Value = dto.NumberInOrder;
+                worksheet.Cells[currentRow, 10].Value = dto.OperationCode;
+                worksheet.Cells[currentRow, 11].Value = dto.OperationDate;
+                worksheet.Cells[currentRow, 12].Value = dto.PassportNumber;
+                worksheet.Cells[currentRow, 13].Value = dto.Type;
+                worksheet.Cells[currentRow, 14].Value = dto.Radionuclids;
+                worksheet.Cells[currentRow, 15].Value = dto.FactoryNumber;
+                worksheet.Cells[currentRow, 16].Value = dto.Quantity;
+                worksheet.Cells[currentRow, 17].Value = dto.Activity;
+                worksheet.Cells[currentRow, 18].Value = dto.CreatorOKPO;
+                worksheet.Cells[currentRow, 19].Value = dto.CreationDate;
+                worksheet.Cells[currentRow, 20].Value = dto.Category;
+                worksheet.Cells[currentRow, 21].Value = dto.SignedServicePeriod;
+                worksheet.Cells[currentRow, 22].Value = dto.PropertyCode;
+                worksheet.Cells[currentRow, 23].Value = dto.Owner;
+                worksheet.Cells[currentRow, 24].Value = dto.DocumentVid;
+                worksheet.Cells[currentRow, 25].Value = dto.DocumentNumber;
+                worksheet.Cells[currentRow, 26].Value = dto.DocumentDate;
+                worksheet.Cells[currentRow, 27].Value = dto.ProviderOrRecieverOKPO;
+                worksheet.Cells[currentRow, 28].Value = dto.TransporterOKPO;
+                worksheet.Cells[currentRow, 29].Value = dto.PackName;
+                worksheet.Cells[currentRow, 30].Value = dto.PackType;
+                worksheet.Cells[currentRow, 31].Value = dto.PackNumber;
+
+                #endregion
+
+                lastRow++;
+                break;
             }
         }
 
@@ -336,112 +320,147 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         
         #endregion
 
-        lastRow = 1;
-        foreach (var key in ReportsStorage.LocalReports.Reports_Collection10)
-        {
-            var reps = (Reports)key;
-            var form15 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
-                .ToList();
-            foreach (var rep in form15)
-            {
-                var repPas = rep.Rows15
-                    .Where(x => ComparePasParam(x.PassportNumber_DB, pasNum)
-                                && ComparePasParam(x.FactoryNumber_DB, factoryNum))
-                    .ToList();
-                foreach (var repForm in repPas)
-                {
-                    if (lastRow == 1)
-                    {
-                        #region BindingCells
-
-                        worksheet.Cells[2, 1].Value = reps.Master.RegNoRep.Value;
-                        worksheet.Cells[2, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                        worksheet.Cells[2, 3].Value = reps.Master.OkpoRep.Value;
-                        worksheet.Cells[2, 4].Value = rep.FormNum_DB;
-                        worksheet.Cells[2, 5].Value = rep.StartPeriod_DB;
-                        worksheet.Cells[2, 6].Value = rep.EndPeriod_DB;
-                        worksheet.Cells[2, 7].Value = rep.CorrectionNumber_DB;
-                        worksheet.Cells[2, 8].Value = rep.Rows.Count;
-                        worksheet.Cells[2, 9].Value = repForm.NumberInOrder_DB;
-                        worksheet.Cells[2, 10].Value = repForm.OperationCode_DB;
-                        worksheet.Cells[2, 11].Value = repForm.OperationDate_DB;
-                        worksheet.Cells[2, 12].Value = repForm.PassportNumber_DB;
-                        worksheet.Cells[2, 13].Value = repForm.Type_DB;
-                        worksheet.Cells[2, 14].Value = repForm.Radionuclids_DB;
-                        worksheet.Cells[2, 15].Value = repForm.FactoryNumber_DB;
-                        worksheet.Cells[2, 16].Value = repForm.Quantity_DB;
-                        worksheet.Cells[2, 17].Value = repForm.Activity_DB;
-                        worksheet.Cells[2, 18].Value = repForm.CreationDate_DB;
-                        worksheet.Cells[2, 19].Value = repForm.StatusRAO_DB;
-                        worksheet.Cells[2, 20].Value = repForm.DocumentVid_DB;
-                        worksheet.Cells[2, 21].Value = repForm.DocumentNumber_DB;
-                        worksheet.Cells[2, 22].Value = repForm.DocumentDate_DB;
-                        worksheet.Cells[2, 23].Value = repForm.ProviderOrRecieverOKPO_DB;
-                        worksheet.Cells[2, 24].Value = repForm.TransporterOKPO_DB;
-                        worksheet.Cells[2, 25].Value = repForm.PackName_DB;
-                        worksheet.Cells[2, 26].Value = repForm.PackType_DB;
-                        worksheet.Cells[2, 27].Value = repForm.PackNumber_DB;
-                        worksheet.Cells[2, 28].Value = repForm.StoragePlaceName_DB;
-                        worksheet.Cells[2, 29].Value = repForm.StoragePlaceCode_DB;
-                        worksheet.Cells[2, 30].Value = repForm.RefineOrSortRAOCode_DB;
-                        worksheet.Cells[2, 31].Value = repForm.Subsidy_DB;
-                        worksheet.Cells[2, 32].Value = repForm.FcpNumber_DB;
-                        
-                        #endregion
-
-                        lastRow++;
-                        continue;
-                    }
-                    for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
-                    {
-                        if (new CustomStringDateComparer(StringComparer.CurrentCulture)
-                                .Compare(repForm.OperationDate_DB, (string)worksheet.Cells[currentRow, 11].Value) < 0)
+        var dto15List = dbReadOnly.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+            .ToArray()
+            .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == "1.5")
+                    .SelectMany(rep => rep.Rows15
+                        .Where(form15 => ComparePasParam(form15.PassportNumber_DB, pasNum)
+                                         && ComparePasParam(form15.FactoryNumber_DB, factoryNum))
+                        .Select(form15 => new Form15DTO
                         {
-                            worksheet.InsertRow(currentRow, 1);
+                            RegNoRep = reps.Master.RegNoRep.Value,
+                            ShortJurLico = reps.Master.ShortJurLicoRep.Value,
+                            OkpoRep = reps.Master.OkpoRep.Value,
+                            FormNum = rep.FormNum_DB,
+                            StartPeriod = rep.StartPeriod_DB,
+                            EndPeriod = rep.EndPeriod_DB,
+                            CorrectionNumber = rep.CorrectionNumber_DB,
+                            RowCount = rep.Rows11.Count,
+                            NumberInOrder = form15.NumberInOrder_DB,
+                            OperationCode = form15.OperationCode_DB,
+                            OperationDate = form15.OperationDate_DB,
+                            PassportNumber = form15.PassportNumber_DB,
+                            Type = form15.Type_DB,
+                            Radionuclids = form15.Radionuclids_DB,
+                            FactoryNumber = form15.FactoryNumber_DB,
+                            Activity = form15.Activity_DB,
+                            Quantity = form15.Quantity_DB,
+                            CreationDate = form15.CreationDate_DB,
+                            StatusRAO = form15.StatusRAO_DB,
+                            DocumentVid = form15.DocumentVid_DB,
+                            DocumentNumber = form15.DocumentNumber_DB,
+                            DocumentDate = form15.DocumentDate_DB,
+                            ProviderOrRecieverOKPO = form15.ProviderOrRecieverOKPO_DB,
+                            TransporterOKPO = form15.TransporterOKPO_DB,
+                            PackName = form15.PackName_DB,
+                            PackType = form15.PackType_DB,
+                            PackNumber = form15.PackNumber_DB,
+                            StoragePlaceName = form15.StoragePlaceName_DB,
+                            StoragePlaceCode = form15.StoragePlaceCode_DB,
+                            RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
+                            Subsidy = form15.Subsidy_DB,
+                            FcpNumber = form15.FcpNumber_DB
+                        })))
+                .ToList();
 
-                            #region BindingCells
+        lastRow = 1;
+        foreach (var dto in dto15List)
+        {
+            if (lastRow == 1)
+            {
+                #region BindingCells
 
-                            worksheet.Cells[currentRow, 1].Value = reps.Master.RegNoRep.Value;
-                            worksheet.Cells[currentRow, 2].Value = reps.Master.Rows10[0].ShortJurLico_DB;
-                            worksheet.Cells[currentRow, 3].Value = reps.Master.OkpoRep.Value;
-                            worksheet.Cells[currentRow, 4].Value = rep.FormNum_DB;
-                            worksheet.Cells[currentRow, 5].Value = rep.StartPeriod_DB;
-                            worksheet.Cells[currentRow, 6].Value = rep.EndPeriod_DB;
-                            worksheet.Cells[currentRow, 7].Value = rep.CorrectionNumber_DB;
-                            worksheet.Cells[currentRow, 8].Value = rep.Rows.Count;
-                            worksheet.Cells[currentRow, 9].Value = repForm.NumberInOrder_DB;
-                            worksheet.Cells[currentRow, 10].Value = repForm.OperationCode_DB;
-                            worksheet.Cells[currentRow, 11].Value = repForm.OperationDate_DB;
-                            worksheet.Cells[currentRow, 12].Value = repForm.PassportNumber_DB;
-                            worksheet.Cells[currentRow, 13].Value = repForm.Type_DB;
-                            worksheet.Cells[currentRow, 14].Value = repForm.Radionuclids_DB;
-                            worksheet.Cells[currentRow, 15].Value = repForm.FactoryNumber_DB;
-                            worksheet.Cells[currentRow, 16].Value = repForm.Quantity_DB;
-                            worksheet.Cells[currentRow, 17].Value = repForm.Activity_DB;
-                            worksheet.Cells[currentRow, 18].Value = repForm.CreationDate_DB;
-                            worksheet.Cells[currentRow, 19].Value = repForm.StatusRAO_DB;
-                            worksheet.Cells[currentRow, 20].Value = repForm.DocumentVid_DB;
-                            worksheet.Cells[currentRow, 21].Value = repForm.DocumentNumber_DB;
-                            worksheet.Cells[currentRow, 22].Value = repForm.DocumentDate_DB;
-                            worksheet.Cells[currentRow, 23].Value = repForm.ProviderOrRecieverOKPO_DB;
-                            worksheet.Cells[currentRow, 24].Value = repForm.TransporterOKPO_DB;
-                            worksheet.Cells[currentRow, 25].Value = repForm.PackName_DB;
-                            worksheet.Cells[currentRow, 26].Value = repForm.PackType_DB;
-                            worksheet.Cells[currentRow, 27].Value = repForm.PackNumber_DB;
-                            worksheet.Cells[currentRow, 28].Value = repForm.StoragePlaceName_DB;
-                            worksheet.Cells[currentRow, 29].Value = repForm.StoragePlaceCode_DB;
-                            worksheet.Cells[currentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
-                            worksheet.Cells[currentRow, 31].Value = repForm.Subsidy_DB;
-                            worksheet.Cells[currentRow, 32].Value = repForm.FcpNumber_DB;
-                            
-                            #endregion
+                Worksheet.Cells[2, 1].Value = dto.RegNoRep;
+                Worksheet.Cells[2, 2].Value = dto.ShortJurLico;
+                Worksheet.Cells[2, 3].Value = dto.OkpoRep;
+                Worksheet.Cells[2, 4].Value = dto.FormNum;
+                Worksheet.Cells[2, 5].Value = dto.StartPeriod;
+                Worksheet.Cells[2, 6].Value = dto.EndPeriod;
+                Worksheet.Cells[2, 7].Value = dto.CorrectionNumber;
+                Worksheet.Cells[2, 8].Value = dto.RowCount;
+                Worksheet.Cells[2, 9].Value = dto.NumberInOrder;
+                Worksheet.Cells[2, 10].Value = dto.OperationCode;
+                Worksheet.Cells[2, 11].Value = dto.OperationDate;
+                Worksheet.Cells[2, 12].Value = dto.PassportNumber;
+                Worksheet.Cells[2, 13].Value = dto.Type;
+                Worksheet.Cells[2, 14].Value = dto.Radionuclids;
+                Worksheet.Cells[2, 15].Value = dto.FactoryNumber;
+                Worksheet.Cells[2, 16].Value = dto.Quantity;
+                Worksheet.Cells[2, 17].Value = dto.Activity;
+                Worksheet.Cells[2, 18].Value = dto.CreationDate;
+                Worksheet.Cells[2, 19].Value = dto.StatusRAO;
+                Worksheet.Cells[2, 20].Value = dto.DocumentVid;
+                Worksheet.Cells[2, 21].Value = dto.DocumentNumber;
+                Worksheet.Cells[2, 22].Value = dto.DocumentDate;
+                Worksheet.Cells[2, 23].Value = dto.ProviderOrRecieverOKPO;
+                Worksheet.Cells[2, 24].Value = dto.TransporterOKPO;
+                Worksheet.Cells[2, 25].Value = dto.PackName;
+                Worksheet.Cells[2, 26].Value = dto.PackType;
+                Worksheet.Cells[2, 27].Value = dto.PackNumber;
+                Worksheet.Cells[2, 28].Value = dto.StoragePlaceName;
+                Worksheet.Cells[2, 29].Value = dto.StoragePlaceCode;
+                Worksheet.Cells[2, 30].Value = dto.RefineOrSortRAOCode;
+                Worksheet.Cells[2, 31].Value = dto.Subsidy;
+                Worksheet.Cells[2, 32].Value = dto.FcpNumber;
 
-                            lastRow++;
-                            break;
-                        }
-                    }
-                }
+                #endregion
+
+                lastRow++;
+                continue;
+            }
+            for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
+            {
+                if (new CustomStringDateComparer(StringComparer.CurrentCulture)
+                        .Compare(dto.OperationDate, (string)worksheet.Cells[currentRow, 11].Value) >= 0) continue;
+
+                worksheet.InsertRow(currentRow, 1);
+
+                #region BindingCells
+
+                worksheet.Cells[currentRow, 1].Value = dto.RegNoRep;
+                worksheet.Cells[currentRow, 2].Value = dto.ShortJurLico;
+                worksheet.Cells[currentRow, 3].Value = dto.OkpoRep;
+                worksheet.Cells[currentRow, 4].Value = dto.FormNum;
+                worksheet.Cells[currentRow, 5].Value = dto.StartPeriod;
+                worksheet.Cells[currentRow, 6].Value = dto.EndPeriod;
+                worksheet.Cells[currentRow, 7].Value = dto.CorrectionNumber;
+                worksheet.Cells[currentRow, 8].Value = dto.RowCount;
+                worksheet.Cells[currentRow, 9].Value = dto.NumberInOrder;
+                worksheet.Cells[currentRow, 10].Value = dto.OperationCode;
+                worksheet.Cells[currentRow, 11].Value = dto.OperationDate;
+                worksheet.Cells[currentRow, 12].Value = dto.PassportNumber;
+                worksheet.Cells[currentRow, 13].Value = dto.Type;
+                worksheet.Cells[currentRow, 14].Value = dto.Radionuclids;
+                worksheet.Cells[currentRow, 15].Value = dto.FactoryNumber;
+                worksheet.Cells[currentRow, 16].Value = dto.Quantity;
+                worksheet.Cells[currentRow, 17].Value = dto.Activity;
+                worksheet.Cells[currentRow, 18].Value = dto.CreationDate;
+                worksheet.Cells[currentRow, 19].Value = dto.StatusRAO;
+                worksheet.Cells[currentRow, 20].Value = dto.DocumentVid;
+                worksheet.Cells[currentRow, 21].Value = dto.DocumentNumber;
+                worksheet.Cells[currentRow, 22].Value = dto.DocumentDate;
+                worksheet.Cells[currentRow, 23].Value = dto.ProviderOrRecieverOKPO;
+                worksheet.Cells[currentRow, 24].Value = dto.TransporterOKPO;
+                worksheet.Cells[currentRow, 25].Value = dto.PackName;
+                worksheet.Cells[currentRow, 26].Value = dto.PackType;
+                worksheet.Cells[currentRow, 27].Value = dto.PackNumber;
+                worksheet.Cells[currentRow, 28].Value = dto.StoragePlaceName;
+                worksheet.Cells[currentRow, 29].Value = dto.StoragePlaceCode;
+                worksheet.Cells[currentRow, 30].Value = dto.RefineOrSortRAOCode;
+                worksheet.Cells[currentRow, 31].Value = dto.Subsidy;
+                worksheet.Cells[currentRow, 32].Value = dto.FcpNumber;
+
+                #endregion
+
+                lastRow++;
+                break;
             }
         }
 

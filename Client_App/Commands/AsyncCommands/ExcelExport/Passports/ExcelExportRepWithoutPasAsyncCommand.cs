@@ -314,7 +314,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
                 #endregion
 
-                currentRow++;
+            currentRow++;
         }
         Worksheet.View.FreezePanes(2, 1);
 
