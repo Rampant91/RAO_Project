@@ -100,18 +100,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                 if (baseReps11 != null)
                 {
-                    foreach (var report in baseReps11.Report_Collection)
-                    {
-                        await ReportsStorage.GetReportAsync(report.Id);
-                    }
                     await ProcessIfHasReports11(baseReps11, item);
                 }
                 else if (baseReps21 != null)
                 {
-                    foreach (var report in baseReps21.Report_Collection)
-                    {
-                        await ReportsStorage.GetReportAsync(report.Id);
-                    }
                     await ProcessIfHasReports21(baseReps21, item);
                 }
                 else if (baseReps11 == null && baseReps21 == null)

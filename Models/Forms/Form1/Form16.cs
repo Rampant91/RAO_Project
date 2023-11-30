@@ -261,14 +261,16 @@ public class Form16 : Form1
         {
             return true;
         }
-        if (value.Value.Length == 1 && (!int.TryParse(value.Value, out var intValue) || intValue < 1 || intValue > 4 && intValue != 6 && intValue != 9)
-            || value.Value.Length != 8 && value.Value.Length != 14
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+
+        if (value.Value.Length == 1
+            && int.TryParse(value.Value, out var intValue)
+            && intValue is > 0 and not 5 and not 8
+            || new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение");
-            return false;
+            return true;
         }
-        return true;
+        value.AddError("Недопустимое значение");
+        return false;
     }
 
     #endregion

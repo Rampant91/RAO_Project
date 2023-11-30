@@ -4,6 +4,7 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms.Form1;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,9 +14,11 @@ using Models.Interfaces;
 using Client_App.ViewModels;
 using System.Linq;
 using DynamicData;
+using FirebirdSql.EntityFrameworkCore.Firebird.Query.Internal;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using ReactiveUI;
 
 namespace Client_App.Commands.AsyncCommands.Import;
@@ -440,7 +443,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         {
             listImpRep.Add(impReport);
         }
-        foreach (var impRep in listImpRep) //Для каждой импортируемой формы
+        foreach (var impRep in listImpRep) //Для каждого импортируемого отчета
         {
             ImpRepFormNum = impRep.FormNum_DB;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
@@ -451,12 +454,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
+            foreach (var key1 in baseReps.Report_Collection) //Для каждого отчета соответствующей организации в базе ищем совпадение
             {
                 var baseRep = (Report)key1;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
-                BaseRepFormCount = baseRep.Rows.Count;
+                BaseRepFormCount = ReportsStorage.GetReportRowsCount(baseRep);
                 BaseRepStartPeriod = baseRep.StartPeriod_DB;
                 BaseRepEndPeriod = baseRep.EndPeriod_DB;
                 BaseRepExpDate = baseRep.ExportDate_DB;
@@ -501,6 +504,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (stBase == stImp && endBase == endImp && ImpRepFormNum == BaseRepFormNum)
                 {
+
                     impInBase = true;
 
                     #region LessCorrectionNumber
@@ -601,8 +605,56 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(Desktop.MainWindow);
-
+                        
                         #endregion
+
+                        var formNum = baseRep.FormNum_DB;
+                        await using var tmpDb = new DBModel(GetRaoFileName());
+                        ArrayList a = new ArrayList();
+                        a.AddRange(baseRep.FormNum_DB switch
+                        {
+                            "1.1" => tmpDb.ReportCollectionDbSet
+                                .AsNoTracking()
+                                .AsSplitQuery()
+                                .AsQueryable()
+                                .Where(rep => rep.Id == baseRep.Id)
+                                .Select(rep => rep.Rows11)
+                                .ToList(),
+                            "1.2" => tmpDb.ReportCollectionDbSet
+                                .AsNoTracking()
+                                .AsSplitQuery()
+                                .AsQueryable()
+                                .Where(rep => rep.Id == baseRep.Id)
+                                .Select(rep => rep.Rows12)
+                                .ToList()
+                        });
+                            
+
+                            //.Include(x => x.Rows10)
+                            //.Include(x => x.Rows11)
+                            //.Include(x => x.Rows12)
+                            //.Include(x => x.Rows13)
+                            //.Include(x => x.Rows14)
+                            //.Include(x => x.Rows15)
+                            //.Include(x => x.Rows16)
+                            //.Include(x => x.Rows17)
+                            //.Include(x => x.Rows18)
+                            //.Include(x => x.Rows19)
+                            //.Include(x => x.Rows20)
+                            //.Include(x => x.Rows21)
+                            //.Include(x => x.Rows22)
+                            //.Include(x => x.Rows23)
+                            //.Include(x => x.Rows24)
+                            //.Include(x => x.Rows25)
+                            //.Include(x => x.Rows26)
+                            //.Include(x => x.Rows27)
+                            //.Include(x => x.Rows28)
+                            //.Include(x => x.Rows29)
+                            //.Include(x => x.Rows210)
+                            //.Include(x => x.Rows211)
+                            //.Include(x => x.Rows212)
+                            //.Include(x => x.Notes)
+                            //.First();
                         await CheckAnswer(res, baseReps, baseRep, impRep);
                         break;
                     }
