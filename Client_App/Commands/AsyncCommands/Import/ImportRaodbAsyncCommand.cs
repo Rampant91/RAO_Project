@@ -102,11 +102,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 {
                     var baseReps11Id = baseReps11.Id;
                     baseReps11 = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                        .AsNoTracking()
                         .AsSplitQuery()
                         .AsQueryable()
                         .Where(reps => reps.Id == baseReps11Id)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                         .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
                         .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
                         .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
@@ -124,11 +123,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 {
                     var baseReps21Id = baseReps21.Id;
                     baseReps21 = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                        .AsNoTracking()
                         .AsSplitQuery()
                         .AsQueryable()
                         .Where(reps => reps.Id == baseReps21Id)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                         .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
                         .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
                         .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)

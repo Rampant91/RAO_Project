@@ -169,7 +169,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 reps.Report_Collection.Replace(oldReport, newReport);
-                StaticConfiguration.DBModel.Remove(oldReport);
                 AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
