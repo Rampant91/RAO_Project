@@ -14,12 +14,9 @@ using Models.Interfaces;
 using Client_App.ViewModels;
 using System.Linq;
 using DynamicData;
-using FirebirdSql.EntityFrameworkCore.Firebird.Query.Internal;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
-using ReactiveUI;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -59,6 +56,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public string ImpRepYear = "";
     public byte ImpRepCorNum;
     public int ImpRepFormCount;
+
+    private protected string TmpImpFilePath = "";
 
     public string OperationDate => IsFirstLogLine
         ? DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")
@@ -608,53 +607,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         
                         #endregion
 
-                        var formNum = baseRep.FormNum_DB;
-                        await using var tmpDb = new DBModel(GetRaoFileName());
-                        ArrayList a = new ArrayList();
-                        a.AddRange(baseRep.FormNum_DB switch
-                        {
-                            "1.1" => tmpDb.ReportCollectionDbSet
-                                .AsNoTracking()
-                                .AsSplitQuery()
-                                .AsQueryable()
-                                .Where(rep => rep.Id == baseRep.Id)
-                                .Select(rep => rep.Rows11)
-                                .ToList(),
-                            "1.2" => tmpDb.ReportCollectionDbSet
-                                .AsNoTracking()
-                                .AsSplitQuery()
-                                .AsQueryable()
-                                .Where(rep => rep.Id == baseRep.Id)
-                                .Select(rep => rep.Rows12)
-                                .ToList()
-                        });
-                            
-
-                            //.Include(x => x.Rows10)
-                            //.Include(x => x.Rows11)
-                            //.Include(x => x.Rows12)
-                            //.Include(x => x.Rows13)
-                            //.Include(x => x.Rows14)
-                            //.Include(x => x.Rows15)
-                            //.Include(x => x.Rows16)
-                            //.Include(x => x.Rows17)
-                            //.Include(x => x.Rows18)
-                            //.Include(x => x.Rows19)
-                            //.Include(x => x.Rows20)
-                            //.Include(x => x.Rows21)
-                            //.Include(x => x.Rows22)
-                            //.Include(x => x.Rows23)
-                            //.Include(x => x.Rows24)
-                            //.Include(x => x.Rows25)
-                            //.Include(x => x.Rows26)
-                            //.Include(x => x.Rows27)
-                            //.Include(x => x.Rows28)
-                            //.Include(x => x.Rows29)
-                            //.Include(x => x.Rows210)
-                            //.Include(x => x.Rows211)
-                            //.Include(x => x.Rows212)
-                            //.Include(x => x.Notes)
-                            //.First();
                         await CheckAnswer(res, baseReps, baseRep, impRep);
                         break;
                     }

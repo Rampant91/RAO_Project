@@ -39,10 +39,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
-            var file = GetRaoFileName();
+            TmpImpFilePath = GetRaoFileName();
             SourceFile = new FileInfo(path);
-            SourceFile.CopyTo(file, true);
-            var reportsCollection = await GetReportsFromDataBase(file);
+            SourceFile.CopyTo(TmpImpFilePath, true);
+            var reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
             if (reportsCollection.Count == 0)
             {
                 #region MessageFailedToReadFile
@@ -71,40 +71,79 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
             }
 
-            foreach (var item in reportsCollection) // Для каждой импортируемой организации
+            foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
             {
-                await item.SortAsync();
-                await RestoreReportsOrders(item);
-                if (item.Master.Rows10.Count != 0)
+                await impReps.SortAsync();
+                await RestoreReportsOrders(impReps);
+                if (impReps.Master.Rows10.Count != 0)
                 {
-                    item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
+                    impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
                 }
 
-                if (item.Master.Rows20.Count != 0)
+                if (impReps.Master.Rows20.Count != 0)
                 {
-                    item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
+                    impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
-                var baseReps11 = GetReports11FromLocalEqual(item);
-                var baseReps21 = GetReports21FromLocalEqual(item);
+                var baseReps11 = GetReports11FromLocalEqual(impReps);
+                var baseReps21 = GetReports21FromLocalEqual(impReps);
                 FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
-                item.CleanIds();
-                ProcessIfNoteOrder0(item);
+                impReps.CleanIds();
+                ProcessIfNoteOrder0(impReps);
 
-                ImpRepFormCount = item.Report_Collection.Count;
-                ImpRepFormNum = item.Master.FormNum_DB;
-                BaseRepsOkpo = item.Master.OkpoRep.Value;
-                BaseRepsRegNum = item.Master.RegNoRep.Value;
-                BaseRepsShortName = item.Master.ShortJurLicoRep.Value;
+                ImpRepFormCount = impReps.Report_Collection.Count;
+                ImpRepFormNum = impReps.Master.FormNum_DB;
+                BaseRepsOkpo = impReps.Master.OkpoRep.Value;
+                BaseRepsRegNum = impReps.Master.RegNoRep.Value;
+                BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
                 if (baseReps11 != null)
                 {
-                    await ProcessIfHasReports11(baseReps11, item);
+                    var baseReps11Id = baseReps11.Id;
+                    baseReps11 = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(reps => reps.Id == baseReps11Id)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .First();
+                    await ProcessIfHasReports11(baseReps11, impReps);
                 }
                 else if (baseReps21 != null)
                 {
-                    await ProcessIfHasReports21(baseReps21, item);
+                    var baseReps21Id = baseReps21.Id;
+                    baseReps21 = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(reps => reps.Id == baseReps21Id)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .First();
+                    await ProcessIfHasReports21(baseReps21, impReps);
                 }
                 else if (baseReps11 == null && baseReps21 == null)
                 {
@@ -177,12 +216,12 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                     if (an is "Добавить" or "Да для всех")
                     {
-                        ReportsStorage.LocalReports.Reports_Collection.Add(item);
+                        ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
                         AtLeastOneImportDone = true;
 
                         #region LoggerImport
 
-                        var sortedRepList = item.Report_Collection
+                        var sortedRepList = impReps.Report_Collection
                                             .OrderBy(x => x.FormNum_DB)
                                             .ThenBy(x => StringReverse(x.StartPeriod_DB))
                                             .ToList();
@@ -212,13 +251,13 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     #endregion
                 }
 
-                switch (item.Master_DB.FormNum_DB)
+                switch (impReps.Master_DB.FormNum_DB)
                 {
                     case "1.0":
-                        await item.Master_DB.Rows10.QuickSortAsync();
+                        await impReps.Master_DB.Rows10.QuickSortAsync();
                         break;
                     case "2.0":
-                        await item.Master_DB.Rows20.QuickSortAsync();
+                        await impReps.Master_DB.Rows20.QuickSortAsync();
                         break;
                 }
             }

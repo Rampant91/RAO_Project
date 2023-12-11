@@ -19,6 +19,7 @@ using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using ReactiveUI;
 
 namespace Client_App.Controls.DataGrid;
 
