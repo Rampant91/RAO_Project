@@ -606,7 +606,15 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         
                         #endregion
 
-                        await CheckAnswer(res, baseReps, baseRep, impRep);
+                        var newBaseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Where(reps => reps.Id == baseReps.Id)
+                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                            .First();
+                        await CheckAnswer(res, newBaseReps, baseRep, impRep);
                         break;
                     }
 

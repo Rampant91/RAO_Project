@@ -101,22 +101,22 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 if (baseReps11 != null)
                 {
                     var baseReps11Id = baseReps11.Id;
-                    baseReps11 = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(reps => reps.Id == baseReps11Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .First();
+                    //baseReps11 = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    //    .AsSplitQuery()
+                    //    .AsQueryable()
+                    //    .Where(reps => reps.Id == baseReps11Id)
+                    //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
+                    //    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                    //    .First();
                     await ProcessIfHasReports11(baseReps11, impReps);
                 }
                 else if (baseReps21 != null)
