@@ -57,6 +57,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public byte ImpRepCorNum;
     public int ImpRepFormCount;
 
+    private protected DBModel Db = StaticConfiguration.DBModel;
     private protected string TmpImpFilePath = "";
 
     public string OperationDate => IsFirstLogLine
@@ -65,7 +66,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region CheckAnswer
 
-    private protected async Task CheckAnswer(string an, Reports reps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
+    private protected async Task CheckAnswer(string an, Reports baseReps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
     {
         switch (an)
         {
@@ -74,7 +75,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             case "Да" or "Да для всех" or "Добавить":
                 if (addToDB)
                 {
-                    reps.Report_Collection.Add(newReport);
+                    baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
                 Act = "\t\t\t";
@@ -106,7 +107,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             case "Сохранить оба":
                 if (addToDB)
                 {
-                    reps.Report_Collection.Add(newReport);
+                    baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
                 Act = "Сохранены оба (пересечение)";
@@ -136,7 +137,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Replace
             
             case "Заменить" or "Заменять все формы":
-                reps.Report_Collection.Replace(oldReport, newReport);
+                if (oldReport is not null) oldReport = await FillReportWithForms(baseReps, oldReport);
+                baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 AtLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
@@ -166,9 +168,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Supplement
             
             case "Дополнить" when newReport != null && oldReport != null:
+                oldReport = await FillReportWithForms(baseReps, oldReport);
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
-                reps.Report_Collection.Replace(oldReport, newReport);
+                baseReps.Report_Collection.Replace(oldReport, newReport);
                 AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -606,15 +609,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         
                         #endregion
 
-                        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
-                        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
-                        {
-                            baseRep = await ReportsStorage.Api.GetAsync(baseRep.Id);
-                            StaticConfiguration.DBModel.Entry(checkedRep).State = EntityState.Detached;
-                            StaticConfiguration.DBModel.Set<Report>().Attach(baseRep);
-                            baseReps.Report_Collection.Replace(checkedRep, baseRep);
-                            await StaticConfiguration.DBModel.SaveChangesAsync();
-                        }
                         await CheckAnswer(res, baseReps, baseRep, impRep);
                         break;
                     }
@@ -709,7 +703,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             #endregion
                         }
                     }
-
                     await CheckAnswer(res, baseReps, baseRep, impRep);
                     break;
 
@@ -1285,6 +1278,24 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
         }
+    }
+
+    #endregion
+
+    #region FillReportWithFormsInReports
+
+    private static async Task<Report> FillReportWithForms(Reports baseReps, Report baseRep)
+    {
+        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
+        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
+        {
+            baseRep = await ReportsStorage.Api.GetAsync(baseRep.Id);
+            StaticConfiguration.DBModel.Entry(checkedRep).State = EntityState.Detached;
+            StaticConfiguration.DBModel.Set<Report>().Attach(baseRep);
+            baseReps.Report_Collection.Replace(checkedRep, baseRep);
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        return baseRep;
     }
 
     #endregion
