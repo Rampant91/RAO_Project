@@ -15,11 +15,14 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Client_App.ViewModels;
+using Client_App.Views;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using ReactiveUI;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -56,6 +59,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _items;
         set
         {
+            if (value != null && Math.Ceiling(value.Count / 10.0 ) < int.Parse(NowPage) && NowPage != "1" && _items?.GetEnumerable().FirstOrDefault() is Report) //жуткий костыль, чтобы страница сбрасывалась при смене организации, но не сбрасывалась при её открытии
+            {
+                NowPage = "1";
+            }
             if (value != null)
             {
                 //if (_items != value)
