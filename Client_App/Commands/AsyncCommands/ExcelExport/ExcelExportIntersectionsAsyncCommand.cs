@@ -23,7 +23,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         #region ReportsCountCheck
 
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -69,11 +69,8 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            return;
-        }
-        finally
-        {
             cts.Dispose();
+            return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
@@ -83,7 +80,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
 
         Worksheet = excelPackage.Workbook.Worksheets.Add("Разрывы и пересечения");
 
@@ -104,7 +101,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         if (OperatingSystem.IsWindows()) Worksheet.Column(3).AutoFit();   // Под Astra Linux эта команда крашит программу без GDI дров      
 
-        var listSortRep = MainWindowVM.LocalReports.Reports_Collection
+        var listSortRep = ReportsStorage.LocalReports.Reports_Collection
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
                               && DateTime.TryParse(rep.EndPeriod_DB, out _))
@@ -147,7 +144,22 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                 var minEndDate = repEnd < repToCompareEnd
                     ? repEnd
                     : repToCompareEnd;
-                if (repStart < repToCompareEnd && repEnd > repToCompareStart)
+
+                if (repStart == repToCompareStart && repEnd == repToCompareEnd)
+                {
+                    Worksheet.Cells[row, 1].Value = rep.RegNoRep;
+                    Worksheet.Cells[row, 2].Value = rep.OkpoRep;
+                    Worksheet.Cells[row, 3].Value = rep.ShortYr;
+                    Worksheet.Cells[row, 4].Value = rep.FormNum;
+                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
+                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
+                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
+                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
+                    Worksheet.Cells[row, 9].Value = $"{repStart.ToShortDateString()}-{repEnd.ToShortDateString()}";
+                    Worksheet.Cells[row, 10].Value = "совпадение";
+                    row++;
+                }
+                else if (repStart < repToCompareEnd && repEnd > repToCompareStart)
                 {
                     Worksheet.Cells[row, 1].Value = rep.RegNoRep;
                     Worksheet.Cells[row, 2].Value = rep.OkpoRep;

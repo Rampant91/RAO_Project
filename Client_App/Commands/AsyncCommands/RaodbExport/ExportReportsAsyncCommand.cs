@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -30,16 +31,14 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         switch (parameter)
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
+                foreach (var item in param)
                 {
-                    foreach (var item in param)
-                    {
-                        ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
-                    }
-                    fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
-                    exportOrg = (Reports)param.First();
-                    await StaticConfiguration.DBModel.SaveChangesAsync();
-                    break;
+                    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
                 }
+                fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
+                exportOrg = (Reports)param.First();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+                break;
             case Reports reps:
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
@@ -50,10 +49,19 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 return;
         }
 
+        List<Report> repList = new();
+        foreach (var key in exportOrg.Report_Collection)
+        {
+            var rep = (Report)key;
+            repList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+        }
+        exportOrg.Report_Collection.Clear();
+        exportOrg.Report_Collection.AddRangeNoChange(repList);
+
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
-                       $"_{exportOrg.Master.FormNum_DB}" +
+                       $"_{exportOrg.Master.FormNum_DB[0]}.x" +
                        $"_{BaseVM.Version}";
 
         var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
@@ -154,7 +162,7 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 ContentTitle = "Выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage =
-                    $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB}) сохранен по пути:" +
+                    $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB[0]}.x) сохранен по пути:" +
                     $"{Environment.NewLine}{fullPath}" +
                     $"{Environment.NewLine}" +
                     $"{Environment.NewLine}Регистрационный номер - {exportOrg.Master.RegNoRep.Value}" +
@@ -172,6 +180,4 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
             Process.Start("explorer", folderPath);
         }
     }
-
-    
 }

@@ -2,7 +2,7 @@
 
 namespace Models.Interfaces;
 
-public interface IKey:INotifyPropertyChanged,INumberInOrder,IExcel
+public interface IKey : INotifyPropertyChanged, INumberInOrder, IExcel
 {
     int Id { get; set; } 
 }

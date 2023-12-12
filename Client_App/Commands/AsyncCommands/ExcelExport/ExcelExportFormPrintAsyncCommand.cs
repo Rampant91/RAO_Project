@@ -11,7 +11,7 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Выбранная форма->Выгрузка Excel->Для печати
+//  Выбранная форма -> Выгрузка Excel -> Для печати
 public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -21,7 +21,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExportType = "Для печати";
 
         var exportForm = (Report)forms.First();
-        var orgWithExportForm = MainWindowVM.LocalReports.Reports_Collection
+        exportForm = await ReportsStorage.GetReportAsync(exportForm.Id);
+        var orgWithExportForm = ReportsStorage.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         var formNum = RemoveForbiddenChars(exportForm.FormNum_DB);
         if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
@@ -51,11 +52,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            return;
-        }
-        finally
-        {
             cts.Dispose();
+            return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;

@@ -8,7 +8,7 @@ using OfficeOpenXml;
 
 namespace Models.Forms.DataAccess;
 
-public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChanged
+public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
 {
     [NotMapped]
     public Func<RamAccess<T>, bool> Handler { get; set; }
@@ -35,10 +35,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
             {
                 return _value;
             }
-            else
-            {
-                return default(T);
-            }
+            return default(T);
         }
         set
         {
@@ -65,10 +62,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
     public T ValueWithOutHandlerAndPropChanged
     {
         get => _value;
-        set
-        {
-            _value = value;
-        }
+        set => _value = value;
     }
     public T ValueWithOutPropChanged
     {
@@ -80,21 +74,21 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
         }
     }
 
-    public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
+    public RamAccess(Func<RamAccess<T>, bool> handler, T value)
     {
-        this.Handler = Handler;
-        _value = Value;
-        Handler?.Invoke(this);
+        Handler = handler;
+        _value = value;
+        handler?.Invoke(this);
     }
-    public RamAccess(Func<RamAccess<T>, bool> Handler, T Value,RefBool IsGet,RefBool IsSet)
+    public RamAccess(Func<RamAccess<T>, bool> handler, T value, RefBool isGet, RefBool isSet)
     {
-        this.Handler = Handler;
-        _value = Value;
-        Handler?.Invoke(this);
-        this.IsGet = IsGet;
-        this.IsGet.PropertyChanged += IsGetChanged;
-        this.IsSet = IsSet;
-        this.IsSet.PropertyChanged += IsSetChanged;
+        Handler = handler;
+        _value = value;
+        handler?.Invoke(this);
+        IsGet = isGet;
+        IsGet.PropertyChanged += IsGetChanged;
+        IsSet = isSet;
+        IsSet.PropertyChanged += IsSetChanged;
     }
 
     public RamAccess()
@@ -104,11 +98,11 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
 
     public void ClearErrors()
     {
-        ClearErrors("Value");
+        ClearErrors(nameof(Value));
     }
     public void AddError(string error)
     {
-        AddError("Value", error);
+        AddError(nameof(Value), error);
     }
 
     #region Equals
@@ -129,10 +123,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
         {
             return obj1.Equals(obj2);
         }
-        else
-        {
-            return obj2 as object == null ? true : false;
-        }
+        return obj2 as object == null;
     }
     public static bool operator !=(RamAccess<T> obj1, RamAccess<T> obj2)
     {
@@ -140,10 +131,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
         {
             return !obj1.Equals(obj2);
         }
-        else
-        {
-            return obj2 as object != null ? true : false;
-        }
+        return obj2 as object != null;
     }
     #endregion
 
@@ -185,7 +173,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChan
         throw new NotImplementedException();
     }
 
-    public int ExcelHeader(ExcelWorksheet worksheet, int row,int column,bool transpon=true)
+    public int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpon = true)
     {
         throw new NotImplementedException();
     }

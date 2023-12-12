@@ -9,7 +9,7 @@ using Models.Forms.Form2;
 
 namespace Models.DBRealization;
 
-public class DataContext:DbContext
+public class DataContext : DbContext
 {
     public string _path { get; set; }
     public DataContext(string Path = "")
@@ -193,9 +193,10 @@ public class DataContext:DbContext
 
     public void Restore()
     {
-        var changedEntries = ChangeTracker.Entries()
-            .Where(x => x.State != EntityState.Unchanged).ToList();
-
+        var changedEntries = ChangeTracker
+            .Entries()
+            .Where(entry => entry.State != EntityState.Unchanged)
+            .ToList();
         foreach (var entry in changedEntries)
         {
             switch (entry.State)
@@ -210,6 +211,7 @@ public class DataContext:DbContext
                 case EntityState.Deleted:
                     entry.State = EntityState.Unchanged;
                     break;
+                
             }
         }
     }

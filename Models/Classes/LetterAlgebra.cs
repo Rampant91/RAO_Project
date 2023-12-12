@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Models.Classes;
 
@@ -28,7 +27,7 @@ public class LetterAlgebra
 
         if (obj != null)
         {
-            for (var i = obj._innerNumberRng.Count() - 1; i >= 0; i--)
+            for (var i = obj._innerNumberRng.Count - 1; i >= 0; i--)
             {
                 if (obj._innerNumberRng[i] + zap == 'Z' + zap)
                 {

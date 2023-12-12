@@ -39,6 +39,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
         var exportForm = (Report)param.First();
+        exportForm = await ReportsStorage.Api.GetAsync(exportForm.Id);
 
         var dtDay = dt.Day.ToString();
         var dtMonth = dt.Month.ToString();
@@ -48,8 +49,9 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
 
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
-        var reps = MainWindowVM.LocalReports.Reports_Collection
-            .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
+        var reps = ReportsStorage.LocalReports.Reports_Collection
+            .FirstOrDefault(t => t.Report_Collection
+                .Any(x => x.Id == exportForm.Id));
         if (reps is null) return;
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");

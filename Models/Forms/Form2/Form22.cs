@@ -18,15 +18,18 @@ namespace Models.Forms.Form2;
 public class Form22 : Form2, IBaseColor
 {
     #region Constructor
+
     public Form22()
     {
         FormNum.Value = "2.2";
         //NumberOfFields.Value = 25;
         Validate_all();
     }
+    
     #endregion
 
     #region Validation
+
     private void Validate_all()
     {
         StoragePlaceName_Validation(StoragePlaceName);
@@ -73,10 +76,15 @@ public class Form22 : Form2, IBaseColor
                  FcpNumber.HasErrors ||
                  PackQuantity.HasErrors);
     } 
+    
     #endregion
 
+    #region Properties
+
     #region BaseColor
+
     public ColorType _BaseColor { get; set; } = ColorType.None;
+
     [NotMapped]
     public ColorType BaseColor
     {
@@ -89,9 +97,11 @@ public class Form22 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     #endregion
 
     #region Sum
+
     public bool Sum_DB { get; set; }
 
     [NotMapped]
@@ -129,9 +139,11 @@ public class Form22 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
     #region  SumGroup
+
     public bool SumGroup_DB { get; set; }
 
     [NotMapped]
@@ -163,11 +175,11 @@ public class Form22 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
-    #region Columns
+    #region NumberInOrder (1)
 
-    #region NumberInOrder_1
     public string NumberInOrderSum_DB { get; set; } = "";
 
     [NotMapped]
@@ -210,12 +222,15 @@ public class Form22 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
-    #region StoragePlaceName_2
+    #region StoragePlaceName (2)
 
     public string StoragePlaceName_DB { get; set; } = "";
+
     public bool _StoragePlaceName_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool StoragePlaceName_Hidden_Get
     {
@@ -237,7 +252,9 @@ public class Form22 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     public bool _StoragePlaceName_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool StoragePlaceName_Hidden_Set
     {
@@ -313,12 +330,15 @@ public class Form22 : Form2, IBaseColor
         //            }
         return true;
     }
+
     #endregion
 
-    #region StoragePlaceCode_3
+    #region StoragePlaceCode (3)
 
     public string StoragePlaceCode_DB { get; set; } = "";
+
     public bool _StoragePlaceCode_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool StoragePlaceCode_Hidden_Get
     {
@@ -332,6 +352,7 @@ public class Form22 : Form2, IBaseColor
             var rm = new RefBool(_StoragePlaceCode_Hidden_Get);
             Dictionary.Add(nameof(StoragePlaceCode_Hidden_Get), rm);
             return rm;
+
         }
         set
         {
@@ -342,6 +363,7 @@ public class Form22 : Form2, IBaseColor
     }
 
     public bool _StoragePlaceCode_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool StoragePlaceCode_Hidden_Set
     {
@@ -422,50 +444,47 @@ public class Form22 : Form2, IBaseColor
             return false;
         }
         var tmp = value.Value;
-        if (tmp.Length == 8)
+        if (tmp.Length != 8) return true;
+        if (!new Regex("^[1-9]").IsMatch(tmp[..1]))
         {
-            if (!new Regex("^[1-9]").IsMatch(tmp[..1]))
-            {
-                value.AddError($"Недопустимый вид пункта - {tmp[..1]}");
-            }
-            if (!new Regex("^[1-3]").IsMatch(tmp.Substring(1, 1)))
-            {
-                value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
-            }
-            if (!new Regex("^[1-2]").IsMatch(tmp.Substring(2, 1)))
-            {
-                value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
-            }
-            if (!new Regex("^[1-59]").IsMatch(tmp.Substring(3, 1)))
-            {
-                value.AddError($"Недопустимая зона нахождения пункта - {tmp.Substring(3, 1)}");
-            }
-            if (!new Regex("^[0-4]").IsMatch(tmp.Substring(4, 1)))
-            {
-                value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
-            }
-            if (!new Regex("^[1-49]").IsMatch(tmp.Substring(5, 1)))
-            {
-                value.AddError($"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
-            }
-            Regex a67 = new("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}");
-            if (!a67.IsMatch(tmp.Substring(6, 2)))
-            {
-                value.AddError($"Недопустимый код типа РАО - {tmp.Substring(6, 2)}");
-            }
-            if (value.HasErrors)
-            {
-                return false;
-            }
+            value.AddError($"Недопустимый вид пункта - {tmp[..1]}");
         }
-        return true;
+        if (!new Regex("^[1-3]").IsMatch(tmp.Substring(1, 1)))
+        {
+            value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
+        }
+        if (!new Regex("^[1-2]").IsMatch(tmp.Substring(2, 1)))
+        {
+            value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
+        }
+        if (!new Regex("^[1-59]").IsMatch(tmp.Substring(3, 1)))
+        {
+            value.AddError($"Недопустимая зона нахождения пункта - {tmp.Substring(3, 1)}");
+        }
+        if (!new Regex("^[0-4]").IsMatch(tmp.Substring(4, 1)))
+        {
+            value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
+        }
+        if (!new Regex("^[1-49]").IsMatch(tmp.Substring(5, 1)))
+        {
+            value.AddError($"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
+        }
+        if (!new Regex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}")
+                .IsMatch(tmp.Substring(6, 2)))
+        {
+            value.AddError($"Недопустимый код типа РАО - {tmp.Substring(6, 2)}");
+        }
+        return !value.HasErrors;
     }
+
     #endregion
 
-    #region PackName_4
+    #region PackName (4)
 
     public string PackName_DB { get; set; } = "";
+
     public bool _PackName_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool PackName_Hidden_Get
     {
@@ -489,6 +508,7 @@ public class Form22 : Form2, IBaseColor
     }
 
     public bool _PackName_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool PackName_Hidden_Set
     {
@@ -566,12 +586,15 @@ public class Form22 : Form2, IBaseColor
         //            }
         return true;
     }
+
     #endregion
 
-    #region PackType_5
+    #region PackType (5)
 
     public string PackType_DB { get; set; } = "";
+
     public bool _PackType_Hidden_Get { get; set; } = true;
+
     [NotMapped]
     public RefBool PackType_Hidden_Get
     {
@@ -594,7 +617,9 @@ public class Form22 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     public bool _PackType_Hidden_Set { get; set; } = true;
+
     [NotMapped]
     public RefBool PackType_Hidden_Set
     {
@@ -676,9 +701,10 @@ public class Form22 : Form2, IBaseColor
 
         return true;
     }
+
     #endregion
 
-    #region PackQuantity_6
+    #region PackQuantity (6)
 
     public string PackQuantity_DB { get; set; }
 
@@ -693,13 +719,10 @@ public class Form22 : Form2, IBaseColor
                 ((RamAccess<string>)Dictionary[nameof(PackQuantity)]).Value = PackQuantity_DB;
                 return (RamAccess<string>)Dictionary[nameof(PackQuantity)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PackQuantity_Validation, PackQuantity_DB);
-                rm.PropertyChanged += PackQuantityValueChanged;
-                Dictionary.Add(nameof(PackQuantity), rm);
-                return (RamAccess<string>)Dictionary[nameof(PackQuantity)];
-            }
+            var rm = new RamAccess<string>(PackQuantity_Validation, PackQuantity_DB);
+            rm.PropertyChanged += PackQuantityValueChanged;
+            Dictionary.Add(nameof(PackQuantity), rm);
+            return (RamAccess<string>)Dictionary[nameof(PackQuantity)];
         }
         set
         {
@@ -736,11 +759,13 @@ public class Form22 : Form2, IBaseColor
                 return true;
         }
     }
+
     #endregion
 
-    #region CodeRAO_7
+    #region CodeRAO (7)
 
     public string CodeRAO_DB { get; set; } = "";
+
     public bool CodeRAO_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -768,21 +793,17 @@ public class Form22 : Form2, IBaseColor
                 Dictionary.Add(nameof(CodeRAO), rm);
                 return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
             }
+            if (Dictionary.ContainsKey(nameof(CodeRAO)))
+            {
+                return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+            }
             else
             {
-                if (Dictionary.ContainsKey(nameof(CodeRAO)))
-                {
-                    return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(null, null);
-                    Dictionary.Add(nameof(CodeRAO), rm);
-                    return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
-                }
+                var rm = new RamAccess<string>(null, null);
+                Dictionary.Add(nameof(CodeRAO), rm);
+                return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
             }
         }
-
         set
         {
             if (CodeRAO_Hidden) return;
@@ -790,11 +811,13 @@ public class Form22 : Form2, IBaseColor
             OnPropertyChanged();
         }
     }
+
     private void CodeRAOValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         CodeRAO_DB = ((RamAccess<string>)value).Value.ToLower().Replace("х", "x");
     }
+
     private bool CodeRAO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -809,60 +832,57 @@ public class Form22 : Form2, IBaseColor
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmp.Length == 11)
+
+        if (tmp.Length != 11) return true;
+        if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
         {
-            if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
-            {
-                value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
-            }
-            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
-            {
-                value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
-            }
-            if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
-            {
-                value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
-            {
-                value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
-            {
-                value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
-            }
-            if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
-            {
-                value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
-            }
-            if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
-            {
-                value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
-            }
-            if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
-            {
-                value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
-            }
-            Regex a89 = new("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}");
-            if (!a89.IsMatch(tmp.Substring(8, 2)))
-            {
-                value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
-            }
-            if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
-            {
-                value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
-            }
-            if (value.HasErrors)
-            {
-                return false;
-            }
+            value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
         }
-        return true;
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
+        {
+            value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
+        }
+        if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
+        {
+            value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
+        {
+            value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
+        {
+            value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
+        }
+        if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
+        {
+            value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
+        }
+        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
+        {
+            value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
+        }
+        if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
+        {
+            value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
+        }
+        if (!new Regex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}").IsMatch(tmp.Substring(8, 2)))
+        {
+            value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
+        }
+        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
+        {
+            value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
+        }
+        return !value.HasErrors;
     }
+
     #endregion
 
-    #region StatusRAO_8
+    #region StatusRAO (8)
+
     public string StatusRAO_DB { get; set; } = "";
+
     public bool StatusRAO_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -885,26 +905,20 @@ public class Form22 : Form2, IBaseColor
                     ((RamAccess<string>)Dictionary[nameof(StatusRAO)]).Value = StatusRAO_DB;
                     return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
                 }
-                else
-                {
-                    var rm = new RamAccess<string>(StatusRAO_Validation, StatusRAO_DB);
-                    rm.PropertyChanged += StatusRAOValueChanged;
-                    Dictionary.Add(nameof(StatusRAO), rm);
-                    return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
-                }
+                var rm = new RamAccess<string>(StatusRAO_Validation, StatusRAO_DB);
+                rm.PropertyChanged += StatusRAOValueChanged;
+                Dictionary.Add(nameof(StatusRAO), rm);
+                return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
+            }
+            if (Dictionary.ContainsKey(nameof(StatusRAO)))
+            {
+                return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
             }
             else
             {
-                if (Dictionary.ContainsKey(nameof(StatusRAO)))
-                {
-                    return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(null, null);
-                    Dictionary.Add(nameof(StatusRAO), rm);
-                    return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
-                }
+                var rm = new RamAccess<string>(null, null);
+                Dictionary.Add(nameof(StatusRAO), rm);
+                return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
             }
         }
         set
@@ -947,10 +961,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region VolumeOutOfPack_9
-    public string VolumeOutOfPack_DB { get; set; } = ""; 
+    #region VolumeOutOfPack (9)
+
+    public string VolumeOutOfPack_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Объем, куб. м", "РАО без упаковки", "9")]
     public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
@@ -1032,10 +1049,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region VolumeInPack_10
+    #region VolumeInPack (10)
+
     public string VolumeInPack_DB { get; set; } = "";
+
     public bool VolumeInPack_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -1044,6 +1064,7 @@ public class Form22 : Form2, IBaseColor
         get => VolumeInPack_Hidden_Priv;
         set => VolumeInPack_Hidden_Priv = value;
     }
+
     public bool VolumeInPack_Hidden_Priv2 { get; set; }
 
     [NotMapped]
@@ -1052,6 +1073,7 @@ public class Form22 : Form2, IBaseColor
         get => VolumeInPack_Hidden_Priv2;
         set => VolumeInPack_Hidden_Priv2 = value;
     }
+
     [NotMapped]
     [FormProperty(true, "Объем, куб. м", "РАО с упаковкой", "10")]
     public RamAccess<string> VolumeInPack
@@ -1065,26 +1087,20 @@ public class Form22 : Form2, IBaseColor
                     ((RamAccess<string>)Dictionary[nameof(VolumeInPack)]).Value = VolumeInPack_DB;
                     return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
                 }
-                else
-                {
-                    var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
-                    rm.PropertyChanged += VolumeInPackValueChanged;
-                    Dictionary.Add(nameof(VolumeInPack), rm);
-                    return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
-                }
+                var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                rm.PropertyChanged += VolumeInPackValueChanged;
+                Dictionary.Add(nameof(VolumeInPack), rm);
+                return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+            }
+            if (Dictionary.TryGetValue(nameof(VolumeInPack), out var value))
+            {
+                return (RamAccess<string>)value;
             }
             else
             {
-                if (Dictionary.ContainsKey(nameof(VolumeInPack)))
-                {
-                    return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(null, null);
-                    Dictionary.Add(nameof(VolumeInPack), rm);
-                    return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
-                }
+                var rm = new RamAccess<string>(null, null);
+                Dictionary.Add(nameof(VolumeInPack), rm);
+                return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
             }
         }
         set
@@ -1149,10 +1165,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region MassOutOfPack_11
+    #region MassOutOfPack (11)
+
     public string MassOutOfPack_DB { get; set; } = ""; 
+
     [NotMapped]
     [FormProperty(true, "Масса, т", "РАО без упаковки (нетто)", "11")]
     public RamAccess<string> MassOutOfPack//SUMMARIZABLE
@@ -1234,10 +1253,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region MassInPack_12
+    #region MassInPack (12)
+
     public string MassInPack_DB { get; set; } = "";
+
     public bool MassInPack_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -1246,6 +1268,7 @@ public class Form22 : Form2, IBaseColor
         get => MassInPack_Hidden_Priv;
         set => MassInPack_Hidden_Priv = value;
     }
+
     public bool MassInPack_Hidden_Priv2 { get; set; }
 
     [NotMapped]
@@ -1268,26 +1291,21 @@ public class Form22 : Form2, IBaseColor
                     ((RamAccess<string>)Dictionary[nameof(MassInPack)]).Value = MassInPack_DB;
                     return (RamAccess<string>)Dictionary[nameof(MassInPack)];
                 }
-                else
-                {
-                    var rm = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
-                    rm.PropertyChanged += MassInPackValueChanged;
-                    Dictionary.Add(nameof(MassInPack), rm);
-                    return (RamAccess<string>)Dictionary[nameof(MassInPack)];
-                }
+
+                var rm = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
+                rm.PropertyChanged += MassInPackValueChanged;
+                Dictionary.Add(nameof(MassInPack), rm);
+                return (RamAccess<string>)Dictionary[nameof(MassInPack)];
+            }
+            if (Dictionary.TryGetValue(nameof(MassInPack), out var value))
+            {
+                return (RamAccess<string>)value;
             }
             else
             {
-                if (Dictionary.ContainsKey(nameof(MassInPack)))
-                {
-                    return (RamAccess<string>)Dictionary[nameof(MassInPack)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(null, null);
-                    Dictionary.Add(nameof(MassInPack), rm);
-                    return (RamAccess<string>)Dictionary[nameof(MassInPack)];
-                }
+                var rm = new RamAccess<string>(null, null);
+                Dictionary.Add(nameof(MassInPack), rm);
+                return (RamAccess<string>)Dictionary[nameof(MassInPack)];
             }
         }
         set
@@ -1351,10 +1369,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region QuantityOZIII_DB_13
+    #region QuantityOZIII (13)
+
     public string QuantityOZIII_DB { get; set; }
+
     [NotMapped]
     [FormProperty(true, "null-13", "Количество ОЗИИИ, шт", "13")]
     public RamAccess<string> QuantityOZIII//SUMMARIZABLE
@@ -1411,10 +1432,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region TritiumActivity_14
+    #region TritiumActivity (14)
+
     public string TritiumActivity_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Суммарная активность, Бк", "тритий", "14")]
     public RamAccess<string> TritiumActivity//SUMMARIZABLE
@@ -1496,10 +1520,14 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region BetaGammaActivity_15
-    public string BetaGammaActivity_DB { get; set; } = ""; [NotMapped]
+    #region BetaGammaActivity (15)
+
+    public string BetaGammaActivity_DB { get; set; } = "";
+
+    [NotMapped]
     [FormProperty(true, "Суммарная активность, Бк", "бета-, гамма-излучающие радионуклиды (исключая тритий)", "15")]
     public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
     {
@@ -1581,10 +1609,14 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region AlphaActivity_16
-    public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
+    #region AlphaActivity (16)
+
+    public string AlphaActivity_DB { get; set; } = "";
+
+    [NotMapped]
     [FormProperty(true, "Суммарная активность, Бк", "альфа-излучающие радионуклиды (исключая трансурановые)", "16")]
     public RamAccess<string> AlphaActivity//SUMMARIZABLE
     {
@@ -1665,10 +1697,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region TransuraniumActivity_17
+    #region TransuraniumActivity (17)
+
     public string TransuraniumActivity_DB { get; set; } = "";
+
     [NotMapped]
     [FormProperty(true, "Суммарная активность, Бк", "трансурановые радионуклиды", "17")]
     public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
@@ -1750,10 +1785,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region MainRadionuclids_18
+    #region MainRadionuclids (18)
+
     public string MainRadionuclids_DB { get; set; } = "";
+
     public bool MainRadionuclids_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -1776,26 +1814,21 @@ public class Form22 : Form2, IBaseColor
                     ((RamAccess<string>)Dictionary[nameof(MainRadionuclids)]).Value = MainRadionuclids_DB;
                     return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
                 }
-                else
-                {
-                    var rm = new RamAccess<string>(MainRadionuclids_Validation, MainRadionuclids_DB);
-                    rm.PropertyChanged += MainRadionuclidsValueChanged;
-                    Dictionary.Add(nameof(MainRadionuclids), rm);
-                    return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
-                }
+
+                var rm = new RamAccess<string>(MainRadionuclids_Validation, MainRadionuclids_DB);
+                rm.PropertyChanged += MainRadionuclidsValueChanged;
+                Dictionary.Add(nameof(MainRadionuclids), rm);
+                return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
+            }
+            if (Dictionary.TryGetValue(nameof(MainRadionuclids), out var value))
+            {
+                return (RamAccess<string>)value;
             }
             else
             {
-                if (Dictionary.ContainsKey(nameof(MainRadionuclids)))
-                {
-                    return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(null, null);
-                    Dictionary.Add(nameof(MainRadionuclids), rm);
-                    return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
-                }
+                var rm = new RamAccess<string>(null, null);
+                Dictionary.Add(nameof(MainRadionuclids), rm);
+                return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
             }
         }
         set
@@ -1843,10 +1876,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region Subsidy_19
+    #region Subsidy (19)
+
     public string Subsidy_DB { get; set; } = "";
+
     public bool Subsidy_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -1869,26 +1905,21 @@ public class Form22 : Form2, IBaseColor
                     ((RamAccess<string>)Dictionary[nameof(Subsidy)]).Value = Subsidy_DB;
                     return (RamAccess<string>)Dictionary[nameof(Subsidy)];
                 }
-                else
-                {
-                    var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
-                    rm.PropertyChanged += SubsidyValueChanged;
-                    Dictionary.Add(nameof(Subsidy), rm);
-                    return (RamAccess<string>)Dictionary[nameof(Subsidy)];
-                }
+
+                var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
+                rm.PropertyChanged += SubsidyValueChanged;
+                Dictionary.Add(nameof(Subsidy), rm);
+                return (RamAccess<string>)Dictionary[nameof(Subsidy)];
+            }
+            if (Dictionary.TryGetValue(nameof(Subsidy), out var value))
+            {
+                return (RamAccess<string>)value;
             }
             else
             {
-                if (Dictionary.ContainsKey(nameof(Subsidy)))
-                {
-                    return (RamAccess<string>)Dictionary[nameof(Subsidy)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(null, null);
-                    Dictionary.Add(nameof(Subsidy), rm);
-                    return (RamAccess<string>)Dictionary[nameof(Subsidy)];
-                }
+                var rm = new RamAccess<string>(null, null);
+                Dictionary.Add(nameof(Subsidy), rm);
+                return (RamAccess<string>)Dictionary[nameof(Subsidy)];
             }
         }
         set
@@ -1921,10 +1952,13 @@ public class Form22 : Form2, IBaseColor
         }
         return true;
     }
+
     #endregion
 
-    #region FcpNumber
+    #region FcpNumber (20)
+
     public string FcpNumber_DB { get; set; } = "";
+
     public bool FcpNumber_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -1947,26 +1981,21 @@ public class Form22 : Form2, IBaseColor
                     ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
                     return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
                 }
-                else
-                {
-                    var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
-                    rm.PropertyChanged += FcpNumberValueChanged;
-                    Dictionary.Add(nameof(FcpNumber), rm);
-                    return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
-                }
+
+                var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
+                rm.PropertyChanged += FcpNumberValueChanged;
+                Dictionary.Add(nameof(FcpNumber), rm);
+                return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+            }
+            if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
+            {
+                return (RamAccess<string>)value;
             }
             else
             {
-                if (Dictionary.ContainsKey(nameof(FcpNumber)))
-                {
-                    return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
-                }
-                else
-                {
-                    var rm = new RamAccess<string>(null, null);
-                    Dictionary.Add(nameof(FcpNumber), rm);
-                    return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
-                }
+                var rm = new RamAccess<string>(null, null);
+                Dictionary.Add(nameof(FcpNumber), rm);
+                return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
             }
         }
         set
@@ -1990,11 +2019,13 @@ public class Form22 : Form2, IBaseColor
         value.ClearErrors();
         return true;
     }
+
     #endregion
 
     #endregion
 
     #region IExcel
+
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
@@ -2019,6 +2050,7 @@ public class Form22 : Form2, IBaseColor
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 20].Value);
 
     }
+
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpose, sumNumber);
@@ -2079,15 +2111,20 @@ public class Form22 : Form2, IBaseColor
     #endregion
 
     #region IDataGridColumn
+
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns != null) return _DataGridColumns;
 
         #region NumberInOrder (1)
+
         var numberInOrderR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(NumberInOrderSum))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(NumberInOrderSum))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD();
         if (numberInOrderR != null)
         {
@@ -2096,12 +2133,16 @@ public class Form22 : Form2, IBaseColor
             numberInOrderR.Blocked = true;
             numberInOrderR.ChooseLine = true;
         }
+
         #endregion
 
         #region StoragePlaceName (2)
+
         var storagePlaceNameR = 
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(StoragePlaceName))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(StoragePlaceName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (storagePlaceNameR != null)
         {
@@ -2109,12 +2150,16 @@ public class Form22 : Form2, IBaseColor
             storagePlaceNameR.Binding = nameof(StoragePlaceName);
             numberInOrderR += storagePlaceNameR;
         }
+
         #endregion
 
         #region StoragePlaceCode (3)
+
         var storagePlaceCodeR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(StoragePlaceCode))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(StoragePlaceCode))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (storagePlaceCodeR != null)
         {
@@ -2122,12 +2167,16 @@ public class Form22 : Form2, IBaseColor
             storagePlaceCodeR.Binding = nameof(StoragePlaceCode);
             numberInOrderR += storagePlaceCodeR;
         }
+
         #endregion
 
         #region PackName (4)
+
         var packNameR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(PackName))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(PackName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (packNameR != null)
         {
@@ -2135,12 +2184,16 @@ public class Form22 : Form2, IBaseColor
             packNameR.Binding = nameof(PackName);
             numberInOrderR += packNameR;
         }
+
         #endregion
 
         #region PackType (5)
+
         var packTypeR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(PackType))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(PackType))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (packTypeR != null)
         {
@@ -2148,12 +2201,16 @@ public class Form22 : Form2, IBaseColor
             packTypeR.Binding = nameof(PackType);
             numberInOrderR += packTypeR;
         }
+
         #endregion
 
         #region PackQuantity (6)
+
         var packQuantityR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(PackQuantity))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(PackQuantity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (packQuantityR != null)
         {
@@ -2161,12 +2218,16 @@ public class Form22 : Form2, IBaseColor
             packQuantityR.Binding = nameof(PackQuantity);
             numberInOrderR += packQuantityR;
         }
+
         #endregion
 
         #region CodeRAO (7)
+
         var codeRaoR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(CodeRAO))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(CodeRAO))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (codeRaoR != null)
         {
@@ -2174,12 +2235,16 @@ public class Form22 : Form2, IBaseColor
             codeRaoR.Binding = nameof(CodeRAO);
             numberInOrderR += codeRaoR;
         }
+
         #endregion
 
         #region StatusRAO (8)
+
         var statusRaoR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(StatusRAO))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(StatusRAO))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (statusRaoR != null)
         {
@@ -2187,12 +2252,16 @@ public class Form22 : Form2, IBaseColor
             statusRaoR.Binding = nameof(StatusRAO);
             numberInOrderR += statusRaoR;
         }
+
         #endregion
 
         #region VolumeOutOfPack (9)
+
         var volumeOutOfPackR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(VolumeOutOfPack))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(VolumeOutOfPack))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (volumeOutOfPackR != null)
         {
@@ -2200,12 +2269,16 @@ public class Form22 : Form2, IBaseColor
             volumeOutOfPackR.Binding = nameof(VolumeOutOfPack);
             numberInOrderR += volumeOutOfPackR;
         }
+
         #endregion
 
         #region VolumeInPack (10)
+
         var volumeInPackR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(VolumeInPack))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(VolumeInPack))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (volumeInPackR != null)
         {
@@ -2213,12 +2286,16 @@ public class Form22 : Form2, IBaseColor
             volumeInPackR.Binding = nameof(VolumeInPack);
             numberInOrderR += volumeInPackR;
         }
+
         #endregion
 
         #region MassOutOfPack (11)
+
         var massOutOfPackR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(MassOutOfPack))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(MassOutOfPack))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (massOutOfPackR != null)
         {
@@ -2226,12 +2303,16 @@ public class Form22 : Form2, IBaseColor
             massOutOfPackR.Binding = nameof(MassOutOfPack);
             numberInOrderR += massOutOfPackR;
         }
+
         #endregion
 
         #region MassInPack (12)
+
         var massInPackR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(MassInPack))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(MassInPack))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (massInPackR != null)
         {
@@ -2239,12 +2320,16 @@ public class Form22 : Form2, IBaseColor
             massInPackR.Binding = nameof(MassInPack);
             numberInOrderR += massInPackR;
         }
+
         #endregion
 
         #region QuantityOZIII (13)
+
         var quantityOziiiR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(QuantityOZIII))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(QuantityOZIII))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (quantityOziiiR != null)
         {
@@ -2252,12 +2337,16 @@ public class Form22 : Form2, IBaseColor
             quantityOziiiR.Binding = nameof(QuantityOZIII);
             numberInOrderR += quantityOziiiR;
         }
+
         #endregion
 
         #region TritiumActivity (14)
+
         var tritiumActivityR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(TritiumActivity))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(TritiumActivity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (tritiumActivityR != null)
         {
@@ -2265,12 +2354,16 @@ public class Form22 : Form2, IBaseColor
             tritiumActivityR.Binding = nameof(TritiumActivity);
             numberInOrderR += tritiumActivityR;
         }
+
         #endregion
 
         #region BetaGammaActivity (15)
+
         var betaGammaActivityR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(BetaGammaActivity))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(BetaGammaActivity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (betaGammaActivityR != null)
         {
@@ -2278,12 +2371,16 @@ public class Form22 : Form2, IBaseColor
             betaGammaActivityR.Binding = nameof(BetaGammaActivity);
             numberInOrderR += betaGammaActivityR;
         }
+
         #endregion
 
         #region AlphaActivity (16)
+
         var alphaActivityR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(AlphaActivity))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(AlphaActivity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (alphaActivityR != null)
         {
@@ -2291,12 +2388,16 @@ public class Form22 : Form2, IBaseColor
             alphaActivityR.Binding = nameof(AlphaActivity);
             numberInOrderR += alphaActivityR;
         }
+
         #endregion
 
         #region TransuraniumActivity (17)
+
         var transuraniumActivityR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(TransuraniumActivity))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(TransuraniumActivity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (transuraniumActivityR != null)
         {
@@ -2304,12 +2405,16 @@ public class Form22 : Form2, IBaseColor
             transuraniumActivityR.Binding = nameof(TransuraniumActivity);
             numberInOrderR += transuraniumActivityR;
         }
+
         #endregion
 
         #region MainRadionuclids (18)
+
         var mainRadionuclidsR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(MainRadionuclids))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(MainRadionuclids))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (mainRadionuclidsR != null)
         {
@@ -2317,12 +2422,16 @@ public class Form22 : Form2, IBaseColor
             mainRadionuclidsR.Binding = nameof(MainRadionuclids);
             numberInOrderR += mainRadionuclidsR;
         }
+
         #endregion
 
         #region Subsidy (19)
+
         var subsidyR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(Subsidy))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(Subsidy))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (subsidyR != null)
         {
@@ -2330,12 +2439,16 @@ public class Form22 : Form2, IBaseColor
             subsidyR.Binding = nameof(Subsidy);
             numberInOrderR += subsidyR;
         }
+
         #endregion
 
         #region FcpNumber (20)
+
         var fcpNumberR =
-            ((FormPropertyAttribute)typeof(Form22).GetProperty(nameof(FcpNumber))
-                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault())
+            ((FormPropertyAttribute)typeof(Form22)
+                .GetProperty(nameof(FcpNumber))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
             ?.GetDataColumnStructureD(numberInOrderR);
         if (fcpNumberR != null)
         {
@@ -2343,11 +2456,13 @@ public class Form22 : Form2, IBaseColor
             fcpNumberR.Binding = nameof(FcpNumber);
             numberInOrderR += fcpNumberR;
         }
+
         #endregion
 
         _DataGridColumns = numberInOrderR;
 
         return _DataGridColumns;
     }
+
     #endregion
 }

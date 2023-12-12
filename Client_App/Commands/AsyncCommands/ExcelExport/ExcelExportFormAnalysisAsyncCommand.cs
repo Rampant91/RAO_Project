@@ -25,7 +25,8 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         ExportType = "Для анализа";
 
         var exportForm = (Report)forms.First();
-        var orgWithExportForm = MainWindowVM.LocalReports.Reports_Collection
+        exportForm = await ReportsStorage.GetReportAsync(exportForm.Id);
+        var orgWithExportForm = ReportsStorage.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
         var formNum = RemoveForbiddenChars(exportForm.FormNum_DB);
         if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
@@ -57,12 +58,10 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
+            cts.Dispose();
             return;
         }
-        finally
-        {
-            cts.Dispose();
-        }
+
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;

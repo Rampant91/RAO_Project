@@ -15,7 +15,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         var cts = new CancellationTokenSource();
         ExportType = "Список организаций";
         
@@ -27,11 +27,8 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            return;
-        }
-        finally
-        {
             cts.Dispose();
+            return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
@@ -42,7 +39,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;  //Добавь сообщение
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
 
         #region Headers
@@ -87,16 +84,13 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         var lst = new List<Reports>();
         var checkedLst = new List<Reports>();
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
-        {
-            var item = (Reports)key;
-            lst.Add(item);
-        }
+        lst.AddRange(ReportsStorage.LocalReports.Reports_Collection);
 
         var row = 2;
         foreach (var reps in lst)
         {
-            if (checkedLst.FirstOrDefault(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep) != null)
+            if (checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
+                                    && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep))
             {
                 row--;
 

@@ -12,7 +12,9 @@
         xmlns:vm="using:Client_App.ViewModels"
         Name="RowNumber"
         Icon="/Assets/logo.png"
-        Title="{Binding WindowHeader}">
+        Title="{Binding WindowHeader}"
+        WindowStartupLocation="CenterScreen">
+
     <Panel x:Name="NumberPanel">
         <StackPanel Orientation="Vertical">
             <TextBlock Text="Какое кол-во строчек вы хотите добавить?" 

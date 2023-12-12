@@ -25,11 +25,10 @@ using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 using Client_App.Commands.AsyncCommands.Import;
+using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
-using Mono.Unix;
-using Mono.Unix.Native;
 
 namespace Client_App.ViewModels;
 
@@ -56,37 +55,111 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     #region LocalReports
 
-    private static DBObservable _localReports = new();
-    public static DBObservable LocalReports
+    private static DBObservable LocalReports
     {
-        get => _localReports;
+        get => ReportsStorage.LocalReports;
         set
         {
-            if (_localReports != value)
+            if (ReportsStorage.LocalReports != value)
             {
-                _localReports = value;
+                ReportsStorage.LocalReports = value;
             }
         }
     }
 
     #endregion
 
-    #region Init
+    #region Initialization
 
-    private static async Task GetSystemDirectory()
+    #region Init
+    
+    public async Task Init(OnStartProgressBarVM onStartProgressBarVm)
+    {
+        onStartProgressBarVm.LoadStatus = "Поиск системной директории";
+        OnStartProgressBar = 1;
+        await GetSystemDirectory();
+
+        onStartProgressBarVm.LoadStatus = "Создание временных файлов";
+        OnStartProgressBar = 5;
+        await ProcessRaoDirectory();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка справочников";
+        OnStartProgressBar = 10;
+        await ProcessSpravochniks();
+
+        onStartProgressBarVm.LoadStatus = "Создание базы данных";
+        OnStartProgressBar = 15;
+        await ProcessDataBaseCreate();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
+        OnStartProgressBar = 20;
+        var dbm = StaticConfiguration.DBModel;
+
+        #region LoadTables
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
+        OnStartProgressBar = 24;
+        await dbm.form_10.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
+        OnStartProgressBar = 45;
+        await dbm.form_20.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
+        OnStartProgressBar = 72;
+        await dbm.ReportCollectionDbSet.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
+        OnStartProgressBar = 74;
+        await dbm.ReportsCollectionDbSet.LoadAsync();
+        var A = ReportsStorage.LocalReports.Reports_Collection;
+        onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
+        OnStartProgressBar = 76;
+        if (!dbm.DBObservableDbSet.Any())
+        {
+            dbm.DBObservableDbSet.Add(new DBObservable());
+            dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
+        }
+
+        await dbm.DBObservableDbSet.LoadAsync();
+
+        #endregion
+
+        onStartProgressBarVm.LoadStatus = "Сортировка организаций";
+        OnStartProgressBar = 80;
+        await ProcessDataBaseFillEmpty(dbm);
+
+        onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
+        OnStartProgressBar = 85;
+        ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
+
+        await ProcessDataBaseFillNullOrder();
+
+        onStartProgressBarVm.LoadStatus = "Сохранение";
+        OnStartProgressBar = 90;
+        await dbm.SaveChangesAsync();
+        ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
+
+        OnStartProgressBar = 100;
+    }
+
+    #endregion
+
+    #region GetSystemDirectory
+    
+    private static async Task<string> GetSystemDirectory()
     {
         try
         {
             if (OperatingSystem.IsWindows())
             {
                 SystemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
-                return;
             }
             if (OperatingSystem.IsLinux())
             {
-                var userName = UnixUserInfo.GetLoginName();
-                SystemDirectory = Path.Combine("/home", userName!);
+                SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             }
+            return SystemDirectory;
         }
         catch (Exception e)
         {
@@ -96,6 +169,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    #endregion
+
+    #region ProcessRaoDirectory
+    
     private static async Task ProcessRaoDirectory()
     {
         try
@@ -103,25 +180,14 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
-            if (OperatingSystem.IsWindows())
-            {
-                Directory.CreateDirectory(LogsDirectory);
-                Directory.CreateDirectory(TmpDirectory);
-            }
-            if (OperatingSystem.IsLinux())
-            {
-                UserPasswd = Syscall.getpwnam(UnixUserInfo.GetLoginName());
-                Syscall.mkdir(RaoDirectory, FilePermissions.ALLPERMS);
-                Syscall.mkdir(LogsDirectory, FilePermissions.ALLPERMS);
-                Syscall.mkdir(TmpDirectory, FilePermissions.ALLPERMS);
-                Syscall.chown(RaoDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-                Syscall.chown(LogsDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-                Syscall.chown(TmpDirectory, UserPasswd.pw_uid, UserPasswd.pw_gid);
-            }
+            Directory.CreateDirectory(LogsDirectory);
+            Directory.CreateDirectory(TmpDirectory);
         }
-        catch
+        catch (Exception e)
         {
-            // ignored
+            Console.WriteLine(e.Message);
+            await ShowMessage.Handle(ErrorMessages.Error2);
+            throw new Exception(ErrorMessages.Error2[0]);
         }
 
         var fl = Directory.GetFiles(TmpDirectory, ".");
@@ -138,6 +204,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    #endregion
+
+    #region ProcessSpravochniks
+    
     private static Task ProcessSpravochniks()
     {
         var a = Spravochniks.SprRadionuclids;
@@ -145,6 +215,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         return Task.CompletedTask;
     }
 
+    #endregion
+
+    #region ProcessDataBaseCreate
+    
     private async Task ProcessDataBaseCreate()
     {
         if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
@@ -180,10 +254,21 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
             StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
             dbm = StaticConfiguration.DBModel;
-            await dbm.Database.MigrateAsync();
+            try
+            {
+                await dbm.Database.MigrateAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 
+    #endregion
+
+    #region ProcessDataBaseFillEmpty
+    
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
@@ -221,9 +306,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    #endregion
+
+    #region ProcessDataBaseFillNullOrder
+    
     private static async Task ProcessDataBaseFillNullOrder()
     {
-        foreach (var key in LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             foreach (var key1 in item.Report_Collection)
@@ -242,9 +331,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
             await item.SortAsync();
         }
 
-        await LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
+        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
     }
 
+    #endregion
+
+    #region GetNumberInOrder
+    
     public static int GetNumberInOrder(IEnumerable lst)
     {
         var maxNum = 0;
@@ -260,172 +353,16 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         return maxNum + 1;
     }
 
-    public async Task Init(OnStartProgressBarVM onStartProgressBarVm)
-    {
-        onStartProgressBarVm.LoadStatus = "Поиск системной директории";
-        OnStartProgressBar = 1;
-        await GetSystemDirectory();
+    #endregion
 
-        onStartProgressBarVm.LoadStatus = "Создание временных файлов";
-        OnStartProgressBar = 5;
-        await ProcessRaoDirectory();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка справочников";
-        OnStartProgressBar = 10;
-        await ProcessSpravochniks();
-
-        onStartProgressBarVm.LoadStatus = "Создание базы данных";
-        OnStartProgressBar = 15;
-        await ProcessDataBaseCreate();
-        
-        onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
-        OnStartProgressBar = 20;
-        var dbm = StaticConfiguration.DBModel;
-
-        #region LoadTables
-        onStartProgressBarVm.LoadStatus = "Загрузка примечаний";
-        OnStartProgressBar = 22;
-        await dbm.notes.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
-        OnStartProgressBar = 24;
-        await dbm.form_10.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.1";
-        OnStartProgressBar = 26;
-        await dbm.form_11.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.2";
-        OnStartProgressBar = 28;
-        await dbm.form_12.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.3";
-        OnStartProgressBar = 30;
-        await dbm.form_13.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.4";
-        OnStartProgressBar = 32;
-        await dbm.form_14.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.5";
-        OnStartProgressBar = 34;
-        await dbm.form_15.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.6";
-        OnStartProgressBar = 36;
-        await dbm.form_16.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.7";
-        OnStartProgressBar = 38;
-        await dbm.form_17.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.8";
-        OnStartProgressBar = 40;
-        await dbm.form_18.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.9";
-        OnStartProgressBar = 42;
-        await dbm.form_19.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
-        OnStartProgressBar = 45;
-        await dbm.form_20.LoadAsync();
-        try
-        {
-
-            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.1";
-            OnStartProgressBar = 48;
-            await dbm.form_21.LoadAsync();
-
-            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.2";
-            OnStartProgressBar = 50;
-            await dbm.form_22.LoadAsync();
-        }
-        catch
-        {
-            dbm.form_21.Local.Clear();
-            dbm.form_22.Local.Clear();
-        }
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.3";
-        OnStartProgressBar = 52;
-        await dbm.form_23.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.4";
-        OnStartProgressBar = 54;
-        await dbm.form_24.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.5";
-        OnStartProgressBar = 56;
-        await dbm.form_25.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.6";
-        OnStartProgressBar = 58;
-        await dbm.form_26.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.7";
-        OnStartProgressBar = 60;
-        await dbm.form_27.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.8";
-        OnStartProgressBar = 62;
-        await dbm.form_28.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.9";
-        OnStartProgressBar = 64;
-        await dbm.form_29.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.10";
-        OnStartProgressBar = 66;
-        await dbm.form_210.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.11";
-        OnStartProgressBar = 68;
-        await dbm.form_211.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.12";
-        OnStartProgressBar = 70;
-        await dbm.form_212.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
-        OnStartProgressBar = 72;
-        await dbm.ReportCollectionDbSet.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
-        OnStartProgressBar = 74;
-        await dbm.ReportsCollectionDbSet.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
-        OnStartProgressBar = 76;
-        if (!dbm.DBObservableDbSet.Any())
-        {
-            dbm.DBObservableDbSet.Add(new DBObservable());
-            dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
-        }
-        await dbm.DBObservableDbSet.LoadAsync(); 
-        #endregion
-
-        onStartProgressBarVm.LoadStatus = "Сортировка организаций";
-        OnStartProgressBar = 80;
-        await ProcessDataBaseFillEmpty(dbm);
-
-        onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
-        OnStartProgressBar = 85;
-        LocalReports = dbm.DBObservableDbSet.Local.First();
-        await ProcessDataBaseFillNullOrder();
-
-        onStartProgressBarVm.LoadStatus = "Сохранение";
-        OnStartProgressBar = 90;
-        await dbm.SaveChangesAsync();
-        LocalReports.PropertyChanged += Local_ReportsChanged;
-
-        OnStartProgressBar = 100;
-    }
-
+    #region Local_ReportsChanged
+    
     private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
     {
-        OnPropertyChanged(nameof(LocalReports));
+        OnPropertyChanged(nameof(ReportsStorage.LocalReports));
     }
+
+    #endregion
 
     #endregion
 
@@ -456,6 +393,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand DeleteForm { get; set; }                    //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                 //  Удалить выбранную организацию
     public ICommand ExcelExportAll { get; set; }                //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
+    public ICommand ExcelExportExecutors { get; set; }          //  Excel -> Список исполнителей
     public ICommand ExcelExportFormAnalysis { get; set; }       //  Выбранная форма -> Выгрузка Excel -> Для анализа
     public ICommand ExcelExportFormPrint { get; set; }          //  Выбранная форма -> Выгрузка Excel -> Для печати
     public ICommand ExcelExportForms { get; set; }              //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
@@ -470,6 +408,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExportReports { get; set; }                 //  Экспорт организации в файл .raodb
     public ICommand ExportReportsWithDateRange { get; set; }    //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
     public ICommand ImportExcel { get; set; }                   //  Импорт -> Из Excel
+    public ICommand ImportJson { get; set; }                    //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                   //  Импорт -> Из RAODB
     public ICommand SaveReports { get; set; }                   //  Сохраняет текущую базу, используется только для сохранения комментария формы
 
@@ -486,6 +425,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangeReports = new ChangeReportsAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
+        ExcelExportExecutors = new ExcelExportExecutorsAsyncCommand();
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
         ExcelExportFormPrint = new ExcelExportFormPrintAsyncCommand(); 
         ExcelExportForms = new ExcelExportFormsAsyncCommand();
@@ -495,12 +435,13 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportListOfOrgs = new ExcelExportListOfOrgsAsyncCommand();
         ExcelExportPasWithoutRep = new ExcelExportPasWithoutRepAsyncCommand();
         ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
-        ExcelExportAll = new ExcelExportAllAsyncCommand();
+        ExcelExportAll = new ExcelExportAllAsyncCommandAsyncCommand();
         ExportAllReports = new ExportAllReportsAsyncCommand();
         ExportForm = new ExportFormAsyncCommand();
         ExportReports = new ExportReportsAsyncCommand();
         ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand(this);
         ImportExcel = new ImportExcelAsyncCommand();
+        ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
     }

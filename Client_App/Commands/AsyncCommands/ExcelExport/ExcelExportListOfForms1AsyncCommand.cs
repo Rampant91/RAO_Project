@@ -28,7 +28,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region ReportsCountCheck
 
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var reps = (Reports)key;
             foreach (var key1 in reps.Report_Collection)
@@ -117,22 +117,34 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            return;
-        }
-        finally
-        {
             cts.Dispose();
+            return;
         }
 
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
+            {
+                File.Delete(dbReadOnlyPath);
+                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+            }
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
+
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (MainWindowVM.LocalReports.Reports_Collection.Count == 0) return;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
 
         #region Headers
@@ -149,7 +161,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         var lst = new List<Reports>();
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection)
+        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
         {
             var item = (Reports)key;
             if (item.Master_DB.FormNum_DB.Split('.')[0] == "1")
@@ -162,6 +174,130 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         var repsList = lst
             .OrderBy(x => x.Master_DB.RegNoRep.Value)
             .ToList();
+
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+
+        #region GetDataFormDB
+
+        #region Tuple11
+
+        var tuple11 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple12
+
+        var tuple12 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.2")
+            .Include(x => x.Rows12)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows12.Count, rep.Rows12.Count(form12 => form12.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple13
+
+        var tuple13 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.3")
+            .Include(x => x.Rows13)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows13.Count, rep.Rows13.Count(form13 => form13.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple14
+
+        var tuple14 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.4")
+            .Include(x => x.Rows14)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows14.Count, rep.Rows14.Count(form14 => form14.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple15
+
+        var tuple15 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.5")
+            .Include(x => x.Rows15)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows15.Count, rep.Rows15.Count(form15 => form15.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple16
+
+        var tuple16 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.6")
+            .Include(x => x.Rows16)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows16.Count, rep.Rows16.Count(form16 => form16.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple17
+
+        var tuple17 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.7")
+            .Include(x => x.Rows17)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows17.Count, rep.Rows17.Count(form17 => form17.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple18
+
+        var tuple18 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.8")
+            .Include(x => x.Rows18)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows18.Count, rep.Rows18.Count(form18 => form18.OperationCode_DB == "10")))
+            .ToList();
+
+        #endregion
+
+        #region Tuple19
+
+        var tuple19 = dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.9")
+            .Include(x => x.Rows19)
+            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows19.Count, rep.Rows19.Count(form19 => form19.OperationCode_DB == "10")))
+            .ToList(); 
+
+        #endregion
+
+        #endregion
+
         foreach (var reps in repsList)
         {
             var repList = reps.Report_Collection
@@ -174,16 +310,29 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 .OrderBy(x => x.FormNum_DB)
                 .ThenBy(x => StringReverse(x.StartPeriod_DB))
                 .ToList();
-            foreach (var rep in repList)
+            foreach(var rep in repList)
             {
+                var tupleList = rep.FormNum_DB switch
+                {
+                    "1.1" => tuple11,
+                    "1.2" => tuple12,
+                    "1.3" => tuple13,
+                    "1.4" => tuple14,
+                    "1.5" => tuple15,
+                    "1.6" => tuple16,
+                    "1.7" => tuple17,
+                    "1.8" => tuple18,
+                    "1.9" => tuple19
+                };
+                var tuple = tupleList.Find(x => x.Item1 == rep.Id) ?? new Tuple<int,int,int>(rep.Id, 0, 0);
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
                 Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
                 Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
                 Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
                 Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[row, 7].Value = rep.Rows.Count;
-                Worksheet.Cells[row, 8].Value = InventoryCheck(rep).TrimStart();
+                Worksheet.Cells[row, 7].Value = tuple.Item2; 
+                Worksheet.Cells[row, 8].Value = InventoryCheck(tuple.Item2, tuple.Item3).TrimStart();
                 row++;
             }
         }
@@ -194,48 +343,5 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         Worksheet.View.FreezePanes(2, 1);
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
-
-        //DateTime repEndDateTime;
-        //var row = 2;
-        //await using var db = StaticConfiguration.DBModel;
-        //try
-        //{
-        //    db.ReportsCollectionDbSet
-        //        .AsNoTracking()
-        //        .SelectMany(filterReps => filterReps.Report_Collection
-        //            .Where(x =>
-        //                x.FormNum_DB.StartsWith('1')
-        //                && startDateTime == DateTime.MinValue
-        //                && endDateTime == DateTime.MaxValue
-        //                && DateTime.TryParse(x.EndPeriod_DB, out repEndDateTime)
-        //                && repEndDateTime >= startDateTime
-        //                && repEndDateTime <= endDateTime)
-        //            .Select(rep => new
-        //            {
-        //                RegNoRep = filterReps.Master.RegNoRep.Value,
-        //                OKPO = filterReps.Master.OkpoRep.Value,
-        //                Report = rep
-        //            }))
-        //        .OrderBy(x => x.RegNoRep)
-        //        .ThenBy(x => x.Report.FormNum_DB)
-        //        .ThenBy(x => StringReverse(x.Report.StartPeriod_DB))
-        //        .ToList()
-        //        .ForEach(x =>
-        //        {
-        //            Worksheet.Cells[row, 1].Value = x.RegNoRep;
-        //            Worksheet.Cells[row, 2].Value = x.OKPO;
-        //            Worksheet.Cells[row, 3].Value = x.Report.FormNum_DB;
-        //            Worksheet.Cells[row, 4].Value = x.Report.StartPeriod_DB;
-        //            Worksheet.Cells[row, 5].Value = x.Report.EndPeriod_DB;
-        //            Worksheet.Cells[row, 6].Value = x.Report.CorrectionNumber_DB;
-        //            Worksheet.Cells[row, 7].Value = x.Report.Rows.Count;
-        //            Worksheet.Cells[row, 8].Value = InventoryCheck(x.Report).TrimStart();
-        //            row++;
-        //        });
-        //}
-        //catch (Exception e)
-        //{
-        //    //ignored
-        //}
     }
 }

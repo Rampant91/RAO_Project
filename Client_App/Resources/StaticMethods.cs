@@ -1,4 +1,6 @@
-﻿using Models.Attributes;
+﻿using Avalonia.Controls;
+using Avalonia;
+using Models.Attributes;
 using Models.Interfaces;
 using System;
 using System.Linq;

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
@@ -17,12 +18,18 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
+using DynamicData;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System.Threading;
 
 namespace Client_App.ViewModels;
 
 public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 {
     private string WindowHeader { get; set; } = "default";
+
     public event PropertyChangedEventHandler PropertyChanged;
     internal void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {
@@ -30,6 +37,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
 
     #region FormType
+
     private string _FormType;
     public string FormType
     {
@@ -43,9 +51,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region IsCanSaveReportEnabled
+
     private bool _isCanSaveReportEnabled;
 
     public bool IsCanSaveReportEnabled
@@ -145,46 +155,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     }
     #endregion
 
-    #region Storage10
-    private Form10 _Storage10;
-    public Form10 Storage10
-    {
-        get
-        {
-            var count = Storage.Rows10.Count;
-            return Storage.Rows10[count - 1];
-        }
-        set
-        {
-            if (_Storage10 != value)
-            {
-                _Storage10 = value;
-                NotifyPropertyChanged("Storage10");
-            }
-        }
-    }
-    #endregion
-
-    #region Storage20
-    private Form20 _Storage20;
-    public Form20 Storage20
-    {
-        get
-        {
-            var count = Storage.Rows20.Count;
-            return Storage.Rows20[count - 1];
-        }
-        set
-        {
-            if (_Storage20 != value)
-            {
-                _Storage20 = value;
-                NotifyPropertyChanged("Storage20");
-            }
-        }
-    }
-    #endregion
-
     #region Commands
 
     public ICommand AddNote { get; set; }                           //  Добавить примечание в форму
@@ -210,20 +180,35 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #region Constructor
 
-    //  При изменении формы или организации
-    public ChangeOrCreateVM(string param, in Report rep, Reports reps, DBObservable localReports)
+    #region ChangeFormOrOrg
+    
+    public ChangeOrCreateVM(string param, in Report rep)
     {
-        Storage = rep;
-        Storages = reps;
+        if (rep.FormNum_DB is "1.0" or "2.0")
+        {
+            Storage = rep;
+        }
+        else
+        {
+            var id = rep.Id;
+            while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
+            Task myTask = Task.Factory.StartNew(() => ReportsStorage.GetReportAsync(id, this));  //при открытии формы загружаем все формы из БД
+            myTask.Wait();
+        }
+        
         FormType = param;
-        LocalReports = localReports;
+        LocalReports = ReportsStorage.LocalReports;
         var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
         var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
         isSum = sumR21 > 0 || sumR22 > 0;
         Init();
+        StaticConfiguration.DBModel.SaveChanges();
     }
 
-    //  При добавлении новой формы
+    #endregion
+
+    #region AddNewForm
+
     public ChangeOrCreateVM(string param, in Reports reps)
     {
         Storage = new Report { FormNum_DB = param };
@@ -231,83 +216,88 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         switch (param)
         {
             case "1.0":
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows10.Add(ty1);
-                Storage.Rows10.Add(ty2);
-                break;
-            }
-            case "2.0":
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows20.Add(ty1);
-                Storage.Rows20.Add(ty2);
-                break;
-            }
-            default:
-            {
-                if (param.StartsWith('1') || param.StartsWith('2'))
                 {
-                    try
-                    {
-                        var ty = reps.Report_Collection
-                            .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
-                            .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
-                            .Select(t => t.EndPeriod_DB)
-                            .LastOrDefault();
-                        FormType = param;
-                        Storage.StartPeriod.Value = ty;
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                    var ty1 = (Form10)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form10)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows10.Add(ty1);
+                    Storage.Rows10.Add(ty2);
+                    break;
                 }
-                break;
-            }
+            case "2.0":
+                {
+                    var ty1 = (Form20)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form20)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows20.Add(ty1);
+                    Storage.Rows20.Add(ty2);
+                    break;
+                }
+            default:
+                {
+                    if (param.StartsWith('1') || param.StartsWith('2'))
+                    {
+                        try
+                        {
+                            var ty = reps.Report_Collection
+                                .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
+                                .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
+                                .Select(t => t.EndPeriod_DB)
+                                .LastOrDefault();
+                            FormType = param;
+                            Storage.StartPeriod.Value = ty;
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+                    }
+                    break;
+                }
         }
         Storages = reps;
         FormType = param;
         Init();
     }
 
-    //  При добавлении новой организации
+    #endregion
+
+    #region AddNewOrg
+    
     public ChangeOrCreateVM(string param, in DBObservable reps)
     {
         Storage = new Report { FormNum_DB = param };
         switch (param)
         {
             case "1.0":
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows10.Add(ty1);
-                Storage.Rows10.Add(ty2);
-                break;
-            }
+                {
+                    var ty1 = (Form10)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form10)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows10.Add(ty1);
+                    Storage.Rows10.Add(ty2);
+                    break;
+                }
             case "2.0":
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows20.Add(ty1);
-                Storage.Rows20.Add(ty2);
-                break;
-            }
+                {
+                    var ty1 = (Form20)FormCreator.Create(param);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form20)FormCreator.Create(param);
+                    ty2.NumberInOrder_DB = 2;
+                    Storage.Rows20.Add(ty1);
+                    Storage.Rows20.Add(ty2);
+                    break;
+                }
         }
         FormType = param;
         DBO = reps;
         Init();
     }
+
+    #endregion
 
     #endregion
 
@@ -356,7 +346,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ShowMessageT = new Interaction<List<string>, string>();
         if (!isSum)
         {
-            Storage.Sort();
+            //Storage.Sort();
         }
     }
 }

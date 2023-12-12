@@ -15,12 +15,19 @@ namespace Models.Forms.Form2;
 [Form_Class("Форма 2.8: Отведение сточных вод, содержащих радионуклиды")]
 public class Form28 : Form2
 {
-    public Form28() : base()
+    #region Constructor
+
+    public Form28()
     {
         FormNum.Value = "2.8";
         //NumberOfFields.Value = 24;
         Validate_all();
     }
+
+    #endregion
+
+    #region Validation
+    
     private void Validate_all()
     {
         WasteSourceName_Validation(WasteSourceName);
@@ -31,21 +38,27 @@ public class Form28 : Form2
         PoolDistrictName_Validation(PoolDistrictName);
     }
 
-    [FormProperty(true,"Форма")]
+    [FormProperty(true, "Форма")]
     public override bool Object_Validation()
     {
-        return !(WasteSourceName.HasErrors||
-                 WasteRecieverName.HasErrors||
-                 RecieverTypeCode.HasErrors||
-                 AllowedWasteRemovalVolume.HasErrors||
-                 RemovedWasteVolume.HasErrors||
+        return !(WasteSourceName.HasErrors ||
+                 WasteRecieverName.HasErrors ||
+                 RecieverTypeCode.HasErrors ||
+                 AllowedWasteRemovalVolume.HasErrors ||
+                 RemovedWasteVolume.HasErrors ||
                  PoolDistrictName.HasErrors);
     }
 
-    #region WasteSourceName
+    #endregion
+
+    #region Properties
+
+    #region WasteSourceName (2)
+
     public string WasteSourceName_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"null-2","Наименование, номер выпуска сточных вод","2")]
+    [FormProperty(true, "null-2", "Наименование, номер выпуска сточных вод", "2")]
     public RamAccess<string> WasteSourceName
     {
         get
@@ -55,13 +68,10 @@ public class Form28 : Form2
                 ((RamAccess<string>)Dictionary[nameof(WasteSourceName)]).Value = WasteSourceName_DB;
                 return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
-                rm.PropertyChanged += WasteSourceNameValueChanged;
-                Dictionary.Add(nameof(WasteSourceName), rm);
-                return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
-            }
+            var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
+            rm.PropertyChanged += WasteSourceNameValueChanged;
+            Dictionary.Add(nameof(WasteSourceName), rm);
+            return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
         }
         set
         {
@@ -70,13 +80,14 @@ public class Form28 : Form2
         }
     }
 
-    private void WasteSourceNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void WasteSourceNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            WasteSourceName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool WasteSourceName_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -87,13 +98,15 @@ public class Form28 : Form2
         }
         return true;
     }
-    //WasteSourceName property
+
     #endregion
 
-    #region WasteRecieverName
+    #region WasteRecieverName (3)
+
     public string WasteRecieverName_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Приемник отведенных вод", "наименование","3")]
+    [FormProperty(true, "Приемник отведенных вод", "наименование", "3")]
     public RamAccess<string> WasteRecieverName
     {
         get
@@ -103,13 +116,10 @@ public class Form28 : Form2
                 ((RamAccess<string>)Dictionary[nameof(WasteRecieverName)]).Value = WasteRecieverName_DB;
                 return (RamAccess<string>)Dictionary[nameof(WasteRecieverName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
-                rm.PropertyChanged += WasteRecieverNameValueChanged;
-                Dictionary.Add(nameof(WasteRecieverName), rm);
-                return (RamAccess<string>)Dictionary[nameof(WasteRecieverName)];
-            }
+            var rm = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
+            rm.PropertyChanged += WasteRecieverNameValueChanged;
+            Dictionary.Add(nameof(WasteRecieverName), rm);
+            return (RamAccess<string>)Dictionary[nameof(WasteRecieverName)];
         }
         set
         {
@@ -118,13 +128,14 @@ public class Form28 : Form2
         }
     }
 
-    private void WasteRecieverNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void WasteRecieverNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            WasteRecieverName_DB = ((RamAccess<string>)Value).Value;
+            WasteRecieverName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool WasteRecieverName_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -135,12 +146,15 @@ public class Form28 : Form2
         }
         return true;
     }
-    //WasteRecieverName property
+
     #endregion
 
-    #region RecieverTypeCode
-    public string RecieverTypeCode_DB { get; set; } = ""; [NotMapped]
-    [FormProperty(true,"Приемник отведенных вод", "код типа приемника","4")]
+    #region RecieverTypeCode (4)
+
+    public string RecieverTypeCode_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Приемник отведенных вод", "код типа приемника", "4")]
     public RamAccess<string> RecieverTypeCode
     {
         get
@@ -150,13 +164,10 @@ public class Form28 : Form2
                 ((RamAccess<string>)Dictionary[nameof(RecieverTypeCode)]).Value = RecieverTypeCode_DB;
                 return (RamAccess<string>)Dictionary[nameof(RecieverTypeCode)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
-                rm.PropertyChanged += RecieverTypeCodeValueChanged;
-                Dictionary.Add(nameof(RecieverTypeCode), rm);
-                return (RamAccess<string>)Dictionary[nameof(RecieverTypeCode)];
-            }
+            var rm = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
+            rm.PropertyChanged += RecieverTypeCodeValueChanged;
+            Dictionary.Add(nameof(RecieverTypeCode), rm);
+            return (RamAccess<string>)Dictionary[nameof(RecieverTypeCode)];
         }
         set
         {
@@ -165,13 +176,14 @@ public class Form28 : Form2
         }
     }
 
-    private void RecieverTypeCodeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void RecieverTypeCodeValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            RecieverTypeCode_DB = ((RamAccess<string>)Value).Value;
+            RecieverTypeCode_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool RecieverTypeCode_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -187,12 +199,15 @@ public class Form28 : Form2
         value.AddError("Недопустимое значение");
         return false;
     }
-    //RecieverTypeCode property
+
     #endregion
 
-    #region PoolDistrictName
-    public string PoolDistrictName_DB { get; set; } = ""; [NotMapped]
-    [FormProperty(true,"Приемник отведенных вод", "наименование бассейнового округа","5")]
+    #region PoolDistrictName (5)
+
+    public string PoolDistrictName_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Приемник отведенных вод", "наименование бассейнового округа", "5")]
     public RamAccess<string> PoolDistrictName
     {
         get
@@ -202,13 +217,10 @@ public class Form28 : Form2
                 ((RamAccess<string>)Dictionary[nameof(PoolDistrictName)]).Value = PoolDistrictName_DB;
                 return (RamAccess<string>)Dictionary[nameof(PoolDistrictName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
-                rm.PropertyChanged += PoolDistrictNameValueChanged;
-                Dictionary.Add(nameof(PoolDistrictName), rm);
-                return (RamAccess<string>)Dictionary[nameof(PoolDistrictName)];
-            }
+            var rm = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
+            rm.PropertyChanged += PoolDistrictNameValueChanged;
+            Dictionary.Add(nameof(PoolDistrictName), rm);
+            return (RamAccess<string>)Dictionary[nameof(PoolDistrictName)];
         }
         set
         {
@@ -217,13 +229,14 @@ public class Form28 : Form2
         }
     }
 
-    private void PoolDistrictNameValueChanged(object Value, PropertyChangedEventArgs args)
+    private void PoolDistrictNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            PoolDistrictName_DB = ((RamAccess<string>)Value).Value;
+            PoolDistrictName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool PoolDistrictName_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -241,12 +254,15 @@ public class Form28 : Form2
         //value.AddError("Недопустимое значение");
         //return false;
     }
-    //PoolDistrictName property
+
     #endregion
 
-    #region AllowedWasteRemovalVolume
-    public string AllowedWasteRemovalVolume_DB { get; set; } = ""; [NotMapped]
-    [FormProperty(true,"null-3","Допустимый объем водоотведения за год, тыс. куб. м", "6")]
+    #region AllowedWasteRemovalVolume (6)
+
+    public string AllowedWasteRemovalVolume_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "null-3", "Допустимый объем водоотведения за год, тыс. куб. м", "6")]
     public RamAccess<string> AllowedWasteRemovalVolume
     {
         get
@@ -256,13 +272,10 @@ public class Form28 : Form2
                 ((RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)]).Value = AllowedWasteRemovalVolume_DB;
                 return (RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
-                rm.PropertyChanged += AllowedWasteRemovalVolumeValueChanged;
-                Dictionary.Add(nameof(AllowedWasteRemovalVolume), rm);
-                return (RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)];
-            }
+            var rm = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
+            rm.PropertyChanged += AllowedWasteRemovalVolumeValueChanged;
+            Dictionary.Add(nameof(AllowedWasteRemovalVolume), rm);
+            return (RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)];
         }
         set
         {
@@ -271,34 +284,30 @@ public class Form28 : Form2
         }
     }
 
-    private void AllowedWasteRemovalVolumeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void AllowedWasteRemovalVolumeValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    AllowedWasteRemovalVolume_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                AllowedWasteRemovalVolume_DB = value1;
+                return;
             }
-            AllowedWasteRemovalVolume_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        AllowedWasteRemovalVolume_DB = value1;
     }
+
     private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -316,25 +325,28 @@ public class Form28 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //AllowedWasteRemovalVolume property
+
     #endregion
 
-    #region RemovedWasteVolume
-    public string RemovedWasteVolume_DB { get; set; } [NotMapped]
-    [FormProperty(true,"null-4","Отведено за отчетный период, тыс. куб. м","7")]
+    #region RemovedWasteVolume (7)
+
+    public string RemovedWasteVolume_DB { get; set; }
+
+    [NotMapped]
+    [FormProperty(true, "null-4", "Отведено за отчетный период, тыс. куб. м", "7")]
     public RamAccess<string> RemovedWasteVolume
     {
         get
@@ -344,13 +356,10 @@ public class Form28 : Form2
                 ((RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)]).Value = RemovedWasteVolume_DB;
                 return (RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
-                rm.PropertyChanged += RemovedWasteVolumeValueChanged;
-                Dictionary.Add(nameof(RemovedWasteVolume), rm);
-                return (RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)];
-            }
+            var rm = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
+            rm.PropertyChanged += RemovedWasteVolumeValueChanged;
+            Dictionary.Add(nameof(RemovedWasteVolume), rm);
+            return (RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)];
         }
         set
         {
@@ -359,34 +368,30 @@ public class Form28 : Form2
         }
     }
 
-    private void RemovedWasteVolumeValueChanged(object Value, PropertyChangedEventArgs args)
+    private void RemovedWasteVolumeValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    RemovedWasteVolume_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                RemovedWasteVolume_DB = value1;
+                return;
             }
-            RemovedWasteVolume_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        RemovedWasteVolume_DB = value1;
     }
+
     private bool RemovedWasteVolume_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -400,23 +405,26 @@ public class Form28 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //RemovedWasteVolume property
+
+    #endregion
+
     #endregion
 
     #region IExcel
+
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
@@ -459,67 +467,134 @@ public class Form28 : Form2
 
         return 6;
     }
+
     #endregion
 
     #region IDataGridColumn
+
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns != null) return _DataGridColumns;
 
         #region NumberInOrder (1)
-        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        NumberInOrderR.SetSizeColToAllLevels(50);
-        NumberInOrderR.Binding = nameof(NumberInOrder);
-        NumberInOrderR.Blocked = true;
-        NumberInOrderR.ChooseLine = true;
+
+        var numberInOrderR = ((FormPropertyAttribute)typeof(Form)
+                .GetProperty(nameof(NumberInOrder))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD();
+        if (numberInOrderR != null)
+        {
+            numberInOrderR.SetSizeColToAllLevels(50);
+            numberInOrderR.Binding = nameof(NumberInOrder);
+            numberInOrderR.Blocked = true;
+            numberInOrderR.ChooseLine = true;
+        }
+        
         #endregion
 
         #region WasteSourceName (2)
-        var WasteSourceNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        WasteSourceNameR.SetSizeColToAllLevels(258);
-        WasteSourceNameR.Binding = nameof(WasteSourceName);
-        NumberInOrderR += WasteSourceNameR;
+
+        var wasteSourceNameR = ((FormPropertyAttribute)typeof(Form28)
+                .GetProperty(nameof(WasteSourceName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (wasteSourceNameR != null)
+        {
+            wasteSourceNameR.SetSizeColToAllLevels(258);
+            wasteSourceNameR.Binding = nameof(WasteSourceName);
+            numberInOrderR += wasteSourceNameR;
+        }
+
         #endregion
 
         #region WasteRecieverName (3)
-        var WasteRecieverNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(WasteRecieverName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        WasteRecieverNameR.SetSizeColToAllLevels(238);
-        WasteRecieverNameR.Binding = nameof(WasteRecieverName);
-        NumberInOrderR += WasteRecieverNameR;
+
+        var wasteRecieverNameR = ((FormPropertyAttribute)typeof(Form28)
+                .GetProperty(nameof(WasteRecieverName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (wasteRecieverNameR != null)
+        {
+            wasteRecieverNameR.SetSizeColToAllLevels(238);
+            wasteRecieverNameR.Binding = nameof(WasteRecieverName);
+            numberInOrderR += wasteRecieverNameR;
+        }
+
         #endregion
 
         #region RecieverTypeCode (4)
-        var RecieverTypeCodeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(RecieverTypeCode)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        RecieverTypeCodeR.SetSizeColToAllLevels(200);
-        RecieverTypeCodeR.Binding = nameof(RecieverTypeCode);
-        NumberInOrderR += RecieverTypeCodeR;
+
+        var recieverTypeCodeR = ((FormPropertyAttribute)typeof(Form28)
+                .GetProperty(nameof(RecieverTypeCode))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (recieverTypeCodeR != null)
+        {
+            recieverTypeCodeR.SetSizeColToAllLevels(200);
+            recieverTypeCodeR.Binding = nameof(RecieverTypeCode);
+            numberInOrderR += recieverTypeCodeR;
+        }
+
         #endregion
 
         #region PoolDistrictName (5)
-        var PoolDistrictNameR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(PoolDistrictName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        PoolDistrictNameR.SetSizeColToAllLevels(213);
-        PoolDistrictNameR.Binding = nameof(PoolDistrictName);
-        NumberInOrderR += PoolDistrictNameR;
+
+        var poolDistrictNameR = ((FormPropertyAttribute)typeof(Form28)
+                .GetProperty(nameof(PoolDistrictName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (poolDistrictNameR != null)
+        {
+            poolDistrictNameR.SetSizeColToAllLevels(213);
+            poolDistrictNameR.Binding = nameof(PoolDistrictName);
+            numberInOrderR += poolDistrictNameR;
+        }
+
         #endregion
 
         #region AllowedWasteRemovalVolume (6)
-        var AllowedWasteRemovalVolumeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        AllowedWasteRemovalVolumeR.SetSizeColToAllLevels(213);
-        AllowedWasteRemovalVolumeR.Binding = nameof(AllowedWasteRemovalVolume);
-        NumberInOrderR += AllowedWasteRemovalVolumeR;
+
+        var allowedWasteRemovalVolumeR = ((FormPropertyAttribute)typeof(Form28)
+                .GetProperty(nameof(AllowedWasteRemovalVolume))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (allowedWasteRemovalVolumeR != null)
+        {
+            allowedWasteRemovalVolumeR.SetSizeColToAllLevels(213);
+            allowedWasteRemovalVolumeR.Binding = nameof(AllowedWasteRemovalVolume);
+            numberInOrderR += allowedWasteRemovalVolumeR;
+        }
+
         #endregion
 
         #region RemovedWasteVolume (7)
-        var RemovedWasteVolumeR = ((FormPropertyAttribute)typeof(Form28).GetProperty(nameof(RemovedWasteVolume)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        RemovedWasteVolumeR.SetSizeColToAllLevels(208);
-        RemovedWasteVolumeR.Binding = nameof(RemovedWasteVolume);
-        NumberInOrderR += RemovedWasteVolumeR;
+
+        var removedWasteVolumeR = ((FormPropertyAttribute)typeof(Form28)
+                .GetProperty(nameof(RemovedWasteVolume))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (removedWasteVolumeR != null)
+        {
+            removedWasteVolumeR.SetSizeColToAllLevels(208);
+            removedWasteVolumeR.Binding = nameof(RemovedWasteVolume);
+            numberInOrderR += removedWasteVolumeR;
+        }
+
         #endregion
 
-        _DataGridColumns = NumberInOrderR;
+        _DataGridColumns = numberInOrderR;
 
         return _DataGridColumns;
     }
+
     #endregion
 }

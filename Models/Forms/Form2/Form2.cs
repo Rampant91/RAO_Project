@@ -35,7 +35,6 @@ public abstract class Form2 : Form
                 ((RamAccess<byte>)Dictionary[nameof(CorrectionNumber)]).Value = CorrectionNumber_DB;
                 return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
             }
-
             var rm = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
             rm.PropertyChanged += CorrectionNumberValueChanged;
             Dictionary.Add(nameof(CorrectionNumber), rm);
@@ -48,15 +47,15 @@ public abstract class Form2 : Form
         }
     }
 
-    private void CorrectionNumberValueChanged(object Value, PropertyChangedEventArgs args)
+    private void CorrectionNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            CorrectionNumber_DB = ((RamAccess<byte>)Value).Value;
+            CorrectionNumber_DB = ((RamAccess<byte>)value).Value;
         }
     }
 
-    private bool CorrectionNumber_Validation(RamAccess<byte> value)
+    private static bool CorrectionNumber_Validation(RamAccess<byte> value)
     {
         value.ClearErrors();
         return true;
@@ -73,13 +72,11 @@ public abstract class Form2 : Form
             : 0;
     }
 
-    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true,
-        string sumNumber = "")
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         worksheet.Cells[row, column].Value = NumberInOrder_DB == 0
             ? sumNumber
             : NumberInOrder_DB;
-
         return 1;
     }
 
@@ -87,7 +84,6 @@ public abstract class Form2 : Form
     {
         worksheet.Cells[row, column].Value = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder))
             ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
-
         return 1;
     }
 

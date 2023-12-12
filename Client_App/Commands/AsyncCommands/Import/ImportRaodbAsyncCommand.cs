@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Models.Forms;
 using Client_App.Interfaces.Logger;
+using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -35,55 +35,80 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
 
-        foreach (var res in answer) // Для каждого импортируемого файла
-        {
-            if (res == "") continue;
-            var file = GetRaoFileName();
-            SourceFile = new FileInfo(res);
-            SourceFile.CopyTo(file, true);
-            var reportsCollection = await GetReportsFromDataBase(file);
+        var countReadFiles = answer.Length;
 
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        foreach (var path in answer) // Для каждого импортируемого файла
+        {
+            if (path == "") continue;
+            TmpImpFilePath = GetRaoFileName();
+            SourceFile = new FileInfo(path);
+            SourceFile.CopyTo(TmpImpFilePath, true);
+            var reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
+            if (reportsCollection.Count == 0)
+            {
+                #region MessageFailedToReadFile
+
+                await MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = ButtonEnum.Ok,
+                                ContentTitle = "Импорт из .raodb",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    $"Не удалось прочесть файл {path}," +
+                                    $"{Environment.NewLine}файл поврежден или не содержит данных.",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow); 
+
+                #endregion
+
+                countReadFiles--;
+                continue;
+            }
             if (!HasMultipleReport)
             {
                 HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
             }
 
-            foreach (var item in reportsCollection) // Для каждой импортируемой организации
+            foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
             {
-                await item.SortAsync();
-                await RestoreReportsOrders(item);
-                if (item.Master.Rows10.Count != 0)
+                await impReps.SortAsync();
+                await RestoreReportsOrders(impReps);
+                if (impReps.Master.Rows10.Count != 0)
                 {
-                    item.Master.Rows10[1].RegNo_DB = item.Master.Rows10[0].RegNo_DB;
+                    impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
                 }
 
-                if (item.Master.Rows20.Count != 0)
+                if (impReps.Master.Rows20.Count != 0)
                 {
-                    item.Master.Rows20[1].RegNo_DB = item.Master.Rows20[0].RegNo_DB;
+                    impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
-                var first11 = GetReports11FromLocalEqual(item);
-                var first21 = GetReports21FromLocalEqual(item);
-                FillEmptyRegNo(ref first11);
-                FillEmptyRegNo(ref first21);
-                item.CleanIds();
-                ProcessIfNoteOrder0(item);
+                var baseReps11 = GetReports11FromLocalEqual(impReps);
+                var baseReps21 = GetReports21FromLocalEqual(impReps);
+                FillEmptyRegNo(ref baseReps11);
+                FillEmptyRegNo(ref baseReps21);
+                impReps.CleanIds();
+                ProcessIfNoteOrder0(impReps);
 
-                ImpRepFormCount = item.Report_Collection.Count;
-                ImpRepFormNum = item.Master.FormNum_DB;
-                BaseRepsOkpo = item.Master.OkpoRep.Value;
-                BaseRepsRegNum = item.Master.RegNoRep.Value;
-                BaseRepsShortName = item.Master.ShortJurLicoRep.Value;
+                ImpRepFormCount = impReps.Report_Collection.Count;
+                ImpRepFormNum = impReps.Master.FormNum_DB;
+                BaseRepsOkpo = impReps.Master.OkpoRep.Value;
+                BaseRepsRegNum = impReps.Master.RegNoRep.Value;
+                BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
-                if (first11 != null)
+                if (baseReps11 != null)
                 {
-                    await ProcessIfHasReports11(first11, item);
+                    await ProcessIfHasReports11(baseReps11, impReps);
                 }
-                else if (first21 != null)
+                else if (baseReps21 != null)
                 {
-                    await ProcessIfHasReports21(first21, item);
+                    await ProcessIfHasReports21(baseReps21, impReps);
                 }
-                else if (first11 == null && first21 == null)
+                else if (baseReps11 == null && baseReps21 == null)
                 {
                     #region AddNewOrg
 
@@ -154,12 +179,12 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                     if (an is "Добавить" or "Да для всех")
                     {
-                        MainWindowVM.LocalReports.Reports_Collection.Add(item);
+                        ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
                         AtLeastOneImportDone = true;
 
                         #region LoggerImport
 
-                        var sortedRepList = item.Report_Collection
+                        var sortedRepList = impReps.Report_Collection
                                             .OrderBy(x => x.FormNum_DB)
                                             .ThenBy(x => StringReverse(x.StartPeriod_DB))
                                             .ToList();
@@ -189,19 +214,19 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     #endregion
                 }
 
-                switch (item.Master_DB.FormNum_DB)
+                switch (impReps.Master_DB.FormNum_DB)
                 {
                     case "1.0":
-                        await item.Master_DB.Rows10.QuickSortAsync();
+                        await impReps.Master_DB.Rows10.QuickSortAsync();
                         break;
                     case "2.0":
-                        await item.Master_DB.Rows20.QuickSortAsync();
+                        await impReps.Master_DB.Rows20.QuickSortAsync();
                         break;
                 }
             }
         }
 
-        await MainWindowVM.LocalReports.Reports_Collection.QuickSortAsync();
+        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         await StaticConfiguration.DBModel.SaveChangesAsync();
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
@@ -214,10 +239,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .raodb",
                     ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из файл{suffix} .raodb успешно завершен.",
+                    ContentMessage = $"Импорт {countReadFiles} из {answer.Length} файл{suffix} .raodb успешно завершен.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -233,10 +258,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .raodb",
                     ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из файл{suffix} .raodb был отменен.",
+                    ContentMessage = $"Импорт из {answer.Length} файл{suffix} .raodb был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -246,174 +271,6 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             #endregion
         }
     }
-
-    #region FillEmptyRegNo
-
-    private static void FillEmptyRegNo(ref Reports? reps)
-    {
-        if (reps is null) return;
-        if (reps.Master.Rows10.Count >= 2)
-        {
-            if (reps.Master.Rows10[0].RegNo_DB is "" && reps.Master.Rows10[1].RegNo_DB is not "" && reps.Master.Rows10[0].Okpo_DB is not "")
-            {
-                reps.Master.Rows10[0].RegNo_DB = reps.Master.Rows10[1].RegNo_DB;
-            }
-            if (reps.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" && reps.Master.Rows10[1].Okpo_DB is not "")
-            {
-                reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
-            }
-        }
-        if (reps.Master.Rows20.Count >= 2)
-        {
-            if (reps.Master.Rows20[0].RegNo_DB is "" && reps.Master.Rows20[1].RegNo_DB is not "" && reps.Master.Rows20[0].Okpo_DB is not "")
-            {
-                reps.Master.Rows20[0].RegNo_DB = reps.Master.Rows20[1].RegNo_DB;
-            }
-            if (reps.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" && reps.Master.Rows20[1].Okpo_DB is not "")
-            {
-                reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
-            }
-        }
-    }
-
-    #endregion
-
-    #region GetRaoFileName
-
-    private static string GetRaoFileName()
-    {
-        var count = 0;
-        string? file;
-        do
-        {
-            file = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
-        } while (File.Exists(file));
-
-        return file;
-    }
-
-    #endregion
-
-    #region GetReports11FromLocalEqual
-
-    private static Reports? GetReports11FromLocalEqual(Reports item)
-    {
-        try
-        {
-            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is not "1.0")
-            {
-                return null;
-            }
-
-            return MainWindowVM.LocalReports.Reports_Collection10
-                       .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && item.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && item.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && item.Master.Rows10[1].Okpo_DB != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && item.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].RegNo_DB == "")
-
-                   ?? MainWindowVM.LocalReports
-                       .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           item.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-                           && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || item.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB != ""
-                           && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    #endregion
-
-    #region GetReports21FromLocalEqual
-
-    private static Reports? GetReports21FromLocalEqual(Reports item)
-    {
-        try
-        {
-            if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
-            {
-                return null;
-            }
-
-            return MainWindowVM.LocalReports.Reports_Collection20
-                       .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                           && item.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                           && item.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                           && item.Master.Rows20[1].Okpo_DB != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                           && item.Master.Rows20[1].Okpo_DB != ""
-                           && t.Master.Rows20[1].RegNo_DB == "")
-
-                   ?? MainWindowVM.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           item.Master.Rows20[1].Okpo_DB != ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-                           && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || item.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB != ""
-                           && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    #endregion
 
     #region GetReportsFromDataBase
 
@@ -432,29 +289,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         await db.Database.MigrateAsync();
         await db.LoadTablesAsync();
         await MainWindowVM.ProcessDataBaseFillEmpty(db);
+
         return db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0
             ? db.DBObservableDbSet.Local.First().Reports_Collection.ToList()
             : await db.ReportsCollectionDbSet.ToListAsync();
-    }
-
-    #endregion
-
-    #region ProcessIfNoteOrder0
-
-    private static void ProcessIfNoteOrder0(Reports item)
-    {
-        foreach (var key in item.Report_Collection)
-        {
-            var form = (Report)key;
-            foreach (var key1 in form.Notes)
-            {
-                var note = (Note)key1;
-                if (note.Order == 0)
-                {
-                    note.Order = MainWindowVM.GetNumberInOrder(form.Notes);
-                }
-            }
-        }
     }
 
     #endregion

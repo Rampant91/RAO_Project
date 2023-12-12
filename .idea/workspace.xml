@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="eda15d97-4e8d-47ee-9c0d-002750cab4c9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Client_App/Commands/AsyncCommands/Import/ImportJsonAsyncCommand.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/ExecutorData.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/JsonForm.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/JsonModel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableData.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain11.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain12.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain13.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain14.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain15.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain16.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain17.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain18.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/JSON/TableDataMain/TableDataMain19.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_App/Client_App.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Client_App/Client_App.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_App/Commands/AsyncCommands/ExcelExport/ExcelBaseAsyncCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client_App/Commands/AsyncCommands/ExcelExport/ExcelBaseAsyncCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_App/Commands/AsyncCommands/Import/ImportBaseAsyncCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client_App/Commands/AsyncCommands/Import/ImportBaseAsyncCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_App/Commands/AsyncCommands/Import/ImportRaodbAsyncCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client_App/Commands/AsyncCommands/Import/ImportRaodbAsyncCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_App/ViewModels/MainWindowVM.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client_App/ViewModels/MainWindowVM.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_App/Views/MainWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Client_App/Views/MainWindow.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Attributes/Form_ClassAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Attributes/Form_ClassAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Classes/LetterAlgebra.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Classes/LetterAlgebra.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Collections/DBObservable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Collections/DBObservable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Collections/ObservableCollectionWithItemPropertyChanged.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Collections/ObservableCollectionWithItemPropertyChanged.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Collections/Report.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Collections/Report.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Collections/ReportForSort.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Collections/ReportForSort.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Collections/Reports.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Collections/Reports.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/DataAccess/RamAccess.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/DataAccess/RamAccess.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/DataAccess/RefBool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/DataAccess/RefBool.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/Form1/Form13.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/Form1/Form13.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/Form1/Form14.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/Form1/Form14.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/Form1/Form16.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/Form1/Form16.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/Form1/Form17.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/Form1/Form17.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/Form1/Form18.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/Form1/Form18.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Forms/Form1/Form19.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Forms/Form1/Form19.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Models.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Models.csproj" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2VvLRzd3J97jeOd3iJ8jHobDDAZ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="eda15d97-4e8d-47ee-9c0d-002750cab4c9" name="Changes" comment="" />
+      <created>1695711605025</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695711605025</updated>
+    </task>
+    <servers />
+  </component>
+</project>

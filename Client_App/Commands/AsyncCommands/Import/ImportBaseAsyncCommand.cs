@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 using Client_App.Interfaces.Logger;
 using Models.DTO;
 using Models.Interfaces;
+using Client_App.ViewModels;
+using System.Linq;
+using DynamicData;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
+using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -50,38 +56,57 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public byte ImpRepCorNum;
     public int ImpRepFormCount;
 
+    private protected DBModel Db = StaticConfiguration.DBModel;
+    private protected string TmpImpFilePath = "";
+
     public string OperationDate => IsFirstLogLine
         ? DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")
         : "\t\t";
 
     #region CheckAnswer
 
-    private protected async Task CheckAnswer(string an, Reports first, Report? elem = null, Report? it = null, bool addToDB = true)
+    private protected async Task CheckAnswer(string an, Reports baseReps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
     {
         switch (an)
         {
+            #region Add
+
             case "Да" or "Да для всех" or "Добавить":
                 if (addToDB)
                 {
-                    first.Report_Collection.Add(it);
+                    baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
                 Act = "\t\t\t";
                 LoggerImportDTO = new LoggerImportDTO
-                    {
-                        Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                        FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                        Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                        ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
-                    };
+                {
+                    Act = Act,
+                    CorNum = ImpRepCorNum,
+                    CurrentLogLine = CurrentLogLine,
+                    EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount,
+                    FormNum = ImpRepFormNum,
+                    StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo,
+                    OperationDate = OperationDate,
+                    RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName,
+                    SourceFileFullPath = SourceFile!.FullName,
+                    Year = ImpRepYear
+                };
                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
+
+            #endregion
+
+            #region SaveBoth
+            
             case "Сохранить оба":
                 if (addToDB)
                 {
-                    first.Report_Collection.Add(it);
+                    baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
                 Act = "Сохранены оба (пересечение)";
@@ -101,13 +126,19 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     SourceFileFullPath = SourceFile!.FullName,
                     Year = ImpRepYear
                 };
-                ServiceExtension.LoggerManager.Import(LoggerImportDTO); 
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
+
+            #endregion
+
+            #region Replace
+            
             case "Заменить" or "Заменять все формы":
-                first.Report_Collection.Remove(elem);
-                first.Report_Collection.Add(it);
+                if (oldReport is not null) oldReport = await FillReportWithForms(baseReps, oldReport);
+                baseReps.Report_Collection.Replace(oldReport, newReport);
+                StaticConfiguration.DBModel.Remove(oldReport!);
                 AtLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -130,11 +161,16 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
-            case "Дополнить" when it != null && elem != null:
-                first.Report_Collection.Remove(elem);
-                it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
-                it.Notes.AddRange<IKey>(0, elem.Notes);
-                first.Report_Collection.Add(it);
+
+            #endregion
+
+            #region Supplement
+            
+            case "Дополнить" when newReport != null && oldReport != null:
+                oldReport = await FillReportWithForms(baseReps, oldReport);
+                newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
+                newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
+                baseReps.Report_Collection.Replace(oldReport, newReport);
                 AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -157,11 +193,193 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 IsFirstLogLine = false;
                 CurrentLogLine++;
                 break;
+
+            #endregion
+
+            #region CancelForAll
+            
             case "Отменить для всех пересечений":
                 SkipInter = true;
-                break;
+                break; 
+
+            #endregion
+
+            #region Cancel
+
             case "Отменить импорт формы":
-                break;
+                break; 
+
+            #endregion
+        }
+    }
+
+    #endregion
+
+    #region FillEmptyRegNo
+
+    private protected static void FillEmptyRegNo(ref Reports? reps)
+    {
+        if (reps is null) return;
+        if (reps.Master.Rows10.Count >= 2)
+        {
+            if (reps.Master.Rows10[0].RegNo_DB is "" && reps.Master.Rows10[1].RegNo_DB is not "" && reps.Master.Rows10[0].Okpo_DB is not "")
+            {
+                reps.Master.Rows10[0].RegNo_DB = reps.Master.Rows10[1].RegNo_DB;
+            }
+            if (reps.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" && reps.Master.Rows10[1].Okpo_DB is not "")
+            {
+                reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
+            }
+        }
+        if (reps.Master.Rows20.Count >= 2)
+        {
+            if (reps.Master.Rows20[0].RegNo_DB is "" && reps.Master.Rows20[1].RegNo_DB is not "" && reps.Master.Rows20[0].Okpo_DB is not "")
+            {
+                reps.Master.Rows20[0].RegNo_DB = reps.Master.Rows20[1].RegNo_DB;
+            }
+            if (reps.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" && reps.Master.Rows20[1].Okpo_DB is not "")
+            {
+                reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
+            }
+        }
+    }
+
+    #endregion
+
+    #region GetRaoFileName
+
+    private protected static string GetRaoFileName()
+    {
+        var count = 0;
+        string? file;
+        do
+        {
+            file = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
+        } while (File.Exists(file));
+
+        return file;
+    }
+
+    #endregion
+
+    #region GetReports11FromLocalEqual
+
+    private protected static Reports? GetReports11FromLocalEqual(Reports item)
+    {
+        try
+        {
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || item.Master_DB.FormNum_DB is not "1.0")
+            if (item.Master_DB.FormNum_DB is not "1.0")
+            {
+                return null;
+            }
+
+            return ReportsStorage.LocalReports.Reports_Collection10
+                       .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+                           && item.Master.Rows10[1].Okpo_DB != ""
+                           && t.Master.Rows10[1].RegNo_DB == "")
+
+                   ?? ReportsStorage.LocalReports
+                       .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                       .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           item.Master.Rows10[1].Okpo_DB != ""
+                           && t.Master.Rows10[1].Okpo_DB == ""
+                           && item.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && item.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || item.Master.Rows10[1].Okpo_DB == ""
+                           && t.Master.Rows10[1].Okpo_DB != ""
+                           && item.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
+                           && item.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region GetReports21FromLocalEqual
+
+    private protected static Reports? GetReports21FromLocalEqual(Reports item)
+    {
+        try
+        {
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            if (item.Master_DB.FormNum_DB is not "2.0")
+            {
+                return null;
+            }
+
+            return ReportsStorage.LocalReports.Reports_Collection20
+                       .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+                           && item.Master.Rows20[1].Okpo_DB != ""
+                           && t.Master.Rows20[1].RegNo_DB == "")
+
+                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                       .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           item.Master.Rows20[1].Okpo_DB != ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+                           && item.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && item.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || item.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master.Rows20[1].Okpo_DB != ""
+                           && item.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
+                           && item.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB);
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -185,13 +403,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region InventoryCheck
 
-    private protected static string InventoryCheck(Report? rep)
+    private static string InventoryCheck(Report? rep)
     {
         if (rep is null)
         {
             return "";
         }
-
         var countCode10 = 0;
         foreach (var key in rep.Rows)
         {
@@ -200,7 +417,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 countCode10++;
             }
         }
-
         return countCode10 == rep.Rows.Count
             ? " (ИНВ)"
             : countCode10 > 0
@@ -227,7 +443,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         {
             listImpRep.Add(impReport);
         }
-        foreach (var impRep in listImpRep) //Для каждой импортируемой формы
+        foreach (var impRep in listImpRep) //Для каждого импортируемого отчета
         {
             ImpRepFormNum = impRep.FormNum_DB;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
@@ -238,12 +454,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе ищем совпадение
+            foreach (var key1 in baseReps.Report_Collection) //Для каждого отчета соответствующей организации в базе ищем совпадение
             {
                 var baseRep = (Report)key1;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
-                BaseRepFormCount = baseRep.Rows.Count;
+                BaseRepFormCount = ReportsStorage.GetReportRowsCount(baseRep);
                 BaseRepStartPeriod = baseRep.StartPeriod_DB;
                 BaseRepEndPeriod = baseRep.EndPeriod_DB;
                 BaseRepExpDate = baseRep.ExportDate_DB;
@@ -288,6 +504,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (stBase == stImp && endBase == endImp && ImpRepFormNum == BaseRepFormNum)
                 {
+
                     impInBase = true;
 
                     #region LessCorrectionNumber
@@ -388,7 +605,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(Desktop.MainWindow);
-
+                        
                         #endregion
 
                         await CheckAnswer(res, baseReps, baseRep, impRep);
@@ -485,7 +702,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             #endregion
                         }
                     }
-
                     await CheckAnswer(res, baseReps, baseRep, impRep);
                     break;
 
@@ -1041,6 +1257,44 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         }
 
         await baseReps.SortAsync();
+    }
+
+    #endregion
+
+    #region ProcessIfNoteOrder0
+
+    private protected static void ProcessIfNoteOrder0(Reports item)
+    {
+        foreach (var key in item.Report_Collection)
+        {
+            var form = (Report)key;
+            foreach (var key1 in form.Notes)
+            {
+                var note = (Note)key1;
+                if (note.Order == 0)
+                {
+                    note.Order = MainWindowVM.GetNumberInOrder(form.Notes);
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region FillReportWithFormsInReports
+
+    private static async Task<Report> FillReportWithForms(Reports baseReps, Report baseRep)
+    {
+        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
+        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
+        {
+            baseRep = await ReportsStorage.Api.GetAsync(baseRep.Id);
+            StaticConfiguration.DBModel.Entry(checkedRep).State = EntityState.Detached;
+            StaticConfiguration.DBModel.Set<Report>().Attach(baseRep);
+            baseReps.Report_Collection.Replace(checkedRep, baseRep);
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        return baseRep;
     }
 
     #endregion

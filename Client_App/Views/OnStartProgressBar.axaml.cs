@@ -1,16 +1,18 @@
-using System.ComponentModel;
+using System;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using ReactiveUI;
 using Client_App.ViewModels;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Interfaces.BackgroundLoader;
+using Client_App.Resources;
 
 namespace Client_App.Views;
 
-public partial class OnStartProgressBar : ReactiveWindow<OnStartProgressBarVM>
+public partial class OnStartProgressBar : BaseWindow<OnStartProgressBarVM>
 {
     public OnStartProgressBar()
     {
@@ -18,7 +20,11 @@ public partial class OnStartProgressBar : ReactiveWindow<OnStartProgressBarVM>
 #if DEBUG
         this.AttachDevTools();
 #endif
-        this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+        this.WhenActivated(d =>
+        {
+            var vm = (OnStartProgressBarVM)ViewModel;
+            d(vm!.ShowDialog.RegisterHandler(DoShowDialogAsync));
+        });
     }
 
     private async Task DoShowDialogAsync(InteractionContext<MainWindowVM, object> interaction)

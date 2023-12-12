@@ -42,7 +42,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         {
             ObserveAll();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             //ignored
         }
@@ -84,11 +84,43 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         base.OnCollectionChanged(e);
     }
 
-    //метод для обмена элементов массива
-    private void Swap(int index1, int index2)
+    //private void QuickSort(int minIndex, int maxIndex)    //Рекурсия на коллекция более 15000 объектов переполняет стэк
+    //{
+    //    while (minIndex < maxIndex)
+    //    {
+    //        var pivotIndex = Partition(minIndex, maxIndex);
+    //        QuickSort(minIndex, pivotIndex - 1);
+    //        minIndex = pivotIndex + 1;
+    //    }
+    //}
+
+    private void QuickSort(int minIndex, int maxIndex)
     {
-        (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
+        var stack = new Stack<(int, int)>();
+        stack.Push((minIndex, maxIndex));
+
+        while (stack.Count > 0)
+        {
+            var (left, right) = stack.Pop();
+
+            while (left < right)
+            {
+                var pivotIndex = Partition(left, right);
+
+                if (pivotIndex - left < right - pivotIndex)
+                {
+                    stack.Push((pivotIndex + 1, right));
+                    right = pivotIndex - 1;
+                }
+                else
+                {
+                    stack.Push((left, pivotIndex - 1));
+                    left = pivotIndex + 1;
+                }
+            }
+        }
     }
+
     private int Partition(int minIndex, int maxIndex)
     {
         var pivot = minIndex - 1;
@@ -103,34 +135,18 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         return pivot;
     }
 
-    private void QuickSort(int minIndex, int maxIndex)
+    private void Swap(int index1, int index2)
     {
-        while (true)
-        {
-            if (minIndex >= maxIndex)
-            {
-                return;
-            }
-            var pivotIndex = Partition(minIndex, maxIndex);
-            QuickSort(minIndex, pivotIndex - 1);
-            minIndex = pivotIndex + 1;
-        }
+        (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
     }
 
     public void QuickSort()
     {
         if (Sorted) return;
-        try
-        {
-            if (CheckForSort()) return;
-            QuickSort(0, Items.Count - 1);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            Sorted = true;
-        }
-        catch
-        {
-            // ignored
-        }
+        if (CheckForSort()) return;
+        QuickSort(0, Items.Count - 1);
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        Sorted = true;
     }
 
     public async Task QuickSortAsync()
@@ -155,6 +171,7 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
 
     private bool CheckForSort()
     {
+        if (Items.Contains(null)) return false;
         var count = 1;
         var flag = true;
         foreach(var item in Items)

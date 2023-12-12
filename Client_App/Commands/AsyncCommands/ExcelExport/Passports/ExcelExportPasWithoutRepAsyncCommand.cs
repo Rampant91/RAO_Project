@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,14 +8,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Resources;
 using Client_App.ViewModels;
-using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Models.Collections;
-using Models.Forms.Form1;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
+using Models.DTO;
 using OfficeOpenXml;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
@@ -114,15 +115,28 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
+            cts.Dispose();
             return;
         }
-        finally
-        {
-            cts.Dispose();
-        }
+        
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
+            {
+                File.Delete(dbReadOnlyPath);
+                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+            }
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
 
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -144,31 +158,57 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
-        foreach (var key in MainWindowVM.LocalReports.Reports_Collection10)
-        {
-            var reps = (Reports)key;
-            var form11 = reps.Report_Collection
-                .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
-                .ToList();
-            foreach (var rep in form11)
-            {
-                List<Form11> repPas = rep.Rows11
-                    .Where(x => x.OperationCode_DB is "11" or "85" && categories.Contains(x.Category_DB))
-                    .ToList();
-                foreach (var repForm in repPas)
+
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        var forms11 = await dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11)
+            .SelectMany(x => x.Rows11
+                .Where(y => (y.OperationCode_DB == "11" || y.OperationCode_DB == "85")
+                            && categories.Contains(y.Category_DB))
+                .Select(form11 => new Form11ShortDTO
                 {
-                    foreach (var pasParam in pasUniqParam.Where(pasParam =>
-                                 StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.CreatorOKPO_DB), pasParam[0])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.Type_DB), pasParam[1])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertDateToYear(repForm.CreationDate_DB), pasParam[2])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.PassportNumber_DB), pasParam[3])
-                                 && StaticStringMethods.ComparePasParam(StaticStringMethods.ConvertPrimToDash(repForm.FactoryNumber_DB), pasParam[4])))
-                    {
-                        files.RemoveMany(files.Where(file => file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-                        break;
-                    }
+                    CreatorOKPO = form11.CreatorOKPO_DB,
+                    Type = form11.Type_DB,
+                    CreationDate = form11.CreationDate_DB,
+                    PassportNumber = form11.PassportNumber_DB,
+                    FactoryNumber = form11.FactoryNumber_DB
+                }))
+            .ToListAsync(cancellationToken: cts.Token);
+
+        ConcurrentBag<FileInfo> filesToRemove = new();
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        try
+        {
+            await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
+            {
+                var flag = forms11.Any(form11 =>
+                    ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                    && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
+                    && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
+                    && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                    && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
+                if (flag)
+                {
+                    filesToRemove.Add(files.First(file =>
+                        file.Name.Remove(file.Name.Length - 4) ==
+                        $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
                 }
-            }
+                return default;
+            });
+        }
+        catch
+        {
+            cts.Dispose();
+            return;
+        }
+        
+        foreach (var fileToRemove in filesToRemove.ToArray())
+        {
+            files.Remove(fileToRemove);
         }
 
         var currentRow = 2;

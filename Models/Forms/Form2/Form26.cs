@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -16,12 +15,19 @@ namespace Models.Forms.Form2;
 [Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
 public class Form26 : Form2
 {
-    public Form26() : base()
+    #region Constructor
+    
+    public Form26()
     {
         FormNum.Value = "2.6";
         //NumberOfFields.Value = 11;
         Validate_all();
     }
+
+    #endregion
+
+    #region Validation
+
     private void Validate_all()
     {
         ObservedSourceNumber_Validation(ObservedSourceNumber);
@@ -33,21 +39,28 @@ public class Form26 : Form2
         AverageYearConcentration_Validation(AverageYearConcentration);
     }
 
-    [FormProperty(true,"Форма")]
+    [FormProperty(true, "Форма")]
     public override bool Object_Validation()
     {
-        return !(ObservedSourceNumber.HasErrors||
-                 ControlledAreaName.HasErrors||
-                 SupposedWasteSource.HasErrors||
-                 DistanceToWasteSource.HasErrors||
-                 TestDepth.HasErrors||
-                 RadionuclidName.HasErrors||
+        return !(ObservedSourceNumber.HasErrors ||
+                 ControlledAreaName.HasErrors ||
+                 SupposedWasteSource.HasErrors ||
+                 DistanceToWasteSource.HasErrors ||
+                 TestDepth.HasErrors ||
+                 RadionuclidName.HasErrors ||
                  AverageYearConcentration.HasErrors);
     }
 
-    #region ObservedSourceNumber
-    public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
-    [FormProperty(true,"null-1","Номер наблюдательной скважины","2")]
+    #endregion
+
+    #region Properties
+
+    #region ObservedSourceNumber (2)
+
+    public string ObservedSourceNumber_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "null-1", "Номер наблюдательной скважины", "2")]
     public RamAccess<string> ObservedSourceNumber
     {
         get
@@ -57,13 +70,10 @@ public class Form26 : Form2
                 ((RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)]).Value = ObservedSourceNumber_DB;
                 return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
-                rm.PropertyChanged += ObservedSourceNumberValueChanged;
-                Dictionary.Add(nameof(ObservedSourceNumber), rm);
-                return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
-            }
+            var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
+            rm.PropertyChanged += ObservedSourceNumberValueChanged;
+            Dictionary.Add(nameof(ObservedSourceNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
         }
         set
         {
@@ -72,23 +82,28 @@ public class Form26 : Form2
         }
     }
     //If change this change validation
-    private void ObservedSourceNumberValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void ObservedSourceNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ObservedSourceNumber_DB = ((RamAccess<string>)Value).Value;
+            ObservedSourceNumber_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors(); return true;
     }
-    //ObservedSourceNumber property
+
     #endregion
 
-    #region ControlledAreaName
-    public string ControlledAreaName_DB { get; set; } = ""; [NotMapped]
-    [FormProperty(true,"null-1", "Наименование зоны контроля","3")]
+    #region ControlledAreaName (3)
+
+    public string ControlledAreaName_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "null-1", "Наименование зоны контроля", "3")]
     public RamAccess<string> ControlledAreaName
     {
         get
@@ -98,13 +113,10 @@ public class Form26 : Form2
                 ((RamAccess<string>)Dictionary[nameof(ControlledAreaName)]).Value = ControlledAreaName_DB;
                 return (RamAccess<string>)Dictionary[nameof(ControlledAreaName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
-                rm.PropertyChanged += ControlledAreaNameValueChanged;
-                Dictionary.Add(nameof(ControlledAreaName), rm);
-                return (RamAccess<string>)Dictionary[nameof(ControlledAreaName)];
-            }
+            var rm = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
+            rm.PropertyChanged += ControlledAreaNameValueChanged;
+            Dictionary.Add(nameof(ControlledAreaName), rm);
+            return (RamAccess<string>)Dictionary[nameof(ControlledAreaName)];
         }
         set
         {
@@ -113,13 +125,15 @@ public class Form26 : Form2
         }
     }
     //If change this change validation
-    private void ControlledAreaNameValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void ControlledAreaNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            ControlledAreaName_DB = ((RamAccess<string>)Value).Value;
+            ControlledAreaName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -132,27 +146,22 @@ public class Form26 : Form2
         {
             return true;
         }
-        List<string> spr = new()
-        {
-            "ПП",
-            "СЗЗ",
-            "ЗН",
-            "прим."
-        };
-        if (!spr.Contains(value.Value))
+        if (!new[]{"ПП", "СЗЗ", "ЗН", "прим."}.Contains(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
-    //ControlledAreaName property
+
     #endregion
 
-    #region SupposedWasteSource
+    #region SupposedWasteSource (4)
+
     public string SupposedWasteSource_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"null-1", "Предполагаемый источник поступления радиоактивных веществ","4")]
+    [FormProperty(true, "null-1", "Предполагаемый источник поступления радиоактивных веществ", "4")]
     public RamAccess<string> SupposedWasteSource
     {
         get
@@ -162,13 +171,10 @@ public class Form26 : Form2
                 ((RamAccess<string>)Dictionary[nameof(SupposedWasteSource)]).Value = SupposedWasteSource_DB;
                 return (RamAccess<string>)Dictionary[nameof(SupposedWasteSource)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
-                rm.PropertyChanged += SupposedWasteSourceValueChanged;
-                Dictionary.Add(nameof(SupposedWasteSource), rm);
-                return (RamAccess<string>)Dictionary[nameof(SupposedWasteSource)];
-            }
+            var rm = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
+            rm.PropertyChanged += SupposedWasteSourceValueChanged;
+            Dictionary.Add(nameof(SupposedWasteSource), rm);
+            return (RamAccess<string>)Dictionary[nameof(SupposedWasteSource)];
         }
         set
         {
@@ -177,25 +183,28 @@ public class Form26 : Form2
         }
     }
 
-    private void SupposedWasteSourceValueChanged(object Value, PropertyChangedEventArgs args)
+    private void SupposedWasteSourceValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            SupposedWasteSource_DB = ((RamAccess<string>)Value).Value;
+            SupposedWasteSource_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();//done
         return true;
     }
-    //SupposedWasteSource property
+
     #endregion
 
-    #region DistanceToWasteSource
+    #region DistanceToWasteSource (5)
+
     public string DistanceToWasteSource_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"null-1", "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м","5")]
+    [FormProperty(true, "null-1", "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м", "5")]
     public RamAccess<string> DistanceToWasteSource
     {
         get
@@ -205,13 +214,10 @@ public class Form26 : Form2
                 ((RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)]).Value = DistanceToWasteSource_DB;
                 return (RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
-                rm.PropertyChanged += DistanceToWasteSourceValueChanged;
-                Dictionary.Add(nameof(DistanceToWasteSource), rm);
-                return (RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)];
-            }
+            var rm = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
+            rm.PropertyChanged += DistanceToWasteSourceValueChanged;
+            Dictionary.Add(nameof(DistanceToWasteSource), rm);
+            return (RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)];
         }
         set
         {
@@ -220,34 +226,30 @@ public class Form26 : Form2
         }
     }
 
-    private void DistanceToWasteSourceValueChanged(object Value, PropertyChangedEventArgs args)
+    private void DistanceToWasteSourceValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    DistanceToWasteSource_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                DistanceToWasteSource_DB = value1;
+                return;
             }
-            DistanceToWasteSource_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        DistanceToWasteSource_DB = value1;
     }
+
     private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -256,11 +258,7 @@ public class Form26 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value == "-")
-        {
-            return true;
-        }
-        if (value.Value.Equals("прим."))
+        if (value.Value is "-" or "прим.")
         {
             return true;
         }
@@ -269,26 +267,28 @@ public class Form26 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //DistanceToWasteSource property
+
     #endregion
 
-    #region TestDepth
+    #region TestDepth (6)
+
     public string TestDepth_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"null-1", "Глубина отбора проб, м","6")]
+    [FormProperty(true, "null-1", "Глубина отбора проб, м", "6")]
     public RamAccess<string> TestDepth
     {
         get
@@ -298,13 +298,10 @@ public class Form26 : Form2
                 ((RamAccess<string>)Dictionary[nameof(TestDepth)]).Value = TestDepth_DB;
                 return (RamAccess<string>)Dictionary[nameof(TestDepth)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
-                rm.PropertyChanged += TestDepthValueChanged;
-                Dictionary.Add(nameof(TestDepth), rm);
-                return (RamAccess<string>)Dictionary[nameof(TestDepth)];
-            }
+            var rm = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
+            rm.PropertyChanged += TestDepthValueChanged;
+            Dictionary.Add(nameof(TestDepth), rm);
+            return (RamAccess<string>)Dictionary[nameof(TestDepth)];
         }
         set
         {
@@ -313,34 +310,30 @@ public class Form26 : Form2
         }
     }
 
-    private void TestDepthValueChanged(object Value, PropertyChangedEventArgs args)
+    private void TestDepthValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    TestDepth_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                TestDepth_DB = value1;
+                return;
             }
-            TestDepth_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        TestDepth_DB = value1;
     }
+
     private bool TestDepth_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -349,11 +342,7 @@ public class Form26 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value == "-")
-        {
-            return true;
-        }
-        if (value.Value.Equals("прим."))
+        if (value.Value is "-" or "прим.")
         {
             return true;
         }
@@ -362,28 +351,28 @@ public class Form26 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); return false;
-            }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //TestDepth property
+
     #endregion
 
-    #region RadionuclidName
-    public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
-    [FormProperty(true,"null-1", "Наименование радионуклида","7")]
+    #region RadionuclidName (7)
+
+    public string RadionuclidName_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "null-1", "Наименование радионуклида", "7")]
     public RamAccess<string> RadionuclidName
     {
         get
@@ -393,13 +382,10 @@ public class Form26 : Form2
                 ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
                 return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
-                rm.PropertyChanged += RadionuclidNameValueChanged;
-                Dictionary.Add(nameof(RadionuclidName), rm);
-                return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
-            }
+            var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
+            rm.PropertyChanged += RadionuclidNameValueChanged;
+            Dictionary.Add(nameof(RadionuclidName), rm);
+            return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
         }
         set
         {
@@ -408,13 +394,15 @@ public class Form26 : Form2
         }
     }
     //If change this change validation
-    private void RadionuclidNameValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void RadionuclidNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            RadionuclidName_DB = ((RamAccess<string>)Value).Value;
+            RadionuclidName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -424,20 +412,25 @@ public class Form26 : Form2
             return false;
         }
         var tmpstr = value.Value.ToLower().Replace(" ", "");
-        var query = from item in Spravochniks.SprRadionuclids where item.Item1 == tmpstr select item.Item1;
-        if (!query.Any())
+        if (!Spravochniks.SprRadionuclids
+                .Where(item => item.Item1 == tmpstr)
+                .Select(item => item.Item1)
+                .Any())
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
-    //RadionuclidName property
+
     #endregion
 
-    #region AverageYearConcentration 
-    public string AverageYearConcentration_DB { get; set; } [NotMapped]
-    [FormProperty(true,"null-1", "Среднегодовое содержание радионуклида, Бк/кг","8")]
+    #region AverageYearConcentration (8)
+
+    public string AverageYearConcentration_DB { get; set; }
+
+    [NotMapped]
+    [FormProperty(true, "null-1", "Среднегодовое содержание радионуклида, Бк/кг", "8")]
     public RamAccess<string> AverageYearConcentration
     {
         get
@@ -447,13 +440,10 @@ public class Form26 : Form2
                 ((RamAccess<string>)Dictionary[nameof(AverageYearConcentration)]).Value = AverageYearConcentration_DB;
                 return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
-                rm.PropertyChanged += AverageYearConcentrationValueChanged;
-                Dictionary.Add(nameof(AverageYearConcentration), rm);
-                return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
-            }
+            var rm = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
+            rm.PropertyChanged += AverageYearConcentrationValueChanged;
+            Dictionary.Add(nameof(AverageYearConcentration), rm);
+            return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
         }
         set
         {
@@ -462,34 +452,30 @@ public class Form26 : Form2
         }
     }
 
-    private void AverageYearConcentrationValueChanged(object Value, PropertyChangedEventArgs args)
+    private void AverageYearConcentrationValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    AverageYearConcentration_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                AverageYearConcentration_DB = value1;
+                return;
             }
-            AverageYearConcentration_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        AverageYearConcentration_DB = value1;
     }
+
     private bool AverageYearConcentration_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -507,23 +493,26 @@ public class Form26 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //AverageYearConcentration property
+
+    #endregion 
+    
     #endregion
 
     #region IExcel
+
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
@@ -570,73 +559,144 @@ public class Form26 : Form2
         
         return 7;
     }
+
     #endregion
 
     #region IDataGridColumn
 
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns != null) return _DataGridColumns;
 
         #region NumberInOrder (1)
-        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        NumberInOrderR.SetSizeColToAllLevels(50);
-        NumberInOrderR.Binding = nameof(NumberInOrder);
-        NumberInOrderR.Blocked = true;
-        NumberInOrderR.ChooseLine = true;
+
+        var numberInOrderR = ((FormPropertyAttribute)typeof(Form)
+                .GetProperty(nameof(NumberInOrder))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD();
+        if (numberInOrderR != null)
+        {
+            numberInOrderR.SetSizeColToAllLevels(50);
+            numberInOrderR.Binding = nameof(NumberInOrder);
+            numberInOrderR.Blocked = true;
+            numberInOrderR.ChooseLine = true;
+        }
+
         #endregion
 
         #region ObservedSourceNumber (2)
-        var ObservedSourceNumberR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        ObservedSourceNumberR.SetSizeColToAllLevels(164);
-        ObservedSourceNumberR.Binding = nameof(ObservedSourceNumber);
-        NumberInOrderR += ObservedSourceNumberR;
+
+        var observedSourceNumberR = ((FormPropertyAttribute)typeof(Form26)
+                .GetProperty(nameof(ObservedSourceNumber))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (observedSourceNumberR != null)
+        {
+            observedSourceNumberR.SetSizeColToAllLevels(164);
+            observedSourceNumberR.Binding = nameof(ObservedSourceNumber);
+            numberInOrderR += observedSourceNumberR;
+        }
+
         #endregion
 
         #region ControlledAreaName (3)
-        var ControlledAreaNameR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        ControlledAreaNameR.SetSizeColToAllLevels(166);
-        ControlledAreaNameR.Binding = nameof(ControlledAreaName);
-        NumberInOrderR += ControlledAreaNameR;
+
+        var controlledAreaNameR = ((FormPropertyAttribute)typeof(Form26)
+                .GetProperty(nameof(ControlledAreaName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (controlledAreaNameR != null)
+        {
+            controlledAreaNameR.SetSizeColToAllLevels(166);
+            controlledAreaNameR.Binding = nameof(ControlledAreaName);
+            numberInOrderR += controlledAreaNameR;
+        }
+
         #endregion
 
         #region SupposedWasteSource (4)
-        var SupposedWasteSourceR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        SupposedWasteSourceR.SetSizeColToAllLevels(238);
-        SupposedWasteSourceR.Binding = nameof(SupposedWasteSource);
-        NumberInOrderR += SupposedWasteSourceR;
+
+        var supposedWasteSourceR = ((FormPropertyAttribute)typeof(Form26)
+                .GetProperty(nameof(SupposedWasteSource))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (supposedWasteSourceR != null)
+        {
+            supposedWasteSourceR.SetSizeColToAllLevels(238);
+            supposedWasteSourceR.Binding = nameof(SupposedWasteSource);
+            numberInOrderR += supposedWasteSourceR;
+        }
+
         #endregion
 
         #region DistanceToWasteSource (5)
-        var DistanceToWasteSourceR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        DistanceToWasteSourceR.SetSizeColToAllLevels(337);
-        DistanceToWasteSourceR.Binding = nameof(DistanceToWasteSource);
-        NumberInOrderR += DistanceToWasteSourceR;
+
+        var distanceToWasteSourceR = ((FormPropertyAttribute)typeof(Form26)
+                .GetProperty(nameof(DistanceToWasteSource))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (distanceToWasteSourceR != null)
+        {
+            distanceToWasteSourceR.SetSizeColToAllLevels(337);
+            distanceToWasteSourceR.Binding = nameof(DistanceToWasteSource);
+            numberInOrderR += distanceToWasteSourceR;
+        }
+
         #endregion
 
         #region TestDepth (6)
-        var TestDepthR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        TestDepthR.SetSizeColToAllLevels(180);
-        TestDepthR.Binding = nameof(TestDepth);
-        NumberInOrderR += TestDepthR;
+
+        var testDepthR = ((FormPropertyAttribute)typeof(Form26)
+                .GetProperty(nameof(TestDepth))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (testDepthR != null)
+        {
+            testDepthR.SetSizeColToAllLevels(180);
+            testDepthR.Binding = nameof(TestDepth);
+            numberInOrderR += testDepthR;
+        }
+
         #endregion
 
         #region RadionuclidName (7)
-        var RadionuclidNameR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        RadionuclidNameR.SetSizeColToAllLevels(230);
-        RadionuclidNameR.Binding = nameof(RadionuclidName);
-        NumberInOrderR += RadionuclidNameR;
+
+        var radionuclidNameR = ((FormPropertyAttribute)typeof(Form26)
+                .GetProperty(nameof(RadionuclidName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (radionuclidNameR != null)
+        {
+            radionuclidNameR.SetSizeColToAllLevels(230);
+            radionuclidNameR.Binding = nameof(RadionuclidName);
+            numberInOrderR += radionuclidNameR;
+        }
+
         #endregion
 
         #region AverageYearConcentration (8)
-        var AverageYearConcentrationR = ((FormPropertyAttribute)typeof(Form26).GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        AverageYearConcentrationR.SetSizeColToAllLevels(200);
-        AverageYearConcentrationR.Binding = nameof(AverageYearConcentration);
-        NumberInOrderR += AverageYearConcentrationR;
+
+        var averageYearConcentrationR = ((FormPropertyAttribute)typeof(Form26)
+                .GetProperty(nameof(AverageYearConcentration))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        averageYearConcentrationR.SetSizeColToAllLevels(200);
+        averageYearConcentrationR.Binding = nameof(AverageYearConcentration);
+        numberInOrderR += averageYearConcentrationR;
+        
         #endregion
 
-        _DataGridColumns = NumberInOrderR;
+        _DataGridColumns = numberInOrderR;
 
         return _DataGridColumns;
     }

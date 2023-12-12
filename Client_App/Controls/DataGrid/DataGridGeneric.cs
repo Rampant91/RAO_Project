@@ -13,15 +13,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Client_App.ViewModels;
 using Client_App.VisualRealization.Converters;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 
 namespace Client_App.Controls.DataGrid;
 
 #region DataGridEnums
+
 public enum ChooseMode
 {
     Cell = 0,
@@ -33,11 +35,13 @@ public enum MultilineMode
     Multi = 0,
     Single
 }
+
 #endregion
 
 public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGridColumn, new()
 {
     #region Items
+
     public static readonly DirectProperty<DataGrid<T>, IKeyCollection> ItemsProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, IKeyCollection>(
             nameof(Items),
@@ -51,21 +55,27 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _items;
         set
         {
+            if (value != null && Math.Ceiling(value.Count / 10.0 ) < int.Parse(NowPage) && NowPage != "1" && _items?.GetEnumerable().FirstOrDefault() is Report) //жуткий костыль, чтобы страница сбрасывалась при смене организации, но не сбрасывалась при её открытии
+            {
+                NowPage = "1";
+            }
             if (value != null)
             {
-                if (_items != value)
-                {
-                    NowPage = "1";
-                }
+                //if (_items != value)
+                //{
+                //    NowPage = "1";
+                //}
                 SetAndRaise(ItemsProperty, ref _items, value);
                 UpdateCells();
                 SetSelectedControls();
             }
         }
     }
+
     #endregion
 
     #region SelectedItems
+
     public static readonly DirectProperty<DataGrid<T>, IKeyCollection> SelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, IKeyCollection>(
             nameof(SelectedItems),
@@ -81,13 +91,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             //if (value != null && value.Count != 0)    Убирает сброс выбранной организации при перелистывании страниц и поиске
             {
                 SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+                ReportStringCount = "0";
                 if (Sum) SumColumn = "0";
             }
         }
     }
+
     #endregion
 
     #region SelectedCells
+
     public static readonly DirectProperty<DataGrid<T>, IList<Control>> SelectedCellsProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, IList<Control>>(
             nameof(SelectedCells),
@@ -107,9 +120,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             UpdateCells();
         }
     }
+
     #endregion
 
     #region Type
+
     public static readonly DirectProperty<DataGrid<T>, string> TypeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(Type),
@@ -120,9 +135,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => typeof(T).Name;
         set { }
     }
+
     #endregion
 
     #region CommentСhangeable
+
     public static readonly DirectProperty<DataGrid<T>, bool> CommentСhangeableProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(CommentСhangeable),
@@ -139,9 +156,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region Comment
+
     public static readonly DirectProperty<DataGrid<T>, string> CommentProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(Comment),
@@ -160,9 +179,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region Search
+
     public static readonly DirectProperty<DataGrid<T>, bool> SearchProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(Search),
@@ -182,9 +203,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region Sum
+
     public static readonly DirectProperty<DataGrid<T>, bool> SumProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(Sum),
@@ -201,9 +224,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region ShowAllReport
+
     public static readonly DirectProperty<DataGrid<T>, bool> ShowAllReportProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(ShowAllReport),
@@ -220,9 +245,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             //Init();
         }
     }
+
     #endregion
 
     #region SumColumn
+
     public static readonly DirectProperty<DataGrid<T>, string> SumColumnProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(SumColumn),
@@ -298,9 +325,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
         return _s.ToString();
     }
+
     #endregion
 
     #region ChooseMode
+
     public static readonly StyledProperty<ChooseMode> ChooseModeProperty =
         AvaloniaProperty.Register<DataGrid<T>, ChooseMode>(nameof(ChooseMode));
 
@@ -309,9 +338,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => GetValue(ChooseModeProperty);
         set => SetValue(ChooseModeProperty, value);
     }
+
     #endregion
 
     #region MultilineMode
+
     public static readonly StyledProperty<MultilineMode> MultilineModeProperty =
         AvaloniaProperty.Register<DataGrid<T>, MultilineMode>(nameof(MultilineMode));
     public MultilineMode MultilineMode
@@ -319,6 +350,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => GetValue(MultilineModeProperty);
         set => SetValue(MultilineModeProperty, value);
     }
+
     #endregion
 
     #region ChooseColor
@@ -332,6 +364,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region Pagination
+
     public static readonly DirectProperty<DataGrid<T>, bool> PaginationProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(Pagination),
@@ -348,9 +381,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             UpdateCells();
         }
     }
+
     #endregion
 
     #region IsReadable
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsReadableProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsReadable),
@@ -367,9 +402,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region IsAutoSizable
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsAutoSizableProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsAutoSizable),
@@ -386,9 +423,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region IsReadableSum
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsReadableSumProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsReadableSum),
@@ -405,9 +444,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region IsColumnResize
+
     public static readonly DirectProperty<DataGrid<T>, bool> IsColumnResizeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
             nameof(IsColumnResize),
@@ -424,9 +465,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region PageSize
+
     public static readonly DirectProperty<DataGrid<T>, int> PageSizeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, int>(
             nameof(PageSize),
@@ -443,9 +486,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Init();
         }
     }
+
     #endregion
 
     #region FixedContent
+
     public static readonly DirectProperty<DataGrid<T>, Thickness> FixedContentProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, Thickness>(
             nameof(FixedContent),
@@ -458,9 +503,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _FixedContent;
         set => SetAndRaise(FixedContentProperty, ref _FixedContent, value);
     }
+
     #endregion
 
     #region ScrollLeftRight
+
     public static readonly DirectProperty<DataGrid<T>, int> ScrollLeftRightProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, int>(
             nameof(ScrollLeftRight),
@@ -473,10 +520,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _ScrollLeftRight;
         set => SetAndRaise(ScrollLeftRightProperty, ref _ScrollLeftRight, value);
     }
+
     #endregion
 
     #region Count
+
     #region ItemsCount
+
     public static readonly DirectProperty<DataGrid<T>, string> ItemsCountProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(ItemsCount),
@@ -489,21 +539,21 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _ItemsCount;
         set
         {
-            if (Items != null)
-            {
-                var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                var val = searchText == "" 
-                    ? Items.Count 
-                    : _itemsWithSearch != null 
-                        ? _itemsWithSearch.Count 
-                        : 0;
-                SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
-            }
+            if (Items == null) return;
+            var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+            var val = searchText == "" 
+                ? Items.Count 
+                : _itemsWithSearch != null 
+                    ? _itemsWithSearch.Count 
+                    : 0;
+            SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
         }
     }
+
     #endregion
 
     #region PageCount
+
     public static readonly DirectProperty<DataGrid<T>, string> PageCountProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(PageCount),
@@ -536,9 +586,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             SetAndRaise(PageCountProperty, ref _PageCount, pageCount.ToString());
         }
     }
+
     #endregion
 
     #region ReportCount
+
     public static readonly DirectProperty<DataGrid<T>, string> ReportCountProperty =
         AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
             nameof(ReportCount),
@@ -551,20 +603,52 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _ReportCount;
         set
         {
-            if (Items != null)
+            if (Items == null) return;
+            var countR = 0;
+            var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
+            foreach (var item in searchText != "" && _itemsWithSearch != null ? _itemsWithSearch : Items)
             {
-                var countR = 0;
-                var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-                foreach (var item in searchText != "" && _itemsWithSearch != null ? _itemsWithSearch : Items)
-                {
-                    var reps = (Reports)item;
-                    countR += reps.Report_Collection.Count;
-                }
-                SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
+                var reps = (Reports)item;
+                countR += reps.Report_Collection.Count;
             }
+            SetAndRaise(ReportCountProperty, ref _ReportCount, countR.ToString());
         }
     }
+
     #endregion
+
+    #region ReportStringCount
+
+    public static readonly DirectProperty<DataGrid<T>, string> ReportStringCountProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+            nameof(ReportStringCount),
+            o => o.ReportStringCount,
+            (o, v) => o.ReportStringCount = v);
+
+    private string _ReportStringCount = "0";
+    public string ReportStringCount
+    {
+        get => _ReportStringCount;
+        set
+        {
+            if (SelectedItems is null || SelectedItems.Count == 0)
+            {
+                if (ReportStringCountProperty is not "0")
+                {
+                    SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, "0");
+                }
+                return;
+            }
+
+            var rep = SelectedItems.Get<Report>(0);
+            if (rep is null) return;
+            var countR = ReportsStorage.GetReportRowsCount(rep);
+            SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
+        }
+    }
+
+    #endregion
+
     #endregion
 
     #region NowPage
@@ -599,6 +683,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 ? _itemsWithSearch.Count / PageSize
                                 : _itemsWithSearch.Count / PageSize + 1
                         : 1;
+                if (maxPage == 0) maxPage = 1;
                 if (val.ToString() == _nowPage) return;
                 if (val <= maxPage && val >= 1)
                 {
@@ -615,13 +700,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             UpdateCells();
                         }
                     }
-                    if (val < 1)
+                    if (val < 1 && _nowPage != "1")
                     {
-                        if (_nowPage != "1")
-                        {
-                            SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                            UpdateCells();
-                        }
+                        SetAndRaise(NowPageProperty, ref _nowPage, "1");
+                        UpdateCells();
                     }
                 }
             }
@@ -741,6 +823,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
         }
     }
+
     #endregion
 
     #region Columns
@@ -796,7 +879,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
-    private List<DataGridRow> Rows { get; set; } = new();
+    private List<DataGridRow> Rows { get; } = new();
 
     private StackPanel HeaderStackPanel { get; set; }
     private StackPanel CenterStackPanel { get; set; }
@@ -1033,33 +1116,40 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
     #endregion
-
+    
+    //Всё что касается работы с мышью
     #region DataGridPoiter
 
-    private int[] FirstPressedItem { get; set; } = new int[2];
+    private int[] FirstPressedItem { get; } = new int[2];
     private int[] LastPressedItem { get; set; } = new int[2];
-    private bool SetFirstPressed(int[] first)
+
+    #region SetFirstPressed
+
+    private bool SetFirstPressed(IReadOnlyList<int> first)
     {
-        if (FirstPressedItem[0] != first[0] || FirstPressedItem[1] != first[1])
-        {
-            FirstPressedItem[0] = first[0];
-            FirstPressedItem[1] = first[1];
-            return true;
-        }
-        return false;
-    }
-    private bool SetLastPressed(int[] last)
-    {
-        if (LastPressedItem[0] != last[0] || LastPressedItem[1] != last[1])
-        {
-            LastPressedItem[0] = last[0];
-            LastPressedItem[1] = last[1];
-            return true;
-        }
-        return false;
+        if (FirstPressedItem[0] == first[0] && FirstPressedItem[1] == first[1]) return false;
+        FirstPressedItem[0] = first[0];
+        FirstPressedItem[1] = first[1];
+        return true;
     }
 
-    private int[] FindMousePress(double[] mouse)
+    #endregion
+
+    #region SetLastPressed
+
+    private bool SetLastPressed(IReadOnlyList<int> last)
+    {
+        if (LastPressedItem[0] == last[0] && LastPressedItem[1] == last[1]) return false;
+        LastPressedItem[0] = last[0];
+        LastPressedItem[1] = last[1];
+        return true;
+    }
+
+    #endregion
+
+    #region FindMousePressed
+
+    private int[] FindMousePress(IReadOnlyList<double> mouse)
     {
         var tmp = new int[2];
         var sumy = 0.0;
@@ -1074,7 +1164,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var sumx = 0.0;
                 foreach (var it in item.Children.Cast<Cell?>())
                 {
-                    sumx += it.Bounds.Width;
+                    sumx += it.Bounds.Width + 2;    //плюс 2 добавил опытным путем, чтобы выделялась правильная ячейка
                     if (!(mouse[1] <= sumx)) continue;
                     if (mouse[1] >= 0)
                     {
@@ -1098,6 +1188,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
         return tmp;
     }
+
+    #endregion
+
+    #region MousePressed
+    
     private void MousePressed(object sender, PointerPressedEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
@@ -1154,6 +1249,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (FirstPressedItem[0] != -1)
             {
                 ContextMenu.Close();
+                
                 var tmp1 = (Cell)Rows
                     .SelectMany(x => x.Children)
                     .FirstOrDefault(item => ((Cell)item).Row == paramRowColumn[0]
@@ -1193,6 +1289,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
 
+    #endregion
+
+    #region MouseDoublePressed
+    
     private void MouseDoublePressed(object sender, EventArgs args)
     {
         if (FirstPressedItem[0] == -1) return;
@@ -1205,6 +1305,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
 
+    #endregion
+
+    #region MouseReleased
+    
     private void MouseReleased(object sender, PointerReleasedEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
@@ -1219,6 +1323,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             SetSelectedControls();
         }
     }
+
+    #endregion
+
+    #region MouseMoved
+    
     private void MouseMoved(object sender, PointerEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties;
@@ -1240,17 +1349,19 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         SetSelectedControls();
         //else
         //{
-            //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
-            //if (paramPos.X > 100)
-            //{
-            //    FixedContentN += 20;
-            //}
-            //if (paramPos.X < 0)
-            //{
-            //    FixedContentN -= 20;
-            //}
+        //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+        //if (paramPos.X > 100)
+        //{
+        //    FixedContentN += 20;
+        //}
+        //if (paramPos.X < 0)
+        //{
+        //    FixedContentN -= 20;
+        //}
         //}
     }
+
+    #endregion
 
     #endregion
 
@@ -1372,101 +1483,114 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         //NowPage = "0";
         PageCount = "0";
         ItemsCount = "0";
+
     }
     #endregion
 
     #region KeyDown
+
     private void OnDataGridKeyDown(object sender, KeyEventArgs args)
     {
-        if (args.Key == Key.Left)
+        switch (args.Key)
         {
-            LastPressedItem[1] = LastPressedItem[1] == 1 
-                ? LastPressedItem[1] 
-                : LastPressedItem[1] - 1;
-            if (args.KeyModifiers != KeyModifiers.Shift)
+            case Key.Left:
             {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                LastPressedItem[1] = LastPressedItem[1] == 1 
+                    ? LastPressedItem[1] 
+                    : LastPressedItem[1] - 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    num = ctrl.Text.Length;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
-                ctrl.CaretIndex = num - 1;
-            }
-        }
-        if (args.Key == Key.Right)
-        {
-            if (LastPressedItem[1] != Rows[0].Children.Count - 1)
-                LastPressedItem[1]++;
-            if (args.KeyModifiers != KeyModifiers.Shift)
-            {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
                 {
-                    num = ctrl.Text.Length;
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
                 }
-                ctrl.CaretIndex = num - 1;
+
+                break;
             }
-        }
-        if (args.Key == Key.Down)
-        {
-            LastPressedItem[0] = LastPressedItem[0] == Rows.Count - 1 || LastPressedItem[0] == Items.Count - 1 ? LastPressedItem[0] : LastPressedItem[0] + 1;
-            if (args.KeyModifiers != KeyModifiers.Shift)
+            case Key.Right:
             {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                if (LastPressedItem[1] != Rows[0].Children.Count - 1)
+                    LastPressedItem[1]++;
+                if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    num = ctrl.Text.Length;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
-                ctrl.CaretIndex = num - 1;
-            }
-        }
-        if (args.Key == Key.Up)
-        {
-            LastPressedItem[0] = LastPressedItem[0] == 0 ? LastPressedItem[0] : LastPressedItem[0] - 1;
-            if (args.KeyModifiers != KeyModifiers.Shift)
-            {
-                FirstPressedItem[0] = LastPressedItem[0];
-                FirstPressedItem[1] = LastPressedItem[1];
-            }
-            SetSelectedControls();
-            var item = (Cell)SelectedCells.FirstOrDefault();
-            if (item is { Control: TextBox ctrl })
-            {
-                ctrl.Focus();
-                ctrl.SelectAll();
-                var num = 0;
-                if (ctrl.Text != null)
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
                 {
-                    num = ctrl.Text.Length;
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
                 }
-                ctrl.CaretIndex = num - 1;
+
+                break;
+            }
+            case Key.Down:
+            {
+                LastPressedItem[0] = LastPressedItem[0] == Rows.Count - 1 || LastPressedItem[0] == Items.Count - 1 ? LastPressedItem[0] : LastPressedItem[0] + 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
+                }
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
+                {
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
+                }
+
+                break;
+            }
+            case Key.Up:
+            {
+                LastPressedItem[0] = LastPressedItem[0] == 0 ? LastPressedItem[0] : LastPressedItem[0] - 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
+                }
+                SetSelectedControls();
+                var item = (Cell)SelectedCells.FirstOrDefault();
+                if (item is { Control: TextBox ctrl })
+                {
+                    ctrl.Focus();
+                    ctrl.SelectAll();
+                    var num = 0;
+                    if (ctrl.Text != null)
+                    {
+                        num = ctrl.Text.Length;
+                    }
+                    ctrl.CaretIndex = num - 1;
+                }
+
+                break;
             }
         }
 
@@ -1482,6 +1606,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
 
     }
+
     #endregion
 
     #region Init
@@ -2041,7 +2166,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Orientation = Orientation.Horizontal
         };
         middleFooterStackPanel2.Children.Add(new TextBlock 
-            { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+            {
+                Text = Type is nameof(Form11) or nameof(Form12) or nameof(Form13) or nameof(Form14) or nameof(Form15)
+                           or nameof(Form16) or nameof(Form17) or nameof(Form18) or nameof(Form19) or nameof(Form21)
+                           or nameof(Form22) or nameof(Form23) or nameof(Form24) or nameof(Form25) or nameof(Form26)
+                           or nameof(Form27) or nameof(Form28) or nameof(Form29) or nameof(Form210) or nameof(Form211)
+                           or nameof(Form212) or nameof(Note) || ShowAllReport
+                    ? "Кол-во строчек:"
+                    : "Кол-во отчетов",
+                Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+            });
         middleFooterStackPanel2.Children.Add(new TextBlock
         {
             [!TextBox.TextProperty] = this[!ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
@@ -2056,10 +2190,25 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Orientation = Orientation.Horizontal
             };
             middleFooterStackPanelR.Children.Add(new TextBlock
-                { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+                { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во отчетов у всех организаций (верхняя таблица)
             middleFooterStackPanelR.Children.Add(new TextBlock
             {
                 [!TextBox.TextProperty] = this[!ReportCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+            });
+            middleFooterStackPanel2.Children.Add(middleFooterStackPanelR);
+        }
+        else if (Type is nameof(Report))
+        {
+            StackPanel middleFooterStackPanelR = new()
+            {
+                [!MarginProperty] = this[!FixedContentProperty],
+                Orientation = Orientation.Horizontal
+            };
+            middleFooterStackPanelR.Children.Add(new TextBlock
+                { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во строчек в отчете (нижняя таблица)
+            middleFooterStackPanelR.Children.Add(new TextBlock
+            {
+                [!TextBox.TextProperty] = this[!ReportStringCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
             });
             middleFooterStackPanel2.Children.Add(middleFooterStackPanelR);
         }
@@ -2137,4 +2286,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
 
     #endregion
+
+    
 }

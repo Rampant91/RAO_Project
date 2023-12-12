@@ -4,7 +4,7 @@ public class RefBool : RamAccess
 {
     private bool _value;
 
-    public RefBool(bool value) : base()
+    public RefBool(bool value)
     {
         _value = value;
     }
@@ -21,8 +21,7 @@ public class RefBool : RamAccess
 
     public bool Equals(RefBool obj)
     {
-        if (obj == null)
-            return false;
+        if (obj == null) return false;
         return _value == obj._value;
     }
 

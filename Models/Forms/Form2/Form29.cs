@@ -15,12 +15,19 @@ namespace Models.Forms.Form2;
 [Form_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
 public class Form29 : Form2
 {
-    public Form29() : base()
+    #region Constructor
+
+    public Form29()
     {
         FormNum.Value = "2.9";
         //NumberOfFields.Value = 8;
         Validate_all();
     }
+
+    #endregion
+
+    #region Validation
+    
     private void Validate_all()
     {
         WasteSourceName_Validation(WasteSourceName);
@@ -29,18 +36,25 @@ public class Form29 : Form2
         FactedActivity_Validation(FactedActivity);
     }
 
-    [FormProperty(true,"Форма")]
+    [FormProperty(true, "Форма")]
     public override bool Object_Validation()
     {
-        return !(WasteSourceName.HasErrors||
-                 RadionuclidName.HasErrors||
-                 AllowedActivity.HasErrors||
+        return !(WasteSourceName.HasErrors ||
+                 RadionuclidName.HasErrors ||
+                 AllowedActivity.HasErrors ||
                  FactedActivity.HasErrors);
     }
 
-    #region WasteSourceName 
-    public string WasteSourceName_DB { get; set; } = ""; [NotMapped]
-    [FormProperty(true,"null-2","Наименование, номер выпуска сточных вод","2")]
+    #endregion
+
+    #region Properties
+
+    #region WasteSourceName (2)
+
+    public string WasteSourceName_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "null-2", "Наименование, номер выпуска сточных вод", "2")]
     public RamAccess<string> WasteSourceName
     {
         get
@@ -50,13 +64,10 @@ public class Form29 : Form2
                 ((RamAccess<string>)Dictionary[nameof(WasteSourceName)]).Value = WasteSourceName_DB;
                 return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
-                rm.PropertyChanged += WasteSourceNameValueChanged;
-                Dictionary.Add(nameof(WasteSourceName), rm);
-                return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
-            }
+            var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
+            rm.PropertyChanged += WasteSourceNameValueChanged;
+            Dictionary.Add(nameof(WasteSourceName), rm);
+            return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
         }
         set
         {
@@ -64,13 +75,15 @@ public class Form29 : Form2
             OnPropertyChanged(nameof(WasteSourceName));
         }
     }
-    private void WasteSourceNameValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void WasteSourceNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            WasteSourceName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool WasteSourceName_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -81,13 +94,15 @@ public class Form29 : Form2
         }
         return true;
     }
-    //WasteSourceName property
+
     #endregion
 
-    #region RadionuclidName
-    public string RadionuclidName_DB { get; set; } = ""; 
-    [NotMapped]        
-    [FormProperty(true,"null-3","Наименование радионуклида","3")]
+    #region RadionuclidName (3)
+
+    public string RadionuclidName_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "null-3", "Наименование радионуклида", "3")]
     public RamAccess<string> RadionuclidName
     {
         get
@@ -97,13 +112,10 @@ public class Form29 : Form2
                 ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
                 return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
-                rm.PropertyChanged += RadionuclidNameValueChanged;
-                Dictionary.Add(nameof(RadionuclidName), rm);
-                return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
-            }
+            var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
+            rm.PropertyChanged += RadionuclidNameValueChanged;
+            Dictionary.Add(nameof(RadionuclidName), rm);
+            return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
         }
         set
         {
@@ -112,13 +124,15 @@ public class Form29 : Form2
         }
     }
     //If change this change validation
-    private void RadionuclidNameValueChanged(object Value, PropertyChangedEventArgs args)
+
+    private void RadionuclidNameValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
-            RadionuclidName_DB = ((RamAccess<string>)Value).Value;
+            RadionuclidName_DB = ((RamAccess<string>)value).Value;
         }
     }
+
     private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
@@ -128,21 +142,25 @@ public class Form29 : Form2
             return false;
         }
         var tmpstr = value.Value.ToLower().Replace(" ", "");
-        var tmp = from item in Spravochniks.SprRadionuclids where tmpstr == item.Item1 select item.Item1;
-        if (!tmp.Any())
+        if (!Spravochniks.SprRadionuclids
+                .Where(item => tmpstr == item.Item1)
+                .Select(item => item.Item1)
+                .Any())
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
-    //RadionuclidName property
+
     #endregion
 
-    #region AllowedActivity
+    #region AllowedActivity (4)
+
     public string AllowedActivity_DB { get; set; } = "";
+
     [NotMapped]
-    [FormProperty(true,"Активность радионуклида, Бк", "допустимая","4")]
+    [FormProperty(true, "Активность радионуклида, Бк", "допустимая", "4")]
     public RamAccess<string> AllowedActivity
     {
         get
@@ -152,13 +170,10 @@ public class Form29 : Form2
                 ((RamAccess<string>)Dictionary[nameof(AllowedActivity)]).Value = AllowedActivity_DB;
                 return (RamAccess<string>)Dictionary[nameof(AllowedActivity)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(AllowedActivity_Validation, AllowedActivity_DB);
-                rm.PropertyChanged += AllowedActivityValueChanged;
-                Dictionary.Add(nameof(AllowedActivity), rm);
-                return (RamAccess<string>)Dictionary[nameof(AllowedActivity)];
-            }
+            var rm = new RamAccess<string>(AllowedActivity_Validation, AllowedActivity_DB);
+            rm.PropertyChanged += AllowedActivityValueChanged;
+            Dictionary.Add(nameof(AllowedActivity), rm);
+            return (RamAccess<string>)Dictionary[nameof(AllowedActivity)];
         }
         set
         {
@@ -167,34 +182,30 @@ public class Form29 : Form2
         }
     }
 
-    private void AllowedActivityValueChanged(object Value, PropertyChangedEventArgs args)
+    private void AllowedActivityValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    AllowedActivity_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                AllowedActivity_DB = value1;
+                return;
             }
-            AllowedActivity_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        AllowedActivity_DB = value1;
     }
+
     private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -208,33 +219,32 @@ public class Form29 : Form2
             return true;
         }
         var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e')&& value1.Contains('+') ^ value1.Contains('-'))
+        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); return false;
-            }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //AllowedActivity property
+
     #endregion
 
-    #region FactedActivity
+    #region FactedActivity (5)
+
     public string FactedActivity_DB { get; set; }
+
     [NotMapped]
-    [FormProperty(true,"Активность радионуклида, Бк", "фактическая","5")]
+    [FormProperty(true, "Активность радионуклида, Бк", "фактическая", "5")]
     public RamAccess<string> FactedActivity
     {
         get
@@ -244,13 +254,10 @@ public class Form29 : Form2
                 ((RamAccess<string>)Dictionary[nameof(FactedActivity)]).Value = FactedActivity_DB;
                 return (RamAccess<string>)Dictionary[nameof(FactedActivity)];
             }
-            else
-            {
-                var rm = new RamAccess<string>(FactedActivity_Validation, FactedActivity_DB);
-                rm.PropertyChanged += FactedActivityValueChanged;
-                Dictionary.Add(nameof(FactedActivity), rm);
-                return (RamAccess<string>)Dictionary[nameof(FactedActivity)];
-            }
+            var rm = new RamAccess<string>(FactedActivity_Validation, FactedActivity_DB);
+            rm.PropertyChanged += FactedActivityValueChanged;
+            Dictionary.Add(nameof(FactedActivity), rm);
+            return (RamAccess<string>)Dictionary[nameof(FactedActivity)];
         }
         set
         {
@@ -258,33 +265,29 @@ public class Form29 : Form2
             OnPropertyChanged(nameof(FactedActivity));
         }
     }
+
     private void FactedActivityValueChanged(object Value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)Value).Value;
+        if (value1 != null)
         {
-            var value1 = ((RamAccess<string>)Value).Value;
-            if (value1 != null)
+            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
             {
-                value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
-                {
-                    FactedActivity_DB = value1;
-                    return;
-                }
-                if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                }
-                try
-                {
-                    var value2 = Convert.ToDouble(value1);
-                    value1 = $"{value2:0.######################################################e+00}";
-                }
-                catch (Exception ex)
-                { }
+                FactedActivity_DB = value1;
+                return;
             }
-            FactedActivity_DB = value1;
+            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value1 = $"{doubleValue:0.######################################################e+00}";
+            }
         }
+        FactedActivity_DB = value1;
     }
 
     private bool FactedActivity_Validation(RamAccess<string> value)//Ready
@@ -300,26 +303,26 @@ public class Form29 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-                     NumberStyles.AllowExponent;
-        try
-        {
-            if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            {
-                value.AddError("Число должно быть больше нуля"); return false;
-            }
-        }
-        catch
+        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
+        if (doubleValue <= 0)
+        {
+            value.AddError("Число должно быть больше нуля"); 
+            return false;
+        }
         return true;
     }
-    //FactedActivity property
+
+    #endregion 
+    
     #endregion
 
     #region IExcel
+
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
         base.ExcelGetRow(worksheet, row);
@@ -356,53 +359,102 @@ public class Form29 : Form2
         
         return 4;
     }
+
     #endregion
 
     #region IDataGridColumn
+
     private static DataGridColumns _DataGridColumns { get; set; }
+
     public override DataGridColumns GetColumnStructure(string param = "")
     {
         if (_DataGridColumns != null) return _DataGridColumns;
 
         #region NumberInOrder (1)
-        var NumberInOrderR = ((FormPropertyAttribute)typeof(Form).GetProperty(nameof(NumberInOrder)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-        NumberInOrderR.SetSizeColToAllLevels(50);
-        NumberInOrderR.Binding = nameof(NumberInOrder);
-        NumberInOrderR.Blocked = true;
-        NumberInOrderR.ChooseLine = true;
+
+        var numberInOrderR = ((FormPropertyAttribute)typeof(Form)
+                .GetProperty(nameof(NumberInOrder))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD();
+        if (numberInOrderR != null)
+        {
+            numberInOrderR.SetSizeColToAllLevels(50);
+            numberInOrderR.Binding = nameof(NumberInOrder);
+            numberInOrderR.Blocked = true;
+            numberInOrderR.ChooseLine = true;
+        }
+        
         #endregion
 
         #region WasteSourceName (2)
-        var WasteSourceNameR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        WasteSourceNameR.SetSizeColToAllLevels(268);
-        WasteSourceNameR.Binding = nameof(WasteSourceName);
-        NumberInOrderR += WasteSourceNameR;
+
+        var wasteSourceNameR = ((FormPropertyAttribute)typeof(Form29)
+                .GetProperty(nameof(WasteSourceName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (wasteSourceNameR != null)
+        {
+            wasteSourceNameR.SetSizeColToAllLevels(268);
+            wasteSourceNameR.Binding = nameof(WasteSourceName);
+            numberInOrderR += wasteSourceNameR;
+        }
+
         #endregion
 
         #region RadionuclidName (3)
-        var RadionuclidNameR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        RadionuclidNameR.SetSizeColToAllLevels(183);
-        RadionuclidNameR.Binding = nameof(RadionuclidName);
-        NumberInOrderR += RadionuclidNameR;
+
+        var radionuclidNameR = ((FormPropertyAttribute)typeof(Form29)
+                .GetProperty(nameof(RadionuclidName))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (radionuclidNameR != null)
+        {
+            radionuclidNameR.SetSizeColToAllLevels(183);
+            radionuclidNameR.Binding = nameof(RadionuclidName);
+            numberInOrderR += radionuclidNameR;
+        }
+
         #endregion
 
         #region AllowedActivity (4)
-        var AllowedActivityR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(AllowedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        AllowedActivityR.SetSizeColToAllLevels(94);
-        AllowedActivityR.Binding = nameof(AllowedActivity);
-        NumberInOrderR += AllowedActivityR;
+
+        var allowedActivityR = ((FormPropertyAttribute)typeof(Form29)
+                .GetProperty(nameof(AllowedActivity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (allowedActivityR != null)
+        {
+            allowedActivityR.SetSizeColToAllLevels(94);
+            allowedActivityR.Binding = nameof(AllowedActivity);
+            numberInOrderR += allowedActivityR;
+        }
+
         #endregion
 
         #region FactedActivity (5)
-        var FactedActivityR = ((FormPropertyAttribute)typeof(Form29).GetProperty(nameof(FactedActivity)).GetCustomAttributes(typeof(FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
-        FactedActivityR.SetSizeColToAllLevels(94);
-        FactedActivityR.Binding = nameof(FactedActivity);
-        NumberInOrderR += FactedActivityR;
+
+        var factedActivityR = ((FormPropertyAttribute)typeof(Form29)
+                .GetProperty(nameof(FactedActivity))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            ?.GetDataColumnStructureD(numberInOrderR);
+        if (factedActivityR != null)
+        {
+            factedActivityR.SetSizeColToAllLevels(94);
+            factedActivityR.Binding = nameof(FactedActivity);
+            numberInOrderR += factedActivityR;
+        }
+
         #endregion
 
-        _DataGridColumns = NumberInOrderR;
+        _DataGridColumns = numberInOrderR;
 
         return _DataGridColumns;
     }
+
     #endregion
 }

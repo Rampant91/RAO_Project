@@ -21,10 +21,10 @@ internal class ChangeFormAsyncCommand : BaseAsyncCommand
             var t = Desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
             var rep = (Report)obj;
-            var tre = MainWindowVM.LocalReports.Reports_Collection
+            var tre = ReportsStorage.LocalReports.Reports_Collection
                 .FirstOrDefault(i => i.Report_Collection.Contains(rep));
             var numForm = rep.FormNum.Value;
-            var frm = new ChangeOrCreateVM(numForm, rep, tre, MainWindowVM.LocalReports);
+            var frm = new ChangeOrCreateVM(numForm, rep);
             switch (numForm)
             {
                 case "2.1":

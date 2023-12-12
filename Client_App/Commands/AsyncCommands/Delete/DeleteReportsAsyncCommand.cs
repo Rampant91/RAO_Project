@@ -1,9 +1,8 @@
-﻿using Models.Collections;
+﻿using System.Collections;
+using Models.Collections;
 using Models.DBRealization;
-using System.Collections;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 
@@ -14,7 +13,7 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        #region MessageExcelExportComplete
+        #region MessageDeleteReports
 
         var answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
@@ -24,7 +23,7 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
                     new ButtonDefinition { Name = "Да" },
                     new ButtonDefinition { Name = "Нет" }
                 },
-                ContentTitle = "Выгрузка в Excel",
+                ContentTitle = "Уведомление",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Вы действительно хотите удалить организацию?",
                 MinWidth = 400,
@@ -35,15 +34,16 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
         #endregion
 
         if (answer is not "Да") return;
-
         if (parameter is IEnumerable param)
         {
             foreach (var item in param)
             {
-                MainWindowVM.LocalReports.Reports_Collection.Remove((Reports)item);
+                var rep = item as Reports;
+                rep?.Report_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection.Remove((Reports)item);
             }
         }
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+        await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
         //await Local_Reports.Reports_Collection.QuickSortAsync();
     }
 }

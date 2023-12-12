@@ -9,11 +9,12 @@ namespace Client_App.VisualRealization.Converters;
 public class ReportsToReport_Converter : IValueConverter
 {
     private Reports last_item { get; set; }
-    public object Convert(object Value, Type tp, object Param, CultureInfo info)
+
+    public object Convert(object value, Type tp, object param, CultureInfo info)
     {
-        if (Value != null)
+        if (value != null)
         {
-            var rps_coll = (IKeyCollection)Value;
+            var rps_coll = (IKeyCollection)value;
             try
             {
                 if (rps_coll.Count != 0)
@@ -37,7 +38,8 @@ public class ReportsToReport_Converter : IValueConverter
         }
         return null;
     }
-    public object ConvertBack(object Value, Type tp, object Param, CultureInfo info)
+
+    public object ConvertBack(object value, Type tp, object param, CultureInfo info)
     {
         if (last_item != null)
         {
