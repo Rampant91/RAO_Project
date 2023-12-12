@@ -606,6 +606,15 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         
                         #endregion
 
+                        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
+                        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
+                        {
+                            baseRep = await ReportsStorage.Api.GetAsync(baseRep.Id);
+                            StaticConfiguration.DBModel.Entry(checkedRep).State = EntityState.Detached;
+                            StaticConfiguration.DBModel.Set<Report>().Attach(baseRep);
+                            baseReps.Report_Collection.Replace(checkedRep, baseRep);
+                            await StaticConfiguration.DBModel.SaveChangesAsync();
+                        }
                         await CheckAnswer(res, baseReps, baseRep, impRep);
                         break;
                     }

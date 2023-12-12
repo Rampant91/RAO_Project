@@ -36,6 +36,8 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         AtLeastOneImportDone = false;
 
         var countReadFiles = answer.Length;
+
+        await using var db = new DBModel(StaticConfiguration.DBPath);
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
@@ -100,47 +102,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                 if (baseReps11 != null)
                 {
-                    var baseReps11Id = baseReps11.Id;
-                    baseReps11 = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(reps => reps.Id == baseReps11Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .First();
                     await ProcessIfHasReports11(baseReps11, impReps);
                 }
                 else if (baseReps21 != null)
                 {
-                    var baseReps21Id = baseReps21.Id;
-                    baseReps21 = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(reps => reps.Id == baseReps21Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .First();
                     await ProcessIfHasReports21(baseReps21, impReps);
                 }
                 else if (baseReps11 == null && baseReps21 == null)
