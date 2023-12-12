@@ -15,14 +15,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Client_App.ViewModels;
-using Client_App.Views;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using ReactiveUI;
-using Avalonia.Controls.ApplicationLifetimes;
 
 namespace Client_App.Controls.DataGrid;
 

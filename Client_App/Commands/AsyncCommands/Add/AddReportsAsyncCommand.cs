@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Client_App.ViewModels;
+﻿using Client_App.ViewModels;
 using Client_App.Views;
 using Models.Collections;
 using System.Reactive.Linq;
