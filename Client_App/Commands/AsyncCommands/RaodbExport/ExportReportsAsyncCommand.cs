@@ -61,7 +61,7 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
-                       $"_{exportOrg.Master.FormNum_DB}" +
+                       $"_{exportOrg.Master.FormNum_DB[0]}.x" +
                        $"_{BaseVM.Version}";
 
         var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
@@ -162,7 +162,7 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 ContentTitle = "Выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage =
-                    $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB}) сохранен по пути:" +
+                    $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB[0]}.x) сохранен по пути:" +
                     $"{Environment.NewLine}{fullPath}" +
                     $"{Environment.NewLine}" +
                     $"{Environment.NewLine}Регистрационный номер - {exportOrg.Master.RegNoRep.Value}" +

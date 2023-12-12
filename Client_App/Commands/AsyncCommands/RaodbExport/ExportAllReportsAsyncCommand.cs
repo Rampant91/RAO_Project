@@ -73,7 +73,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                 var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}.RAODB");
                 var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                                $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
-                               $"_{exportOrg.Master.FormNum_DB}" +
+                               $"_{exportOrg.Master.FormNum_DB[0]}.x" +
                                $"_{BaseVM.Version}";
 
                 var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
