@@ -180,6 +180,4 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
             Process.Start("explorer", folderPath);
         }
     }
-
-    
 }
