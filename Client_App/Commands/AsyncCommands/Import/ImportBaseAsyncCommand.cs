@@ -4,7 +4,6 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms.Form1;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;

@@ -25,86 +25,88 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        {
-            var param = ((IEnumerable<IKey>)parameter).ToArray();
+        var param = ((IEnumerable<IKey>)parameter).ToArray();
 
-            #region MessageDeleteLine
+        #region MessageDeleteLine
 
-            var answer = await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        ButtonDefinitions = new[]
-                        {
-                        new ButtonDefinition { Name = "Да", IsDefault = true },
-                        new ButtonDefinition { Name = "Нет", IsCancel = true }
-                        },
-                        ContentTitle = "Удаление строки",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = "Вы действительно хотите удалить строчку?",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow);
-
-            #endregion
-
-            if (answer is "Да")
+        var answer = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                var minItem = param.Min(x => x.Order);
-                foreach (var item in param)
+                ButtonDefinitions = new[]
                 {
-                    if (item != null)
-                    {
-                        Storage.Rows.Remove(item);
-                    }
+                    new ButtonDefinition { Name = "Да", IsDefault = true },
+                    new ButtonDefinition { Name = "Нет", IsCancel = true }
+                },
+                ContentTitle = "Удаление строки",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Вы действительно хотите удалить строчку?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow);
+
+        #endregion
+
+        if (answer is "Да")
+        {
+            var minItem = param.Min(x => x.Order);
+            foreach (var item in param)
+            {
+                if (item != null)
+                {
+                    Storage.Rows.Remove(item);
                 }
-                var rows = Storage[Storage.FormNum_DB]
-                    .GetEnumerable()
-                    .ToList();
-                switch ((rows.FirstOrDefault() as Form).FormNum_DB)
+            }
+
+            var rows = Storage[Storage.FormNum_DB]
+                .GetEnumerable()
+                .ToList();
+            switch ((rows.FirstOrDefault() as Form).FormNum_DB)
+            {
+                case "2.1":
                 {
-                    case "2.1":
-                        {
-                            var count = 1;
-                            foreach (var key in rows)
-                            {
-                                var row = (Form21)key;
-                                row.NumberInOrder_DB = count;
-                                count++;
-                                row.NumberInOrderSum_DB = "";
-                                //row.NumberInOrderSum = new RamAccess<string>(null, "");   //выполняется 0.2c. на итерацию, вроде работает и с заменой выше
-                            }
-                            break;
-                        }
-                    case "2.2":
-                        {
-                            var count = 1;
-                            foreach (var key in rows)
-                            {
-                                var row = (Form22)key;
-                                row.NumberInOrder_DB = count;
-                                count++;
-                                row.NumberInOrderSum_DB = "";
-                            }
-                            break;
-                        }
-                    default:
-                        {
-                            await Storage.SortAsync();
-                            var itemQ = Storage.Rows
-                                .GetEnumerable()
-                                .Where(x => x.Order > minItem)
-                                .Select(x => x as Form)
-                                .ToList();
-                            foreach (var form in itemQ)
-                            {
-                                //form.SetOrder(minItem);   //выполняется полсекунды на итерацию, вроде работает и с заменой ниже
-                                form.NumberInOrder_DB = (int)minItem;
-                                form.NumberInOrder.OnPropertyChanged();
-                                minItem++;
-                            }
-                            break;
-                        }
+                    var count = 1;
+                    foreach (var key in rows)
+                    {
+                        var row = (Form21)key;
+                        row.NumberInOrder_DB = count;
+                        count++;
+                        row.NumberInOrderSum_DB = "";
+                        //row.NumberInOrderSum = new RamAccess<string>(null, "");   //выполняется 0.2c. на итерацию, вроде работает и с заменой выше
+                    }
+
+                    break;
+                }
+                case "2.2":
+                {
+                    var count = 1;
+                    foreach (var key in rows)
+                    {
+                        var row = (Form22)key;
+                        row.NumberInOrder_DB = count;
+                        count++;
+                        row.NumberInOrderSum_DB = "";
+                    }
+
+                    break;
+                }
+                default:
+                {
+                    await Storage.SortAsync();
+                    var itemQ = Storage.Rows
+                        .GetEnumerable()
+                        .Where(x => x.Order > minItem)
+                        .Select(x => x as Form)
+                        .ToList();
+                    foreach (var form in itemQ)
+                    {
+                        //form.SetOrder(minItem);   //выполняется полсекунды на итерацию, вроде работает и с заменой ниже
+                        form.NumberInOrder_DB = (int)minItem;
+                        form.NumberInOrder.OnPropertyChanged();
+                        minItem++;
+                    }
+
+                    break;
                 }
             }
         }

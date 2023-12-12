@@ -55,15 +55,14 @@ internal class DeleteDataInRowsSyncCommand : BaseCommand
                         switch (midValue)
                         {
                             case RamAccess<int?>:
-                                midValue.GetType().GetProperty("Value")?.SetMethod
-                                    ?.Invoke(midValue, new object[] { int.Parse("") });
-                                break;
                             case RamAccess<float?>:
+                            case RamAccess<short?>:
+                            case RamAccess<byte?>:
+                            case RamAccess<bool>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod
-                                    ?.Invoke(midValue, new object[] { float.Parse("") });
+                                    ?.Invoke(midValue, new object?[1]);
                                 break;
                             case RamAccess<short>:
-                            case RamAccess<short?>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod
                                     ?.Invoke(midValue, new object[] { short.Parse("") });
                                 break;
@@ -74,11 +73,6 @@ internal class DeleteDataInRowsSyncCommand : BaseCommand
                             case RamAccess<string>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod
                                     ?.Invoke(midValue, new object[] { "" });
-                                break;
-                            case RamAccess<byte?>:
-                            case RamAccess<bool>:
-                                midValue.GetType().GetProperty("Value")?.SetMethod
-                                    ?.Invoke(midValue, new object[] { null });
                                 break;
                             default:
                                 midValue?.GetType().GetProperty("Value")?.SetMethod
