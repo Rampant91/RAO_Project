@@ -116,28 +116,28 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.Type_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.FactoryNumber_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.Quantity_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.Activity_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.CreatorOKPO_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.CreationDate_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.Category_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.SignedServicePeriod_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.Owner_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 29].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 30].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 31].Value = repForm.PackNumber_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PassportNumber_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.Type_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = repForm.Quantity_DB is null ? "-" : repForm.Quantity_DB;
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.Activity_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelString(repForm.CreatorOKPO_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDate(repForm.CreationDate_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = repForm.Category_DB is null ? "-" : repForm.Category_DB;
+                Worksheet.Cells[CurrentRow, 21].Value = repForm.SignedServicePeriod_DB is null ? "-" : repForm.SignedServicePeriod_DB;
+                Worksheet.Cells[CurrentRow, 22].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.Owner_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.PackNumber_DB);
 
                 #endregion
 
@@ -195,25 +195,25 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.NameIOU_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.FactoryNumber_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.Mass_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.CreatorOKPO_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.CreationDate_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.SignedServicePeriod_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.Owner_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.PackNumber_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PassportNumber_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.NameIOU_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.Mass_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.CreatorOKPO_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.CreationDate_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.SignedServicePeriod_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelString(repForm.Owner_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackNumber_DB);
 
                 #endregion
 
@@ -272,26 +272,26 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.Type_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.FactoryNumber_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.Activity_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.CreatorOKPO_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.CreationDate_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.AggregateState_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.Owner_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 29].Value = repForm.PackNumber_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PassportNumber_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.Type_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.Activity_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelString(repForm.CreatorOKPO_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDate(repForm.CreationDate_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = repForm.AggregateState_DB is null ? "-" : repForm.AggregateState_DB;
+                Worksheet.Cells[CurrentRow, 20].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.Owner_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.PackNumber_DB);
 
                 #endregion
 
@@ -350,27 +350,27 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.Name_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Sort_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.Activity_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.ActivityMeasurementDate_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.Volume_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.Mass_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.AggregateState_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.Owner_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 29].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 30].Value = repForm.PackNumber_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PassportNumber_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.Name_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = repForm.Sort_DB is null ? "-" : repForm.Sort_DB;
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.Activity_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.ActivityMeasurementDate_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.Volume_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.Mass_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = repForm.AggregateState_DB is null ? "-" : repForm.AggregateState_DB;
+                Worksheet.Cells[CurrentRow, 21].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelString(repForm.Owner_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.PackNumber_DB);
 
                 #endregion
 
@@ -429,29 +429,29 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.Type_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.FactoryNumber_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.Quantity_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.Activity_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.CreationDate_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.StatusRAO_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.PackNumber_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.StoragePlaceName_DB;
-                Worksheet.Cells[CurrentRow, 29].Value = repForm.StoragePlaceCode_DB;
-                Worksheet.Cells[CurrentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
-                Worksheet.Cells[CurrentRow, 31].Value = repForm.Subsidy_DB;
-                Worksheet.Cells[CurrentRow, 32].Value = repForm.FcpNumber_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PassportNumber_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.Type_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = repForm.Quantity_DB is null ? "-" : repForm.Quantity_DB;
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.Activity_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDate(repForm.CreationDate_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelString(repForm.StatusRAO_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackNumber_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
+                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.Subsidy_DB);
+                Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelString(repForm.FcpNumber_DB);
 
                 #endregion
 
@@ -510,32 +510,32 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.CodeRAO_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.StatusRAO_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Volume_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.Mass_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.QuantityOZIII_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.MainRadionuclids_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.TritiumActivity_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.BetaGammaActivity_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.AlphaActivity_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.TransuraniumActivity_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.ActivityMeasurementDate_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.StoragePlaceName_DB;
-                Worksheet.Cells[CurrentRow, 29].Value = repForm.StoragePlaceCode_DB;
-                Worksheet.Cells[CurrentRow, 30].Value = repForm.RefineOrSortRAOCode_DB;
-                Worksheet.Cells[CurrentRow, 31].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 32].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 33].Value = repForm.PackNumber_DB;
-                Worksheet.Cells[CurrentRow, 34].Value = repForm.Subsidy_DB;
-                Worksheet.Cells[CurrentRow, 35].Value = repForm.FcpNumber_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.CodeRAO_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.StatusRAO_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.Volume_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.Mass_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelString(repForm.MainRadionuclids_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.TritiumActivity_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDouble(repForm.TransuraniumActivity_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDate(repForm.ActivityMeasurementDate_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
+                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelString(repForm.PackNumber_DB);
+                Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.Subsidy_DB);
+                Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.FcpNumber_DB);
 
                 #endregion
 
@@ -594,38 +594,38 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.PackFactoryNumber_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.PackFactoryNumber_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.FormingDate_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.Volume_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.Mass_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.SpecificActivity_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.StoragePlaceName_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.StoragePlaceCode_DB;
-                Worksheet.Cells[CurrentRow, 29].Value = repForm.CodeRAO_DB;
-                Worksheet.Cells[CurrentRow, 30].Value = repForm.StatusRAO_DB;
-                Worksheet.Cells[CurrentRow, 31].Value = repForm.VolumeOutOfPack_DB;
-                Worksheet.Cells[CurrentRow, 32].Value = repForm.MassOutOfPack_DB;
-                Worksheet.Cells[CurrentRow, 33].Value = repForm.Quantity_DB;
-                Worksheet.Cells[CurrentRow, 34].Value = repForm.TritiumActivity_DB;
-                Worksheet.Cells[CurrentRow, 35].Value = repForm.BetaGammaActivity_DB;
-                Worksheet.Cells[CurrentRow, 36].Value = repForm.AlphaActivity_DB;
-                Worksheet.Cells[CurrentRow, 37].Value = repForm.TransuraniumActivity_DB;
-                Worksheet.Cells[CurrentRow, 38].Value = repForm.RefineOrSortRAOCode_DB;
-                Worksheet.Cells[CurrentRow, 39].Value = repForm.Subsidy_DB;
-                Worksheet.Cells[CurrentRow, 40].Value = repForm.FcpNumber_DB;
-
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.PackFactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.PackFactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDate(repForm.FormingDate_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelString(repForm.PassportNumber_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.Volume_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.Mass_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDouble(repForm.SpecificActivity_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.CodeRAO_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.StatusRAO_DB);
+                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelDouble(repForm.VolumeOutOfPack_DB);
+                Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelDouble(repForm.MassOutOfPack_DB);
+                Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelInt(repForm.Quantity_DB);
+                Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelDouble(repForm.TritiumActivity_DB);
+                Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
+                Worksheet.Cells[CurrentRow, 36].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
+                Worksheet.Cells[CurrentRow, 37].Value = ConvertToExcelDouble(repForm.TransuraniumActivity_DB);
+                Worksheet.Cells[CurrentRow, 38].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
+                Worksheet.Cells[CurrentRow, 39].Value = ConvertToExcelString(repForm.Subsidy_DB);
+                Worksheet.Cells[CurrentRow, 40].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                                                        
                 #endregion
 
                 CurrentRow++;
@@ -683,33 +683,33 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.IndividualNumberZHRO_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.PassportNumber_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Volume6_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.Mass7_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.SaltConcentration_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.SpecificActivity_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.ProviderOrRecieverOKPO_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.TransporterOKPO_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.StoragePlaceName_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.StoragePlaceCode_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.CodeRAO_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.StatusRAO_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.Volume20_DB;
-                Worksheet.Cells[CurrentRow, 29].Value = repForm.Mass21_DB;
-                Worksheet.Cells[CurrentRow, 30].Value = repForm.TritiumActivity_DB;
-                Worksheet.Cells[CurrentRow, 31].Value = repForm.BetaGammaActivity_DB;
-                Worksheet.Cells[CurrentRow, 32].Value = repForm.AlphaActivity_DB;
-                Worksheet.Cells[CurrentRow, 33].Value = repForm.TransuraniumActivity_DB;
-                Worksheet.Cells[CurrentRow, 34].Value = repForm.RefineOrSortRAOCode_DB;
-                Worksheet.Cells[CurrentRow, 35].Value = repForm.Subsidy_DB;
-                Worksheet.Cells[CurrentRow, 36].Value = repForm.FcpNumber_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.IndividualNumberZHRO_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.PassportNumber_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.Volume6_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.Mass7_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.SaltConcentration_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.SpecificActivity_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.CodeRAO_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.StatusRAO_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(repForm.Volume20_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelDouble(repForm.Mass21_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelDouble(repForm.TritiumActivity_DB);
+                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
+                Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
+                Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelDouble(repForm.TransuraniumActivity_DB);
+                Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
+                Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.Subsidy_DB);
+                Worksheet.Cells[CurrentRow, 36].Value = ConvertToExcelString(repForm.FcpNumber_DB);
 
                 #endregion
 
@@ -768,14 +768,14 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 8].Value = rep.Rows.Count;
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.OperationDate_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.CodeTypeAccObject_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.Activity_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = repForm.CodeTypeAccObject_DB is null ? "-" : repForm.CodeTypeAccObject_DB;
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.Activity_DB);
 
                 #endregion
 
@@ -831,28 +831,28 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.RefineMachineName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.MachineCode_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.MachinePower_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.NumberOfHoursPerYear_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.CodeRAOIn_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.StatusRAOIn_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.VolumeIn_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.MassIn_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.QuantityIn_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.TritiumActivityIn_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.BetaGammaActivityIn_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.AlphaActivityIn_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.TransuraniumActivityIn_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.CodeRAOout_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.StatusRAOout_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.VolumeOut_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.MassOut_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.QuantityOZIIIout_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.TritiumActivityOut_DB;
-                Worksheet.Cells[CurrentRow, 26].Value = repForm.BetaGammaActivityOut_DB;
-                Worksheet.Cells[CurrentRow, 27].Value = repForm.AlphaActivityOut_DB;
-                Worksheet.Cells[CurrentRow, 28].Value = repForm.TransuraniumActivityOut_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.RefineMachineName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = repForm.MachineCode.Value is null ? "-" : repForm.MachineCode.Value;
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.MachinePower_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.NumberOfHoursPerYear_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.CodeRAOIn_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.StatusRAOIn_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.VolumeIn_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.MassIn_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelInt(repForm.QuantityIn_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.TritiumActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.BetaGammaActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.AlphaActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.TransuraniumActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelString(repForm.CodeRAOout_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.StatusRAOout_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDouble(repForm.VolumeOut_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelDouble(repForm.MassOut_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelInt(repForm.QuantityOZIIIout_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelDouble(repForm.TritiumActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelDouble(repForm.BetaGammaActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelDouble(repForm.AlphaActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(repForm.TransuraniumActivityOut_DB);
 
                 #endregion
 
@@ -907,25 +907,25 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.StoragePlaceName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.StoragePlaceCode_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.PackName_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.PackType_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.PackQuantity_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.CodeRAO_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.StatusRAO_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.VolumeOutOfPack_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.VolumeInPack_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.MassOutOfPack_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.MassInPack_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.QuantityOZIII_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.TritiumActivity_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.BetaGammaActivity_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.AlphaActivity_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.TransuraniumActivity_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = repForm.MainRadionuclids_DB;
-                Worksheet.Cells[CurrentRow, 24].Value = repForm.Subsidy_DB;
-                Worksheet.Cells[CurrentRow, 25].Value = repForm.FcpNumber_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelInt(repForm.PackQuantity_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.CodeRAO_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.StatusRAO_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.VolumeOutOfPack_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.VolumeInPack_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.MassOutOfPack_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.MassInPack_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.TritiumActivity_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDouble(repForm.TransuraniumActivity_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.MainRadionuclids_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.Subsidy_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.FcpNumber_DB);
 
                 #endregion
 
@@ -980,18 +980,18 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.StoragePlaceName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.StoragePlaceCode_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.ProjectVolume_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.CodeRAO_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.Volume_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.Mass_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.QuantityOZIII_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.SummaryActivity_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.DocumentNumber_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.DocumentDate_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.ExpirationDate_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.DocumentName_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.ProjectVolume_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.CodeRAO_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.Volume_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.Mass_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.SummaryActivity_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDate(repForm.DocumentDate_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.ExpirationDate_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelString(repForm.DocumentName_DB);
 
                 #endregion
 
@@ -1046,22 +1046,22 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.CodeOYAT_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.FcpNumber_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.MassCreated_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.QuantityCreated_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.MassFromAnothers_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.QuantityFromAnothers_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.MassFromAnothersImported_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.QuantityFromAnothersImported_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.MassAnotherReasons_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.QuantityAnotherReasons_DB;
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.MassTransferredToAnother_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.QuantityTransferredToAnother_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.MassRefined_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.QuantityRefined_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.MassRemovedFromAccount_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.QuantityRemovedFromAccount_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.CodeOYAT_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.MassCreated_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelInt(repForm.QuantityCreated_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.MassFromAnothers_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelInt(repForm.QuantityFromAnothers_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.MassFromAnothersImported_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelInt(repForm.QuantityFromAnothersImported_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.MassAnotherReasons_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelInt(repForm.QuantityAnotherReasons_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.MassTransferredToAnother_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelInt(repForm.QuantityTransferredToAnother_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.MassRefined_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelInt(repForm.QuantityRefined_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDouble(repForm.MassRemovedFromAccount_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelInt(repForm.QuantityRemovedFromAccount_DB);
 
                 #endregion
 
@@ -1116,15 +1116,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.StoragePlaceName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.StoragePlaceCode_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.CodeOYAT_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.FcpNumber_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.FuelMass_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.CellMass_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.Quantity_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.AlphaActivity_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.BetaGammaActivity_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.CodeOYAT_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.FuelMass_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.CellMass_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = repForm.Quantity_DB is null ? "-" : repForm.Quantity_DB;
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
 
                 #endregion
 
@@ -1179,13 +1179,13 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.ObservedSourceNumber_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.ControlledAreaName_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.SupposedWasteSource_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.DistanceToWasteSource_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.TestDepth_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.RadionuclidName_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.AverageYearConcentration_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.ObservedSourceNumber_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.ControlledAreaName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.SupposedWasteSource_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.DistanceToWasteSource_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.TestDepth_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.AverageYearConcentration_DB);
 
                 #endregion
 
@@ -1240,11 +1240,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.ObservedSourceNumber_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.RadionuclidName_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.AllowedWasteValue_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.FactedWasteValue_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.WasteOutbreakPreviousYear_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.ObservedSourceNumber_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.AllowedWasteValue_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.FactedWasteValue_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.WasteOutbreakPreviousYear_DB);
 
                 #endregion
 
@@ -1299,12 +1299,12 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.WasteSourceName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.WasteRecieverName_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.RecieverTypeCode_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.PoolDistrictName_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.AllowedWasteRemovalVolume_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.RemovedWasteVolume_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.WasteSourceName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.WasteRecieverName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.RecieverTypeCode_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PoolDistrictName_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.AllowedWasteRemovalVolume_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.RemovedWasteVolume_DB);
 
                 #endregion
 
@@ -1359,10 +1359,10 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.WasteSourceName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.RadionuclidName_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.AllowedActivity_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.FactedActivity_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.WasteSourceName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.AllowedActivity_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.FactedActivity_DB);
 
                 #endregion
 
@@ -1417,16 +1417,16 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.IndicatorName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.PlotName_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.PlotKadastrNumber_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.PlotCode_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.InfectedArea_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.AvgGammaRaysDosePower_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.MaxGammaRaysDosePower_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.WasteDensityAlpha_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = repForm.WasteDensityBeta_DB;
-                Worksheet.Cells[CurrentRow, 16].Value = repForm.FcpNumber_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.IndicatorName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.PlotName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PlotKadastrNumber_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PlotCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.InfectedArea_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.AvgGammaRaysDosePower_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.MaxGammaRaysDosePower_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.WasteDensityAlpha_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.WasteDensityBeta_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.FcpNumber_DB);
 
                 #endregion
 
@@ -1481,14 +1481,14 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.PlotName_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.PlotKadastrNumber_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.PlotCode_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.InfectedArea_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.SpecificActivityOfPlot_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.SpecificActivityOfLiquidPart_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.SpecificActivityOfDensePart_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.PlotName_DB);
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.PlotKadastrNumber_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PlotCode_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.InfectedArea_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.SpecificActivityOfPlot_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.SpecificActivityOfLiquidPart_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.SpecificActivityOfDensePart_DB);
 
                 #endregion
 
@@ -1543,11 +1543,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
                 Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.ObjectTypeCode_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = repForm.Radionuclids_DB;
-                Worksheet.Cells[CurrentRow, 10].Value = repForm.Activity_DB;
-                Worksheet.Cells[CurrentRow, 11].Value = repForm.ProviderOrRecieverOKPO_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.OperationCode_DB is null ? "-" : repForm.OperationCode_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = repForm.ObjectTypeCode_DB is null ? "-" : repForm.ObjectTypeCode_DB;
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.Activity_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
 
                 #endregion
 

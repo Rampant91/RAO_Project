@@ -58,6 +58,50 @@ internal static class StaticStringMethods
 
     #endregion
 
+    #region ConvertToExcel
+    
+    public static object ConvertToExcelDate(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : DateTime.TryParse(value, out var dateTime)
+                ? dateTime.ToShortDateString()
+                : value;
+    }
+
+    public static object ConvertToExcelDouble(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : double.TryParse(ReplaceE(value), out var doubleValue)
+                ? doubleValue
+                : value;
+    }
+
+    public static object ConvertToExcelInt(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : int.TryParse(ReplaceE(value), out var intValue)
+                ? intValue
+                : value;
+    }
+
+    public static object ConvertToExcelString(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : value;
+    }
+
+    private static string ReplaceE(string numberE)
+    {
+        return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
+            .Replace("(", "").Replace(")", "").Replace(".", ",");
+    } 
+
+    #endregion
+
     #region RemoveForbiddenChars
 
     internal static string RemoveForbiddenChars(string str)

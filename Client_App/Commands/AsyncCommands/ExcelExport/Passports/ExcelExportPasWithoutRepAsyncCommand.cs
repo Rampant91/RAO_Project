@@ -217,11 +217,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             var pasName = file.Name.TrimEnd(".pdf".ToCharArray());
             Worksheet.Cells[currentRow, 1].Value = file.DirectoryName;
             Worksheet.Cells[currentRow, 2].Value = pasName;
-            Worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[0];
-            Worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[1];
-            Worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[2];
-            Worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[3];
-            Worksheet.Cells[currentRow, 7].Value = pasName.Split('#')[4];
+            Worksheet.Cells[currentRow, 3].Value = ConvertToExcelString(pasName.Split('#')[0]);
+            Worksheet.Cells[currentRow, 4].Value = ConvertToExcelString(pasName.Split('#')[1]);
+            Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(pasName.Split('#')[2]);
+            Worksheet.Cells[currentRow, 6].Value = ConvertToExcelString(pasName.Split('#')[3]);
+            Worksheet.Cells[currentRow, 7].Value = ConvertToExcelString(pasName.Split('#')[4]);
             currentRow++;
         }
 
