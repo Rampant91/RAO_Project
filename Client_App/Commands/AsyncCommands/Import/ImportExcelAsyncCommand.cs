@@ -197,10 +197,6 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             AtLeastOneImportDone = false;
             if (baseReps.Report_Collection.Count != 0)
             {
-                foreach (var report in baseReps.Report_Collection)
-                {
-                    await ReportsStorage.GetReportAsync(report.Id);
-                }
                 switch (worksheet0.Name)
                 {
                     case "1.0":
@@ -342,11 +338,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         IEnumerable<Reports>? reps = worksheet0.Name switch
         {
             "1.0" => ReportsStorage.LocalReports.Reports_Collection10
-                .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB &&
-                            Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB),
+                .Where(t => (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB
+                             && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB)
+                            || (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[1].Okpo_DB
+                                && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[1].RegNo_DB)),
             "2.0" => ReportsStorage.LocalReports.Reports_Collection20
-                .Where(t => Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB &&
-                            Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB),
+                .Where(t => (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB
+                             && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB)
+                            || (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[1].Okpo_DB
+                                && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[1].RegNo_DB)),
             _ => null
         };
         if (reps.Any())
