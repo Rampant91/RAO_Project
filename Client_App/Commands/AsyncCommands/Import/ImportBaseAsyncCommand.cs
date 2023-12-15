@@ -136,6 +136,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Replace
             
             case "Заменить" or "Заменять все формы":
+                if (oldReport is not null) oldReport = await FillReportWithForms(baseReps, oldReport);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 AtLeastOneImportDone = true;
@@ -166,6 +167,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Supplement
             
             case "Дополнить" when newReport != null && oldReport != null:
+                oldReport = await FillReportWithForms(baseReps, oldReport);
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
@@ -502,7 +504,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (stBase == stImp && endBase == endImp && ImpRepFormNum == BaseRepFormNum)
                 {
-                    baseRep = await FillReportWithForms(baseReps, baseRep);
+
                     impInBase = true;
 
                     #region LessCorrectionNumber
@@ -712,7 +714,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (stBase < endImp && endBase > stImp && ImpRepFormNum == BaseRepFormNum)
                 {
-                    baseRep = await FillReportWithForms(baseReps, baseRep);
                     impInBase = true;
 
                     if (SkipInter) break;
@@ -883,7 +884,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #endregion
         }
 
-        await baseReps.SortAsync().ConfigureAwait(false);
+        await baseReps.SortAsync();
     }
 
     #endregion
@@ -959,8 +960,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
                                 $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
-                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
                                 $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
@@ -1017,8 +1018,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
                                 $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
-                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
@@ -1026,10 +1027,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    if (res is "Дополнить" or "Заменить")
-                    {
-                        baseRep = await FillReportWithForms(baseReps, baseRep);
-                    }
                     await CheckAnswer(res, baseReps, baseRep, impRep);
                     break;
                 }
@@ -1070,8 +1067,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                     $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
                                     $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
                                     $"{Environment.NewLine}все формы с меньшим номером корректировки.",
@@ -1112,8 +1109,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                     $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
                                     $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -1122,10 +1119,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         #endregion
                     }
                 }
-                if (res is "Заменить" or "Заменять все формы")
-                {
-                    baseRep = await FillReportWithForms(baseReps, baseRep);
-                }
+
                 await CheckAnswer(res, baseReps, baseRep, impRep);
                 break;
 
@@ -1209,7 +1203,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
                                 $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}{InventoryCheck(impRep)}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
                                 $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
@@ -1247,7 +1241,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
                                 $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}{InventoryCheck(impRep)}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
@@ -1262,7 +1256,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #endregion
         }
 
-        await baseReps.SortAsync().ConfigureAwait(false);
+        await baseReps.SortAsync();
     }
 
     #endregion
