@@ -318,9 +318,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
+                    ContentTitle = "Импорт из .xlsx",
                     ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из файл{suffix} .raodb был отменен.",
+                    ContentMessage = $"Импорт из файл{suffix} .xlsx был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
