@@ -1273,7 +1273,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var note = (Note)key1;
                 if (note.Order == 0)
                 {
-                    note.Order = MainWindowVM.GetNumberInOrder(form.Notes);
+                    note.Order = InitializationAsyncCommand.GetNumberInOrder(form.Notes);
                 }
             }
         }

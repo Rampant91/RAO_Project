@@ -288,7 +288,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         await db.Database.MigrateAsync();
         await db.LoadTablesAsync();
-        await MainWindowVM.ProcessDataBaseFillEmpty(db);
+        await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);
 
         return db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0
             ? db.DBObservableDbSet.Local.First().Reports_Collection.ToList()

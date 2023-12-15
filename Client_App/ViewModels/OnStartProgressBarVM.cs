@@ -3,15 +3,15 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ReactiveUI;
 using System.Reactive.Linq;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
-using Client_App.Views;
 
 namespace Client_App.ViewModels;
 
 public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 {
-    public Task MainTask { get; set; }
+    private Task MainTask { get; set; }
     public OnStartProgressBarVM(IBackgroundLoader backgroundWorker)
     {
         ShowDialog = new Interaction<MainWindowVM, object>();
@@ -20,43 +20,45 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             ServiceExtension.LoggerManager.CreateFile("Import.log");
         }, () =>
         {
-            MainTask=new Task(() => Start());
+            MainTask=new Task(async () => await Start().ConfigureAwait(false));
             MainTask.GetAwaiter().OnCompleted(async ()=> await ShowDialog.Handle(VMDataContext));
             MainTask.Start();
         });
     }
-    private double _OnStartProgressBar;
+    private double _onStartProgressBar;
     public double OnStartProgressBar
     {
-        get => _OnStartProgressBar;
+        get => _onStartProgressBar;
         set
         {
-            if (_OnStartProgressBar.Equals(value)) return;
-            _OnStartProgressBar = value;
+            if (_onStartProgressBar.Equals(value)) return;
+            _onStartProgressBar = value;
             OnPropertyChanged();
         }
     }
 
-    private string _LoadStatus;
+    private string _loadStatus;
     public string LoadStatus
     {
-        get => _LoadStatus;
+        get => _loadStatus;
         set
         {
-            if (_LoadStatus == value) return;
-            _LoadStatus = value;
+            if (_loadStatus == value) return;
+            _loadStatus = value;
             OnPropertyChanged();
         }
     }
 
-    public MainWindowVM VMDataContext {get;set;}
-    public async Task Start()
+    private MainWindowVM VMDataContext {get;set;}
+
+    private async Task Start()
     {
         VMDataContext = new MainWindowVM();
         VMDataContext.PropertyChanged += OnVMPropertyChanged;
-        await VMDataContext.Init(this);
+        await new InitializationAsyncCommand(VMDataContext).AsyncExecute(this);
     }
-    public void OnVMPropertyChanged(object sender,PropertyChangedEventArgs args)
+
+    private void OnVMPropertyChanged(object sender,PropertyChangedEventArgs args)
     {
         if(args.PropertyName==nameof(OnStartProgressBar))
         {
@@ -66,13 +68,11 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
     public Interaction<MainWindowVM, object> ShowDialog { get; private set; }
 
     #region INotifyPropertyChanged
-    protected void OnPropertyChanged([CallerMemberName] string prop = "")
+
+    private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
-        if (PropertyChanged != null)
-        {
-            PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     #endregion
 }

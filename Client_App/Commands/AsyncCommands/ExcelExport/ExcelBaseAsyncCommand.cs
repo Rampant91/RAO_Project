@@ -96,7 +96,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         #region MessageSaveOrOpenTemp
 
         var res =
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
                 ButtonDefinitions = new[]
@@ -111,7 +111,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowDialog(Desktop.MainWindow)).Result;
 
         #endregion
 

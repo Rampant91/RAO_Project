@@ -14,11 +14,11 @@ namespace Client_App.Commands.AsyncCommands.RaodbExport;
 //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
 internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
 {
-    private readonly MainWindowVM _MainWindowViewModel;
+    private readonly MainWindowVM _mainWindowViewModel;
 
     public ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowViewModel)
     {
-        _MainWindowViewModel = mainWindowViewModel;
+        _mainWindowViewModel = mainWindowViewModel;
     }
 
     public override async Task AsyncExecute(object? parameter)
@@ -108,7 +108,7 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
         Reports exportOrg = new() { Master = org.Master };
         exportOrg.Report_Collection.AddRange(repInRangeWithForms);
 
-        if (_MainWindowViewModel.ExportReports.CanExecute(null))
-            _MainWindowViewModel.ExportReports.Execute(exportOrg);
+        if (_mainWindowViewModel.ExportReports.CanExecute(null))
+            _mainWindowViewModel.ExportReports.Execute(exportOrg);
     }
 }
