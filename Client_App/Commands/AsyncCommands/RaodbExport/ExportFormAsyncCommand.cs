@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -71,7 +72,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportForm.StartPeriod_DB)}" +
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportForm.EndPeriod_DB)}" +
                 $"_{exportForm.CorrectionNumber_DB}" +
-                $"_{BaseVM.Version}",
+                $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "2.0" when orgWithExpForm.Master.Rows20.Count > 0 =>
                 StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
@@ -79,7 +80,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
                 $"_{exportForm.FormNum_DB}" +
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportForm.Year_DB)}" +
                 $"_{exportForm.CorrectionNumber_DB}" +
-                $"_{BaseVM.Version}",
+                $"_{Assembly.GetExecutingAssembly().GetName().Version}",
             _ => throw new ArgumentOutOfRangeException()
         };
 

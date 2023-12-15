@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -50,7 +51,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             return;
         }
 
-        var fileName = $"{ExportType}_{RemoveForbiddenChars(pasNum)}_{RemoveForbiddenChars(factoryNum)}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{RemoveForbiddenChars(pasNum)}_{RemoveForbiddenChars(factoryNum)}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
         {

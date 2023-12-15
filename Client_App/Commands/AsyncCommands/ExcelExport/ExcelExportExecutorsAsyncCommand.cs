@@ -12,6 +12,7 @@ using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
+using System.Reflection;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -49,7 +50,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         }
 
         ExportType = "Список исполнителей";
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
 
         (string fullPath, bool openTemp) result;
         try

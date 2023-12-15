@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -74,7 +75,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                 var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                                $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                                $"_{exportOrg.Master.FormNum_DB[0]}.x" +
-                               $"_{BaseVM.Version}";
+                               $"_{Assembly.GetExecutingAssembly().GetName().Version}";
 
                 var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
                 DBModel db = new(fullPathTmp);

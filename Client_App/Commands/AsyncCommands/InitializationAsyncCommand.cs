@@ -20,6 +20,7 @@ using Models.Interfaces;
 using Spravochniki;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.ViewModels.BaseVM;
+using System.Reflection;
 
 namespace Client_App.Commands.AsyncCommands;
 public class InitializationAsyncCommand : BaseAsyncCommand
@@ -189,7 +190,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
             {
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                _mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{BaseVM.Version} Текущая база данных - {DbFileName}";
+                _mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -202,7 +203,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
             }
         }
         DbFileName = $"Local_{i}";
-        _mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{BaseVM.Version} Текущая база данных - {DbFileName}";
+        _mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
         StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
         StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
         dbm = StaticConfiguration.DBModel;

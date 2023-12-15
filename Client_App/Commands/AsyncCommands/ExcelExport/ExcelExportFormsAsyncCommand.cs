@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,13 +87,13 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
                 ExportType = $"Выбранная организация_Формы {param}";
                 var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
                 var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             }
             default:
             {
                 ExportType = $"Формы {param}";
-                fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             }
         }

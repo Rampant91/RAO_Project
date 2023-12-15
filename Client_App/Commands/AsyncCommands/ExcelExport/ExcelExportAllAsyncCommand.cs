@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -81,12 +82,12 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
             ExportType = "Выбранная организация_Все формы";
             var regNum = RemoveForbiddenChars(CurrentReports.Master_DB.RegNoRep.Value);
             var okpo = RemoveForbiddenChars(CurrentReports.Master_DB.OkpoRep.Value);
-            fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
+            fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
         }
         else
         {
             ExportType = "Все формы";
-            fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+            fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         }
 
         (string fullPath, bool openTemp) result;
