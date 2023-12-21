@@ -197,6 +197,12 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 9].Value = repForm.NumberInOrder_DB;
                 Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.OperationCode_DB);
                 Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDate(repForm.OperationDate_DB);
+                if (ConvertToExcelDate(repForm.OperationDate_DB) is DateOnly)
+                {
+                    Worksheet.Cells[CurrentRow, 11].Style.Numberformat.Format = "dd.mm.yyyy";
+                    Worksheet.Cells[CurrentRow, 11].Formula = "=DATE(10,10,2022";
+                }
+                    
                 Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PassportNumber_DB);
                 Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.NameIOU_DB);
                 Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
