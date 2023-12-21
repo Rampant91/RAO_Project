@@ -232,8 +232,8 @@ public abstract class Form : IKey, IDataGridColumn
     {
         return value is null or "" or "-"
             ? "-"
-            : DateTime.TryParse(value, out var dateTime)
-                ? dateTime.ToShortDateString()
+            : DateOnly.TryParse(value, out var dateTime)
+                ? dateTime
                 : value;
     }
 

@@ -64,8 +64,8 @@ internal static class StaticStringMethods
     {
         return value is null or "" or "-"
             ? "-"
-            : DateTime.TryParse(value, out var dateTime)
-                ? dateTime.ToShortDateString()
+            : DateOnly.TryParse(value, out var dateTime)
+                ? dateTime
                 : value;
     }
 
