@@ -169,7 +169,6 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
             .ToArray()
             .SelectMany(reps => reps.Report_Collection
@@ -238,13 +237,13 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[currentRow, 2].Value = dto.ShortJurLico;
                 Worksheet.Cells[currentRow, 3].Value = dto.OkpoRep;
                 Worksheet.Cells[currentRow, 4].Value = dto.FormNum;
-                Worksheet.Cells[currentRow, 5].Value = dto.StartPeriod;
-                Worksheet.Cells[currentRow, 6].Value = dto.EndPeriod;
+                Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, currentRow, 5);
+                Worksheet.Cells[currentRow, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, currentRow, 6);
                 Worksheet.Cells[currentRow, 7].Value = dto.CorrectionNumber;
                 Worksheet.Cells[currentRow, 8].Value = dto.RowCount;
                 Worksheet.Cells[currentRow, 9].Value = dto.NumberInOrder;
                 Worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(dto.OperationCode);
-                Worksheet.Cells[currentRow, 11].Value = ConvertToExcelDate(dto.OperationDate);
+                Worksheet.Cells[currentRow, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, currentRow, 11);
                 Worksheet.Cells[currentRow, 12].Value = ConvertToExcelString(dto.PassportNumber);
                 Worksheet.Cells[currentRow, 13].Value = ConvertToExcelString(dto.Type);
                 Worksheet.Cells[currentRow, 14].Value = ConvertToExcelString(dto.Radionuclids);
@@ -252,14 +251,14 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[currentRow, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
                 Worksheet.Cells[currentRow, 17].Value = ConvertToExcelDouble(dto.Activity);
                 Worksheet.Cells[currentRow, 18].Value = ConvertToExcelString(dto.CreatorOKPO);
-                Worksheet.Cells[currentRow, 19].Value = ConvertToExcelDate(dto.CreationDate);
+                Worksheet.Cells[currentRow, 19].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, currentRow, 19);
                 Worksheet.Cells[currentRow, 20].Value = dto.Category is null ? "-" : dto.Category;
                 Worksheet.Cells[currentRow, 21].Value = dto.SignedServicePeriod is null ? "-" : dto.SignedServicePeriod;
                 Worksheet.Cells[currentRow, 22].Value = dto.PropertyCode is null ? "-" : dto.PropertyCode;
                 Worksheet.Cells[currentRow, 23].Value = ConvertToExcelString(dto.Owner);
                 Worksheet.Cells[currentRow, 24].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
                 Worksheet.Cells[currentRow, 25].Value = ConvertToExcelString(dto.DocumentNumber);
-                Worksheet.Cells[currentRow, 26].Value = ConvertToExcelDate(dto.DocumentDate);
+                Worksheet.Cells[currentRow, 26].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, currentRow, 26);
                 Worksheet.Cells[currentRow, 27].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
                 Worksheet.Cells[currentRow, 28].Value = ConvertToExcelString(dto.TransporterOKPO);
                 Worksheet.Cells[currentRow, 29].Value = ConvertToExcelString(dto.PackName);

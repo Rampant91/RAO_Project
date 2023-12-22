@@ -20,8 +20,8 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             ServiceExtension.LoggerManager.CreateFile("Import.log");
         }, () =>
         {
-            MainTask=new Task(async () => await Start().ConfigureAwait(false));
-            MainTask.GetAwaiter().OnCompleted(async ()=> await ShowDialog.Handle(VMDataContext));
+            MainTask = new Task(async () => await Start().ConfigureAwait(false));
+            MainTask.GetAwaiter().OnCompleted(async () => await ShowDialog.Handle(VMDataContext));
             MainTask.Start();
         });
     }

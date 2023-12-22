@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -329,8 +330,8 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
                 Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-                Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
-                Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[row, 4].Value = ConvertToExcelDate(rep.StartPeriod_DB, Worksheet, row, 4);
+                Worksheet.Cells[row, 5].Value = ConvertToExcelDate(rep.EndPeriod_DB, Worksheet, row, 5);
                 Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[row, 7].Value = tuple.Item2; 
                 Worksheet.Cells[row, 8].Value = InventoryCheck(tuple.Item2, tuple.Item3).TrimStart();

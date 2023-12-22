@@ -228,12 +228,16 @@ public abstract class Form : IKey, IDataGridColumn
 
     #region ConvertToExcel
     
-    private protected static object ConvertToExcelDate(string value)
+    private protected static object ConvertToExcelDate(string value, ExcelWorksheet worksheet, int row, int column)
     {
+        if (DateTime.TryParse(value, out var dateTime))
+        {
+            worksheet.Cells[row, column].Style.Numberformat.Format = "dd.mm.yyyy";
+        }
         return value is null or "" or "-"
             ? "-"
-            : DateTime.TryParse(value, out var dateTime)
-                ? dateTime.ToShortDateString()
+            : DateTime.TryParse(value, out _)
+                ? dateTime.Date
                 : value;
     }
 

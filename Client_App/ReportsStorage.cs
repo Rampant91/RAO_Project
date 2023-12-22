@@ -42,11 +42,12 @@ public static class ReportsStorage
             .FirstOrDefault(reports => reports.Report_Collection
                 .Any(report => report.Id == Convert.ToInt32(id)));  //организация в локальном хранилище
         var checkedRep = db.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(id));   //отчет в локальном хранилище
-        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0)) //если в отчете нет форм
+        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null)
+                                   || checkedRep.Rows.Count != GetReportRowsCount(checkedRep))) //если в отчете изменилось количество форм
         {
             newRep = await Api.GetAsync(Convert.ToInt32(id));   //загружаем отчет из БД
             db.Entry(checkedRep).State = EntityState.Detached; //убираем отчет из локального хранилища из отслеживания
-            db.Set<Report>().Attach(newRep);    //добавляем новый отчет в отслеживание
+            db.Set<Report>().Attach(newRep); //добавляем новый отчет в отслеживание
             //db.Entry(newRep).State = EntityState.Modified;  //устанавливаем флаг, что этот отчет был изменен и требует перезаписи в БД
             //await db.SaveChangesAsync();
             reps.Report_Collection.Replace(checkedRep, newRep); //заменяем отчет в локальном хранилище на тот, в котором загружены формы

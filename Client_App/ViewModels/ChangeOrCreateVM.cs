@@ -18,10 +18,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
-using DynamicData;
-using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System.Threading;
 
 namespace Client_App.ViewModels;
@@ -340,7 +337,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
         SetNumberOrder = new SetNumberOrderSyncCommand(this);
-
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();

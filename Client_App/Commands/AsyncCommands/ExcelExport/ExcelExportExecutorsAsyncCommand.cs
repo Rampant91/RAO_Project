@@ -157,8 +157,8 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
-                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
-                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 5].Value = ConvertToExcelDate(rep.StartPeriod_DB, Worksheet, _currentRow, 5);
+                Worksheet.Cells[_currentRow, 6].Value = ConvertToExcelDate(rep.EndPeriod_DB, Worksheet, _currentRow, 6);
                 Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 8].Value = rep.FIOexecutor_DB;
                 Worksheet.Cells[_currentRow, 9].Value = rep.GradeExecutor_DB;

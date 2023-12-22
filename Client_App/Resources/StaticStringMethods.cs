@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using OfficeOpenXml;
 
 namespace Client_App.Resources;
 
@@ -60,12 +61,16 @@ internal static class StaticStringMethods
 
     #region ConvertToExcel
     
-    public static object ConvertToExcelDate(string value)
+    public static object ConvertToExcelDate(string value, ExcelWorksheet worksheet, int row, int column)
     {
+        if (DateTime.TryParse(value, out var dateTime))
+        {
+            worksheet.Cells[row, column].Style.Numberformat.Format = "dd.mm.yyyy";
+        }
         return value is null or "" or "-"
             ? "-"
-            : DateTime.TryParse(value, out var dateTime)
-                ? dateTime.ToShortDateString()
+            : DateTime.TryParse(value, out _)
+                ? dateTime.Date
                 : value;
     }
 

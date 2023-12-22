@@ -1,25 +1,9 @@
-﻿using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Models.DBRealization;
-using Models.Forms;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Models.Interfaces;
+﻿using Models.Collections;
 using ReactiveUI;
-using Spravochniki;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Controls;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Delete;
@@ -30,9 +14,6 @@ using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using Avalonia.Threading;
 
 namespace Client_App.ViewModels;
 
@@ -114,7 +95,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExportForm { get; set; }                    //  Экспорт формы в файл .raodb
     public ICommand ExportReports { get; set; }                 //  Экспорт организации в файл .raodb
     public ICommand ExportReportsWithDateRange { get; set; }    //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
-    public ICommand Initialization { get; set; }                //  Инициализация при первом запуске
     public ICommand ImportExcel { get; set; }                   //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                    //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                   //  Импорт -> Из RAODB

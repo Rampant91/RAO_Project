@@ -386,7 +386,7 @@ public abstract class Form1 : Form
     {
         worksheet.Cells[row, column].Value = NumberInOrder_DB;
         worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(OperationCode_DB);
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDate(OperationDate_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDate(OperationDate_DB, worksheet, row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0));
         return 3;
     }
 

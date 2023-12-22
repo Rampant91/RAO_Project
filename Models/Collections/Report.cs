@@ -2942,8 +2942,8 @@ public class Report : IKey, IDataGridColumn
         if (FormNum_DB.Split('.')[0] == "1")
         {
             worksheet.Cells[row, column].Value = CorrectionNumber_DB;
-            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = StartPeriod_DB;
-            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = EndPeriod_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelDate(StartPeriod_DB, worksheet, row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0));
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDate(EndPeriod_DB, worksheet, row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0));
             return 3;
         }
         if (FormNum_DB.Split('.')[0] == "2")
@@ -2995,6 +2995,19 @@ public class Report : IKey, IDataGridColumn
             return 2;
         }
         return 0;
+    }
+
+    private protected static object ConvertToExcelDate(string value, ExcelWorksheet worksheet, int row, int column)
+    {
+        if (DateTime.TryParse(value, out var dateTime))
+        {
+            worksheet.Cells[row, column].Style.Numberformat.Format = "dd.mm.yyyy";
+        }
+        return value is null or "" or "-"
+            ? "-"
+            : DateTime.TryParse(value, out _)
+                ? dateTime.Date
+                : value;
     }
 
     #endregion
