@@ -337,12 +337,12 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 row++;
             }
         }
+
+        var range = Worksheet.Cells[Worksheet.Dimension.Start.Row, Worksheet.Dimension.Start.Column, 
+            Worksheet.Dimension.End.Row, Worksheet.Dimension.End.Column];
+        Worksheet.Tables.Add(range, "myTable");
         if (OperatingSystem.IsWindows())
         {
-            var range = Worksheet.Cells[Worksheet.Dimension.Start.Row, Worksheet.Dimension.Start.Column, 
-                Worksheet.Dimension.End.Row, Worksheet.Dimension.End.Column];
-
-            Worksheet.Tables.Add(range, "myTable");
             Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
         }
         Worksheet.View.FreezePanes(2, 1);

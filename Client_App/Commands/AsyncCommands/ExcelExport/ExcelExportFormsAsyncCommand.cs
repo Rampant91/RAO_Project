@@ -483,6 +483,10 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
             FillExportForms(param);
         }
 
+        var range = Worksheet.Cells[Worksheet.Dimension.Start.Row, Worksheet.Dimension.Start.Column, 
+            Worksheet.Dimension.End.Row, Worksheet.Dimension.End.Column];
+        Worksheet.Tables.Add(range, "myTable");
+
         Worksheet.View.FreezePanes(2, 1);
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }

@@ -382,6 +382,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                 row++;
             }
         }
+
+        var range = Worksheet.Cells[Worksheet.Dimension.Start.Row, Worksheet.Dimension.Start.Column, 
+            Worksheet.Dimension.End.Row, Worksheet.Dimension.End.Column];
+        Worksheet.Tables.Add(range, "myTable");
         if (OperatingSystem.IsWindows()) 
         {
             Worksheet.Cells.AutoFitColumns();  // Под Astra Linux эта команда крашит программу без GDI дров

@@ -465,6 +465,10 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             }
         }
 
+        var range = Worksheet.Cells[Worksheet.Dimension.Start.Row, Worksheet.Dimension.Start.Column, 
+            Worksheet.Dimension.End.Row, Worksheet.Dimension.End.Column];
+        Worksheet.Tables.Add(range, "myTable");
+
         if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
         {
             Worksheet.Cells.AutoFitColumns();
