@@ -264,9 +264,6 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
-        var range = Worksheet.Cells[Worksheet.Dimension.Start.Row, Worksheet.Dimension.Start.Column, 
-            Worksheet.Dimension.End.Row, Worksheet.Dimension.End.Column];
-        Worksheet.Tables.Add(range, "myTable");
         for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
         {
             if (Worksheet.Cells[1, col].Value is "Сокращенное наименование" or "Адрес" or "Орган управления") continue;
