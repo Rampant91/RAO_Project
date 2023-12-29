@@ -297,7 +297,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         Worksheet.Cells[1, 9].Value = "№ п/п";
         Worksheet.Cells[1, 10].Value = "код";
         Worksheet.Cells[1, 11].Value = "дата";
-        Worksheet.Cells[1, 12].Value = $"номер паспорта (сертификата) Эри,{Environment.NewLine}акта определения характеристик ОЗИИ";
+        Worksheet.Cells[1, 12].Value = $"номер паспорта (сертификата) ЗРИ,{Environment.NewLine}акта определения характеристик ОЗИИ";
         Worksheet.Cells[1, 13].Value = "тип";
         Worksheet.Cells[1, 14].Value = "радионуклиды";
         Worksheet.Cells[1, 15].Value = "номер";
