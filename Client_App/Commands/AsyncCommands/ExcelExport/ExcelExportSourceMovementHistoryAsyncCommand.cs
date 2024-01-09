@@ -222,8 +222,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             }
             for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
             {
+                var opDateStr = ((DateTime?)Worksheet.Cells[currentRow, 11].Value)?.ToShortDateString();
                 if (new CustomStringDateComparer(StringComparer.CurrentCulture)
-                        .Compare(dto.OperationDate, (string)Worksheet.Cells[currentRow, 11].Value) >= 0) continue;
+                        .Compare(dto.OperationDate, opDateStr) >= 0) continue;
 
                 Worksheet.InsertRow(currentRow, 1);
 
@@ -418,8 +419,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             }
             for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
             {
+                var opDateStr = ((DateTime?)Worksheet.Cells[currentRow, 11].Value)?.ToShortDateString();
                 if (new CustomStringDateComparer(StringComparer.CurrentCulture)
-                        .Compare(dto.OperationDate, (string)Worksheet.Cells[currentRow, 11].Value) >= 0) continue;
+                        .Compare(dto.OperationDate, opDateStr) >= 0) continue;
 
                 Worksheet.InsertRow(currentRow, 1);
 
