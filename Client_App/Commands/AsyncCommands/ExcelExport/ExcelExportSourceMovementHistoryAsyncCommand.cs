@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +22,14 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Выгрузка в Excel истории движения источника
 internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is null) return;
         var cts = new CancellationTokenSource();
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar());
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
         ExportType = "История движения источника";
         StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
         if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
@@ -65,7 +70,8 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
-
+        progressBarVM.LoadStatus = "Создание временного файла БД";
+        progressBarVM.ValueBar = 2;
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -85,6 +91,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+        progressBarVM.LoadStatus = "Загрузка форм 1.1";
+        progressBarVM.ValueBar = 5;
 
         #region FillForm_1.1
 
@@ -176,6 +185,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                         })))
                 .ToList();
 
+        progressBarVM.LoadStatus = "Заполнение форм 1.1";
+        progressBarVM.ValueBar = 40;
+
         var lastRow = 1;
         foreach (var dto in dto11List)
         {
@@ -222,7 +234,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             }
             for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
             {
-                var opDateStr = ((DateTime?)Worksheet.Cells[currentRow, 11].Value)?.ToShortDateString();
+                var opDateStr = Worksheet.Cells[currentRow, 11].Value is null
+                    ? null
+                    : Worksheet.Cells[currentRow, 11].Value.ToString();
                 if (new CustomStringDateComparer(StringComparer.CurrentCulture)
                         .Compare(dto.OperationDate, opDateStr) >= 0) continue;
 
@@ -280,6 +294,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         Worksheet.Cells[headersCellsString].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
         #endregion
+
+        progressBarVM.LoadStatus = "Загрузка форм 1.5";
+        progressBarVM.ValueBar = 50;
 
         #region FillForm_1.5
 
@@ -372,6 +389,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                         })))
                 .ToList();
 
+        progressBarVM.LoadStatus = "Заполнение форм 1.5";
+        progressBarVM.ValueBar = 90;
+
         lastRow = 1;
         foreach (var dto in dto15List)
         {
@@ -419,7 +439,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             }
             for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
             {
-                var opDateStr = ((DateTime?)Worksheet.Cells[currentRow, 11].Value)?.ToShortDateString();
+                var opDateStr = Worksheet.Cells[currentRow, 11].Value is null
+                    ? null
+                    : Worksheet.Cells[currentRow, 11].Value.ToString();
                 if (new CustomStringDateComparer(StringComparer.CurrentCulture)
                         .Compare(dto.OperationDate, opDateStr) >= 0) continue;
 
@@ -478,6 +500,13 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         
         #endregion
 
+        progressBarVM.LoadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+
+        progressBarVM.LoadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

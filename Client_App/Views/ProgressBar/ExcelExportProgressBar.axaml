@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Client_App.ViewModels.ProgressBar"
+        mc:Ignorable="d"
+        x:Class="Client_App.Views.ProgressBar.ExcelExportProgressBar"
+        Title="ExcelExportProgressBar"
+        d:DesignWidth="300" 
+        d:DesignHeight="30"
+        Width="300"
+        Height="50"
+        SystemDecorations="None"
+        WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <vm:ExcelExportProgressBarVM/>
+    </Design.DataContext>
+
+    <Grid>
+      <ProgressBar
+          Maximum="100"
+          Minimum="0"
+          Height="40"
+          Value="{Binding ValueBar, Mode=OneWay}"/>
+      <TextBlock
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Text="{Binding LoadStatus, Mode=OneWay}"/>
+    </Grid>
+</Window>
