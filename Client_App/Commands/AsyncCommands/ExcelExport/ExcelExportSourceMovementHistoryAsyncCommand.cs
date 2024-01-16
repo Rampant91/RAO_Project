@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,8 +29,8 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
     {
         if (parameter is null) return;
         var cts = new CancellationTokenSource();
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar());
-        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        //await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        //var progressBarVM = progressBar.ExcelExportProgressBarVM;
         ExportType = "История движения источника";
         StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
         if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
@@ -70,8 +71,9 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
-        progressBarVM.LoadStatus = "Создание временного файла БД";
-        progressBarVM.ValueBar = 2;
+        //progressBarVM.ExportName = $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}";
+        //progressBarVM.LoadStatus = "Создание временного файла БД";
+        //progressBarVM.ValueBar = 2;
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -92,8 +94,10 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        progressBarVM.LoadStatus = "Загрузка форм 1.1";
-        progressBarVM.ValueBar = 5;
+        //progressBarVM.LoadStatus = "Загрузка форм 1.1";
+        //progressBarVM.ValueBar = 5;
+
+        //Thread.Sleep(10000);
 
         #region FillForm_1.1
 
@@ -135,58 +139,69 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
 
         #endregion
 
-        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        var dto11List = dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-            .ToArray()
-            .SelectMany(reps => reps.Report_Collection
-                    .Where(rep => rep.FormNum_DB == "1.1")
-                    .SelectMany(rep => rep.Rows11
-                        .Where(form11 => ComparePasParam(form11.PassportNumber_DB, pasNum)
-                                         && ComparePasParam(form11.FactoryNumber_DB, factoryNum))
-                        .Select(form11 => new Form11DTO
-                        {
-                            RegNoRep = reps.Master.RegNoRep.Value,
-                            ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-                            OkpoRep = reps.Master.OkpoRep.Value,
-                            FormNum = rep.FormNum_DB,
-                            StartPeriod = rep.StartPeriod_DB,
-                            EndPeriod = rep.EndPeriod_DB,
-                            CorrectionNumber = rep.CorrectionNumber_DB,
-                            RowCount = rep.Rows11.Count,
-                            NumberInOrder = form11.NumberInOrder_DB,
-                            OperationCode = form11.OperationCode_DB,
-                            OperationDate = form11.OperationDate_DB,
-                            PassportNumber = form11.PassportNumber_DB,
-                            Type = form11.Type_DB,
-                            Radionuclids = form11.Radionuclids_DB,
-                            FactoryNumber = form11.FactoryNumber_DB,
-                            Activity = form11.Activity_DB,
-                            Quantity = form11.Quantity_DB,
-                            CreatorOKPO = form11.CreatorOKPO_DB,
-                            CreationDate = form11.CreationDate_DB,
-                            Category = form11.Category_DB,
-                            SignedServicePeriod = form11.SignedServicePeriod_DB,
-                            PropertyCode = form11.PropertyCode_DB,
-                            Owner = form11.Owner_DB,
-                            DocumentVid = form11.DocumentVid_DB,
-                            DocumentNumber = form11.DocumentNumber_DB,
-                            DocumentDate = form11.DocumentDate_DB,
-                            ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
-                            TransporterOKPO = form11.TransporterOKPO_DB,
-                            PackName = form11.PackName_DB,
-                            PackType = form11.PackType_DB,
-                            PackNumber = form11.PackNumber_DB
-                        })))
-                .ToList();
+        var dto11List = new List<Form11DTO>();
 
-        progressBarVM.LoadStatus = "Заполнение форм 1.1";
-        progressBarVM.ValueBar = 40;
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        try
+        { 
+            var dto111List = dbReadOnly.ReportsCollectionDbSet
+        .AsNoTracking()
+        .AsSplitQuery()
+        .AsQueryable()
+        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+        .SelectMany(reps => reps.Report_Collection
+            .Where(rep => rep.FormNum_DB == "1.1")
+            .SelectMany(rep => rep.Rows11
+                .Where(form11 => ComparePasParam(form11.PassportNumber_DB, pasNum)
+                                 && ComparePasParam(form11.FactoryNumber_DB, factoryNum))
+                .Select(form11 => new Form11DTO
+                {
+                    RegNoRep = reps.Master.RegNoRep.Value,
+                    ShortJurLico = reps.Master.ShortJurLicoRep.Value,
+                    OkpoRep = reps.Master.OkpoRep.Value,
+                    FormNum = rep.FormNum_DB,
+                    StartPeriod = rep.StartPeriod_DB,
+                    EndPeriod = rep.EndPeriod_DB,
+                    CorrectionNumber = rep.CorrectionNumber_DB,
+                    RowCount = rep.Rows11.Count,
+                    NumberInOrder = form11.NumberInOrder_DB,
+                    OperationCode = form11.OperationCode_DB,
+                    OperationDate = form11.OperationDate_DB,
+                    PassportNumber = form11.PassportNumber_DB,
+                    Type = form11.Type_DB,
+                    Radionuclids = form11.Radionuclids_DB,
+                    FactoryNumber = form11.FactoryNumber_DB,
+                    Activity = form11.Activity_DB,
+                    Quantity = form11.Quantity_DB,
+                    CreatorOKPO = form11.CreatorOKPO_DB,
+                    CreationDate = form11.CreationDate_DB,
+                    Category = form11.Category_DB,
+                    SignedServicePeriod = form11.SignedServicePeriod_DB,
+                    PropertyCode = form11.PropertyCode_DB,
+                    Owner = form11.Owner_DB,
+                    DocumentVid = form11.DocumentVid_DB,
+                    DocumentNumber = form11.DocumentNumber_DB,
+                    DocumentDate = form11.DocumentDate_DB,
+                    ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
+                    TransporterOKPO = form11.TransporterOKPO_DB,
+                    PackName = form11.PackName_DB,
+                    PackType = form11.PackType_DB,
+                    PackNumber = form11.PackNumber_DB
+                })))
+        .ToList();
+        }
+        catch (Exception ex)
+        {
+
+        }
+        await dbReadOnly.DisposeAsync();
+
+        //Thread.Sleep(100000);
+
+        //progressBarVM.LoadStatus = "Заполнение форм 1.1";
+        //progressBarVM.ValueBar = 40;
 
         var lastRow = 1;
         foreach (var dto in dto11List)
@@ -295,8 +310,8 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
 
         #endregion
 
-        progressBarVM.LoadStatus = "Загрузка форм 1.5";
-        progressBarVM.ValueBar = 50;
+        //progressBarVM.LoadStatus = "Загрузка форм 1.5";
+        //progressBarVM.ValueBar = 50;
 
         #region FillForm_1.5
 
@@ -389,8 +404,8 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                         })))
                 .ToList();
 
-        progressBarVM.LoadStatus = "Заполнение форм 1.5";
-        progressBarVM.ValueBar = 90;
+        //progressBarVM.LoadStatus = "Заполнение форм 1.5";
+        //progressBarVM.ValueBar = 90;
 
         lastRow = 1;
         foreach (var dto in dto15List)
@@ -500,13 +515,13 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         
         #endregion
 
-        progressBarVM.LoadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
+        //progressBarVM.LoadStatus = "Сохранение";
+        //progressBarVM.ValueBar = 95;
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
 
-        progressBarVM.LoadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        //progressBarVM.LoadStatus = "Завершение выгрузки";
+        //progressBarVM.ValueBar = 100;
+        //await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

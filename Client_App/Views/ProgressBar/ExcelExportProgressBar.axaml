@@ -7,25 +7,56 @@
         x:Class="Client_App.Views.ProgressBar.ExcelExportProgressBar"
         Title="ExcelExportProgressBar"
         d:DesignWidth="300" 
-        d:DesignHeight="30"
+        d:DesignHeight="90"
         Width="300"
-        Height="50"
+        Height="150"
         SystemDecorations="None"
         WindowStartupLocation="CenterScreen">
 
     <Design.DataContext>
         <vm:ExcelExportProgressBarVM/>
     </Design.DataContext>
-
-    <Grid>
-      <ProgressBar
-          Maximum="100"
-          Minimum="0"
-          Height="40"
-          Value="{Binding ValueBar, Mode=OneWay}"/>
-      <TextBlock
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          Text="{Binding LoadStatus, Mode=OneWay}"/>
+    
+    <Grid 
+        PointerMoved="InputElement_OnPointerMoved"
+        PointerPressed="InputElement_OnPointerPressed"
+        PointerReleased="InputElement_OnPointerReleased" 
+        RowDefinitions="40,10,50,10,40">
+        <Grid Grid.Row="0" MinHeight="30">
+            <TextBlock 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Padding="5,0"
+                TextWrapping="Wrap"
+                Text="{Binding ExportName, Mode=OneWay}">
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="2">
+            <ProgressBar
+                Height="50"
+                Maximum="100"
+                Minimum="0"
+                Value="{Binding ValueBar, Mode=OneWay}">
+            </ProgressBar>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Padding="0,5"
+                Text="{Binding LoadStatus, Mode=OneWay}">
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="4">
+            <Button
+                Height="30"
+                Width="50"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="20,5,5,20"
+                Padding="0,5"
+                IsEnabled="True"
+                Content="Отмена"
+                Command="{Binding ExcelExportCancel, Mode=OneWay}"
+                CommandParameter="{Binding CancellationToken, Mode=OneWay}"/>
+        </Grid>
     </Grid>
 </Window>

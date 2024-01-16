@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Views.ProgressBar;
-using OfficeOpenXml.Packaging.Ionic.Zip;
 using ReactiveUI;
 
 namespace Client_App.ViewModels.ProgressBar;
@@ -13,14 +14,19 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
 {
     private IBackgroundLoader _backgroundWorker;
     private Task MainTask { get; set; }
+    private CancellationTokenSource CancellationTokenSource { get; set; }
     private ExcelExportProgressBar ExcelExportProgressBar { get; set; }
 
     public Interaction<MainWindowVM, object> ShowDialog { get; }
 
-    public ExcelExportProgressBarVM(ExcelExportProgressBar excelExportProgressBar, IBackgroundLoader backgroundWorker)
+    public ICommand ExcelExportCancel { get; set; } //Отмена экспорта в .xlsx
+
+    public ExcelExportProgressBarVM(ExcelExportProgressBar excelExportProgressBar, CancellationTokenSource cts, IBackgroundLoader backgroundWorker)
     {
+        ExcelExportCancel = new ExcelExportCancelAsyncCommand();
         _backgroundWorker = backgroundWorker;
         ExcelExportProgressBar = excelExportProgressBar;
+        CancellationTokenSource = cts;
         LoadStatus = "Начало экспорта";
         ValueBar = 1;
         //_backgroundWorker.BackgroundWorker(() =>
@@ -40,6 +46,23 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
         {
             if (value == _loadStatus) return;
             _loadStatus = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    #region ExportName
+
+    private string _exportName;
+
+    public string ExportName
+    {
+        get => _exportName;
+        set
+        {
+            if (value == _exportName) return;
+            _exportName = value;
             OnPropertyChanged();
         }
     }
