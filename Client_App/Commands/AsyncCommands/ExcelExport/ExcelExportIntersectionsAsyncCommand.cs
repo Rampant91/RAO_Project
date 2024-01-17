@@ -132,8 +132,15 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         for (var i = 0; i < listSortRep.Count; i++)
         {
             var rep = listSortRep[i];
+            var order13Date = new DateTime(2022, 1, 1);
             var repStart = rep.StartPeriod;
             var repEnd = rep.EndPeriod;
+            var repStartOriginal = new DateTime();
+            if (repStart < order13Date && repEnd < order13Date)
+            {
+                repStartOriginal = repStart;
+                repStart = repStart.AddDays(1);
+            }
             var listToCompare = listSortRep
                 .Skip(i + 1)
                 .Where(x => x.RegNoRep == rep.RegNoRep && x.OkpoRep == rep.OkpoRep && x.FormNum == rep.FormNum)
@@ -143,6 +150,12 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             {
                 var repToCompareStart = repToCompare.StartPeriod;
                 var repToCompareEnd = repToCompare.EndPeriod;
+                var repToCompareStartOriginal = new DateTime();
+                if (repToCompareStart < order13Date && repToCompareEnd < order13Date)
+                {
+                    repToCompareStartOriginal = repToCompareStart;
+                    repToCompareStart = repToCompareStart.AddDays(1);
+                }
                 var minEndDate = repEnd < repToCompareEnd
                     ? repEnd
                     : repToCompareEnd;
@@ -150,27 +163,33 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                     || repStart < repToCompareEnd && repEnd > repToCompareStart
                     || isNext && repEnd < repToCompareStart)
                 {
+                    var repStartToExcel = repStartOriginal == repStart
+                        ? repStart
+                        : repStartOriginal;
+                    var repToCompareStartToExcel = repToCompareStartOriginal == repToCompareStart
+                        ? repToCompareStart
+                        : repToCompareStartOriginal;
                     Worksheet.Cells[row, 1].Value = rep.RegNoRep;
                     Worksheet.Cells[row, 2].Value = rep.OkpoRep;
                     Worksheet.Cells[row, 3].Value = rep.ShortYr;
                     Worksheet.Cells[row, 4].Value = rep.FormNum;
-                    Worksheet.Cells[row, 5].Value = ConvertToExcelDate(repStart.ToShortDateString(), Worksheet, row, 5);
+                    Worksheet.Cells[row, 5].Value = ConvertToExcelDate(repStartToExcel.ToShortDateString(), Worksheet, row, 5);
                     Worksheet.Cells[row, 6].Value = ConvertToExcelDate(repEnd.ToShortDateString(), Worksheet, row, 6);
-                    Worksheet.Cells[row, 7].Value = ConvertToExcelDate(repToCompareStart.ToShortDateString(), Worksheet, row, 7);
+                    Worksheet.Cells[row, 7].Value = ConvertToExcelDate(repToCompareStartToExcel.ToShortDateString(), Worksheet, row, 7);
                     Worksheet.Cells[row, 8].Value = ConvertToExcelDate(repToCompareEnd.ToShortDateString(), Worksheet, row, 8);
                     if (repStart == repToCompareStart && repEnd == repToCompareEnd)
                     {
-                        Worksheet.Cells[row, 9].Value = $"{repStart.ToShortDateString()}-{repEnd.ToShortDateString()}";
+                        Worksheet.Cells[row, 9].Value = $"{repStartToExcel.ToShortDateString()}-{repEnd.ToShortDateString()}";
                         Worksheet.Cells[row, 10].Value = "совпадение";
                     }
                     else if (repStart < repToCompareEnd && repEnd > repToCompareStart)
                     {
-                        Worksheet.Cells[row, 9].Value = $"{repToCompareStart.ToShortDateString()}-{minEndDate.ToShortDateString()}";
+                        Worksheet.Cells[row, 9].Value = $"{repToCompareStartToExcel.ToShortDateString()}-{minEndDate.ToShortDateString()}";
                         Worksheet.Cells[row, 10].Value = "пересечение";
                     }
                     else if (isNext && repEnd < repToCompareStart)
                     {
-                        Worksheet.Cells[row, 9].Value = $"{repEnd.ToShortDateString()}-{repToCompareStart.ToShortDateString()}";
+                        Worksheet.Cells[row, 9].Value = $"{repEnd.ToShortDateString()}-{repToCompareStartToExcel.ToShortDateString()}";
                         Worksheet.Cells[row, 10].Value = "разрыв";
                     }
                     row++;

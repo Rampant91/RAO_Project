@@ -21,6 +21,8 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
 
     public ICommand ExcelExportCancel { get; set; } //Отмена экспорта в .xlsx
 
+    public ExcelExportProgressBarVM() {}
+
     public ExcelExportProgressBarVM(ExcelExportProgressBar excelExportProgressBar, CancellationTokenSource cts, IBackgroundLoader backgroundWorker)
     {
         ExcelExportCancel = new ExcelExportCancelAsyncCommand();
