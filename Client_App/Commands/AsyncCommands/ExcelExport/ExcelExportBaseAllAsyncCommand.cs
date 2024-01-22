@@ -837,6 +837,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         if (OperatingSystem.IsWindows())
         {
             Worksheet.Column(10).AutoFit();
+            Worksheet.Column(13).AutoFit();
         }
     }
 
