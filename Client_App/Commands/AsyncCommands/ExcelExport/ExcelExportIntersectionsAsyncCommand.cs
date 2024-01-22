@@ -139,7 +139,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             if (repStart < order13Date && repEnd < order13Date)
             {
                 repStartOriginal = repStart;
-                repStart = repStart.AddDays(1);
+                repStart = repStart.AddDays(-1);
             }
             var listToCompare = listSortRep
                 .Skip(i + 1)
@@ -154,19 +154,20 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                 if (repToCompareStart < order13Date && repToCompareEnd < order13Date)
                 {
                     repToCompareStartOriginal = repToCompareStart;
-                    repToCompareStart = repToCompareStart.AddDays(1);
+                    repToCompareStart = repToCompareStart.AddDays(-1);
                 }
                 var minEndDate = repEnd < repToCompareEnd
                     ? repEnd
                     : repToCompareEnd;
-                if (repStart == repToCompareStart && repEnd == repToCompareEnd
-                    || repStart < repToCompareEnd && repEnd > repToCompareStart
-                    || isNext && repEnd < repToCompareStart)
+                if ((repStart == repToCompareStart && repEnd == repToCompareEnd
+                     || repStart < repToCompareEnd && repEnd > repToCompareStart
+                     || isNext && repEnd < repToCompareStart)
+                    && !(repToCompareStart == order13Date && repEnd.AddDays(1) == repToCompareStart))
                 {
-                    var repStartToExcel = repStartOriginal == repStart
+                    var repStartToExcel = repStartOriginal == new DateTime() || repStartOriginal == repStart
                         ? repStart
                         : repStartOriginal;
-                    var repToCompareStartToExcel = repToCompareStartOriginal == repToCompareStart
+                    var repToCompareStartToExcel = repToCompareStartOriginal == new DateTime() || repToCompareStartOriginal == repToCompareStart
                         ? repToCompareStart
                         : repToCompareStartOriginal;
                     Worksheet.Cells[row, 1].Value = rep.RegNoRep;
