@@ -860,34 +860,35 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.RefineMachineName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.MachineCode.Value is null ? "-" : repForm.MachineCode.Value;
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.MachinePower_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.NumberOfHoursPerYear_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.CodeRAOIn_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.StatusRAOIn_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.VolumeIn_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.MassIn_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelInt(repForm.QuantityIn_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.TritiumActivityIn_DB);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.BetaGammaActivityIn_DB);
-                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.AlphaActivityIn_DB);
-                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.TransuraniumActivityIn_DB);
-                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelString(repForm.CodeRAOout_DB);
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.StatusRAOout_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDouble(repForm.VolumeOut_DB);
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelDouble(repForm.MassOut_DB);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelInt(repForm.QuantityOZIIIout_DB);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelDouble(repForm.TritiumActivityOut_DB);
-                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelDouble(repForm.BetaGammaActivityOut_DB);
-                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelDouble(repForm.AlphaActivityOut_DB);
-                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(repForm.TransuraniumActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.RefineMachineName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = repForm.MachineCode.Value is null ? "-" : repForm.MachineCode.Value;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.MachinePower_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.NumberOfHoursPerYear_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.CodeRAOIn_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.StatusRAOIn_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.VolumeIn_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.MassIn_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelInt(repForm.QuantityIn_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.TritiumActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.BetaGammaActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.AlphaActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDouble(repForm.TransuraniumActivityIn_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.CodeRAOout_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelString(repForm.StatusRAOout_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelDouble(repForm.VolumeOut_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelDouble(repForm.MassOut_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelInt(repForm.QuantityOZIIIout_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelDouble(repForm.TritiumActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelDouble(repForm.BetaGammaActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(repForm.AlphaActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelDouble(repForm.TransuraniumActivityOut_DB);
 
                 #endregion
 
@@ -936,31 +937,32 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PackName_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PackType_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelInt(repForm.PackQuantity_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.CodeRAO_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.StatusRAO_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.VolumeOutOfPack_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.VolumeInPack_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.MassOutOfPack_DB);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.MassInPack_DB);
-                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
-                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.TritiumActivity_DB);
-                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDouble(repForm.TransuraniumActivity_DB);
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.MainRadionuclids_DB);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.Subsidy_DB);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PackName_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.PackType_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelInt(repForm.PackQuantity_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.CodeRAO_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.StatusRAO_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.VolumeOutOfPack_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.VolumeInPack_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.MassOutOfPack_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.MassInPack_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDouble(repForm.TritiumActivity_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelDouble(repForm.TransuraniumActivity_DB);
+                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.MainRadionuclids_DB);
+                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.Subsidy_DB);
+                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.FcpNumber_DB);
 
                 #endregion
 
@@ -1009,24 +1011,25 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.ProjectVolume_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.CodeRAO_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.Volume_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.Mass_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.SummaryActivity_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 16);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.ExpirationDate_DB, Worksheet, CurrentRow, 17);
-                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelString(repForm.DocumentName_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.ProjectVolume_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.CodeRAO_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.Volume_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.Mass_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.SummaryActivity_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 16);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDate(repForm.ExpirationDate_DB, Worksheet, CurrentRow, 17);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelString(repForm.DocumentName_DB);
 
                 #endregion
 
@@ -1054,6 +1057,10 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 CurrentPrimRow++;
             }
         }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(16).AutoFit();
+        }
     }
 
     #endregion
@@ -1075,28 +1082,29 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.CodeOYAT_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.FcpNumber_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.MassCreated_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelInt(repForm.QuantityCreated_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.MassFromAnothers_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelInt(repForm.QuantityFromAnothers_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.MassFromAnothersImported_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelInt(repForm.QuantityFromAnothersImported_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.MassAnotherReasons_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelInt(repForm.QuantityAnotherReasons_DB);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.MassTransferredToAnother_DB);
-                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelInt(repForm.QuantityTransferredToAnother_DB);
-                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.MassRefined_DB);
-                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelInt(repForm.QuantityRefined_DB);
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelDouble(repForm.MassRemovedFromAccount_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelInt(repForm.QuantityRemovedFromAccount_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.CodeOYAT_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.MassCreated_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelInt(repForm.QuantityCreated_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.MassFromAnothers_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelInt(repForm.QuantityFromAnothers_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.MassFromAnothersImported_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelInt(repForm.QuantityFromAnothersImported_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.MassAnotherReasons_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelInt(repForm.QuantityAnotherReasons_DB);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.MassTransferredToAnother_DB);
+                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelInt(repForm.QuantityTransferredToAnother_DB);
+                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDouble(repForm.MassRefined_DB);
+                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelInt(repForm.QuantityRefined_DB);
+                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDouble(repForm.MassRemovedFromAccount_DB);
+                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelInt(repForm.QuantityRemovedFromAccount_DB);
 
                 #endregion
 
@@ -1145,21 +1153,22 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.CodeOYAT_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.FcpNumber_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.FuelMass_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.CellMass_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = repForm.Quantity_DB is null ? "-" : repForm.Quantity_DB;
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.CodeOYAT_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.FuelMass_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.CellMass_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = repForm.Quantity_DB is null ? "-" : repForm.Quantity_DB;
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
 
                 #endregion
 
@@ -1208,19 +1217,20 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.ObservedSourceNumber_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.ControlledAreaName_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.SupposedWasteSource_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.DistanceToWasteSource_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.TestDepth_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.AverageYearConcentration_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.ObservedSourceNumber_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.ControlledAreaName_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.SupposedWasteSource_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.DistanceToWasteSource_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.TestDepth_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.AverageYearConcentration_DB);
 
                 #endregion
 
@@ -1269,17 +1279,18 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.ObservedSourceNumber_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.AllowedWasteValue_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.FactedWasteValue_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.WasteOutbreakPreviousYear_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.ObservedSourceNumber_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.AllowedWasteValue_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.FactedWasteValue_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.WasteOutbreakPreviousYear_DB);
 
                 #endregion
 
@@ -1328,18 +1339,19 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.WasteSourceName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.WasteRecieverName_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.RecieverTypeCode_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PoolDistrictName_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.AllowedWasteRemovalVolume_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.RemovedWasteVolume_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.WasteSourceName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.WasteRecieverName_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.RecieverTypeCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.PoolDistrictName_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.AllowedWasteRemovalVolume_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.RemovedWasteVolume_DB);
 
                 #endregion
 
@@ -1388,16 +1400,17 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.WasteSourceName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDouble(repForm.AllowedActivity_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.FactedActivity_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.WasteSourceName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.RadionuclidName_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.AllowedActivity_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.FactedActivity_DB);
 
                 #endregion
 
@@ -1446,22 +1459,23 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.IndicatorName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.PlotName_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PlotKadastrNumber_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PlotCode_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.InfectedArea_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.AvgGammaRaysDosePower_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.MaxGammaRaysDosePower_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.WasteDensityAlpha_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.WasteDensityBeta_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.IndicatorName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PlotName_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PlotKadastrNumber_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.PlotCode_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.InfectedArea_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.AvgGammaRaysDosePower_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.MaxGammaRaysDosePower_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.WasteDensityAlpha_DB);
+                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.WasteDensityBeta_DB);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelString(repForm.FcpNumber_DB);
 
                 #endregion
 
@@ -1510,20 +1524,21 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = ConvertToExcelString(repForm.PlotName_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.PlotKadastrNumber_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PlotCode_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.InfectedArea_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.Radionuclids_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.SpecificActivityOfPlot_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.SpecificActivityOfLiquidPart_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.SpecificActivityOfDensePart_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.PlotName_DB);
+                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.PlotKadastrNumber_DB);
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PlotCode_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.InfectedArea_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.SpecificActivityOfPlot_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.SpecificActivityOfLiquidPart_DB);
+                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.SpecificActivityOfDensePart_DB);
 
                 #endregion
 
@@ -1572,17 +1587,18 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Binding
 
-                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.OkpoRep.Value;
-                Worksheet.Cells[CurrentRow, 4].Value = rep.CorrectionNumber_DB;
-                Worksheet.Cells[CurrentRow, 5].Value = rep.Year_DB;
-                Worksheet.Cells[CurrentRow, 6].Value = repForm.NumberInOrder_DB;
-                Worksheet.Cells[CurrentRow, 7].Value = repForm.OperationCode_DB is null ? "-" : repForm.OperationCode_DB;
-                Worksheet.Cells[CurrentRow, 8].Value = repForm.ObjectTypeCode_DB is null ? "-" : repForm.ObjectTypeCode_DB;
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelString(repForm.Radionuclids_DB);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelDouble(repForm.Activity_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
+                Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.Id;
+                Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
+                Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
+                Worksheet.Cells[CurrentRow, 4].Value = CurrentReports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[CurrentRow, 5].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[CurrentRow, 6].Value = rep.Year_DB;
+                Worksheet.Cells[CurrentRow, 7].Value = repForm.NumberInOrder_DB;
+                Worksheet.Cells[CurrentRow, 8].Value = repForm.OperationCode_DB is null ? "-" : repForm.OperationCode_DB;
+                Worksheet.Cells[CurrentRow, 9].Value = repForm.ObjectTypeCode_DB is null ? "-" : repForm.ObjectTypeCode_DB;
+                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.Radionuclids_DB);
+                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelDouble(repForm.Activity_DB);
+                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
 
                 #endregion
 
@@ -1628,7 +1644,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
 
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1668,7 +1684,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
 
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1705,7 +1721,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
 
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1743,7 +1759,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1782,7 +1798,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1823,7 +1839,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1867,7 +1883,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1916,7 +1932,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1961,7 +1977,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
 
-                Worksheet.Cells[1, 1].Value = "Id";
+                Worksheet.Cells[1, 1].Value = "ID";
                 Worksheet.Cells[1, 2].Value = "ОКПО";
                 Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
                 Worksheet.Cells[1, 4].Value = "Рег.№";
@@ -1987,34 +2003,35 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
 
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "мощность куб.м/год";
-                Worksheet.Cells[1, 10].Value = "количество часов работы за год";
-                Worksheet.Cells[1, 11].Value = "код РАО";
-                Worksheet.Cells[1, 12].Value = "статус РАО";
-                Worksheet.Cells[1, 13].Value = "куб.м";
-                Worksheet.Cells[1, 14].Value = "т";
-                Worksheet.Cells[1, 15].Value = "ОЗИИИ, шт";
-                Worksheet.Cells[1, 16].Value = "тритий";
-                Worksheet.Cells[1, 17].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 18].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 19].Value = "трансурановые радионуклиды";
-                Worksheet.Cells[1, 20].Value = "код РАО";
-                Worksheet.Cells[1, 21].Value = "статус РАО";
-                Worksheet.Cells[1, 22].Value = "куб.м";
-                Worksheet.Cells[1, 23].Value = "т";
-                Worksheet.Cells[1, 24].Value = "ОЗИИИ, шт";
-                Worksheet.Cells[1, 25].Value = "тритий";
-                Worksheet.Cells[1, 26].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 27].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 28].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "наименование";
+                Worksheet.Cells[1, 9].Value = "код";
+                Worksheet.Cells[1, 10].Value = "мощность куб.м/год";
+                Worksheet.Cells[1, 11].Value = "количество часов работы за год";
+                Worksheet.Cells[1, 12].Value = "код РАО";
+                Worksheet.Cells[1, 13].Value = "статус РАО";
+                Worksheet.Cells[1, 14].Value = "куб.м";
+                Worksheet.Cells[1, 15].Value = "т";
+                Worksheet.Cells[1, 16].Value = "ОЗИИИ, шт";
+                Worksheet.Cells[1, 17].Value = "тритий";
+                Worksheet.Cells[1, 18].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 19].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 20].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 21].Value = "код РАО";
+                Worksheet.Cells[1, 22].Value = "статус РАО";
+                Worksheet.Cells[1, 23].Value = "куб.м";
+                Worksheet.Cells[1, 24].Value = "т";
+                Worksheet.Cells[1, 25].Value = "ОЗИИИ, шт";
+                Worksheet.Cells[1, 26].Value = "тритий";
+                Worksheet.Cells[1, 27].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 28].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 29].Value = "трансурановые радионуклиды";
                 NotesHeaders2(); 
 
                 #endregion
@@ -2025,31 +2042,32 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "наименование";
-                Worksheet.Cells[1, 10].Value = "тип";
-                Worksheet.Cells[1, 11].Value = "количество, шт";
-                Worksheet.Cells[1, 12].Value = "код РАО";
-                Worksheet.Cells[1, 13].Value = "статус РАО";
-                Worksheet.Cells[1, 14].Value = "РАО без упаковки";
-                Worksheet.Cells[1, 15].Value = "РАО с упаковкой";
-                Worksheet.Cells[1, 16].Value = "РАО без упаковки (нетто)";
-                Worksheet.Cells[1, 17].Value = "РАО с упаковкой (брутто)";
-                Worksheet.Cells[1, 18].Value = "Количество ОЗИИИ, шт";
-                Worksheet.Cells[1, 19].Value = "тритий";
-                Worksheet.Cells[1, 20].Value = "бета-, гамма-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 21].Value = "альфа-излучающие радионуклиды (исключая";
-                Worksheet.Cells[1, 22].Value = "трансурановые радионуклиды";
-                Worksheet.Cells[1, 23].Value = "Основные радионуклиды";
-                Worksheet.Cells[1, 24].Value = "Субсидия, %";
-                Worksheet.Cells[1, 25].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "наименование";
+                Worksheet.Cells[1, 9].Value = "код";
+                Worksheet.Cells[1, 10].Value = "наименование";
+                Worksheet.Cells[1, 11].Value = "тип";
+                Worksheet.Cells[1, 12].Value = "количество, шт";
+                Worksheet.Cells[1, 13].Value = "код РАО";
+                Worksheet.Cells[1, 14].Value = "статус РАО";
+                Worksheet.Cells[1, 15].Value = "РАО без упаковки";
+                Worksheet.Cells[1, 16].Value = "РАО с упаковкой";
+                Worksheet.Cells[1, 17].Value = "РАО без упаковки (нетто)";
+                Worksheet.Cells[1, 18].Value = "РАО с упаковкой (брутто)";
+                Worksheet.Cells[1, 19].Value = "Количество ОЗИИИ, шт";
+                Worksheet.Cells[1, 20].Value = "тритий";
+                Worksheet.Cells[1, 21].Value = "бета-, гамма-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 22].Value = "альфа-излучающие радионуклиды (исключая";
+                Worksheet.Cells[1, 23].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 24].Value = "Основные радионуклиды";
+                Worksheet.Cells[1, 25].Value = "Субсидия, %";
+                Worksheet.Cells[1, 26].Value = "Номер мероприятия ФЦП";
                 NotesHeaders2(); 
         
                 #endregion
@@ -2060,24 +2078,25 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "проектный объем, куб.м";
-                Worksheet.Cells[1, 10].Value = "код РАО";
-                Worksheet.Cells[1, 11].Value = "объем, куб.м";
-                Worksheet.Cells[1, 12].Value = "масса, т";
-                Worksheet.Cells[1, 13].Value = "количество ОЗИИИ, шт";
-                Worksheet.Cells[1, 14].Value = "суммарная активность, Бк";
-                Worksheet.Cells[1, 15].Value = "номер";
-                Worksheet.Cells[1, 16].Value = "дата";
-                Worksheet.Cells[1, 17].Value = "срок действия";
-                Worksheet.Cells[1, 18].Value = "наименование документа";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "наименование";
+                Worksheet.Cells[1, 9].Value = "код";
+                Worksheet.Cells[1, 10].Value = "проектный объем, куб.м";
+                Worksheet.Cells[1, 11].Value = "код РАО";
+                Worksheet.Cells[1, 12].Value = "объем, куб.м";
+                Worksheet.Cells[1, 13].Value = "масса, т";
+                Worksheet.Cells[1, 14].Value = "количество ОЗИИИ, шт";
+                Worksheet.Cells[1, 15].Value = "суммарная активность, Бк";
+                Worksheet.Cells[1, 16].Value = "номер";
+                Worksheet.Cells[1, 17].Value = "дата";
+                Worksheet.Cells[1, 18].Value = "срок действия";
+                Worksheet.Cells[1, 19].Value = "наименование документа";
                 NotesHeaders2(); 
         
                 #endregion
@@ -2088,28 +2107,29 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Код ОЯТ";
-                Worksheet.Cells[1, 8].Value = "Номер мероприятия ФЦП";
-                Worksheet.Cells[1, 9].Value = "масса образованного, т";
-                Worksheet.Cells[1, 10].Value = "количество образованного, шт";
-                Worksheet.Cells[1, 11].Value = "масса поступивших от сторонних, т";
-                Worksheet.Cells[1, 12].Value = "количество поступивших от сторонних, шт";
-                Worksheet.Cells[1, 13].Value = "масса импортированных от сторонних, т";
-                Worksheet.Cells[1, 14].Value = "количество импортированных от сторонних, шт";
-                Worksheet.Cells[1, 15].Value = "масса учтенных по другим причинам, т";
-                Worksheet.Cells[1, 16].Value = "количество учтенных по другим причинам, шт";
-                Worksheet.Cells[1, 17].Value = "масса переданных сторонним, т";
-                Worksheet.Cells[1, 18].Value = "количество переданных сторонним, шт";
-                Worksheet.Cells[1, 19].Value = "масса переработанных, т";
-                Worksheet.Cells[1, 20].Value = "количество переработанных, шт";
-                Worksheet.Cells[1, 21].Value = "масса снятия с учета, т";
-                Worksheet.Cells[1, 22].Value = "количество снятых с учета, шт";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Код ОЯТ";
+                Worksheet.Cells[1, 9].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 10].Value = "масса образованного, т";
+                Worksheet.Cells[1, 11].Value = "количество образованного, шт";
+                Worksheet.Cells[1, 12].Value = "масса поступивших от сторонних, т";
+                Worksheet.Cells[1, 13].Value = "количество поступивших от сторонних, шт";
+                Worksheet.Cells[1, 14].Value = "масса импортированных от сторонних, т";
+                Worksheet.Cells[1, 15].Value = "количество импортированных от сторонних, шт";
+                Worksheet.Cells[1, 16].Value = "масса учтенных по другим причинам, т";
+                Worksheet.Cells[1, 17].Value = "количество учтенных по другим причинам, шт";
+                Worksheet.Cells[1, 18].Value = "масса переданных сторонним, т";
+                Worksheet.Cells[1, 19].Value = "количество переданных сторонним, шт";
+                Worksheet.Cells[1, 20].Value = "масса переработанных, т";
+                Worksheet.Cells[1, 21].Value = "количество переработанных, шт";
+                Worksheet.Cells[1, 22].Value = "масса снятия с учета, т";
+                Worksheet.Cells[1, 23].Value = "количество снятых с учета, шт";
                 NotesHeaders2();
         
                 #endregion
@@ -2120,21 +2140,22 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "наименование, номер";
-                Worksheet.Cells[1, 8].Value = "код";
-                Worksheet.Cells[1, 9].Value = "код ОЯТ";
-                Worksheet.Cells[1, 10].Value = "номер мероприятия ФЦП";
-                Worksheet.Cells[1, 11].Value = "топливо (нетто)";
-                Worksheet.Cells[1, 12].Value = "ОТВС(ТВЭЛ, выемной части реактора) брутто";
-                Worksheet.Cells[1, 13].Value = "количество, шт";
-                Worksheet.Cells[1, 14].Value = "альфа-излучающих нуклидов";
-                Worksheet.Cells[1, 15].Value = "бета-, гамма-излучающих нуклидов";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "наименование, номер";
+                Worksheet.Cells[1, 9].Value = "код";
+                Worksheet.Cells[1, 10].Value = "код ОЯТ";
+                Worksheet.Cells[1, 11].Value = "номер мероприятия ФЦП";
+                Worksheet.Cells[1, 12].Value = "топливо (нетто)";
+                Worksheet.Cells[1, 13].Value = "ОТВС(ТВЭЛ, выемной части реактора) брутто";
+                Worksheet.Cells[1, 14].Value = "количество, шт";
+                Worksheet.Cells[1, 15].Value = "альфа-излучающих нуклидов";
+                Worksheet.Cells[1, 16].Value = "бета-, гамма-излучающих нуклидов";
                 NotesHeaders2(); 
         
                 #endregion
@@ -2145,19 +2166,20 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Номер наблюдательной скважины";
-                Worksheet.Cells[1, 8].Value = "Наименование зоны контроля";
-                Worksheet.Cells[1, 9].Value = "Предполагаемый источник поступления радиоактивных веществ";
-                Worksheet.Cells[1, 10].Value = "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м";
-                Worksheet.Cells[1, 11].Value = "Глубина отбора проб, м";
-                Worksheet.Cells[1, 12].Value = "Наименование радионуклида";
-                Worksheet.Cells[1, 13].Value = "Среднегодовое содержание радионуклида, Бк/кг";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Номер наблюдательной скважины";
+                Worksheet.Cells[1, 9].Value = "Наименование зоны контроля";
+                Worksheet.Cells[1, 10].Value = "Предполагаемый источник поступления радиоактивных веществ";
+                Worksheet.Cells[1, 11].Value = "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м";
+                Worksheet.Cells[1, 12].Value = "Глубина отбора проб, м";
+                Worksheet.Cells[1, 13].Value = "Наименование радионуклида";
+                Worksheet.Cells[1, 14].Value = "Среднегодовое содержание радионуклида, Бк/кг";
                 NotesHeaders2();
 
                 #endregion
@@ -2168,17 +2190,18 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование, номер источника выбросов";
-                Worksheet.Cells[1, 8].Value = "Наименование радионуклида";
-                Worksheet.Cells[1, 9].Value = "разрешенный выброс за отчетный год";
-                Worksheet.Cells[1, 10].Value = "фактический выброс за отчетный год";
-                Worksheet.Cells[1, 11].Value = "фактический выброс за предыдущий год";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Наименование, номер источника выбросов";
+                Worksheet.Cells[1, 9].Value = "Наименование радионуклида";
+                Worksheet.Cells[1, 10].Value = "разрешенный выброс за отчетный год";
+                Worksheet.Cells[1, 11].Value = "фактический выброс за отчетный год";
+                Worksheet.Cells[1, 12].Value = "фактический выброс за предыдущий год";
                 NotesHeaders2(); 
         
                 #endregion
@@ -2189,18 +2212,19 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование, номер выпуска сточных вод";
-                Worksheet.Cells[1, 8].Value = "наименование";
-                Worksheet.Cells[1, 9].Value = "код типа документа";
-                Worksheet.Cells[1, 10].Value = "Наименование бассейнового округа";
-                Worksheet.Cells[1, 11].Value = "Допустимый объем водоотведения за год, тыс.куб.м";
-                Worksheet.Cells[1, 12].Value = "Отведено за отчетный период, тыс.куб.м";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Наименование, номер выпуска сточных вод";
+                Worksheet.Cells[1, 9].Value = "наименование";
+                Worksheet.Cells[1, 10].Value = "код типа документа";
+                Worksheet.Cells[1, 11].Value = "Наименование бассейнового округа";
+                Worksheet.Cells[1, 12].Value = "Допустимый объем водоотведения за год, тыс.куб.м";
+                Worksheet.Cells[1, 13].Value = "Отведено за отчетный период, тыс.куб.м";
                 NotesHeaders2();
 
                 #endregion
@@ -2211,16 +2235,17 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование, номер выпуска сточных вод";
-                Worksheet.Cells[1, 8].Value = "Наименование радионуклида";
-                Worksheet.Cells[1, 9].Value = "допустимая";
-                Worksheet.Cells[1, 10].Value = "фактическая";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Наименование, номер выпуска сточных вод";
+                Worksheet.Cells[1, 9].Value = "Наименование радионуклида";
+                Worksheet.Cells[1, 10].Value = "допустимая";
+                Worksheet.Cells[1, 11].Value = "фактическая";
                 NotesHeaders2();
 
                 #endregion
@@ -2231,22 +2256,23 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование показателя";
-                Worksheet.Cells[1, 8].Value = "Наименование участка";
-                Worksheet.Cells[1, 9].Value = "Кадастровый номер участка";
-                Worksheet.Cells[1, 10].Value = "Код участка";
-                Worksheet.Cells[1, 11].Value = "Площадь загрязненной территории, кв.м";
-                Worksheet.Cells[1, 12].Value = "средняя";
-                Worksheet.Cells[1, 13].Value = "максимальная";
-                Worksheet.Cells[1, 14].Value = "альфа-излучающие радионуклиды";
-                Worksheet.Cells[1, 15].Value = "бета-излучающие радионуклиды";
-                Worksheet.Cells[1, 16].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Наименование показателя";
+                Worksheet.Cells[1, 9].Value = "Наименование участка";
+                Worksheet.Cells[1, 10].Value = "Кадастровый номер участка";
+                Worksheet.Cells[1, 11].Value = "Код участка";
+                Worksheet.Cells[1, 12].Value = "Площадь загрязненной территории, кв.м";
+                Worksheet.Cells[1, 13].Value = "средняя";
+                Worksheet.Cells[1, 14].Value = "максимальная";
+                Worksheet.Cells[1, 15].Value = "альфа-излучающие радионуклиды";
+                Worksheet.Cells[1, 16].Value = "бета-излучающие радионуклиды";
+                Worksheet.Cells[1, 17].Value = "Номер мероприятия ФЦП";
                 NotesHeaders2(); 
         
                 #endregion
@@ -2257,20 +2283,21 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Наименование участка";
-                Worksheet.Cells[1, 8].Value = "Кадастровый номер участка";
-                Worksheet.Cells[1, 9].Value = "Код участка";
-                Worksheet.Cells[1, 10].Value = "Площадь загрязненной территории, кв.м";
-                Worksheet.Cells[1, 11].Value = "Наименование радионуклидов";
-                Worksheet.Cells[1, 12].Value = "земельный участок";
-                Worksheet.Cells[1, 13].Value = "жидкая фаза";
-                Worksheet.Cells[1, 14].Value = "донные отложения";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Наименование участка";
+                Worksheet.Cells[1, 9].Value = "Кадастровый номер участка";
+                Worksheet.Cells[1, 10].Value = "Код участка";
+                Worksheet.Cells[1, 11].Value = "Площадь загрязненной территории, кв.м";
+                Worksheet.Cells[1, 12].Value = "Наименование радионуклидов";
+                Worksheet.Cells[1, 13].Value = "земельный участок";
+                Worksheet.Cells[1, 14].Value = "жидкая фаза";
+                Worksheet.Cells[1, 15].Value = "донные отложения";
                 NotesHeaders2();
 
                 #endregion
@@ -2281,17 +2308,18 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             {
                 #region Headers
         
-                Worksheet.Cells[1, 1].Value = "Рег. №";
-                Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 3].Value = "ОКПО";
-                Worksheet.Cells[1, 4].Value = "Номер корректировки";
-                Worksheet.Cells[1, 5].Value = "отчетный год";
-                Worksheet.Cells[1, 6].Value = "№ п/п";
-                Worksheet.Cells[1, 7].Value = "Код операции";
-                Worksheet.Cells[1, 8].Value = "Код типа объектов учета";
-                Worksheet.Cells[1, 9].Value = "радионуклиды";
-                Worksheet.Cells[1, 10].Value = "активность, Бк";
-                Worksheet.Cells[1, 11].Value = "ОКПО поставщика/получателя";
+                Worksheet.Cells[1, 1].Value = "ID";
+                Worksheet.Cells[1, 2].Value = "ОКПО";
+                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 4].Value = "Рег. №";
+                Worksheet.Cells[1, 5].Value = "Номер корректировки";
+                Worksheet.Cells[1, 6].Value = "отчетный год";
+                Worksheet.Cells[1, 7].Value = "№ п/п";
+                Worksheet.Cells[1, 8].Value = "Код операции";
+                Worksheet.Cells[1, 9].Value = "Код типа объектов учета";
+                Worksheet.Cells[1, 10].Value = "радионуклиды";
+                Worksheet.Cells[1, 11].Value = "активность, Бк";
+                Worksheet.Cells[1, 12].Value = "ОКПО поставщика/получателя";
                 NotesHeaders2();
 
                 #endregion
