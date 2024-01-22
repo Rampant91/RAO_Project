@@ -761,7 +761,7 @@ public class Form11 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value is not (>= 1 and <= 9))
+        if (value.Value is not (>= 1 and <= 6 or 9))
         {
             value.AddError("Недопустимое значение");
             return false;
