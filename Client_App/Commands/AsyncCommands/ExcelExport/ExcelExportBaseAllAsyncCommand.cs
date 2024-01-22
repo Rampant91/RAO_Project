@@ -1059,7 +1059,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         }
         if (OperatingSystem.IsWindows())
         {
-            Worksheet.Column(16).AutoFit();
+            Worksheet.Column(17).AutoFit();
         }
     }
 
