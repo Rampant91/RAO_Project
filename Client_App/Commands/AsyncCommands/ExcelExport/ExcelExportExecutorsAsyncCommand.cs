@@ -74,17 +74,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         var repsList = new List<Reports>();
         repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection
             .OrderBy(x => x.Master.RegNoRep.Value));
-
-        //HashSet<string> formNums = new();
-        //foreach (var rep in repsList
-        //             .SelectMany(reps => reps.Report_Collection)
-        //             .OrderBy(x => byte.Parse(x.FormNum_DB.Split('.')[0]))
-        //             .ThenBy(x => byte.Parse(x.FormNum_DB.Split('.')[1]))
-        //             .ToList())
-        //{
-        //    formNums.Add(rep.FormNum_DB);
-        //}
-
+        
         _currentRow = 2;
         Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 1");
         FillExecutorsHeaders('1');
@@ -100,9 +90,9 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 _currentRow++;
             }
         }
-        FillExecutorsHeaders('2');
+        _currentRow = 2;
         Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 2");
-        FillExecutorsHeaders('1');
+        FillExecutorsHeaders('2');
         foreach (var reps in repsList)
         {
             CurrentReports = reps;
@@ -115,26 +105,6 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 _currentRow++;
             }
         }
-
-
-        //foreach (var formNum in formNums)
-        //{
-        //    _currentRow = 2;
-        //    Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
-        //    FillExecutorsHeaders(formNum[0]);
-            
-        //    foreach (var reps in repsList)
-        //    {
-        //        CurrentReports = reps;
-        //        foreach (var rep in CurrentReports.Report_Collection
-        //                     .OrderBy(x => x.FormNum_DB.Split('.')[1])
-        //                     .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
-        //        {
-        //            FillExecutors(rep);
-        //            _currentRow++;
-        //        }
-        //    }
-        //}
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
