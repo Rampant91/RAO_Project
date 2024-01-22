@@ -163,6 +163,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 CurrentPrimRow++;
             }
         }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(25).AutoFit();
+        }
     }
 
     #endregion
@@ -238,6 +243,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
                 CurrentPrimRow++;
             }
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(22).AutoFit();
         }
     }
 
@@ -316,6 +326,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 CurrentPrimRow++;
             }
         }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(23).AutoFit();
+        }
     }
 
     #endregion
@@ -393,6 +408,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
                 CurrentPrimRow++;
             }
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(24).AutoFit();
         }
     }
 
@@ -473,6 +493,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
                 CurrentPrimRow++;
             }
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(21).AutoFit();
         }
     }
 
@@ -556,6 +581,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
                 CurrentPrimRow++;
             }
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(24).AutoFit();
         }
     }
 
@@ -645,6 +675,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 CurrentPrimRow++;
             }
         }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(23).AutoFit();
+        }
     }
 
     #endregion
@@ -729,6 +764,11 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 CurrentPrimRow++;
             }
         }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(20).AutoFit();
+        }
     }
 
     #endregion
@@ -793,6 +833,10 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
                 CurrentPrimRow++;
             }
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
         }
     }
 
