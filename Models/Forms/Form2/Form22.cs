@@ -109,10 +109,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Sum)))
+            if (Dictionary.TryGetValue(nameof(Sum), out var value))
             {
-                ((RamAccess<bool>)Dictionary[nameof(Sum)]).Value = Sum_DB;
-                return (RamAccess<bool>)Dictionary[nameof(Sum)];
+                ((RamAccess<bool>)value).Value = Sum_DB;
+                return (RamAccess<bool>)value;
             }
             var rm = new RamAccess<bool>(Sum_Validation, Sum_DB);
             rm.PropertyChanged += SumValueChanged;
@@ -188,12 +188,12 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(NumberInOrderSum)))
+            if (Dictionary.TryGetValue(nameof(NumberInOrderSum), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(NumberInOrderSum)]).Value = !string.IsNullOrEmpty(NumberInOrderSum_DB)
+                ((RamAccess<string>)value).Value = !string.IsNullOrEmpty(NumberInOrderSum_DB)
                     ? NumberInOrderSum_DB
                     : NumberInOrder_DB.ToString();
-                return (RamAccess<string>)Dictionary[nameof(NumberInOrderSum)];
+                return (RamAccess<string>)value;
             }
             var rm = !string.IsNullOrEmpty(NumberInOrderSum_DB)
                 ? new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrderSum_DB)
@@ -236,10 +236,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceName_Hidden_Get)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceName_Hidden_Get), out var value))
             {
-                ((RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Get)]).Set(_StoragePlaceName_Hidden_Get);
-                return (RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Get)];
+                ((RefBool)value).Set(_StoragePlaceName_Hidden_Get);
+                return (RefBool)value;
             }
             var rm = new RefBool(_StoragePlaceName_Hidden_Get);
             Dictionary.Add(nameof(StoragePlaceName_Hidden_Get), rm);
@@ -260,10 +260,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceName_Hidden_Set)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceName_Hidden_Set), out var value))
             {
-                ((RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Set)]).Set(_StoragePlaceName_Hidden_Set);
-                return (RefBool)Dictionary[nameof(StoragePlaceName_Hidden_Set)];
+                ((RefBool)value).Set(_StoragePlaceName_Hidden_Set);
+                return (RefBool)value;
 
             }
             var rm = new RefBool(_StoragePlaceName_Hidden_Set);
@@ -285,10 +285,10 @@ public class Form22 : Form2, IBaseColor
         get
         {
 
-            if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
+                ((RamAccess<string>)value).Value = StoragePlaceName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB, StoragePlaceName_Hidden_Get, StoragePlaceName_Hidden_Set);
             rm.PropertyChanged += StoragePlaceNameValueChanged;
@@ -344,10 +344,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceCode_Hidden_Get)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceCode_Hidden_Get), out var value))
             {
-                ((RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Get)]).Set(_StoragePlaceCode_Hidden_Get);
-                return (RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Get)];
+                ((RefBool)value).Set(_StoragePlaceCode_Hidden_Get);
+                return (RefBool)value;
             }
             var rm = new RefBool(_StoragePlaceCode_Hidden_Get);
             Dictionary.Add(nameof(StoragePlaceCode_Hidden_Get), rm);
@@ -369,10 +369,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceCode_Hidden_Set)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceCode_Hidden_Set), out var value))
             {
-                ((RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Set)]).Set(_StoragePlaceCode_Hidden_Set);
-                return (RefBool)Dictionary[nameof(StoragePlaceCode_Hidden_Set)];
+                ((RefBool)value).Set(_StoragePlaceCode_Hidden_Set);
+                return (RefBool)value;
 
             }
             var rm = new RefBool(_StoragePlaceCode_Hidden_Set);
@@ -393,10 +393,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceCode), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
+                ((RamAccess<string>)value).Value = StoragePlaceCode_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB, StoragePlaceCode_Hidden_Get, StoragePlaceCode_Hidden_Set);
             rm.PropertyChanged += StoragePlaceCodeValueChanged;
@@ -490,10 +490,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackName_Hidden_Get)))
+            if (Dictionary.TryGetValue(nameof(PackName_Hidden_Get), out var value))
             {
-                ((RefBool)Dictionary[nameof(PackName_Hidden_Get)]).Set(_PackName_Hidden_Get);
-                return (RefBool)Dictionary[nameof(PackName_Hidden_Get)];
+                ((RefBool)value).Set(_PackName_Hidden_Get);
+                return (RefBool)value;
             }
             var rm = new RefBool(_PackName_Hidden_Get);
             Dictionary.Add(nameof(PackName_Hidden_Get), rm);
@@ -514,10 +514,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackName_Hidden_Set)))
+            if (Dictionary.TryGetValue(nameof(PackName_Hidden_Set), out var value))
             {
-                ((RefBool)Dictionary[nameof(PackName_Hidden_Set)]).Set(_PackName_Hidden_Set);
-                return (RefBool)Dictionary[nameof(PackName_Hidden_Set)];
+                ((RefBool)value).Set(_PackName_Hidden_Set);
+                return (RefBool)value;
 
             }
             var rm = new RefBool(_PackName_Hidden_Set);
@@ -539,10 +539,10 @@ public class Form22 : Form2, IBaseColor
         get
         {
 
-            if (Dictionary.ContainsKey(nameof(PackName)))
+            if (Dictionary.TryGetValue(nameof(PackName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PackName)]).Value = PackName_DB;
-                return (RamAccess<string>)Dictionary[nameof(PackName)];
+                ((RamAccess<string>)value).Value = PackName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackName_Validation, PackName_DB, PackName_Hidden_Get, PackName_Hidden_Set);
             rm.PropertyChanged += PackNameValueChanged;
@@ -600,10 +600,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackType_Hidden_Get)))
+            if (Dictionary.TryGetValue(nameof(PackType_Hidden_Get), out var value))
             {
-                ((RefBool)Dictionary[nameof(PackType_Hidden_Get)]).Set(_PackType_Hidden_Get);
-                return (RefBool)Dictionary[nameof(PackType_Hidden_Get)];
+                ((RefBool)value).Set(_PackType_Hidden_Get);
+                return (RefBool)value;
 
             }
             var rm = new RefBool(_PackType_Hidden_Get);
@@ -625,10 +625,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackType_Hidden_Set)))
+            if (Dictionary.TryGetValue(nameof(PackType_Hidden_Set), out var value))
             {
-                ((RefBool)Dictionary[nameof(PackType_Hidden_Set)]).Set(_PackType_Hidden_Set);
-                return (RefBool)Dictionary[nameof(PackType_Hidden_Set)];
+                ((RefBool)value).Set(_PackType_Hidden_Set);
+                return (RefBool)value;
             }
             var rm = new RefBool(_PackType_Hidden_Set);
             Dictionary.Add(nameof(PackType_Hidden_Set), rm);
@@ -648,10 +648,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackType)))
+            if (Dictionary.TryGetValue(nameof(PackType), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PackType)]).Value = PackType_DB;
-                return (RamAccess<string>)Dictionary[nameof(PackType)];
+                ((RamAccess<string>)value).Value = PackType_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackType_Validation, PackType_DB, PackType_Hidden_Get, PackType_Hidden_Set);
             rm.PropertyChanged += PackTypeValueChanged;
@@ -714,10 +714,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackQuantity)))
+            if (Dictionary.TryGetValue(nameof(PackQuantity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PackQuantity)]).Value = PackQuantity_DB;
-                return (RamAccess<string>)Dictionary[nameof(PackQuantity)];
+                ((RamAccess<string>)value).Value = PackQuantity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackQuantity_Validation, PackQuantity_DB);
             rm.PropertyChanged += PackQuantityValueChanged;
@@ -783,19 +783,19 @@ public class Form22 : Form2, IBaseColor
         {
             if (!CodeRAO_Hidden)
             {
-                if (Dictionary.ContainsKey(nameof(CodeRAO)))
+                if (Dictionary.TryGetValue(nameof(CodeRAO), out var value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(CodeRAO)]).Value = CodeRAO_DB;
-                    return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+                    ((RamAccess<string>)value).Value = CodeRAO_DB;
+                    return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
                 rm.PropertyChanged += CodeRAOValueChanged;
                 Dictionary.Add(nameof(CodeRAO), rm);
                 return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
             }
-            if (Dictionary.ContainsKey(nameof(CodeRAO)))
+            if (Dictionary.TryGetValue(nameof(CodeRAO), out var value2))
             {
-                return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+                return (RamAccess<string>)value2;
             }
             else
             {
@@ -900,19 +900,19 @@ public class Form22 : Form2, IBaseColor
         {
             if (!StatusRAO_Hidden)
             {
-                if (Dictionary.ContainsKey(nameof(StatusRAO)))
+                if (Dictionary.TryGetValue(nameof(StatusRAO), out var value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(StatusRAO)]).Value = StatusRAO_DB;
-                    return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
+                    ((RamAccess<string>)value).Value = StatusRAO_DB;
+                    return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(StatusRAO_Validation, StatusRAO_DB);
                 rm.PropertyChanged += StatusRAOValueChanged;
                 Dictionary.Add(nameof(StatusRAO), rm);
                 return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
             }
-            if (Dictionary.ContainsKey(nameof(StatusRAO)))
+            if (Dictionary.TryGetValue(nameof(StatusRAO), out var value2))
             {
-                return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
+                return (RamAccess<string>)value2;
             }
             else
             {
@@ -974,10 +974,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(VolumeOutOfPack)))
+            if (Dictionary.TryGetValue(nameof(VolumeOutOfPack), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(VolumeOutOfPack)]).Value = VolumeOutOfPack_DB;
-                return (RamAccess<string>)Dictionary[nameof(VolumeOutOfPack)];
+                ((RamAccess<string>)value).Value = VolumeOutOfPack_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
             rm.PropertyChanged += VolumeOutOfPackValueChanged;
@@ -1082,19 +1082,19 @@ public class Form22 : Form2, IBaseColor
         {
             if (!VolumeInPack_Hidden || VolumeInPack_Hidden2)
             {
-                if (Dictionary.ContainsKey(nameof(VolumeInPack)))
+                if (Dictionary.TryGetValue(nameof(VolumeInPack), out var value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(VolumeInPack)]).Value = VolumeInPack_DB;
-                    return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    ((RamAccess<string>)value).Value = VolumeInPack_DB;
+                    return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
                 rm.PropertyChanged += VolumeInPackValueChanged;
                 Dictionary.Add(nameof(VolumeInPack), rm);
                 return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
             }
-            if (Dictionary.TryGetValue(nameof(VolumeInPack), out var value))
+            if (Dictionary.TryGetValue(nameof(VolumeInPack), out var value2))
             {
-                return (RamAccess<string>)value;
+                return (RamAccess<string>)value2;
             }
             else
             {
@@ -1178,10 +1178,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassOutOfPack)))
+            if (Dictionary.TryGetValue(nameof(MassOutOfPack), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassOutOfPack)]).Value = MassOutOfPack_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassOutOfPack)];
+                ((RamAccess<string>)value).Value = MassOutOfPack_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
             rm.PropertyChanged += MassOutOfPackValueChanged;
@@ -1286,10 +1286,10 @@ public class Form22 : Form2, IBaseColor
         {
             if (!MassInPack_Hidden || MassInPack_Hidden2)
             {
-                if (Dictionary.ContainsKey(nameof(MassInPack)))
+                if (Dictionary.TryGetValue(nameof(MassInPack), out var value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(MassInPack)]).Value = MassInPack_DB;
-                    return (RamAccess<string>)Dictionary[nameof(MassInPack)];
+                    ((RamAccess<string>)value).Value = MassInPack_DB;
+                    return (RamAccess<string>)value;
                 }
 
                 var rm = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
@@ -1297,9 +1297,9 @@ public class Form22 : Form2, IBaseColor
                 Dictionary.Add(nameof(MassInPack), rm);
                 return (RamAccess<string>)Dictionary[nameof(MassInPack)];
             }
-            if (Dictionary.TryGetValue(nameof(MassInPack), out var value))
+            if (Dictionary.TryGetValue(nameof(MassInPack), out var value2))
             {
-                return (RamAccess<string>)value;
+                return (RamAccess<string>)value2;
             }
             else
             {
@@ -1382,10 +1382,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityOZIII)))
+            if (Dictionary.TryGetValue(nameof(QuantityOZIII), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
+                ((RamAccess<string>)value).Value = QuantityOZIII_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
             rm.PropertyChanged += QuantityOZIIIValueChanged;
@@ -1445,10 +1445,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(TritiumActivity)))
+            if (Dictionary.TryGetValue(nameof(TritiumActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(TritiumActivity)]).Value = TritiumActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(TritiumActivity)];
+                ((RamAccess<string>)value).Value = TritiumActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TritiumActivity_Validation, TritiumActivity_DB);
             rm.PropertyChanged += TritiumActivityValueChanged;
@@ -1533,10 +1533,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(BetaGammaActivity)))
+            if (Dictionary.TryGetValue(nameof(BetaGammaActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(BetaGammaActivity)]).Value = BetaGammaActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(BetaGammaActivity)];
+                ((RamAccess<string>)value).Value = BetaGammaActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
             rm.PropertyChanged += BetaGammaActivityValueChanged;
@@ -1622,10 +1622,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(AlphaActivity)))
+            if (Dictionary.TryGetValue(nameof(AlphaActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(AlphaActivity)]).Value = AlphaActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(AlphaActivity)];
+                ((RamAccess<string>)value).Value = AlphaActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
             rm.PropertyChanged += AlphaActivityValueChanged;
@@ -1710,10 +1710,10 @@ public class Form22 : Form2, IBaseColor
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(TransuraniumActivity)))
+            if (Dictionary.TryGetValue(nameof(TransuraniumActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(TransuraniumActivity)]).Value = TransuraniumActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(TransuraniumActivity)];
+                ((RamAccess<string>)value).Value = TransuraniumActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransuraniumActivity_Validation, TransuraniumActivity_DB);
             rm.PropertyChanged += TransuraniumActivityValueChanged;
@@ -1809,10 +1809,10 @@ public class Form22 : Form2, IBaseColor
         {
             if (!MainRadionuclids_Hidden)
             {
-                if (Dictionary.ContainsKey(nameof(MainRadionuclids)))
+                if (Dictionary.TryGetValue(nameof(MainRadionuclids), out var value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(MainRadionuclids)]).Value = MainRadionuclids_DB;
-                    return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
+                    ((RamAccess<string>)value).Value = MainRadionuclids_DB;
+                    return (RamAccess<string>)value;
                 }
 
                 var rm = new RamAccess<string>(MainRadionuclids_Validation, MainRadionuclids_DB);
@@ -1820,9 +1820,9 @@ public class Form22 : Form2, IBaseColor
                 Dictionary.Add(nameof(MainRadionuclids), rm);
                 return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
             }
-            if (Dictionary.TryGetValue(nameof(MainRadionuclids), out var value))
+            if (Dictionary.TryGetValue(nameof(MainRadionuclids), out var value2))
             {
-                return (RamAccess<string>)value;
+                return (RamAccess<string>)value2;
             }
             else
             {
@@ -1900,10 +1900,10 @@ public class Form22 : Form2, IBaseColor
         {
             if (!Subsidy_Hidden)
             {
-                if (Dictionary.ContainsKey(nameof(Subsidy)))
+                if (Dictionary.TryGetValue(nameof(Subsidy), out var value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(Subsidy)]).Value = Subsidy_DB;
-                    return (RamAccess<string>)Dictionary[nameof(Subsidy)];
+                    ((RamAccess<string>)value).Value = Subsidy_DB;
+                    return (RamAccess<string>)value;
                 }
 
                 var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
@@ -1911,9 +1911,9 @@ public class Form22 : Form2, IBaseColor
                 Dictionary.Add(nameof(Subsidy), rm);
                 return (RamAccess<string>)Dictionary[nameof(Subsidy)];
             }
-            if (Dictionary.TryGetValue(nameof(Subsidy), out var value))
+            if (Dictionary.TryGetValue(nameof(Subsidy), out var value2))
             {
-                return (RamAccess<string>)value;
+                return (RamAccess<string>)value2;
             }
             else
             {
@@ -1976,10 +1976,10 @@ public class Form22 : Form2, IBaseColor
         {
             if (!FcpNumber_Hidden)
             {
-                if (Dictionary.ContainsKey(nameof(FcpNumber)))
+                if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
-                    return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+                    ((RamAccess<string>)value).Value = FcpNumber_DB;
+                    return (RamAccess<string>)value;
                 }
 
                 var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
@@ -1987,9 +1987,9 @@ public class Form22 : Form2, IBaseColor
                 Dictionary.Add(nameof(FcpNumber), rm);
                 return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
             }
-            if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
+            if (Dictionary.TryGetValue(nameof(FcpNumber), out var value2))
             {
-                return (RamAccess<string>)value;
+                return (RamAccess<string>)value2;
             }
             else
             {

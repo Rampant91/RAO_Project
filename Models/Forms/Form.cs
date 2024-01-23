@@ -31,10 +31,10 @@ public abstract class Form : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FormNum)))
+            if (Dictionary.TryGetValue(nameof(FormNum), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FormNum)]).Value = FormNum_DB;
-                return (RamAccess<string>)Dictionary[nameof(FormNum)];
+                ((RamAccess<string>)value).Value = FormNum_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
             rm.PropertyChanged += FormNumValueChanged;
@@ -87,10 +87,10 @@ public abstract class Form : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(NumberInOrder)))
+            if (Dictionary.TryGetValue(nameof(NumberInOrder), out RamAccess value))
             {
-                ((RamAccess<int>)Dictionary[nameof(NumberInOrder)]).Value = NumberInOrder_DB;
-                return (RamAccess<int>)Dictionary[nameof(NumberInOrder)];
+                ((RamAccess<int>)value).Value = NumberInOrder_DB;
+                return (RamAccess<int>)value;
             }
             var rm = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
             rm.PropertyChanged += NumberInOrderValueChanged;
@@ -130,10 +130,10 @@ public abstract class Form : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(NumberOfFields)))
+            if (Dictionary.TryGetValue(nameof(NumberOfFields), out RamAccess value))
             {
-                ((RamAccess<int>)Dictionary[nameof(NumberOfFields)]).Value = NumberOfFields_DB;
-                return (RamAccess<int>)Dictionary[nameof(NumberOfFields)];
+                ((RamAccess<int>)value).Value = NumberOfFields_DB;
+                return (RamAccess<int>)value;
             }
             var rm = new RamAccess<int>(NumberOfFields_Validation, NumberOfFields_DB);
             rm.PropertyChanged += NumberOfFieldsValueChanged;

@@ -12,7 +12,7 @@ namespace Models.Forms.Form1;
 
 [Serializable]
 [Form_Class("Форма 1.0: Титульный лист организации")]
-public class Form10 : Form
+public partial class Form10 : Form
 {
     #region Constructor
     
@@ -71,10 +71,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RegNo)))
+            if (Dictionary.TryGetValue(nameof(RegNo), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(RegNo)]).ValueWithOutHandlerAndPropChanged = RegNo_DB;
-                return (RamAccess<string>)Dictionary[nameof(RegNo)];
+                ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = RegNo_DB;
+                return (RamAccess<string>)value;
             }
 
             var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
@@ -109,7 +109,7 @@ public class Form10 : Form
         {
             return true;
         }
-        if (value.Value.Length != 5 || !new Regex("^[0123456789]{5}$").IsMatch(value.Value))
+        if (value.Value.Length != 5 || !RegNoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -129,10 +129,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(OrganUprav)))
+            if (Dictionary.TryGetValue(nameof(OrganUprav), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(OrganUprav)]).Value = OrganUprav_DB;
-                return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
+                ((RamAccess<string>)value).Value = OrganUprav_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
             rm.PropertyChanged += OrganUpravValueChanged;
@@ -172,10 +172,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SubjectRF)))
+            if (Dictionary.TryGetValue(nameof(SubjectRF), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(SubjectRF)]).Value = SubjectRF_DB;
-                return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
+                ((RamAccess<string>)value).Value = SubjectRF_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
             rm.PropertyChanged += SubjectRFValueChanged;
@@ -215,10 +215,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(JurLico)))
+            if (Dictionary.TryGetValue(nameof(JurLico), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(JurLico)]).Value = JurLico_DB;
-                return (RamAccess<string>)Dictionary[nameof(JurLico)];
+                ((RamAccess<string>)value).Value = JurLico_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(JurLico_Validation, JurLico_DB);
             rm.PropertyChanged += JurLicoValueChanged;
@@ -258,10 +258,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ShortJurLico)))
+            if (Dictionary.TryGetValue(nameof(ShortJurLico), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ShortJurLico)]).ValueWithOutHandlerAndPropChanged = ShortJurLico_DB;
-                return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
+                ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = ShortJurLico_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
             rm.PropertyChanged += ShortJurLicoValueChanged;
@@ -301,10 +301,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(JurLicoAddress)))
+            if (Dictionary.TryGetValue(nameof(JurLicoAddress), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(JurLicoAddress)]).Value = JurLicoAddress_DB;
-                return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
+                ((RamAccess<string>)value).Value = JurLicoAddress_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
             rm.PropertyChanged += JurLicoAddressValueChanged;
@@ -345,10 +345,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(JurLicoFactAddress)))
+            if (Dictionary.TryGetValue(nameof(JurLicoFactAddress), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)]).Value = JurLicoFactAddress_DB;
-                return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
+                ((RamAccess<string>)value).Value = JurLicoFactAddress_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
             rm.PropertyChanged += JurLicoFactAddressValueChanged;
@@ -388,10 +388,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(GradeFIO)))
+            if (Dictionary.TryGetValue(nameof(GradeFIO), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(GradeFIO)]).Value = GradeFIO_DB;
-                return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
+                ((RamAccess<string>)value).Value = GradeFIO_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
             rm.PropertyChanged += GradeFIOValueChanged;
@@ -431,10 +431,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Telephone)))
+            if (Dictionary.TryGetValue(nameof(Telephone), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Telephone)]).Value = Telephone_DB;
-                return (RamAccess<string>)Dictionary[nameof(Telephone)];
+                ((RamAccess<string>)value).Value = Telephone_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
             rm.PropertyChanged += TelephoneValueChanged;
@@ -474,10 +474,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Fax)))
+            if (Dictionary.TryGetValue(nameof(Fax), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Fax)]).Value = Fax_DB;
-                return (RamAccess<string>)Dictionary[nameof(Fax)];
+                ((RamAccess<string>)value).Value = Fax_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
             rm.PropertyChanged += FaxValueChanged;
@@ -517,10 +517,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Email)))
+            if (Dictionary.TryGetValue(nameof(Email), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Email)]).Value = Email_DB;
-                return (RamAccess<string>)Dictionary[nameof(Email)];
+                ((RamAccess<string>)value).Value = Email_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Email_Validation, Email_DB);
             rm.PropertyChanged += EmailValueChanged;
@@ -560,10 +560,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Okpo)))
+            if (Dictionary.TryGetValue(nameof(Okpo), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Okpo)]).ValueWithOutHandlerAndPropChanged = Okpo_DB;
-                return (RamAccess<string>)Dictionary[nameof(Okpo)];
+                ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = Okpo_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
             rm.PropertyChanged += OkpoValueChanged;
@@ -594,7 +594,7 @@ public class Form10 : Form
             return false;
         }
         if (value.Value.Length != 8 && value.Value.Length != 14
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+            || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -614,10 +614,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Okved)))
+            if (Dictionary.TryGetValue(nameof(Okved), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Okved)]).Value = Okved_DB;
-                return (RamAccess<string>)Dictionary[nameof(Okved)];
+                ((RamAccess<string>)value).Value = Okved_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okved_Validation, Okved_DB);
             rm.PropertyChanged += OkvedValueChanged;
@@ -647,7 +647,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$").IsMatch(value.Value))
+        if (!OkvedRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -667,10 +667,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Okogu)))
+            if (Dictionary.TryGetValue(nameof(Okogu), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Okogu)]).Value = Okogu_DB;
-                return (RamAccess<string>)Dictionary[nameof(Okogu)];
+                ((RamAccess<string>)value).Value = Okogu_DB;
+                return (RamAccess<string>)value;
             }
 
             var rm = new RamAccess<string>(Okogu_Validation, Okogu_DB);
@@ -701,7 +701,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{7}$").IsMatch(value.Value))
+        if (!OkoguRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -721,10 +721,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Oktmo)))
+            if (Dictionary.TryGetValue(nameof(Oktmo), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Oktmo)]).Value = Oktmo_DB;
-                return (RamAccess<string>)Dictionary[nameof(Oktmo)];
+                ((RamAccess<string>)value).Value = Oktmo_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
             rm.PropertyChanged += OktmoValueChanged;
@@ -754,7 +754,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{11}$").IsMatch(value.Value))
+        if (!OktmoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -774,10 +774,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Inn)))
+            if (Dictionary.TryGetValue(nameof(Inn), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Inn)]).Value = Inn_DB;
-                return (RamAccess<string>)Dictionary[nameof(Inn)];
+                ((RamAccess<string>)value).Value = Inn_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Inn_Validation, Inn_DB);
             rm.PropertyChanged += InnValueChanged;
@@ -807,7 +807,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{10}$").IsMatch(value.Value))
+        if (!InnRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -827,10 +827,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Kpp)))
+            if (Dictionary.TryGetValue(nameof(Kpp), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Kpp)]).Value = Kpp_DB;
-                return (RamAccess<string>)Dictionary[nameof(Kpp)];
+                ((RamAccess<string>)value).Value = Kpp_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Kpp_Validation, Kpp_DB);
             rm.PropertyChanged += KppValueChanged;
@@ -860,7 +860,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{9}$|-").IsMatch(value.Value))
+        if (!KppRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -880,10 +880,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Okopf)))
+            if (Dictionary.TryGetValue(nameof(Okopf), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Okopf)]).Value = Okopf_DB;
-                return (RamAccess<string>)Dictionary[nameof(Okopf)];
+                ((RamAccess<string>)value).Value = Okopf_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okopf_Validation, Okopf_DB);
             rm.PropertyChanged += OkopfValueChanged;
@@ -913,7 +913,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{5}$").IsMatch(value.Value))
+        if (!OkopfRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -933,10 +933,10 @@ public class Form10 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Okfs)))
+            if (Dictionary.TryGetValue(nameof(Okfs), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Okfs)]).Value = Okfs_DB;
-                return (RamAccess<string>)Dictionary[nameof(Okfs)];
+                ((RamAccess<string>)value).Value = Okfs_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okfs_Validation, Okfs_DB);
             rm.PropertyChanged += OkfsValueChanged;
@@ -966,7 +966,7 @@ public class Form10 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{2}$").IsMatch(value.Value))
+        if (!OkfsRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1054,6 +1054,37 @@ public class Form10 : Form
     {
         return null;
     }
-        
+
+    #endregion
+
+    #region GeneratedRegex
+
+    [GeneratedRegex("^[0-9]{10}$")]
+    private static partial Regex InnRegex();
+
+    [GeneratedRegex("^[0-9]{9}$|-")]
+    private static partial Regex KppRegex();
+
+    [GeneratedRegex("^[0-9]{2}$")]
+    private static partial Regex OkfsRegex(); 
+
+    [GeneratedRegex("^[0-9]{7}$")]
+    private static partial Regex OkoguRegex();
+
+    [GeneratedRegex("^[0-9]{5}$")]
+    private static partial Regex OkopfRegex();
+
+    [GeneratedRegex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$")]
+    private static partial Regex OkpoRegex();
+
+    [GeneratedRegex("^[0-9]{11}$")]
+    private static partial Regex OktmoRegex();
+
+    [GeneratedRegex(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$")]
+    private static partial Regex OkvedRegex();
+
+    [GeneratedRegex("^[0123456789]{5}$")]
+    private static partial Regex RegNoRegex();
+    
     #endregion
 }

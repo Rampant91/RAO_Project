@@ -58,10 +58,10 @@ public class Note : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RowNumber)))
+            if (Dictionary.TryGetValue(nameof(RowNumber), out RamAccess? value))
             {
-                ((RamAccess<string?>)Dictionary[nameof(RowNumber)]).Value = RowNumber_DB;
-                return (RamAccess<string?>)Dictionary[nameof(RowNumber)];
+                ((RamAccess<string?>)value).Value = RowNumber_DB;
+                return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
             rm.PropertyChanged += RowNumberValueChanged;
@@ -102,10 +102,10 @@ public class Note : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(GraphNumber)))
+            if (Dictionary.TryGetValue(nameof(GraphNumber), out RamAccess? value))
             {
-                ((RamAccess<string?>)Dictionary[nameof(GraphNumber)]).Value = GraphNumber_DB;
-                return (RamAccess<string?>)Dictionary[nameof(GraphNumber)];
+                ((RamAccess<string?>)value).Value = GraphNumber_DB;
+                return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
             rm.PropertyChanged += GraphNumberValueChanged;
@@ -145,10 +145,10 @@ public class Note : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Comment)))
+            if (Dictionary.TryGetValue(nameof(Comment), out RamAccess? value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Comment)]).Value = Comment_DB;
-                return (RamAccess<string>)Dictionary[nameof(Comment)];
+                ((RamAccess<string>)value).Value = Comment_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Comment_Validation, Comment_DB);
             rm.PropertyChanged += CommentValueChanged;

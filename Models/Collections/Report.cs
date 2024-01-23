@@ -231,10 +231,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Comments)))
+            if (Dictionary.TryGetValue(nameof(Comments), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Comments)]).Value = Comments_DB;
-                return (RamAccess<string>)Dictionary[nameof(Comments)];
+                ((RamAccess<string>)value).Value = Comments_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Comments_Validation, Comments_DB);
             rm.PropertyChanged += CommentsValueChanged;
@@ -273,10 +273,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CorrectionNumber)))
+            if (Dictionary.TryGetValue(nameof(CorrectionNumber), out RamAccess value))
             {
-                ((RamAccess<byte>)Dictionary[nameof(CorrectionNumber)]).Value = CorrectionNumber_DB;
-                return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
+                ((RamAccess<byte>)value).Value = CorrectionNumber_DB;
+                return (RamAccess<byte>)value;
             }
             var rm = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
             rm.PropertyChanged += CorrectionNumberValueChanged;
@@ -316,10 +316,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FormNum)))
+            if (Dictionary.TryGetValue(nameof(FormNum), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FormNum)]).Value = FormNum_DB;
-                return (RamAccess<string>)Dictionary[nameof(FormNum)];
+                ((RamAccess<string>)value).Value = FormNum_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
             rm.PropertyChanged += FormNumValueChanged;
@@ -362,10 +362,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FIOexecutor)))
+            if (Dictionary.TryGetValue(nameof(FIOexecutor), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FIOexecutor)]).Value = FIOexecutor_DB;
-                return (RamAccess<string>)Dictionary[nameof(FIOexecutor)];
+                ((RamAccess<string>)value).Value = FIOexecutor_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FIOexecutor_Validation, FIOexecutor_DB);
             rm.PropertyChanged += FIOexecutorValueChanged;
@@ -405,10 +405,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(GradeExecutor)))
+            if (Dictionary.TryGetValue(nameof(GradeExecutor), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(GradeExecutor)]).Value = GradeExecutor_DB;
-                return (RamAccess<string>)Dictionary[nameof(GradeExecutor)];
+                ((RamAccess<string>)value).Value = GradeExecutor_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(GradeExecutor_Validation, GradeExecutor_DB);
             rm.PropertyChanged += GradeExecutorValueChanged;
@@ -448,10 +448,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ExecPhone)))
+            if (Dictionary.TryGetValue(nameof(ExecPhone), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ExecPhone)]).Value = ExecPhone_DB;
-                return (RamAccess<string>)Dictionary[nameof(ExecPhone)];
+                ((RamAccess<string>)value).Value = ExecPhone_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ExecPhone_Validation, ExecPhone_DB);
             rm.PropertyChanged += ExecPhoneValueChanged;
@@ -491,10 +491,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ExecEmail)))
+            if (Dictionary.TryGetValue(nameof(ExecEmail), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ExecEmail)]).Value = ExecEmail_DB;
-                return (RamAccess<string>)Dictionary[nameof(ExecEmail)];
+                ((RamAccess<string>)value).Value = ExecEmail_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ExecEmail_Validation, ExecEmail_DB);
             rm.PropertyChanged += ExecEmailValueChanged;
@@ -560,10 +560,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SourcesQuantity26)))
+            if (Dictionary.TryGetValue(nameof(SourcesQuantity26), out RamAccess value))
             {
-                ((RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)]).Value = SourcesQuantity26_DB;
-                return (RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)];
+                ((RamAccess<int?>)value).Value = SourcesQuantity26_DB;
+                return (RamAccess<int?>)value;
             }
             var rm = new RamAccess<int?>(SourcesQuantity26_Validation, SourcesQuantity26_DB);
             rm.PropertyChanged += SourcesQuantity26ValueChanged;
@@ -730,10 +730,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidBegin27)))
+            if (Dictionary.TryGetValue(nameof(ValidBegin27), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidBegin27)]).Value = ValidBegin27_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin27)];
+                ((RamAccess<string>)value).Value = ValidBegin27_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ValidBegin27_Validation, ValidBegin27_DB);
             rm.PropertyChanged += ValidBegin27ValueChanged;
@@ -792,10 +792,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidThru27)))
+            if (Dictionary.TryGetValue(nameof(ValidThru27), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidThru27)]).Value = ValidThru27_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidThru27)];
+                ((RamAccess<string>)value).Value = ValidThru27_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ValidThru27_Validation, ValidThru27_DB);
             rm.PropertyChanged += ValidThru27ValueChanged;
@@ -854,10 +854,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionDocumentName27)))
+            if (Dictionary.TryGetValue(nameof(PermissionDocumentName27), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)]).Value = PermissionDocumentName27_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
+                ((RamAccess<string>)value).Value = PermissionDocumentName27_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
             rm.PropertyChanged += PermissionDocumentName27ValueChanged;
@@ -902,10 +902,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionNumber_28)))
+            if (Dictionary.TryGetValue(nameof(PermissionNumber_28), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionNumber_28)]).Value = PermissionNumber_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionNumber_28)];
+                ((RamAccess<string>)value).Value = PermissionNumber_28_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PermissionNumber_28_Validation, PermissionNumber_28_DB);
             rm.PropertyChanged += PermissionNumber_28ValueChanged;
@@ -945,10 +945,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionIssueDate_28)))
+            if (Dictionary.TryGetValue(nameof(PermissionIssueDate_28), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)]).Value = PermissionIssueDate_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)];
+                ((RamAccess<string>)value).Value = PermissionIssueDate_28_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PermissionIssueDate_28_Validation, PermissionIssueDate_28_DB);
             rm.PropertyChanged += PermissionIssueDate_28ValueChanged;
@@ -1005,10 +1005,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidBegin_28)))
+            if (Dictionary.TryGetValue(nameof(ValidBegin_28), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidBegin_28)]).Value = ValidBegin_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidBegin_28)];
+                ((RamAccess<string>)value).Value = ValidBegin_28_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ValidBegin_28_Validation, ValidBegin_28_DB);
             rm.PropertyChanged += ValidBegin_28ValueChanged;
@@ -1065,10 +1065,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ValidThru_28)))
+            if (Dictionary.TryGetValue(nameof(ValidThru_28), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ValidThru_28)]).Value = ValidThru_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(ValidThru_28)];
+                ((RamAccess<string>)value).Value = ValidThru_28_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ValidThru_28_Validation, ValidThru_28_DB);
             rm.PropertyChanged += ValidThru_28ValueChanged;
@@ -1125,10 +1125,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionDocumentName_28)))
+            if (Dictionary.TryGetValue(nameof(PermissionDocumentName_28), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)]).Value = PermissionDocumentName_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)];
+                ((RamAccess<string>)value).Value = PermissionDocumentName_28_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PermissionDocumentName_28_Validation, PermissionDocumentName_28_DB);
             rm.PropertyChanged += PermissionDocumentName_28ValueChanged;
@@ -1172,10 +1172,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PermissionNumber1_28)))
+            if (Dictionary.TryGetValue(nameof(PermissionNumber1_28), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)]).Value = PermissionNumber1_28_DB;
-                return (RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)];
+                ((RamAccess<string>)value).Value = PermissionNumber1_28_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PermissionNumber1_28_Validation, PermissionNumber1_28_DB);
             rm.PropertyChanged += PermissionNumber1_28ValueChanged;
@@ -1728,10 +1728,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ExportDate)))
+            if (Dictionary.TryGetValue(nameof(ExportDate), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ExportDate)]).Value = ExportDate_DB;
-                return (RamAccess<string>)Dictionary[nameof(ExportDate)];
+                ((RamAccess<string>)value).Value = ExportDate_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ExportDate_Validation, ExportDate_DB);
             rm.PropertyChanged += ExportDateValueChanged;
@@ -1770,10 +1770,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(IsCorrection)))
+            if (Dictionary.TryGetValue(nameof(IsCorrection), out RamAccess value))
             {
-                ((RamAccess<bool>)Dictionary[nameof(IsCorrection)]).Value = IsCorrection_DB;
-                return (RamAccess<bool>)Dictionary[nameof(IsCorrection)];
+                ((RamAccess<bool>)value).Value = IsCorrection_DB;
+                return (RamAccess<bool>)value;
             }
             var rm = new RamAccess<bool>(IsCorrection_Validation, IsCorrection_DB);
             rm.PropertyChanged += IsCorrectionValueChanged;
@@ -1847,10 +1847,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(NumberInOrder)))
+            if (Dictionary.TryGetValue(nameof(NumberInOrder), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(NumberInOrder)]).Value = NumberInOrder_DB;
-                return (RamAccess<string>)Dictionary[nameof(NumberInOrder)];
+                ((RamAccess<string>)value).Value = NumberInOrder_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(NumberInOrder_Validation, NumberInOrder_DB);
             rm.PropertyChanged += NumberInOrderValueChanged;
@@ -2073,10 +2073,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StartPeriod)))
+            if (Dictionary.TryGetValue(nameof(StartPeriod), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(StartPeriod)]).Value = StartPeriod_DB;
-                return (RamAccess<string>)Dictionary[nameof(StartPeriod)];
+                ((RamAccess<string>)value).Value = StartPeriod_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StartPeriod_Validation, StartPeriod_DB);
             rm.PropertyChanged += StartPeriodValueChanged;
@@ -2144,10 +2144,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(EndPeriod)))
+            if (Dictionary.TryGetValue(nameof(EndPeriod), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(EndPeriod)]).Value = EndPeriod_DB;
-                return (RamAccess<string>)Dictionary[nameof(EndPeriod)];
+                ((RamAccess<string>)value).Value = EndPeriod_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(EndPeriod_Validation, EndPeriod_DB);
             rm.PropertyChanged += EndPeriodValueChanged;
@@ -2225,10 +2225,10 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Year)))
+            if (Dictionary.TryGetValue(nameof(Year), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Year)]).Value = Year_DB;
-                return (RamAccess<string>)Dictionary[nameof(Year)];
+                ((RamAccess<string>)value).Value = Year_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Year_Validation, Year_DB);
             rm.PropertyChanged += YearValueChanged;

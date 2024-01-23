@@ -65,10 +65,10 @@ public class Form26 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ObservedSourceNumber)))
+            if (Dictionary.TryGetValue(nameof(ObservedSourceNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)]).Value = ObservedSourceNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
+                ((RamAccess<string>)value).Value = ObservedSourceNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
             rm.PropertyChanged += ObservedSourceNumberValueChanged;
@@ -108,10 +108,10 @@ public class Form26 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ControlledAreaName)))
+            if (Dictionary.TryGetValue(nameof(ControlledAreaName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ControlledAreaName)]).Value = ControlledAreaName_DB;
-                return (RamAccess<string>)Dictionary[nameof(ControlledAreaName)];
+                ((RamAccess<string>)value).Value = ControlledAreaName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
             rm.PropertyChanged += ControlledAreaNameValueChanged;
@@ -166,10 +166,10 @@ public class Form26 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SupposedWasteSource)))
+            if (Dictionary.TryGetValue(nameof(SupposedWasteSource), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(SupposedWasteSource)]).Value = SupposedWasteSource_DB;
-                return (RamAccess<string>)Dictionary[nameof(SupposedWasteSource)];
+                ((RamAccess<string>)value).Value = SupposedWasteSource_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
             rm.PropertyChanged += SupposedWasteSourceValueChanged;
@@ -209,10 +209,10 @@ public class Form26 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(DistanceToWasteSource)))
+            if (Dictionary.TryGetValue(nameof(DistanceToWasteSource), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)]).Value = DistanceToWasteSource_DB;
-                return (RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)];
+                ((RamAccess<string>)value).Value = DistanceToWasteSource_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
             rm.PropertyChanged += DistanceToWasteSourceValueChanged;
@@ -293,10 +293,10 @@ public class Form26 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(TestDepth)))
+            if (Dictionary.TryGetValue(nameof(TestDepth), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(TestDepth)]).Value = TestDepth_DB;
-                return (RamAccess<string>)Dictionary[nameof(TestDepth)];
+                ((RamAccess<string>)value).Value = TestDepth_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
             rm.PropertyChanged += TestDepthValueChanged;
@@ -377,10 +377,10 @@ public class Form26 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RadionuclidName)))
+            if (Dictionary.TryGetValue(nameof(RadionuclidName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
-                return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                ((RamAccess<string>)value).Value = RadionuclidName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
             rm.PropertyChanged += RadionuclidNameValueChanged;
@@ -435,10 +435,10 @@ public class Form26 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(AverageYearConcentration)))
+            if (Dictionary.TryGetValue(nameof(AverageYearConcentration), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(AverageYearConcentration)]).Value = AverageYearConcentration_DB;
-                return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
+                ((RamAccess<string>)value).Value = AverageYearConcentration_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
             rm.PropertyChanged += AverageYearConcentrationValueChanged;

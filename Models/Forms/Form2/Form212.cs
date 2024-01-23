@@ -62,10 +62,10 @@ public class Form212 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(OperationCode)))
+            if (Dictionary.TryGetValue(nameof(OperationCode), out var value))
             {
-                ((RamAccess<short?>)Dictionary[nameof(OperationCode)]).Value = OperationCode_DB;
-                return (RamAccess<short?>)Dictionary[nameof(OperationCode)];
+                ((RamAccess<short?>)value).Value = OperationCode_DB;
+                return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
             rm.PropertyChanged += OperationCodeValueChanged;
@@ -115,10 +115,10 @@ public class Form212 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ObjectTypeCode)))
+            if (Dictionary.TryGetValue(nameof(ObjectTypeCode), out var value))
             {
-                ((RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)]).Value = ObjectTypeCode_DB;
-                return (RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)];
+                ((RamAccess<short?>)value).Value = ObjectTypeCode_DB;
+                return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
             rm.PropertyChanged += ObjectTypeCodeValueChanged;
@@ -169,10 +169,10 @@ public class Form212 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Radionuclids)))
+            if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
-                return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                ((RamAccess<string>)value).Value = Radionuclids_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
             rm.PropertyChanged += RadionuclidsValueChanged;
@@ -237,10 +237,10 @@ public class Form212 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Activity)))
+            if (Dictionary.TryGetValue(nameof(Activity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Activity)]).Value = Activity_DB;
-                return (RamAccess<string>)Dictionary[nameof(Activity)];
+                ((RamAccess<string>)value).Value = Activity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
             rm.PropertyChanged += ActivityValueChanged;
@@ -317,10 +317,10 @@ public class Form212 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ProviderOrRecieverOKPO)))
+            if (Dictionary.TryGetValue(nameof(ProviderOrRecieverOKPO), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
-                return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                ((RamAccess<string>)value).Value = ProviderOrRecieverOKPO_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
             rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;

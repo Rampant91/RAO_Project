@@ -59,10 +59,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(WasteSourceName)))
+            if (Dictionary.TryGetValue(nameof(WasteSourceName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(WasteSourceName)]).Value = WasteSourceName_DB;
-                return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
+                ((RamAccess<string>)value).Value = WasteSourceName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
             rm.PropertyChanged += WasteSourceNameValueChanged;
@@ -107,10 +107,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RadionuclidName)))
+            if (Dictionary.TryGetValue(nameof(RadionuclidName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
-                return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                ((RamAccess<string>)value).Value = RadionuclidName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
             rm.PropertyChanged += RadionuclidNameValueChanged;
@@ -165,10 +165,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(AllowedActivity)))
+            if (Dictionary.TryGetValue(nameof(AllowedActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(AllowedActivity)]).Value = AllowedActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(AllowedActivity)];
+                ((RamAccess<string>)value).Value = AllowedActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedActivity_Validation, AllowedActivity_DB);
             rm.PropertyChanged += AllowedActivityValueChanged;
@@ -249,10 +249,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FactedActivity)))
+            if (Dictionary.TryGetValue(nameof(FactedActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FactedActivity)]).Value = FactedActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(FactedActivity)];
+                ((RamAccess<string>)value).Value = FactedActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactedActivity_Validation, FactedActivity_DB);
             rm.PropertyChanged += FactedActivityValueChanged;

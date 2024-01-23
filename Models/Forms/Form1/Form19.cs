@@ -68,11 +68,11 @@ public class Form19 : Form1
             return false;
         }
         var tmp = value.Value;
-        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
+        if (Date6NumRegex().IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -89,11 +89,11 @@ public class Form19 : Form1
             return false;
         }
         var tmp = value.Value;
-        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
+        if (Date6NumRegex().IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp)  || !DateTimeOffset.TryParse(tmp, out _))
+        if (!Date8NumRegex().IsMatch(tmp)  || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -130,10 +130,10 @@ public class Form19 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CodeTypeAccObject)))
+            if (Dictionary.TryGetValue(nameof(CodeTypeAccObject), out RamAccess value))
             {
-                ((RamAccess<short?>)Dictionary[nameof(CodeTypeAccObject)]).Value = CodeTypeAccObject_DB;
-                return (RamAccess<short?>)Dictionary[nameof(CodeTypeAccObject)];
+                ((RamAccess<short?>)value).Value = CodeTypeAccObject_DB;
+                return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(CodeTypeAccObject_Validation, CodeTypeAccObject_DB);
             rm.PropertyChanged += CodeTypeAccObjectValueChanged;
@@ -183,10 +183,10 @@ public class Form19 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Radionuclids)))
+            if (Dictionary.TryGetValue(nameof(Radionuclids), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
-                return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                ((RamAccess<string>)value).Value = Radionuclids_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
             rm.PropertyChanged += RadionuclidsValueChanged;
@@ -246,10 +246,10 @@ public class Form19 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Activity)))
+            if (Dictionary.TryGetValue(nameof(Activity), out RamAccess value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Activity)]).Value = Activity_DB;
-                return (RamAccess<string>)Dictionary[nameof(Activity)];
+                ((RamAccess<string>)value).Value = Activity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
             rm.PropertyChanged += ActivityValueChanged;

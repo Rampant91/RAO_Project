@@ -14,7 +14,7 @@ namespace Models.Forms.Form1;
 
 [Serializable]
 [Form_Class("Форма 1.1: Сведения о ЗРИ")]
-public class Form11 : Form1
+public partial class Form11 : Form1
 {
     #region Constructor
     
@@ -125,10 +125,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PassportNumber)))
+            if (Dictionary.TryGetValue(nameof(PassportNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PassportNumber)]).Value = PassportNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
+                ((RamAccess<string>)value).Value = PassportNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
             rm.PropertyChanged += PassportNumberValueChanged;
@@ -173,10 +173,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Type)))
+            if (Dictionary.TryGetValue(nameof(Type), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Type)]).Value = Type_DB;
-                return (RamAccess<string>)Dictionary[nameof(Type)];
+                ((RamAccess<string>)value).Value = Type_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Type_Validation, Type_DB);
             rm.PropertyChanged += TypeValueChanged;
@@ -230,10 +230,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Radionuclids)))
+            if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
-                return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                ((RamAccess<string>)value).Value = Radionuclids_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
             rm.PropertyChanged += RadionuclidsValueChanged;
@@ -304,10 +304,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FactoryNumber)))
+            if (Dictionary.TryGetValue(nameof(FactoryNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FactoryNumber)]).Value = FactoryNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(FactoryNumber)];
+                ((RamAccess<string>)value).Value = FactoryNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactoryNumber_Validation, FactoryNumber_DB);
             rm.PropertyChanged += FactoryNumberValueChanged;
@@ -352,10 +352,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Quantity)))
+            if (Dictionary.TryGetValue(nameof(Quantity), out var value))
             {
-                ((RamAccess<int?>)Dictionary[nameof(Quantity)]).Value = Quantity_DB;
-                return (RamAccess<int?>)Dictionary[nameof(Quantity)];
+                ((RamAccess<int?>)value).Value = Quantity_DB;
+                return (RamAccess<int?>)value;
             }
             var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
             rm.PropertyChanged += QuantityValueChanged;
@@ -405,10 +405,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Activity)))
+            if (Dictionary.TryGetValue(nameof(Activity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Activity)]).Value = Activity_DB;
-                return (RamAccess<string>)Dictionary[nameof(Activity)];
+                ((RamAccess<string>)value).Value = Activity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
             rm.PropertyChanged += ActivityValueChanged;
@@ -494,10 +494,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CreatorOKPO)))
+            if (Dictionary.TryGetValue(nameof(CreatorOKPO), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(CreatorOKPO)]).Value = CreatorOKPO_DB;
-                return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
+                ((RamAccess<string>)value).Value = CreatorOKPO_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CreatorOKPO_Validation, CreatorOKPO_DB);
             rm.PropertyChanged += CreatorOKPOValueChanged;
@@ -541,7 +541,7 @@ public class Form11 : Form1
             return true;
         }
         if (value.Value.Length != 8 && value.Value.Length != 14
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+            || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -561,10 +561,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CreationDate)))
+            if (Dictionary.TryGetValue(nameof(CreationDate), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(CreationDate)]).Value = CreationDate_DB;
-                return (RamAccess<string>)Dictionary[nameof(CreationDate)];
+                ((RamAccess<string>)value).Value = CreationDate_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CreationDate_Validation, CreationDate_DB);
             rm.PropertyChanged += CreationDateValueChanged;
@@ -602,7 +602,7 @@ public class Form11 : Form1
             return false;
         }
         var tmp = value.Value;
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -622,10 +622,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Category)))
+            if (Dictionary.TryGetValue(nameof(Category), out var value))
             {
-                ((RamAccess<short?>)Dictionary[nameof(Category)]).Value = Category_DB;
-                return (RamAccess<short?>)Dictionary[nameof(Category)];
+                ((RamAccess<short?>)value).Value = Category_DB;
+                return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(Category_Validation, Category_DB);
             rm.PropertyChanged += CategoryValueChanged;
@@ -675,10 +675,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SignedServicePeriod)))
+            if (Dictionary.TryGetValue(nameof(SignedServicePeriod), out var value))
             {
-                ((RamAccess<float?>)Dictionary[nameof(SignedServicePeriod)]).Value = SignedServicePeriod_DB;
-                return (RamAccess<float?>)Dictionary[nameof(SignedServicePeriod)];
+                ((RamAccess<float?>)value).Value = SignedServicePeriod_DB;
+                return (RamAccess<float?>)value;
             }
             var rm = new RamAccess<float?>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
             rm.PropertyChanged += SignedServicePeriodValueChanged;
@@ -728,10 +728,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PropertyCode)))
+            if (Dictionary.TryGetValue(nameof(PropertyCode), out var value))
             {
-                ((RamAccess<byte?>)Dictionary[nameof(PropertyCode)]).Value = PropertyCode_DB;
-                return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
+                ((RamAccess<byte?>)value).Value = PropertyCode_DB;
+                return (RamAccess<byte?>)value;
             }
             var rm = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
             rm.PropertyChanged += PropertyCodeValueChanged;
@@ -781,10 +781,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Owner)))
+            if (Dictionary.TryGetValue(nameof(Owner), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Owner)]).Value = Owner_DB;
-                return (RamAccess<string>)Dictionary[nameof(Owner)];
+                ((RamAccess<string>)value).Value = Owner_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Owner_Validation, Owner_DB);
             rm.PropertyChanged += OwnerValueChanged;
@@ -832,7 +832,7 @@ public class Form11 : Form1
             return true;
         }
         if (value.Value.Length is not (8 or 14)
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+            || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -852,10 +852,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ProviderOrRecieverOKPO)))
+            if (Dictionary.TryGetValue(nameof(ProviderOrRecieverOKPO), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
-                return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                ((RamAccess<string>)value).Value = ProviderOrRecieverOKPO_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
             rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
@@ -902,7 +902,7 @@ public class Form11 : Form1
             return true;
         }
         if (value.Value.Length is not (8 or 14)
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+            || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -922,10 +922,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(TransporterOKPO)))
+            if (Dictionary.TryGetValue(nameof(TransporterOKPO), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(TransporterOKPO)]).Value = TransporterOKPO_DB;
-                return (RamAccess<string>)Dictionary[nameof(TransporterOKPO)];
+                ((RamAccess<string>)value).Value = TransporterOKPO_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
             rm.PropertyChanged += TransporterOKPOValueChanged;
@@ -972,7 +972,7 @@ public class Form11 : Form1
             return true;
         }
         if (value.Value.Length is not (8 or 14)
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+            || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -992,10 +992,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackName)))
+            if (Dictionary.TryGetValue(nameof(PackName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PackName)]).Value = PackName_DB;
-                return (RamAccess<string>)Dictionary[nameof(PackName)];
+                ((RamAccess<string>)value).Value = PackName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
             rm.PropertyChanged += PackNameValueChanged;
@@ -1046,10 +1046,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackType)))
+            if (Dictionary.TryGetValue(nameof(PackType), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PackType)]).Value = PackType_DB;
-                return (RamAccess<string>)Dictionary[nameof(PackType)];
+                ((RamAccess<string>)value).Value = PackType_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
             rm.PropertyChanged += PackTypeValueChanged;
@@ -1101,10 +1101,10 @@ public class Form11 : Form1
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PackNumber)))
+            if (Dictionary.TryGetValue(nameof(PackNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PackNumber)]).Value = PackNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(PackNumber)];
+                ((RamAccess<string>)value).Value = PackNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
             rm.PropertyChanged += PackNumberValueChanged;

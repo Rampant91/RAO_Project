@@ -61,10 +61,10 @@ public class Form27 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ObservedSourceNumber)))
+            if (Dictionary.TryGetValue(nameof(ObservedSourceNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)]).Value = ObservedSourceNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
+                ((RamAccess<string>)value).Value = ObservedSourceNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
             rm.PropertyChanged += ObservedSourceNumberValueChanged;
@@ -110,10 +110,10 @@ public class Form27 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RadionuclidName)))
+            if (Dictionary.TryGetValue(nameof(RadionuclidName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
-                return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                ((RamAccess<string>)value).Value = RadionuclidName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
             rm.PropertyChanged += RadionuclidNameValueChanged;
@@ -167,10 +167,10 @@ public class Form27 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(AllowedWasteValue)))
+            if (Dictionary.TryGetValue(nameof(AllowedWasteValue), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(AllowedWasteValue)]).Value = AllowedWasteValue_DB;
-                return (RamAccess<string>)Dictionary[nameof(AllowedWasteValue)];
+                ((RamAccess<string>)value).Value = AllowedWasteValue_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedWasteValue_Validation, AllowedWasteValue_DB);
             rm.PropertyChanged += AllowedWasteValueValueChanged;
@@ -251,10 +251,10 @@ public class Form27 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FactedWasteValue)))
+            if (Dictionary.TryGetValue(nameof(FactedWasteValue), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FactedWasteValue)]).Value = FactedWasteValue_DB;
-                return (RamAccess<string>)Dictionary[nameof(FactedWasteValue)];
+                ((RamAccess<string>)value).Value = FactedWasteValue_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactedWasteValue_Validation, FactedWasteValue_DB);
             rm.PropertyChanged += FactedWasteValueValueChanged;
@@ -339,10 +339,10 @@ public class Form27 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(WasteOutbreakPreviousYear)))
+            if (Dictionary.TryGetValue(nameof(WasteOutbreakPreviousYear), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(WasteOutbreakPreviousYear)]).Value = WasteOutbreakPreviousYear_DB;
-                return (RamAccess<string>)Dictionary[nameof(WasteOutbreakPreviousYear)];
+                ((RamAccess<string>)value).Value = WasteOutbreakPreviousYear_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteOutbreakPreviousYear_Validation, WasteOutbreakPreviousYear_DB);
             rm.PropertyChanged += WasteOutbreakPreviousYearValueChanged;

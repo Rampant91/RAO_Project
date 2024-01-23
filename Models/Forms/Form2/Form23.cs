@@ -75,10 +75,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
+                ((RamAccess<string>)value).Value = StoragePlaceName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
             rm.PropertyChanged += StoragePlaceNameValueChanged;
@@ -131,10 +131,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceCode), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
+                ((RamAccess<string>)value).Value = StoragePlaceCode_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
             rm.PropertyChanged += StoragePlaceCodeValueChanged;
@@ -226,10 +226,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ProjectVolume)))
+            if (Dictionary.TryGetValue(nameof(ProjectVolume), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ProjectVolume)]).Value = ProjectVolume_DB;
-                return (RamAccess<string>)Dictionary[nameof(ProjectVolume)];
+                ((RamAccess<string>)value).Value = ProjectVolume_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ProjectVolume_Validation, ProjectVolume_DB);
             rm.PropertyChanged += ProjectVolumeValueChanged;
@@ -310,10 +310,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CodeRAO)))
+            if (Dictionary.TryGetValue(nameof(CodeRAO), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(CodeRAO)]).Value = CodeRAO_DB;
-                return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+                ((RamAccess<string>)value).Value = CodeRAO_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
             rm.PropertyChanged += CodeRAOValueChanged;
@@ -407,10 +407,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Volume)))
+            if (Dictionary.TryGetValue(nameof(Volume), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Volume)]).Value = Volume_DB;
-                return (RamAccess<string>)Dictionary[nameof(Volume)];
+                ((RamAccess<string>)value).Value = Volume_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
             rm.PropertyChanged += VolumeValueChanged;
@@ -486,10 +486,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Mass)))
+            if (Dictionary.TryGetValue(nameof(Mass), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Mass)]).Value = Mass_DB;
-                return (RamAccess<string>)Dictionary[nameof(Mass)];
+                ((RamAccess<string>)value).Value = Mass_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
             rm.PropertyChanged += MassValueChanged;
@@ -569,10 +569,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityOZIII)))
+            if (Dictionary.TryGetValue(nameof(QuantityOZIII), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
+                ((RamAccess<string>)value).Value = QuantityOZIII_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
             rm.PropertyChanged += QuantityOZIIIValueChanged;
@@ -632,10 +632,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SummaryActivity)))
+            if (Dictionary.TryGetValue(nameof(SummaryActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(SummaryActivity)]).Value = SummaryActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(SummaryActivity)];
+                ((RamAccess<string>)value).Value = SummaryActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SummaryActivity_Validation, SummaryActivity_DB);
             rm.PropertyChanged += SummaryActivityValueChanged;
@@ -715,10 +715,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(DocumentNumber)))
+            if (Dictionary.TryGetValue(nameof(DocumentNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(DocumentNumber)]).Value = DocumentNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
+                ((RamAccess<string>)value).Value = DocumentNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
             rm.PropertyChanged += DocumentNumberValueChanged;
@@ -763,10 +763,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(DocumentDate)))
+            if (Dictionary.TryGetValue(nameof(DocumentDate), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(DocumentDate)]).Value = DocumentDate_DB;
-                return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
+                ((RamAccess<string>)value).Value = DocumentDate_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
             rm.PropertyChanged += DocumentDateValueChanged;
@@ -828,10 +828,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(ExpirationDate)))
+            if (Dictionary.TryGetValue(nameof(ExpirationDate), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(ExpirationDate)]).Value = ExpirationDate_DB;
-                return (RamAccess<string>)Dictionary[nameof(ExpirationDate)];
+                ((RamAccess<string>)value).Value = ExpirationDate_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ExpirationDate_Validation, ExpirationDate_DB);
             rm.PropertyChanged += ExpirationDateValueChanged;
@@ -889,10 +889,10 @@ public class Form23 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(DocumentName)))
+            if (Dictionary.TryGetValue(nameof(DocumentName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(DocumentName)]).Value = DocumentName_DB;
-                return (RamAccess<string>)Dictionary[nameof(DocumentName)];
+                ((RamAccess<string>)value).Value = DocumentName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(DocumentName_Validation, DocumentName_DB);
             rm.PropertyChanged += DocumentNameValueChanged;
