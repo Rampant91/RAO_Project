@@ -25,17 +25,16 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
 
     public ExcelExportProgressBarVM(ExcelExportProgressBar excelExportProgressBar, CancellationTokenSource cts, IBackgroundLoader backgroundWorker)
     {
+        ExcelExportCancel = new ExcelExportCancelAsyncCommand();
         _backgroundWorker = backgroundWorker;
         ExcelExportProgressBar = excelExportProgressBar;
-        _backgroundWorker.BackgroundWorker(() =>
-        {
-            ExcelExportCancel = new ExcelExportCancelAsyncCommand();
-            _backgroundWorker = backgroundWorker;
-            ExcelExportProgressBar = excelExportProgressBar;
-            CancellationTokenSource = cts;
-            LoadStatus = "Начало экспорта";
-            ValueBar = 1;
-        }, () => ExcelExportProgressBar.Close());
+        CancellationTokenSource = cts;
+        LoadStatus = "Начало экспорта";
+        ValueBar = 1;
+        //_backgroundWorker.BackgroundWorker(() =>
+        //{
+
+        //}, () => ExcelExportProgressBar.Close());
     }
 
     #region LoadStatus
