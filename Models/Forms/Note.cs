@@ -38,8 +38,8 @@ public class Note : IKey, IDataGridColumn
 
     #endregion
 
-    [NotMapped]
-    Dictionary<string, RamAccess> Dictionary { get; set; } = new();
+    [NotMapped] 
+    private Dictionary<string, RamAccess> Dictionary { get; set; } = new();
 
     public int Id { get; set; }
 
@@ -186,10 +186,7 @@ public class Note : IKey, IDataGridColumn
     
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
-        if (PropertyChanged != null)
-        {
-            PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

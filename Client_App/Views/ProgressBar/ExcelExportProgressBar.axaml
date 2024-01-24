@@ -55,7 +55,8 @@
                 Padding="0,5"
                 IsEnabled="True"
                 Content="Отмена"
-                Command="{Binding ExcelExportCancel, Mode=OneWay}"/>
+                Command="{Binding ExcelExportCancel, Mode=OneWay}"
+                CommandParameter="{Binding CancellationTokenSource}"/>
         </Grid>
     </Grid>
 </Window>

@@ -145,7 +145,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-            .ToArray()
+            .ToArrayAsync(cancellationToken: cts.Token).Result
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.1")
                 .SelectMany(rep => rep.Rows11
@@ -186,7 +186,6 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
                         PackNumber = form11.PackNumber_DB
                     })))
             .ToList();
-        await dbReadOnly.DisposeAsync();
 
         progressBarVM.LoadStatus = "Заполнение форм 1.1";
         progressBarVM.ValueBar = 40;
