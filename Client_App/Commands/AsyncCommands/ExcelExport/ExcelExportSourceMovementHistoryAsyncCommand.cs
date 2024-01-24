@@ -137,7 +137,7 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         #endregion
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        
+        Thread.Sleep(10000);
         var dto11List = dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
