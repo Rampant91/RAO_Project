@@ -21,6 +21,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
+    private protected CancellationTokenSource Cts = new();
     private protected ExcelWorksheet Worksheet { get; set; }
 
     private protected ExcelWorksheet WorksheetPrim { get; set; }
@@ -32,7 +33,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter));
+            await Task.Run(() => AsyncExecute(parameter), Cts.Token);
         }
         catch (Exception e)
         {
