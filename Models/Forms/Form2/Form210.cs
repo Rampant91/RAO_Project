@@ -13,7 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
-public class Form210 : Form2
+public partial class Form210 : Form2
 {
     #region Constructor
     
@@ -254,7 +254,7 @@ public class Form210 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{6}$").IsMatch(value.Value))
+        if (!SixNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -952,5 +952,12 @@ public class Form210 : Form2
         return _DataGridColumns;
     }
 
+    #endregion
+
+    #region GeneratedRegex
+    
+    [GeneratedRegex("^[0-9]{6}$")]
+    private static partial Regex SixNumRegex();
+    
     #endregion
 }

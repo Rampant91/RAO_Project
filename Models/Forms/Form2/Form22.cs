@@ -15,7 +15,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения")]
-public class Form22 : Form2, IBaseColor
+public partial class Form22 : Form2, IBaseColor
 {
     #region Constructor
 
@@ -437,40 +437,38 @@ public class Form22 : Form2, IBaseColor
         //}
         //return true;
         if (value.Value == "-") return true;
-        Regex a = new("^[0-9]{8}$");
-        if (!a.IsMatch(value.Value))
+        if (!StoragePlaceCodeRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         var tmp = value.Value;
         if (tmp.Length != 8) return true;
-        if (!new Regex("^[1-9]").IsMatch(tmp[..1]))
+        if (!StoragePlaceCodeRegex1().IsMatch(tmp[..1]))
         {
             value.AddError($"Недопустимый вид пункта - {tmp[..1]}");
         }
-        if (!new Regex("^[1-3]").IsMatch(tmp.Substring(1, 1)))
+        if (!StoragePlaceCodeRegex2().IsMatch(tmp.AsSpan(1, 1)))
         {
             value.AddError($"Недопустимое состояние пункта - {tmp.Substring(1, 1)}");
         }
-        if (!new Regex("^[1-2]").IsMatch(tmp.Substring(2, 1)))
+        if (!StoragePlaceCodeRegex3().IsMatch(tmp.AsSpan(2, 1)))
         {
             value.AddError($"Недопустимая изоляция от окружающей среды - {tmp.Substring(2, 1)}");
         }
-        if (!new Regex("^[1-59]").IsMatch(tmp.Substring(3, 1)))
+        if (!StoragePlaceCodeRegex4().IsMatch(tmp.AsSpan(3, 1)))
         {
             value.AddError($"Недопустимая зона нахождения пункта - {tmp.Substring(3, 1)}");
         }
-        if (!new Regex("^[0-4]").IsMatch(tmp.Substring(4, 1)))
+        if (!StoragePlaceCodeRegex5().IsMatch(tmp.AsSpan(4, 1)))
         {
             value.AddError($"Недопустимое значение пункта - {tmp.Substring(4, 1)}");
         }
-        if (!new Regex("^[1-49]").IsMatch(tmp.Substring(5, 1)))
+        if (!StoragePlaceCodeRegex6().IsMatch(tmp.AsSpan(5, 1)))
         {
             value.AddError($"Недопустимое размещение пункта хранения относительно поверхности земли - {tmp.Substring(5, 1)}");
         }
-        if (!new Regex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}")
-                .IsMatch(tmp.Substring(6, 2)))
+        if (!StoragePlaceCodeRegex7().IsMatch(tmp.AsSpan(6, 2)))
         {
             value.AddError($"Недопустимый код типа РАО - {tmp.Substring(6, 2)}");
         }
@@ -827,50 +825,50 @@ public class Form22 : Form2, IBaseColor
         }
         var tmp = value.Value.ToLower();
         tmp = tmp.Replace("х", "x");
-        if (!new Regex("^[0-9x+]{11}$").IsMatch(tmp))
+        if (!CodeRaoRegex().IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
 
         if (tmp.Length != 11) return true;
-        if (!new Regex("^[1-3x+]").IsMatch(tmp[..1]))
+        if (!CodeRaoRegex1().IsMatch(tmp[..1]))
         {
             value.AddError($"Недопустимое агрегатное состояние - {tmp[..1]}");
         }
-        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(1, 1)))
+        if (!CodeRaoRegex2().IsMatch(tmp.AsSpan(1, 1)))
         {
             value.AddError($"Недопустимое категория РАО - {tmp.Substring(1, 1)}");
         }
-        if (!new Regex("^[0-6x+]").IsMatch(tmp.Substring(2, 1)))
+        if (!CodeRaoRegex3().IsMatch(tmp.AsSpan(2, 1)))
         {
             value.AddError($"Недопустимый радионуклидный состав РАО - {tmp.Substring(2, 1)}");
         }
-        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(3, 1)))
+        if (!CodeRaoRegex4().IsMatch(tmp.AsSpan(3, 1)))
         {
             value.AddError($"Недопустимое содержание ядерных материалов - {tmp.Substring(3, 1)}");
         }
-        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(4, 1)))
+        if (!CodeRaoRegex4().IsMatch(tmp.AsSpan(4, 1)))
         {
             value.AddError($"Недопустимый период полураспада - {tmp.Substring(4, 1)}");
         }
-        if (!new Regex("^[0-3x+]").IsMatch(tmp.Substring(5, 1)))
+        if (!CodeRaoRegex5().IsMatch(tmp.AsSpan(5, 1)))
         {
             value.AddError($"Недопустимый период потенциальной опасности РАО - {tmp.Substring(5, 1)}");
         }
-        if (!new Regex("^[0-49x+]").IsMatch(tmp.Substring(6, 1)))
+        if (!CodeRaoRegex2().IsMatch(tmp.AsSpan(6, 1)))
         {
             value.AddError($"Недопустимый способ переработки - {tmp.Substring(6, 1)}");
         }
-        if (!new Regex("^[0-79x+]").IsMatch(tmp.Substring(7, 1)))
+        if (!CodeRaoRegex6().IsMatch(tmp.AsSpan(7, 1)))
         {
             value.AddError($"Недопустимый класс РАО - {tmp.Substring(7, 1)}");
         }
-        if (!new Regex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}").IsMatch(tmp.Substring(8, 2)))
+        if (!CodeRaoRegex7().IsMatch(tmp.AsSpan(8, 2)))
         {
             value.AddError($"Недопустимый код типа РАО - {tmp.Substring(8, 2)}");
         }
-        if (!new Regex("^[12x+]").IsMatch(tmp.Substring(10, 1)))
+        if (!CodeRaoRegex4().IsMatch(tmp.AsSpan(10, 1)))
         {
             value.AddError($"Недопустимая горючесть - {tmp.Substring(10, 1)}");
         }
@@ -954,7 +952,7 @@ public class Form22 : Form2, IBaseColor
             return true;
         }
         if (value.Value.Length != 8 && value.Value.Length != 14
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+            || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -2463,6 +2461,66 @@ public class Form22 : Form2, IBaseColor
 
         return _DataGridColumns;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+    
+    #region StoragePlaceCode
+
+    [GeneratedRegex("^[0-9]{8}$")]
+    private static partial Regex StoragePlaceCodeRegex();
+
+    [GeneratedRegex("^[1-9]")]
+    private static partial Regex StoragePlaceCodeRegex1();
+
+    [GeneratedRegex("^[1-3]")]
+    private static partial Regex StoragePlaceCodeRegex2();
+
+    [GeneratedRegex("^[1-2]")]
+    private static partial Regex StoragePlaceCodeRegex3();
+
+    [GeneratedRegex("^[1-59]")]
+    private static partial Regex StoragePlaceCodeRegex4();
+
+    [GeneratedRegex("^[0-4]")]
+    private static partial Regex StoragePlaceCodeRegex5();
+
+    [GeneratedRegex("^[1-49]")]
+    private static partial Regex StoragePlaceCodeRegex6();
+
+    [GeneratedRegex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}")]
+    private static partial Regex StoragePlaceCodeRegex7();
+
+    #endregion
+
+    #region CodeRao
+
+    [GeneratedRegex("^[0-9x+]{11}$")]
+    private static partial Regex CodeRaoRegex();
+
+    [GeneratedRegex("^[1-3x+]")]
+    private static partial Regex CodeRaoRegex1();
+
+    [GeneratedRegex("^[0-49x+]")]
+    private static partial Regex CodeRaoRegex2();
+
+    [GeneratedRegex("^[0-6x+]")]
+    private static partial Regex CodeRaoRegex3();
+
+    [GeneratedRegex("^[12x+]")]
+    private static partial Regex CodeRaoRegex4();
+
+    [GeneratedRegex("^[0-3x+]")]
+    private static partial Regex CodeRaoRegex5();
+
+    [GeneratedRegex("^[0-79x+]")]
+    private static partial Regex CodeRaoRegex6();
+
+    [GeneratedRegex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}")]
+    private static partial Regex CodeRaoRegex7();
+
+    #endregion 
 
     #endregion
 }

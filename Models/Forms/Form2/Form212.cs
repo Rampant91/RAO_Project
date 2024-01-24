@@ -358,8 +358,7 @@ public class Form212 : Form2
         {
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14
-            || !new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$").IsMatch(value.Value))
+        if (value.Value.Length != 8 && value.Value.Length != 14 || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;

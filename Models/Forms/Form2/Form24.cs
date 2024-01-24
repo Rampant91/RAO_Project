@@ -13,7 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
-public class Form24 : Form2
+public partial class Form24 : Form2
 {
     #region Constructor
 
@@ -115,7 +115,7 @@ public class Form24 : Form2
         {
             value.AddError("Поле не заполнено"); return false;
         }
-        if (!new Regex("^[0-9]{5}$").IsMatch(value.Value))
+        if (!FiveNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
@@ -1565,6 +1565,13 @@ public class Form24 : Form2
         //_DataGridColumns = MassCreatedR;
         return _DataGridColumns;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+    
+    [GeneratedRegex("^[0-9]{5}$")]
+    private static partial Regex FiveNumRegex();
 
     #endregion
 }

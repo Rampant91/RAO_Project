@@ -13,7 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
-public class Form25 : Form2
+public partial class Form25 : Form2
 {
     #region Constructor
     
@@ -155,7 +155,7 @@ public class Form25 : Form2
         {
             return true;
         }
-        if (!new Regex("^[0-9]{8}$").IsMatch(value.Value))
+        if (!EightNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -207,7 +207,7 @@ public class Form25 : Form2
         {
             value.AddError("Поле не заполнено"); return false;
         }
-        if (!new Regex("^[0-9]{5}$").IsMatch(value.Value))
+        if (!FiveNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
@@ -875,6 +875,16 @@ public class Form25 : Form2
 
         return _DataGridColumns;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+    
+    [GeneratedRegex("^[0-9]{8}$")]
+    private static partial Regex EightNumRegex();
+
+    [GeneratedRegex("^[0-9]{5}$")]
+    private static partial Regex FiveNumRegex();
 
     #endregion
 }
