@@ -43,6 +43,8 @@ public class Note : IKey, IDataGridColumn
 
     public int Id { get; set; }
 
+    public int ReportId { get; set; }
+
     public void SetOrder(long index) { }
 
     public long Order { get;set; }
