@@ -81,6 +81,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             return;
         }
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";

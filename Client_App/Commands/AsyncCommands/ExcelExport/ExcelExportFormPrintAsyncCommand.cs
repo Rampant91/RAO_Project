@@ -65,6 +65,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"{formNum}.xlsx");
         #endif
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
         await exportForm.SortAsync();
         var worksheetTitle = excelPackage.Workbook.Worksheets[$"{formNum.Split('.')[0]}.0"];

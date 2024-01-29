@@ -29,6 +29,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         {
             if (res is "") continue;
             SourceFile = new FileInfo(res);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage excelPackage = new(SourceFile);
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
             var val = worksheet0.Name == "1.0"

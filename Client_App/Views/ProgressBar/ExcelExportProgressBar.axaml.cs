@@ -5,7 +5,6 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.ViewModels.ProgressBar;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using static Avalonia.Controls.WindowState;
 
 namespace Client_App.Views.ProgressBar;
