@@ -20,6 +20,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Models.DBRealization;
 using System.Threading;
+using Client_App.Commands.AsyncCommands.CheckForm;
 
 namespace Client_App.ViewModels;
 
@@ -325,7 +326,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
         ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
-        CheckReport = new CheckReportSyncCommand(this);
+        CheckReport = new CheckFormAsyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
