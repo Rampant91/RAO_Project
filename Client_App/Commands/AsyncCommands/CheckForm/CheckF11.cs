@@ -134,7 +134,7 @@ public class CheckF11
 
     #region CheckTotal
     
-    public static List<CheckError> Check_Total(Report rep)
+    public static List<CheckError> Check_Total(Reports reps, Report rep)
     {
         var currentFormLine = 0;
         List<CheckError> errorList = new();
@@ -151,7 +151,7 @@ public class CheckF11
             var form = (Form11)key;
             var formsList = rep.Rows11.ToList<Form11>();
             var notes = rep.Notes.ToList<Note>();
-            var forms10 = rep.Rows10.ToList<Form10>();
+            var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
             errorList.AddRange(Check_001(formsList, currentFormLine));
             errorList.AddRange(Check_002(formsList, currentFormLine));
             errorList.AddRange(Check_003(formsList, currentFormLine));
@@ -230,10 +230,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Id",
-                param4 = forms[line].Id.ToString(),
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Id",
+                Param4 = forms[line].Id.ToString(),
                 Message = "-"
             });
         }
@@ -248,10 +248,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "OperationCode_DB",
-                param4 = forms[line].OperationCode_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "OperationCode_DB",
+                Param4 = forms[line].OperationCode_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -268,10 +268,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "OperationCode_DB",
-                param4 = forms[line].OperationCode_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "OperationCode_DB",
+                Param4 = forms[line].OperationCode_DB,
                 Message = "Сведения, представленные в инвентаризации, не соответствуют СНК."
             });
         }
@@ -299,10 +299,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Radionuclids_DB",
-                param4 = forms[line].Radionuclids_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Radionuclids_DB",
+                Param4 = forms[line].Radionuclids_DB,
                 Message = "В графе 6 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. Проверьте правильность выбранного кода операции."
             });
         }
@@ -323,10 +323,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "-",
-                param4 = "-",
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "-",
+                Param4 = "-",
                 Message = "В предыдущих отчетах не найдена строка об осуществлении операции переработки РАО в виде ОЗИИИ. Проверьте правильность выбранного кода операции."
             });
         }
@@ -401,10 +401,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "OperationCode_DB",
-                param4 = "-",
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "OperationCode_DB",
+                Param4 = "-",
                 Message = "Необходимо дать пояснение об осуществленной операции."
             });
         }
@@ -425,10 +425,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "-",
-                param4 = "-",
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "-",
+                Param4 = "-",
                 Message = "Учетной единицы с такими параметрами нет в организации. Проверьте правильность указываемых сведений для ЗРИ."
             });
         }
@@ -449,10 +449,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "OperationCode_DB",
-                param4 = forms[line].OperationCode_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "OperationCode_DB",
+                Param4 = forms[line].OperationCode_DB,
                 Message = "В отчетах не найдена строка об осуществлении передачи учетной единицы. Проверьте правильность выбранного кода операции."
             });
         }
@@ -473,10 +473,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "-",
-                param4 = "-",
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "-",
+                Param4 = "-",
                 Message = "Заполните форму 1.5."
             });
         }
@@ -504,10 +504,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "ProviderOrRecieverOKPO_DB",
-                param4 = forms[line].ProviderOrRecieverOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "ProviderOrRecieverOKPO_DB",
+                Param4 = forms[line].ProviderOrRecieverOKPO_DB,
                 Message = "В графе 19 необходимо указать ОКПО подрядной организации."
             });
         }
@@ -528,10 +528,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "OperationCode_DB",
-                param4 = forms[line].OperationCode_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "OperationCode_DB",
+                Param4 = forms[line].OperationCode_DB,
                 Message = "В отчетах не найдены сведения о снятии с учета учетной единицы для разукомплектования. Проверьте правильность выбранного кода операции."
             });
         }
@@ -552,10 +552,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "-",
-                param4 = forms[line].OperationCode_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "-",
+                Param4 = forms[line].OperationCode_DB,
                 Message = "В отчетах не найдены сведения о вывозе учетной единицы. Проверьте правильность выбранного кода операции."
             });
         }
@@ -576,10 +576,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "-",
-                param4 = "-",
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "-",
+                Param4 = "-",
                 Message = "Заполните форму 1.3."
             });
         }
@@ -608,10 +608,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "CreatorOKPO_DB",
-                param4 = forms[line].CreatorOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "CreatorOKPO_DB",
+                Param4 = forms[line].CreatorOKPO_DB,
                 Message = "Код используется для предоставления сведений о ЗРИ, произведенных в Российской Федерации."
             });
         }
@@ -636,10 +636,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "CreatorOKPO_DB",
-                param4 = forms[line].CreatorOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "CreatorOKPO_DB",
+                Param4 = forms[line].CreatorOKPO_DB,
                 Message = "Код используется для предоставления сведений о ЗРИ, произведенных за пределами Российской Федерации."
             });
         }
@@ -676,10 +676,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "OperationDate_DB",
-                param4 = forms[line].OperationDate_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "OperationDate_DB",
+                Param4 = forms[line].OperationDate_DB,
                 Message = "Дата операции не входит в отчетный период."
             });
         }
@@ -716,10 +716,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "DocumentDate_DB",
-                param4 = forms[line].DocumentDate_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "DocumentDate_DB",
+                Param4 = forms[line].DocumentDate_DB,
                 Message = "Дата акта инвентаризации не входит в отчетный период."
             });
         }
@@ -734,10 +734,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "PassportNumber_DB",
-                param4 = forms[line].PassportNumber_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "PassportNumber_DB",
+                Param4 = forms[line].PassportNumber_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -757,10 +757,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Type_DB",
-                param4 = forms[line].Type_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Type_DB",
+                Param4 = forms[line].Type_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -796,10 +796,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Radionuclids_DB",
-                param4 = forms[line].Radionuclids_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Radionuclids_DB",
+                Param4 = forms[line].Radionuclids_DB,
                 Message = "Перечень радионуклидов не соответствует справочным данным."
             });
         }
@@ -815,10 +815,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Radionuclids_DB",
-                param4 = forms[line].Radionuclids_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Radionuclids_DB",
+                Param4 = forms[line].Radionuclids_DB,
                 Message = "Формат ввода данных не соответствует приказу"
             });
         }
@@ -834,10 +834,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "PassportNumber_DB",
-                param4 = forms[line].Radionuclids_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "PassportNumber_DB",
+                Param4 = forms[line].Radionuclids_DB,
                 Message = "Формат ввода данных не соответствует приказу"
             });
         }
@@ -852,10 +852,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Quantity_DB",
-                param4 = forms[line].Quantity_DB.ToString(),
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Quantity_DB",
+                Param4 = forms[line].Quantity_DB.ToString(),
                 Message = "Формат ввода данных не соответствует приказу"
             });
         }
@@ -884,10 +884,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Activity_DB",
-                param4 = forms[line].Activity_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Activity_DB",
+                Param4 = forms[line].Activity_DB,
                 Message = "Активность ниже МЗА, ЗРИ не является объектом учета СГУК РВ и РАО."
             });
         }
@@ -929,10 +929,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Activity_DB",
-                param4 = forms[line].Activity_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Activity_DB",
+                Param4 = forms[line].Activity_DB,
                 Message = "Активность ниже МЗА, ЗРИ не является объектом учета СГУК РВ и РАО."
             });
         }
@@ -956,10 +956,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Activity_DB",
-                param4 = forms[line].Activity_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Activity_DB",
+                Param4 = forms[line].Activity_DB,
                 Message = "Проверьте правильность предоставления сведений по суммарной активности."
             });
         }
@@ -984,10 +984,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "CreatorOKPO_DB",
-                param4 = forms[line].CreatorOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "CreatorOKPO_DB",
+                Param4 = forms[line].CreatorOKPO_DB,
                 Message = "Проверьте код ОКПО организации-изготовителя."
             });
         }
@@ -1026,10 +1026,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "CreatorOKPO_DB",
-                param4 = forms[line].CreatorOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "CreatorOKPO_DB",
+                Param4 = forms[line].CreatorOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1122,10 +1122,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "CreatorOKPO_DB",
-                param4 = forms[line].CreatorOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "CreatorOKPO_DB",
+                Param4 = forms[line].CreatorOKPO_DB,
                 Message = "Необходимо указать в примечании наименование и адрес организации-изготовителя ЗРИ."
             });
         }
@@ -1155,10 +1155,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "CreationDate_DB",
-                param4 = forms[line].CreationDate_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "CreationDate_DB",
+                Param4 = forms[line].CreationDate_DB,
                 Message = "Дата выпуска не может быть позже даты операции."
             });
         }
@@ -1216,10 +1216,10 @@ public class CheckF11
                 {
                     result.Add(new CheckError
                     {
-                        param1 = "form_11",
-                        param2 = (line + 1).ToString(),
-                        param3 = "Radionuclids_DB",
-                        param4 = forms[line].Radionuclids_DB,
+                        Param1 = "form_11",
+                        Param2 = (line + 1).ToString(),
+                        Param3 = "Radionuclids_DB",
+                        Param4 = forms[line].Radionuclids_DB,
                         Message = "Проверьте правильность заполнения графы 6."
                     });
                     return result;
@@ -1250,10 +1250,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Category_DB",
-                param4 = forms[line].Category_DB.ToString(),
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Category_DB",
+                Param4 = forms[line].Category_DB.ToString(),
                 Message = "Проверьте правильность указания категории ЗРИ."
             });
         }
@@ -1291,10 +1291,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "SignedServicePeriod_DB",
-                param4 = forms[line].SignedServicePeriod_DB.ToString(),
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "SignedServicePeriod_DB",
+                Param4 = forms[line].SignedServicePeriod_DB.ToString(),
                 Message = "Для ЗРИ истек НСС, следует продлить НСС либо снять с учета с одновременной постановкой на учет как РАО (при выполнении критериев отнесения к РАО)."
             });
         }
@@ -1310,10 +1310,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "PropertyCode_DB",
-                param4 = forms[line].PropertyCode_DB.ToString(),
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "PropertyCode_DB",
+                Param4 = forms[line].PropertyCode_DB.ToString(),
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1342,10 +1342,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Owner_DB",
-                param4 = forms[line].Owner_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Owner_DB",
+                Param4 = forms[line].Owner_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1370,10 +1370,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Owner_DB",
-                param4 = forms[line].Owner_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Owner_DB",
+                Param4 = forms[line].Owner_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1448,10 +1448,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Owner_DB",
-                param4 = forms[line].Owner_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Owner_DB",
+                Param4 = forms[line].Owner_DB,
                 Message = "Необходимо указать в примечании наименование и адрес правообладателя (собственника или обладателя иного вещного права) на ЗРИ."
             });
         }
@@ -1526,10 +1526,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "Owner_DB",
-                param4 = forms[line].Owner_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "Owner_DB",
+                Param4 = forms[line].Owner_DB,
                 Message = "Необходимо указать в примечании наименование и адрес правообладателя (собственника или обладателя иного вещного права) на ЗРИ."
             });
         }
@@ -1549,10 +1549,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "DocumentVid_DB",
-                param4 = forms[line].DocumentVid_DB.ToString(),
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "DocumentVid_DB",
+                Param4 = forms[line].DocumentVid_DB.ToString(),
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1567,10 +1567,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "DocumentNumber_DB",
-                param4 = forms[line].DocumentNumber_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "DocumentNumber_DB",
+                Param4 = forms[line].DocumentNumber_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1602,10 +1602,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "DocumentDate_DB",
-                param4 = forms[line].DocumentDate_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "DocumentDate_DB",
+                Param4 = forms[line].DocumentDate_DB,
                 Message = "Дата документа не может быть позже даты операции."
             });
         }
@@ -1637,10 +1637,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "DocumentDate_DB",
-                param4 = forms[line].DocumentDate_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "DocumentDate_DB",
+                Param4 = forms[line].DocumentDate_DB,
                 Message = "Дата документа должна соответствовать дате операции."
             });
         }
@@ -1680,10 +1680,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "DocumentDate_DB",
-                param4 = forms[line].DocumentDate_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "DocumentDate_DB",
+                Param4 = forms[line].DocumentDate_DB,
                 Message = "Дата документа выходит за границы периода."
             });
         }
@@ -1712,10 +1712,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "ProviderOrRecieverOKPO_DB",
-                param4 = forms[line].ProviderOrRecieverOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "ProviderOrRecieverOKPO_DB",
+                Param4 = forms[line].ProviderOrRecieverOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1744,10 +1744,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "ProviderOrRecieverOKPO_DB",
-                param4 = forms[line].ProviderOrRecieverOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "ProviderOrRecieverOKPO_DB",
+                Param4 = forms[line].ProviderOrRecieverOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1787,10 +1787,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "ProviderOrRecieverOKPO_DB",
-                param4 = forms[line].ProviderOrRecieverOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "ProviderOrRecieverOKPO_DB",
+                Param4 = forms[line].ProviderOrRecieverOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1815,10 +1815,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "ProviderOrRecieverOKPO_DB",
-                param4 = forms[line].ProviderOrRecieverOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "ProviderOrRecieverOKPO_DB",
+                Param4 = forms[line].ProviderOrRecieverOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1885,10 +1885,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "ProviderOrRecieverOKPO_DB",
-                param4 = forms[line].ProviderOrRecieverOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "ProviderOrRecieverOKPO_DB",
+                Param4 = forms[line].ProviderOrRecieverOKPO_DB,
                 Message = "Необходимо добавить примечание."
             });
         }
@@ -1918,10 +1918,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "ProviderOrRecieverOKPO_DB",
-                param4 = forms[line].ProviderOrRecieverOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "ProviderOrRecieverOKPO_DB",
+                Param4 = forms[line].ProviderOrRecieverOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1938,10 +1938,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "TransporterOKPO_DB",
-                param4 = forms[line].TransporterOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "TransporterOKPO_DB",
+                Param4 = forms[line].TransporterOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -1970,10 +1970,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "TransporterOKPO_DB",
-                param4 = forms[line].TransporterOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "TransporterOKPO_DB",
+                Param4 = forms[line].TransporterOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -2008,10 +2008,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "TransporterOKPO_DB",
-                param4 = forms[line].TransporterOKPO_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "TransporterOKPO_DB",
+                Param4 = forms[line].TransporterOKPO_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -2026,10 +2026,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "PackName_DB",
-                param4 = forms[line].PackName_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "PackName_DB",
+                Param4 = forms[line].PackName_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -2044,10 +2044,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "PackType_DB",
-                param4 = forms[line].PackType_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "PackType_DB",
+                Param4 = forms[line].PackType_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
@@ -2062,10 +2062,10 @@ public class CheckF11
         {
             result.Add(new CheckError
             {
-                param1 = "form_11",
-                param2 = (line + 1).ToString(),
-                param3 = "PackNumber_DB",
-                param4 = forms[line].PackNumber_DB,
+                Param1 = "form_11",
+                Param2 = (line + 1).ToString(),
+                Param3 = "PackNumber_DB",
+                Param4 = forms[line].PackNumber_DB,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }

@@ -10,7 +10,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm;
 internal class CheckFormAsyncCommand : BaseAsyncCommand
 {
     private readonly ChangeOrCreateVM _changeOrCreateViewModel;
-    private Report rep;
 
     public CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
     {
@@ -24,12 +23,14 @@ internal class CheckFormAsyncCommand : BaseAsyncCommand
 
     public override async Task<List<CheckError>> AsyncExecute(object? parameter)
     {
-        rep = _changeOrCreateViewModel.Storage;
-        List<CheckError>? result = new();
+        var reps = _changeOrCreateViewModel.Storages;
+        var rep = _changeOrCreateViewModel.Storage;
+        
+        List<CheckError> result = new();
         switch (rep.FormNum_DB)
         {
             case "1.1":
-                result.AddRange(CheckF11.Check_Total(rep));
+                result.AddRange(CheckF11.Check_Total(reps, rep));
                 break;
         }
         return result;
