@@ -26,7 +26,10 @@
                     <MenuItem Header="Паспорта без отчетов" Command="{Binding ExcelExportPasWithoutRep}"></MenuItem>
                     <MenuItem Header="Изменить расположение паспортов по умолчанию" Command="{Binding ChangePasFolder}"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Список организаций" Command="{Binding ExcelExportListOfOrgs}"></MenuItem>
+                <MenuItem Header="Список организаций">
+                    <MenuItem Header="Количество форм" Command="{Binding ExcelExportListOfOrgs}"/>
+                    <MenuItem Header="Список с доп. полями" Command="{Binding ExcelExportListOfOrgs}" CommandParameter="full"/>
+                </MenuItem>
                 <MenuItem Header="Список форм 1" Command="{Binding ExcelExportListOfForms1}"></MenuItem>
                 <MenuItem Header="Список форм 2" Command="{Binding ExcelExportListOfForms2}"></MenuItem>
                 <MenuItem Header="Разрывы и пересечения" Command="{Binding ExcelExportIntersections}"></MenuItem>
