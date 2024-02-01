@@ -484,6 +484,11 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
             FillExportForms(param);
         }
 
+        if (OperatingSystem.IsWindows())
+        {
+            Worksheet.Column(10).AutoFit();
+            Worksheet.Column(25).AutoFit();
+        }
         Worksheet.View.FreezePanes(2, 1);
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }

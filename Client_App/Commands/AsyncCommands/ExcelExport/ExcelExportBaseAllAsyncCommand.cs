@@ -163,11 +163,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 CurrentPrimRow++;
             }
         }
-        if (OperatingSystem.IsWindows())
-        {
-            Worksheet.Column(10).AutoFit();
-            Worksheet.Column(25).AutoFit();
-        }
     }
 
     #endregion
