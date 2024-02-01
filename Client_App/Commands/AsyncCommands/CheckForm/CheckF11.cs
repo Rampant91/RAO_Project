@@ -140,11 +140,19 @@ public class CheckF11
         List<CheckError> errorList = new();
         if (OKSM.Count == 0)
         {
-            OKSM_Populate_From_File(AppContext.BaseDirectory + "\\oksm.xlsx");
+#if DEBUG
+            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "oksm.xlsx"));
+#else
+            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"oksm.xlsx"));
+#endif
         }
         if (D.Count == 0)
         {
-            D_Populate_From_File(AppContext.BaseDirectory + "\\D.xlsx");
+#if DEBUG
+            D_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "D.xlsx"));
+#else
+            D_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"D.xlsx"));
+#endif
         }
         foreach (var key in rep.Rows11)
         {

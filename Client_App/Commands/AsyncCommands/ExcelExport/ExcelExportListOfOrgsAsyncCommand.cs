@@ -549,8 +549,6 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                         .Count(x => x.FormNum_DB.Equals("2.12"));
                 }
 
-                
-
                 #endregion
 
                 row++;
