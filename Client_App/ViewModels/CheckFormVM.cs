@@ -79,6 +79,22 @@ public class CheckFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    #region Index
+
+    private int _index;
+    public int Index
+    {
+        get => _index;
+        set
+        {
+            if (_index == value) return;
+            _index = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
     #region Message
 
     private string _message;

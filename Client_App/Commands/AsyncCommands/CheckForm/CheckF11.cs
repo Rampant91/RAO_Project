@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Models.CheckForm;
@@ -28,7 +29,7 @@ public class CheckF11
         "плутоний","уран-233","уран-235","нептуний-237","америций-241","америций-243","калифорний-252","торий","литий-6","тритий"
     };
 
-    public static Dictionary<string, string> GraphsList = new()
+    private static readonly Dictionary<string, string> GraphsList = new()
     {
         { "NumberInOrder_DB", "01 - № п/п" },
         { "OperationCode_DB", "02 - Код операции" },
@@ -246,12 +247,15 @@ public class CheckF11
             currentFormLine++;
         }
 
+        var index = 0;
         foreach (var error in errorList)
         {
             if (GraphsList.TryGetValue(error.Column, out var columnFrontName))
             {
                 error.Column = columnFrontName;
             }
+            index++;
+            error.Index = index;
         }
         return errorList;
     }
@@ -993,7 +997,13 @@ public class CheckF11
     {
         List<CheckError> result = new();
         if (string.IsNullOrEmpty(forms[line].Activity_DB) || forms[line].Activity_DB == "-") return result;
-        var activity_real = double.Parse(forms[line].Activity_DB!.Replace(".", ",").Replace("(", "").Replace(")", ""), System.Globalization.NumberStyles.Float);
+        if (double.TryParse(forms[line].Activity_DB!.Replace(".", ",").Replace("(", "").Replace(")", ""),
+                NumberStyles.Float,
+                CultureInfo.InvariantCulture,
+                out var activity_real))
+        {
+
+        }
         var valid = activity_real <= 10e+20;
         if (!valid)
         {

@@ -17,13 +17,13 @@
 
     <Grid>
         <DataGrid
+            CanUserReorderColumns="True"
             CanUserResizeColumns="True"
             CanUserSortColumns="True"
             GridLinesVisibility="All"
             HorizontalAlignment="Left"
             IsReadOnly="True"
             Items ="{Binding Path=CheckError, Mode=OneWay}"
-            LoadingRow="DataGrid_LoadingRow"
             Name="DtgCheck"
             VerticalAlignment="Top">
             <DataGrid.Styles>
@@ -34,7 +34,7 @@
             </DataGrid.Styles>
             <DataGrid.Columns>
                 <DataGridTextColumn
-                    Binding="{Binding Path=Row, Mode=OneWay}"
+                    Binding="{Binding Path=Index, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"

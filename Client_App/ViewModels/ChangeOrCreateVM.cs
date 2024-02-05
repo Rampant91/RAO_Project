@@ -300,9 +300,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region Interaction
+
     public Interaction<int, int> ShowDialogIn { get; protected set; }
     public Interaction<object, int> ShowDialog { get; protected set; }
     public Interaction<List<string>, string> ShowMessageT { get; protected set; }
+
     #endregion
 
     private void Init()

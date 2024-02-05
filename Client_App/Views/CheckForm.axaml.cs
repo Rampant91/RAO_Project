@@ -16,10 +16,5 @@ public partial class CheckForm : BaseWindow<CheckFormVM>
         Show();
     }
 
-    private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-    {
-        var rowNumber = e.Row.GetIndex() + 1;
-        e.Row.Header = rowNumber.ToString();
-        if (e.Row.DataContext is CheckError dataObject) dataObject.Row = rowNumber.ToString();
-    }
+
 }
