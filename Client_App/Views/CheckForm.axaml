@@ -10,69 +10,63 @@
     Title="{Binding Path=TitleName, Mode=OneWay}"
     Width="714"
     Height="889"
+    WindowStartupLocation="CenterScreen"
     d:DataContext="{d:DesignInstance Type=vm:CheckFormVM}"
     x:DataType="vm:CheckFormVM"
-    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
     <Grid>
         <DataGrid
-            Name="dtg_check"
-            LoadingRow="DataGrid_LoadingRow"
             CanUserResizeColumns="True"
             CanUserSortColumns="True"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
             GridLinesVisibility="All"
+            HorizontalAlignment="Left"
             IsReadOnly="True"
-            Items ="{Binding Path=CheckError, Mode=OneWay}">
+            Items ="{Binding Path=CheckError, Mode=OneWay}"
+            LoadingRow="DataGrid_LoadingRow"
+            Name="DtgCheck"
+            VerticalAlignment="Top">
             <DataGrid.Styles>
                 <Style Selector="TextBlock">
-                    <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                    <Setter Property="TextWrapping"
+                            Value="WrapWithOverflow"/>
                 </Style>
             </DataGrid.Styles>
             <DataGrid.Columns>
                 <DataGridTextColumn
-                    Width="0.8*"
+                    Binding="{Binding Path=Row, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
                     Header="№ п/п"
-                    Binding="{Binding Path=Row, Mode=OneWay}"/>
+                    Width="0.8*"/>
                 <DataGridTextColumn
-                    Width="1.5*"
-                    CellStyleClasses="cell_tooltip"
-                    FontSize="11"
-                    FontWeight="Bold"
-                    Header="Форма"
-                    Binding="{Binding Path=FormNum, Mode=OneWay}"/>
-                <DataGridTextColumn
-                    Width="*"
+                    Binding="{Binding Path=Row, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
                     Header="стр."
-                    Binding="{Binding Path=Row, Mode=OneWay}"/>
+                    Width="*"/>
                 <DataGridTextColumn
-                    Width="2.5*"
+                    Binding="{Binding Path=Column, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
                     Header="Графа"
-                    Binding="{Binding Path=Column, Mode=OneWay}"/>
+                    Width="2.5*"/>
                 <DataGridTextColumn
-                    Width="3*"
+                    Binding="{Binding Path=Value, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
                     Header="Значение"
-                    Binding="{Binding Path=Value, Mode=OneWay}"/>
+                    Width="3*"/>
                 <DataGridTextColumn
-                    Width="10*"
+                    Binding="{Binding Path=Message, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     Header="Сообщение"
-                    Binding="{Binding Path=Message, Mode=OneWay}"/>
+                    Width="10*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

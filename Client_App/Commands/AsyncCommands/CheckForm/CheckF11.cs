@@ -28,6 +28,33 @@ public class CheckF11
         "плутоний","уран-233","уран-235","нептуний-237","америций-241","америций-243","калифорний-252","торий","литий-6","тритий"
     };
 
+    public static Dictionary<string, string> GraphsList = new()
+    {
+        { "NumberInOrder_DB", "01 - № п/п" },
+        { "OperationCode_DB", "02 - Код операции" },
+        { "OperationDate_DB", "03 - Дата операции" },
+        { "PassportNumber_DB", "04 - Номер паспорта (сертификата)" },
+        { "Type_DB", "05 - Тип ЗРИ" },
+        { "Radionuclids_DB", "06 - Радионуклиды" },
+        { "FactoryNumber_DB", "07 - Номер" },
+        { "Quantity_DB", "08 - Количество, шт." },
+        { "Activity_DB", "09 - Суммарная активность, Бк" },
+        { "CreatorOKPO_DB", "10 - код ОКПО изготовителя" },
+        { "CreationDate_DB", "11 - Дата выпуска" },
+        { "Category_DB", "12 - Категория ЗРИ" },
+        { "SignedServicePeriod_DB", "13 - НСС, месяцев" },
+        { "PropertyCode_DB", "14 - Код формы собственности" },
+        { "Owner_DB", "15 - Код ОКПО правообладателя" },
+        { "DocumentVid_DB", "16 - Вид документа" },
+        { "DocumentNumber_DB", "17 - Номер документа" },
+        { "DocumentDate_DB", "18 - Дата документа" },
+        { "ProviderOrRecieverOKPO_DB", "19 - Код ОКПО поставщика или получателя" },
+        { "TransporterOKPO_DB", "20 - Код ОКПО перевозчика" },
+        { "PackName_DB", "21 - Наименование прибора, УКТ, упаковки" },
+        { "PackType_DB", "22 - Тип прибора, УКТ, упаковки" },
+        { "PackNumber_DB", "23 - Номер прибора, УКТ, упаковки" },
+    };
+
     public static string[] Type_DB_Valids =
     {
 
@@ -217,6 +244,14 @@ public class CheckF11
             errorList.AddRange(Check_055(formsList, currentFormLine));
 
             currentFormLine++;
+        }
+
+        foreach (var error in errorList)
+        {
+            if (GraphsList.TryGetValue(error.Column, out var columnFrontName))
+            {
+                error.Column = columnFrontName;
+            }
         }
         return errorList;
     }
