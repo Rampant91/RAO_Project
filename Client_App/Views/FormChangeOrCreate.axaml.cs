@@ -3687,7 +3687,6 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         par.ButtonDefinitions = interaction.Input
             .Select(elem => new ButtonDefinition
             {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
                 Name = elem
             });
         

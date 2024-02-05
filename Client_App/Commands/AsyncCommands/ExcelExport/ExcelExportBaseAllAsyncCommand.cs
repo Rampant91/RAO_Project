@@ -2216,7 +2216,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 7].Value = "№ п/п";
                 Worksheet.Cells[1, 8].Value = "Наименование, номер выпуска сточных вод";
                 Worksheet.Cells[1, 9].Value = "наименование";
-                Worksheet.Cells[1, 10].Value = "код типа документа";
+                Worksheet.Cells[1, 10].Value = "код типа приемника";
                 Worksheet.Cells[1, 11].Value = "Наименование бассейнового округа";
                 Worksheet.Cells[1, 12].Value = "Допустимый объем водоотведения за год, тыс.куб.м";
                 Worksheet.Cells[1, 13].Value = "Отведено за отчетный период, тыс.куб.м";

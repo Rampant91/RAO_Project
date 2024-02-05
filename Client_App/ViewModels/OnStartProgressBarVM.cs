@@ -74,5 +74,6 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
     public event PropertyChangedEventHandler? PropertyChanged;
+
     #endregion
 }

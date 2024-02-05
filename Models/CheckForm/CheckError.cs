@@ -2,9 +2,9 @@
 
 public class CheckError
 {
-    public string Param1 { get; set; } = "";
-    public string Param2 { get; set; } = "";
-    public string Param3 { get; set; } = "";
-    public string? Param4 { get; set; } = "";
+    public string FormNum { get; set; } = "";
+    public string Row { get; set; } = "";
+    public string Column { get; set; } = "";
+    public string? Value { get; set; } = "";
     public string Message { get; set; } = "";
 }

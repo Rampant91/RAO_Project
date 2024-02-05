@@ -78,7 +78,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
         par.ContentHeader = interaction.Input[0];
         interaction.Input.RemoveAt(0);
         var lt = interaction.Input
-            .Select(elem => new ButtonDefinition { Type = MessageBox.Avalonia.Enums.ButtonType.Default, Name = elem })
+            .Select(elem => new ButtonDefinition { Name = elem })
             .ToList();
         par.ButtonDefinitions = lt;
         par.ContentTitle = "Уведомление";

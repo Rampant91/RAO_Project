@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.CheckForm;
 
+
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 //  Проверяет открытую форму, открывает окно с отчетом об ошибках, активируется при нажатии кнопки "Проверить"
@@ -56,6 +57,8 @@ internal class CheckFormAsyncCommand : BaseAsyncCommand
                 result.AddRange(CheckF19.Check_Total(reps, rep));
                 break;
         }
+
+        _ = new Views.CheckForm(_changeOrCreateViewModel, result);
         return result;
     }
 }
