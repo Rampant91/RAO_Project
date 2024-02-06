@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels;
 using Models.CheckForm;
@@ -15,6 +14,4 @@ public partial class CheckForm : BaseWindow<CheckFormVM>
         DataContext = new CheckFormVM(changeOrCreateVM, checkError);
         Show();
     }
-
-
 }
