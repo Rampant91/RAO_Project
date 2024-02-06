@@ -9,11 +9,11 @@ using Models.Forms;
 using Models.Forms.Form1;
 using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.CheckForm;
+namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public class CheckF11
 {
-    private static readonly string[] OperationCode_DB_Valids = 
+    private static readonly string[] OperationCode_DB_Valids =
     {
         "1","10","11","12","15","17","18","21",
         "22","25","27","28","29","31","32","35",
@@ -76,10 +76,10 @@ public class CheckF11
     private static bool MZA_Ignore = true;
 
     #region DFromFile
-    
+
     private static void D_Populate_From_File(string file_address)
     {
-        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(file_address)) return;
         FileInfo excel_import_file = new(file_address);
         var xls = new ExcelPackage(excel_import_file);
@@ -115,7 +115,7 @@ public class CheckF11
                 }
                 else
                 {
-                    value_real = 1e12 * double.Parse(value_base[..6].Replace(" ", ""), System.Globalization.NumberStyles.Float);
+                    value_real = 1e12 * double.Parse(value_base[..6].Replace(" ", ""), NumberStyles.Float);
                 }
                 D[name_real] = value_real;
                 if (name_real.Contains("йод"))
@@ -134,10 +134,10 @@ public class CheckF11
     #endregion
 
     #region OKSMFromFile
-    
+
     private static void OKSM_Populate_From_File(string fileAddress)
     {
-        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(fileAddress)) return;
         FileInfo excel_import_file = new(fileAddress);
         var xls = new ExcelPackage(excel_import_file);
@@ -161,7 +161,7 @@ public class CheckF11
     #endregion
 
     #region CheckTotal
-    
+
     public static List<CheckError> Check_Total(Reports reps, Report rep)
     {
         var currentFormLine = 0;
@@ -711,7 +711,7 @@ public class CheckF11
                     p_start = DateTime.Parse(rep.StartPeriod_DB);
                     p_end = DateTime.Parse(rep.EndPeriod_DB);
                     p_mid = DateTime.Parse(forms[line].OperationDate_DB!);
-                    valid = (p_mid >= p_start && p_mid <= p_end);
+                    valid = p_mid >= p_start && p_mid <= p_end;
                 }
                 catch
                 {
@@ -751,7 +751,7 @@ public class CheckF11
                     p_start = DateTime.Parse(rep.StartPeriod_DB);
                     p_end = DateTime.Parse(rep.EndPeriod_DB);
                     p_mid = DateTime.Parse(forms[line].DocumentDate_DB!);
-                    valid = (p_mid >= p_start && p_mid <= p_end);
+                    valid = p_mid >= p_start && p_mid <= p_end;
                 }
                 catch
                 {
@@ -925,7 +925,7 @@ public class CheckF11
         {
             activity_minimum = value;
         }
-        var activity_real = double.Parse(forms[line].Activity_DB!.Replace(".", ","), System.Globalization.NumberStyles.Float);
+        var activity_real = double.Parse(forms[line].Activity_DB!.Replace(".", ","), NumberStyles.Float);
         var valid = activity_real >= activity_minimum;
         if (!valid)
         {
@@ -970,7 +970,7 @@ public class CheckF11
                 activity_minimum = activity_considered;
             }
         }
-        var activity_real = double.Parse(forms[line].Activity_DB!.Replace(".", ","), System.Globalization.NumberStyles.Float);
+        var activity_real = double.Parse(forms[line].Activity_DB!.Replace(".", ","), NumberStyles.Float);
         var valid = activity_real >= activity_minimum;
         if (!valid)
         {
@@ -1283,7 +1283,7 @@ public class CheckF11
                     D_max_value = D_value_list.Max();
                     try
                     {
-                        A_value = double.Parse(forms[line].Activity_DB!.Replace(".", ","), System.Globalization.NumberStyles.Float);
+                        A_value = double.Parse(forms[line].Activity_DB!.Replace(".", ","), NumberStyles.Float);
                     }
                     catch
                     {
@@ -2123,7 +2123,7 @@ public class CheckF11
             });
         }
         return result;
-    } 
+    }
 
     #endregion
 }

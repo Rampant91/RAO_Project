@@ -2,9 +2,9 @@
 using Models.Collections;
 using System.Collections.Generic;
 
-namespace Client_App.Commands.AsyncCommands.CheckForm;
+namespace Client_App.Commands.SyncCommands.CheckForm;
 
-public class CheckF19
+public class CheckF17
 {
     public static List<CheckError> Check_Total(Reports reps, Report rep)
     {

@@ -20,7 +20,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Models.DBRealization;
 using System.Threading;
-using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.SyncCommands.CheckForm;
 
 namespace Client_App.ViewModels;
 
@@ -161,7 +161,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRows { get; set; }                           //  Добавить N строк в форму
     public ICommand AddRowsIn { get; set; }                         //  Добавить N строк в форму перед выбранной строкой
     public ICommand ChangeReportOrder { get; set; }                 //  Поменять местами юр. лицо и обособленное подразделение
-    public ICommand CheckReport { get; set; }                       //  Бесполезная команда, ничего не делает, активируется при нажатии кнопки "Проверить"
+    public ICommand CheckReport { get; set; }                       //  Открывает окно проверки текущей формы при нажатии кнопки "Проверить"
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
     public ICommand CopyPasName { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand CopyRows { get; set; }                          //  Скопировать в буфер обмена уникальное имя паспорта
@@ -328,7 +328,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
         ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
-        CheckReport = new CheckFormAsyncCommand(this);
+        CheckReport = new CheckFormSyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
