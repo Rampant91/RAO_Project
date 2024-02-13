@@ -65,14 +65,21 @@ public class InitializationAsyncCommand : BaseAsyncCommand
         _mainWindowViewModel.OnStartProgressBar = 45;
         await dbm.form_20.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
-        _mainWindowViewModel.OnStartProgressBar = 72;
-        await dbm.ReportCollectionDbSet.LoadAsync();
+        try
+        {
+            onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
+            _mainWindowViewModel.OnStartProgressBar = 72;
+            await dbm.ReportCollectionDbSet.LoadAsync();
+        }
+        catch (Exception ex)
+        {
+
+        }
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
         _mainWindowViewModel.OnStartProgressBar = 74;
         await dbm.ReportsCollectionDbSet.LoadAsync();
-        var A = ReportsStorage.LocalReports.Reports_Collection;
+
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
         _mainWindowViewModel.OnStartProgressBar = 76;
         if (!dbm.DBObservableDbSet.Any())

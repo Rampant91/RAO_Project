@@ -57,7 +57,7 @@ internal class CheckFormSyncCommand : BaseCommand
                 //    result.AddRange(CheckF19.Check_Total(reps, rep));
                 //    break;
         }
-
         _ = new Views.CheckForm(_changeOrCreateViewModel, result);
+        //_ = new Form_11();
     }
 }
