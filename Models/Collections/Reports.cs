@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using OfficeOpenXml;
 using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Interfaces;
@@ -22,14 +23,19 @@ public class Reports : IKey, IDataGridColumn
             try
             {
                 var num_str = "0";
-                if (Master_DB.RegNoRep.Value.Length >= 5)
+
+                if (Master_DB.RegNoRep is not null)
                 {
-                    num_str = Master_DB.RegNoRep.Value[..5];
+                    if (Master_DB.RegNoRep.Value.Length >= 5)
+                    {
+                        num_str = Master_DB.RegNoRep.Value[..5];
+                    }
+                    else 
+                    {
+                        num_str = Master_DB.RegNoRep.Value;
+                    }
                 }
-                else 
-                {
-                    num_str = Master_DB.RegNoRep.Value;
-                }
+
                 var num_int = Convert.ToInt64(num_str);
                 return num_int;
             }
@@ -46,8 +52,8 @@ public class Reports : IKey, IDataGridColumn
     }
     private void Init()
     {
-        Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
-        Report_Collection.CollectionChanged += CollectionChanged;
+        Report_Collection_DB = new ObservableCollectionWithItemPropertyChanged<Report>();
+        Report_Collection_DB.CollectionChanged += CollectionChanged;
     }
 
     public Report Master_DB { get; set; }
@@ -64,14 +70,13 @@ public class Reports : IKey, IDataGridColumn
     }
 
     ObservableCollectionWithItemPropertyChanged<Report> Report_Collection_DB;
-
     public ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
     {
         get => Report_Collection_DB;
         set
         {
             Report_Collection_DB = value;
-            OnPropertyChanged(nameof(Report_Collection));
+            OnPropertyChanged(nameof(Report_Collection_DB));
         }
     }
 

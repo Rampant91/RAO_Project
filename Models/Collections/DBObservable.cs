@@ -16,7 +16,7 @@ public class DBObservable : INotifyPropertyChanged
     public DBObservable()
     {
         Reports_Collection_DB = new ObservableCollectionWithItemPropertyChanged<Reports>();
-        Reports_Collection.CollectionChanged += CollectionChanged;
+        Reports_Collection_DB.CollectionChanged += CollectionChanged;
     }
 
     #region Reports_Collection
@@ -27,7 +27,7 @@ public class DBObservable : INotifyPropertyChanged
         set
         {
             Reports_Collection_DB = value;
-            OnPropertyChanged();
+            OnPropertyChanged(nameof(Reports_Collection_DB));
         }
     }
 

@@ -168,11 +168,13 @@ public class Report : IKey, IDataGridColumn
     #region Id
 
     public int Id { get; set; }
+    //public int? ReportsId { get; set; }
+    //public Reports? Reports { get; set; }
 
     #endregion
 
     #region Order
-    
+
     public void SetOrder(long index) { }
 
     public long Order
@@ -1944,10 +1946,10 @@ public class Report : IKey, IDataGridColumn
     #region RegNoRep
 
     [NotMapped]
-    private string _RegNoRep { get; set; } = "";
+    private string? _RegNoRep { get; set; } = "";
 
     [NotMapped]
-    public RamAccess<string> RegNoRep
+    public RamAccess<string?> RegNoRep
     {
         get
         {
