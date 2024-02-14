@@ -58,6 +58,6 @@ internal class CheckFormSyncCommand : BaseCommand
                 //    break;
         }
         _ = new Views.CheckForm(_changeOrCreateViewModel, result);
-        //_ = new Form_11();
+        _ = new CompareReportsTitleForm();
     }
 }

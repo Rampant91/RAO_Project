@@ -18,6 +18,9 @@ namespace Client_App.VisualRealization.Long_Visual;
 public class Form2_Visual
 {
     public static ChangeOrCreateVM tmpVM { get; set; }
+
+    #region CreateButton
+    
     public static Button CreateButton(string content, string thickness, int height, string commProp)
     {
         return new Button
@@ -31,6 +34,10 @@ public class Form2_Visual
         };
     }
 
+    #endregion
+
+    #region CreateToggleSwitch
+    
     public static ToggleSwitch CreateToggleSwitch(string content, string thickness, int height, string commProp)
     {
         var a = new ToggleSwitch
@@ -46,6 +53,10 @@ public class Form2_Visual
         return a;
     }
 
+    #endregion
+
+    #region CreateTextBox
+    
     public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
     {
         Cell textCell = new()
@@ -61,40 +72,44 @@ public class Form2_Visual
             ElementName = "ChangingPanel",
             NameScope = new WeakReference<INameScope>(scp)
         };
-        if (_flag == "")
+        switch (_flag)
         {
-            textCell.Control = new TextBox()
-            {
-                [!StyledElement.DataContextProperty] = b,
-                [!TextBox.TextProperty] = new Binding("Value")
-            };
-        }
-        if (_flag == "phone")
-        {
-            textCell.Control = new MaskedTextBox()
-            {
-                [!StyledElement.DataContextProperty] = b,
-                [!TextBox.TextProperty] = new Binding("Value"),
-            };
-            ((MaskedTextBox)textCell.Control).Mask = "+7 (000) 000-00-00";
-        }
-        if (_flag == "year")
-        {
-            textCell.Control = new TextBox()
-            {
-                [!StyledElement.DataContextProperty] = b,
-                [!TextBox.TextProperty] = new Binding("Value"),
-            };
-            //textCell.Control = new MaskedTextBox()
-            //{
-            //    [!MaskedTextBox.DataContextProperty] = b,
-            //    [!MaskedTextBox.TextProperty] = new Binding("Value"),
-            //};
-            //((MaskedTextBox)textCell.Control).Mask = "0000";
+            case "":
+                textCell.Control = new TextBox()
+                {
+                    [!StyledElement.DataContextProperty] = b,
+                    [!TextBox.TextProperty] = new Binding("Value")
+                };
+                break;
+            case "phone":
+                textCell.Control = new MaskedTextBox()
+                {
+                    [!StyledElement.DataContextProperty] = b,
+                    [!TextBox.TextProperty] = new Binding("Value"),
+                };
+                ((MaskedTextBox)textCell.Control).Mask = "+7 (000) 000-00-00";
+                break;
+            case "year":
+                textCell.Control = new TextBox()
+                {
+                    [!StyledElement.DataContextProperty] = b,
+                    [!TextBox.TextProperty] = new Binding("Value"),
+                };
+                //textCell.Control = new MaskedTextBox()
+                //{
+                //    [!MaskedTextBox.DataContextProperty] = b,
+                //    [!MaskedTextBox.TextProperty] = new Binding("Value"),
+                //};
+                //((MaskedTextBox)textCell.Control).Mask = "0000";
+                break;
         }
         return textCell;
     }
 
+    #endregion
+
+    #region CreateTextBlock
+    
     public static TextBlock CreateTextBlock(string margin, int height, string text, double width = 0)
     {
         TextBlock tmp = null;
@@ -124,16 +139,20 @@ public class Form2_Visual
         return tmp;
     }
 
-    static Grid Create20Item(string Property, string BindingPrefix, INameScope scp, int index)
+    #endregion
+
+    #region Create20Item
+    
+    private static Grid Create20Item(string property, string bindingPrefix, INameScope scp, int index)
     {
         Grid itemStackPanel = new();
-        itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Parse("1*")});
-        itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Parse("1*")});
+        itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
+        itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
 
-        var tmp1 = CreateTextBlock("5,0,0,0", 30, ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty(Property).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[index], 0);
-        tmp1.SetValue(Grid.ColumnProperty,0);
-        var tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[{index}].{Property}", 400, scp);
-        if (BindingPrefix == "DataContext.Storage.Rows20")
+        var tmp1 = CreateTextBlock("5,0,0,0", 30, ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form20,Models").GetProperty(property).GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[index], 0);
+        tmp1.SetValue(Grid.ColumnProperty, 0);
+        var tmp2 = CreateTextBox("5,0,0,0", 30, $"{bindingPrefix}[{index}].{property}", 400, scp);
+        if (bindingPrefix == "DataContext.Storage.Rows20")
         {
             ((TextBox)tmp2.Control).HorizontalContentAlignment = HorizontalAlignment.Right;
         }
@@ -143,9 +162,15 @@ public class Form2_Visual
         return itemStackPanel;
     }
 
+    #endregion
+
+    #region Forms2.x_Visual
+
+    #region Form20_Visual
+
     public static Control Form20_Visual(INameScope scp)
     {
-        var BindingPrefix = "DataContext.Storage.Rows20";
+        const string bindingPrefix = "DataContext.Storage.Rows20";
 
         ScrollViewer vw = new()
         {
@@ -164,6 +189,7 @@ public class Form2_Visual
         #endregion
 
         #region Header
+
         Panel headerPanel = new() { Width = 735 };
         Binding b = new()
         {
@@ -202,7 +228,7 @@ public class Form2_Visual
         tmp1.SetValue(Grid.ColumnProperty, 0);
         headerOrganUprav.Children.Add(tmp1);
 
-        var tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[0].OrganUprav", 400, scp);
+        var tmp2 = CreateTextBox("5,0,0,0", 30, $"{bindingPrefix}[0].OrganUprav", 400, scp);
         ((TextBox)tmp2.Control).HorizontalContentAlignment = HorizontalAlignment.Right;
         tmp2.SetValue(Grid.ColumnProperty, 1);
         headerOrganUprav.Children.Add(tmp2);
@@ -218,7 +244,7 @@ public class Form2_Visual
                 .GetCustomAttributes(typeof(FormPropertyAttribute), false).First()).Names[0], 0);
         tmp1.SetValue(Grid.ColumnProperty, 0);
         headerRegNo.Children.Add(tmp1);
-        tmp2 = CreateTextBox("5,0,0,0", 30, $"{BindingPrefix}[0].RegNo", 400, scp);
+        tmp2 = CreateTextBox("5,0,0,0", 30, $"{bindingPrefix}[0].RegNo", 400, scp);
         ((TextBox)tmp2.Control).HorizontalContentAlignment = HorizontalAlignment.Right;
         tmp2.SetValue(Grid.ColumnProperty, 1);
         headerRegNo.Children.Add(tmp2);
@@ -231,6 +257,7 @@ public class Form2_Visual
         headerButtons.Children.Add(CreateButton("Поменять местами", "5,5,0,0", 30, "ChangeReportOrder"));
         headerButtons.Children.Add(CreateButton("Проверить", "5,5,0,0", 30, "CheckReport"));
         headerButtons.Children.Add(CreateButton("Сохранить", "5,5,0,0", 30, "SaveReport"));
+
         #endregion
 
         StackPanel centerStackPanel = new();
@@ -239,6 +266,7 @@ public class Form2_Visual
         mainCanvas.Children.Add(centerStackPanel);
 
         #region UrLico
+
         Panel urLicoPanel = new();
         Border brdUr = new()
         {
@@ -268,26 +296,28 @@ public class Form2_Visual
             FontSize = 16,
             Text = "Юридическое лицо",
         });
-        urLicoStackPanel.Children.Add(Create20Item("SubjectRF", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("JurLico", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("ShortJurLico", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("JurLicoAddress", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("JurLicoFactAddress", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("GradeFIO", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Telephone", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Fax", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Email", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Okpo", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Okved", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Okogu", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Oktmo", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Inn", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Kpp", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Okopf", BindingPrefix, scp, 0));
-        urLicoStackPanel.Children.Add(Create20Item("Okfs", BindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("SubjectRF", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("JurLico", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("ShortJurLico", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("JurLicoAddress", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("JurLicoFactAddress", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("GradeFIO", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Telephone", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Fax", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Email", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Okpo", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Okved", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Okogu", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Oktmo", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Inn", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Kpp", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Okopf", bindingPrefix, scp, 0));
+        urLicoStackPanel.Children.Add(Create20Item("Okfs", bindingPrefix, scp, 0));
+
         #endregion
 
         #region ObosobPodrazd
+
         Panel obosobPodrazdPanel = new();
         Border brdOb = new()
         {
@@ -317,27 +347,32 @@ public class Form2_Visual
             FontSize = 16,
             Text = "Территориальное обособленное подразделение",
         });
-        obosobPodrazdStackPanel.Children.Add(Create20Item("SubjectRF", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("JurLico", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("ShortJurLico", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("JurLicoAddress", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("JurLicoFactAddress", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("GradeFIO", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Telephone", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Fax", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Email", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Okpo", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Okved", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Okogu", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Oktmo", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Inn", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Kpp", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Okopf", BindingPrefix, scp, 1));
-        obosobPodrazdStackPanel.Children.Add(Create20Item("Okfs", BindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("SubjectRF", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("JurLico", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("ShortJurLico", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("JurLicoAddress", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("JurLicoFactAddress", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("GradeFIO", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Telephone", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Fax", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Email", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Okpo", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Okved", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Okogu", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Oktmo", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Inn", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Kpp", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Okopf", bindingPrefix, scp, 1));
+        obosobPodrazdStackPanel.Children.Add(Create20Item("Okfs", bindingPrefix, scp, 1));
+
         #endregion
 
         return vw;
     }
+
+    #endregion
+
+    #region Form21_Visual
 
     public static Control Form21_Visual(INameScope scp)
     {
@@ -345,8 +380,8 @@ public class Form2_Visual
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
         };
-        StackPanel maingrid = new();
-        vw.Content = maingrid;
+        StackPanel mainGrid = new();
+        vw.Content = mainGrid;
         Binding ind = new()
         {
             Source = vw,
@@ -420,6 +455,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -474,14 +510,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
-        maingrid.Children.Add(topPnl1);
+        mainGrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm21 grd = new()
         {
             Name = "Form21Data_",
@@ -509,7 +548,7 @@ public class Form2_Visual
         };
         grd.Bind(DataGridForm21.ItemsProperty, b);
 
-        maingrid.Children.Add(grd);
+        mainGrid.Children.Add(grd);
 
         Grid? topPnl22 = new()
         {
@@ -526,10 +565,12 @@ public class Form2_Visual
         topPnl22.HorizontalAlignment = HorizontalAlignment.Left;
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
-        maingrid.Children.Add(topPnl22);
+        mainGrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -560,11 +601,16 @@ public class Form2_Visual
         };
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
-        maingrid.Children.Add(prt);
+        mainGrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+
+    #endregion
+
+    #region Form22_Visual
 
     public static Control Form22_Visual(INameScope scp)
     {
@@ -648,6 +694,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -702,14 +749,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm22 grd = new()
         {
             Name = "Form22Data_",
@@ -755,9 +805,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -789,10 +841,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form23_Visual
 
     public static Control Form23_Visual(INameScope scp)
     {
@@ -867,6 +924,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -921,14 +979,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm23 grd = new()
         {
             Name = "Form23Data_",
@@ -973,9 +1034,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1007,10 +1070,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form24_Visual
 
     public static Control Form24_Visual(INameScope scp)
     {
@@ -1085,6 +1153,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -1139,14 +1208,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm24 grd = new()
         {
             Name = "Form24Data_",
@@ -1191,9 +1263,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1225,10 +1299,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form25_Visual
 
     public static Control Form25_Visual(INameScope scp)
     {
@@ -1303,6 +1382,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -1357,14 +1437,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm25 grd = new()
         {
             Name = "Form25Data_",
@@ -1409,9 +1492,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1443,10 +1528,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form26_Visual
 
     public static Control Form26_Visual(INameScope scp)
     {
@@ -1529,6 +1619,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -1583,14 +1674,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm26 grd = new()
         {
             Name = "Form26Data_",
@@ -1635,9 +1729,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1669,10 +1765,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form27_Visual
 
     public static Control Form27_Visual(INameScope scp)
     {
@@ -1768,6 +1869,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -1822,14 +1924,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm27 grd = new()
         {
             Name = "Form27Data_",
@@ -1874,9 +1979,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1908,10 +2015,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form28_Visual
 
     public static Control Form28_Visual(INameScope scp)
     {
@@ -2051,6 +2163,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -2105,14 +2218,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm28 grd = new()
         {
             Name = "Form28Data_",
@@ -2157,9 +2273,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -2191,10 +2309,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form29_Visual
 
     public static Control Form29_Visual(INameScope scp)
     {
@@ -2269,6 +2392,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -2323,14 +2447,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm29 grd = new()
         {
             Name = "Form29Data_",
@@ -2375,9 +2502,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -2409,10 +2538,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form210_Visual
 
     public static Control Form210_Visual(INameScope scp)
     {
@@ -2487,6 +2621,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -2541,14 +2676,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm210 grd = new()
         {
             Name = "Form210Data_",
@@ -2593,9 +2731,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -2627,10 +2767,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form211_Visual
 
     public static Control Form211_Visual(INameScope scp)
     {
@@ -2705,6 +2850,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -2759,14 +2905,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm211 grd = new()
         {
             Name = "Form211Data_",
@@ -2811,9 +2960,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -2845,10 +2996,15 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form212_Visual
 
     public static Control Form212_Visual(INameScope scp)
     {
@@ -2923,6 +3079,7 @@ public class Form2_Visual
         #endregion
 
         #region Right
+
         StackPanel rigthStP = new()
         {
             Orientation = Orientation.Vertical,
@@ -2977,14 +3134,17 @@ public class Form2_Visual
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
+
         #endregion
 
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm212 grd = new()
         {
             Name = "Form212Data_",
@@ -3029,9 +3189,11 @@ public class Form2_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -3063,8 +3225,13 @@ public class Form2_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
     }
+
+    #endregion
+
+    #endregion
 }

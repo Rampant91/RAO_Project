@@ -15,6 +15,8 @@ namespace Client_App.VisualRealization.Long_Visual;
 
 public class Form1_Visual
 {
+    #region CreateButton
+    
     public static Button CreateButton(string content, string thickness, int height, string commProp)
     {
         return new Button
@@ -28,6 +30,10 @@ public class Form1_Visual
         };
     }
 
+    #endregion
+
+    #region CreateTextBox
+    
     public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
     {
         Cell textCell = new()
@@ -51,8 +57,8 @@ public class Form1_Visual
                 [!TextBox.TextProperty] = new Binding("Value")
             };
         }
-        if(_flag == "phone")
-        { 
+        if (_flag == "phone")
+        {
             textCell.Control = new MaskedTextBox()
             {
                 [!StyledElement.DataContextProperty] = b,
@@ -72,6 +78,10 @@ public class Form1_Visual
         return textCell;
     }
 
+    #endregion
+
+    #region CreateTextBlock
+    
     public static TextBlock CreateTextBlock(string margin, int height, string text, double width = 0)
     {
         TextBlock tmp = null;
@@ -101,7 +111,11 @@ public class Form1_Visual
         return tmp;
     }
 
-    static Grid Create10Item(string Property, string BindingPrefix, INameScope scp, int index)
+    #endregion
+
+    #region Create10Item
+    
+    private static Grid Create10Item(string Property, string BindingPrefix, INameScope scp, int index)
     {
         Grid itemStackPanel = new();
         itemStackPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Parse("1*") });
@@ -119,6 +133,12 @@ public class Form1_Visual
         itemStackPanel.Children.Add(tmp2);
         return itemStackPanel;
     }
+
+    #endregion
+
+    #region Forms1.x_Visual
+
+    #region Form10_Visual
 
     public static Control Form10_Visual(INameScope scp)
     {
@@ -140,7 +160,8 @@ public class Form1_Visual
         #endregion
 
         #region Header
-        Panel headerPanel = new() {Width=735};
+
+        Panel headerPanel = new() { Width = 735 };
         Binding b = new()
         {
             Source = vw,
@@ -207,6 +228,7 @@ public class Form1_Visual
         headerButtons.Children.Add(CreateButton("Поменять местами", "5,5,0,0", 30, "ChangeReportOrder"));
         headerButtons.Children.Add(CreateButton("Проверить", "5,5,0,0", 30, "CheckReport"));
         headerButtons.Children.Add(CreateButton("Сохранить", "5,5,0,0", 30, "SaveReport"));
+
         #endregion
 
         StackPanel centerStackPanel = new();
@@ -215,6 +237,7 @@ public class Form1_Visual
         mainCanvas.Children.Add(centerStackPanel);
 
         #region UrLico
+
         Panel urLicoPanel = new();
         Border brdUr = new()
         {
@@ -261,9 +284,11 @@ public class Form1_Visual
         urLicoStackPanel.Children.Add(Create10Item("Kpp", BindingPrefix, scp, 0));
         urLicoStackPanel.Children.Add(Create10Item("Okopf", BindingPrefix, scp, 0));
         urLicoStackPanel.Children.Add(Create10Item("Okfs", BindingPrefix, scp, 0));
+
         #endregion
 
         #region ObosobPodrazd
+
         Panel obosobPodrazdPanel = new();
         Border brdOb = new()
         {
@@ -310,11 +335,16 @@ public class Form1_Visual
         obosobPodrazdStackPanel.Children.Add(Create10Item("Kpp", BindingPrefix, scp, 1));
         obosobPodrazdStackPanel.Children.Add(Create10Item("Okopf", BindingPrefix, scp, 1));
         obosobPodrazdStackPanel.Children.Add(Create10Item("Okfs", BindingPrefix, scp, 1));
+
         #endregion
 
         return vw;
     }
 
+    #endregion
+
+    #region Form11_Visual
+    
     public static Control Form11_Visual(INameScope scp)
     {
         ScrollViewer vw = new()
@@ -536,7 +566,11 @@ public class Form1_Visual
         #endregion
 
         return vw;
-    }
+    } 
+    
+    #endregion
+
+    #region Form12_Visual
 
     public static Control Form12_Visual(INameScope scp)
     {
@@ -761,6 +795,10 @@ public class Form1_Visual
 
         return vw;
     }
+
+    #endregion
+
+    #region Form13_Visual
 
     public static Control Form13_Visual(INameScope scp)
     {
@@ -987,6 +1025,10 @@ public class Form1_Visual
         return vw;
     }
 
+    #endregion
+
+    #region Form14_Visual
+
     public static Control Form14_Visual(INameScope scp)
     {
         ScrollViewer vw = new()
@@ -1212,6 +1254,10 @@ public class Form1_Visual
         return vw;
     }
 
+    #endregion
+
+    #region Form15_Visual
+
     public static Control Form15_Visual(INameScope scp)
     {
         ScrollViewer vw = new()
@@ -1436,6 +1482,10 @@ public class Form1_Visual
 
         return vw;
     }
+
+    #endregion
+
+    #region Form16_Visual
 
     public static Control Form16_Visual(INameScope scp)
     {
@@ -1663,6 +1713,10 @@ public class Form1_Visual
         return vw;
     }
 
+    #endregion
+
+    #region Form17_Visual
+
     public static Control Form17_Visual(INameScope scp)
     {
         ScrollViewer vw = new()
@@ -1887,6 +1941,10 @@ public class Form1_Visual
 
         return vw;
     }
+
+    #endregion
+
+    #region Form18_Visual
 
     public static Control Form18_Visual(INameScope scp)
     {
@@ -2113,6 +2171,10 @@ public class Form1_Visual
 
         return vw;
     }
+    
+    #endregion
+
+    #region Form19_Visual
 
     public static Control Form19_Visual(INameScope scp)
     {
@@ -2338,4 +2400,8 @@ public class Form1_Visual
 
         return vw;
     }
+
+    #endregion
+
+    #endregion
 }

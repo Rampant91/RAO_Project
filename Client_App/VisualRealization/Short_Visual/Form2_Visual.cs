@@ -39,7 +39,7 @@ public class Form2_Visual
     }
 
     //Форма 20
-    private static Control Form0_Visual(INameScope scp)
+    private static DataGridReports Form0_Visual(INameScope scp)
     {
         DataGridReports grd = new()
         {
@@ -77,7 +77,7 @@ public class Form2_Visual
     }
 
     //Форма 2X
-    private static Control FormX_Visual(INameScope scp)
+    private static DataGridReport FormX_Visual(INameScope scp)
     {
         DataGridReport grd = new("Form2AllDataGrid_")
         {
