@@ -1,7 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Client_App.ViewModels"
-        xmlns:Controls="using:Client_App.Controls.DataGrid"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tools="clr-namespace:Client_App.Tools"
@@ -11,9 +10,11 @@
         MinHeight="200"
         MinWidth="200"
         x:Class="Client_App.Views.MainWindow"
+        x:DataType="vm:MainWindowVM"
         Icon="/Assets/logo.png"
         Title="{Binding Current_Db}"
         x:Name="MainWindow"
+        x:CompileBindings="True"
         Background="#ffffff"
         WindowStartupLocation="CenterScreen">
 
