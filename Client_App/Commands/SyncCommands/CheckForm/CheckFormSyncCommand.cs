@@ -1,6 +1,7 @@
 ﻿using Client_App.ViewModels;
 using System.Collections.Generic;
 using Models.CheckForm;
+using Models.Collections;
 
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
@@ -58,6 +59,5 @@ internal class CheckFormSyncCommand : BaseCommand
                 //    break;
         }
         _ = new Views.CheckForm(_changeOrCreateViewModel, result);
-        _ = new CompareReportsTitleForm();
     }
 }

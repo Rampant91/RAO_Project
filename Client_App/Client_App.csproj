@@ -8,6 +8,7 @@
     <AssemblyVersion>1.2.3.3</AssemblyVersion>
     <FileVersion>1.2.3.3</FileVersion>
     <Version>1.2.3.3</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -30,6 +31,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.22" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.22" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.22" />
     <PackageReference Include="EPPlus" Version="7.0.8" />
     <PackageReference Include="JsonSubTypes" Version="2.0.1" />
     <PackageReference Include="MessageBox.Avalonia" Version="1.7.1" />

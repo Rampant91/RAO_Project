@@ -606,6 +606,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         
                         #endregion
 
+                        Report a = new();
+                        if (res is "Заменить" &&
+                            (baseReps.Master.Rows10[0].SubjectRF_DB != impReps.Master.Rows10[0].SubjectRF_DB))
+                        {
+                            a = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master).AsyncExecute(null);
+                        }
+                        var b = a;
                         await CheckAnswer(res, baseReps, baseRep, impRep);
                         break;
                     }
