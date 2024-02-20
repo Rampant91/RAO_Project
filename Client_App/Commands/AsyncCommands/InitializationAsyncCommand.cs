@@ -183,7 +183,6 @@ public class InitializationAsyncCommand : BaseAsyncCommand
     
     private async Task ProcessDataBaseCreate()
     {
-        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
         var i = 0;
         var loadDbFileError = false;
         DBModel dbm;
@@ -218,10 +217,16 @@ public class InitializationAsyncCommand : BaseAsyncCommand
         {
             try
             {
-                if (File.Exists(StaticConfiguration.DBPath))
+                var reservePath = Path.Combine(RaoDirectory, "reserve");
+                Directory.CreateDirectory(reservePath);
+                foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
+                             .Where(x => x.Name.ToLower().EndsWith(".raodb")))
                 {
-                    File.Delete(StaticConfiguration.DBPath);
+                    if (!File.Exists(fileInfo.FullName)) continue;
+                    File.Copy(fileInfo.FullName, Path.Combine(reservePath, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $@"{DateTime.Now.Ticks}.RAODB");
+                    File.Delete(fileInfo.FullName);
                 }
+                
                 await dbm.Database.MigrateAsync();
 
                 #region MessageFailedToReadFile
@@ -239,7 +244,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(desktop.MainWindow)).GetAwaiter().GetResult(); 
+                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
 
                 #endregion
             }
@@ -258,7 +263,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(desktop.MainWindow)).GetAwaiter().GetResult(); 
+                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
 
                 #endregion
 
@@ -286,7 +291,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(desktop.MainWindow)).GetAwaiter().GetResult(); 
+                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
 
             #endregion
 

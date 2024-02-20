@@ -2,15 +2,13 @@
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
-using JetBrains.Annotations;
-using Rectangle = Avalonia.Controls.Shapes.Rectangle;
+using Client_App.Tools.ConverterType;
 
 namespace Client_App.Tools;
 
+// get display resolution
 public partial class RatioConverter : MarkupExtension, IValueConverter
 {
     private static RatioConverter? _instance;
@@ -19,18 +17,24 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
 
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     { // do not let the culture default to local to prevent variable outcome re decimal syntax
+        var t = value as Type;
+        var isHeight = t == typeof(Height);
         var par = float.TryParse(parameter?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var floatPar)
             ? floatPar
             : 1;
         if (OperatingSystem.IsWindows())
         {
-            return DisplayTools.GetDisplaySizeOnWindows().Height * par;
+            return isHeight
+                ? System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par)
+                : System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par);
         }
         if (OperatingSystem.IsLinux())
         {
-            return DisplayTools.GetDisplaySizeOnLinux().Height * par;
+            return isHeight
+                ? System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnLinux().Height * par)
+                : System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par);
         }
-        return 800;
+        return isHeight ? 600 : 800;
 
         //var size = System.Convert.ToDouble(value) * System.Convert.ToDouble(parameter,CultureInfo.InvariantCulture);
         //return size.ToString( "G0", CultureInfo.InvariantCulture );
@@ -87,7 +91,6 @@ internal static partial class DisplayTools
             Width = int.Parse(w),
             Height = int.Parse(h)
         };
-        Console.WriteLine ("Display Size is {0} x {1}", w, h);
         return r;
     }
 
