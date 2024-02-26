@@ -591,7 +591,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.PackName_DB);
                 Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PackType_DB);
                 Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.PackFactoryNumber_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.PackFactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.PackNumber_DB);
                 Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDate(repForm.FormingDate_DB, Worksheet, CurrentRow, 15);
                 Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.PassportNumber_DB);
                 Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.Volume_DB);
