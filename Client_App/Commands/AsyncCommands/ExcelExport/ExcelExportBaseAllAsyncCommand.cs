@@ -591,7 +591,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.PackName_DB);
                 Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.PackType_DB);
                 Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.PackFactoryNumber_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.PackFactoryNumber_DB);
+                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelString(repForm.PackNumber_DB);
                 Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDate(repForm.FormingDate_DB, Worksheet, CurrentRow, 15);
                 Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.PassportNumber_DB);
                 Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.Volume_DB);
@@ -982,8 +982,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
                 Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.SummaryActivity_DB);
                 Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 16);
-                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDate(repForm.ExpirationDate_DB, Worksheet, CurrentRow, 17);
+                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 17);
+                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDate(repForm.ExpirationDate_DB, Worksheet, CurrentRow, 18);
                 Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelString(repForm.DocumentName_DB);
 
                 #endregion
@@ -1011,10 +1011,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
                 CurrentPrimRow++;
             }
-        }
-        if (OperatingSystem.IsWindows())
-        {
-            Worksheet.Column(17).AutoFit();
         }
     }
 

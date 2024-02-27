@@ -1,13 +1,11 @@
 <Window
-    x:Class="Client_App.CompareReportsTitleForm"
+    x:Class="Client_App.Views.CompareReportsTitleForm"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:ir="clr-namespace:Avalonia.Xaml.Interactions.Responsive;assembly=Avalonia.Xaml.Interactions"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels"
-    Title="Сравнение форм"
+    Title="{Binding Title, Mode=OneTime}"
     Width="950"
     MinWidth="950"
     MinHeight="600"
@@ -69,26 +67,32 @@
                     Margin="0,0,5,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Text=""/>
-                <!--  #bind RegNo_DB  -->
+                    IsReadOnly="True"
+                    Text="{Binding RegNo, Mode=OneWay}"/>
                 <WrapPanel
                     Grid.Row="2"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Margin="20,30,0,20">
                     <Button
+                        Name="Replace"
                         Width="80"
                         Height="30"
                         Margin="0,0,20,0"
+                        Click="ReplaceButtonClick"
                         Content="Заменить"/>
                     <Button
+                        Name="CloseWithoutReplace"
                         Width="80"
                         Height="30"
                         Margin="0,0,304,0"
+                        Click="CloseWithoutReplaceButtonClick"
                         Content="Не заменять"/>
                     <Button
+                        Name="SelectAll"
                         Width="80"
                         Height="30"
+                        Click="SelectAllButtonClick"
                         Content="Выбрать всё"/>
                 </WrapPanel>
             </Grid>
@@ -210,71 +214,87 @@
                                 Height="26"
                                 Margin="0,0,0,3"
                                 IsReadOnly="True"
-                                Text="{Binding OldSubjectRF, Mode=OneWay}"/>
+                                Text="{Binding OldSubjectRF0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldJurLico0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldShortJurLico0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldJurLicoAddress0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldJurLicoFactAddress0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldGradeFIO0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldTelephone0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldFax0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldEmail0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkpo0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkved0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkogu0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOktmo0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldInn0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldKpp0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkopf0, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkfs0, Mode=OneWay}"/>
                         </StackPanel>
                         <!--  Юридическое лицо - CheckBox  -->
                         <StackPanel
@@ -287,76 +307,91 @@
                                 Text="Заменить"/>
                             <ListBox BorderThickness="0">
                                 <CheckBox
-                                    Margin="0,4,0,7"
+                                    Margin="0,3,0,6"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    IsChecked="{Binding ReplaceSubjectRF, Mode=OneWay}"/>
+                                    IsChecked="{Binding ReplaceSubjectRF0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceJurLico0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceShortJurLico0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceJurLicoAddress0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceJurLicoFactAddress0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceGradeFIO0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceTelephone0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceFax0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceEmail0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkpo0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkved0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkogu0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOktmo0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceInn0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceKpp0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkopf0, Mode=TwoWay}"/>
                                 <CheckBox
-                                    Margin="0,7"
+                                    Margin="0,6"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkfs0, Mode=TwoWay}"/>
                             </ListBox>
-
                         </StackPanel>
                         <!--  Юридическое лицо - Новые значения  -->
                         <StackPanel
@@ -371,71 +406,71 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text="{Binding NewSubjectRF, Mode=TwoWay}"/>
+                                Text="{Binding NewSubjectRF0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewJurLico0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewShortJurLico0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewJurLicoAddress0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewJurLicoFactAddress0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewGradeFIO0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewTelephone0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewFax0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewEmail0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkpo0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkved0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkogu0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOktmo0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewInn0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewKpp0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkopf0, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkfs0, Mode=TwoWay}"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -444,6 +479,7 @@
                     Margin="5,0,5,5"
                     Padding="3"
                     HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
                     BorderBrush="Black"
                     BorderThickness="1"
                     CornerRadius="5">
@@ -466,6 +502,7 @@
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
+                                IsEnabled="False"
                                 Text="Субъект Российской федерации"/>
                             <TextBlock
                                 Height="32"
@@ -546,71 +583,88 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldSubjectRF1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldJurLico1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldShortJurLico1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldJurLicoAddress1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldJurLicoFactAddress1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldGradeFIO1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldTelephone1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldFax1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldEmail1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkpo1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkved1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkogu1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOktmo1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldInn1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldKpp1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkopf1, Mode=OneWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                IsReadOnly="True"
+                                Text="{Binding OldOkfs1, Mode=OneWay}"/>
                         </StackPanel>
                         <!--  Территориальное обособленное подразделение - CheckBox  -->
                         <StackPanel
@@ -618,80 +672,96 @@
                             Grid.Column="2"
                             HorizontalAlignment="Center">
                             <TextBlock
-                                Width="50"
-                                Height="15"
-                                Margin="0,0,0,3"
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Bottom"
+                                VerticalAlignment="Center"
                                 Text="Заменить"/>
-                            <CheckBox
-                                Margin="0,4,0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
+                            <ListBox BorderThickness="0">
+                                <CheckBox
+                                    Margin="0,3,0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceSubjectRF1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceJurLico1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceShortJurLico1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceJurLicoAddress1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceJurLicoFactAddress1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceGradeFIO1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceTelephone1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceFax1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceEmail1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkpo1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkved1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkogu0, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOktmo1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceInn1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceKpp1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkopf1, Mode=TwoWay}"/>
+                                <CheckBox
+                                    Margin="0,6"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding ReplaceOkfs1, Mode=TwoWay}"/>
+                            </ListBox>
                         </StackPanel>
                         <!--  Территориальное обособленное подразделение - Новые значения  -->
                         <StackPanel
@@ -706,71 +776,71 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text=""/>
+                                Text="{Binding NewSubjectRF1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewJurLico1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewShortJurLico1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewJurLicoAddress1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewJurLicoFactAddress1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewGradeFIO1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewTelephone1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewFax1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewEmail1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkpo1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkved1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkogu1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOktmo1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewInn1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewKpp1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkopf1, Mode=TwoWay}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text=""/>
+                                Text="{Binding NewOkfs1, Mode=TwoWay}"/>
                         </StackPanel>
                     </Grid>
                 </Border>

@@ -23,7 +23,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
     {
         IsFirstLogLine = true;
         CurrentLogLine = 1;
-        string[] extensions = { "raodb", "RAODB" };
+        string[] extensions = ["raodb", "RAODB"];
         var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
         if (answer is null) return;
         SkipNewOrg = false;
@@ -101,7 +101,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                 if (baseReps11 != null)
                 {
-                    await ProcessIfHasReports11(baseReps11, impReps);
+                    await ProcessIfHasReports11(baseReps11, impReps, impReps.Report_Collection.ToList());
                 }
                 else if (baseReps21 != null)
                 {

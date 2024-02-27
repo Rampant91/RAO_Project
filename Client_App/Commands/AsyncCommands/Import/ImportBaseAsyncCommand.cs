@@ -65,13 +65,15 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region CheckAnswer
 
-    private protected async Task CheckAnswer(string an, Reports baseReps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
+    private protected async Task CheckAnswer(string an, Reports baseReps, Reports impReps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
     {
         switch (an)
         {
             #region Add
 
             case "Да" or "Да для всех" or "Добавить":
+                ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
+                await CheckTitleFormAsync(baseReps, impReps);
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
@@ -104,6 +106,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region SaveBoth
             
             case "Сохранить оба":
+                await CheckTitleFormAsync(baseReps, impReps);
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
@@ -136,6 +139,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Replace
             
             case "Заменить" or "Заменять все формы":
+                await CheckTitleFormAsync(baseReps, impReps);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 AtLeastOneImportDone = true;
@@ -166,6 +170,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Supplement
             
             case "Дополнить" when newReport != null && oldReport != null:
+                await CheckTitleFormAsync(baseReps, impReps);
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
@@ -204,10 +209,56 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #region Cancel
 
-            case "Отменить импорт формы":
+            case "Отменить импорт формы" or "Нет":
                 break; 
 
             #endregion
+        }
+    }
+
+    #endregion
+
+    #region CheckTitleForm
+
+    private static async Task CheckTitleFormAsync(Reports baseReps, Reports impReps)
+    {
+        if ((baseReps.Master.Rows10[0].SubjectRF_DB != impReps.Master.Rows10[0].SubjectRF_DB
+             || baseReps.Master.Rows10[0].JurLico_DB != impReps.Master.Rows10[0].JurLico_DB
+             || baseReps.Master.Rows10[0].ShortJurLico_DB != impReps.Master.Rows10[0].ShortJurLico_DB
+             || baseReps.Master.Rows10[0].JurLicoAddress_DB != impReps.Master.Rows10[0].JurLicoAddress_DB
+             || baseReps.Master.Rows10[0].JurLicoFactAddress_DB != impReps.Master.Rows10[0].JurLicoFactAddress_DB
+             || baseReps.Master.Rows10[0].GradeFIO_DB != impReps.Master.Rows10[0].GradeFIO_DB
+             || baseReps.Master.Rows10[0].Telephone_DB != impReps.Master.Rows10[0].Telephone_DB
+             || baseReps.Master.Rows10[0].Fax_DB != impReps.Master.Rows10[0].Fax_DB
+             || baseReps.Master.Rows10[0].Email_DB != impReps.Master.Rows10[0].Email_DB
+             || baseReps.Master.Rows10[0].Okpo_DB != impReps.Master.Rows10[0].Okpo_DB
+             || baseReps.Master.Rows10[0].Okved_DB != impReps.Master.Rows10[0].Okved_DB
+             || baseReps.Master.Rows10[0].Okogu_DB != impReps.Master.Rows10[0].Okogu_DB
+             || baseReps.Master.Rows10[0].Oktmo_DB != impReps.Master.Rows10[0].Oktmo_DB
+             || baseReps.Master.Rows10[0].Inn_DB != impReps.Master.Rows10[0].Inn_DB
+             || baseReps.Master.Rows10[0].Kpp_DB != impReps.Master.Rows10[0].Kpp_DB
+             || baseReps.Master.Rows10[0].Okopf_DB != impReps.Master.Rows10[0].Okopf_DB
+             || baseReps.Master.Rows10[0].Okfs_DB != impReps.Master.Rows10[0].Okfs_DB
+             || baseReps.Master.Rows10[1].SubjectRF_DB != impReps.Master.Rows10[1].SubjectRF_DB
+             || baseReps.Master.Rows10[1].JurLico_DB != impReps.Master.Rows10[1].JurLico_DB
+             || baseReps.Master.Rows10[1].ShortJurLico_DB != impReps.Master.Rows10[1].ShortJurLico_DB
+             || baseReps.Master.Rows10[1].JurLicoAddress_DB != impReps.Master.Rows10[1].JurLicoAddress_DB
+             || baseReps.Master.Rows10[1].JurLicoFactAddress_DB != impReps.Master.Rows10[1].JurLicoFactAddress_DB
+             || baseReps.Master.Rows10[1].GradeFIO_DB != impReps.Master.Rows10[1].GradeFIO_DB
+             || baseReps.Master.Rows10[1].Telephone_DB != impReps.Master.Rows10[1].Telephone_DB
+             || baseReps.Master.Rows10[1].Fax_DB != impReps.Master.Rows10[1].Fax_DB
+             || baseReps.Master.Rows10[1].Email_DB != impReps.Master.Rows10[1].Email_DB
+             || baseReps.Master.Rows10[1].Okpo_DB != impReps.Master.Rows10[1].Okpo_DB
+             || baseReps.Master.Rows10[1].Okved_DB != impReps.Master.Rows10[1].Okved_DB
+             || baseReps.Master.Rows10[1].Okogu_DB != impReps.Master.Rows10[1].Okogu_DB
+             || baseReps.Master.Rows10[1].Oktmo_DB != impReps.Master.Rows10[1].Oktmo_DB
+             || baseReps.Master.Rows10[1].Inn_DB != impReps.Master.Rows10[1].Inn_DB
+             || baseReps.Master.Rows10[1].Kpp_DB != impReps.Master.Rows10[1].Kpp_DB
+             || baseReps.Master.Rows10[1].Okopf_DB != impReps.Master.Rows10[1].Okopf_DB
+             || baseReps.Master.Rows10[1].Okfs_DB != impReps.Master.Rows10[1].Okfs_DB))
+        {
+            var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master).AsyncExecute(null);
+            baseReps.Master = newTitleRep;
         }
     }
 
@@ -385,15 +436,15 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region GetSelectedFilesFromDialog
 
-    private protected async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
+    private protected static async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
     {
         OpenFileDialog dial = new() { AllowMultiple = true };
         var filter = new FileDialogFilter
         {
             Name = name,
-            Extensions = new List<string>(extensions)
+            Extensions = [..extensions]
         };
-        dial.Filters = new List<FileDialogFilter> { filter };
+        dial.Filters = [filter];
         return await dial.ShowAsync(Desktop.MainWindow);
     }
 
@@ -426,22 +477,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region ProcessIfHasReports11
 
-    private protected async Task ProcessIfHasReports11(Reports baseReps, Reports? impReps = null, Report? impReport = null)
+    private protected async Task ProcessIfHasReports11(Reports baseReps, Reports impReps, List<Report> impRepList)
     {
         BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
         BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
         BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
 
-        var listImpRep = new List<Report>();
-        if (impReps != null)
-        {
-            listImpRep.AddRange(impReps.Report_Collection);
-        }
-        if (impReport != null)
-        {
-            listImpRep.Add(impReport);
-        }
-        foreach (var impRep in listImpRep) //Для каждого импортируемого отчета
+        foreach (var impRep in impRepList) //Для каждого импортируемого отчета
         {
             ImpRepFormNum = impRep.FormNum_DB;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
@@ -457,7 +499,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var baseRep = (Report)key1;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
-                BaseRepFormCount = ReportsStorage.GetReportRowsCount(baseRep);
+                BaseRepFormCount = Math.Max(ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepStartPeriod = baseRep.StartPeriod_DB;
                 BaseRepEndPeriod = baseRep.EndPeriod_DB;
                 BaseRepExpDate = baseRep.ExportDate_DB;
@@ -491,7 +533,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         ? DateTime.Parse(ImpRepEndPeriod)
                         : DateTime.Parse(ImpRepStartPeriod);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // ignored
                 }
@@ -603,17 +645,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(Desktop.MainWindow);
-                        
+
                         #endregion
 
-                        Report a = new();
-                        if (res is "Заменить" &&
-                            (baseReps.Master.Rows10[0].SubjectRF_DB != impReps.Master.Rows10[0].SubjectRF_DB))
-                        {
-                            a = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master).AsyncExecute(null);
-                        }
-                        var b = a;
-                        await CheckAnswer(res, baseReps, baseRep, impRep);
+                        await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                         break;
                     }
 
@@ -707,7 +742,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             #endregion
                         }
                     }
-                    await CheckAnswer(res, baseReps, baseRep, impRep);
+                    await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
 
                     #endregion
@@ -762,7 +797,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    await CheckAnswer(res, baseReps, null, impRep);
+                    await CheckAnswer(res, baseReps, impReps, null, impRep);
                     break;
                 }
 
@@ -771,7 +806,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #region TryAddEmptyOrg
 
-            if (impReps?.Report_Collection.Count == 0)
+            if (impRepList.Count == 0)
             {
                 impInBase = true;
 
@@ -885,7 +920,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
 
-            await CheckAnswer(res, baseReps, null, impRep);
+            await CheckAnswer(res, baseReps, impReps, null, impRep);
 
             #endregion
         }
@@ -1037,7 +1072,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     {
                         baseRep = await FillReportWithForms(baseReps, baseRep);
                     }
-                    await CheckAnswer(res, baseReps, baseRep, impRep);
+                    await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
                 }
 
@@ -1133,7 +1168,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     baseRep = await FillReportWithForms(baseReps, baseRep);
                 }
-                await CheckAnswer(res, baseReps, baseRep, impRep);
+                await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                 break;
 
                 #endregion
@@ -1264,7 +1299,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
 
-            await CheckAnswer(res, baseReps, null, impRep);
+            await CheckAnswer(res, baseReps, impReps, null, impRep);
 
             #endregion
         }

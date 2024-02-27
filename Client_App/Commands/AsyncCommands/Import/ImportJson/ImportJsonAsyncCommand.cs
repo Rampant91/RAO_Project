@@ -302,7 +302,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                     ? StringDateReverse(dateTimeValue.ToShortDateString())
                                     : rep.StartPeriod_DB
                                 : rep.Year_DB);
-                        reps.Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
+                        reps.Report_Collection = [];
                         reps.Report_Collection.AddRange(newRepCol);
                     });
 
@@ -327,7 +327,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         {
                             await ReportsStorage.GetReportAsync(report.Id);
                         }
-                        await ProcessIfHasReports11(baseReps11, impReps);
+                        await ProcessIfHasReports11(baseReps11, impReps, impReps.Report_Collection.ToList());
                     }
                     else if (baseReps21 != null)
                     {

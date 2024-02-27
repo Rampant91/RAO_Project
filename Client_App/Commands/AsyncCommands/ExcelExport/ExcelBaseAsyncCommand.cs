@@ -143,6 +143,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 dial.Filters.Add(filter);
                 dial.InitialFileName = fileName;
                 fullPath = await dial.ShowAsync(Desktop.MainWindow);
+                if (fullPath is null)
+                {
+                    cts.Cancel();
+                    cts.Token.ThrowIfCancellationRequested();
+                }
                 if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
                 if (string.IsNullOrEmpty(fullPath))
                 {
@@ -186,7 +191,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
             default:
             {
-                cts.Cancel();
+                await cts.CancelAsync();
                 cts.Token.ThrowIfCancellationRequested();
                 break;
             }
