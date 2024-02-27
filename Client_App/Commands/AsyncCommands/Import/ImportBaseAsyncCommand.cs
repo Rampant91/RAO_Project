@@ -1204,7 +1204,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #region TryAddEmptyOrg
 
-            if (impReps?.Report_Collection.Count == 0)
+            if (impRepList.Count == 0)
             {
                 impInBase = true;
 
