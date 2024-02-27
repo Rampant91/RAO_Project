@@ -39,41 +39,82 @@ public partial class CompareReportsTitleForm : BaseWindow<CompareReportsTitleFor
             return;
         }
 
-        RepInBase.Rows10[0].SubjectRF_DB = _vm.SubjectRF0;
-        RepInBase.Rows10[0].JurLico_DB = _vm.JurLico0;
-        RepInBase.Rows10[0].ShortJurLico_DB = _vm.ShortJurLico0;
-        RepInBase.Rows10[0].JurLicoAddress_DB = _vm.JurLicoAddress0;
-        RepInBase.Rows10[0].JurLicoFactAddress_DB = _vm.JurLicoFactAddress0;
-        RepInBase.Rows10[0].GradeFIO_DB = _vm.GradeFIO0;
-        RepInBase.Rows10[0].Telephone_DB = _vm.Telephone0;
-        RepInBase.Rows10[0].Fax_DB = _vm.Fax0;
-        RepInBase.Rows10[0].Email_DB = _vm.Email0;
-        RepInBase.Rows10[0].Okpo_DB = _vm.Okpo0;
-        RepInBase.Rows10[0].Okved_DB = _vm.Okved0;
-        RepInBase.Rows10[0].Okogu_DB = _vm.Okogu0;
-        RepInBase.Rows10[0].Oktmo_DB = _vm.Oktmo0;
-        RepInBase.Rows10[0].Inn_DB = _vm.Inn0;
-        RepInBase.Rows10[0].Kpp_DB = _vm.Kpp0;
-        RepInBase.Rows10[0].Okopf_DB = _vm.Okopf0;
-        RepInBase.Rows10[0].Okfs_DB = _vm.Okfs0;
+        if (RepInBase.FormNum_DB is "1.0")
+        {
+            RepInBase.Rows10[0].SubjectRF_DB = _vm.SubjectRF0;
+            RepInBase.Rows10[0].JurLico_DB = _vm.JurLico0;
+            RepInBase.Rows10[0].ShortJurLico_DB = _vm.ShortJurLico0;
+            RepInBase.Rows10[0].JurLicoAddress_DB = _vm.JurLicoAddress0;
+            RepInBase.Rows10[0].JurLicoFactAddress_DB = _vm.JurLicoFactAddress0;
+            RepInBase.Rows10[0].GradeFIO_DB = _vm.GradeFIO0;
+            RepInBase.Rows10[0].Telephone_DB = _vm.Telephone0;
+            RepInBase.Rows10[0].Fax_DB = _vm.Fax0;
+            RepInBase.Rows10[0].Email_DB = _vm.Email0;
+            RepInBase.Rows10[0].Okpo_DB = _vm.Okpo0;
+            RepInBase.Rows10[0].Okved_DB = _vm.Okved0;
+            RepInBase.Rows10[0].Okogu_DB = _vm.Okogu0;
+            RepInBase.Rows10[0].Oktmo_DB = _vm.Oktmo0;
+            RepInBase.Rows10[0].Inn_DB = _vm.Inn0;
+            RepInBase.Rows10[0].Kpp_DB = _vm.Kpp0;
+            RepInBase.Rows10[0].Okopf_DB = _vm.Okopf0;
+            RepInBase.Rows10[0].Okfs_DB = _vm.Okfs0;
 
-        RepInBase.Rows10[1].SubjectRF_DB = _vm.SubjectRF1;
-        RepInBase.Rows10[1].JurLico_DB = _vm.JurLico1;
-        RepInBase.Rows10[1].ShortJurLico_DB = _vm.ShortJurLico1;
-        RepInBase.Rows10[1].JurLicoAddress_DB = _vm.JurLicoAddress1;
-        RepInBase.Rows10[1].JurLicoFactAddress_DB = _vm.JurLicoFactAddress1;
-        RepInBase.Rows10[1].GradeFIO_DB = _vm.GradeFIO1;
-        RepInBase.Rows10[1].Telephone_DB = _vm.Telephone1;
-        RepInBase.Rows10[1].Fax_DB = _vm.Fax1;
-        RepInBase.Rows10[1].Email_DB = _vm.Email1;
-        RepInBase.Rows10[1].Okpo_DB = _vm.Okpo1;
-        RepInBase.Rows10[1].Okved_DB = _vm.Okved1;
-        RepInBase.Rows10[1].Okogu_DB = _vm.Okogu1;
-        RepInBase.Rows10[1].Oktmo_DB = _vm.Oktmo1;
-        RepInBase.Rows10[1].Inn_DB = _vm.Inn1;
-        RepInBase.Rows10[1].Kpp_DB = _vm.Kpp1;
-        RepInBase.Rows10[1].Okopf_DB = _vm.Okopf1;
-        RepInBase.Rows10[1].Okfs_DB = _vm.Okfs1;
+            RepInBase.Rows10[1].SubjectRF_DB = _vm.SubjectRF1;
+            RepInBase.Rows10[1].JurLico_DB = _vm.JurLico1;
+            RepInBase.Rows10[1].ShortJurLico_DB = _vm.ShortJurLico1;
+            RepInBase.Rows10[1].JurLicoAddress_DB = _vm.JurLicoAddress1;
+            RepInBase.Rows10[1].JurLicoFactAddress_DB = _vm.JurLicoFactAddress1;
+            RepInBase.Rows10[1].GradeFIO_DB = _vm.GradeFIO1;
+            RepInBase.Rows10[1].Telephone_DB = _vm.Telephone1;
+            RepInBase.Rows10[1].Fax_DB = _vm.Fax1;
+            RepInBase.Rows10[1].Email_DB = _vm.Email1;
+            RepInBase.Rows10[1].Okpo_DB = _vm.Okpo1;
+            RepInBase.Rows10[1].Okved_DB = _vm.Okved1;
+            RepInBase.Rows10[1].Okogu_DB = _vm.Okogu1;
+            RepInBase.Rows10[1].Oktmo_DB = _vm.Oktmo1;
+            RepInBase.Rows10[1].Inn_DB = _vm.Inn1;
+            RepInBase.Rows10[1].Kpp_DB = _vm.Kpp1;
+            RepInBase.Rows10[1].Okopf_DB = _vm.Okopf1;
+            RepInBase.Rows10[1].Okfs_DB = _vm.Okfs1;
+        }
+        else if (RepInBase.FormNum_DB is "2.0")
+        {
+            RepInBase.Rows20[0].SubjectRF_DB = _vm.SubjectRF0;
+            RepInBase.Rows20[0].JurLico_DB = _vm.JurLico0;
+            RepInBase.Rows20[0].ShortJurLico_DB = _vm.ShortJurLico0;
+            RepInBase.Rows20[0].JurLicoAddress_DB = _vm.JurLicoAddress0;
+            RepInBase.Rows20[0].JurLicoFactAddress_DB = _vm.JurLicoFactAddress0;
+            RepInBase.Rows20[0].GradeFIO_DB = _vm.GradeFIO0;
+            RepInBase.Rows20[0].Telephone_DB = _vm.Telephone0;
+            RepInBase.Rows20[0].Fax_DB = _vm.Fax0;
+            RepInBase.Rows20[0].Email_DB = _vm.Email0;
+            RepInBase.Rows20[0].Okpo_DB = _vm.Okpo0;
+            RepInBase.Rows20[0].Okved_DB = _vm.Okved0;
+            RepInBase.Rows20[0].Okogu_DB = _vm.Okogu0;
+            RepInBase.Rows20[0].Oktmo_DB = _vm.Oktmo0;
+            RepInBase.Rows20[0].Inn_DB = _vm.Inn0;
+            RepInBase.Rows20[0].Kpp_DB = _vm.Kpp0;
+            RepInBase.Rows20[0].Okopf_DB = _vm.Okopf0;
+            RepInBase.Rows20[0].Okfs_DB = _vm.Okfs0;
+
+            RepInBase.Rows20[1].SubjectRF_DB = _vm.SubjectRF1;
+            RepInBase.Rows20[1].JurLico_DB = _vm.JurLico1;
+            RepInBase.Rows20[1].ShortJurLico_DB = _vm.ShortJurLico1;
+            RepInBase.Rows20[1].JurLicoAddress_DB = _vm.JurLicoAddress1;
+            RepInBase.Rows20[1].JurLicoFactAddress_DB = _vm.JurLicoFactAddress1;
+            RepInBase.Rows20[1].GradeFIO_DB = _vm.GradeFIO1;
+            RepInBase.Rows20[1].Telephone_DB = _vm.Telephone1;
+            RepInBase.Rows20[1].Fax_DB = _vm.Fax1;
+            RepInBase.Rows20[1].Email_DB = _vm.Email1;
+            RepInBase.Rows20[1].Okpo_DB = _vm.Okpo1;
+            RepInBase.Rows20[1].Okved_DB = _vm.Okved1;
+            RepInBase.Rows20[1].Okogu_DB = _vm.Okogu1;
+            RepInBase.Rows20[1].Oktmo_DB = _vm.Oktmo1;
+            RepInBase.Rows20[1].Inn_DB = _vm.Inn1;
+            RepInBase.Rows20[1].Kpp_DB = _vm.Kpp1;
+            RepInBase.Rows20[1].Okopf_DB = _vm.Okopf1;
+            RepInBase.Rows20[1].Okfs_DB = _vm.Okfs1;
+        }
 
         base.OnClosing(e);
     }

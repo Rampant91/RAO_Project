@@ -54,8 +54,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldSubjectRF0
     {
-        get => _repInBase.Rows10[0].SubjectRF_DB;
-        set => _repInBase.Rows10[0].SubjectRF_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].SubjectRF_DB,
+                "2.0" => _repInBase.Rows20[0].SubjectRF_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].SubjectRF_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].SubjectRF_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -90,8 +109,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldJurLico0
     {
-        get => _repInBase.Rows10[0].JurLico_DB;
-        set => _repInBase.Rows10[0].JurLico_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].JurLico_DB,
+                "2.0" => _repInBase.Rows20[0].JurLico_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].JurLico_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].JurLico_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -126,8 +164,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldShortJurLico0
     {
-        get => _repInBase.Rows10[0].ShortJurLico_DB;
-        set => _repInBase.Rows10[0].ShortJurLico_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].ShortJurLico_DB,
+                "2.0" => _repInBase.Rows20[0].ShortJurLico_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].ShortJurLico_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].ShortJurLico_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -162,8 +219,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldJurLicoAddress0
     {
-        get => _repInBase.Rows10[0].JurLicoAddress_DB;
-        set => _repInBase.Rows10[0].JurLicoAddress_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].JurLicoAddress_DB,
+                "2.0" => _repInBase.Rows20[0].JurLicoAddress_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].JurLicoAddress_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].JurLicoAddress_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -198,8 +274,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldJurLicoFactAddress0
     {
-        get => _repInBase.Rows10[0].JurLicoFactAddress_DB;
-        set => _repInBase.Rows10[0].JurLicoFactAddress_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].JurLicoFactAddress_DB,
+                "2.0" => _repInBase.Rows20[0].JurLicoFactAddress_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].JurLicoFactAddress_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].JurLicoFactAddress_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -234,8 +329,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldGradeFIO0
     {
-        get => _repInBase.Rows10[0].GradeFIO_DB;
-        set => _repInBase.Rows10[0].GradeFIO_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].GradeFIO_DB,
+                "2.0" => _repInBase.Rows20[0].GradeFIO_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].GradeFIO_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].GradeFIO_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -270,8 +384,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldTelephone0
     {
-        get => _repInBase.Rows10[0].Telephone_DB;
-        set => _repInBase.Rows10[0].Telephone_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Telephone_DB,
+                "2.0" => _repInBase.Rows20[0].Telephone_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Telephone_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Telephone_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -306,8 +439,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldFax0
     {
-        get => _repInBase.Rows10[0].Fax_DB;
-        set => _repInBase.Rows10[0].Fax_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Fax_DB,
+                "2.0" => _repInBase.Rows20[0].Fax_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Fax_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Fax_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -342,8 +494,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldEmail0
     {
-        get => _repInBase.Rows10[0].Email_DB;
-        set => _repInBase.Rows10[0].Email_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Email_DB,
+                "2.0" => _repInBase.Rows20[0].Email_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Email_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Email_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -378,8 +549,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkpo0
     {
-        get => _repInBase.Rows10[0].Okpo_DB;
-        set => _repInBase.Rows10[0].Okpo_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Okpo_DB,
+                "2.0" => _repInBase.Rows20[0].Okpo_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Okpo_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Okpo_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -414,8 +604,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkved0
     {
-        get => _repInBase.Rows10[0].Okved_DB;
-        set => _repInBase.Rows10[0].Okved_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Okved_DB,
+                "2.0" => _repInBase.Rows20[0].Okved_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Okved_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Okved_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -450,8 +659,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkogu0
     {
-        get => _repInBase.Rows10[0].Okogu_DB;
-        set => _repInBase.Rows10[0].Okogu_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Okogu_DB,
+                "2.0" => _repInBase.Rows20[0].Okogu_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Okogu_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Okogu_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -486,8 +714,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOktmo0
     {
-        get => _repInBase.Rows10[0].Oktmo_DB;
-        set => _repInBase.Rows10[0].Oktmo_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Oktmo_DB,
+                "2.0" => _repInBase.Rows20[0].Oktmo_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Oktmo_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Oktmo_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -522,8 +769,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldInn0
     {
-        get => _repInBase.Rows10[0].Inn_DB;
-        set => _repInBase.Rows10[0].Inn_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Inn_DB,
+                "2.0" => _repInBase.Rows20[0].Inn_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Inn_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Inn_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -558,8 +824,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldKpp0
     {
-        get => _repInBase.Rows10[0].Kpp_DB;
-        set => _repInBase.Rows10[0].Kpp_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Kpp_DB,
+                "2.0" => _repInBase.Rows20[0].Kpp_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Kpp_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Kpp_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -594,8 +879,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkopf0
     {
-        get => _repInBase.Rows10[0].Okopf_DB;
-        set => _repInBase.Rows10[0].Okopf_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Okopf_DB,
+                "2.0" => _repInBase.Rows20[0].Okopf_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Okopf_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Okopf_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -630,8 +934,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkfs0
     {
-        get => _repInBase.Rows10[0].Okfs_DB;
-        set => _repInBase.Rows10[0].Okfs_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[0].Okfs_DB,
+                "2.0" => _repInBase.Rows20[0].Okfs_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[0].Okfs_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[0].Okfs_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -670,8 +993,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldSubjectRF1
     {
-        get => _repInBase.Rows10[1].SubjectRF_DB;
-        set => _repInBase.Rows10[1].SubjectRF_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].SubjectRF_DB,
+                "2.0" => _repInBase.Rows20[1].SubjectRF_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].SubjectRF_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].SubjectRF_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -706,8 +1048,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldJurLico1
     {
-        get => _repInBase.Rows10[1].JurLico_DB;
-        set => _repInBase.Rows10[1].JurLico_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].JurLico_DB,
+                "2.0" => _repInBase.Rows20[1].JurLico_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].JurLico_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].JurLico_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -742,8 +1103,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldShortJurLico1
     {
-        get => _repInBase.Rows10[1].ShortJurLico_DB;
-        set => _repInBase.Rows10[1].ShortJurLico_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].ShortJurLico_DB,
+                "2.0" => _repInBase.Rows20[1].ShortJurLico_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].ShortJurLico_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].ShortJurLico_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -778,8 +1158,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldJurLicoAddress1
     {
-        get => _repInBase.Rows10[1].JurLicoAddress_DB;
-        set => _repInBase.Rows10[1].JurLicoAddress_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].JurLicoAddress_DB,
+                "2.0" => _repInBase.Rows20[1].JurLicoAddress_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].JurLicoAddress_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].JurLicoAddress_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -814,8 +1213,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldJurLicoFactAddress1
     {
-        get => _repInBase.Rows10[1].JurLicoFactAddress_DB;
-        set => _repInBase.Rows10[1].JurLicoFactAddress_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].JurLicoFactAddress_DB,
+                "2.0" => _repInBase.Rows20[1].JurLicoFactAddress_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].JurLicoFactAddress_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].JurLicoFactAddress_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -850,8 +1268,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldGradeFIO1
     {
-        get => _repInBase.Rows10[1].GradeFIO_DB;
-        set => _repInBase.Rows10[1].GradeFIO_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].GradeFIO_DB,
+                "2.0" => _repInBase.Rows20[1].GradeFIO_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].GradeFIO_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].GradeFIO_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -886,8 +1323,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldTelephone1
     {
-        get => _repInBase.Rows10[1].Telephone_DB;
-        set => _repInBase.Rows10[1].Telephone_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Telephone_DB,
+                "2.0" => _repInBase.Rows20[1].Telephone_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Telephone_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Telephone_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -922,8 +1378,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldFax1
     {
-        get => _repInBase.Rows10[1].Fax_DB;
-        set => _repInBase.Rows10[1].Fax_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Fax_DB,
+                "2.0" => _repInBase.Rows20[1].Fax_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Fax_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Fax_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -958,8 +1433,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldEmail1
     {
-        get => _repInBase.Rows10[1].Email_DB;
-        set => _repInBase.Rows10[1].Email_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Email_DB,
+                "2.0" => _repInBase.Rows20[1].Email_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Email_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Email_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -994,8 +1488,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkpo1
     {
-        get => _repInBase.Rows10[1].Okpo_DB;
-        set => _repInBase.Rows10[1].Okpo_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Okpo_DB,
+                "2.0" => _repInBase.Rows20[1].Okpo_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Okpo_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Okpo_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1030,8 +1543,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkved1
     {
-        get => _repInBase.Rows10[1].Okved_DB;
-        set => _repInBase.Rows10[1].Okved_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Okved_DB,
+                "2.0" => _repInBase.Rows20[1].Okved_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Okved_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Okved_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1066,8 +1598,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkogu1
     {
-        get => _repInBase.Rows10[1].Okogu_DB;
-        set => _repInBase.Rows10[1].Okogu_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Okogu_DB,
+                "2.0" => _repInBase.Rows20[1].Okogu_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Okogu_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Okogu_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1102,8 +1653,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOktmo1
     {
-        get => _repInBase.Rows10[1].Oktmo_DB;
-        set => _repInBase.Rows10[1].Oktmo_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Oktmo_DB,
+                "2.0" => _repInBase.Rows20[1].Oktmo_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Oktmo_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Oktmo_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1138,8 +1708,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldInn1
     {
-        get => _repInBase.Rows10[1].Inn_DB;
-        set => _repInBase.Rows10[1].Inn_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Inn_DB,
+                "2.0" => _repInBase.Rows20[1].Inn_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Inn_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Inn_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1174,8 +1763,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldKpp1
     {
-        get => _repInBase.Rows10[1].Kpp_DB;
-        set => _repInBase.Rows10[1].Kpp_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Kpp_DB,
+                "2.0" => _repInBase.Rows20[1].Kpp_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Kpp_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Kpp_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1210,8 +1818,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkopf1
     {
-        get => _repInBase.Rows10[1].Okopf_DB;
-        set => _repInBase.Rows10[1].Okopf_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Okopf_DB,
+                "2.0" => _repInBase.Rows20[1].Okopf_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Okopf_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Okopf_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1246,8 +1873,27 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     public string OldOkfs1
     {
-        get => _repInBase.Rows10[1].Okfs_DB;
-        set => _repInBase.Rows10[1].Okfs_DB = value;
+        get
+        {
+            return _repInBase.FormNum_DB switch
+            {
+                "1.0" => _repInBase.Rows10[1].Okfs_DB,
+                "2.0" => _repInBase.Rows20[1].Okfs_DB,
+                _ => string.Empty
+            };
+        }
+        set
+        {
+            switch (_repInBase.FormNum_DB)
+            {
+                case "1.0":
+                    _repInBase.Rows10[1].Okfs_DB = value;
+                    break;
+                case "2.0":
+                    _repInBase.Rows20[1].Okfs_DB = value;
+                    break;
+            }
+        }
     }
 
     #endregion
@@ -1265,114 +1911,276 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
         _repInBase = repInBase;
         RegNo = repInBase.RegNoRep.Value;
 
-        #region JurLico
+        switch (repInBase.FormNum_DB)
+        {
+            case "1.0":
+
+                #region JurLico
         
-        NewSubjectRF0 = repImport.Rows10[0].SubjectRF_DB;
-        OldSubjectRF0 = repInBase.Rows10[0].SubjectRF_DB;
+                NewSubjectRF0 = repImport.Rows10[0].SubjectRF_DB;
+                OldSubjectRF0 = repInBase.Rows10[0].SubjectRF_DB;
+            
+                NewJurLico0 = repImport.Rows10[0].JurLico_DB;
+                OldJurLico0 = repInBase.Rows10[0].JurLico_DB;
+            
+                NewShortJurLico0 = repImport.Rows10[0].ShortJurLico_DB;
+                OldShortJurLico0 = repInBase.Rows10[0].ShortJurLico_DB;
+            
+                NewJurLicoAddress0 = repImport.Rows10[0].JurLicoAddress_DB;
+                OldJurLicoAddress0 = repInBase.Rows10[0].JurLicoAddress_DB;
+            
+                NewJurLicoFactAddress0 = repImport.Rows10[0].JurLicoFactAddress_DB;
+                OldJurLicoFactAddress0 = repInBase.Rows10[0].JurLicoFactAddress_DB;
+            
+                NewGradeFIO0 = repImport.Rows10[0].GradeFIO_DB;
+                OldGradeFIO0 = repInBase.Rows10[0].GradeFIO_DB;
+            
+                NewTelephone0 = repImport.Rows10[0].Telephone_DB;
+                OldTelephone0 = repInBase.Rows10[0].Telephone_DB;
+            
+                NewFax0 = repImport.Rows10[0].Fax_DB;
+                OldFax0 = repInBase.Rows10[0].Fax_DB;
+            
+                NewEmail0 = repImport.Rows10[0].Email_DB;
+                OldEmail0 = repInBase.Rows10[0].Email_DB;
+            
+                NewOkpo0 = repImport.Rows10[0].Okpo_DB;
+                OldOkpo0 = repInBase.Rows10[0].Okpo_DB;
+            
+                NewOkved0 = repImport.Rows10[0].Okved_DB;
+                OldOkved0 = repInBase.Rows10[0].Okved_DB;
+            
+                NewOkogu0 = repImport.Rows10[0].Okogu_DB;
+                OldOkogu0 = repInBase.Rows10[0].Okogu_DB;
+            
+                NewOktmo0 = repImport.Rows10[0].Oktmo_DB;
+                OldOktmo0 = repInBase.Rows10[0].Oktmo_DB;
+            
+                NewInn0 = repImport.Rows10[0].Inn_DB;
+                OldInn0 = repInBase.Rows10[0].Inn_DB;
+            
+                NewKpp0 = repImport.Rows10[0].Kpp_DB;
+                OldKpp0 = repInBase.Rows10[0].Kpp_DB;
+            
+                NewOkopf0 = repImport.Rows10[0].Okopf_DB;
+                OldOkopf0 = repInBase.Rows10[0].Okopf_DB;
+            
+                NewOkfs0 = repImport.Rows10[0].Okfs_DB;
+                OldOkfs0 = repInBase.Rows10[0].Okfs_DB;
+            
+                #endregion
+
+                #region ObosoblPodr
+            
+                NewSubjectRF1 = repImport.Rows10[1].SubjectRF_DB;
+                OldSubjectRF1 = repInBase.Rows10[1].SubjectRF_DB;
+            
+                NewJurLico1 = repImport.Rows10[1].JurLico_DB;
+                OldJurLico1 = repInBase.Rows10[1].JurLico_DB;
+            
+                NewShortJurLico1 = repImport.Rows10[1].ShortJurLico_DB;
+                OldShortJurLico1 = repInBase.Rows10[1].ShortJurLico_DB;
+            
+                NewJurLicoAddress1 = repImport.Rows10[1].JurLicoAddress_DB;
+                OldJurLicoAddress1 = repInBase.Rows10[1].JurLicoAddress_DB;
+            
+                NewJurLicoFactAddress1 = repImport.Rows10[1].JurLicoFactAddress_DB;
+                OldJurLicoFactAddress1 = repInBase.Rows10[1].JurLicoFactAddress_DB;
+            
+                NewGradeFIO1 = repImport.Rows10[1].GradeFIO_DB;
+                OldGradeFIO1 = repInBase.Rows10[1].GradeFIO_DB;
+            
+                NewTelephone1 = repImport.Rows10[1].Telephone_DB;
+                OldTelephone1 = repInBase.Rows10[1].Telephone_DB;
+            
+                NewFax1 = repImport.Rows10[1].Fax_DB;
+                OldFax1 = repInBase.Rows10[1].Fax_DB;
+            
+                NewEmail1 = repImport.Rows10[1].Email_DB;
+                OldEmail1 = repInBase.Rows10[1].Email_DB;
+            
+                NewOkpo1 = repImport.Rows10[1].Okpo_DB;
+                OldOkpo1 = repInBase.Rows10[1].Okpo_DB;
+            
+                NewOkved1 = repImport.Rows10[1].Okved_DB;
+                OldOkved1 = repInBase.Rows10[1].Okved_DB;
+            
+                NewOkogu1 = repImport.Rows10[1].Okogu_DB;
+                OldOkogu1 = repInBase.Rows10[1].Okogu_DB;
+            
+                NewOktmo1 = repImport.Rows10[1].Oktmo_DB;
+                OldOktmo1 = repInBase.Rows10[1].Oktmo_DB;
+            
+                NewInn1 = repImport.Rows10[1].Inn_DB;
+                OldInn1 = repInBase.Rows10[1].Inn_DB;
+            
+                NewKpp1 = repImport.Rows10[1].Kpp_DB;
+                OldKpp1 = repInBase.Rows10[1].Kpp_DB;
+            
+                NewOkopf1 = repImport.Rows10[1].Okopf_DB;
+                OldOkopf1 = repInBase.Rows10[1].Okopf_DB;
+            
+                NewOkfs1 = repImport.Rows10[1].Okfs_DB;
+                OldOkfs1 = repInBase.Rows10[1].Okfs_DB;
+            
+                #endregion
+
+                break;
+            case "2.0":
+
+                #region JurLico
+        
+                NewSubjectRF0 = repImport.Rows20[0].SubjectRF_DB;
+                OldSubjectRF0 = repInBase.Rows20[0].SubjectRF_DB;
+            
+                NewJurLico0 = repImport.Rows20[0].JurLico_DB;
+                OldJurLico0 = repInBase.Rows20[0].JurLico_DB;
+            
+                NewShortJurLico0 = repImport.Rows20[0].ShortJurLico_DB;
+                OldShortJurLico0 = repInBase.Rows20[0].ShortJurLico_DB;
+            
+                NewJurLicoAddress0 = repImport.Rows20[0].JurLicoAddress_DB;
+                OldJurLicoAddress0 = repInBase.Rows20[0].JurLicoAddress_DB;
+            
+                NewJurLicoFactAddress0 = repImport.Rows20[0].JurLicoFactAddress_DB;
+                OldJurLicoFactAddress0 = repInBase.Rows20[0].JurLicoFactAddress_DB;
+            
+                NewGradeFIO0 = repImport.Rows20[0].GradeFIO_DB;
+                OldGradeFIO0 = repInBase.Rows20[0].GradeFIO_DB;
+            
+                NewTelephone0 = repImport.Rows20[0].Telephone_DB;
+                OldTelephone0 = repInBase.Rows20[0].Telephone_DB;
+            
+                NewFax0 = repImport.Rows20[0].Fax_DB;
+                OldFax0 = repInBase.Rows20[0].Fax_DB;
+            
+                NewEmail0 = repImport.Rows20[0].Email_DB;
+                OldEmail0 = repInBase.Rows20[0].Email_DB;
+            
+                NewOkpo0 = repImport.Rows20[0].Okpo_DB;
+                OldOkpo0 = repInBase.Rows20[0].Okpo_DB;
+            
+                NewOkved0 = repImport.Rows20[0].Okved_DB;
+                OldOkved0 = repInBase.Rows20[0].Okved_DB;
+            
+                NewOkogu0 = repImport.Rows20[0].Okogu_DB;
+                OldOkogu0 = repInBase.Rows20[0].Okogu_DB;
+            
+                NewOktmo0 = repImport.Rows20[0].Oktmo_DB;
+                OldOktmo0 = repInBase.Rows20[0].Oktmo_DB;
+            
+                NewInn0 = repImport.Rows20[0].Inn_DB;
+                OldInn0 = repInBase.Rows20[0].Inn_DB;
+            
+                NewKpp0 = repImport.Rows20[0].Kpp_DB;
+                OldKpp0 = repInBase.Rows20[0].Kpp_DB;
+            
+                NewOkopf0 = repImport.Rows20[0].Okopf_DB;
+                OldOkopf0 = repInBase.Rows20[0].Okopf_DB;
+            
+                NewOkfs0 = repImport.Rows20[0].Okfs_DB;
+                OldOkfs0 = repInBase.Rows20[0].Okfs_DB;
+            
+                #endregion
+
+                #region ObosoblPodr
+            
+                NewSubjectRF1 = repImport.Rows20[1].SubjectRF_DB;
+                OldSubjectRF1 = repInBase.Rows20[1].SubjectRF_DB;
+            
+                NewJurLico1 = repImport.Rows20[1].JurLico_DB;
+                OldJurLico1 = repInBase.Rows20[1].JurLico_DB;
+            
+                NewShortJurLico1 = repImport.Rows20[1].ShortJurLico_DB;
+                OldShortJurLico1 = repInBase.Rows20[1].ShortJurLico_DB;
+            
+                NewJurLicoAddress1 = repImport.Rows20[1].JurLicoAddress_DB;
+                OldJurLicoAddress1 = repInBase.Rows20[1].JurLicoAddress_DB;
+            
+                NewJurLicoFactAddress1 = repImport.Rows20[1].JurLicoFactAddress_DB;
+                OldJurLicoFactAddress1 = repInBase.Rows20[1].JurLicoFactAddress_DB;
+            
+                NewGradeFIO1 = repImport.Rows20[1].GradeFIO_DB;
+                OldGradeFIO1 = repInBase.Rows20[1].GradeFIO_DB;
+            
+                NewTelephone1 = repImport.Rows20[1].Telephone_DB;
+                OldTelephone1 = repInBase.Rows20[1].Telephone_DB;
+            
+                NewFax1 = repImport.Rows20[1].Fax_DB;
+                OldFax1 = repInBase.Rows20[1].Fax_DB;
+            
+                NewEmail1 = repImport.Rows20[1].Email_DB;
+                OldEmail1 = repInBase.Rows20[1].Email_DB;
+            
+                NewOkpo1 = repImport.Rows20[1].Okpo_DB;
+                OldOkpo1 = repInBase.Rows20[1].Okpo_DB;
+            
+                NewOkved1 = repImport.Rows20[1].Okved_DB;
+                OldOkved1 = repInBase.Rows20[1].Okved_DB;
+            
+                NewOkogu1 = repImport.Rows20[1].Okogu_DB;
+                OldOkogu1 = repInBase.Rows20[1].Okogu_DB;
+            
+                NewOktmo1 = repImport.Rows20[1].Oktmo_DB;
+                OldOktmo1 = repInBase.Rows20[1].Oktmo_DB;
+            
+                NewInn1 = repImport.Rows20[1].Inn_DB;
+                OldInn1 = repInBase.Rows20[1].Inn_DB;
+            
+                NewKpp1 = repImport.Rows20[1].Kpp_DB;
+                OldKpp1 = repInBase.Rows20[1].Kpp_DB;
+            
+                NewOkopf1 = repImport.Rows20[1].Okopf_DB;
+                OldOkopf1 = repInBase.Rows20[1].Okopf_DB;
+            
+                NewOkfs1 = repImport.Rows20[1].Okfs_DB;
+                OldOkfs1 = repInBase.Rows20[1].Okfs_DB;
+            
+                #endregion
+
+                break;
+        }
+
+        #region JurLicoCheckBox
+
         ReplaceSubjectRF0 = !OldSubjectRF0.Equals(NewSubjectRF0);
-        NewJurLico0 = repImport.Rows10[0].JurLico_DB;
-        OldJurLico0 = repInBase.Rows10[0].JurLico_DB;
         ReplaceJurLico0 = !OldJurLico0.Equals(NewJurLico0);
-        NewShortJurLico0 = repImport.Rows10[0].ShortJurLico_DB;
-        OldShortJurLico0 = repInBase.Rows10[0].ShortJurLico_DB;
         ReplaceShortJurLico0 = !OldShortJurLico0.Equals(NewShortJurLico0);
-        NewJurLicoAddress0 = repImport.Rows10[0].JurLicoAddress_DB;
-        OldJurLicoAddress0 = repInBase.Rows10[0].JurLicoAddress_DB;
         ReplaceJurLicoAddress0 = !OldJurLicoAddress0.Equals(NewJurLicoAddress0);
-        NewJurLicoFactAddress0 = repImport.Rows10[0].JurLicoFactAddress_DB;
-        OldJurLicoFactAddress0 = repInBase.Rows10[0].JurLicoFactAddress_DB;
         ReplaceJurLicoFactAddress0 = !OldJurLicoFactAddress0.Equals(NewJurLicoFactAddress0);
-        NewGradeFIO0 = repImport.Rows10[0].GradeFIO_DB;
-        OldGradeFIO0 = repInBase.Rows10[0].GradeFIO_DB;
         ReplaceGradeFIO0 = !OldGradeFIO0.Equals(NewGradeFIO0);
-        NewTelephone0 = repImport.Rows10[0].Telephone_DB;
-        OldTelephone0 = repInBase.Rows10[0].Telephone_DB;
         ReplaceTelephone0 = !OldTelephone0.Equals(NewTelephone0);
-        NewFax0 = repImport.Rows10[0].Fax_DB;
-        OldFax0 = repInBase.Rows10[0].Fax_DB;
         ReplaceFax0 = !OldFax0.Equals(NewFax0);
-        NewEmail0 = repImport.Rows10[0].Email_DB;
-        OldEmail0 = repInBase.Rows10[0].Email_DB;
         ReplaceEmail0 = !OldEmail0.Equals(NewEmail0);
-        NewOkpo0 = repImport.Rows10[0].Okpo_DB;
-        OldOkpo0 = repInBase.Rows10[0].Okpo_DB;
         ReplaceOkpo0 = !OldOkpo0.Equals(NewOkpo0);
-        NewOkved0 = repImport.Rows10[0].Okved_DB;
-        OldOkved0 = repInBase.Rows10[0].Okved_DB;
         ReplaceOkved0 = !OldOkved0.Equals(NewOkved0);
-        NewOkogu0 = repImport.Rows10[0].Okogu_DB;
-        OldOkogu0 = repInBase.Rows10[0].Okogu_DB;
         ReplaceOkogu0 = !OldOkogu0.Equals(NewOkogu0);
-        NewOktmo0 = repImport.Rows10[0].Oktmo_DB;
-        OldOktmo0 = repInBase.Rows10[0].Oktmo_DB;
         ReplaceOktmo0 = !OldOktmo0.Equals(NewOktmo0);
-        NewInn0 = repImport.Rows10[0].Inn_DB;
-        OldInn0 = repInBase.Rows10[0].Inn_DB;
         ReplaceInn0 = !OldInn0.Equals(NewInn0);
-        NewKpp0 = repImport.Rows10[0].Kpp_DB;
-        OldKpp0 = repInBase.Rows10[0].Kpp_DB;
         ReplaceKpp0 = !OldKpp0.Equals(NewKpp0);
-        NewOkopf0 = repImport.Rows10[0].Okopf_DB;
-        OldOkopf0 = repInBase.Rows10[0].Okopf_DB;
         ReplaceOkopf0 = !OldOkopf0.Equals(NewOkopf0);
-        NewOkfs0 = repImport.Rows10[0].Okfs_DB;
-        OldOkfs0 = repInBase.Rows10[0].Okfs_DB;
         ReplaceOkfs0 = !OldOkfs0.Equals(NewOkfs0);
 
         #endregion
 
-        #region ObosoblPodr
-        
-        NewSubjectRF1 = repImport.Rows10[1].SubjectRF_DB;
-        OldSubjectRF1 = repInBase.Rows10[1].SubjectRF_DB;
+        #region ObosoblPodrCheckBox
+
         ReplaceSubjectRF1 = !OldSubjectRF1.Equals(NewSubjectRF1);
-        NewJurLico1 = repImport.Rows10[1].JurLico_DB;
-        OldJurLico1 = repInBase.Rows10[1].JurLico_DB;
         ReplaceJurLico1 = !OldJurLico1.Equals(NewJurLico1);
-        NewShortJurLico1 = repImport.Rows10[1].ShortJurLico_DB;
-        OldShortJurLico1 = repInBase.Rows10[1].ShortJurLico_DB;
         ReplaceShortJurLico1 = !OldShortJurLico1.Equals(NewShortJurLico1);
-        NewJurLicoAddress1 = repImport.Rows10[1].JurLicoAddress_DB;
-        OldJurLicoAddress1 = repInBase.Rows10[1].JurLicoAddress_DB;
         ReplaceJurLicoAddress1 = !OldJurLicoAddress1.Equals(NewJurLicoAddress1);
-        NewJurLicoFactAddress1 = repImport.Rows10[1].JurLicoFactAddress_DB;
-        OldJurLicoFactAddress1 = repInBase.Rows10[1].JurLicoFactAddress_DB;
         ReplaceJurLicoFactAddress1 = !OldJurLicoFactAddress1.Equals(NewJurLicoFactAddress1);
-        NewGradeFIO1 = repImport.Rows10[1].GradeFIO_DB;
-        OldGradeFIO1 = repInBase.Rows10[1].GradeFIO_DB;
         ReplaceGradeFIO1 = !OldGradeFIO1.Equals(NewGradeFIO1);
-        NewTelephone1 = repImport.Rows10[1].Telephone_DB;
-        OldTelephone1 = repInBase.Rows10[1].Telephone_DB;
         ReplaceTelephone1 = !OldTelephone1.Equals(NewTelephone1);
-        NewFax1 = repImport.Rows10[1].Fax_DB;
-        OldFax1 = repInBase.Rows10[1].Fax_DB;
         ReplaceFax1 = !OldFax1.Equals(NewFax1);
-        NewEmail1 = repImport.Rows10[1].Email_DB;
-        OldEmail1 = repInBase.Rows10[1].Email_DB;
         ReplaceEmail1 = !OldEmail1.Equals(NewEmail1);
-        NewOkpo1 = repImport.Rows10[1].Okpo_DB;
-        OldOkpo1 = repInBase.Rows10[1].Okpo_DB;
         ReplaceOkpo1 = !OldOkpo1.Equals(NewOkpo1);
-        NewOkved1 = repImport.Rows10[1].Okved_DB;
-        OldOkved1 = repInBase.Rows10[1].Okved_DB;
         ReplaceOkved1 = !OldOkved1.Equals(NewOkved1);
-        NewOkogu1 = repImport.Rows10[1].Okogu_DB;
-        OldOkogu1 = repInBase.Rows10[1].Okogu_DB;
         ReplaceOkogu1 = !OldOkogu1.Equals(NewOkogu1);
-        NewOktmo1 = repImport.Rows10[1].Oktmo_DB;
-        OldOktmo1 = repInBase.Rows10[1].Oktmo_DB;
         ReplaceOktmo1 = !OldOktmo1.Equals(NewOktmo1);
-        NewInn1 = repImport.Rows10[1].Inn_DB;
-        OldInn1 = repInBase.Rows10[1].Inn_DB;
         ReplaceInn1 = !OldInn1.Equals(NewInn1);
-        NewKpp1 = repImport.Rows10[1].Kpp_DB;
-        OldKpp1 = repInBase.Rows10[1].Kpp_DB;
         ReplaceKpp1 = !OldKpp1.Equals(NewKpp1);
-        NewOkopf1 = repImport.Rows10[1].Okopf_DB;
-        OldOkopf1 = repInBase.Rows10[1].Okopf_DB;
         ReplaceOkopf1 = !OldOkopf1.Equals(NewOkopf1);
-        NewOkfs1 = repImport.Rows10[1].Okfs_DB;
-        OldOkfs1 = repInBase.Rows10[1].Okfs_DB;
         ReplaceOkfs1 = !OldOkfs1.Equals(NewOkfs1);
 
         #endregion

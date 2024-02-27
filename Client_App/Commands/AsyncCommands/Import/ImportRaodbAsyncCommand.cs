@@ -105,7 +105,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 }
                 else if (baseReps21 != null)
                 {
-                    await ProcessIfHasReports21(baseReps21, impReps);
+                    await ProcessIfHasReports21(baseReps21, impReps, impReps.Report_Collection.ToList());
                 }
                 else if (baseReps11 == null && baseReps21 == null)
                 {

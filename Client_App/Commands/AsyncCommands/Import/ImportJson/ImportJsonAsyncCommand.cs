@@ -335,7 +335,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         {
                             await ReportsStorage.GetReportAsync(report.Id);
                         }
-                        await ProcessIfHasReports21(baseReps21, impReps);
+                        await ProcessIfHasReports21(baseReps21, impReps, impReps.Report_Collection.ToList());
                     }
                     else if (baseReps11 == null && baseReps21 == null)
                     {

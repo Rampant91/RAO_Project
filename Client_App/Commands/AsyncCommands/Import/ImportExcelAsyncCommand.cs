@@ -146,7 +146,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         }
                     case "2.0":
                         {
-                            await ProcessIfHasReports21(baseReps, impReps);
+                            await ProcessIfHasReports21(baseReps, impReps, impRepList);
                             break;
                         }
                 }
