@@ -99,13 +99,14 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 BaseRepsRegNum = impReps.Master.RegNoRep.Value;
                 BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
+                var impRepsReportList = impReps.Report_Collection.ToList();
                 if (baseReps11 != null)
                 {
-                    await ProcessIfHasReports11(baseReps11, impReps, impReps.Report_Collection.ToList());
+                    await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
                 }
                 else if (baseReps21 != null)
                 {
-                    await ProcessIfHasReports21(baseReps21, impReps, impReps.Report_Collection.ToList());
+                    await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
                 }
                 else if (baseReps11 == null && baseReps21 == null)
                 {
@@ -121,12 +122,12 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             an = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                         new ButtonDefinition { Name = "Да для всех" },
                                         new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    },
+                                    ],
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
@@ -154,11 +155,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             an = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                         new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    },
+                                    ],
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =

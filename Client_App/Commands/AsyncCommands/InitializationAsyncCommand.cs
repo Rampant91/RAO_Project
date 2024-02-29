@@ -23,65 +23,59 @@ using static Client_App.ViewModels.BaseVM;
 using System.Reflection;
 
 namespace Client_App.Commands.AsyncCommands;
-public class InitializationAsyncCommand : BaseAsyncCommand
+
+public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
 {
-    private readonly MainWindowVM _mainWindowViewModel;
-
-    public InitializationAsyncCommand(MainWindowVM mainWindowViewModel)
-    {
-        _mainWindowViewModel = mainWindowViewModel;
-    }
-
     public override async Task AsyncExecute(object? parameter)
     {
         var onStartProgressBarVm = parameter as OnStartProgressBarVM;
         onStartProgressBarVm!.LoadStatus = "Поиск системной директории";
-        _mainWindowViewModel.OnStartProgressBar = 1;
+        mainWindowViewModel.OnStartProgressBar = 1;
         GetSystemDirectory();
 
         onStartProgressBarVm.LoadStatus = "Создание временных файлов";
-        _mainWindowViewModel.OnStartProgressBar = 5;
+        mainWindowViewModel.OnStartProgressBar = 5;
         await ProcessRaoDirectory();
 
         onStartProgressBarVm.LoadStatus = "Загрузка справочников";
-        _mainWindowViewModel.OnStartProgressBar = 10;
+        mainWindowViewModel.OnStartProgressBar = 10;
         await ProcessSpravochniks();
 
         onStartProgressBarVm.LoadStatus = "Создание базы данных";
-        _mainWindowViewModel.OnStartProgressBar = 15;
+        mainWindowViewModel.OnStartProgressBar = 15;
         await ProcessDataBaseCreate();
 
         onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
-        _mainWindowViewModel.OnStartProgressBar = 20;
+        mainWindowViewModel.OnStartProgressBar = 20;
         var dbm = StaticConfiguration.DBModel;
 
         #region LoadTables
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
-        _mainWindowViewModel.OnStartProgressBar = 24;
+        mainWindowViewModel.OnStartProgressBar = 24;
         await dbm.form_10.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
-        _mainWindowViewModel.OnStartProgressBar = 45;
+        mainWindowViewModel.OnStartProgressBar = 45;
         await dbm.form_20.LoadAsync();
 
         try
         {
             onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
-            _mainWindowViewModel.OnStartProgressBar = 72;
+            mainWindowViewModel.OnStartProgressBar = 72;
             await dbm.ReportCollectionDbSet.LoadAsync();
         }
         catch (Exception ex)
         {
-
+            //ignore
         }
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
-        _mainWindowViewModel.OnStartProgressBar = 74;
+        mainWindowViewModel.OnStartProgressBar = 74;
         await dbm.ReportsCollectionDbSet.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
-        _mainWindowViewModel.OnStartProgressBar = 76;
+        mainWindowViewModel.OnStartProgressBar = 76;
         if (!dbm.DBObservableDbSet.Any())
         {
             dbm.DBObservableDbSet.Add(new DBObservable());
@@ -93,21 +87,21 @@ public class InitializationAsyncCommand : BaseAsyncCommand
         #endregion
 
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
-        _mainWindowViewModel.OnStartProgressBar = 80;
+        mainWindowViewModel.OnStartProgressBar = 80;
         await ProcessDataBaseFillEmpty(dbm);
 
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
-        _mainWindowViewModel.OnStartProgressBar = 85;
+        mainWindowViewModel.OnStartProgressBar = 85;
         ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
 
         await ProcessDataBaseFillNullOrder();
 
         onStartProgressBarVm.LoadStatus = "Сохранение";
-        _mainWindowViewModel.OnStartProgressBar = 90;
+        mainWindowViewModel.OnStartProgressBar = 90;
         await dbm.SaveChangesAsync();
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
-        _mainWindowViewModel.OnStartProgressBar = 100;
+        mainWindowViewModel.OnStartProgressBar = 100;
     }
 
     #region Initialization
@@ -137,7 +131,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
 
     #region ProcessRaoDirectory
     
-    private static async Task ProcessRaoDirectory()
+    private static Task ProcessRaoDirectory()
     {
         try
         {
@@ -164,6 +158,8 @@ public class InitializationAsyncCommand : BaseAsyncCommand
                 // ignored
             }
         }
+
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -196,7 +192,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
             {
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                _mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+                mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -209,7 +205,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
             }
         }
         DbFileName = $"Local_{i}";
-        _mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+        mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
         StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
         StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
         dbm = StaticConfiguration.DBModel;
@@ -235,7 +231,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
+                        ContentTitle = "Ошибка при чтении файла .raodb",
                         ContentHeader = "Ошибка",
                         ContentMessage = $"Не удалось прочесть файл базы данных " +
                                          $"{Environment.NewLine}{dbFileInfo.FullName}. Файл поврежден." +
@@ -256,7 +252,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
+                        ContentTitle = "Создание файла .raodb",
                         ContentHeader = "Ошибка",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
@@ -394,7 +390,7 @@ public class InitializationAsyncCommand : BaseAsyncCommand
     
     private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
     {
-        _mainWindowViewModel.OnPropertyChanged(nameof(ReportsStorage.LocalReports));
+        mainWindowViewModel.OnPropertyChanged(nameof(ReportsStorage.LocalReports));
     }
 
     #endregion

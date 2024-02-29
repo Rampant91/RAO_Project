@@ -7,7 +7,6 @@ using Models.Forms;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,11 +47,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
-                        ButtonDefinitions = new[]
-                        {
+                        ButtonDefinitions = 
+                        [
                             new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
-                        },
-                        ContentTitle = "Импорт из Excel",
+                        ],
+                        ContentTitle = "Импорт из .xlsx",
                         ContentHeader = "Уведомление",
                         ContentMessage = $"Не удалось импортировать данные из {SourceFile.FullName}." +
                                          $"{Environment.NewLine}Не соответствует формат данных!",
@@ -165,13 +164,13 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         an = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                     new ButtonDefinition { Name = "Да для всех" },
                                     new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .xlsx",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
@@ -198,12 +197,12 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         an = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                     new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .xlsx",
                                 ContentHeader = "Уведомление",
                                 ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
                                                  $"{Environment.NewLine}" +

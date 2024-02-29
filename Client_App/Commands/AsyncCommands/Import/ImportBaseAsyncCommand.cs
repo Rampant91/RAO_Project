@@ -16,7 +16,6 @@ using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
-using OfficeOpenXml.ConditionalFormatting.Contracts;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -57,7 +56,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public byte ImpRepCorNum;
     public int ImpRepFormCount;
 
-    private protected DBModel Db = StaticConfiguration.DBModel;
     private protected string TmpImpFilePath = "";
 
     public string OperationDate => IsFirstLogLine
@@ -595,12 +593,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
                                     new ButtonDefinition { Name = "Пропустить для всех" }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
@@ -654,14 +652,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                     new ButtonDefinition { Name = "Дополнить" },
                                     new ButtonDefinition { Name = "Сохранить оба" },
                                     new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Импортируемый отчет имеет тот же период, номер корректировки, что и имеющийся в базе." +
@@ -703,13 +701,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             res = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                         new ButtonDefinition { Name = "Заменять все формы" },
                                         new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                    },
-                                    ContentTitle = "Импорт из .raodb",
+                                    ],
+                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
                                         "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
@@ -747,12 +745,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             res = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                         new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                    },
-                                    ContentTitle = "Импорт из .raodb",
+                                    ],
+                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
                                         "Импортируемый отчет имеет больший номер корректировки чем имеющийся в базе." +
@@ -801,13 +799,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Сохранить оба", IsDefault = true },
                                 new ButtonDefinition { Name = "Отменить для всех пересечений" },
                                 new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Периоды импортируемого и имеющегося в базе отчетов пересекаются, но не совпадают." +
@@ -852,11 +850,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
-                        ButtonDefinitions = new[]
-                        {
+                        ButtonDefinitions =
+                        [
                             new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
-                        },
-                        ContentTitle = "Импорт из .raodb",
+                        ],
+                        ContentTitle = "Импорт из .raodb/.xlsx/.json",
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
@@ -888,13 +886,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Да для всех" },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
@@ -928,12 +926,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
@@ -1008,12 +1006,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
                                 new ButtonDefinition { Name = "Пропустить для всех" }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
@@ -1066,14 +1064,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                 new ButtonDefinition { Name = "Дополнить" },
                                 new ButtonDefinition { Name = "Сохранить оба" },
                                 new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортируемый отчет имеет тот же год и номер корректировки, что и имеющийся в базе." +
@@ -1118,13 +1116,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                     new ButtonDefinition { Name = "Заменять все формы" },
                                     new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
@@ -1161,12 +1159,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                     new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
@@ -1213,11 +1211,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
-                        ButtonDefinitions = new[]
-                        {
+                        ButtonDefinitions =
+                        [
                             new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
-                        },
-                        ContentTitle = "Импорт из .raodb",
+                        ],
+                        ContentTitle = "Импорт из .raodb/.xlsx/.json",
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
@@ -1260,13 +1258,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Да для всех" },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
@@ -1299,12 +1297,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +

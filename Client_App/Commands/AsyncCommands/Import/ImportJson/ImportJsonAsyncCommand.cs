@@ -26,7 +26,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
     {
         IsFirstLogLine = true;
         CurrentLogLine = 1;
-        string[] extensions = { "json", "JSON" };
+        string[] extensions = ["json", "JSON"];
         var answer = await GetSelectedFilesFromDialog("JSON", extensions);
         if (answer is null) return;
         var countReadFiles = answer.Length;
@@ -49,7 +49,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 SourceFile.CopyTo(file, true);
                 var jsonString = await File.ReadAllTextAsync(file);
                 var jsonObject = JsonConvert.DeserializeObject<JsonModel>(jsonString)!;
-                List<Reports> reportsJsonCollection = new();
+                List<Reports> reportsJsonCollection = [];
 
                 foreach (var reps in jsonObject.Orgs)   // Для каждой организации в файле (получаем лист импортируемых организаций)
                 {
@@ -268,7 +268,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = "Импорт из .raodb",
+                            ContentTitle = "Импорт из .json",
                             ContentHeader = "Ошибка",
                             ContentMessage =
                                 $"Не удалось прочесть файл {path}," +
@@ -321,13 +321,14 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     BaseRepsRegNum = impReps.Master.RegNoRep.Value;
                     BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
+                    var impRepsReportList = impReps.Report_Collection.ToList();
                     if (baseReps11 != null)
                     {
                         foreach (var report in baseReps11.Report_Collection)
                         {
                             await ReportsStorage.GetReportAsync(report.Id);
                         }
-                        await ProcessIfHasReports11(baseReps11, impReps, impReps.Report_Collection.ToList());
+                        await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
                     }
                     else if (baseReps21 != null)
                     {
@@ -335,7 +336,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         {
                             await ReportsStorage.GetReportAsync(report.Id);
                         }
-                        await ProcessIfHasReports21(baseReps21, impReps, impReps.Report_Collection.ToList());
+                        await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
                     }
                     else if (baseReps11 == null && baseReps21 == null)
                     {
@@ -354,13 +355,13 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                 an = await MessageBox.Avalonia.MessageBoxManager
                                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                     {
-                                        ButtonDefinitions = new[]
-                                        {
+                                        ButtonDefinitions =
+                                        [
                                             new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                             new ButtonDefinition { Name = "Да для всех" },
                                             new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                        },
-                                        ContentTitle = "Импорт из .raodb",
+                                        ],
+                                        ContentTitle = "Импорт из .json",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
                                             $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
@@ -387,12 +388,12 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                 an = await MessageBox.Avalonia.MessageBoxManager
                                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                     {
-                                        ButtonDefinitions = new[]
-                                        {
+                                        ButtonDefinitions =
+                                        [
                                             new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                             new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                        },
-                                        ContentTitle = "Импорт из .raodb",
+                                        ],
+                                        ContentTitle = "Импорт из .json",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
                                             $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
@@ -497,7 +498,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
+                    ContentTitle = "Импорт из .json",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Импорт {countReadFiles} из {answer.Length} файл{suffix1} .json успешно завершен." +
                     $"{Environment.NewLine}Импортировано {countNewReps} нов{suffix2} организаци{suffix3}",
@@ -517,7 +518,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
+                    ContentTitle = "Импорт из .json",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Импорт из {answer.Length} файл{suffix1} .json был отменен.",
                     MinWidth = 400,

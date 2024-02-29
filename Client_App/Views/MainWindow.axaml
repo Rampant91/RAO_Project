@@ -7,7 +7,6 @@
     xmlns:tools="clr-namespace:Client_App.Tools"
     xmlns:type="clr-namespace:Client_App.Tools.ConverterType"
     xmlns:vm="using:Client_App.ViewModels"
-    x:Name="MainWindow"
     Title="{Binding Current_Db, Mode=OneWay}"
     Width="{Binding Source={x:Type type:Width}, Converter={tools:RatioConverter}, ConverterParameter='0.75', FallbackValue='600', Mode=OneWay}"
     Height="{Binding Source={x:Type type:Height}, Converter={tools:RatioConverter}, ConverterParameter='0.8', FallbackValue='800', Mode=OneWay}"
