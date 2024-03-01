@@ -26,8 +26,20 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     #region RegNo
 
-    public string RegNo { get; set; } = null!; 
-    
+    public string RegNo { get; } = null!;
+
+    #endregion
+
+    #region ShortJurLico
+
+    public string ShortJurLico => !string.IsNullOrEmpty(ShortJurLico1) ? ShortJurLico1 : ShortJurLico0;
+
+    #endregion
+
+    #region Okpo
+
+    public string Okpo => !string.IsNullOrEmpty(Okpo1) ? Okpo1 : Okpo0;
+
     #endregion
 
     #region OrganUprav

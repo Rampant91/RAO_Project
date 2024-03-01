@@ -19,6 +19,7 @@ internal class DeleteDataInRowsSyncCommand : BaseCommand
     public override void Execute(object? parameter)
     {
         var param = parameter as object[];
+        if (param[0] is null) return;
         var collection = param[0] as IKeyCollection;
         var minColumn = Convert.ToInt32(param[1]) + 1;
         var maxColumn = Convert.ToInt32(param[2]) + 1;
@@ -39,7 +40,7 @@ internal class DeleteDataInRowsSyncCommand : BaseCommand
             var tre = findStructure.GetLevel(level - 1);
             foreach (var prop in props)
             {
-                var attr = (FormPropertyAttribute)prop
+                var attr = (FormPropertyAttribute?)prop
                     .GetCustomAttributes(typeof(FormPropertyAttribute), false)
                     .FirstOrDefault();
                 if (attr is null) continue;

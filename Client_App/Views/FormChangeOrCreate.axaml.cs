@@ -345,7 +345,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                 panel.Children.Add(grd);
                 break;
             }
-                case "1.2":
+            case "1.2":
             {
                 var grd = (ScrollViewer)Form1_Visual.Form12_Visual(this.FindNameScope());
 

@@ -18,6 +18,7 @@ internal class PasteRowsAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var param = parameter as object[];
+        if (param[0] is null) return;
         var collection = param[0] as IKeyCollection;
         var minColumn = Convert.ToInt32(param[1]) + 1;
         var maxColumn = Convert.ToInt32(param[2]) + 1;
