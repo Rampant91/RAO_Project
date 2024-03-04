@@ -36,6 +36,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public FileInfo? SourceFile;                    // Импортируемый файл
     public string Act = "\t\t\t";                   // Действие с формой для логгера
 
+    protected readonly List<(string, string)> RepsWhereTitleFormCheckIsCancel = [];
     public string BaseRepsOkpo = "";
     public string BaseRepsRegNum = "";
     public string BaseRepsShortName = "";
@@ -72,7 +73,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             case "Да" or "Да для всех" or "Добавить":
                 ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
-                await CheckTitleFormAsync(baseReps, impReps);
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
@@ -105,7 +109,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region SaveBoth
             
             case "Сохранить оба":
-                await CheckTitleFormAsync(baseReps, impReps);
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
@@ -138,7 +145,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Replace
             
             case "Заменить" or "Заменять все формы":
-                await CheckTitleFormAsync(baseReps, impReps);
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 AtLeastOneImportDone = true;
@@ -169,7 +179,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Supplement
             
             case "Дополнить" when newReport != null && oldReport != null:
-                await CheckTitleFormAsync(baseReps, impReps);
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
@@ -219,7 +232,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region CheckTitleForm
 
-    private static async Task CheckTitleFormAsync(Reports baseReps, Reports impReps)
+    private static async Task CheckTitleFormAsync(Reports baseReps, Reports impReps, List<(string, string)> repsWhereTitleFormCheckIsCancel)
     {
         if ((baseReps.Master.FormNum_DB is "1.0"
              && (baseReps.Master.Rows10[0].SubjectRF_DB != impReps.Master.Rows10[0].SubjectRF_DB
@@ -292,7 +305,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     || baseReps.Master.Rows20[1].Okopf_DB != impReps.Master.Rows20[1].Okopf_DB
                     || baseReps.Master.Rows20[1].Okfs_DB != impReps.Master.Rows20[1].Okfs_DB)))
         {
-            var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master).AsyncExecute(null);
+            var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master, repsWhereTitleFormCheckIsCancel).AsyncExecute(null);
             baseReps.Master = newTitleRep;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Client_App.Views;
@@ -10,17 +11,19 @@ internal class CompareReportsTitleFormAsyncCommand : BaseAsyncCommand
 {
     public Report BaseMasterReport;
     public Report ImportMasterReport;
+    private List<(string, string)> _repsWhereTitleFormCheckIsCancel;
     //public CompareReportsTitleFormVM ViewModel;
 
-    public CompareReportsTitleFormAsyncCommand(Report baseMasterReport, Report importMasterReport)
+    public CompareReportsTitleFormAsyncCommand(Report baseMasterReport, Report importMasterReport, List<(string, string)> repsWhereTitleFormCheckIsCancel)
     {
         BaseMasterReport = baseMasterReport;
         ImportMasterReport = importMasterReport;
+        _repsWhereTitleFormCheckIsCancel = repsWhereTitleFormCheckIsCancel;
     }
 
     public override async Task<Report> AsyncExecute(object? parameter)
     {
-        var compareReportsTitleFormWindow = new CompareReportsTitleForm(BaseMasterReport, ImportMasterReport);
+        var compareReportsTitleFormWindow = new CompareReportsTitleForm(BaseMasterReport, ImportMasterReport, _repsWhereTitleFormCheckIsCancel);
         //ViewModel = (compareReportsTitleFormWindow.DataContext as CompareReportsTitleFormVM)!;
         var newRep = await ShowPopup(compareReportsTitleFormWindow) as Report;
         return newRep!;

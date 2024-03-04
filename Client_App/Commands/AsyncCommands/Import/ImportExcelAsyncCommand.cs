@@ -20,6 +20,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        RepsWhereTitleFormCheckIsCancel.Clear();
         IsFirstLogLine = true;
         CurrentLogLine = 1;
         string[] extensions = ["xlsx", "XLSX"];

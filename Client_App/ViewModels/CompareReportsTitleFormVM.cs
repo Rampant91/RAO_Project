@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Models.Collections;
 
@@ -9,6 +10,8 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
     private readonly Report _repInBase = null!;
     internal bool Replace = false;
 
+    public List<(string, string)> RepsWhereTitleFormCheckIsCancel = [];
+
     #region Properties
 
     #region Title
@@ -17,7 +20,7 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
     {
         get
         {
-            var okpo = string.IsNullOrEmpty(Okpo0) ? Okpo0 : Okpo1;
+            var okpo = !string.IsNullOrEmpty(Okpo1) ? Okpo1 : Okpo0;
             return $"Сравнение титульных форм {_repInBase.FormNum_DB} организации {RegNo}_{okpo}";
         }
     }
@@ -32,13 +35,13 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
     #region ShortJurLico
 
-    public string ShortJurLico => !string.IsNullOrEmpty(ShortJurLico1) ? ShortJurLico1 : ShortJurLico0;
+    public string ShortJurLico => !string.IsNullOrEmpty(OldShortJurLico1) ? OldShortJurLico1 : OldShortJurLico0;
 
     #endregion
 
     #region Okpo
 
-    public string Okpo => !string.IsNullOrEmpty(Okpo1) ? Okpo1 : Okpo0;
+    public string Okpo => !string.IsNullOrEmpty(OldOkpo1) ? OldOkpo1 : OldOkpo0;
 
     #endregion
 
@@ -1569,8 +1572,9 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
     
     public CompareReportsTitleFormVM() {}
 
-    public CompareReportsTitleFormVM(Report repInBase, Report repImport)
+    public CompareReportsTitleFormVM(Report repInBase, Report repImport, List<(string, string)> repsWhereTitleFormCheckIsCancel)
     {
+        RepsWhereTitleFormCheckIsCancel = repsWhereTitleFormCheckIsCancel;
         _repInBase = repInBase;
         RegNo = repInBase.RegNoRep.Value;
         

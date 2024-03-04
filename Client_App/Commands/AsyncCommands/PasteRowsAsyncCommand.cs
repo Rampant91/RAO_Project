@@ -101,48 +101,51 @@ internal class PasteRowsAsyncCommand : BaseAsyncCommand
                         {
                             case RamAccess<int?>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { int.Parse(columnsText[columnNum - minColumn]) });
+                                    [int.Parse(columnsText[columnNum - minColumn])]);
                                 break;
                             case RamAccess<float?>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { float.Parse(columnsText[columnNum - minColumn]) });
+                                    [float.Parse(columnsText[columnNum - minColumn])]);
                                 break;
                             case RamAccess<short>:
                             case RamAccess<short?>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { short.Parse(columnsText[columnNum - minColumn]) });
+                                    [short.Parse(columnsText[columnNum - minColumn])]);
                                 break;
                             case RamAccess<int>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { int.Parse(columnsText[columnNum - minColumn]) });
+                                    [int.Parse(columnsText[columnNum - minColumn])]);
                                 break;
                             case RamAccess<string>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { columnsText[columnNum - minColumn] });
+                                    [columnsText[columnNum - minColumn]]);
                                 break;
                             case RamAccess<byte?>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
+                                    [byte.Parse(columnsText[columnNum - minColumn])]);
                                 break;
                             case RamAccess<bool>:
                                 midValue.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
+                                    [bool.Parse(columnsText[columnNum - minColumn])]);
                                 break;
                             default:
                                 midValue?.GetType().GetProperty("Value")?.SetMethod?.Invoke(midValue,
-                                    new object[] { columnsText[columnNum - minColumn] });
+                                    [columnsText[columnNum - minColumn]]);
                                 break;
                         }
                     }
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    //ignore
+                }
             }
         }
     }
 
     private static string[] ParseInnerTextRows(string text)
     {
-        List<string> lst = new();
+        List<string> lst = [];
         var comaFlag = false;
         text = text.Replace("\r\n", "\n");
         var txt = "";
@@ -172,7 +175,7 @@ internal class PasteRowsAsyncCommand : BaseAsyncCommand
             lst.Add(txt);
         }
         lst.Add("");
-        return lst.ToArray();
+        return [.. lst];
     }
 
     private static string[] ParseInnerTextColumn(string text)
@@ -203,6 +206,6 @@ internal class PasteRowsAsyncCommand : BaseAsyncCommand
         {
             lst.Add(txt);
         }
-        return lst.ToArray();
+        return [.. lst];
     }
 }
