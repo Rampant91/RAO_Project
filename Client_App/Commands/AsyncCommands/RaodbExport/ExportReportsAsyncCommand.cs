@@ -29,6 +29,7 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         var dt = DateTime.Now;
         Reports exportOrg;
         string fileNameTmp;
+        await using var db = new DBModel(StaticConfiguration.DBPath);
         switch (parameter)
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
@@ -38,19 +39,19 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 }
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = (Reports)param.First();
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                await db.SaveChangesAsync();
                 break;
             case Reports reps:
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
                 exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                await db.SaveChangesAsync();
                 break;
             default:
                 return;
         }
 
-        List<Report> repList = new();
+        List<Report> repList = [];
         foreach (var key in exportOrg.Report_Collection)
         {
             var rep = (Report)key;
@@ -103,19 +104,19 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
 
         await Task.Run(async () =>
         {
-            DBModel db = new(fullPathTmp);
+            await using var tempDb = new DBModel(fullPathTmp);
             try
             {
-                await db.Database.MigrateAsync();
-                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
-                await db.SaveChangesAsync();
+                await tempDb.Database.MigrateAsync();
+                await tempDb.ReportsCollectionDbSet.AddAsync(exportOrg);
+                await tempDb.SaveChangesAsync();
 
-                var t = db.Database.GetDbConnection() as FbConnection;
+                var t = tempDb.Database.GetDbConnection() as FbConnection;
                 await t.CloseAsync();
                 await t.DisposeAsync();
 
-                await db.Database.CloseConnectionAsync();
-                await db.DisposeAsync();
+                await tempDb.Database.CloseConnectionAsync();
+                await tempDb.DisposeAsync();
             }
             catch (Exception e)
             {
@@ -155,11 +156,11 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         var answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Ок", IsDefault = true },
                     new ButtonDefinition { Name = "Открыть расположение файла" }
-                },
+                ],
                 ContentTitle = "Выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage =

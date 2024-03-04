@@ -54,25 +54,25 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 
     private void OnStandardClosing(object sender, CancelEventArgs args)
     {
-        if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges()) return;
+        using var db = new DBModel(StaticConfiguration.DBPath);
+        if (!db.ChangeTracker.HasChanges()) return;
         if (Answ != null) return;
         var flag = false;
         var tmp = DataContext as ChangeOrCreateVM;
-        Answ = tmp.ShowMessageT.Handle(new List<string> { "Сохранить?", "Да", "Нет" }).GetAwaiter();
+        Answ = tmp.ShowMessageT.Handle(["Сохранить?", "Да", "Нет"]).GetAwaiter();
         Answ.Subscribe(async x =>
         {
+            await using var dbm = new DBModel(StaticConfiguration.DBPath);
             switch (x)
             {
                 case "Да":
                     flag = true;
-                    await StaticConfiguration.DBModel.SaveChangesAsync();
+                    await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(tmp).AsyncExecute(null);
                     return;
                 case "Нет":
                 {
-                    var a = ReportsStorage.LocalReports;
                     flag = true;
-                    var dbm = StaticConfiguration.DBModel;
                     dbm.Restore();
                     await dbm.SaveChangesAsync();
 

@@ -21,6 +21,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        RepsWhereTitleFormCheckIsCancel.Clear();
         IsFirstLogLine = true;
         CurrentLogLine = 1;
         string[] extensions = ["raodb", "RAODB"];
@@ -227,7 +228,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         }
 
         await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+        await db.SaveChangesAsync();
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

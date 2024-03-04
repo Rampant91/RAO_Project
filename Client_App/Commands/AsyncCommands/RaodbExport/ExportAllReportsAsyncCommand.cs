@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ using Models.DBRealization;
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 //  Экспорт всех организаций организации в отдельные файлы .raodb
-internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
+internal partial class ExportAllReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -31,11 +32,11 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
             answer = await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    ButtonDefinitions = new[]
-                    {
+                    ButtonDefinitions =
+                    [
                         new ButtonDefinition { Name = "Да", IsDefault = true },
                         new ButtonDefinition { Name = "Отменить выгрузку", IsCancel = true }
-                    },
+                    ],
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Уведомление",
                     ContentMessage =
@@ -55,7 +56,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
 
         Parallel.ForEach(ReportsStorage.LocalReports.Reports_Collection, async exportOrg =>
         {
-            List<Report> repInRangeWithForms = new();
+            List<Report> repInRangeWithForms = [];
             foreach (var key1 in exportOrg.Report_Collection)
             {
                 var rep = (Report)key1;
@@ -78,19 +79,19 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                                $"_{Assembly.GetExecutingAssembly().GetName().Version}";
 
                 var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
-                DBModel db = new(fullPathTmp);
+                await using var tempDb = new DBModel(fullPathTmp);
                 try
                 {
-                    await db.Database.MigrateAsync();
-                    await db.ReportsCollectionDbSet.AddAsync(exportOrg);
-                    await db.SaveChangesAsync();
+                    await tempDb.Database.MigrateAsync();
+                    await tempDb.ReportsCollectionDbSet.AddAsync(exportOrg);
+                    await tempDb.SaveChangesAsync();
 
-                    var t = db.Database.GetDbConnection() as FbConnection;
+                    var t = tempDb.Database.GetDbConnection() as FbConnection;
                     await t.CloseAsync();
                     await t.DisposeAsync();
 
-                    await db.Database.CloseConnectionAsync();
-                    await db.DisposeAsync();
+                    await tempDb.Database.CloseConnectionAsync();
+                    await tempDb.DisposeAsync();
                 }
                 catch (Exception e)
                 {
@@ -102,10 +103,10 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
                 {
                     while (File.Exists(fullPath)) // insert index if file already exist
                     {
-                        var matches = Regex.Matches(fullPath, @"(.+)#(\d+)(?=\.RAODB)");
+                        var matches = RaodbFileNameRegex().Matches(fullPath);
                         if (matches.Count > 0)
                         {
-                            foreach (Match match in matches)
+                            foreach (var match in matches.Cast<Match>())
                             {
                                 if (!int.TryParse(match.Groups[2].Value, out var index)) return;
                                 fullPath = match.Groups[1].Value + $"#{index + 1}.RAODB";
@@ -143,7 +144,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
 
                     #endregion
                 }
-            });
+            }).ConfigureAwait(false);
         });
 
         #region ExportDoneMessage
@@ -151,11 +152,11 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
         answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Ок", IsDefault = true },
                     new ButtonDefinition { Name = "Открыть расположение файлов" }
-                },
+                ],
                 ContentTitle = "Выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Выгрузка всех организаций в отдельные" +
@@ -173,4 +174,7 @@ internal class ExportAllReportsAsyncCommand : BaseAsyncCommand
             Process.Start("explorer", folderPath);
         }
     }
+
+    [GeneratedRegex(@"(.+)#(\d+)(?=\.RAODB)")]
+    private static partial Regex RaodbFileNameRegex();
 }

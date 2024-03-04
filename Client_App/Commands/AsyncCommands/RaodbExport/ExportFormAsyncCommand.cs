@@ -48,7 +48,8 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
         if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
         exportForm.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
 
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        await db.SaveChangesAsync();
 
         var reps = ReportsStorage.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection
@@ -122,24 +123,24 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
 
         await Task.Run(async () =>
         {
-            DBModel db = new(fullPathTmp);
+            await using var tempDb = new DBModel(fullPathTmp);
             try
             {
-                await db.Database.MigrateAsync();
-                await db.ReportsCollectionDbSet.AddAsync(orgWithExpForm);
-                if (!db.DBObservableDbSet.Any())
+                await tempDb.Database.MigrateAsync();
+                await tempDb.ReportsCollectionDbSet.AddAsync(orgWithExpForm);
+                if (!tempDb.DBObservableDbSet.Any())
                 {
-                    db.DBObservableDbSet.Add(new DBObservable());
-                    db.DBObservableDbSet.Local.First().Reports_Collection.AddRange(db.ReportsCollectionDbSet.Local);
+                    tempDb.DBObservableDbSet.Add(new DBObservable());
+                    tempDb.DBObservableDbSet.Local.First().Reports_Collection.AddRange(db.ReportsCollectionDbSet.Local);
                 }
-                await db.SaveChangesAsync();
+                await tempDb.SaveChangesAsync();
 
-                var t = db.Database.GetDbConnection() as FbConnection;
+                var t = tempDb.Database.GetDbConnection() as FbConnection;
                 await t.CloseAsync();
                 await t.DisposeAsync();
 
-                await db.Database.CloseConnectionAsync();
-                await db.DisposeAsync();
+                await tempDb.Database.CloseConnectionAsync();
+                await tempDb.DisposeAsync();
             }
             catch (Exception e)
             {
@@ -171,8 +172,6 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
                         }).ShowDialog(Desktop.MainWindow));
 
                 #endregion
-
-                return;
             }
         });
 
@@ -182,11 +181,11 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
             MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    ButtonDefinitions = new[]
-                    {
+                    ButtonDefinitions =
+                    [
                         new ButtonDefinition { Name = "Ок", IsDefault = true },
                         new ButtonDefinition { Name = "Открыть расположение файла" }
-                    },
+                    ],
                     ContentTitle = "Выгрузка в .raodb",
                     ContentHeader = "Уведомление",
                     ContentMessage =
@@ -217,7 +216,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
 
     #region InventoryCheck
 
-    private protected static string InventoryCheck(Report? rep)
+    private static string InventoryCheck(Report? rep)
     {
         if (rep is null)
         {

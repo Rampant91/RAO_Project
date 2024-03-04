@@ -12,15 +12,8 @@ using Models.Interfaces;
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
-internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
+internal class ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
 {
-    private readonly MainWindowVM _mainWindowViewModel;
-
-    public ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowViewModel)
-    {
-        _mainWindowViewModel = mainWindowViewModel;
-    }
-
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
@@ -108,7 +101,7 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
         Reports exportOrg = new() { Master = org.Master };
         exportOrg.Report_Collection.AddRange(repInRangeWithForms);
 
-        if (_mainWindowViewModel.ExportReports.CanExecute(null))
-            _mainWindowViewModel.ExportReports.Execute(exportOrg);
+        if (mainWindowViewModel.ExportReports.CanExecute(null))
+            mainWindowViewModel.ExportReports.Execute(exportOrg);
     }
 }
