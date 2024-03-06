@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
@@ -912,7 +913,11 @@ public class CheckF11
         List<CheckError> result = new();
         var pasNum = forms[line].PassportNumber_DB;
         if (pasNum == null) return result;
-        var valid = !string.IsNullOrWhiteSpace(pasNum) || pasNum == "-" || !pasNum.Contains(',');
+        var regex = new Regex(@".\d{1}-\d{1}.");
+        var valid = !string.IsNullOrWhiteSpace(pasNum) 
+                    || pasNum == "-" 
+                    || !pasNum.Contains(',') 
+                    || regex.IsMatch(pasNum);
         if (!valid)
         {
             result.Add(new CheckError
