@@ -275,18 +275,16 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
     {
+        var excelOkpo = Convert.ToString(worksheet0.Cells["B36"].Value);
+        var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
         return worksheet0.Name switch
         {
             "1.0" => ReportsStorage.LocalReports.Reports_Collection10.FirstOrDefault(t => 
-                    (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[0].Okpo_DB
-                     && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[0].RegNo_DB)
-                    || (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows10[1].Okpo_DB
-                        && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows10[1].RegNo_DB)),
+                    (excelOkpo == t.Master.Rows10[0].Okpo_DB && excelRegNo == t.Master.Rows10[0].RegNo_DB)
+                    || (excelOkpo == t.Master.Rows10[1].Okpo_DB && excelRegNo == t.Master.Rows10[1].RegNo_DB)),
             "2.0" => ReportsStorage.LocalReports.Reports_Collection20.FirstOrDefault(t =>
-                (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[0].Okpo_DB
-                 && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[0].RegNo_DB)
-                || (Convert.ToString(worksheet0.Cells["B36"].Value) == t.Master.Rows20[1].Okpo_DB
-                    && Convert.ToString(worksheet0.Cells["F6"].Value) == t.Master.Rows20[1].RegNo_DB)),
+                (excelOkpo == t.Master.Rows20[0].Okpo_DB && excelRegNo == t.Master.Rows20[0].RegNo_DB)
+                || (excelOkpo == t.Master.Rows20[1].Okpo_DB && excelRegNo == t.Master.Rows20[1].RegNo_DB)),
             _ => null
         };
     }
