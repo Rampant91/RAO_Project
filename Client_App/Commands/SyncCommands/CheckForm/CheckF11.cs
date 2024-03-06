@@ -668,9 +668,10 @@ public class CheckF11
     private static List<CheckError> Check_016(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        string[] ApplicableOperationCodes = { "84", "85", "86", "83" };
-        if (!ApplicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
+        string[] applicableOperationCodes = { "83", "84", "85", "86" };
+        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
         var valid = false;
+
         foreach (var OKSM_Entry in OKSM)
         {
             if (OKSM_Entry["shortname"] == forms[line].CreatorOKPO_DB)
@@ -679,7 +680,7 @@ public class CheckF11
                 break;
             }
         }
-        if (!valid)
+        if (!valid || forms[line].CreatorOKPO_DB.ToLower() is "россия")
         {
             result.Add(new CheckError
             {
@@ -696,28 +697,18 @@ public class CheckF11
     private static List<CheckError> Check_017(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] NonapplicableOperationCodes = { "10" };
-        if (NonapplicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
+        string[] nonApplicableOperationCodes = { "10" };
+        var opCode = forms[line].OperationCode_DB;
+        if (nonApplicableOperationCodes.Contains(opCode)) return result;
         var valid = forms[line].OperationDate_DB != null;
-        DateTime? p_start;
-        DateTime? p_end;
-        DateTime? p_mid;
-        if (valid)
+        var pEnd = DateTime.MinValue;
+        var pMid = DateTime.MinValue;
+        if (valid && rep is { StartPeriod_DB: not null, EndPeriod_DB: not null })
         {
-            if (rep is { StartPeriod_DB: not null, EndPeriod_DB: not null })
-            {
-                try
-                {
-                    p_start = DateTime.Parse(rep.StartPeriod_DB);
-                    p_end = DateTime.Parse(rep.EndPeriod_DB);
-                    p_mid = DateTime.Parse(forms[line].OperationDate_DB!);
-                    valid = p_mid >= p_start && p_mid <= p_end;
-                }
-                catch
-                {
-                    valid = false;
-                }
-            }
+            valid = DateTime.TryParse(rep.StartPeriod_DB, out var pStart)
+                    && DateTime.TryParse(rep.EndPeriod_DB, out pEnd)
+                    && DateTime.TryParse(forms[line].OperationDate_DB!, out pMid)
+                    && pMid >= pStart && pMid <= pEnd;
         }
         if (!valid)
         {
@@ -730,34 +721,67 @@ public class CheckF11
                 Message = "Дата операции не входит в отчетный период."
             });
         }
+        else
+        {
+            string[] operationCodeWithDeadline1 = { "71" };
+            string[] operationCodeWithDeadline5 = { "73", "74", "75" };
+            string[] operationCodeWithDeadline10 =
+            {
+                "11", "12", "15", "17", "18", "21", "22", "25", "27", "28", "29", "31", "32", "35", "37", "38", "39",
+                "41", "42", "43", "46", "47", "48", "53", "54", "58", "61", "62", "63", "64", "65", "66", "67", "68",
+                "72", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
+            };
+            if (operationCodeWithDeadline10.Contains(opCode) && (pEnd - pMid).Days > 10)
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_11",
+                    Row = (line + 1).ToString(),
+                    Column = "OperationDate_DB",
+                    Value = forms[line].OperationDate_DB,
+                    Message = "Дата окончания отчетного периода превышает дату операции более чем на 10 дней."
+                });
+            }
+            else if (operationCodeWithDeadline5.Contains(opCode) && (pEnd - pMid).Days > 5)
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_11",
+                    Row = (line + 1).ToString(),
+                    Column = "OperationDate_DB",
+                    Value = forms[line].OperationDate_DB,
+                    Message = "Дата окончания отчетного периода превышает дату операции более чем на 5 дней."
+                });
+            }
+            else if (operationCodeWithDeadline1.Contains(opCode) && (pEnd - pMid).Days > 1)
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_11",
+                    Row = (line + 1).ToString(),
+                    Column = "OperationDate_DB",
+                    Value = forms[line].OperationDate_DB,
+                    Message = "Дата окончания отчетного периода превышает дату операции более чем на 1 день."
+                });
+            }
+        }
         return result;
     }
 
     private static List<CheckError> Check_018(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] ApplicableOperationCodes = { "10" };
-        if (!ApplicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
+        string[] applicableOperationCodes = { "10" };
+        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
         var valid = forms[line].DocumentDate_DB != null;
-        DateTime? p_start;
-        DateTime? p_end;
-        DateTime? p_mid;
-        if (valid)
+        var pEnd = DateTime.MinValue;
+        var pMid = DateTime.MinValue;
+        if (valid && rep is { StartPeriod_DB: not null, EndPeriod_DB: not null })
         {
-            if (rep is { StartPeriod_DB: not null, EndPeriod_DB: not null })
-            {
-                try
-                {
-                    p_start = DateTime.Parse(rep.StartPeriod_DB);
-                    p_end = DateTime.Parse(rep.EndPeriod_DB);
-                    p_mid = DateTime.Parse(forms[line].DocumentDate_DB!);
-                    valid = p_mid >= p_start && p_mid <= p_end;
-                }
-                catch
-                {
-                    valid = false;
-                }
-            }
+            valid = DateTime.TryParse(rep.StartPeriod_DB, out var pStart)
+                    && DateTime.TryParse(rep.EndPeriod_DB, out pEnd)
+                    && DateTime.TryParse(forms[line].DocumentDate_DB!, out pMid)
+                    && pMid >= pStart && pMid <= pEnd;
         }
         if (!valid)
         {
@@ -768,6 +792,17 @@ public class CheckF11
                 Column = "DocumentDate_DB",
                 Value = forms[line].DocumentDate_DB,
                 Message = "Дата акта инвентаризации не входит в отчетный период."
+            });
+        }
+        else if ((pEnd - pMid).Days > 10)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "DocumentDate_DB",
+                Value = forms[line].OperationDate_DB,
+                Message = "Дата окончания отчетного периода превышает дату операции более чем на 10 дней."
             });
         }
         return result;
@@ -875,8 +910,9 @@ public class CheckF11
     private static List<CheckError> Check_023(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        if (forms[line].PassportNumber_DB == null) return result;
-        var valid = forms[line].PassportNumber_DB == "-" || !forms[line].PassportNumber_DB!.Contains(',');
+        var pasNum = forms[line].PassportNumber_DB;
+        if (pasNum == null) return result;
+        var valid = !string.IsNullOrWhiteSpace(pasNum) || pasNum == "-" || !pasNum.Contains(',');
         if (!valid)
         {
             result.Add(new CheckError
