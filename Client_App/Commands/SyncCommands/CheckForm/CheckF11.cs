@@ -265,13 +265,19 @@ public class CheckF11
 
     #region Checks
 
-    private static IEnumerable<CheckError> Check_001(List<Form11> forms, int line)
+    #region Check001
+    
+    private static List<CheckError> Check_001(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
         return result;
     }
 
-    private static IEnumerable<CheckError> Check_002(List<Form11> forms, int line)
+    #endregion
+
+    #region Check002
+    
+    private static List<CheckError> Check_002(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
         if (forms[line].Id < 1)
@@ -288,6 +294,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check003
+    
     private static List<CheckError> Check_003(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -306,6 +316,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check004
+    
     private static List<CheckError> Check_004(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -326,6 +340,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check005
+    
     private static List<CheckError> Check_005(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -357,6 +375,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check006
+    
     private static List<CheckError> Check_006(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -381,6 +403,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check007
+    
     private static List<CheckError> Check_007(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
@@ -459,6 +485,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check008
+    
     private static List<CheckError> Check_008(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -483,6 +513,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check009
+    
     private static List<CheckError> Check_009(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -507,6 +541,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check010
+    
     private static List<CheckError> Check_010(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -531,6 +569,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check011
+    
     private static List<CheckError> Check_011(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
@@ -562,6 +604,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check012
+    
     private static List<CheckError> Check_012(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -586,6 +632,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check013
+    
     private static List<CheckError> Check_013(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -610,6 +660,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check014
+    
     private static List<CheckError> Check_014(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -634,6 +688,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check015
+    
     private static List<CheckError> Check_015(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -666,6 +724,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check016
+    
     private static List<CheckError> Check_016(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -695,6 +757,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check017
+    
     private static List<CheckError> Check_017(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -769,6 +835,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check018
+    
     private static List<CheckError> Check_018(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -809,6 +879,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check019
+    
     private static List<CheckError> Check_019(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -827,6 +901,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check020
+    
     private static List<CheckError> Check_020(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -850,6 +928,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check021
+    
     private static List<CheckError> Check_021(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -889,6 +971,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check022
+    
     private static List<CheckError> Check_022(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -908,34 +994,43 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check023
+    
     private static List<CheckError> Check_023(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var pasNum = forms[line].PassportNumber_DB;
-        if (pasNum == null) return result;
-        var regex = new Regex(@".\d{1}-\d{1}.");
-        var valid = !string.IsNullOrWhiteSpace(pasNum) 
-                    || pasNum == "-" 
-                    || !pasNum.Contains(',') 
-                    || regex.IsMatch(pasNum);
+        var factoryNum = forms[line].FactoryNumber_DB;
+        var quantity = forms[line].Quantity_DB;
+        if (factoryNum == null) return result;
+        var valid = !string.IsNullOrWhiteSpace(factoryNum)
+                    && !factoryNum.Contains(',');
+        if (quantity > 1 && !factoryNum.Contains(';')
+            || quantity == 1 && factoryNum.Contains(';')) valid = false;
         if (!valid)
         {
             result.Add(new CheckError
             {
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
-                Column = "PassportNumber_DB",
-                Value = forms[line].Radionuclids_DB,
+                Column = "FactoryNumber_DB",
+                Value = forms[line].FactoryNumber_DB,
                 Message = "Формат ввода данных не соответствует приказу"
             });
         }
         return result;
     }
 
+    #endregion
+
+    #region Check024
+    
     private static List<CheckError> Check_024(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var valid = forms[line].Quantity_DB != null && forms[line].Quantity_DB > 0;
+        var quantity = forms[line].Quantity_DB;
+        var valid = quantity != null && quantity > 0;
         if (!valid)
         {
             result.Add(new CheckError
@@ -943,13 +1038,16 @@ public class CheckF11
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "Quantity_DB",
-                Value = forms[line].Quantity_DB.ToString(),
+                Value = quantity.ToString(),
                 Message = "Формат ввода данных не соответствует приказу"
             });
         }
         return result;
     }
 
+    #endregion
+
+    #region Check025
     private static List<CheckError> Check_025(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -982,6 +1080,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check026
+    
     private static List<CheckError> Check_026(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1027,6 +1129,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check028
+    
     private static List<CheckError> Check_027(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1034,19 +1140,24 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check028
+
+    //"Суммарная активность, Бк" положительное число, менее 10е+20
     private static List<CheckError> Check_028(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
         if (string.IsNullOrEmpty(forms[line].Activity_DB) || forms[line].Activity_DB == "-") return result;
-        if (double.TryParse(forms[line].Activity_DB!.Replace(".", ",").Replace("(", "").Replace(")", ""),
-                NumberStyles.Float,
-                CultureInfo.InvariantCulture,
-                out var activity_real))
-        {
-
-        }
-        var valid = activity_real <= 10e+20;
-        if (!valid)
+        var activity = forms[line].Activity_DB
+            !.Replace(".", ",")
+            .Replace("(", "")
+            .Replace(")", "");
+        if (!double.TryParse(activity,
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                CultureInfo.CreateSpecificCulture("en-GB"),
+                out var activityReal)
+            || activityReal is > 10e+20 or <= 0)
         {
             result.Add(new CheckError
             {
@@ -1060,11 +1171,16 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check029
+
+    //"код ОКПО изготовителя" = "ОКПО организации" для кодов операции 11, 58
     private static List<CheckError> Check_029(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] ApplicableOperationCodes = { "11", "58" };
-        if (!ApplicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
+        string[] applicableOperationCodes = { "11", "58" };
+        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
         var valid = false;
         foreach (var org in forms10)
         {
@@ -1088,28 +1204,24 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check030
+
+    //Соответствие формата данных "код ОКПО изготовителя" (колонка 10)
     private static List<CheckError> Check_030(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        char[] CreatorOKPO_DB_Valids = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_' };
-        var valid = !string.IsNullOrEmpty(forms[line].CreatorOKPO_DB);
-        if (valid)
-        {
-            foreach (var chr in forms[line].CreatorOKPO_DB!)
-            {
-                if (!CreatorOKPO_DB_Valids.Contains(chr))
-                {
-                    valid = false;
-                    break;
-                }
-            }
-        }
+        var creatorOKPO = forms[line].CreatorOKPO_DB;
+        var okpoRegex = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+        var valid = !string.IsNullOrEmpty(forms[line].CreatorOKPO_DB)
+                    && (okpoRegex.IsMatch(creatorOKPO) || creatorOKPO is "прим.");
         if (!valid)
         {
             //a miniature Check_031 (see if the cell has a comment; don't check OKSM yet)
             foreach (var OKSM_Entry in OKSM)
             {
-                if (OKSM_Entry["shortname"] == forms[line].CreatorOKPO_DB!)
+                if (OKSM_Entry["shortname"] == creatorOKPO!)
                 {
                     valid = true;
                     break;
@@ -1123,91 +1235,58 @@ public class CheckF11
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
-                Value = forms[line].CreatorOKPO_DB,
+                Value = creatorOKPO,
                 Message = "Формат ввода данных не соответствует приказу."
             });
         }
         return result;
     }
 
+    #endregion
+
+    #region Check031
+
+    // Если в "код ОКПО изготовителя" (колонка 10) указано примечание, то проверяется наличие примечания для данной строки
     private static List<CheckError> Check_031(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
-        string[] CreatorOKPO_DB_Valids = { "прим.", "прим" };
-        var valid = !string.IsNullOrEmpty(forms[line].CreatorOKPO_DB);
-        List<int> note_rows_final_int;
-        string note_rows_real;
-        int note_rows_begin;
-        int note_rows_end;
-        List<string> note_rows_real_str;
-        if (valid)
+        string[] creatorOkpoValid = { "прим.", "прим", "примечание", "примечания" };
+        if (!creatorOkpoValid.Contains(forms[line].CreatorOKPO_DB.ToLower())) return result;
+        var valid = false;
+        foreach (var note in notes)
         {
-            valid = false;
-            foreach (var OKSM_Entry in OKSM)
+            if (note.RowNumber_DB == null || forms[line].ReportId == null) continue;
+            var noteRowsReal = note.RowNumber_DB.Replace(" ", string.Empty);
+            List<int> noteRowsFinalInt = new();
+            List<string> noteRowsRealStr = new(noteRowsReal.Split(','));
+            foreach (var noteRowCluster in noteRowsRealStr)
             {
-                if (OKSM_Entry["shortname"] == forms[line].CreatorOKPO_DB!)
+                if (noteRowCluster.Contains('-'))
                 {
-                    valid = true;
-                    break;
-                }
-            }
-            if (valid)
-            {
-                foreach (var note in notes)
-                {
-                    if (note.RowNumber_DB != null && forms[line].ReportId != null)
+                    var noteRowBounds = noteRowCluster.Split('-');
+                    if (noteRowBounds.Length != 2
+                        || !int.TryParse(noteRowBounds[0], out var noteRowsBegin)
+                        || !int.TryParse(noteRowBounds[1], out var noteRowsEnd))
                     {
-                        note_rows_real = note.RowNumber_DB.Replace(" ", string.Empty);
-                        note_rows_final_int = new();
-                        note_rows_real_str = new(note_rows_real.Split(','));
-                        foreach (var note_row_cluster in note_rows_real_str)
-                        {
-                            if (note_row_cluster.Contains('-'))
-                            {
-                                try
-                                {
-                                    string[] note_row_bounds = note_row_cluster.Split('-');
-                                    if (note_row_bounds.Length != 2) throw new Exception();
-                                    note_rows_begin = int.Parse(note_row_bounds[0]);
-                                    note_rows_end = int.Parse(note_row_bounds[1]);
-                                    for (var i = note_rows_begin; i <= note_rows_end; i++)
-                                    {
-                                        note_rows_final_int.Add(i);
-                                    }
-                                }
-                                catch
-                                {
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    note_rows_final_int.Add(int.Parse(note_row_cluster));
-                                }
-                                catch
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                        foreach (var note_rownumber in note_rows_final_int)
-                        {
-                            if (note_rownumber == line + 1 && note.GraphNumber_DB == 10.ToString())
-                            {
-                                if (note.Comment_DB != null && note.Comment_DB.Trim() != string.Empty)
-                                {
-                                    valid = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (valid) break;
+                        continue;
+                    }
+                    for (var i = noteRowsBegin; i <= noteRowsEnd; i++)
+                    {
+                        noteRowsFinalInt.Add(i);
+                    }
+                }
+                else
+                {
+                    if (int.TryParse(noteRowCluster, out var noteRowClusterInt))
+                    {
+                        noteRowsFinalInt.Add(noteRowClusterInt);
                     }
                 }
             }
-            else
+            if (noteRowsFinalInt.Any(noteRowNumber =>
+                    noteRowNumber == line + 1
+                    && note.GraphNumber_DB == 10.ToString()
+                    && !string.IsNullOrWhiteSpace(note.Comment_DB)))
             {
                 valid = true;
             }
@@ -1226,25 +1305,17 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check032
+    
+    //Дата выпуска (колонка 11) <= Дате операции (колонка 3)
     private static List<CheckError> Check_032(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var valid = forms[line].OperationDate_DB != null && forms[line].CreationDate_DB != null;
-        if (valid)
-        {
-            DateTime date_oper;
-            DateTime date_create;
-            try
-            {
-                date_oper = DateTime.Parse(forms[line].OperationDate_DB!);
-                date_create = DateTime.Parse(forms[line].CreationDate_DB!);
-                valid = date_create <= date_oper;
-            }
-            catch
-            {
-                valid = false;
-            }
-        }
+        var valid = DateTime.TryParse(forms[line].OperationDate_DB, out var operDate)
+                    && DateTime.TryParse(forms[line].CreationDate_DB, out var createDate)
+                    && createDate <= operDate;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1259,84 +1330,87 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check033
+    
+    //Соответствие категории ЗРИ (колонка 12)
     private static List<CheckError> Check_033(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        short[] Category_DB_Valids = { 1, 2, 3, 4, 5 };
-        var DB_Bounds = new Dictionary<short, (double, double)>
+        var dbBounds = new Dictionary<short, (double, double)>
         {
             { 1, (1000, double.MaxValue) },
             { 2, (10, 1000) },
             { 3, (1, 10) },
             { 4, (0.01, 1) },
-            { 5, (0, 0.01) },
+            { 5, (0, 0.01) }
         };
-        var valid = forms[line].Category_DB != null
-                    && forms[line].Activity_DB != null
-                    && DB_Bounds.ContainsKey((short)forms[line].Category_DB!);
+        var activity = forms[line].Activity_DB;
+        var category = forms[line].Category_DB;
+        var quantity = forms[line].Quantity_DB;
+        var radionuclids = forms[line].Radionuclids_DB;
+        var valid = category != null
+                    && activity != null
+                    && dbBounds.ContainsKey((short)category);
         if (valid)
         {
-            var A_value = 0.0;
-            List<double> D_value_list = new();
-            double D_min_value, D_max_value;
-            double AD_min_bound, AD_max_bound;
-            var nuclids_list = forms[line].Radionuclids_DB!.ToLower().Replace(" ", string.Empty).Split(';');
-            valid = nuclids_list.Length > 0;
+            List<double> dValueList = new();
+            var nuclidsList = radionuclids!
+                .ToLower()
+                .Replace(" ", string.Empty)
+                .Split(';');
+            valid = nuclidsList.Length > 0;
             if (valid)
             {
-                foreach (var nuclid in nuclids_list)
+                foreach (var nuclid in nuclidsList)
                 {
                     //get the values from the table, this is a placeholder
                     if (D.TryGetValue(nuclid, out var value))
                     {
-                        D_value_list.Add(value);
+                        dValueList.Add(value);
                     }
                 }
-                if (D_value_list.Count == 0)
+                if (dValueList.Count == 0)
                 {
-                    foreach (var nuclid in nuclids_list)
+                    foreach (var nuclid in nuclidsList)
                     {
                         foreach (var key in D.Keys)
                         {
                             if (key.Contains(nuclid))
                             {
-                                D_value_list.Add(D[key] / (forms[line].Quantity_DB != null && forms[line].Quantity_DB != 0 ? (double)forms[line].Quantity_DB! : 1.0));
+                                dValueList.Add(D[key] / (quantity != null && quantity != 0 
+                                    ? (double)quantity 
+                                    : 1.0));
                                 break;
                             }
                         }
                     }
                 }
-                if (D_value_list.Count == 0)
+                if (dValueList.Count == 0)
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_11",
                         Row = (line + 1).ToString(),
                         Column = "Radionuclids_DB",
-                        Value = forms[line].Radionuclids_DB,
+                        Value = radionuclids,
                         Message = "Проверьте правильность заполнения графы 6."
                     });
                     return result;
                 }
-                else
+                var dMinValue = dValueList.Min();
+                var dMaxValue = dValueList.Max();
+                valid = double.TryParse(activity!.Replace(".", ","), 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands, 
+                    CultureInfo.CreateSpecificCulture("en-GB"),
+                    out var aValue);
+                if (valid)
                 {
-                    D_min_value = D_value_list.Min();
-                    D_max_value = D_value_list.Max();
-                    try
-                    {
-                        A_value = double.Parse(forms[line].Activity_DB!.Replace(".", ","), NumberStyles.Float);
-                    }
-                    catch
-                    {
-                        valid = false;
-                    }
-                    if (valid)
-                    {
-                        AD_min_bound = D_max_value == 0.0 ? double.MaxValue : A_value / D_max_value;
-                        AD_max_bound = D_min_value == 0.0 ? double.MaxValue : A_value / D_min_value;
-                        valid = DB_Bounds[(short)forms[line].Category_DB!].Item1 <= AD_min_bound
-                                && DB_Bounds[(short)forms[line].Category_DB!].Item2 > AD_max_bound;
-                    }
+                    var adMinBound = dMaxValue == 0.0 ? double.MaxValue : aValue / dMaxValue;
+                    var adMaxBound = dMinValue == 0.0 ? double.MaxValue : aValue / dMinValue;
+                    valid = dbBounds[(short)category!].Item1 <= adMinBound
+                            && dbBounds[(short)category].Item2 > adMaxBound;
                 }
             }
         }
@@ -1347,13 +1421,17 @@ public class CheckF11
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "Category_DB",
-                Value = forms[line].Category_DB.ToString(),
+                Value = category.ToString(),
                 Message = "Проверьте правильность указания категории ЗРИ."
             });
         }
         return result;
     }
 
+    #endregion
+
+    #region Check034
+    
     private static List<CheckError> Check_034(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1395,6 +1473,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check035
+    
     private static List<CheckError> Check_035(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1414,6 +1496,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check036
+    
     private static List<CheckError> Check_036(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1446,6 +1532,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check037
+    
     private static List<CheckError> Check_037(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1474,6 +1564,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check038
+    
     private static List<CheckError> Check_038(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
@@ -1552,6 +1646,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check039
+    
     private static List<CheckError> Check_039(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
@@ -1630,6 +1728,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check040
+    
     private static List<CheckError> Check_040(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1653,6 +1755,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check041
+    
     private static List<CheckError> Check_041(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1671,6 +1777,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check042
+    
     private static List<CheckError> Check_042(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1706,6 +1816,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check043
+    
     private static List<CheckError> Check_043(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1741,6 +1855,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check044
+    
     private static List<CheckError> Check_044(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -1784,6 +1902,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check045
+    
     private static List<CheckError> Check_045(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
@@ -1816,6 +1938,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check046
+    
     private static List<CheckError> Check_046(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1848,6 +1974,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check047
+    
     private static List<CheckError> Check_047(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1891,6 +2021,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check048
+    
     private static List<CheckError> Check_048(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
@@ -1990,6 +2124,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check049
+    
     private static List<CheckError> Check_049(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -2022,6 +2160,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check050
+    
     private static List<CheckError> Check_050(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -2042,6 +2184,9 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check051
     private static List<CheckError> Check_051(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -2073,6 +2218,11 @@ public class CheckF11
         }
         return result;
     }
+
+    #endregion
+
+    #region Check052
+    
     private static List<CheckError> Check_052(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -2112,6 +2262,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check053
+    
     private static List<CheckError> Check_053(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -2130,6 +2284,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check054
+    
     private static List<CheckError> Check_054(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -2148,6 +2306,10 @@ public class CheckF11
         return result;
     }
 
+    #endregion
+
+    #region Check055
+    
     private static List<CheckError> Check_055(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -2165,6 +2327,8 @@ public class CheckF11
         }
         return result;
     }
+
+    #endregion
 
     #endregion
 }
