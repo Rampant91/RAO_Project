@@ -408,13 +408,13 @@ public abstract partial class Form1 : Form
 
     #region GeneratedRegex
 
-    [GeneratedRegex(@"^[0-9]{2}\.[0-9]{2}\.[0-9]{2}$")]
+    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{2}$")]
     protected static partial Regex Date6NumRegex();
 
-    [GeneratedRegex(@"^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$")]
+    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{4}$")]
     protected static partial Regex Date8NumRegex();
 
-    [GeneratedRegex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$")]
+    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
     protected static partial Regex OkpoRegex();
 
     #endregion

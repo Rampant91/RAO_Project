@@ -1080,31 +1080,31 @@ public partial class Form20 : Form
 
     #region GeneratedRegex
     
-    [GeneratedRegex("^[0123456789]{5}$")]
+    [GeneratedRegex(@"^\d{5}$")]
     private static partial Regex FiveNumRegex();
 
-    [GeneratedRegex("^[0-9]{10}$")]
+    [GeneratedRegex(@"^\d{10}$")]
     private static partial Regex InnRegex();
 
-    [GeneratedRegex("^[0-9]{9}$|-")]
+    [GeneratedRegex(@"^\d{9}$|-")]
     private static partial Regex KppRegex();
 
-    [GeneratedRegex("^[0-9]{2}$")]
+    [GeneratedRegex(@"^\d{2}$")]
     private static partial Regex OkfsRegex();
 
-    [GeneratedRegex("^[0-9]{7}$")]
+    [GeneratedRegex(@"^\d{7}$")]
     private static partial Regex OkoguRegex();
 
-    [GeneratedRegex("^[0-9]{5}$")]
+    [GeneratedRegex(@"^\d{5}$")]
     private static partial Regex OkopfRegex();
 
-    [GeneratedRegex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$")]
+    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
     private static partial Regex OkpoRegex();
 
-    [GeneratedRegex("^[0-9]{11}$")]
+    [GeneratedRegex(@"^\d{11}$")]
     private static partial Regex OktmoRegex();
 
-    [GeneratedRegex(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$")]
+    [GeneratedRegex(@"^\d{2}(|\.\d{1,2})(|\.\d{1,2})$")]
     private static partial Regex OkvedRegex(); 
     
     #endregion

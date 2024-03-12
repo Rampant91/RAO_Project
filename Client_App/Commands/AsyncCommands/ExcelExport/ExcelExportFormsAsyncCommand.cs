@@ -486,6 +486,6 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
 
-    [GeneratedRegex("[^\\d.]")]
+    [GeneratedRegex(@"[^\d.]")]
     private static partial Regex OnlyDigitsRegex();
 }
