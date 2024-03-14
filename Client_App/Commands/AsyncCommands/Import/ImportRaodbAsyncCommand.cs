@@ -37,7 +37,6 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         var countReadFiles = answer.Length;
 
-        await using var db = new DBModel(StaticConfiguration.DBPath);
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
@@ -228,7 +227,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         }
 
         await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-        await db.SaveChangesAsync();
+        await StaticConfiguration.DBModel.SaveChangesAsync();
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

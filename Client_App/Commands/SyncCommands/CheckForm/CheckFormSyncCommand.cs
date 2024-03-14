@@ -1,21 +1,12 @@
 ﻿using Client_App.ViewModels;
 using System.Collections.Generic;
 using Models.CheckForm;
-using Models.Collections;
-
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
 //  Проверяет открытую форму, открывает окно с отчетом об ошибках, активируется при нажатии кнопки "Проверить"
-internal class CheckFormSyncCommand : BaseCommand
+internal class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseCommand
 {
-    private readonly ChangeOrCreateVM _changeOrCreateViewModel;
-
-    public CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _changeOrCreateViewModel = changeOrCreateViewModel;
-    }
-
     public override bool CanExecute(object? parameter)
     {
         return true;
@@ -23,10 +14,10 @@ internal class CheckFormSyncCommand : BaseCommand
 
     public override void Execute(object? parameter)
     {
-        var reps = _changeOrCreateViewModel.Storages;
-        var rep = _changeOrCreateViewModel.Storage;
+        var reps = changeOrCreateViewModel.Storages;
+        var rep = changeOrCreateViewModel.Storage;
 
-        List<CheckError> result = new();
+        List<CheckError> result = [];
         switch (rep.FormNum_DB)
         {
             case "1.1":
@@ -58,6 +49,6 @@ internal class CheckFormSyncCommand : BaseCommand
                 //    result.AddRange(CheckF19.Check_Total(reps, rep));
                 //    break;
         }
-        _ = new Views.CheckForm(_changeOrCreateViewModel, result);
+        _ = new Views.CheckForm(changeOrCreateViewModel, result);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Client_App.Resources;
 using Models.Collections;
 
 namespace Client_App.ViewModels;
@@ -1697,49 +1698,51 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
 
         #region CheckBoxInitialization
 
-        ReplaceOrganUprav = !OldOrganUprav.Equals(NewOrganUprav);
+        var comparator = new CustomStringTitleFormComparer();
+
+        ReplaceOrganUprav = comparator.Compare(OldOrganUprav, NewOrganUprav) != 0;
 
         #region JurLicoCheckBox
 
-        ReplaceSubjectRF0 = !OldSubjectRF0.Equals(NewSubjectRF0);
-        ReplaceJurLico0 = !OldJurLico0.Equals(NewJurLico0);
-        ReplaceShortJurLico0 = !OldShortJurLico0.Equals(NewShortJurLico0);
-        ReplaceJurLicoAddress0 = !OldJurLicoAddress0.Equals(NewJurLicoAddress0);
-        ReplaceJurLicoFactAddress0 = !OldJurLicoFactAddress0.Equals(NewJurLicoFactAddress0);
-        ReplaceGradeFIO0 = !OldGradeFIO0.Equals(NewGradeFIO0);
-        ReplaceTelephone0 = !OldTelephone0.Equals(NewTelephone0);
-        ReplaceFax0 = !OldFax0.Equals(NewFax0);
-        ReplaceEmail0 = !OldEmail0.Equals(NewEmail0);
-        ReplaceOkpo0 = !OldOkpo0.Equals(NewOkpo0);
-        ReplaceOkved0 = !OldOkved0.Equals(NewOkved0);
-        ReplaceOkogu0 = !OldOkogu0.Equals(NewOkogu0);
-        ReplaceOktmo0 = !OldOktmo0.Equals(NewOktmo0);
-        ReplaceInn0 = !OldInn0.Equals(NewInn0);
-        ReplaceKpp0 = !OldKpp0.Equals(NewKpp0);
-        ReplaceOkopf0 = !OldOkopf0.Equals(NewOkopf0);
-        ReplaceOkfs0 = !OldOkfs0.Equals(NewOkfs0);
+        ReplaceSubjectRF0 = comparator.Compare(OldSubjectRF0, NewSubjectRF0) != 0;
+        ReplaceJurLico0 = comparator.Compare(OldJurLico0, NewJurLico0) != 0;
+        ReplaceShortJurLico0 = comparator.Compare(OldShortJurLico0, NewShortJurLico0) != 0;
+        ReplaceJurLicoAddress0 = comparator.Compare(OldJurLicoAddress0, NewJurLicoAddress0) != 0;
+        ReplaceJurLicoFactAddress0 = comparator.Compare(OldJurLicoFactAddress0, NewJurLicoFactAddress0) != 0;
+        ReplaceGradeFIO0 = comparator.Compare(OldGradeFIO0, NewGradeFIO0) != 0;
+        ReplaceTelephone0 = comparator.Compare(OldTelephone0, NewTelephone0) != 0;
+        ReplaceFax0 = comparator.Compare(OldFax0, NewFax0) != 0;
+        ReplaceEmail0 = comparator.Compare(OldEmail0, NewEmail0) != 0;
+        ReplaceOkpo0 = comparator.Compare(OldOkpo0, NewOkpo0) != 0;
+        ReplaceOkved0 = comparator.Compare(OldOkved0, NewOkved0) != 0;
+        ReplaceOkogu0 = comparator.Compare(OldOkogu0, NewOkogu0) != 0;
+        ReplaceOktmo0 = comparator.Compare(OldOktmo0, NewOktmo0) != 0;
+        ReplaceInn0 = comparator.Compare(OldInn0, NewInn0) != 0;
+        ReplaceKpp0 = comparator.Compare(OldKpp0, NewKpp0) != 0;
+        ReplaceOkopf0 = comparator.Compare(OldOkopf0, NewOkopf0) != 0;
+        ReplaceOkfs0 = comparator.Compare(OldOkfs0, NewOkfs0) != 0;
 
         #endregion
 
         #region ObosoblPodrCheckBox
 
-        ReplaceSubjectRF1 = !OldSubjectRF1.Equals(NewSubjectRF1);
-        ReplaceJurLico1 = !OldJurLico1.Equals(NewJurLico1);
-        ReplaceShortJurLico1 = !OldShortJurLico1.Equals(NewShortJurLico1);
-        ReplaceJurLicoAddress1 = !OldJurLicoAddress1.Equals(NewJurLicoAddress1);
-        ReplaceJurLicoFactAddress1 = !OldJurLicoFactAddress1.Equals(NewJurLicoFactAddress1);
-        ReplaceGradeFIO1 = !OldGradeFIO1.Equals(NewGradeFIO1);
-        ReplaceTelephone1 = !OldTelephone1.Equals(NewTelephone1);
-        ReplaceFax1 = !OldFax1.Equals(NewFax1);
-        ReplaceEmail1 = !OldEmail1.Equals(NewEmail1);
-        ReplaceOkpo1 = !OldOkpo1.Equals(NewOkpo1);
-        ReplaceOkved1 = !OldOkved1.Equals(NewOkved1);
-        ReplaceOkogu1 = !OldOkogu1.Equals(NewOkogu1);
-        ReplaceOktmo1 = !OldOktmo1.Equals(NewOktmo1);
-        ReplaceInn1 = !OldInn1.Equals(NewInn1);
-        ReplaceKpp1 = !OldKpp1.Equals(NewKpp1);
-        ReplaceOkopf1 = !OldOkopf1.Equals(NewOkopf1);
-        ReplaceOkfs1 = !OldOkfs1.Equals(NewOkfs1);
+        ReplaceSubjectRF1 = comparator.Compare(OldSubjectRF1, NewSubjectRF1) != 0;
+        ReplaceJurLico1 = comparator.Compare(OldJurLico1, NewJurLico1) != 0;
+        ReplaceShortJurLico1 = comparator.Compare(OldShortJurLico1, NewShortJurLico1) != 0;
+        ReplaceJurLicoAddress1 = comparator.Compare(OldJurLicoAddress1, NewJurLicoAddress1) != 0;
+        ReplaceJurLicoFactAddress1 = comparator.Compare(OldJurLicoFactAddress1, NewJurLicoFactAddress1) != 0;
+        ReplaceGradeFIO1 = comparator.Compare(OldGradeFIO1, NewGradeFIO1) != 0;
+        ReplaceTelephone1 = comparator.Compare(OldTelephone1, NewTelephone1) != 0;
+        ReplaceFax1 = comparator.Compare(OldFax1, NewFax1) != 0;
+        ReplaceEmail1 = comparator.Compare(OldEmail1, NewEmail1) != 0;
+        ReplaceOkpo1 = comparator.Compare(OldOkpo1, NewOkpo1) != 0;
+        ReplaceOkved1 = comparator.Compare(OldOkved1, NewOkved1) != 0;
+        ReplaceOkogu1 = comparator.Compare(OldOkogu1, NewOkogu1) != 0;
+        ReplaceOktmo1 = comparator.Compare(OldOktmo1, NewOktmo1) != 0;
+        ReplaceInn1 = comparator.Compare(OldInn1, NewInn1) != 0;
+        ReplaceKpp1 = comparator.Compare(OldKpp1, NewKpp1) != 0;
+        ReplaceOkopf1 = comparator.Compare(OldOkopf1, NewOkopf1) != 0;
+        ReplaceOkfs1 = comparator.Compare(OldOkfs1, NewOkfs1) != 0;
 
         #endregion
 

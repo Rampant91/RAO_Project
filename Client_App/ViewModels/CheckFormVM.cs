@@ -11,7 +11,7 @@ public class CheckFormVM : BaseVM, INotifyPropertyChanged
 
     public CheckFormVM(){}
 
-    public CheckFormVM(ChangeOrCreateVM changeOrCreateVM,List<CheckError> checkError)
+    public CheckFormVM(ChangeOrCreateVM changeOrCreateVM, List<CheckError> checkError)
     {
         ChangeOrCreateVM = changeOrCreateVM;
         CheckError = checkError;

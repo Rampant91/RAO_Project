@@ -16,6 +16,7 @@ using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -72,7 +73,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Add
 
             case "Да" or "Да для всех" or "Добавить":
-                ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
+                //ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
@@ -234,76 +235,77 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     private static async Task CheckTitleFormAsync(Reports baseReps, Reports impReps, List<(string, string)> repsWhereTitleFormCheckIsCancel)
     {
-        if ((baseReps.Master.FormNum_DB is "1.0"
-             && (baseReps.Master.Rows10[0].SubjectRF_DB != impReps.Master.Rows10[0].SubjectRF_DB
-                 || baseReps.Master.Rows10[0].JurLico_DB != impReps.Master.Rows10[0].JurLico_DB
-                 || baseReps.Master.Rows10[0].ShortJurLico_DB != impReps.Master.Rows10[0].ShortJurLico_DB
-                 || baseReps.Master.Rows10[0].JurLicoAddress_DB != impReps.Master.Rows10[0].JurLicoAddress_DB
-                 || baseReps.Master.Rows10[0].JurLicoFactAddress_DB != impReps.Master.Rows10[0].JurLicoFactAddress_DB
-                 || baseReps.Master.Rows10[0].GradeFIO_DB != impReps.Master.Rows10[0].GradeFIO_DB
-                 || baseReps.Master.Rows10[0].Telephone_DB != impReps.Master.Rows10[0].Telephone_DB
-                 || baseReps.Master.Rows10[0].Fax_DB != impReps.Master.Rows10[0].Fax_DB
-                 || baseReps.Master.Rows10[0].Email_DB != impReps.Master.Rows10[0].Email_DB
-                 || baseReps.Master.Rows10[0].Okpo_DB != impReps.Master.Rows10[0].Okpo_DB
-                 || baseReps.Master.Rows10[0].Okved_DB != impReps.Master.Rows10[0].Okved_DB
-                 || baseReps.Master.Rows10[0].Okogu_DB != impReps.Master.Rows10[0].Okogu_DB
-                 || baseReps.Master.Rows10[0].Oktmo_DB != impReps.Master.Rows10[0].Oktmo_DB
-                 || baseReps.Master.Rows10[0].Inn_DB != impReps.Master.Rows10[0].Inn_DB
-                 || baseReps.Master.Rows10[0].Kpp_DB != impReps.Master.Rows10[0].Kpp_DB
-                 || baseReps.Master.Rows10[0].Okopf_DB != impReps.Master.Rows10[0].Okopf_DB
-                 || baseReps.Master.Rows10[0].Okfs_DB != impReps.Master.Rows10[0].Okfs_DB
-                 || baseReps.Master.Rows10[1].SubjectRF_DB != impReps.Master.Rows10[1].SubjectRF_DB
-                 || baseReps.Master.Rows10[1].JurLico_DB != impReps.Master.Rows10[1].JurLico_DB
-                 || baseReps.Master.Rows10[1].ShortJurLico_DB != impReps.Master.Rows10[1].ShortJurLico_DB
-                 || baseReps.Master.Rows10[1].JurLicoAddress_DB != impReps.Master.Rows10[1].JurLicoAddress_DB
-                 || baseReps.Master.Rows10[1].JurLicoFactAddress_DB != impReps.Master.Rows10[1].JurLicoFactAddress_DB
-                 || baseReps.Master.Rows10[1].GradeFIO_DB != impReps.Master.Rows10[1].GradeFIO_DB
-                 || baseReps.Master.Rows10[1].Telephone_DB != impReps.Master.Rows10[1].Telephone_DB
-                 || baseReps.Master.Rows10[1].Fax_DB != impReps.Master.Rows10[1].Fax_DB
-                 || baseReps.Master.Rows10[1].Email_DB != impReps.Master.Rows10[1].Email_DB
-                 || baseReps.Master.Rows10[1].Okpo_DB != impReps.Master.Rows10[1].Okpo_DB
-                 || baseReps.Master.Rows10[1].Okved_DB != impReps.Master.Rows10[1].Okved_DB
-                 || baseReps.Master.Rows10[1].Okogu_DB != impReps.Master.Rows10[1].Okogu_DB
-                 || baseReps.Master.Rows10[1].Oktmo_DB != impReps.Master.Rows10[1].Oktmo_DB
-                 || baseReps.Master.Rows10[1].Inn_DB != impReps.Master.Rows10[1].Inn_DB
-                 || baseReps.Master.Rows10[1].Kpp_DB != impReps.Master.Rows10[1].Kpp_DB
-                 || baseReps.Master.Rows10[1].Okopf_DB != impReps.Master.Rows10[1].Okopf_DB
-                 || baseReps.Master.Rows10[1].Okfs_DB != impReps.Master.Rows10[1].Okfs_DB))
+        var comparator = new CustomStringTitleFormComparer();
+        if (baseReps.Master.FormNum_DB is "1.0"
+            && (comparator.Compare(baseReps.Master.Rows10[0].SubjectRF_DB, impReps.Master.Rows10[0].SubjectRF_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].JurLico_DB, impReps.Master.Rows10[0].JurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].ShortJurLico_DB, impReps.Master.Rows10[0].ShortJurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].JurLicoAddress_DB, impReps.Master.Rows10[0].JurLicoAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].JurLicoFactAddress_DB, impReps.Master.Rows10[0].JurLicoFactAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].GradeFIO_DB, impReps.Master.Rows10[0].GradeFIO_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Telephone_DB, impReps.Master.Rows10[0].Telephone_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Fax_DB, impReps.Master.Rows10[0].Fax_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Email_DB, impReps.Master.Rows10[0].Email_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okpo_DB, impReps.Master.Rows10[0].Okpo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okved_DB, impReps.Master.Rows10[0].Okved_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okogu_DB, impReps.Master.Rows10[0].Okogu_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Oktmo_DB, impReps.Master.Rows10[0].Oktmo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Inn_DB, impReps.Master.Rows10[0].Inn_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Kpp_DB, impReps.Master.Rows10[0].Kpp_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okopf_DB, impReps.Master.Rows10[0].Okopf_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okfs_DB, impReps.Master.Rows10[0].Okfs_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].SubjectRF_DB, impReps.Master.Rows10[1].SubjectRF_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].JurLico_DB, impReps.Master.Rows10[1].JurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].ShortJurLico_DB, impReps.Master.Rows10[1].ShortJurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].JurLicoAddress_DB, impReps.Master.Rows10[1].JurLicoAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].JurLicoFactAddress_DB, impReps.Master.Rows10[1].JurLicoFactAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].GradeFIO_DB, impReps.Master.Rows10[1].GradeFIO_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Telephone_DB, impReps.Master.Rows10[1].Telephone_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Fax_DB, impReps.Master.Rows10[1].Fax_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Email_DB, impReps.Master.Rows10[1].Email_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okpo_DB, impReps.Master.Rows10[1].Okpo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okved_DB, impReps.Master.Rows10[1].Okved_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okogu_DB, impReps.Master.Rows10[1].Okogu_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Oktmo_DB, impReps.Master.Rows10[1].Oktmo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Inn_DB, impReps.Master.Rows10[1].Inn_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Kpp_DB, impReps.Master.Rows10[1].Kpp_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okopf_DB, impReps.Master.Rows10[1].Okopf_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okfs_DB, impReps.Master.Rows10[1].Okfs_DB) != 0)
             || (baseReps.Master.FormNum_DB is "2.0"
-                && (baseReps.Master.Rows20[0].SubjectRF_DB != impReps.Master.Rows20[0].SubjectRF_DB
-                    || baseReps.Master.Rows20[0].JurLico_DB != impReps.Master.Rows20[0].JurLico_DB
-                    || baseReps.Master.Rows20[0].ShortJurLico_DB != impReps.Master.Rows20[0].ShortJurLico_DB
-                    || baseReps.Master.Rows20[0].JurLicoAddress_DB != impReps.Master.Rows20[0].JurLicoAddress_DB
-                    || baseReps.Master.Rows20[0].JurLicoFactAddress_DB != impReps.Master.Rows20[0].JurLicoFactAddress_DB
-                    || baseReps.Master.Rows20[0].GradeFIO_DB != impReps.Master.Rows20[0].GradeFIO_DB
-                    || baseReps.Master.Rows20[0].Telephone_DB != impReps.Master.Rows20[0].Telephone_DB
-                    || baseReps.Master.Rows20[0].Fax_DB != impReps.Master.Rows20[0].Fax_DB
-                    || baseReps.Master.Rows20[0].Email_DB != impReps.Master.Rows20[0].Email_DB
-                    || baseReps.Master.Rows20[0].Okpo_DB != impReps.Master.Rows20[0].Okpo_DB
-                    || baseReps.Master.Rows20[0].Okved_DB != impReps.Master.Rows20[0].Okved_DB
-                    || baseReps.Master.Rows20[0].Okogu_DB != impReps.Master.Rows20[0].Okogu_DB
-                    || baseReps.Master.Rows20[0].Oktmo_DB != impReps.Master.Rows20[0].Oktmo_DB
-                    || baseReps.Master.Rows20[0].Inn_DB != impReps.Master.Rows20[0].Inn_DB
-                    || baseReps.Master.Rows20[0].Kpp_DB != impReps.Master.Rows20[0].Kpp_DB
-                    || baseReps.Master.Rows20[0].Okopf_DB != impReps.Master.Rows20[0].Okopf_DB
-                    || baseReps.Master.Rows20[0].Okfs_DB != impReps.Master.Rows20[0].Okfs_DB
-                    || baseReps.Master.Rows20[1].SubjectRF_DB != impReps.Master.Rows20[1].SubjectRF_DB
-                    || baseReps.Master.Rows20[1].JurLico_DB != impReps.Master.Rows20[1].JurLico_DB
-                    || baseReps.Master.Rows20[1].ShortJurLico_DB != impReps.Master.Rows20[1].ShortJurLico_DB
-                    || baseReps.Master.Rows20[1].JurLicoAddress_DB != impReps.Master.Rows20[1].JurLicoAddress_DB
-                    || baseReps.Master.Rows20[1].JurLicoFactAddress_DB != impReps.Master.Rows20[1].JurLicoFactAddress_DB
-                    || baseReps.Master.Rows20[1].GradeFIO_DB != impReps.Master.Rows20[1].GradeFIO_DB
-                    || baseReps.Master.Rows20[1].Telephone_DB != impReps.Master.Rows20[1].Telephone_DB
-                    || baseReps.Master.Rows20[1].Fax_DB != impReps.Master.Rows20[1].Fax_DB
-                    || baseReps.Master.Rows20[1].Email_DB != impReps.Master.Rows20[1].Email_DB
-                    || baseReps.Master.Rows20[1].Okpo_DB != impReps.Master.Rows20[1].Okpo_DB
-                    || baseReps.Master.Rows20[1].Okved_DB != impReps.Master.Rows20[1].Okved_DB
-                    || baseReps.Master.Rows20[1].Okogu_DB != impReps.Master.Rows20[1].Okogu_DB
-                    || baseReps.Master.Rows20[1].Oktmo_DB != impReps.Master.Rows20[1].Oktmo_DB
-                    || baseReps.Master.Rows20[1].Inn_DB != impReps.Master.Rows20[1].Inn_DB
-                    || baseReps.Master.Rows20[1].Kpp_DB != impReps.Master.Rows20[1].Kpp_DB
-                    || baseReps.Master.Rows20[1].Okopf_DB != impReps.Master.Rows20[1].Okopf_DB
-                    || baseReps.Master.Rows20[1].Okfs_DB != impReps.Master.Rows20[1].Okfs_DB)))
+                && (comparator.Compare(baseReps.Master.Rows20[0].SubjectRF_DB, impReps.Master.Rows20[0].SubjectRF_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].JurLico_DB, impReps.Master.Rows20[0].JurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].ShortJurLico_DB, impReps.Master.Rows20[0].ShortJurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].JurLicoAddress_DB, impReps.Master.Rows20[0].JurLicoAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].JurLicoFactAddress_DB, impReps.Master.Rows20[0].JurLicoFactAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].GradeFIO_DB, impReps.Master.Rows20[0].GradeFIO_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Telephone_DB, impReps.Master.Rows20[0].Telephone_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Fax_DB, impReps.Master.Rows20[0].Fax_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Email_DB, impReps.Master.Rows20[0].Email_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okpo_DB, impReps.Master.Rows20[0].Okpo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okved_DB, impReps.Master.Rows20[0].Okved_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okogu_DB, impReps.Master.Rows20[0].Okogu_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Oktmo_DB, impReps.Master.Rows20[0].Oktmo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Inn_DB, impReps.Master.Rows20[0].Inn_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Kpp_DB, impReps.Master.Rows20[0].Kpp_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okopf_DB, impReps.Master.Rows20[0].Okopf_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okfs_DB, impReps.Master.Rows20[0].Okfs_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].SubjectRF_DB, impReps.Master.Rows20[1].SubjectRF_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].JurLico_DB, impReps.Master.Rows20[1].JurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].ShortJurLico_DB, impReps.Master.Rows20[1].ShortJurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].JurLicoAddress_DB, impReps.Master.Rows20[1].JurLicoAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].JurLicoFactAddress_DB, impReps.Master.Rows20[1].JurLicoFactAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].GradeFIO_DB, impReps.Master.Rows20[1].GradeFIO_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Telephone_DB, impReps.Master.Rows20[1].Telephone_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Fax_DB, impReps.Master.Rows20[1].Fax_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Email_DB, impReps.Master.Rows20[1].Email_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okpo_DB, impReps.Master.Rows20[1].Okpo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okved_DB, impReps.Master.Rows20[1].Okved_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okogu_DB, impReps.Master.Rows20[1].Okogu_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Oktmo_DB, impReps.Master.Rows20[1].Oktmo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Inn_DB, impReps.Master.Rows20[1].Inn_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Kpp_DB, impReps.Master.Rows20[1].Kpp_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okopf_DB, impReps.Master.Rows20[1].Okopf_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okfs_DB, impReps.Master.Rows20[1].Okfs_DB) != 0)))
         {
             var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master, repsWhereTitleFormCheckIsCancel).AsyncExecute(null);
             baseReps.Master = newTitleRep;
