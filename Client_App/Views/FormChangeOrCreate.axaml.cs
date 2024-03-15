@@ -54,8 +54,15 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 
     private void OnStandardClosing(object sender, CancelEventArgs args)
     {
-        using var db = new DBModel(StaticConfiguration.DBPath);
-        if (!db.ChangeTracker.HasChanges()) return;
+        try
+        {
+            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges()) return;
+        }
+        catch (Exception e)
+        {
+            //ignore
+        }
+        
         if (Answ != null) return;
         var flag = false;
         var tmp = DataContext as ChangeOrCreateVM;
