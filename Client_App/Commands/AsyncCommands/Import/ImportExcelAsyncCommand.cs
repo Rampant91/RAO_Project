@@ -22,6 +22,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     {
         RepsWhereTitleFormCheckIsCancel.Clear();
         IsFirstLogLine = true;
+        ExcelImportNewReps = false;
         CurrentLogLine = 1;
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
@@ -84,8 +85,12 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
             var baseReps = GetBaseReps(worksheet0);
             var impReps = GetImportReps(worksheet0);
-            baseReps ??= impReps;
-
+            if (baseReps is null)
+            {
+                ExcelImportNewReps = true;
+                baseReps = impReps;
+            }
+            
             BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
             BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
             BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;

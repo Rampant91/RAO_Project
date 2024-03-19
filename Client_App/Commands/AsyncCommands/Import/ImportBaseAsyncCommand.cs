@@ -31,6 +31,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
     private protected bool AtLeastOneImportDone;    // Не отменена хотя бы одна операция импорта файлов/организаций/форм
+    private protected bool ExcelImportNewReps;
 
     private protected bool IsFirstLogLine;          // Это первая строчка в логгере ?
     public int CurrentLogLine;                      // Порядковый номер добавляемой формы в логгере для текущей операции
@@ -73,7 +74,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Add
 
             case "Да" or "Да для всех" or "Добавить":
-                //ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
+                if (ExcelImportNewReps) ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
