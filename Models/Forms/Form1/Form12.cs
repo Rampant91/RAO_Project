@@ -322,13 +322,14 @@ public partial class Form12 : Form1
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        var len = value1.Length;
-        if (value1[0] == '(' && value1[len - 1] == ')')
+        if (value1[0] == '(' && value1[^1] == ')')
         {
-            value1 = value1.Remove(len - 1, 1).Remove(0, 1);
+            value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;

@@ -1115,7 +1115,7 @@ public class CheckF11
             .Replace(")", "");
         if (!double.TryParse(activity,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("en-GB"),
+                CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var activityReal)
             || activity.Contains('-')
             || activityReal is <= 0 or > 10e+20)
@@ -1342,7 +1342,7 @@ public class CheckF11
             var dMaxValue = dValueList.Max();
             valid = double.TryParse(activity!.Replace(".", ","), 
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands, 
-                CultureInfo.CreateSpecificCulture("en-GB"),
+                CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var aValue);
             if (valid)
             {

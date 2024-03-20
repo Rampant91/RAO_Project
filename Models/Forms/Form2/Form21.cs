@@ -554,7 +554,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(tmp.Length - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -693,7 +696,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -964,7 +970,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1053,7 +1062,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1201,7 +1213,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1285,7 +1300,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1369,7 +1387,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1453,7 +1474,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1725,7 +1749,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1814,7 +1841,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1883,7 +1913,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!int.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpInt))
+        if (!int.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("ru-RU"), out var tmpInt))
         {
             value1.AddError("Недопустимое значение");
             return false;
@@ -1972,7 +2002,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -2061,7 +2094,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -2150,7 +2186,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -2243,7 +2282,10 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("en-GB"), out var tmpDouble))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var tmpDouble))
         {
             value.AddError("Недопустимое значение");
             return false;

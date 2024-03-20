@@ -554,39 +554,33 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 BaseRepStartPeriod = baseRep.StartPeriod_DB;
                 BaseRepEndPeriod = baseRep.EndPeriod_DB;
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                
+
                 #region Periods
 
                 var stBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Начало периода у отчета в базе
                 var endBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у отчета в базе
-                try
+                if (DateTime.TryParse(BaseRepStartPeriod, out var baseRepStartPeriod)
+                    && DateTime.TryParse(BaseRepEndPeriod, out var baseRepEndPeriod))
                 {
-                    stBase = DateTime.Parse(BaseRepStartPeriod) > DateTime.Parse(BaseRepEndPeriod)
-                        ? DateTime.Parse(BaseRepEndPeriod)
-                        : DateTime.Parse(BaseRepStartPeriod);
-                    endBase = DateTime.Parse(BaseRepStartPeriod) < DateTime.Parse(BaseRepEndPeriod)
-                        ? DateTime.Parse(BaseRepEndPeriod)
-                        : DateTime.Parse(BaseRepStartPeriod);
-                }
-                catch (Exception)
-                {
-                    // ignored
+                    stBase = baseRepStartPeriod > baseRepEndPeriod
+                        ? baseRepEndPeriod
+                        : baseRepStartPeriod;
+                    endBase = baseRepStartPeriod < baseRepEndPeriod
+                        ? baseRepEndPeriod
+                        : baseRepStartPeriod;
                 }
 
                 var stImp = DateTime.Parse(DateTime.Now.ToShortDateString()); //Начало периода у импортируемого отчета
                 var endImp = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у импортируемого отчета
-                try
+                if (DateTime.TryParse(ImpRepStartPeriod, out var impRepStartPeriod)
+                    && DateTime.TryParse(ImpRepEndPeriod, out var impRepEndPeriod))
                 {
-                    stImp = DateTime.Parse(ImpRepStartPeriod) > DateTime.Parse(ImpRepEndPeriod)
-                        ? DateTime.Parse(ImpRepEndPeriod)
-                        : DateTime.Parse(ImpRepStartPeriod);
-                    endImp = DateTime.Parse(ImpRepStartPeriod) < DateTime.Parse(ImpRepEndPeriod)
-                        ? DateTime.Parse(ImpRepEndPeriod)
-                        : DateTime.Parse(ImpRepStartPeriod);
-                }
-                catch (Exception ex)
-                {
-                    // ignored
+                    stImp = impRepStartPeriod > impRepEndPeriod
+                        ? impRepEndPeriod
+                        : impRepStartPeriod;
+                    endImp = impRepStartPeriod < impRepEndPeriod
+                        ? impRepEndPeriod
+                        : impRepStartPeriod;
                 }
 
                 #endregion

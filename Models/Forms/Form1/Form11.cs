@@ -280,7 +280,9 @@ public partial class Form11 : Form1
         var flag = true;
         foreach (var nucl in nuclids)
         {
-            var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
+            var tmp = Spravochniks.SprRadionuclids
+                .Where(item => nucl == item.Item1)
+                .Select(item => item.Item1);
             if (!tmp.Any())
                 flag = false;
         }
@@ -438,7 +440,10 @@ public partial class Form11 : Form1
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
                 value1 = $"{doubleValue:0.######################################################e+00}";
             }
@@ -468,8 +473,10 @@ public partial class Form11 : Form1
         {
             value1 = value1.Remove(len - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
