@@ -1375,8 +1375,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     private static async Task<Report> FillReportWithForms(Reports baseReps, Report baseRep)
     {
-        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
-        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
+        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local
+                .FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
+        if (checkedRep != null &&
+            (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
         {
             baseRep = await ReportsStorage.Api.GetAsync(baseRep.Id);
             StaticConfiguration.DBModel.Entry(checkedRep).State = EntityState.Detached;
@@ -1384,6 +1386,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             baseReps.Report_Collection.Replace(checkedRep, baseRep);
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
+        
         return baseRep;
     }
 

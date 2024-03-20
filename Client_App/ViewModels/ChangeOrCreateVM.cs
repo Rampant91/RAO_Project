@@ -200,8 +200,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
         isSum = sumR21 > 0 || sumR22 > 0;
         Init();
-        using var db = new DBModel(StaticConfiguration.DBPath);
-        db.SaveChanges();
+        StaticConfiguration.DBModel.SaveChanges();
     }
 
     #endregion

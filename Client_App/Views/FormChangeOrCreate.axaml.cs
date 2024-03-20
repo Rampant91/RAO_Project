@@ -50,6 +50,8 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 #endif
     }
 
+    #region OnStandartClosing
+    
     System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; }
 
     private void OnStandardClosing(object sender, CancelEventArgs args)
@@ -62,14 +64,14 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         {
             //ignore
         }
-        
+
         if (Answ != null) return;
         var flag = false;
         var tmp = DataContext as ChangeOrCreateVM;
         Answ = tmp.ShowMessageT.Handle(["Сохранить?", "Да", "Нет"]).GetAwaiter();
         Answ.Subscribe(async x =>
         {
-            await using var dbm = new DBModel(StaticConfiguration.DBPath);
+            var dbm = StaticConfiguration.DBModel;
             switch (x)
             {
                 case "Да":
@@ -78,50 +80,50 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     await new SaveReportAsyncCommand(tmp).AsyncExecute(null);
                     return;
                 case "Нет":
-                {
-                    flag = true;
-                    dbm.Restore();
-                    await dbm.SaveChangesAsync();
+                    {
+                        flag = true;
+                        dbm.Restore();
+                        await dbm.SaveChangesAsync();
 
-                    var lst = tmp.Storage[tmp.FormType];
+                        var lst = tmp.Storage[tmp.FormType];
 
-                    foreach (var key in lst)
-                    {
-                        var item = (Form)key;
-                        if (item.Id == 0)
+                        foreach (var key in lst)
                         {
-                            tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
+                            var item = (Form)key;
+                            if (item.Id == 0)
+                            {
+                                tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
+                            }
                         }
-                    }
 
-                    var lstNote = tmp.Storage.Notes.ToList<Note>();
-                    foreach (var item in lstNote.Where(item => item.Id == 0))
-                    {
-                        tmp.Storage.Notes.Remove(item);
-                    }
-                    
-                    if (tmp.FormType is not "1.0" and not "2.0")
-                    {
-                        if (tmp.FormType.Split('.')[0] == "1")
+                        var lstNote = tmp.Storage.Notes.ToList<Note>();
+                        foreach (var item in lstNote.Where(item => item.Id == 0))
                         {
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            tmp.Storage.Notes.Remove(item);
                         }
-                        if (tmp.FormType.Split('.')[0] == "2")
+
+                        if (tmp.FormType is not "1.0" and not "2.0")
                         {
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            if (tmp.FormType.Split('.')[0] == "1")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
+                            if (tmp.FormType.Split('.')[0] == "2")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
                         }
+                        else
+                        {
+                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
+                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
+                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
+                        }
+                        break;
                     }
-                    else
-                    {
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
-                    }
-                    break;
-                }
             }
         });
         Answ.OnCompleted(() =>
@@ -138,6 +140,8 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         });
         args.Cancel = true;
     }
+
+    #endregion
 
     #region Init
     private void Form1Init(in Panel panel)

@@ -55,7 +55,22 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         foreach (var key in exportOrg.Report_Collection)
         {
             var rep = (Report)key;
-            repList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+            //await using var tempDb = new DBModel(StaticConfiguration.DBPath);
+            //repList = [.. tempDb.ReportCollectionDbSet
+            //    .AsNoTracking()
+            //    .Include(x => x.Rows10)
+            //    .Include(x => x.Rows11)
+            //    .Include(x => x.Rows12)
+            //    .Include(x => x.Rows13)
+            //    .Include(x => x.Rows14)
+            //    .Include(x => x.Rows15)
+            //    .Include(x => x.Rows16)
+            //    .Include(x => x.Rows17)
+            //    .Include(x => x.Rows18)
+            //    .Include(x => x.Rows19)
+            //    .Where(x => x.Id == rep.Id)];
+            //repList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+            repList.Add(await ReportsStorage.GetReportAsync(rep.Id));
         }
         exportOrg.Report_Collection.Clear();
         exportOrg.Report_Collection.AddRangeNoChange(repList);

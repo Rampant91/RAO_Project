@@ -60,7 +60,7 @@ internal partial class ExportAllReportsAsyncCommand : BaseAsyncCommand
             foreach (var key1 in exportOrg.Report_Collection)
             {
                 var rep = (Report)key1;
-                repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+                repInRangeWithForms.Add(await ReportsStorage.GetReportAsync(rep.Id));
             }
 
             exportOrg.Report_Collection.Clear();
