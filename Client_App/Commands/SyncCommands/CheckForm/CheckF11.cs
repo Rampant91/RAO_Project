@@ -1198,7 +1198,7 @@ public class CheckF11
     {
         List<CheckError> result = new();
         string[] creatorOkpoValid = { "прим.", "прим", "примечание", "примечания" };
-        if (!creatorOkpoValid.Contains(forms[line].CreatorOKPO_DB.ToLower())) return result;
+        if (!creatorOkpoValid.Contains(forms[line].CreatorOKPO_DB?.ToLower())) return result;
         var valid = false;
         foreach (var note in notes)
         {
