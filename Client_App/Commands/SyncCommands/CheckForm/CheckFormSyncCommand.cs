@@ -23,31 +23,31 @@ internal class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
             case "1.1":
                 result.AddRange(CheckF11.Check_Total(reps, rep));
                 break;
+            //case "1.2":
+            //    result.AddRange(CheckF12.Check_Total(reps, rep));
+            //    break;
+            case "1.3":
+                result.AddRange(CheckF13.Check_Total(reps, rep));
+                break;
+            //case "1.4":
+            //    result.AddRange(CheckF14.Check_Total(reps, rep));
+            //    break;
+            //case "1.5":
+            //    result.AddRange(CheckF15.Check_Total(reps, rep));
+            //    break;
+            //case "1.6":
+            //    result.AddRange(CheckF16.Check_Total(reps, rep));
+            //    break;
+            //case "1.7":
+            //    result.AddRange(CheckF17.Check_Total(reps, rep));
+            //    break;
+            //case "1.8":
+            //    result.AddRange(CheckF18.Check_Total(reps, rep));
+            //    break;
+            //case "1.9":
+            //    result.AddRange(CheckF19.Check_Total(reps, rep));
+            //    break;
             default: return;
-                //case "1.2":
-                //    result.AddRange(CheckF12.Check_Total(reps, rep));
-                //    break;
-                //case "1.3":
-                //    result.AddRange(CheckF13.Check_Total(reps, rep));
-                //    break;
-                //case "1.4":
-                //    result.AddRange(CheckF14.Check_Total(reps, rep));
-                //    break;
-                //case "1.5":
-                //    result.AddRange(CheckF15.Check_Total(reps, rep));
-                //    break;
-                //case "1.6":
-                //    result.AddRange(CheckF16.Check_Total(reps, rep));
-                //    break;
-                //case "1.7":
-                //    result.AddRange(CheckF17.Check_Total(reps, rep));
-                //    break;
-                //case "1.8":
-                //    result.AddRange(CheckF18.Check_Total(reps, rep));
-                //    break;
-                //case "1.9":
-                //    result.AddRange(CheckF19.Check_Total(reps, rep));
-                //    break;
         }
         _ = new Views.CheckForm(changeOrCreateViewModel, result);
     }

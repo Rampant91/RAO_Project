@@ -1008,7 +1008,7 @@ public abstract class CheckF11 : CheckBase
 
     #region Check029
 
-    //"код ОКПО изготовителя" = "ОКПО организации" для кодов операции 11, 58
+    //"код ОКПО изготовителя" = "ОКПО организации" для кодов операции 11
     private static List<CheckError> Check_029(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
