@@ -83,6 +83,21 @@ public abstract class CheckF13 : CheckBase
             errorList.AddRange(Check_038(formsList, currentFormLine));
             errorList.AddRange(Check_039(formsList, notes, currentFormLine));
             errorList.AddRange(Check_040(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_041(formsList, currentFormLine));
+            errorList.AddRange(Check_042(formsList, currentFormLine));
+            errorList.AddRange(Check_043(formsList, currentFormLine));
+            errorList.AddRange(Check_044(formsList, currentFormLine));
+            errorList.AddRange(Check_045(formsList, rep, currentFormLine));
+            errorList.AddRange(Check_046(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_047(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_048(formsList, currentFormLine));
+            errorList.AddRange(Check_049(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_050(formsList, currentFormLine));
+            errorList.AddRange(Check_051(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_052(formsList, currentFormLine));
+            errorList.AddRange(Check_053(formsList, currentFormLine));
+            errorList.AddRange(Check_054(formsList, currentFormLine));
+            errorList.AddRange(Check_055(formsList, currentFormLine));
             currentFormLine++;
         }
 
@@ -295,7 +310,7 @@ public abstract class CheckF13 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = Convert.ToString(operationCode),
@@ -324,7 +339,7 @@ public abstract class CheckF13 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = Convert.ToString(operationCode),
@@ -734,7 +749,7 @@ public abstract class CheckF13 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
                 Value = forms[line].Activity_DB,
@@ -817,7 +832,7 @@ public abstract class CheckF13 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = forms[line].CreatorOKPO_DB,
@@ -842,7 +857,7 @@ public abstract class CheckF13 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = forms[line].CreationDate_DB,
@@ -1155,10 +1170,10 @@ public abstract class CheckF13 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
-                Value = documentDate,
+                Value = Convert.ToString(documentDate),
                 Message = "Дата документа выходит за границы периода."
             });
         }
@@ -1167,7 +1182,311 @@ public abstract class CheckF13 : CheckBase
 
     #endregion
 
+    #region Check046
+    
+    //Код ОКПО поставщика/получателя равен коду ОКПО отчитывающейся организации + 8/14 цифр (колонка 17)
+    private static List<CheckError> Check_046(List<Form13> forms, List<Form10> forms10, int line)
+    {
+        List<CheckError> result = new();
+        string[] applicableOperationCodes = { "10", "11", "12", "15", "17", "18", "41", "42", "43", "58", "61", "62", "65", "67", "68", "71", "72", "73", "74", "75", "97", "98", "99" };
+        var operationCode = forms[line].OperationCode_DB;
+        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB) 
+            ? forms10[1].Okpo_DB 
+            : forms10[0].Okpo_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
 
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        var valid = okpoRegex.IsMatch(providerOrRecieverOKPO)
+                     && providerOrRecieverOKPO == repOKPO;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "ProviderOrRecieverOKPO_DB",
+                Value = Convert.ToString(providerOrRecieverOKPO),
+                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check047
+    
+    //Код ОКПО поставщика/получателя не равен коду ОКПО отчитывающейся организации + 8/14 цифр (колонка 17)
+    private static List<CheckError> Check_047(List<Form13> forms, List<Form10> forms10, int line)
+    {
+        List<CheckError> result = new();
+        string[] applicableOperationCodes = { "25", "27", "28", "29", "35", "37", "38", "39", "63", "64" };
+        var operationCode = forms[line].OperationCode_DB;
+        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB) 
+            ? forms10[1].Okpo_DB 
+            : forms10[0].Okpo_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        var valid = okpoRegex.IsMatch(providerOrRecieverOKPO)
+                     && providerOrRecieverOKPO != repOKPO;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "ProviderOrRecieverOKPO_DB",
+                Value = Convert.ToString(providerOrRecieverOKPO),
+                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check048
+    
+    //Код ОКПО поставщика/получателя состоит из 8/14 чисел или "минобороны" (колонка 19)
+    private static List<CheckError> Check_048(List<Form13> forms, int line)
+    {
+        List<CheckError> result = new();
+        string[] applicableOperationCodes = { "22", "32" };
+        var operationCode = forms[line].OperationCode_DB;
+        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var valid = okpoRegex.IsMatch(providerOrRecieverOKPO) 
+                    || providerOrRecieverOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "ProviderOrRecieverOKPO_DB",
+                Value = Convert.ToString(providerOrRecieverOKPO),
+                Message = "Формат ввода данных не соответствует приказу."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check049
+
+    //Код ОКПО поставщика/получателя из ОКСМ (не Россия), для определенных кодов операции, с примечанием (колонка 17)
+    private static List<CheckError> Check_049(List<Form13> forms, List<Note> notes, int line)
+    {
+        List<CheckError> result = new();
+        const byte graphNumber = 17;
+        string[] applicableOperationCodes = { "81", "82", "83", "84", "85", "86", "87", "88" };
+        var operationCode = forms[line].OperationCode_DB;
+        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == providerOrRecieverOKPO) 
+                    && !providerOrRecieverOKPO.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "ProviderOrRecieverOKPO_DB",
+                Value = Convert.ToString(providerOrRecieverOKPO),
+                Message = "Формат ввода данных не соответствует приказу."
+            });
+        }
+        valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "ProviderOrRecieverOKPO_DB",
+                Value = Convert.ToString(providerOrRecieverOKPO),
+                Message = "Необходимо добавить примечание."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check050
+    
+    //При определенных кодах операции, код ОКПО перевозчика равен "-" (колонка 18)
+    private static List<CheckError> Check_050(List<Form13> forms, int line)
+    {
+        List<CheckError> result = new();
+        string[] applicableOperationCodes = { "10", "11", "12", "15", "17", "18", "41", "42", "43", "46", "47", "53", "54", "58", "65", "67", "68", "71", "72", "73", "74", "75", "97", "98" };
+        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
+        var transporterOKPO = forms[line].TransporterOKPO_DB;
+        var valid = transporterOKPO is "-";
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "TransporterOKPO_DB",
+                Value = Convert.ToString(transporterOKPO),
+                Message = "При выбранном коде операции транспортирование не производится."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check051
+
+    //При определенных кодах операции, код ОКПО перевозчика равен 8/14 цифр, допускается "прим." (колонка 18)
+    private static List<CheckError> Check_051(List<Form13> forms, List<Note> notes, int line)
+    {
+        List<CheckError> result = new();
+        string[] applicableOperationCodes = { "21", "25", "27", "28", "29", "31", "32", "35", "36", "37", "38", "39", "61", "62", "81", "82", "83", "84", "85", "86", "87", "88" };
+        var operationCode = forms[line].OperationCode_DB;
+        var transporterOKPO = forms[line].TransporterOKPO_DB;
+        const byte graphNumber = 18;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        var valid = transporterOKPO is "прим." 
+                    && CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "TransporterOKPO_DB",
+                Value = Convert.ToString(transporterOKPO),
+                Message = "Необходимо указать примечание."
+            });
+            return result;
+        }
+        valid = okpoRegex.IsMatch(transporterOKPO);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "TransporterOKPO_DB",
+                Value = Convert.ToString(transporterOKPO),
+                Message = "Необходимо указать код ОКПО организации перевозчика."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check052
+    
+    //Код ОКПО перевозчика состоит из 8/14 чисел или "минобороны" (колонка 18)
+    private static List<CheckError> Check_052(List<Form13> forms, int line)
+    {
+        List<CheckError> result = new();
+        string[] applicableOperationCodes = { "22", "32" };
+        var operationCode = forms[line].OperationCode_DB;
+        var transporterOKPO = forms[line].TransporterOKPO_DB;
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var valid = okpoRegex.IsMatch(transporterOKPO) 
+                    || transporterOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "TransporterOKPO_DB",
+                Value = Convert.ToString(transporterOKPO),
+                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check053
+    
+    //Не пустое поле (колонка 19)
+    private static List<CheckError> Check_053(List<Form13> forms, int line)
+    {
+        List<CheckError> result = new();
+        var packName = forms[line].PackName_DB;
+        var valid = !string.IsNullOrWhiteSpace(packName);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "PackName_DB",
+                Value = Convert.ToString(packName),
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check054
+    
+    //Не пустое поле (колонка 20)
+    private static List<CheckError> Check_054(List<Form13> forms, int line)
+    {
+        List<CheckError> result = new();
+        var packType = forms[line].PackType_DB;
+        var valid = !string.IsNullOrWhiteSpace(packType);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "PackType_DB",
+                Value = Convert.ToString(packType),
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check055
+    
+    //Не пустое поле (колонка 21)
+    private static List<CheckError> Check_055(List<Form13> forms, int line)
+    {
+        List<CheckError> result = new();
+        var packNumber = forms[line].PackNumber_DB;
+        var valid = !string.IsNullOrWhiteSpace(packNumber);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "PackNumber_DB",
+                Value = Convert.ToString(packNumber),
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+            });
+        }
+        return result;
+    }
+
+    #endregion
 
     #endregion
 }

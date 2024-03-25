@@ -411,7 +411,7 @@ public partial class Form13 : Form1
             //    value.AddError( "Заполните примечание");
             return true;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e').Replace('.', ',');
         if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
