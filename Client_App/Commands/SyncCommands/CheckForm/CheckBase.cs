@@ -9,9 +9,11 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public abstract class CheckBase
 {
+    private protected static Dictionary<string, double> D = new();
+
     private protected static List<Dictionary<string, string>> OKSM = new();
 
-    private protected static Dictionary<string, double> D = new();
+    private protected static List<Dictionary<string, string>> R = new();
 
     private protected static bool DB_Ignore = true;
 
@@ -139,6 +141,31 @@ public abstract class CheckBase
                 {"longname", wrksht1.Cells[i, 4].Text},
                 {"alpha2", wrksht1.Cells[i, 5].Text},
                 {"alpha3", wrksht1.Cells[i, 6].Text}
+            });
+            i++;
+        }
+    }
+
+    #endregion
+
+    #region RFromFile
+
+    private protected static void R_Populate_From_File(string filePath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(filePath)) return;
+        FileInfo excelImportFile = new(filePath);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet = xls.Workbook.Worksheets["Лист1"];
+        var i = 2;
+        R.Clear();
+        while (worksheet.Cells[i, 1].Text != string.Empty)
+        {
+            R.Add(new Dictionary<string, string>
+            {
+                {"name", worksheet.Cells[i, 1].Text},
+                {"value", worksheet.Cells[i, 5].Text},
+                {"unit", worksheet.Cells[i, 6].Text}
             });
             i++;
         }
