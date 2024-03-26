@@ -23,9 +23,9 @@ internal class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
             case "1.1":
                 result.AddRange(CheckF11.Check_Total(reps, rep));
                 break;
-            //case "1.2":
-            //    result.AddRange(CheckF12.Check_Total(reps, rep));
-            //    break;
+            case "1.2":
+                result.AddRange(CheckF12.Check_Total(reps, rep));
+                break;
             case "1.3":
                 result.AddRange(CheckF13.Check_Total(reps, rep));
                 break;
