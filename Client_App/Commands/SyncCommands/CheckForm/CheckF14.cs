@@ -7,7 +7,6 @@ using System.IO;
 using Models.Forms;
 using System.Linq;
 using System.Globalization;
-using FirebirdSql.EntityFrameworkCore.Firebird.Query.ExpressionTranslators.Internal;
 using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;

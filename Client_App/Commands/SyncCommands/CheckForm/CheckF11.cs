@@ -316,8 +316,8 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         const byte graphNumber = 2;
-        string[] applicableOperationCodes = { "29", "39", "97", "98", "99" };
-        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
+        var operationCode = forms[line].OperationCode_DB;
+        if (operationCode is not("29" or "39" or "97" or "98" or "99")) return result;
         var valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
         if (!valid)
         {
@@ -326,7 +326,7 @@ public abstract class CheckF11 : CheckBase
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
-                Value = "-",
+                Value = Convert.ToString(operationCode),
                 Message = "Необходимо дать пояснение об осуществленной операции."
             });
         }

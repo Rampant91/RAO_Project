@@ -66,7 +66,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
     private async Task DoShowDialogAsync(InteractionContext<ChangeOrCreateVM, object> interaction)
     {
         FormChangeOrCreate frm = new(interaction.Input);
-
+        WindowState = WindowState.Minimized;
         await frm.ShowDialog(this);
         interaction.SetOutput(null);
     }

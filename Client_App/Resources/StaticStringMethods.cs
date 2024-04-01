@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using OfficeOpenXml;
 
 namespace Client_App.Resources;
 
-internal static class StaticStringMethods
+internal static partial class StaticStringMethods
 {
     #region ComparePasParam
     
@@ -15,10 +16,8 @@ internal static class StaticStringMethods
         {
             return nameDb == null && namePas == null;
         }
-        nameDb = Regex.Replace(nameDb, "[\\\\/:*?\"<>|]", "");
-        nameDb = Regex.Replace(nameDb, "\\s+", "");
-        namePas = Regex.Replace(namePas, "[\\\\/:*?\"<>|]", "");
-        namePas = Regex.Replace(namePas, "\\s+", "");
+        nameDb = RestrictedSymbolsRegex().Replace(nameDb, "");
+        namePas = RestrictedSymbolsRegex().Replace(namePas, "");
         return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase)
                || TranslateToEng(nameDb).Equals(TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
                || TranslateToRus(nameDb).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
@@ -111,8 +110,8 @@ internal static class StaticStringMethods
 
     internal static string RemoveForbiddenChars(string str)
     {
-        str = str.Replace(Environment.NewLine, "").Trim();
-        str = Regex.Replace(str, "[\\\\/:*?\"<>|]", "");
+        str = str.Replace(str, "").Replace(Environment.NewLine, "");
+        str = RestrictedSymbolsRegex().Replace(str, "");
         return str;
     }
 
@@ -154,32 +153,20 @@ internal static class StaticStringMethods
         Dictionary<string, string> dictRusToEng = new()
         {
             {"а", "a"},
-            {"А", "A"},
             {"е", "e"},
-            {"Е", "E"},
             {"к", "k"},
-            {"К", "K"},
             {"м", "m"},
-            {"М", "M"},
             {"о", "o"},
-            {"О", "O"},
             {"р", "p"},
-            {"Р", "P"},
             {"с", "c"},
-            {"С", "C"},
-            {"Т", "T"},
+            {"т", "t"},
             {"у", "y"},
-            {"У", "Y"},
-            {"х", "x"},
-            {"Х", "X"},
+            {"х", "x"}
         };
-        var newPasName = "";
-        foreach (var ch in pasName)
-        {
-            if (dictRusToEng.TryGetValue(ch.ToString(), out var ss)) newPasName += ss;
-            else newPasName += ch;
-        }
-        return newPasName;
+        return pasName.Aggregate("", (current, ch) => 
+            current + (dictRusToEng.TryGetValue(ch.ToString(), out var ss)
+                ? ss
+                : ch));
     }
     
     #endregion
@@ -191,33 +178,24 @@ internal static class StaticStringMethods
         Dictionary<string, string> dictEngToRus = new()
         {
             {"a", "а"},
-            {"A", "А"},
             {"e", "е"},
-            {"E", "Е"},
             {"k", "к"},
-            {"K", "К"},
             {"m", "м"},
-            {"M", "М"},
             {"o", "о"},
-            {"O", "О"},
             {"p", "р"},
-            {"P", "Р"},
             {"c", "с"},
-            {"C", "С"},
-            {"T", "Т"},
+            {"t", "т"},
             {"y", "у"},
-            {"Y", "У"},
-            {"x", "х"},
-            {"X", "Х"},
+            {"x", "х"}
         };
-        var newPasName = "";
-        foreach (var ch in pasName)
-        {
-            if (dictEngToRus.TryGetValue(ch.ToString(), out var ss)) newPasName += ss;
-            else newPasName += ch;
-        }
-        return newPasName;
-    } 
+        return pasName.Aggregate("", (current, ch) => 
+            current + (dictEngToRus.TryGetValue(ch.ToString(), out var ss) 
+                ? ss 
+                : ch));
+    }
+
+    [GeneratedRegex("[\\\\/:*?\"<>|]\\s")]
+    private static partial Regex RestrictedSymbolsRegex();
 
     #endregion
 }

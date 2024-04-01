@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
-public class CheckF12 : CheckBase
+public abstract class CheckF12 : CheckBase
 {
     private static readonly string[] OperationCode_DB_Valids =
     {
@@ -33,7 +33,7 @@ public class CheckF12 : CheckBase
         if (OKSM.Count == 0)
         {
 #if DEBUG
-            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "oksm.xlsx"));
+            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "oksm.xlsx"));
 #else
             OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"oksm.xlsx"));
 #endif
@@ -41,7 +41,7 @@ public class CheckF12 : CheckBase
         if (D.Count == 0)
         {
 #if DEBUG
-            D_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "D.xlsx"));
+            D_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "D.xlsx"));
 #else
             D_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"D.xlsx"));
 #endif
@@ -107,10 +107,8 @@ public class CheckF12 : CheckBase
             errorList.AddRange(Check_053(formsList, currentFormLine));
             errorList.AddRange(Check_054(formsList, currentFormLine));
             errorList.AddRange(Check_055(formsList, currentFormLine));
-
             currentFormLine++;
         }
-
         var index = 0;
         foreach (var error in errorList)
         {
@@ -173,7 +171,7 @@ public class CheckF12 : CheckBase
                 FormNum = "form_12",
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
-                Value = operationCode,
+                Value = Convert.ToString(operationCode),
                 Message = "Этот код операции не может быть использован в форме 1.2."
             });
         }
@@ -187,8 +185,8 @@ public class CheckF12 : CheckBase
     private static List<CheckError> Check_004(List<Form12> forms, int line)
     {
         List<CheckError> result = new();
-        string[] nonapplicableOperationCodes = { "43" };
-        var valid = !(nonapplicableOperationCodes.Contains(forms[line].OperationCode_DB));
+        var operationCode = forms[line].OperationCode_DB;
+        var valid = operationCode is not "43";
         if (!valid)
         {
             result.Add(new CheckError
@@ -901,7 +899,7 @@ public class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "PropertyCode_DB",
                 Value = propertyCode.ToString(),
-                Message = "Формат ввода данных не соответствует приказу. Выберите идентификатор, соотвествующий форме собственности ИОУ."
+                Message = "Формат ввода данных не соответствует приказу. Выберите идентификатор, соответствующий форме собственности ИОУ."
             });
         }
         return result;

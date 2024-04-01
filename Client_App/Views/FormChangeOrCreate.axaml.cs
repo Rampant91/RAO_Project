@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
@@ -56,9 +57,14 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 
     private void OnStandardClosing(object sender, CancelEventArgs args)
     {
+        var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges()) return;
+            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            {
+                desktop.MainWindow.WindowState = WindowState.Normal;
+                return;
+            }
         }
         catch (Exception e)
         {
@@ -128,6 +134,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         });
         Answ.OnCompleted(() =>
         {
+            desktop.MainWindow.WindowState = WindowState.Normal;
             if (flag)
             {
                 Close();
@@ -139,7 +146,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
             }
         });
         args.Cancel = true;
-    }
+        }
 
     #endregion
 

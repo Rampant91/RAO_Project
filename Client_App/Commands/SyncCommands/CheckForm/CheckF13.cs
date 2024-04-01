@@ -108,6 +108,8 @@ public abstract class CheckF13 : CheckBase
             errorList.AddRange(Check_055(formsList, notes, currentFormLine));
             errorList.AddRange(Check_056(formsList, currentFormLine));
             errorList.AddRange(Check_057(formsList, currentFormLine));
+            errorList.AddRange(Check_058(formsList, currentFormLine));
+            errorList.AddRange(Check_059(formsList, currentFormLine));
             currentFormLine++;
         }
         var index = 0;
@@ -349,7 +351,7 @@ public abstract class CheckF13 : CheckBase
         var operationCode = forms[line].OperationCode_DB;
         var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
         var okpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB) ? forms10[1].Okpo_DB : forms10[0].Okpo_DB;
-        string[] applicableOperationCodes = { "53" };
+        string[] applicableOperationCodes = { "54" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = !string.IsNullOrWhiteSpace(providerOrRecieverOKPO) && providerOrRecieverOKPO.Equals(okpo);
         if (!valid)
@@ -1500,11 +1502,10 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_056(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "22", "32" };
         var operationCode = forms[line].OperationCode_DB;
         var transporterOKPO = forms[line].TransporterOKPO_DB;
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        if (operationCode is not ("22" or "32")) return result;
         var valid = okpoRegex.IsMatch(transporterOKPO) 
                     || transporterOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
