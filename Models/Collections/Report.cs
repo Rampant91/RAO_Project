@@ -171,6 +171,10 @@ public class Report : IKey, IDataGridColumn
 
     #endregion
 
+    #region Reports
+    public Reports Reports { get; set; }
+    #endregion
+
     #region Order
     
     public void SetOrder(long index) { }

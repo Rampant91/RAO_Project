@@ -45,7 +45,10 @@ public class DataContext : DbContext
         modelBuilder.Entity<Reports>()
             .ToTable("ReportsCollection_DbSet");
         modelBuilder.Entity<Report>()
-            .ToTable("ReportCollection_DbSet");
+            .ToTable("ReportCollection_DbSet")
+            .HasOne(x => x.Reports)
+            .WithMany(x => x.Report_Collection)
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Note>()
             .ToTable("notes");
 
