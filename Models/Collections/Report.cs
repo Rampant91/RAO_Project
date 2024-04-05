@@ -172,7 +172,12 @@ public class Report : IKey, IDataGridColumn
     #endregion
 
     #region Reports
-    public Reports Reports { get; set; }
+
+    public virtual Reports Reports { get; set; }
+
+    //[ForeignKey(nameof(Id))]
+    //public Reports Master_DB { get; set; }
+
     #endregion
 
     #region Order

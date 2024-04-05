@@ -24,7 +24,7 @@ public abstract class CheckBase
         var valid = false;
         foreach (var note in notes)
         {
-            if (note.RowNumber_DB == null || forms[line].ReportId == null) continue;
+            if (note.RowNumber_DB == null || forms[line].Report == null) continue;
             var noteRowsReal = note.RowNumber_DB.Replace(" ", string.Empty);
             List<int> noteRowsFinalInt = new();
             List<string> noteRowsRealStr = new(noteRowsReal.Split(','));

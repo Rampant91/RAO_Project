@@ -40,22 +40,55 @@ public class DataContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<DBObservable>()
-            .ToTable("DBObservable_DbSet");
+            .ToTable("DBObservable_DbSet")
+            .HasMany(x => x.Reports_Collection)
+            .WithOne(x => x.DBObservable)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Reports>()
-            .ToTable("ReportsCollection_DbSet");
+            .ToTable("ReportsCollection_DbSet")
+            .HasMany(x => x.Report_Collection)
+            .WithOne(x => x.Reports)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Report>()
             .ToTable("ReportCollection_DbSet")
             .HasOne(x => x.Reports)
             .WithMany(x => x.Report_Collection)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows10)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows11)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Notes)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Note>()
-            .ToTable("notes");
+            .ToTable("notes")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Notes)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Form10>()
-            .ToTable("form_10");
+            .ToTable("form_10")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows10)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Form11>()
-            .ToTable("form_11");
+            .ToTable("form_11")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows11)
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Form12>()
             .ToTable("form_12");
         modelBuilder.Entity<Form13>()

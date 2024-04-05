@@ -45,6 +45,8 @@ public class Note : IKey, IDataGridColumn
 
     public void SetOrder(long index) { }
 
+    public virtual Report Report { get; set; }
+
     public long Order { get;set; }
 
     #region RowNumber

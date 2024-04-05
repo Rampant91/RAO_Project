@@ -50,6 +50,8 @@ public class Reports : IKey, IDataGridColumn
         Report_Collection.CollectionChanged += CollectionChanged;
     }
 
+    public virtual DBObservable DBObservable { get; set; }
+
     public Report Master_DB { get; set; }
 
     [NotMapped]
