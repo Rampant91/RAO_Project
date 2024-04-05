@@ -223,11 +223,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         await impReps.Master_DB.Rows20.QuickSortAsync();
                         break;
                 }
+                await StaticConfiguration.DBModel.SaveChangesAsync();
             }
         }
 
         await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-        await StaticConfiguration.DBModel.SaveChangesAsync();
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

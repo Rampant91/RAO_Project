@@ -197,7 +197,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                 await dbm.Database.MigrateAsync();
                 return;
             }
-            catch
+            catch (Exception ex)
             {
                 loadDbFileError = true;
             }

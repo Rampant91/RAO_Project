@@ -235,6 +235,9 @@
                         Header="Все формы"/>
                 </MenuItem>
             </MenuItem>
+            <MenuItem FontSize="14" Header="_Удаление к хуям">
+                <MenuItem Command="{Binding ClearDB}" Header="Очистка"/>
+            </MenuItem>
         </Menu>
         <Panel
             x:Name="MainPanel"
