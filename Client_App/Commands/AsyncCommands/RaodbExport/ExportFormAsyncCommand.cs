@@ -124,6 +124,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
         await Task.Run(async () =>
         {
             await using var tempDb = new DBModel(fullPathTmp);
+            //DBModel tempDb = new(fullPathTmp);
             try
             {
                 await tempDb.Database.MigrateAsync();
@@ -131,7 +132,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
                 if (!tempDb.DBObservableDbSet.Any())
                 {
                     tempDb.DBObservableDbSet.Add(new DBObservable());
-                    tempDb.DBObservableDbSet.Local.First().Reports_Collection.AddRange(db.ReportsCollectionDbSet.Local);
+                    tempDb.DBObservableDbSet.Local.First().Reports_Collection.AddRange(tempDb.ReportsCollectionDbSet.Local);
                 }
                 await tempDb.SaveChangesAsync();
 

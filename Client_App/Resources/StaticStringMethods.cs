@@ -110,7 +110,7 @@ internal static partial class StaticStringMethods
 
     internal static string RemoveForbiddenChars(string str)
     {
-        str = str.Replace(str, "").Replace(Environment.NewLine, "");
+        str = str.Replace(" ", "").Replace(Environment.NewLine, "");
         str = RestrictedSymbolsRegex().Replace(str, "");
         return str;
     }
