@@ -78,7 +78,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ChangeForm { get; set; }                    //  Открыть окно редактирования выбранной формы
     public ICommand ChangePasFolder { get; set; }               //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                 //  Изменить Формы организации (1.0 и 2.0)
-    public ICommand ClearDB { get; set; }
     public ICommand DeleteForm { get; set; }                    //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                 //  Удалить выбранную организацию
     public ICommand ExcelExportAll { get; set; }                //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
@@ -112,7 +111,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
-        ClearDB = new ClearDBAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportExecutors = new ExcelExportExecutorsAsyncCommand();

@@ -14,7 +14,6 @@ using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
-using System.ComponentModel.DataAnnotations;
 
 namespace Models.Collections;
 
@@ -2075,8 +2074,6 @@ public class Report : IKey, IDataGridColumn
 
     #region StartPeriod
 
-    [MaxLength(250)]
-    [Column(TypeName = "varchar(250)")]
     public string StartPeriod_DB { get; set; } = "";
 
     [NotMapped]

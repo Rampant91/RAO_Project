@@ -116,8 +116,7 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("StartPeriod_DB")
-                        .HasMaxLength(250)
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("ValidBegin1_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
