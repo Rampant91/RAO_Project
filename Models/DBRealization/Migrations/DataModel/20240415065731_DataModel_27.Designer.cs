@@ -12,7 +12,7 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20240401182347_DataModel_27")]
+    [Migration("20240415065731_DataModel_27")]
     partial class DataModel_27
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2240,13 +2240,16 @@ namespace Models.DBRealization.Migrations.DataModel
 
             modelBuilder.Entity("Models.Collections.Reports", b =>
                 {
-                    b.HasOne("Models.Collections.DBObservable", null)
+                    b.HasOne("Models.Collections.DBObservable", "DBObservable")
                         .WithMany("Reports_Collection")
-                        .HasForeignKey("DBObservableId");
+                        .HasForeignKey("DBObservableId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Collections.Report", "Master_DB")
                         .WithMany()
                         .HasForeignKey("Master_DBId");
+
+                    b.Navigation("DBObservable");
 
                     b.Navigation("Master_DB");
                 });
@@ -2255,7 +2258,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows10")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2264,7 +2268,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows11")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2273,7 +2278,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows12")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2282,7 +2288,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows13")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2291,7 +2298,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows14")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2300,7 +2308,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows15")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2309,7 +2318,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows16")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2318,7 +2328,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows17")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2327,7 +2338,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows18")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2336,7 +2348,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows19")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2345,7 +2358,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows20")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2354,7 +2368,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows21")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2363,7 +2378,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows210")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2372,7 +2388,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows211")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2381,7 +2398,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows212")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2390,7 +2408,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows22")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2399,7 +2418,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows23")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2408,7 +2428,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows24")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2417,7 +2438,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows25")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2426,7 +2448,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows26")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2435,7 +2458,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows27")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2444,7 +2468,8 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows28")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
@@ -2453,16 +2478,20 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows29")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Note", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Notes")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Collections.DBObservable", b =>
