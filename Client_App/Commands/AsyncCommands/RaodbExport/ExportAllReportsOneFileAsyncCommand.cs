@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -44,41 +45,29 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 
             if (answer is "Отменить выгрузку") return;
         }
-        var folderPath = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
-        if (string.IsNullOrEmpty(folderPath)) return;
+        var newDbFolder = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
+        if (string.IsNullOrEmpty(newDbFolder)) return;
+        var newDbPath = Path.Combine(newDbFolder, "Local_0.RAODB");
 
-        var tmpPath = Path.Combine(BaseVM.TmpDirectory, "Local_0.RAODB");
-        await using var tempDb = new DBModel(tmpPath);
-        await tempDb.Database.MigrateAsync();
+        await using var db = new DBModel(newDbPath);
+        await db.Database.MigrateAsync();
+        db.DBObservableDbSet.Add(ReportsStorage.LocalReports);
+        await db.SaveChangesAsync();
 
-        var flag = true;
         foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
         {
             var exportOrg = (Reports)reps;
-            if (!flag)
-            {
-                var oldReps = await tempDb.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
-                tempDb.ReportsCollectionDbSet.Remove(oldReps);
-                await tempDb.SaveChangesAsync();
-            }
+            var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
+            if (oldReps != null) db.ReportsCollectionDbSet.Remove(oldReps);
+            await db.SaveChangesAsync();
             foreach (var rep in exportOrg.Report_Collection)
             {
                 var exportRep = (Report)rep;
                 var report = await ReportsStorage.Api.GetAsync(exportRep.Id);
                 exportOrg.Report_Collection.Replace(exportRep, report);
             }
-            
-            tempDb.ReportsCollectionDbSet.Add(exportOrg);
-            flag = false;
-            
-            try
-            {
-                await tempDb.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                //ignored
-            }
+            db.ReportsCollectionDbSet.Add(exportOrg);
+            await db.SaveChangesAsync();
         }
     }
 }
