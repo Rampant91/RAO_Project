@@ -152,7 +152,16 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузить все организации" },
+            ContextMenuText = new[] { "Выгрузить все организации в один файл" },
+            Command = dataContext.ExportAllReportsOneFile
+        });
+
+        grd1.CommandsList.Add(new KeyCommand
+        {
+            IsDoubleTappedCommand = false,
+            IsContextMenuCommand = true,
+            ParamName = "SelectedItems",
+            ContextMenuText = new[] { "Выгрузить все организации в отдельные файлы" },
             Command = dataContext.ExportAllReports
         });
 

@@ -44,6 +44,7 @@ public class Reports : IKey, IDataGridColumn
     {
         Init();
     }
+
     private void Init()
     {
         Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();

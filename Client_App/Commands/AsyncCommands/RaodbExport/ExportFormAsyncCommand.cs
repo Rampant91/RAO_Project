@@ -124,7 +124,6 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
         await Task.Run(async () =>
         {
             await using var tempDb = new DBModel(fullPathTmp);
-            //DBModel tempDb = new(fullPathTmp);
             try
             {
                 await tempDb.Database.MigrateAsync();
