@@ -1,16 +1,15 @@
 ﻿using Avalonia.Controls;
-using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
+using Models.Forms;
+using System.Linq;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -54,20 +53,35 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
         db.DBObservableDbSet.Add(ReportsStorage.LocalReports);
         await db.SaveChangesAsync();
 
-        foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
+        try
         {
-            var exportOrg = (Reports)reps;
-            var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
-            if (oldReps != null) db.ReportsCollectionDbSet.Remove(oldReps);
-            await db.SaveChangesAsync();
-            foreach (var rep in exportOrg.Report_Collection)
+            foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
             {
-                var exportRep = (Report)rep;
-                var report = await ReportsStorage.Api.GetAsync(exportRep.Id);
-                exportOrg.Report_Collection.Replace(exportRep, report);
+                var exportOrg = (Reports)reps;
+
+                var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
+                if (oldReps != null)
+                    db.ReportsCollectionDbSet.Remove(oldReps);
+                await db.SaveChangesAsync();
+
+                var newOrg = new Reports
+                {
+                    Id = exportOrg.Id, Master_DB = exportOrg.Master_DB, Master = exportOrg.Master,
+                    DBObservable = exportOrg.DBObservable,
+                };
+                foreach (var rep in exportOrg.Report_Collection)
+                {
+                    var repWithoutForms = (Report)rep;
+                    var repWithForms = await ReportsStorage.Api.GetAsync(repWithoutForms.Id);
+                    newOrg.Report_Collection.Add(repWithForms);
+                }
+                db.ReportsCollectionDbSet.Add(newOrg);
+                await db.SaveChangesAsync();
             }
-            db.ReportsCollectionDbSet.Add(exportOrg);
-            await db.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+
         }
     }
 }
