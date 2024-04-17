@@ -54,12 +54,16 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 
         try
         {
+            var i = 0;
             foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
             {
                 var exportOrg = (Reports)reps;
 
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                if (i % 100 == 0)
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
 
                 var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
                 if (oldReps != null) db.ReportsCollectionDbSet.Remove(oldReps);
@@ -76,6 +80,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 
                 await db.ReportsCollectionDbSet.AddAsync(exportOrg);
                 await db.SaveChangesAsync();
+                i++;
             }
             var t = db.Database.GetDbConnection() as FbConnection;
             await t.CloseAsync();
