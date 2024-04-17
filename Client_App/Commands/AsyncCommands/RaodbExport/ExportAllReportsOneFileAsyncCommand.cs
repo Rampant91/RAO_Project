@@ -4,6 +4,7 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using DynamicData;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Forms;
 using System.Linq;
 using System.Threading;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -59,27 +61,29 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
             foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
             {
                 var exportOrg = (Reports)reps;
+
                 var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
-                if (oldReps != null)
-                    db.ReportsCollectionDbSet.Remove(oldReps);
+                if (oldReps != null) db.ReportsCollectionDbSet.Remove(oldReps);
                 await db.SaveChangesAsync();
 
-                var newOrg = new Reports
+                List<Report> repWithFormsList = [];
+                foreach (var key1 in exportOrg.Report_Collection)
                 {
-                    Id = exportOrg.Id,
-                    Master_DB = exportOrg.Master_DB,
-                    Master = exportOrg.Master,
-                    DBObservable = exportOrg.DBObservable
-                };
-                foreach (var rep in exportOrg.Report_Collection)
-                {
-                    var repWithoutForms = (Report)rep;
-                    var repWithForms = await ReportsStorage.Api.GetAsync(repWithoutForms.Id);
-                    newOrg.Report_Collection.Add(repWithForms);
+                    var rep = (Report)key1;
+                    repWithFormsList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
                 }
-                db.ReportsCollectionDbSet.Add(newOrg);
+                exportOrg.Report_Collection.Clear();
+                exportOrg.Report_Collection.AddRangeNoChange(repWithFormsList);
+
+                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
                 await db.SaveChangesAsync();
             }
+            var t = db.Database.GetDbConnection() as FbConnection;
+            await t.CloseAsync();
+            await t.DisposeAsync();
+
+            await db.Database.CloseConnectionAsync();
+            await db.DisposeAsync();
         }
         catch (Exception ex)
         {
