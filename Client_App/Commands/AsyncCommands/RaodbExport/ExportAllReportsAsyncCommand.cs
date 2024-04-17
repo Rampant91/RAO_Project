@@ -60,7 +60,7 @@ internal partial class ExportAllReportsAsyncCommand : BaseAsyncCommand
             foreach (var key1 in exportOrg.Report_Collection)
             {
                 var rep = (Report)key1;
-                repInRangeWithForms.Add(await ReportsStorage.GetReportAsync(rep.Id));
+                repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
             }
 
             exportOrg.Report_Collection.Clear();
@@ -79,19 +79,19 @@ internal partial class ExportAllReportsAsyncCommand : BaseAsyncCommand
                                $"_{Assembly.GetExecutingAssembly().GetName().Version}";
 
                 var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
-                await using var tempDb = new DBModel(fullPathTmp);
+                var db = new DBModel(fullPathTmp);
                 try
                 {
-                    await tempDb.Database.MigrateAsync();
-                    await tempDb.ReportsCollectionDbSet.AddAsync(exportOrg);
-                    await tempDb.SaveChangesAsync();
+                    await db.Database.MigrateAsync();
+                    await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                    await db.SaveChangesAsync();
 
-                    var t = tempDb.Database.GetDbConnection() as FbConnection;
+                    var t = db.Database.GetDbConnection() as FbConnection;
                     await t.CloseAsync();
                     await t.DisposeAsync();
 
-                    await tempDb.Database.CloseConnectionAsync();
-                    await tempDb.DisposeAsync();
+                    await db.Database.CloseConnectionAsync();
+                    await db.DisposeAsync();
                 }
                 catch (Exception e)
                 {
@@ -143,36 +143,38 @@ internal partial class ExportAllReportsAsyncCommand : BaseAsyncCommand
                             .ShowDialog(Desktop.MainWindow));
 
                     #endregion
+
+                    return;
+                }
+
+                #region ExportDoneMessage
+
+                answer = await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок", IsDefault = true },
+                            new ButtonDefinition { Name = "Открыть расположение файлов" }
+                        ],
+                        ContentTitle = "Выгрузка",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "Выгрузка всех организаций в отдельные" +
+                                         $"{Environment.NewLine}файлы .raodb завершена.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    })
+                    .ShowDialog(Desktop.MainWindow);
+
+                #endregion
+
+                if (answer is "Открыть расположение файлов")
+                {
+                    Process.Start("explorer", folderPath);
                 }
             }).ConfigureAwait(false);
         });
-
-        #region ExportDoneMessage
-
-        answer = await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Ок", IsDefault = true },
-                    new ButtonDefinition { Name = "Открыть расположение файлов" }
-                ],
-                ContentTitle = "Выгрузка",
-                ContentHeader = "Уведомление",
-                ContentMessage = "Выгрузка всех организаций в отдельные" +
-                                 $"{Environment.NewLine}файлы .raodb завершена.",
-                MinWidth = 400,
-                MinHeight = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            })
-            .ShowDialog(Desktop.MainWindow);
-
-        #endregion
-
-        if (answer is "Открыть расположение файлов")
-        {
-            Process.Start("explorer", folderPath);
-        }
     }
 
     [GeneratedRegex(@"(.+)#(\d+)(?=\.RAODB)")]
