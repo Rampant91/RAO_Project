@@ -58,6 +58,9 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
             {
                 var exportOrg = (Reports)reps;
 
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
                 var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
                 if (oldReps != null) db.ReportsCollectionDbSet.Remove(oldReps);
                 await db.SaveChangesAsync();
