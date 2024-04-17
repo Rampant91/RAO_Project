@@ -10,6 +10,7 @@ using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.Forms;
 using System.Linq;
+using System.Threading;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -58,7 +59,6 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
             foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
             {
                 var exportOrg = (Reports)reps;
-
                 var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
                 if (oldReps != null)
                     db.ReportsCollectionDbSet.Remove(oldReps);
@@ -66,8 +66,10 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 
                 var newOrg = new Reports
                 {
-                    Id = exportOrg.Id, Master_DB = exportOrg.Master_DB, Master = exportOrg.Master,
-                    DBObservable = exportOrg.DBObservable,
+                    Id = exportOrg.Id,
+                    Master_DB = exportOrg.Master_DB,
+                    Master = exportOrg.Master,
+                    DBObservable = exportOrg.DBObservable
                 };
                 foreach (var rep in exportOrg.Report_Collection)
                 {
