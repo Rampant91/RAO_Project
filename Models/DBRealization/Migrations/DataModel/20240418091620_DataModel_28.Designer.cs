@@ -12,7 +12,7 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20240418084009_DataModel_28")]
+    [Migration("20240418091620_DataModel_28")]
     partial class DataModel_28
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,7 +119,8 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("StartPeriodNew_DB")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("varchar(256)")
+                        .HasColumnName("StartPeriodNew_DB");
 
                     b.Property<string>("StartPeriod_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");

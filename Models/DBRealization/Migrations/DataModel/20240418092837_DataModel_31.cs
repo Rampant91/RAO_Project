@@ -4,16 +4,10 @@
 
 namespace Models.DBRealization.Migrations.DataModel
 {
-    public partial class DataModel_29 : Migration
+    public partial class DataModel_31 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("UPDATE \"ReportCollection_DbSet\" SET \"StartPeriodNew_DB\" = \"StartPeriod_DB\"");
-
-            migrationBuilder.DropColumn(
-                name: "StartPeriod_DB",
-                table: "ReportCollection_DbSet");
-
             migrationBuilder.RenameColumn(
                 name: "StartPeriodNew_DB",
                 table: "ReportCollection_DbSet",
@@ -22,7 +16,10 @@ namespace Models.DBRealization.Migrations.DataModel
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.RenameColumn(
+                name: "StartPeriod_DB",
+                table: "ReportCollection_DbSet",
+                newName: "StartPeriodNew_DB");
         }
     }
 }

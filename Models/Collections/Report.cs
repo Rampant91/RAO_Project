@@ -2076,8 +2076,10 @@ public class Report : IKey, IDataGridColumn
     #region StartPeriod
 
     [MaxLength(256)]
-    [Column(TypeName = "varchar(256)")]
+    [Column(name: "StartPeriod_DB", TypeName = "varchar(256)")]
     public string StartPeriod_DB { get; set; } = "";
+
+
 
     [NotMapped]
     [FormProperty(true, "Дата начала периода")]
@@ -2145,79 +2147,6 @@ public class Report : IKey, IDataGridColumn
     }
 
     #endregion
-
-    //#region StartPeriodNew
-
-    //[MaxLength(256)]
-    //[Column(TypeName = "varchar(256)")]
-    //public string StartPeriodNew_DB { get; set; } = "";
-
-    //[NotMapped]
-    //[FormProperty(true, "Дата начала периода")]
-    //public RamAccess<string> StartPeriodNew
-    //{
-    //    get
-    //    {
-    //        if (Dictionary.TryGetValue(nameof(StartPeriodNew), out RamAccess value))
-    //        {
-    //            ((RamAccess<string>)value).Value = StartPeriodNew_DB;
-    //            return (RamAccess<string>)value;
-    //        }
-    //        var rm = new RamAccess<string>(StartPeriodNew_Validation, StartPeriodNew_DB);
-    //        rm.PropertyChanged += StartPeriodNewValueChanged;
-    //        Dictionary.Add(nameof(StartPeriodNew), rm);
-    //        return (RamAccess<string>)Dictionary[nameof(StartPeriodNew)];
-    //    }
-    //    set
-    //    {
-    //        StartPeriodNew_DB = value.Value;
-    //        OnPropertyChanged(nameof(StartPeriodNew));
-    //    }
-    //}
-
-    //private void StartPeriodNewValueChanged(object value, PropertyChangedEventArgs args)
-    //{
-    //    if (args.PropertyName == "Value")
-    //    {
-    //        var tmp = ((RamAccess<string>)value).Value;
-    //        //Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-    //        //if (b.IsMatch(tmp))
-    //        //{
-    //        //    tmp = tmp.Insert(6, "20");
-    //        //}
-    //        StartPeriodNew_DB = tmp;
-    //    }
-    //}
-
-    //private static bool StartPeriodNew_Validation(RamAccess<string> value)
-    //{
-    //    value.ClearErrors();
-    //    if (string.IsNullOrEmpty(value.Value))
-    //    {
-    //        value.AddError("Поле не заполнено");
-    //        return false;
-    //    }
-    //    var tmp = value.Value;
-    //    //Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-    //    //if (b.IsMatch(tmp))
-    //    //{
-    //    //    tmp = tmp.Insert(6, "20");
-    //    //}
-    //    //Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-    //    //if (!a.IsMatch(tmp))
-    //    //{
-    //    //    value.AddError("Недопустимое значение");
-    //    //    return false;
-    //    //}
-    //    if (!DateTime.TryParse(tmp, out _))
-    //    {
-    //        value.AddError("Недопустимое значение");
-    //        return false;
-    //    }
-    //    return true;
-    //}
-
-    //#endregion
 
     #region EndPeriod
 

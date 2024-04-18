@@ -3,6 +3,7 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
@@ -11,9 +12,10 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [Migration("20240418092740_DataModel_30")]
+    partial class DataModel_30
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,7 +120,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("StartPeriodNew_DB")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)")
-                        .HasColumnName("StartPeriod_DB");
+                        .HasColumnName("StartPeriodNew_DB");
 
                     b.Property<string>("ValidBegin1_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
