@@ -13,7 +13,7 @@ namespace Models.DBRealization.Migrations.DataModel
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.Sql("UPDATE \"ReportCollection_DbSet\" SET \"StartPeriod_DB\" = \"StartPeriodNew_DB\"");
         }
     }
 }
