@@ -112,38 +112,42 @@ public static partial class EssenceMethods
         #endregion
 
         #region GetAsync
-        async Task<T?> IEssenceMethods.GetAsync<T>(int ID) where T : class
+        async Task<T?> IEssenceMethods.GetAsync<T>(int id) where T : class
         {
             if (!CheckType(typeof(T))) return null;
             await using var db = new DBModel(StaticConfiguration.DBPath);
+            var tmp = new object() as T;
             try
             {
                 await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
-                return await db.ReportsCollectionDbSet.Where(x => x.Id == ID)
+                tmp = await db.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .Where(x => x.Id == id)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows11)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows12)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows13)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows14)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows15)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows16)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows17)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows18)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows19)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows21)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows22)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows23)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows24)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows25)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows26)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows27)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows28)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows29)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows210)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows211)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows212)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Notes)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
                     .FirstOrDefaultAsync(ReportsStorage.cancellationToken) as T;
             }
             catch (Exception ex)
@@ -151,7 +155,7 @@ public static partial class EssenceMethods
                 ServiceExtension.LoggerManager.Error(ex.Message);
             }
 
-            return null;
+            return tmp;
         }
         #endregion
 

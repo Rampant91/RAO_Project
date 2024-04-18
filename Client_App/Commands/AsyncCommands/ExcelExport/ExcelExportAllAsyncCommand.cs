@@ -10,7 +10,6 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
@@ -135,7 +134,7 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
             repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection.OrderBy(x => x.Master_DB.RegNoRep.Value));
         }
 
-        HashSet<string> formNums = new();
+        HashSet<string> formNums = [];
         foreach (var rep in repsList
                      .SelectMany(reps => reps.Report_Collection)
                      .OrderBy(x => byte.Parse(x.FormNum_DB.Split('.')[0]))
@@ -146,7 +145,7 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         }
         foreach (var formNum in formNums)
         {
-            Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
+            Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}");
             WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
             FillHeaders(formNum);
         }
@@ -154,40 +153,14 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
         foreach (var reps in repsList)
         {
-            var repsWithRows = dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == reps.Id)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                .First();
+            var oldDBPath = new string(StaticConfiguration.DBPath);
+            StaticConfiguration.DBPath = dbReadOnlyPath;
+            var repsWithRows = await ReportsStorage.ApiReports.GetAsync(reps.Id);
+            StaticConfiguration.DBPath = oldDBPath;
             foreach (var formNum in formNums)
             {
                 CurrentReports = repsWithRows;
-                Worksheet = excelPackage.Workbook.Worksheets[$"Форма {formNum}"];
+                Worksheet = excelPackage.Workbook.Worksheets[$"Отчеты {formNum}"];
                 WorksheetPrim = excelPackage.Workbook.Worksheets[$"Примечания {formNum}"];
                 CurrentRow = Worksheet.Dimension.End.Row + 1;
                 CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
@@ -197,6 +170,4 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
-
-    
 }

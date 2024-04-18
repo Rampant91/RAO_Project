@@ -16,7 +16,9 @@ public static class ReportsStorage
 {
     public static EssenceMethods.APIFactory<Report> Api => new();
     public static EssenceMethods.APIFactory<Reports> ApiReports => new();
+
     public static CancellationTokenSource _cancellationTokenSource = new();
+
     public static CancellationToken cancellationToken = _cancellationTokenSource.Token;
 
     private static DBObservable _localReports = new();
