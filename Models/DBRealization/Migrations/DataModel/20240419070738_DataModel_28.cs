@@ -1,0 +1,65 @@
+﻿using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Models.DBRealization.Migrations.DataModel
+{
+    public partial class DataModel_28 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+            name: "form_11_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                Quantity_DB = table.Column<int>(type: "INTEGER", nullable: true),
+                Category_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                SignedServicePeriod_DB = table.Column<float>(type: "FLOAT", nullable: true),
+                PropertyCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                OperationDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentVid_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                DocumentVid_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
+            });
+
+            migrationBuilder.CreateTable(
+                name: "form_11_editableColumns",
+                columns: table => new
+                {
+                    IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                    PassportNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    Type_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    FactoryNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    Activity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    CreationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    CreatorOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    Owner_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    ProviderOrRecieverOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    TransporterOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    PackName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    PackType_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    PackNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    OperationCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    OperationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    DocumentNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                });
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+
+        }
+    }
+}
