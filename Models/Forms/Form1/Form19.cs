@@ -13,6 +13,7 @@ using Spravochniki;
 namespace Models.Forms.Form1;
 
 [Form_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
+[Table (name: "form_19")]
 public class Form19 : Form1
 {
     #region Constructor

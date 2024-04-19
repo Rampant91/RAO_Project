@@ -65,9 +65,8 @@ public class RedDataBaseCreation
             }
 #endif
         Console.WriteLine(_path);
-        var connstring= new FbConnectionStringBuilder
+        var connstring = new FbConnectionStringBuilder
         {
-
             Database = _path,
             ServerType = FbServerType.Embedded,
             UserID = "SYSDBA",

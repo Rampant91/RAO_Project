@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 namespace Models.Forms.Form1;
 
 [Form_Class("Форма 1.4: Сведения об ОРИ, кроме отдельных изделий")]
+[Table (name: "form_14")]
 public class Form14 : Form1
 {
     #region Constructor

@@ -14,6 +14,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ")]
+[Table (name: "form_212")]
 public class Form212 : Form2
 {
     #region Constrctor

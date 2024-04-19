@@ -12,6 +12,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.0: Титульный лист организации")]
+[Table (name: "form_20")]
 public partial class Form20 : Form
 {
     public Form20()

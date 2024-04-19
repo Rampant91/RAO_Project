@@ -13,6 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.8: Отведение сточных вод, содержащих радионуклиды")]
+[Table (name: "form_28")]
 public class Form28 : Form2
 {
     #region Constructor
