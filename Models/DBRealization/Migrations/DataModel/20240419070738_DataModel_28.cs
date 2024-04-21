@@ -118,12 +118,12 @@ public partial class DataModel_28 : Migration
                 IdNew = table.Column<int>(type: "INTEGER", nullable: false)
                     .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
                 PassportNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
-                NameIOU_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Type_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                 FactoryNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
-                Mass_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
-                CreatorOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Activity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                 CreationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
-                SignedServicePeriod_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CreatorOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                 Owner_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                 ProviderOrRecieverOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                 TransporterOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
@@ -143,6 +143,7 @@ public partial class DataModel_28 : Migration
             {
                 Id = table.Column<int>(type: "INTEGER", nullable: false)
                     .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                AggregateState_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                 PropertyCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                 ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                 NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
@@ -153,6 +154,26 @@ public partial class DataModel_28 : Migration
                 DocumentVid_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                 DocumentNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                 DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
+            });
+
+        #endregion
+
+        #region form14
+        
+        migrationBuilder.CreateTable(
+            name: "form_14_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_14_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
             });
 
         #endregion

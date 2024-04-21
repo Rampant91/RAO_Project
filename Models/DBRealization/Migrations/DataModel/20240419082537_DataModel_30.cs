@@ -49,6 +49,48 @@ public partial class DataModel_30 : Migration
         migrationBuilder.DropTable(name: "form_12_withoutEditableColumns"); 
         
         #endregion
+
+        #region form13
+
+        const string allColumns13 = 
+            "\"Id\", \"PassportNumber_DB\", \"Type_DB\", \"Radionuclids_DB\", \"FactoryNumber_DB\", \"Activity_DB\", " + 
+            "\"CreationDate_DB\", \"CreatorOKPO_DB\",\"AggregateState_DB\", \"PropertyCode_DB\", \"Owner_DB\", " + 
+            "\"ProviderOrRecieverOKPO_DB\", \"TransporterOKPO_DB\", \"PackName_DB\", \"PackType_DB\", " + 
+            "\"PackNumber_DB\", \"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", " + 
+            "\"OperationCode_DB\", \"OperationCode_Hidden_Priv\", \"OperationDate_DB\", \"OperationDate_Hidden_Priv\", " + 
+            "\"DocumentVid_DB\", \"DocumentVid_Hidden_Priv\", \"DocumentNumber_DB\", \"DocumentNumber_Hidden_Priv\", " + 
+            "\"DocumentDate_DB\", \"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_13\" ({allColumns13}) " +
+                             $"SELECT {allColumns13} " +
+                             $"FROM \"form_13_editableColumns\" " +
+                             $"INNER JOIN \"form_13_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_13_editableColumns");
+        migrationBuilder.DropTable(name: "form_13_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form14
+
+        const string allColumns14 = 
+            "\"Id\", \"PassportNumber_DB\", \"Type_DB\", \"Radionuclids_DB\", \"FactoryNumber_DB\", \"Activity_DB\", " + 
+            "\"CreationDate_DB\", \"CreatorOKPO_DB\",\"AggregateState_DB\", \"PropertyCode_DB\", \"Owner_DB\", " + 
+            "\"ProviderOrRecieverOKPO_DB\", \"TransporterOKPO_DB\", \"PackName_DB\", \"PackType_DB\", " + 
+            "\"PackNumber_DB\", \"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", " + 
+            "\"OperationCode_DB\", \"OperationCode_Hidden_Priv\", \"OperationDate_DB\", \"OperationDate_Hidden_Priv\", " + 
+            "\"DocumentVid_DB\", \"DocumentVid_Hidden_Priv\", \"DocumentNumber_DB\", \"DocumentNumber_Hidden_Priv\", " + 
+            "\"DocumentDate_DB\", \"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_14\" ({allColumns14}) " +
+                             $"SELECT {allColumns14} " +
+                             $"FROM \"form_14_editableColumns\" " +
+                             $"INNER JOIN \"form_14_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_14_editableColumns");
+        migrationBuilder.DropTable(name: "form_14_withoutEditableColumns"); 
+        
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
