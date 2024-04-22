@@ -48,8 +48,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
         if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
         exportForm.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
 
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-        await db.SaveChangesAsync();
+        await StaticConfiguration.DBModel.SaveChangesAsync();
 
         var reps = ReportsStorage.LocalReports.Reports_Collection
             .FirstOrDefault(t => t.Report_Collection
@@ -123,7 +122,7 @@ internal class ExportFormAsyncCommand : BaseAsyncCommand
 
         await Task.Run(async () =>
         {
-            await using var tempDb = new DBModel(fullPathTmp);
+            var tempDb = new DBModel(fullPathTmp);
             try
             {
                 await tempDb.Database.MigrateAsync();
