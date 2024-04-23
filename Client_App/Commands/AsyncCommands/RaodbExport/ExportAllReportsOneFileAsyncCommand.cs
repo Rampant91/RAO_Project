@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using FirebirdSql.Data.FirebirdClient;
 using SkiaSharp;
@@ -59,23 +60,24 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
             foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
             {
                 var newReports = (Reports)reps;
-                List<Report> repWithFormsList = [];
+                //List<Report> repWithFormsList = [];
+                var masterReport = db.ReportCollectionDbSet.First(x => x.Id == newReports.Master_DBId);
                 foreach (var key1 in newReports.Report_Collection)
                 {
                     var rep = (Report)key1;
                     var repWithForms = await ReportsStorage.Api.GetAsync(rep.Id);
-                    repWithFormsList.Add(repWithForms);
+                    //repWithFormsList.Add(repWithForms);
+                    newReports.Report_Collection.Replace(rep, repWithForms);
                 }
-                newReports.Report_Collection.Clear();
-                newReports.Report_Collection.AddRangeNoChange(repWithFormsList);
+                //newReports.Report_Collection.Clear();
+                //newReports.Report_Collection.AddRangeNoChange(repWithFormsList);
                
 
                 var existingReports = await db.ReportsCollectionDbSet
                     .Where(x => x.Id == newReports.Id)
-                    .Include(x => x.Report_Collection)
+                    .Include(reports => reports.Report_Collection)
                     .Include(reports => reports.Master_DB)
                     .SingleOrDefaultAsync();
-                newReports.Master_DB = existingReports.Master_DB;
 
                 foreach (var rep in existingReports.Report_Collection)
                 {
@@ -87,7 +89,9 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 
                 await db.SaveChangesAsync();
 
+                newReports.Master_DB = masterReport;
                 db.ReportsCollectionDbSet.Add(newReports);
+
                 await db.SaveChangesAsync();
             }
             var t = db.Database.GetDbConnection() as FbConnection;

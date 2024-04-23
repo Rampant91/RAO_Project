@@ -227,7 +227,14 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         }
 
         await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+
+        }
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

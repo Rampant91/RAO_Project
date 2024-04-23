@@ -55,6 +55,10 @@ public class Reports : IKey, IDataGridColumn
         Report_Collection.CollectionChanged += CollectionChanged;
     }
 
+
+    [ForeignKey(nameof(DBObservable))]
+    public int? DBObservableId { get; set; }
+
     public virtual DBObservable DBObservable { get; set; }
 
     [ForeignKey(nameof(Report))]

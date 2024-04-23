@@ -187,6 +187,7 @@ public class DataContext : DbContext
             .ToTable("DBObservable_DbSet")
             .HasMany(x => x.Reports_Collection)
             .WithOne(x => x.DBObservable)
+            .HasForeignKey(x => x.DBObservableId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
