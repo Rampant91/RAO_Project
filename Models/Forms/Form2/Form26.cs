@@ -13,6 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
+[Table("form_26")]
 public class Form26 : Form2
 {
     #region Constructor

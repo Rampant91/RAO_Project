@@ -13,6 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
+[Table("form_210")]
 public partial class Form210 : Form2
 {
     #region Constructor

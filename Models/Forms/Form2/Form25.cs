@@ -13,6 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
+[Table("form_25")]
 public partial class Form25 : Form2
 {
     #region Constructor

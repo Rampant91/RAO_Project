@@ -14,6 +14,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.11: Радионуклидный состав загрязненных участков территорий")]
+[Table("form_211")]
 public partial class Form211 : Form2
 {
     #region Cobstructor

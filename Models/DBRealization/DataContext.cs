@@ -195,6 +195,11 @@ public class DataContext : DbContext
 
         modelBuilder.Entity<Reports>()
             .ToTable("ReportsCollection_DbSet")
+            .HasOne(x => x.DBObservable)
+            .WithMany(x => x.Reports_Collection)
+            .OnDelete(DeleteBehavior.Cascade); 
+
+        modelBuilder.Entity<Reports>()
             .HasMany(x => x.Report_Collection)
             .WithOne(x => x.Reports)
             .OnDelete(DeleteBehavior.Cascade); 

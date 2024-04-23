@@ -175,6 +175,8 @@ public class Report : IKey, IDataGridColumn
 
     public virtual Reports Reports { get; set; }
 
+    //public virtual Reports MasterReports { get; set; }
+
     //[ForeignKey(nameof(Id))]
     //public Reports Master_DB { get; set; }
 

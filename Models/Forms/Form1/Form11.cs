@@ -13,6 +13,7 @@ namespace Models.Forms.Form1;
 
 [Serializable]
 [Form_Class("Форма 1.1: Сведения о ЗРИ")]
+[Table("form_11")]
 public partial class Form11 : Form1
 {
     #region Constructor

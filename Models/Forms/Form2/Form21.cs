@@ -14,6 +14,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
+[Table("form_21")]
 public partial class Form21 : Form2, IBaseColor
 {
     #region Constructor

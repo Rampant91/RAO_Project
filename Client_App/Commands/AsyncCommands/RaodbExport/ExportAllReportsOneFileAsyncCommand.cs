@@ -6,9 +6,11 @@ using Models.DBRealization;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FirebirdSql.Data.FirebirdClient;
+using SkiaSharp;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -56,22 +58,36 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
         {
             foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
             {
-                var exportOrg = (Reports)reps;
-
-                var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
-                if (oldReps != null) db.ReportsCollectionDbSet.Remove(oldReps);
-                await db.SaveChangesAsync();
-
+                var newReports = (Reports)reps;
                 List<Report> repWithFormsList = [];
-                foreach (var key1 in exportOrg.Report_Collection)
+                foreach (var key1 in newReports.Report_Collection)
                 {
                     var rep = (Report)key1;
-                    repWithFormsList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+                    var repWithForms = await ReportsStorage.Api.GetAsync(rep.Id);
+                    repWithFormsList.Add(repWithForms);
                 }
-                exportOrg.Report_Collection.Clear();
-                exportOrg.Report_Collection.AddRangeNoChange(repWithFormsList);
+                newReports.Report_Collection.Clear();
+                newReports.Report_Collection.AddRangeNoChange(repWithFormsList);
+               
 
-                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                var existingReports = await db.ReportsCollectionDbSet
+                    .Where(x => x.Id == newReports.Id)
+                    .Include(x => x.Report_Collection)
+                    .Include(reports => reports.Master_DB)
+                    .SingleOrDefaultAsync();
+                newReports.Master_DB = existingReports.Master_DB;
+
+                foreach (var rep in existingReports.Report_Collection)
+                {
+                    var report = (Report)rep;
+                    db.Entry(report).State = EntityState.Deleted;
+                }
+                db.Entry(existingReports.Master_DB).State = EntityState.Deleted;
+                db.Entry(existingReports).State = EntityState.Deleted;
+
+                await db.SaveChangesAsync();
+
+                db.ReportsCollectionDbSet.Add(newReports);
                 await db.SaveChangesAsync();
             }
             var t = db.Database.GetDbConnection() as FbConnection;
