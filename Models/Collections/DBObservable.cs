@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -7,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Models.Collections;
 
+[Table("DBObservable_DbSet")]
 public class DBObservable : INotifyPropertyChanged
 {
     [NotMapped] private bool _isChanged = true;
 
+    [Key]
     public int Id { get; set; }
 
     public DBObservable()

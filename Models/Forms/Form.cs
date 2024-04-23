@@ -17,7 +17,8 @@ public abstract class Form : IKey, IDataGridColumn
     [Key]
     public int Id { get; set; }
 
-    //public int? ReportId { get; set; }
+    [ForeignKey(nameof(Report))]
+    public int? ReportId { get; set; }
 
     public virtual Report? Report { get; set; }
 

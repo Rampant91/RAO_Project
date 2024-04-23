@@ -5,13 +5,17 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using OfficeOpenXml;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Interfaces;
 
 namespace Models.Collections;
 
+[Table("ReportsCollection_DbSet")]
+[Index(nameof(DBObservable), IsUnique = true)]
 public class Reports : IKey, IDataGridColumn
 {
     [NotMapped]
@@ -53,6 +57,9 @@ public class Reports : IKey, IDataGridColumn
 
     public virtual DBObservable DBObservable { get; set; }
 
+    [ForeignKey(nameof(Report))]
+    public int? Master_DBId { get; set; }
+
     public Report Master_DB { get; set; }
 
     [NotMapped]
@@ -89,6 +96,7 @@ public class Reports : IKey, IDataGridColumn
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    [Key]
     public int Id { get; set; }
 
     public void SetOrder(long index) { }
