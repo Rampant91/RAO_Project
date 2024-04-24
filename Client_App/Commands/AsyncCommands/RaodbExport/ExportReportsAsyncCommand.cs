@@ -20,7 +20,7 @@ using Models.Interfaces;
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 //  Экспорт организации в файл .raodb
-internal class ExportReportsAsyncCommand : BaseAsyncCommand
+public class ExportReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -29,7 +29,9 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         var dt = DateTime.Now;
         Reports exportOrg;
         string fileNameTmp;
-        await using var db = new DBModel(StaticConfiguration.DBPath);
+        //await using var db = new DBModel(StaticConfiguration.DBPath);
+        
+
         switch (parameter)
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
@@ -39,13 +41,13 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 }
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = (Reports)param.First();
-                await db.SaveChangesAsync();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
                 break;
             case Reports reps:
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
                 exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
-                await db.SaveChangesAsync();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
                 break;
             default:
                 return;
@@ -57,16 +59,11 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
             var rep = (Report)key;
             repList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
         }
-        var newDbObservable = new DBObservable();
-        var newReps = new Reports();
-        newReps.Report_Collection.AddRangeNoChange(repList);
-        newReps.Master_DB = exportOrg.Master_DB;
-        newDbObservable.Reports_Collection.Add(newReps);
-        //newDbObservable.Reports_Collection.First().Report_Collection.Clear();
-        //newDbObservable.Reports_Collection.First().Report_Collection.AddRangeNoChange(repList);
-
-        //exportOrg.Report_Collection.Clear();
-        //exportOrg.Report_Collection.AddRangeNoChange(repList);
+        var newReps = new Reports
+        {
+            Master = exportOrg.Master,
+            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>(repList)
+        };
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
@@ -116,7 +113,12 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
             try
             {
                 await tempDb.Database.MigrateAsync();
-                await tempDb.DBObservableDbSet.AddAsync(newDbObservable);
+                await tempDb.ReportsCollectionDbSet.AddAsync(newReps);
+                if (!tempDb.DBObservableDbSet.Any())
+                {
+                    tempDb.DBObservableDbSet.Add(new DBObservable());
+                    tempDb.DBObservableDbSet.Local.First().Reports_Collection.AddRange(tempDb.ReportsCollectionDbSet.Local);
+                }
                 await tempDb.SaveChangesAsync();
 
                 var t = tempDb.Database.GetDbConnection() as FbConnection;
@@ -124,7 +126,6 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 await t.DisposeAsync();
 
                 await tempDb.Database.CloseConnectionAsync();
-                await tempDb.DisposeAsync();
             }
             catch (Exception e)
             {

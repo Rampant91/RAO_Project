@@ -11,19 +11,35 @@ namespace Models.Collections;
 [Table("DBObservable_DbSet")]
 public class DBObservable : INotifyPropertyChanged
 {
-    [NotMapped] private bool _isChanged = true;
-
+    #region Id
+    
     [Key]
     public int Id { get; set; }
 
+    #endregion
+
+    #region Constructor
+    
     public DBObservable()
     {
         Reports_Collection_DB = new ObservableCollectionWithItemPropertyChanged<Reports>();
         Reports_Collection.CollectionChanged += CollectionChanged;
     }
 
+    private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Reports_Collection));
+        OnPropertyChanged(nameof(Reports_Collection10));
+        OnPropertyChanged(nameof(Reports_Collection20));
+    }
+
+    #endregion
+
     #region Reports_Collection
-    ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
+
+    private ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
+
+    [NotMapped]
     public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
     {
         get => Reports_Collection_DB;
@@ -34,15 +50,12 @@ public class DBObservable : INotifyPropertyChanged
         }
     }
 
-    private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-    {
-        OnPropertyChanged(nameof(Reports_Collection));
-        OnPropertyChanged(nameof(Reports_Collection10));
-        OnPropertyChanged(nameof(Reports_Collection20));
-    }
+
+
     #endregion
 
     #region Reports_Collection10
+
     [NotMapped]
     public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection10
     {
@@ -53,9 +66,11 @@ public class DBObservable : INotifyPropertyChanged
             return obj;
         }
     }
+
     #endregion
 
     #region Reports_Collection20
+
     [NotMapped]
     public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection20
     {
@@ -66,18 +81,26 @@ public class DBObservable : INotifyPropertyChanged
             return obj;
         }
     }
+
     #endregion
 
+    #region Validation
+    
     private static bool Reports_Collection_Validation(DbSet<Reports> value)
     {
         return true;
     }
 
-    //Property Changed
+    #endregion
+
+    #region PropertyChanged
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    #endregion
 }
