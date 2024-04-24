@@ -4,14 +4,13 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using FirebirdSql.Data.FirebirdClient;
-using SkiaSharp;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -20,11 +19,12 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        string answer;
         if (ReportsStorage.LocalReports.Reports_Collection.Count > 10)
         {
             #region ExportDoneMessage
 
-            var answer = await MessageBox.Avalonia.MessageBoxManager
+            answer = await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
@@ -104,6 +104,33 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
         catch (Exception ex)
         {
 
+        }
+
+        #region ExportDoneMessage
+
+        answer = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Открыть расположение файла" }
+                ],
+                ContentTitle = "Выгрузка",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка всех организаций в отдельный" +
+                                 $"{Environment.NewLine}файл .raodb завершена.",
+                MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            })
+            .ShowDialog(Desktop.MainWindow);
+
+        #endregion
+
+        if (answer is "Открыть расположение файлов")
+        {
+            Process.Start("explorer", newDbFolder);
         }
     }
 }
