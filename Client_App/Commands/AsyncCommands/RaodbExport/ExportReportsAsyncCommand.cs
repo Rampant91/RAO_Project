@@ -55,10 +55,18 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         foreach (var key in exportOrg.Report_Collection)
         {
             var rep = (Report)key;
-            repList.Add(await ReportsStorage.GetReportAsync(rep.Id));
+            repList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
         }
-        exportOrg.Report_Collection.Clear();
-        exportOrg.Report_Collection.AddRangeNoChange(repList);
+        var newDbObservable = new DBObservable();
+        var newReps = new Reports();
+        newReps.Report_Collection.AddRangeNoChange(repList);
+        newReps.Master_DB = exportOrg.Master_DB;
+        newDbObservable.Reports_Collection.Add(newReps);
+        //newDbObservable.Reports_Collection.First().Report_Collection.Clear();
+        //newDbObservable.Reports_Collection.First().Report_Collection.AddRangeNoChange(repList);
+
+        //exportOrg.Report_Collection.Clear();
+        //exportOrg.Report_Collection.AddRangeNoChange(repList);
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
@@ -108,7 +116,7 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
             try
             {
                 await tempDb.Database.MigrateAsync();
-                await tempDb.ReportsCollectionDbSet.AddAsync(exportOrg);
+                await tempDb.DBObservableDbSet.AddAsync(newDbObservable);
                 await tempDb.SaveChangesAsync();
 
                 var t = tempDb.Database.GetDbConnection() as FbConnection;
