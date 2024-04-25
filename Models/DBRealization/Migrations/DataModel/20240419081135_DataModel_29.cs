@@ -455,6 +455,109 @@ public partial class DataModel_29 : Migration
             });
 
         #endregion
+
+        #region form17
+
+        const string columnsWithEditableTypes17 =
+            "\"PackName_DB\", \"PackType_DB\", \"PackNumber_DB\", \"PackFactoryNumber_DB\", \"FormingDate_DB\", " +
+            "\"Volume_DB\", \"Mass_DB\", \"PassportNumber_DB\", \"Radionuclids_DB\", \"SpecificActivity_DB\", " +
+            "\"ProviderOrRecieverOKPO_DB\", \"TransporterOKPO_DB\", \"StoragePlaceName_DB\", \"StoragePlaceCode_DB\", " +
+            "\"Subsidy_DB\", \"FcpNumber_DB\", \"CodeRAO_DB\", \"StatusRAO_DB\", \"VolumeOutOfPack_DB\", " +
+            "\"MassOutOfPack_DB\", \"Quantity_DB\", \"TritiumActivity_DB\", \"BetaGammaActivity_DB\", " +
+            "\"AlphaActivity_DB\", \"TransuraniumActivity_DB\", \"RefineOrSortRAOCode_DB\", \"FormNum_DB\", " +
+            "\"OperationCode_DB\", \"OperationDate_DB\", \"DocumentNumber_DB\", \"DocumentDate_DB\"";
+
+        const string columnsWithoutEditableTypes17 =
+            "\"Sum_DB\", \"PackName_Hidden_Priv\", \"PackType_Hidden_Priv\", \"PackNumber_Hidden_Priv\", " +
+            "\"PackFactoryNumber_Hidden_Priv\", \"FormingDate_Hidden_Priv\", \"Volume_Hidden_Priv\", " + 
+            "\"Mass_Hidden_Priv\", \"PassportNumber_Hidden_Priv\", \"ProviderOrRecieverOKPO_Hidden_~\", " + 
+            "\"TransporterOKPO_Hidden_Priv\", \"StoragePlaceName_Hidden_Priv\", \"StoragePlaceCode_Hidden_Priv\", " +
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"OperationCode_Hidden_Priv\", " +
+            "\"OperationDate_Hidden_Priv\", \"DocumentVid_DB\", \"DocumentVid_Hidden_Priv\", " +
+            "\"DocumentNumber_Hidden_Priv\", \"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_17_editableColumns\" (\"IdNew\", {columnsWithEditableTypes17}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes17} " +
+                             "FROM \"form_17\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_17_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes17}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes17}" +
+                             "FROM \"form_17\"");
+
+        migrationBuilder.DropTable(name: "form_17");
+
+        migrationBuilder.CreateTable(
+            name: "form_17",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                PackName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackName_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                PackType_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackType_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                PackNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                PackFactoryNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackFactoryNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                FormingDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormingDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Volume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Volume_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Mass_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Mass_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                PassportNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PassportNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProviderOrRecieverOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProviderOrRecieverOKPO_Hidden_ = table.Column<bool>(name: "ProviderOrRecieverOKPO_Hidden_~", type: "BOOLEAN", nullable: false),
+                TransporterOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransporterOKPO_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StoragePlaceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceName_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StoragePlaceCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Subsidy_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StatusRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeOutOfPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassOutOfPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Quantity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RefineOrSortRAOCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                OperationCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                OperationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OperationDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentVid_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                DocumentVid_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_17", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_17_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
