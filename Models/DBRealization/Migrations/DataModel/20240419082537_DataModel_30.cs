@@ -113,6 +113,28 @@ public partial class DataModel_30 : Migration
         migrationBuilder.DropTable(name: "form_15_withoutEditableColumns");
 
         #endregion
+
+        #region form16
+
+        const string allColumns16 =
+            "\"Id\", \"CodeRAO_DB\", \"StatusRAO_DB\", \"Volume_DB\", \"Mass_DB\", \"MainRadionuclids_DB\", " + 
+            "\"TritiumActivity_DB\", \"BetaGammaActivity_DB\", \"AlphaActivity_DB\", \"TransuraniumActivity_DB\", " + 
+            "\"ActivityMeasurementDate_DB\", \"QuantityOZIII_DB\", \"ProviderOrRecieverOKPO_DB\", \"TransporterOKPO_DB\", " + 
+            "\"PackName_DB\", \"PackType_DB\", \"PackNumber_DB\", \"StoragePlaceName_DB\", \"StoragePlaceCode_DB\", " + 
+            "\"Subsidy_DB\", \"FcpNumber_DB\", \"RefineOrSortRAOCode_DB\", \"ReportId\", \"FormNum_DB\", " + 
+            "\"NumberInOrder_DB\", \"NumberOfFields_DB\", \"OperationCode_DB\", \"OperationCode_Hidden_Priv\", " + 
+            "\"OperationDate_DB\", \"OperationDate_Hidden_Priv\", \"DocumentVid_DB\", \"DocumentVid_Hidden_Priv\", " + 
+            "\"DocumentNumber_DB\", \"DocumentNumber_Hidden_Priv\", \"DocumentDate_DB\", \"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_16\" ({allColumns16}) " +
+                             $"SELECT {allColumns16} " +
+                             $"FROM \"form_16_editableColumns\" " +
+                             $"INNER JOIN \"form_16_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_16_editableColumns");
+        migrationBuilder.DropTable(name: "form_16_withoutEditableColumns");
+
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
