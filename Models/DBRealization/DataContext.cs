@@ -187,6 +187,7 @@ public class DataContext : DbContext
             .ToTable("DBObservable_DbSet")
             .HasMany(x => x.Reports_Collection)
             .WithOne(x => x.DBObservable)
+            .HasForeignKey(x => x.DBObservableId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -195,6 +196,15 @@ public class DataContext : DbContext
 
         modelBuilder.Entity<Reports>()
             .ToTable("ReportsCollection_DbSet")
+            .HasOne(x => x.DBObservable)
+            .WithMany(x => x.Reports_Collection)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Reports>()
+            .HasKey(x => x.Id)
+            .HasName("PK_ReportsCollection_DbSet");
+
+        modelBuilder.Entity<Reports>()
             .HasMany(x => x.Report_Collection)
             .WithOne(x => x.Reports)
             .OnDelete(DeleteBehavior.Cascade); 
@@ -337,6 +347,7 @@ public class DataContext : DbContext
             .ToTable("notes")
             .HasOne(x => x.Report)
             .WithMany(x => x.Notes)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -349,6 +360,7 @@ public class DataContext : DbContext
             .ToTable("form_10")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows10)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -359,6 +371,7 @@ public class DataContext : DbContext
             .ToTable("form_11")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows11)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -369,6 +382,7 @@ public class DataContext : DbContext
             .ToTable("form_12")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows12)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -379,6 +393,7 @@ public class DataContext : DbContext
             .ToTable("form_13")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows13)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -389,6 +404,7 @@ public class DataContext : DbContext
             .ToTable("form_14")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows14)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -399,6 +415,7 @@ public class DataContext : DbContext
             .ToTable("form_15")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows15)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -409,6 +426,7 @@ public class DataContext : DbContext
             .ToTable("form_16")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows16)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -419,6 +437,7 @@ public class DataContext : DbContext
             .ToTable("form_17")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows17)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -429,6 +448,7 @@ public class DataContext : DbContext
             .ToTable("form_18")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows18)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -439,6 +459,7 @@ public class DataContext : DbContext
             .ToTable("form_19")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows19)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -449,6 +470,7 @@ public class DataContext : DbContext
             .ToTable("form_20")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows20)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -459,6 +481,7 @@ public class DataContext : DbContext
             .ToTable("form_21")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows21)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -469,6 +492,7 @@ public class DataContext : DbContext
             .ToTable("form_22")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows22)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -479,6 +503,7 @@ public class DataContext : DbContext
             .ToTable("form_23")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows23)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -489,6 +514,7 @@ public class DataContext : DbContext
             .ToTable("form_24")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows24)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -499,6 +525,7 @@ public class DataContext : DbContext
             .ToTable("form_25")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows25)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -509,6 +536,7 @@ public class DataContext : DbContext
             .ToTable("form_26")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows26)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -519,6 +547,7 @@ public class DataContext : DbContext
             .ToTable("form_27")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows27)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -529,6 +558,7 @@ public class DataContext : DbContext
             .ToTable("form_28")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows28)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -539,6 +569,7 @@ public class DataContext : DbContext
             .ToTable("form_29")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows29)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -549,6 +580,7 @@ public class DataContext : DbContext
             .ToTable("form_210")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows210)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -559,6 +591,7 @@ public class DataContext : DbContext
             .ToTable("form_211")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows211)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
@@ -569,6 +602,7 @@ public class DataContext : DbContext
             .ToTable("form_212")
             .HasOne(x => x.Report)
             .WithMany(x => x.Rows212)
+            .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
 
         #endregion 

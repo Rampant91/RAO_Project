@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -11,7 +10,7 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
-//  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
+// Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
 internal class ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -93,13 +92,13 @@ internal class ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowVie
                           && DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
                           && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
             .ToArray();
-        List<Report> repInRangeWithForms = new();
-        foreach (var rep in repInRange)
-        {
-            repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
-        }
+        //List<Report> repInRangeWithForms = [];
+        //foreach (var rep in repInRange)
+        //{
+        //    repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+        //}
         Reports exportOrg = new() { Master = org.Master };
-        exportOrg.Report_Collection.AddRange(repInRangeWithForms);
+        exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
         if (mainWindowViewModel.ExportReports.CanExecute(null))
             mainWindowViewModel.ExportReports.Execute(exportOrg);

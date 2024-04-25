@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -12,6 +13,7 @@ using OfficeOpenXml;
 
 namespace Models.Forms;
 
+[Table("notes")]
 public class Note : IKey, IDataGridColumn
 {
     #region Constructor
@@ -38,16 +40,32 @@ public class Note : IKey, IDataGridColumn
 
     #endregion
 
-    [NotMapped] 
-    private Dictionary<string, RamAccess> Dictionary { get; set; } = new();
+    #region Id
 
+    [Key]
     public int Id { get; set; }
 
-    public void SetOrder(long index) { }
+    #endregion
+
+    #region Report
+    
+    [ForeignKey(nameof(Report))]
+    public int? ReportId { get; set; }
 
     public virtual Report Report { get; set; }
 
-    public long Order { get;set; }
+    #endregion
+
+    [NotMapped] 
+    private Dictionary<string, RamAccess> Dictionary { get; set; } = new();
+
+    #region Order
+    
+    public long Order { get; set; }
+
+    public void SetOrder(long index) { }
+
+    #endregion
 
     #region RowNumber
 

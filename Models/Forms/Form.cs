@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -13,9 +14,11 @@ namespace Models.Forms;
 
 public abstract class Form : IKey, IDataGridColumn
 {
+    [Key]
     public int Id { get; set; }
 
-    //public int? ReportId { get; set; }
+    [ForeignKey(nameof(Report))]
+    public int? ReportId { get; set; }
 
     public virtual Report? Report { get; set; }
 

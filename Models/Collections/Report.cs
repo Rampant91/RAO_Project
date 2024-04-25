@@ -8,7 +8,9 @@ using System.Text.RegularExpressions;
 using Models.Attributes;
 using OfficeOpenXml;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Models.Forms;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
@@ -17,6 +19,8 @@ using Models.Interfaces;
 
 namespace Models.Collections;
 
+[Table("ReportCollection_DbSet")]
+[Index(nameof(Reports), IsUnique = true)]
 public class Report : IKey, IDataGridColumn
 {
     #region Constructor
@@ -167,6 +171,7 @@ public class Report : IKey, IDataGridColumn
 
     #region Id
 
+    [Key]
     public int Id { get; set; }
 
     #endregion
@@ -175,13 +180,14 @@ public class Report : IKey, IDataGridColumn
 
     public virtual Reports Reports { get; set; }
 
-    //[ForeignKey(nameof(Id))]
-    //public Reports Master_DB { get; set; }
+    //[ForeignKey(nameof(Reports))]
+    //public int? ReportsId { get; set; }
+
 
     #endregion
 
     #region Order
-    
+
     public void SetOrder(long index) { }
 
     public long Order

@@ -4,9 +4,11 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using FirebirdSql.Data.FirebirdClient;
 
@@ -17,11 +19,12 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        string answer;
         if (ReportsStorage.LocalReports.Reports_Collection.Count > 10)
         {
             #region ExportDoneMessage
 
-            var answer = await MessageBox.Avalonia.MessageBoxManager
+            answer = await MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
@@ -56,22 +59,39 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
         {
             foreach (var reps in ReportsStorage.LocalReports.Reports_Collection)
             {
-                var exportOrg = (Reports)reps;
-
-                var oldReps = await db.ReportsCollectionDbSet.FindAsync(exportOrg.Id);
-                if (oldReps != null) db.ReportsCollectionDbSet.Remove(oldReps);
-                await db.SaveChangesAsync();
-
-                List<Report> repWithFormsList = [];
-                foreach (var key1 in exportOrg.Report_Collection)
+                var newReports = (Reports)reps;
+                //List<Report> repWithFormsList = [];
+                var masterReport = db.ReportCollectionDbSet.First(x => x.Id == newReports.Master_DBId);
+                foreach (var key1 in newReports.Report_Collection)
                 {
                     var rep = (Report)key1;
-                    repWithFormsList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+                    var repWithForms = await ReportsStorage.Api.GetAsync(rep.Id);
+                    //repWithFormsList.Add(repWithForms);
+                    newReports.Report_Collection.Replace(rep, repWithForms);
                 }
-                exportOrg.Report_Collection.Clear();
-                exportOrg.Report_Collection.AddRangeNoChange(repWithFormsList);
+                //newReports.Report_Collection.Clear();
+                //newReports.Report_Collection.AddRangeNoChange(repWithFormsList);
+               
 
-                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
+                var existingReports = await db.ReportsCollectionDbSet
+                    .Where(x => x.Id == newReports.Id)
+                    .Include(reports => reports.Report_Collection)
+                    .Include(reports => reports.Master_DB)
+                    .SingleOrDefaultAsync();
+
+                foreach (var rep in existingReports.Report_Collection)
+                {
+                    var report = (Report)rep;
+                    db.Entry(report).State = EntityState.Deleted;
+                }
+                db.Entry(existingReports.Master_DB).State = EntityState.Deleted;
+                db.Entry(existingReports).State = EntityState.Deleted;
+
+                await db.SaveChangesAsync();
+
+                newReports.Master_DB = masterReport;
+                db.ReportsCollectionDbSet.Add(newReports);
+
                 await db.SaveChangesAsync();
             }
             var t = db.Database.GetDbConnection() as FbConnection;
@@ -84,6 +104,33 @@ public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
         catch (Exception ex)
         {
 
+        }
+
+        #region ExportDoneMessage
+
+        answer = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Открыть расположение файла" }
+                ],
+                ContentTitle = "Выгрузка",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка всех организаций в отдельный" +
+                                 $"{Environment.NewLine}файл .raodb завершена.",
+                MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            })
+            .ShowDialog(Desktop.MainWindow);
+
+        #endregion
+
+        if (answer is "Открыть расположение файлов")
+        {
+            Process.Start("explorer", newDbFolder);
         }
     }
 }
