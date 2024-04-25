@@ -8,6 +8,7 @@ using Client_App.VisualRealization.Long_Visual;
 using Models.Interfaces;
 using System.Reactive.Linq;
 using Client_App.Commands.AsyncCommands.SumRow;
+using Models.Forms.Form2;
 
 namespace Client_App.Commands.AsyncCommands;
 

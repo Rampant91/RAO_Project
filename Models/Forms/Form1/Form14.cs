@@ -8,10 +8,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Models.Forms.Form1;
 
+[Serializable]
 [Form_Class("Форма 1.4: Сведения об ОРИ, кроме отдельных изделий")]
 [Table (name: "form_14")]
 public class Form14 : Form1

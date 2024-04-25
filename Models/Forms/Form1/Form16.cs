@@ -12,6 +12,7 @@ using Spravochniki;
 
 namespace Models.Forms.Form1;
 
+[Serializable]
 [Form_Class("Форма 1.6: Сведения о некондиционированных РАО")]
 [Table (name: "form_16")]
 public partial class Form16 : Form1
