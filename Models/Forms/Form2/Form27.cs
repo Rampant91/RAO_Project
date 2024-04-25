@@ -13,7 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
-[Table (name: "form_27")]
+[Table ("form_27")]
 public class Form27 : Form2
 {
     #region Constructor

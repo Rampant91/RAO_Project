@@ -13,7 +13,7 @@ using Spravochniki;
 namespace Models.Forms.Form1;
 
 [Form_Class("Форма 1.8: Сведения о жидких кондиционированных РАО")]
-[Table (name: "form_18")]
+[Table ("form_18")]
 public partial class Form18 : Form1
 {
     #region Constructor

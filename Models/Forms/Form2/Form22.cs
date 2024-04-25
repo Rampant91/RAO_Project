@@ -15,7 +15,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения")]
-[Table (name: "form_22")]
+[Table ("form_22")]
 public partial class Form22 : Form2, IBaseColor
 {
     #region Constructor

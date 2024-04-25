@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
@@ -13,7 +12,7 @@ using Spravochniki;
 namespace Models.Forms.Form1;
 
 [Form_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
-[Table (name: "form_19")]
+[Table ("form_19")]
 public class Form19 : Form1
 {
     #region Constructor
