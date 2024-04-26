@@ -10,6 +10,49 @@ public partial class DataModel_28 : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
+        #region form10
+        
+        migrationBuilder.CreateTable(
+            name: "form_10_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                RegNo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OrganUprav_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SubjectRF_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ShortJurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoFactAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                GradeFIO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Telephone_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Fax_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Email_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okpo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okved_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okogu_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Oktmo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Inn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Kpp_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okopf_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okfs_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_10_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false)
+            });
+
+        #endregion
+
         #region form11
         
         migrationBuilder.CreateTable(
@@ -468,7 +511,7 @@ public partial class DataModel_28 : Migration
                 OperationCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                 OperationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                 DocumentNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
-                DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
             });
 
         migrationBuilder.CreateTable(
@@ -487,6 +530,112 @@ public partial class DataModel_28 : Migration
                 DocumentVid_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                 DocumentNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                 DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
+            });
+
+        #endregion
+
+        #region form20
+        
+        migrationBuilder.CreateTable(
+            name: "form_20_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                RegNo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OrganUprav_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SubjectRF_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ShortJurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoFactAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                GradeFIO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Telephone_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Fax_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Email_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okpo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okved_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okogu_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Oktmo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Inn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Kpp_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okopf_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okfs_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_20_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false)
+            });
+
+        #endregion
+
+        #region form21
+        
+        migrationBuilder.CreateTable(
+            name: "form_21_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                RefineMachineName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MachinePower_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberOfHoursPerYear_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAOIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StatusRAOIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAOout_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StatusRAOout_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityOZIIIout_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrderSum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_21_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _RefineMachineName_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MachineCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                _MachineCode_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _MachinePower_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _NumberOfHoursPerYear_Hidden_Get = table.Column<bool>(name: "_NumberOfHoursPerYear_Hidden_G~", type: "BOOLEAN", nullable: false),
+                CodeRAOIn_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
+                CodeRAOout_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                StatusRAOIn_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                StatusRAOout_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _MachineCode_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _MachinePower_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _NumberOfHoursPerYear_Hidden_Set = table.Column<bool>(name: "_NumberOfHoursPerYear_Hidden_S~", type: "BOOLEAN", nullable: false, defaultValue: false),
+                _RefineMachineName_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                SumGroup_DB = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _BaseColor = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0)
             });
 
         #endregion

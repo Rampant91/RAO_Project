@@ -12,6 +12,69 @@ public partial class DataModel_29 : Migration
 
     protected override void Up(MigrationBuilder migrationBuilder)
     {
+        #region form10
+        
+        const string columnsWithEditableTypes10 =
+            "\"RegNo_DB\", \"OrganUprav_DB\", \"SubjectRF_DB\", \"JurLico_DB\", \"ShortJurLico_DB\", " +
+            "\"JurLicoAddress_DB\", \"JurLicoFactAddress_DB\", \"GradeFIO_DB\", \"Telephone_DB\", \"Fax_DB\", " +
+            "\"Email_DB\", \"Okpo_DB\", \"Okved_DB\", \"Okogu_DB\", \"Oktmo_DB\", \"Inn_DB\", \"Kpp_DB\", " +
+            "\"Okopf_DB\", \"Okfs_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes10 = "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_10_editableColumns\" (\"IdNew\", {columnsWithEditableTypes10}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes10} " +
+                             "FROM \"form_10\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_10_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes10}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes10}" +
+                             "FROM \"form_10\"");
+
+        migrationBuilder.DropTable(name: "form_10");
+
+        migrationBuilder.CreateTable(
+            name: "form_10",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                RegNo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OrganUprav_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SubjectRF_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ShortJurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoFactAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                GradeFIO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Telephone_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Fax_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Email_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okpo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okved_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okogu_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Oktmo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Inn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Kpp_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okopf_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okfs_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_10", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_10_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
         #region form11
         
         const string columnsWithEditableTypes11 =
@@ -711,6 +774,162 @@ public partial class DataModel_29 : Migration
                     onDelete: ReferentialAction.Cascade);
             });
 
+        #endregion
+
+        #region form20
+        
+        const string columnsWithEditableTypes20 =
+            "\"RegNo_DB\", \"OrganUprav_DB\", \"SubjectRF_DB\", \"JurLico_DB\", \"ShortJurLico_DB\", " +
+            "\"JurLicoAddress_DB\", \"JurLicoFactAddress_DB\", \"GradeFIO_DB\", \"Telephone_DB\", \"Fax_DB\", " +
+            "\"Email_DB\", \"Okpo_DB\", \"Okved_DB\", \"Okogu_DB\", \"Oktmo_DB\", \"Inn_DB\", \"Kpp_DB\", " +
+            "\"Okopf_DB\", \"Okfs_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes20 = "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_20_editableColumns\" (\"IdNew\", {columnsWithEditableTypes20}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes20} " +
+                             "FROM \"form_20\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_20_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes20}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes20}" +
+                             "FROM \"form_20\"");
+
+        migrationBuilder.DropTable(name: "form_20");
+
+        migrationBuilder.CreateTable(
+            name: "form_20",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                RegNo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OrganUprav_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SubjectRF_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ShortJurLico_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                JurLicoFactAddress_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                GradeFIO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Telephone_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Fax_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Email_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okpo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okved_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okogu_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Oktmo_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Inn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Kpp_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okopf_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Okfs_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_20", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_20_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form21
+        
+        const string columnsWithEditableTypes21 = 
+            "\"RefineMachineName_DB\", \"MachinePower_DB\", \"NumberOfHoursPerYear_DB\", \"CodeRAOIn_DB\", " +
+            "\"StatusRAOIn_DB\", \"VolumeIn_DB\", \"MassIn_DB\", \"QuantityIn_DB\", \"TritiumActivityIn_DB\", " +
+            "\"BetaGammaActivityIn_DB\", \"AlphaActivityIn_DB\", \"TransuraniumActivityIn_DB\", \"CodeRAOout_DB\", " +
+            "\"StatusRAOout_DB\", \"VolumeOut_DB\", \"MassOut_DB\", \"QuantityOZIIIout_DB\", " +
+            "\"TritiumActivityOut_DB\", \"BetaGammaActivityOut_DB\", \"AlphaActivityOut_DB\", " +
+            "\"TransuraniumActivityOut_DB\", \"FormNum_DB\", \"NumberInOrderSum_DB\"";
+
+
+        const string columnsWithoutEditableTypes21 = 
+            "\"Sum_DB\", \"_RefineMachineName_Hidden_Get\", \"MachineCode_DB\", \"_MachineCode_Hidden_Get\", " +
+            "\"_MachinePower_Hidden_Get\", \"_NumberOfHoursPerYear_Hidden_G~\", \"CodeRAOIn_Hidden_Priv\", " +
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\", " +
+            "\"CodeRAOout_Hidden_Priv\", \"StatusRAOIn_Hidden_Priv\", \"StatusRAOout_Hidden_Priv\", " +
+            "\"_MachineCode_Hidden_Set\", \"_MachinePower_Hidden_Set\", \"_NumberOfHoursPerYear_Hidden_S~\", " +
+            "\"_RefineMachineName_Hidden_Set\", \"SumGroup_DB\", \"_BaseColor\"";
+            
+
+        migrationBuilder.Sql($"INSERT INTO \"form_21_editableColumns\" (\"IdNew\", {columnsWithEditableTypes21}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes21} " +
+                             "FROM \"form_21\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_21_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes21}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes21}" +
+                             "FROM \"form_21\"");
+
+        migrationBuilder.DropTable(name: "form_21");
+
+        migrationBuilder.CreateTable(
+            name: "form_21",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                RefineMachineName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                _RefineMachineName_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MachineCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                _MachineCode_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MachinePower_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                _MachinePower_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                NumberOfHoursPerYear_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                _NumberOfHoursPerYear_Hidden_Get = table.Column<bool>(name: "_NumberOfHoursPerYear_Hidden_G~", type: "BOOLEAN", nullable: false),
+                CodeRAOIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAOIn_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StatusRAOIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivityIn_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAOout_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StatusRAOout_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityOZIIIout_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivityOut_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
+                CodeRAOout_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                StatusRAOIn_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                StatusRAOout_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _MachineCode_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _MachinePower_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _NumberOfHoursPerYear_Hidden_Set = table.Column<bool>(name: "_NumberOfHoursPerYear_Hidden_S~", type: "BOOLEAN", nullable: false, defaultValue: false),
+                _RefineMachineName_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                SumGroup_DB = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _BaseColor = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0),
+                NumberInOrderSum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_21", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_21_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
         #endregion
     }
 

@@ -9,6 +9,24 @@ public partial class DataModel_30 : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
+        #region form10
+        
+        const string allColumns10 =
+            "\"Id\", \"RegNo_DB\", \"OrganUprav_DB\", \"SubjectRF_DB\", \"JurLico_DB\", \"ShortJurLico_DB\", " +
+            "\"JurLicoAddress_DB\", \"JurLicoFactAddress_DB\", \"GradeFIO_DB\", \"Telephone_DB\", \"Fax_DB\", " +
+            "\"Email_DB\", \"Okpo_DB\", \"Okved_DB\", \"Okogu_DB\", \"Oktmo_DB\", \"Inn_DB\", \"Kpp_DB\", " +
+            "\"Okopf_DB\", \"Okfs_DB\", \"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_10\" ({allColumns10}) " +
+                             $"SELECT {allColumns10} " +
+                             $"FROM \"form_10_editableColumns\" " +
+                             $"INNER JOIN \"form_10_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_10_editableColumns");
+        migrationBuilder.DropTable(name: "form_10_withoutEditableColumns"); 
+        
+        #endregion
+
         #region form11
         
         const string allColumns11 =
@@ -205,6 +223,50 @@ public partial class DataModel_30 : Migration
         migrationBuilder.DropTable(name: "form_19_editableColumns");
         migrationBuilder.DropTable(name: "form_19_withoutEditableColumns");
 
+        #endregion
+
+        #region form20
+        
+        const string allColumns20 =
+            "\"Id\", \"RegNo_DB\", \"OrganUprav_DB\", \"SubjectRF_DB\", \"JurLico_DB\", \"ShortJurLico_DB\", " +
+            "\"JurLicoAddress_DB\", \"JurLicoFactAddress_DB\", \"GradeFIO_DB\", \"Telephone_DB\", \"Fax_DB\", " +
+            "\"Email_DB\", \"Okpo_DB\", \"Okved_DB\", \"Okogu_DB\", \"Oktmo_DB\", \"Inn_DB\", \"Kpp_DB\", " +
+            "\"Okopf_DB\", \"Okfs_DB\", \"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_20\" ({allColumns20}) " +
+                             $"SELECT {allColumns20} " +
+                             $"FROM \"form_20_editableColumns\" " +
+                             $"INNER JOIN \"form_20_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_20_editableColumns");
+        migrationBuilder.DropTable(name: "form_20_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form21
+        
+        const string allColumns21 =
+            "\"Id\", \"Sum_DB\", \"RefineMachineName_DB\", \"_RefineMachineName_Hidden_Get\", \"MachineCode_DB\", " +
+            "\"_MachineCode_Hidden_Get\", \"MachinePower_DB\", \"_MachinePower_Hidden_Get\", " +
+            "\"NumberOfHoursPerYear_DB\", \"_NumberOfHoursPerYear_Hidden_G~\", \"CodeRAOIn_DB\", " +
+            "\"CodeRAOIn_Hidden_Priv\", \"StatusRAOIn_DB\", \"VolumeIn_DB\", \"MassIn_DB\", \"QuantityIn_DB\", " +
+            "\"TritiumActivityIn_DB\", \"BetaGammaActivityIn_DB\", \"AlphaActivityIn_DB\", " +
+            "\"TransuraniumActivityIn_DB\", \"CodeRAOout_DB\", \"StatusRAOout_DB\", \"VolumeOut_DB\", " +
+            "\"MassOut_DB\", \"QuantityOZIIIout_DB\", \"TritiumActivityOut_DB\", \"BetaGammaActivityOut_DB\", " +
+            "\"AlphaActivityOut_DB\", \"TransuraniumActivityOut_DB\", \"ReportId\", \"FormNum_DB\", " +
+            "\"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\", \"CodeRAOout_Hidden_Priv\", " +
+            "\"StatusRAOIn_Hidden_Priv\", \"StatusRAOout_Hidden_Priv\", \"_MachineCode_Hidden_Set\", " +
+            "\"_MachinePower_Hidden_Set\", \"_NumberOfHoursPerYear_Hidden_S~\", \"_RefineMachineName_Hidden_Set\", " +
+            "\"SumGroup_DB\", \"_BaseColor\", \"NumberInOrderSum_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_21\" ({allColumns21}) " +
+                             $"SELECT {allColumns21} " +
+                             $"FROM \"form_21_editableColumns\" " +
+                             $"INNER JOIN \"form_21_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_21_editableColumns");
+        migrationBuilder.DropTable(name: "form_21_withoutEditableColumns"); 
+        
         #endregion
     }
 
