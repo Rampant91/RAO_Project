@@ -162,6 +162,50 @@ public partial class DataModel_30 : Migration
         migrationBuilder.DropTable(name: "form_17_withoutEditableColumns");
 
         #endregion
+
+        #region form18
+
+        const string allColumns18 =
+            "\"Id\", \"Sum_DB\", \"IndividualNumberZHRO_DB\", \"IndividualNumberZHRO_Hidden_Pr~\", \"PassportNumber_DB\", " +
+            "\"PassportNumber_Hidden_Priv\", \"Volume6_DB\", \"Volume6_Hidden_Priv\", \"Mass7_DB\", " +
+            "\"Mass7_Hidden_Priv\", \"SaltConcentration_DB\", \"SaltConcentration_Hidden_Priv\", \"Radionuclids_DB\", " +
+            "\"SpecificActivity_DB\", \"ProviderOrRecieverOKPO_DB\", \"ProviderOrRecieverOKPO_Hidden_~\", " +
+            "\"TransporterOKPO_DB\", \"TransporterOKPO_Hidden_Priv\", \"StoragePlaceName_DB\", " +
+            "\"StoragePlaceName_Hidden_Priv\", \"StoragePlaceCode_DB\", \"StoragePlaceCode_Hidden_Priv\", \"CodeRAO_DB\", " +
+            "\"StatusRAO_DB\", \"Volume20_DB\", \"Mass21_DB\", \"TritiumActivity_DB\", \"BetaGammaActivity_DB\", " +
+            "\"AlphaActivity_DB\", \"TransuraniumActivity_DB\", \"RefineOrSortRAOCode_DB\", \"Subsidy_DB\", " +
+            "\"FcpNumber_DB\", \"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", " +
+            "\"OperationCode_Hidden_Priv\", \"OperationDate_DB\", \"OperationDate_Hidden_Priv\", \"DocumentVid_DB\", " +
+            "\"DocumentVid_Hidden_Priv\", \"DocumentNumber_DB\", \"DocumentNumber_Hidden_Priv\", \"DocumentDate_DB\", " +
+            "\"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_18\" ({allColumns18}) " +
+                             $"SELECT {allColumns18} " +
+                             $"FROM \"form_18_editableColumns\" " +
+                             $"INNER JOIN \"form_18_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_18_editableColumns");
+        migrationBuilder.DropTable(name: "form_18_withoutEditableColumns");
+
+        #endregion
+
+        #region form19
+
+        const string allColumns19 =
+            "\"Id\", \"CodeTypeAccObject_DB\", \"Radionuclids_DB\", \"Activity_DB\", \"ReportId\", \"FormNum_DB\", " +
+            "\"NumberInOrder_DB\", \"NumberOfFields_DB\", \"OperationCode_DB\", \"OperationCode_Hidden_Priv\", " +
+            "\"OperationDate_DB\", \"OperationDate_Hidden_Priv\", \"DocumentVid_DB\", \"DocumentVid_Hidden_Priv\", " +
+            "\"DocumentNumber_DB\", \"DocumentNumber_Hidden_Priv\", \"DocumentDate_DB\", \"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_19\" ({allColumns19}) " +
+                             $"SELECT {allColumns19} " +
+                             $"FROM \"form_19_editableColumns\" " +
+                             $"INNER JOIN \"form_19_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_19_editableColumns");
+        migrationBuilder.DropTable(name: "form_19_withoutEditableColumns");
+
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

@@ -8,6 +8,8 @@ namespace Models.DBRealization.Migrations.DataModel;
 // Заполняем временные таблицы данными из таблиц форм, удаляем таблицы форм и создаём их заново с нужными типами данных
 public partial class DataModel_29 : Migration
 {
+    private static string Trim(string column, ushort length) => $"LEFT(TRIM(\"{column}\"), {length})";
+
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         #region form11
@@ -551,6 +553,158 @@ public partial class DataModel_29 : Migration
                 table.PrimaryKey(name: "PK_form_17", columns: x => x.Id);
                 table.ForeignKey(
                     name: "FK_form_17_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
+        #endregion
+
+        #region form18
+
+        const string columnsWithEditableTypes18 =
+            "\"IndividualNumberZHRO_DB\", \"PassportNumber_DB\", \"Volume6_DB\", \"Mass7_DB\", \"SaltConcentration_DB\", " +
+            "\"Radionuclids_DB\", \"SpecificActivity_DB\", \"ProviderOrRecieverOKPO_DB\", \"TransporterOKPO_DB\", " +
+            "\"StoragePlaceName_DB\", \"StoragePlaceCode_DB\", \"CodeRAO_DB\", \"StatusRAO_DB\", \"Volume20_DB\", " +
+            "\"Mass21_DB\", \"TritiumActivity_DB\", \"BetaGammaActivity_DB\", \"AlphaActivity_DB\", " +
+            "\"TransuraniumActivity_DB\", \"RefineOrSortRAOCode_DB\", \"Subsidy_DB\", \"FcpNumber_DB\", " +
+            "\"FormNum_DB\", \"OperationCode_DB\", \"OperationDate_DB\",\"DocumentNumber_DB\", \"DocumentDate_DB\"";
+
+        const string columnsWithoutEditableTypes18 =
+            "\"Sum_DB\", \"IndividualNumberZHRO_Hidden_Pr~\", \"PassportNumber_Hidden_Priv\", \"Volume6_Hidden_Priv\", " +
+            "\"Mass7_Hidden_Priv\", \"SaltConcentration_Hidden_Priv\", \"ProviderOrRecieverOKPO_Hidden_~\", " +
+            "\"TransporterOKPO_Hidden_Priv\", \"StoragePlaceName_Hidden_Priv\", \"StoragePlaceCode_Hidden_Priv\", " +
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"OperationCode_Hidden_Priv\", " +
+            "\"OperationDate_Hidden_Priv\", \"DocumentVid_DB\", \"DocumentVid_Hidden_Priv\", " +
+            "\"DocumentNumber_Hidden_Priv\", \"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_18_editableColumns\" (\"IdNew\", {columnsWithEditableTypes18}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes18} " +
+                             "FROM \"form_18\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_18_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes18}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes18}" +
+                             "FROM \"form_18\"");
+
+        migrationBuilder.DropTable(name: "form_18");
+
+        migrationBuilder.CreateTable(
+            name: "form_18",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                IndividualNumberZHRO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                IndividualNumberZHRO_Hidden_Pr = table.Column<bool>(name: "IndividualNumberZHRO_Hidden_Pr~", type: "BOOLEAN", nullable: false),
+                PassportNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PassportNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Volume6_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Volume6_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Mass7_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Mass7_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                SaltConcentration_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SaltConcentration_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProviderOrRecieverOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProviderOrRecieverOKPO_Hidden_ = table.Column<bool>(name: "ProviderOrRecieverOKPO_Hidden_~", type: "BOOLEAN", nullable: false),
+                TransporterOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransporterOKPO_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StoragePlaceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceName_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StoragePlaceCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                CodeRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StatusRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Volume20_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Mass21_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RefineOrSortRAOCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Subsidy_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                OperationCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                OperationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OperationDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentVid_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                DocumentVid_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_18", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_18_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
+        #endregion
+
+        #region form19
+
+        const string columnsWithEditableTypes19 =
+            "\"Radionuclids_DB\", \"Activity_DB\", \"FormNum_DB\", \"OperationCode_DB\", \"OperationDate_DB\", " +
+            "\"DocumentNumber_DB\", \"DocumentDate_DB\"";
+
+        const string columnsWithoutEditableTypes19 =
+            "\"CodeTypeAccObject_DB\", \"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", " +
+            "\"OperationCode_Hidden_Priv\", \"OperationDate_Hidden_Priv\", \"DocumentVid_DB\", " +
+            "\"DocumentVid_Hidden_Priv\", \"DocumentNumber_Hidden_Priv\", \"DocumentDate_Hidden_Priv\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_19_editableColumns\" (\"IdNew\", {columnsWithEditableTypes19}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes19} " +
+                             "FROM \"form_19\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_19_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes19}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes19}" +
+                             "FROM \"form_19\"");
+
+        migrationBuilder.DropTable(name: "form_19");
+
+        migrationBuilder.CreateTable(
+            name: "form_19",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                CodeTypeAccObject_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Activity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                OperationCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                OperationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                OperationDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentVid_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                DocumentVid_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_19", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_19_ReportCollection_Db~",
                     column: x => x.ReportId,
                     principalTable: "ReportCollection_DbSet",
                     principalColumn: "Id",
