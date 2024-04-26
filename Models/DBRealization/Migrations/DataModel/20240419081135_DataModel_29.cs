@@ -849,7 +849,6 @@ public partial class DataModel_29 : Migration
             "\"TritiumActivityOut_DB\", \"BetaGammaActivityOut_DB\", \"AlphaActivityOut_DB\", " +
             "\"TransuraniumActivityOut_DB\", \"FormNum_DB\", \"NumberInOrderSum_DB\"";
 
-
         const string columnsWithoutEditableTypes21 = 
             "\"Sum_DB\", \"_RefineMachineName_Hidden_Get\", \"MachineCode_DB\", \"_MachineCode_Hidden_Get\", " +
             "\"_MachinePower_Hidden_Get\", \"_NumberOfHoursPerYear_Hidden_G~\", \"CodeRAOIn_Hidden_Priv\", " +
@@ -857,8 +856,7 @@ public partial class DataModel_29 : Migration
             "\"CodeRAOout_Hidden_Priv\", \"StatusRAOIn_Hidden_Priv\", \"StatusRAOout_Hidden_Priv\", " +
             "\"_MachineCode_Hidden_Set\", \"_MachinePower_Hidden_Set\", \"_NumberOfHoursPerYear_Hidden_S~\", " +
             "\"_RefineMachineName_Hidden_Set\", \"SumGroup_DB\", \"_BaseColor\"";
-            
-
+        
         migrationBuilder.Sql($"INSERT INTO \"form_21_editableColumns\" (\"IdNew\", {columnsWithEditableTypes21}) " +
                              $"SELECT \"Id\", {columnsWithEditableTypes21} " +
                              "FROM \"form_21\"");
@@ -924,6 +922,99 @@ public partial class DataModel_29 : Migration
                 table.PrimaryKey(name: "PK_form_21", columns: x => x.Id);
                 table.ForeignKey(
                     name: "FK_form_21_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form22
+        
+        const string columnsWithEditableTypes22 = 
+            "\"StoragePlaceName_DB\", \"StoragePlaceCode_DB\", \"PackName_DB\", \"PackType_DB\", " +
+            "\"PackQuantity_DB\", \"CodeRAO_DB\", \"StatusRAO_DB\", \"VolumeInPack_DB\", \"MassInPack_DB\", " +
+            "\"VolumeOutOfPack_DB\", \"MassOutOfPack_DB\", \"QuantityOZIII_DB\", \"TritiumActivity_DB\", " +
+            "\"BetaGammaActivity_DB\", \"AlphaActivity_DB\", \"TransuraniumActivity_DB\", \"MainRadionuclids_DB\", " +
+            "\"Subsidy_DB\", \"FcpNumber_DB\", \"FormNum_DB\", \"NumberInOrderSum_DB\"";
+
+        const string columnsWithoutEditableTypes22 = 
+            "\"_PackName_Hidden_Get\", \"_PackName_Hidden_Set\", \"_PackType_Hidden_Get\", " +
+            "\"_PackType_Hidden_Set\", \"_StoragePlaceCode_Hidden_Get\", \"_StoragePlaceCode_Hidden_Set\", " +
+            "\"_StoragePlaceName_Hidden_Get\", \"_StoragePlaceName_Hidden_Set\", \"MassInPack_Hidden_Priv\", " +
+            "\"MassInPack_Hidden_Priv2\", \"VolumeInPack_Hidden_Priv\", \"VolumeInPack_Hidden_Priv2\", " +
+            "\"FcpNumber_Hidden_Priv\", \"Subsidy_Hidden_Priv\", \"Sum_DB\", \"CodeRAO_Hidden_Priv\", " +
+            "\"StatusRAO_Hidden_Priv\", \"MainRadionuclids_Hidden_Priv\", \"ReportId\", \"NumberInOrder_DB\", " +
+            "\"NumberOfFields_DB\", \"CorrectionNumber_DB\", \"SumGroup_DB\", \"_BaseColor\"";
+            
+        migrationBuilder.Sql($"INSERT INTO \"form_22_editableColumns\" (\"IdNew\", {columnsWithEditableTypes22}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes22} " +
+                             "FROM \"form_22\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_22_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes22}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes22}" +
+                             "FROM \"form_22\"");
+
+        migrationBuilder.DropTable(name: "form_22");
+
+        migrationBuilder.CreateTable(
+            name: "form_22",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                _PackName_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _PackName_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _PackType_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _PackType_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceCode_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceCode_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceName_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceName_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MassInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MassInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                VolumeInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                VolumeInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                FcpNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Subsidy_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StoragePlaceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackType_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackQuantity_DB = table.Column<int>(type: "VARCHAR(255)", nullable: true),
+                CodeRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAO_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StatusRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StatusRAO_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                VolumeInPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassInPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeOutOfPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassOutOfPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityOZIII_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MainRadionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MainRadionuclids_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Subsidy_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
+                SumGroup_DB = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _BaseColor = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0),
+                NumberInOrderSum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_22", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_22_ReportCollection_Db~",
                     column: x => x.ReportId,
                     principalTable: "ReportCollection_DbSet",
                     principalColumn: "Id",

@@ -639,6 +639,71 @@ public partial class DataModel_28 : Migration
             });
 
         #endregion
+
+        #region form22
+        
+        migrationBuilder.CreateTable(
+            name: "form_22_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                StoragePlaceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackType_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PackQuantity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StatusRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeInPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassInPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                VolumeOutOfPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassOutOfPack_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityOZIII_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TritiumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                BetaGammaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TransuraniumActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MainRadionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Subsidy_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrderSum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_22_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                _PackName_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _PackName_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _PackType_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _PackType_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceCode_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceCode_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceName_Hidden_Get = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                _StoragePlaceName_Hidden_Set = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MassInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MassInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                VolumeInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                VolumeInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                FcpNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Subsidy_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                CodeRAO_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                StatusRAO_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                MainRadionuclids_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
+                SumGroup_DB = table.Column<bool>(type: "BOOLEAN", nullable: false, defaultValue: false),
+                _BaseColor = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0)
+            });
+
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

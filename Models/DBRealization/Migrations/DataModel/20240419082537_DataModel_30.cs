@@ -268,6 +268,32 @@ public partial class DataModel_30 : Migration
         migrationBuilder.DropTable(name: "form_21_withoutEditableColumns"); 
         
         #endregion
+
+        #region form22
+        
+        const string allColumns22 =
+            "\"Id\", \"_PackName_Hidden_Get\", \"_PackName_Hidden_Set\", \"_PackType_Hidden_Get\", " +
+            "\"_PackType_Hidden_Set\", \"_StoragePlaceCode_Hidden_Get\", \"_StoragePlaceCode_Hidden_Set\", " +
+            "\"_StoragePlaceName_Hidden_Get\", \"_StoragePlaceName_Hidden_Set\", \"MassInPack_Hidden_Priv\", " +
+            "\"MassInPack_Hidden_Priv2\", \"VolumeInPack_Hidden_Priv\", \"VolumeInPack_Hidden_Priv2\", " +
+            "\"FcpNumber_Hidden_Priv\", \"Subsidy_Hidden_Priv\", \"Sum_DB\", \"StoragePlaceName_DB\", " +
+            "\"StoragePlaceCode_DB\", \"PackName_DB\", \"PackType_DB\", \"PackQuantity_DB\", \"CodeRAO_DB\", " +
+            "\"CodeRAO_Hidden_Priv\", \"StatusRAO_DB\", \"StatusRAO_Hidden_Priv\", \"VolumeInPack_DB\", " +
+            "\"MassInPack_DB\", \"VolumeOutOfPack_DB\", \"MassOutOfPack_DB\", \"QuantityOZIII_DB\", " +
+            "\"TritiumActivity_DB\", \"BetaGammaActivity_DB\", \"AlphaActivity_DB\", \"TransuraniumActivity_DB\", " +
+            "\"MainRadionuclids_DB\", \"MainRadionuclids_Hidden_Priv\", \"Subsidy_DB\", \"FcpNumber_DB\", " +
+            "\"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\", " +
+            "\"SumGroup_DB\", \"_BaseColor\", \"NumberInOrderSum_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_22\" ({allColumns22}) " +
+                             $"SELECT {allColumns22} " +
+                             $"FROM \"form_22_editableColumns\" " +
+                             $"INNER JOIN \"form_22_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_22_editableColumns");
+        migrationBuilder.DropTable(name: "form_22_withoutEditableColumns"); 
+        
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
