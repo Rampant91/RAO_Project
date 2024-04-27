@@ -1,5 +1,7 @@
 ﻿using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Models.Forms.Form2;
+using VSLangProj;
 
 #nullable disable
 
@@ -1015,6 +1017,127 @@ public partial class DataModel_29 : Migration
                 table.PrimaryKey(name: "PK_form_22", columns: x => x.Id);
                 table.ForeignKey(
                     name: "FK_form_22_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form23
+        
+        const string columnsWithEditableTypes23 = 
+            "\"StoragePlaceName_DB\", \"StoragePlaceCode_DB\", \"ProjectVolume_DB\", \"CodeRAO_DB\", " +
+            "\"Volume_DB\", \"Mass_DB\", \"QuantityOZIII_DB\", \"SummaryActivity_DB\", \"DocumentNumber_DB\", " +
+            "\"DocumentDate_DB\", \"ExpirationDate_DB\", \"DocumentName_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes23 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+            
+            
+        migrationBuilder.Sql($"INSERT INTO \"form_23_editableColumns\" (\"IdNew\", {columnsWithEditableTypes23}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes23} " +
+                             "FROM \"form_23\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_23_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes23}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes23}" +
+                             "FROM \"form_23\"");
+
+        migrationBuilder.DropTable(name: "form_23");
+
+        migrationBuilder.CreateTable(
+            name: "form_23",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                StoragePlaceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProjectVolume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Volume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Mass_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityOZIII_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SummaryActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ExpirationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_23", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_23_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form24
+        
+        const string columnsWithEditableTypes24 = 
+            "\"CodeOYAT_DB\", \"FcpNumber_DB\", \"MassCreated_DB\", \"QuantityCreated_DB\", " +
+            "\"MassFromAnothers_DB\", \"QuantityFromAnothers_DB\", \"MassFromAnothersImported_DB\", " +
+            "\"QuantityFromAnothersImported_DB\", \"MassAnotherReasons_DB\", \"QuantityAnotherReasons_DB\", " +
+            "\"MassTransferredToAnother_DB\", \"QuantityTransferredToAnother_DB\", \"MassRefined_DB\", " +
+            "\"QuantityRefined_DB\", \"MassRemovedFromAccount_DB\", \"QuantityRemovedFromAccount_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes24 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_24_editableColumns\" (\"IdNew\", {columnsWithEditableTypes24}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes24} " +
+                             "FROM \"form_24\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_24_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes24}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes24}" +
+                             "FROM \"form_24\"");
+
+        migrationBuilder.DropTable(name: "form_24");
+
+        migrationBuilder.CreateTable(
+            name: "form_24",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                CodeOYAT_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassCreated_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityCreated_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassFromAnothers_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityFromAnothers_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassFromAnothersImported_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityFromAnothersImported_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassAnotherReasons_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityAnotherReasons_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassTransferredToAnother_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityTransferredToAnother_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassRefined_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityRefined_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassRemovedFromAccount_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityRemovedFromAccount_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_24", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_24_ReportCollection_Db~",
                     column: x => x.ReportId,
                     principalTable: "ReportCollection_DbSet",
                     principalColumn: "Id",

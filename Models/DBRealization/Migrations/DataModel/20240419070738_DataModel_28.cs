@@ -704,6 +704,84 @@ public partial class DataModel_28 : Migration
             });
 
         #endregion
+
+        #region form23
+        
+        migrationBuilder.CreateTable(
+            name: "form_23_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                StoragePlaceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProjectVolume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeRAO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Volume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Mass_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityOZIII_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SummaryActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ExpirationDate_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DocumentName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_23_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
+
+        #region form24
+        
+        migrationBuilder.CreateTable(
+            name: "form_24_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                CodeOYAT_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassCreated_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityCreated_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassFromAnothers_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityFromAnothers_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassFromAnothersImported_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityFromAnothersImported_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassAnotherReasons_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityAnotherReasons_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassTransferredToAnother_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityTransferredToAnother_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassRefined_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityRefined_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MassRemovedFromAccount_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                QuantityRemovedFromAccount_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_24_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

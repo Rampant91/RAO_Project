@@ -291,7 +291,47 @@ public partial class DataModel_30 : Migration
                              $"INNER JOIN \"form_22_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
 
         migrationBuilder.DropTable(name: "form_22_editableColumns");
-        migrationBuilder.DropTable(name: "form_22_withoutEditableColumns"); 
+        migrationBuilder.DropTable(name: "form_22_withoutEditableColumns");
+
+        #endregion
+
+        #region form23
+
+        const string allColumns23 =
+            "\"Id\", \"StoragePlaceName_DB\", \"StoragePlaceCode_DB\", \"ProjectVolume_DB\", \"CodeRAO_DB\", " +
+            "\"Volume_DB\", \"Mass_DB\", \"QuantityOZIII_DB\", \"SummaryActivity_DB\", \"DocumentNumber_DB\", " +
+            "\"DocumentDate_DB\", \"ExpirationDate_DB\", \"DocumentName_DB\", \"ReportId\", \"FormNum_DB\", " +
+            "\"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+
+        migrationBuilder.Sql($"INSERT INTO \"form_23\" ({allColumns23}) " +
+                             $"SELECT {allColumns23} " +
+                             $"FROM \"form_23_editableColumns\" " +
+                             $"INNER JOIN \"form_23_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_23_editableColumns");
+        migrationBuilder.DropTable(name: "form_23_withoutEditableColumns");
+
+        #endregion
+
+        #region form24
+
+        const string allColumns24 = 
+            "\"Id\", \"CodeOYAT_DB\", \"FcpNumber_DB\", \"MassCreated_DB\", \"QuantityCreated_DB\", " +
+            "\"MassFromAnothers_DB\", \"QuantityFromAnothers_DB\", \"MassFromAnothersImported_DB\", " +
+            "\"QuantityFromAnothersImported_DB\", \"MassAnotherReasons_DB\", \"QuantityAnotherReasons_DB\", " +
+            "\"MassTransferredToAnother_DB\", \"QuantityTransferredToAnother_DB\", \"MassRefined_DB\", " +
+            "\"QuantityRefined_DB\", \"MassRemovedFromAccount_DB\", \"QuantityRemovedFromAccount_DB\", " +
+            "\"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+
+        migrationBuilder.Sql($"INSERT INTO \"form_24\" ({allColumns24}) " +
+                             $"SELECT {allColumns24} " +
+                             $"FROM \"form_24_editableColumns\" " +
+                             $"INNER JOIN \"form_24_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_24_editableColumns");
+        migrationBuilder.DropTable(name: "form_24_withoutEditableColumns"); 
         
         #endregion
     }
