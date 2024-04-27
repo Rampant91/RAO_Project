@@ -334,6 +334,24 @@ public partial class DataModel_30 : Migration
         migrationBuilder.DropTable(name: "form_24_withoutEditableColumns"); 
         
         #endregion
+
+        #region form25
+
+        const string allColumns25 = 
+            "\"Id\", \"StoragePlaceName_DB\", \"CodeOYAT_DB\", \"StoragePlaceCode_DB\", \"FcpNumber_DB\", " +
+            "\"FuelMass_DB\", \"CellMass_DB\", \"Quantity_DB\", \"BetaGammaActivity_DB\", \"AlphaActivity_DB\", " +
+            "\"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+
+        migrationBuilder.Sql($"INSERT INTO \"form_25\" ({allColumns25}) " +
+                             $"SELECT {allColumns25} " +
+                             $"FROM \"form_25_editableColumns\" " +
+                             $"INNER JOIN \"form_25_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_25_editableColumns");
+        migrationBuilder.DropTable(name: "form_25_withoutEditableColumns"); 
+        
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

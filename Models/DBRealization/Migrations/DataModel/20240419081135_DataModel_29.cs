@@ -1145,6 +1145,59 @@ public partial class DataModel_29 : Migration
             }); 
         
         #endregion
+
+        #region form25
+        
+        const string columnsWithEditableTypes25 = 
+            "\"StoragePlaceName_DB\", \"CodeOYAT_DB\", \"StoragePlaceCode_DB\", \"FcpNumber_DB\", \"FuelMass_DB\", " +
+            "\"CellMass_DB\", \"BetaGammaActivity_DB\", \"AlphaActivity_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes25 = 
+            "\"Quantity_DB\", \"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_25_editableColumns\" (\"IdNew\", {columnsWithEditableTypes25}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes25} " +
+                             "FROM \"form_25\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_25_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes25}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes25}" +
+                             "FROM \"form_25\"");
+
+        migrationBuilder.DropTable(name: "form_25");
+
+        migrationBuilder.CreateTable(
+            name: "form_25",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                StoragePlaceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CodeOYAT_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                StoragePlaceCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FuelMass_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                CellMass_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Quantity_DB = table.Column<int>(type: "INTEGER", nullable: true),
+                BetaGammaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AlphaActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_25", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_25_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
