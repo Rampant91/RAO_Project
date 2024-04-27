@@ -1198,6 +1198,362 @@ public partial class DataModel_29 : Migration
             }); 
         
         #endregion
+
+        #region form26
+        
+        const string columnsWithEditableTypes26 = 
+            "\"ObservedSourceNumber_DB\", \"ControlledAreaName_DB\", \"SupposedWasteSource_DB\", " +
+            "\"DistanceToWasteSource_DB\", \"TestDepth_DB\", \"RadionuclidName_DB\", " +
+            "\"AverageYearConcentration_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes26 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_26_editableColumns\" (\"IdNew\", {columnsWithEditableTypes26}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes26} " +
+                             "FROM \"form_26\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_26_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes26}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes26}" +
+                             "FROM \"form_26\"");
+
+        migrationBuilder.DropTable(name: "form_26");
+
+        migrationBuilder.CreateTable(
+            name: "form_26",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ObservedSourceNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ControlledAreaName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SupposedWasteSource_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DistanceToWasteSource_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TestDepth_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RadionuclidName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AverageYearConcentration_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_26", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_26_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form27
+        
+        const string columnsWithEditableTypes27 = 
+            "\"ObservedSourceNumber_DB\", \"RadionuclidName_DB\", \"AllowedWasteValue_DB\", " +
+            "\"FactedWasteValue_DB\", \"WasteOutbreakPreviousYear_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes27 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_27_editableColumns\" (\"IdNew\", {columnsWithEditableTypes27}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes27} " +
+                             "FROM \"form_27\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_27_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes27}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes27}" +
+                             "FROM \"form_27\"");
+
+        migrationBuilder.DropTable(name: "form_27");
+
+        migrationBuilder.CreateTable(
+            name: "form_27",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ObservedSourceNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RadionuclidName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AllowedWasteValue_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FactedWasteValue_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteOutbreakPreviousYear_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_27", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_27_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form28
+        
+        const string columnsWithEditableTypes28 = 
+            "\"WasteSourceName_DB\", \"WasteRecieverName_DB\", \"RecieverTypeCode_DB\", \"PoolDistrictName_DB\", " +
+            "\"AllowedWasteRemovalVolume_DB\", \"RemovedWasteVolume_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes28 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_28_editableColumns\" (\"IdNew\", {columnsWithEditableTypes28}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes28} " +
+                             "FROM \"form_28\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_28_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes28}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes28}" +
+                             "FROM \"form_28\"");
+
+        migrationBuilder.DropTable(name: "form_28");
+
+        migrationBuilder.CreateTable(
+            name: "form_28",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                WasteSourceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteRecieverName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RecieverTypeCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PoolDistrictName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AllowedWasteRemovalVolume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RemovedWasteVolume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_28", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_28_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form29
+        
+        const string columnsWithEditableTypes29 = 
+            "\"WasteSourceName_DB\", \"RadionuclidName_DB\", \"AllowedActivity_DB\", " +
+            "\"FactedActivity_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes29 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_29_editableColumns\" (\"IdNew\", {columnsWithEditableTypes29}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes29} " +
+                             "FROM \"form_29\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_29_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes29}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes29}" +
+                             "FROM \"form_29\"");
+
+        migrationBuilder.DropTable(name: "form_29");
+
+        migrationBuilder.CreateTable(
+            name: "form_29",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                WasteSourceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RadionuclidName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AllowedActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FactedActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_29", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_29_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form210
+        
+        const string columnsWithEditableTypes210 = 
+            "\"IndicatorName_DB\", \"PlotName_DB\", \"PlotKadastrNumber_DB\", \"PlotCode_DB\", " +
+            "\"InfectedArea_DB\", \"AvgGammaRaysDosePower_DB\", \"MaxGammaRaysDosePower_DB\", " +
+            "\"WasteDensityAlpha_DB\", \"WasteDensityBeta_DB\", \"FcpNumber_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes210 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_210_editableColumns\" (\"IdNew\", {columnsWithEditableTypes210}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes210} " +
+                             "FROM \"form_210\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_210_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes210}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes210}" +
+                             "FROM \"form_210\"");
+
+        migrationBuilder.DropTable(name: "form_210");
+
+        migrationBuilder.CreateTable(
+            name: "form_210",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                IndicatorName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotKadastrNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                InfectedArea_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AvgGammaRaysDosePower_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MaxGammaRaysDosePower_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteDensityAlpha_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteDensityBeta_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_210", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_210_ReportCollection_D~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form211
+        
+        const string columnsWithEditableTypes211 = 
+            "\"PlotName_DB\", \"PlotKadastrNumber_DB\", \"PlotCode_DB\", \"InfectedArea_DB\", " +
+            "\"Radionuclids_DB\", \"SpecificActivityOfPlot_DB\", \"SpecificActivityOfLiquidPart_DB\", " +
+            "\"SpecificActivityOfDensePart_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes211 = 
+            "\"ReportId\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_211_editableColumns\" (\"IdNew\", {columnsWithEditableTypes211}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes211} " +
+                             "FROM \"form_211\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_211_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes211}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes211}" +
+                             "FROM \"form_211\"");
+
+        migrationBuilder.DropTable(name: "form_211");
+
+        migrationBuilder.CreateTable(
+            name: "form_211",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                PlotName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotKadastrNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                InfectedArea_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivityOfPlot_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivityOfLiquidPart_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivityOfDensePart_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_211", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_211_ReportCollection_D~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
+
+        #region form212
+        
+        const string columnsWithEditableTypes212 = 
+            "\"Radionuclids_DB\", \"Activity_DB\", \"ProviderOrRecieverOKPO_DB\", \"FormNum_DB\"";
+
+        const string columnsWithoutEditableTypes212 = 
+            "\"OperationCode_DB\", \"ObjectTypeCode_DB\", \"ReportId\", \"NumberInOrder_DB\", " +
+            "\"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"form_212_editableColumns\" (\"IdNew\", {columnsWithEditableTypes212}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypes212} " +
+                             "FROM \"form_212\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"form_212_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypes212}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypes212}" +
+                             "FROM \"form_212\"");
+
+        migrationBuilder.DropTable(name: "form_212");
+
+        migrationBuilder.CreateTable(
+            name: "form_212",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                ObjectTypeCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Activity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProviderOrRecieverOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_form_212", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_form_212_ReportCollection_D~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            }); 
+        
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

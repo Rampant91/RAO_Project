@@ -816,6 +816,226 @@ public partial class DataModel_28 : Migration
             });
 
         #endregion
+
+        #region form26
+        
+        migrationBuilder.CreateTable(
+            name: "form_26_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ObservedSourceNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ControlledAreaName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SupposedWasteSource_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                DistanceToWasteSource_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                TestDepth_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RadionuclidName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AverageYearConcentration_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_26_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
+
+        #region form27
+        
+        migrationBuilder.CreateTable(
+            name: "form_27_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ObservedSourceNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RadionuclidName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AllowedWasteValue_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FactedWasteValue_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteOutbreakPreviousYear_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_27_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
+
+        #region form28
+        
+        migrationBuilder.CreateTable(
+            name: "form_28_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                WasteSourceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteRecieverName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RecieverTypeCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PoolDistrictName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AllowedWasteRemovalVolume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RemovedWasteVolume_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_28_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
+
+        #region form29
+        
+        migrationBuilder.CreateTable(
+            name: "form_29_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                WasteSourceName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                RadionuclidName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AllowedActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FactedActivity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_29_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
+
+        #region form210
+        
+        migrationBuilder.CreateTable(
+            name: "form_210_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                IndicatorName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotKadastrNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                InfectedArea_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                AvgGammaRaysDosePower_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                MaxGammaRaysDosePower_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteDensityAlpha_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                WasteDensityBeta_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FcpNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_210_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
+
+        #region form211
+        
+        migrationBuilder.CreateTable(
+            name: "form_211_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                PlotName_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotKadastrNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                PlotCode_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                InfectedArea_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivityOfPlot_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivityOfLiquidPart_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                SpecificActivityOfDensePart_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_211_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
+
+        #region form212
+        
+        migrationBuilder.CreateTable(
+            name: "form_212_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                Radionuclids_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Activity_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ProviderOrRecieverOKPO_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                FormNum_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "form_212_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                ObjectTypeCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
+            });
+
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

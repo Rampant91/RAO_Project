@@ -352,6 +352,126 @@ public partial class DataModel_30 : Migration
         migrationBuilder.DropTable(name: "form_25_withoutEditableColumns"); 
         
         #endregion
+
+        #region form26
+
+        const string allColumns26 = 
+            "\"Id\", \"ObservedSourceNumber_DB\", \"ControlledAreaName_DB\", \"SupposedWasteSource_DB\", " +
+            "\"DistanceToWasteSource_DB\", \"TestDepth_DB\", \"RadionuclidName_DB\", \"AverageYearConcentration_DB\", " +
+            "\"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_26\" ({allColumns26}) " +
+                             $"SELECT {allColumns26} " +
+                             $"FROM \"form_26_editableColumns\" " +
+                             $"INNER JOIN \"form_26_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_26_editableColumns");
+        migrationBuilder.DropTable(name: "form_26_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form27
+
+        const string allColumns27 = 
+            "\"Id\", \"ObservedSourceNumber_DB\", \"RadionuclidName_DB\", \"AllowedWasteValue_DB\", " +
+            "\"FactedWasteValue_DB\", \"WasteOutbreakPreviousYear_DB\", \"ReportId\", \"FormNum_DB\", " +
+            "\"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_27\" ({allColumns27}) " +
+                             $"SELECT {allColumns27} " +
+                             $"FROM \"form_27_editableColumns\" " +
+                             $"INNER JOIN \"form_27_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_27_editableColumns");
+        migrationBuilder.DropTable(name: "form_27_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form28
+
+        const string allColumns28 = 
+            "\"Id\", \"WasteSourceName_DB\", \"WasteRecieverName_DB\", \"RecieverTypeCode_DB\", " +
+            "\"PoolDistrictName_DB\", \"AllowedWasteRemovalVolume_DB\", \"RemovedWasteVolume_DB\", \"ReportId\", " +
+            "\"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_28\" ({allColumns28}) " +
+                             $"SELECT {allColumns28} " +
+                             $"FROM \"form_28_editableColumns\" " +
+                             $"INNER JOIN \"form_28_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_28_editableColumns");
+        migrationBuilder.DropTable(name: "form_28_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form29
+
+        const string allColumns29 = 
+            "\"Id\", \"WasteSourceName_DB\", \"RadionuclidName_DB\", \"AllowedActivity_DB\", \"FactedActivity_DB\", " +
+            "\"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_29\" ({allColumns29}) " +
+                             $"SELECT {allColumns29} " +
+                             $"FROM \"form_29_editableColumns\" " +
+                             $"INNER JOIN \"form_29_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_29_editableColumns");
+        migrationBuilder.DropTable(name: "form_29_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form210
+
+        const string allColumns210 = 
+            "\"Id\", \"IndicatorName_DB\", \"PlotName_DB\", \"PlotKadastrNumber_DB\", \"PlotCode_DB\", " +
+            "\"InfectedArea_DB\", \"AvgGammaRaysDosePower_DB\", \"MaxGammaRaysDosePower_DB\", " +
+            "\"WasteDensityAlpha_DB\", \"WasteDensityBeta_DB\", \"FcpNumber_DB\", \"ReportId\", \"FormNum_DB\", " +
+            "\"NumberInOrder_DB\", \"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_210\" ({allColumns210}) " +
+                             $"SELECT {allColumns210} " +
+                             $"FROM \"form_210_editableColumns\" " +
+                             $"INNER JOIN \"form_210_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_210_editableColumns");
+        migrationBuilder.DropTable(name: "form_210_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form211
+
+        const string allColumns211 = 
+            "\"Id\", \"PlotName_DB\", \"PlotKadastrNumber_DB\", \"PlotCode_DB\", \"InfectedArea_DB\", " +
+            "\"Radionuclids_DB\", \"SpecificActivityOfPlot_DB\", \"SpecificActivityOfLiquidPart_DB\", " +
+            "\"SpecificActivityOfDensePart_DB\", \"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", " +
+            "\"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_211\" ({allColumns211}) " +
+                             $"SELECT {allColumns211} " +
+                             $"FROM \"form_211_editableColumns\" " +
+                             $"INNER JOIN \"form_211_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_211_editableColumns");
+        migrationBuilder.DropTable(name: "form_211_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region form212
+
+        const string allColumns212 = 
+            "\"Id\", \"OperationCode_DB\", \"ObjectTypeCode_DB\", \"Radionuclids_DB\", \"Activity_DB\", " +
+            "\"ProviderOrRecieverOKPO_DB\", \"ReportId\", \"FormNum_DB\", \"NumberInOrder_DB\", " +
+            "\"NumberOfFields_DB\", \"CorrectionNumber_DB\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"form_212\" ({allColumns212}) " +
+                             $"SELECT {allColumns212} " +
+                             $"FROM \"form_212_editableColumns\" " +
+                             $"INNER JOIN \"form_212_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "form_212_editableColumns");
+        migrationBuilder.DropTable(name: "form_212_withoutEditableColumns"); 
+        
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
