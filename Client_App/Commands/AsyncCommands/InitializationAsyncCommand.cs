@@ -217,7 +217,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                              .Where(x => x.Name.ToLower().EndsWith(".raodb")))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
-                    File.Copy(fileInfo.FullName, Path.Combine(reservePath, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $@"{DateTime.Now.Ticks}.RAODB");
+                    File.Copy(fileInfo.FullName, Path.Combine(reservePath, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
                     File.Delete(fileInfo.FullName);
                 }
                 
