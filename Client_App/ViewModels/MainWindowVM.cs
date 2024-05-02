@@ -126,7 +126,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
         ExcelExportAll = new ExcelExportAllAsyncCommandAsyncCommand();
         ExportAllReports = new ExportAllReportsAsyncCommand();
-        ExportAllReportsOneFile = new ExportAllReportsOneFileAsyncCommand();
+        //ExportAllReportsOneFile = new ExportAllReportsOneFileAsyncCommand();
         ExportForm = new ExportFormAsyncCommand();
         ExportReports = new ExportReportsAsyncCommand();
         ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand(this);
