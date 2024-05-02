@@ -13,7 +13,7 @@ using Models.Collections;
 namespace Client_App.Commands.AsyncCommands.Delete;
 
 //  Удалить выбранные строчки из формы
-internal class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
 
