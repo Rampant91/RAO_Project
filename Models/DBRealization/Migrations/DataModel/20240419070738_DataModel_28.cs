@@ -1036,6 +1036,31 @@ public partial class DataModel_28 : Migration
             });
 
         #endregion
+
+        #region notes
+        
+        migrationBuilder.CreateTable(
+            name: "notes_editableColumns",
+            columns: table => new
+            {
+                IdNew = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                RowNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                GraphNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Comment_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+            });
+
+        migrationBuilder.CreateTable(
+            name: "notes_withoutEditableColumns",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                Order = table.Column<int>(type: "INTEGER", nullable: false)
+            });
+
+        #endregion
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

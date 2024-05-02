@@ -1,4 +1,5 @@
-﻿using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
+﻿using System.Reflection.Metadata;
+using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Models.Forms.Form2;
 using VSLangProj;
@@ -1554,6 +1555,54 @@ public partial class DataModel_29 : Migration
             }); 
         
         #endregion
+
+        #region notes
+        
+        const string columnsWithEditableTypesNotes = "\"RowNumber_DB\", \"GraphNumber_DB\", \"Comment_DB\"";
+
+        const string columnsWithoutEditableTypesNotes = "\"ReportId\", \"Order\"";
+        
+        migrationBuilder.Sql($"INSERT INTO \"notes_editableColumns\" (\"IdNew\", {columnsWithEditableTypesNotes}) " +
+                             $"SELECT \"Id\", {columnsWithEditableTypesNotes} " +
+                             "FROM \"notes\"");
+
+        migrationBuilder.Sql($"INSERT INTO \"notes_withoutEditableColumns\" (\"Id\", {columnsWithoutEditableTypesNotes}) " +
+                             $"SELECT \"Id\", {columnsWithoutEditableTypesNotes}" +
+                             "FROM \"notes\"");
+
+        migrationBuilder.DropTable(name: "notes");
+
+        migrationBuilder.CreateTable(
+            name: "notes",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                RowNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                GraphNumber_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                Comment_DB = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                ReportId = table.Column<int>(type: "INTEGER", nullable: true),
+                Order = table.Column<int>(type: "INTEGER", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey(name: "PK_notes", columns: x => x.Id);
+                table.ForeignKey(
+                    name: "FK_notes_ReportCollection_Db~",
+                    column: x => x.ReportId,
+                    principalTable: "ReportCollection_DbSet",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
+        #endregion
+
+        //migrationBuilder.DropForeignKey(table: "form_10", name: "FK_form_10_ReportCollection_Db~");
+
+        //migrationBuilder.Sql("ALTER TABLE [dbo].[ReportCollection_DbSet] " +
+        //                     "DROP CONSTRAINT [FK_ReportCollection_DbSet_Repo~]");
+
+        //migrationBuilder.DropTable("ReportCollection_DbSet");
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

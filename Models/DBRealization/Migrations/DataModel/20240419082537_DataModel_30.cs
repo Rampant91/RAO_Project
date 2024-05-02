@@ -468,8 +468,24 @@ public partial class DataModel_30 : Migration
                              $"FROM \"form_212_editableColumns\" " +
                              $"INNER JOIN \"form_212_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
 
+        //migrationBuilder.Sql("DROP TABLE ")
         migrationBuilder.DropTable(name: "form_212_editableColumns");
         migrationBuilder.DropTable(name: "form_212_withoutEditableColumns"); 
+        
+        #endregion
+
+        #region notes
+
+        const string allColumnsNotes = 
+            "\"Id\", \"RowNumber_DB\", \"GraphNumber_DB\", \"Comment_DB\", \"ReportId\", \"Order\"";
+
+        migrationBuilder.Sql($"INSERT INTO \"notes\" ({allColumnsNotes}) " +
+                             $"SELECT {allColumnsNotes} " +
+                             $"FROM \"notes_editableColumns\" " +
+                             $"INNER JOIN \"notes_withoutEditableColumns\" ON \"Id\"=\"IdNew\"");
+
+        migrationBuilder.DropTable(name: "notes_editableColumns");
+        migrationBuilder.DropTable(name: "notes_withoutEditableColumns"); 
         
         #endregion
     }
