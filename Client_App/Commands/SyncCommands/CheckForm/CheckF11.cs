@@ -14,17 +14,22 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 public abstract class CheckF11 : CheckBase
 {
     #region Properties
-    
+
     private static readonly string[] OperationCode_DB_Valids =
     {
-        "1","10","11","12","15","17","18","21",
+        "10","11","12","15","17","18","21",
         "22","25","27","28","29","31","32","35",
-        "37","38","39","41","42","43","48","53",
+        "37","38","39","41","42","43","46","47","53",
         "54","58","61","62","63","64","65","66",
         "67","68","71","72","73","74","75","81",
         "82","83","84","85","86","87","88","97",
         "98","99"
     };
+
+    private static readonly string[] OperationCode_DB_Check018 =
+    {
+        "11", "12", "15", "28", "38", "41", "63", "64", "65", "73", "81", "85", "88"
+    };  //заслужили собственную константу т.к. используется в нескольких проверках (18, 41, 42 и 43).
 
     private static readonly string[] Radionuclids_DB_Valids =
     {
@@ -62,8 +67,8 @@ public abstract class CheckF11 : CheckBase
 
     private static bool ZRI_Ignore = true;
 
-    private static bool MZA_Ignore = true; 
-    
+    private static bool MZA_Ignore = true;
+
     #endregion
 
     #region CheckTotal
@@ -86,6 +91,14 @@ public abstract class CheckF11 : CheckBase
             D_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "D.xlsx"));
 #else
             D_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"D.xlsx"));
+#endif
+        }
+        if (holidays_specific.Count == 0)
+        {
+#if DEBUG
+            Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "Holidays.xlsx"));
+#else
+            Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
 #endif
         }
         foreach (var key in rep.Rows11)
@@ -177,7 +190,7 @@ public abstract class CheckF11 : CheckBase
     #region Checks
 
     #region Check001
-    
+
     private static List<CheckError> Check_001(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -187,11 +200,11 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check002
-    
+
     private static List<CheckError> Check_002(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        if (forms[line].Id < 1)
+        if (forms[line].NumberInOrder_DB != line + 1)
         {
             result.Add(new CheckError
             {
@@ -208,7 +221,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check003
-    
+
     private static List<CheckError> Check_003(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -231,7 +244,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check004
-    
+
     private static List<CheckError> Check_004(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -255,7 +268,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check005
-    
+
     //Для кодов операции 12, 42, в радионуклидах должен быть указан хоть один из списка (колонка 6)
     private static List<CheckError> Check_005(List<Form11> forms, int line)
     {
@@ -263,7 +276,7 @@ public abstract class CheckF11 : CheckBase
         string[] applicableOperationCodes = { "12", "42" };
         var radionuclids = forms[line].Radionuclids_DB;
         if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var valid = Radionuclids_DB_Valids.Any(nuclid => 
+        var valid = Radionuclids_DB_Valids.Any(nuclid =>
             radionuclids?.Contains(nuclid, StringComparison.CurrentCultureIgnoreCase) == true);
         if (!valid)
         {
@@ -282,7 +295,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check006
-    
+
     private static List<CheckError> Check_006(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -310,14 +323,14 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check007
-    
+
     //Наличие примечания для кодов операции 29, 29, 97-99
     private static List<CheckError> Check_007(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         const byte graphNumber = 2;
-        var operationCode = forms[line].OperationCode_DB;
-        if (operationCode is not("29" or "39" or "97" or "98" or "99")) return result;
+        string[] applicableOperationCodes = { "29", "39", "97", "98", "99" };
+        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
         var valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
         if (!valid)
         {
@@ -326,7 +339,7 @@ public abstract class CheckF11 : CheckBase
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
-                Value = Convert.ToString(operationCode),
+                Value = forms[line].OperationCode_DB,
                 Message = "Необходимо дать пояснение об осуществленной операции."
             });
         }
@@ -336,7 +349,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check008
-    
+
     private static List<CheckError> Check_008(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -364,7 +377,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check009
-    
+
     private static List<CheckError> Check_009(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -392,7 +405,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check010
-    
+
     private static List<CheckError> Check_010(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -506,7 +519,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check014
-    
+
     private static List<CheckError> Check_014(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -534,7 +547,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check015
-    
+
     private static List<CheckError> Check_015(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -562,12 +575,12 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check016
-    
+
     //Код ОКПО состоит из 8/14 чисел для определенных кодов операции (колонка 10)
     private static List<CheckError> Check_016(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "81", "88" };
+        string[] applicableOperationCodes = { "81", "82", "87", "88" };
         var operationCode = forms[line].OperationCode_DB;
         var сreatorOKPO = forms[line].CreatorOKPO_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
@@ -581,7 +594,7 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = forms[line].CreatorOKPO_DB,
-                Message = "Код используется для предоставления сведений о ЗРИ, произведенных в Российской Федерации."
+                Message = "Код используется для предоставления сведений о ЗРИ, произведенных в Российской Федерации. Необходимо ввести ОКПО организации."
             });
         }
         return result;
@@ -590,15 +603,15 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check017
-    
+
     //Коды операции 83-86 используются для зарубежных стран 
     private static List<CheckError> Check_017(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "83", "84", "85", "86" };
         if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var valid = OKSM.All(oksmEntry => oksmEntry["shortname"] != forms[line].CreatorOKPO_DB) 
-                    || forms[line].CreatorOKPO_DB.ToLower() is "россия";
+        var valid = !(OKSM.All(oksmEntry => oksmEntry["shortname"] != forms[line].CreatorOKPO_DB)
+                    || forms[line].CreatorOKPO_DB.ToLower() is "россия");
         if (!valid)
         {
             result.Add(new CheckError
@@ -620,16 +633,14 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_018(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "11","12","15","28","38","41","48","63","64","65","73","81","85","88"};
         var operationCode = forms[line].OperationCode_DB;
-        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        if (!OperationCode_DB_Check018.Contains(operationCode)) return result;
         var okpoRep = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
         var owner = forms[line].Owner_DB;
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var valid = !string.IsNullOrEmpty(owner)
-                    && okpoRegex.IsMatch(owner);
+        var valid = !string.IsNullOrWhiteSpace(owner)
+                    && owner == okpoRep;
         if (!valid)
         {
             result.Add(new CheckError
@@ -726,22 +737,20 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check020
-    
-    //Дата документа входит в отчетный период при коде операции 10 (колонка 3) + 10 дней
+
+    //При коде операции 10, дата документа должна попадать в отчетный период
     private static List<CheckError> Check_020(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "10" };
         var documentDate = forms[line].DocumentDate_DB;
-        var operationDate = forms[line].OperationDate_DB;
+        var operationCode = forms[line].OperationCode_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
 
-        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var pEnd = DateTime.MinValue;
-        var pMid = DateTime.MinValue;
-        var valid = DateTime.TryParse(rep.StartPeriod_DB, out var pStart)
-                    && DateTime.TryParse(rep.EndPeriod_DB, out pEnd)
-                    && DateTime.TryParse(documentDate, out pMid)
-                    && pMid >= pStart && pMid <= pEnd;
+        var valid = DateTime.TryParse(documentDate, out var documentDateReal)
+                    && DateTime.TryParse(rep.StartPeriod_DB, out var dateBeginReal)
+                    && DateTime.TryParse(rep.EndPeriod_DB, out var dateEndReal)
+                    && documentDateReal >= dateBeginReal && documentDateReal <= dateEndReal;
         if (!valid)
         {
             result.Add(new CheckError
@@ -750,18 +759,7 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата акта инвентаризации не входит в отчетный период."
-            });
-        }
-        else if ((pEnd - pMid).Days > 10)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "OperationDate_DB",
-                Value = operationDate,
-                Message = "Дата окончания отчетного периода превышает дату операции более чем на 10 дней."
+                Message = "Дата акта инвентаризации выходит за границы отчетного периода."
             });
         }
         return result;
@@ -770,7 +768,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check021
-    
+
     //Номер паспорта не пустая строка (колонка 4)
     private static List<CheckError> Check_021(List<Form11> forms, int line)
     {
@@ -793,7 +791,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check022
-    
+
     private static List<CheckError> Check_022(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -820,7 +818,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check023
-    
+
     private static List<CheckError> Check_023(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -860,13 +858,13 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check024
-    
+
     //Не пустое поле
     private static List<CheckError> Check_024(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
         var radionuclids = forms[line].Radionuclids_DB;
-        var valid = !string.IsNullOrEmpty(radionuclids);
+        var valid = !string.IsNullOrEmpty(radionuclids) || string.Equals(radionuclids, "-");
         if (!valid)
         {
             result.Add(new CheckError
@@ -884,7 +882,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check025
-    
+
     //Разделение через ";", если количество > 1.
     private static List<CheckError> Check_025(List<Form11> forms, int line)
     {
@@ -905,9 +903,9 @@ public abstract class CheckF11 : CheckBase
             {
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
-                Column = "FactoryNumber_DB",
-                Value = factoryNum,
-                Message = "Формат ввода данных не соответствует приказу. Радионуклиды должны быть разделены точкой с запятой"
+                Column = "Quantity_DB",
+                Value = quantity?.ToString(),
+                Message = "Формат ввода данных не соответствует приказу. Номера ЗРИ должны быть разделены точкой с запятой"
             });
         }
         return result;
@@ -916,7 +914,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check026
-    
+
     private static List<CheckError> Check_026(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -975,7 +973,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check028
-    
+
     private static List<CheckError> Check_028(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1023,7 +1021,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check029
-    
+
     private static List<CheckError> Check_029(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
@@ -1130,7 +1128,10 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         string[] creatorOkpoValid = { "прим.", "прим", "примечание", "примечания" };
-        if (!creatorOkpoValid.Contains(forms[line].CreatorOKPO_DB?.ToLower())) return result;
+        string[] applicableOperationCodes = { "81", "82", "87", "88" };
+        var operationCode = forms[line].OperationCode_DB;
+        if (applicableOperationCodes.Contains(operationCode)) return result;
+        if (!creatorOkpoValid.Contains(forms[line].CreatorOKPO_DB?.ToLower()) && OKSM.All(oksmEntry => oksmEntry["shortname"] != forms[line].CreatorOKPO_DB)) return result;
         const byte graphNumber = 10;
         var valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
         if (!valid)
@@ -1150,7 +1151,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check034
-    
+
     //Дата выпуска (колонка 11) <= Дате операции (колонка 3)
     private static List<CheckError> Check_034(List<Form11> forms, int line)
     {
@@ -1175,7 +1176,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check035
-    
+
     //Соответствие категории ЗРИ (колонка 12)
     private static List<CheckError> Check_035(List<Form11> forms, int line)
     {
@@ -1201,7 +1202,7 @@ public abstract class CheckF11 : CheckBase
                     && activity != null
                     && dbBounds.ContainsKey((short)category)
                     && nuclidsList.Length > 0;
-        
+
         if (valid)
         {
             foreach (var nuclid in nuclidsList)
@@ -1217,8 +1218,8 @@ public abstract class CheckF11 : CheckBase
                 {
                     foreach (var key in D.Keys.Where(key => key.Contains(nuclid)))
                     {
-                        dValueList.Add(D[key] / (quantity != null && quantity != 0 
-                            ? (double)quantity 
+                        dValueList.Add(D[key] / (quantity != null && quantity != 0
+                            ? (double)quantity
                             : 1.0));
                         break;
                     }
@@ -1238,17 +1239,17 @@ public abstract class CheckF11 : CheckBase
             }
             var dMinValue = dValueList.Min();
             var dMaxValue = dValueList.Max();
-            valid = double.TryParse(activity!.Replace(".", ","), 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands, 
+            valid = double.TryParse(activity!.Replace(".", ","),
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var aValue);
             if (valid)
             {
-                var adMinBound = dMaxValue == 0.0 
-                    ? double.MaxValue 
+                var adMinBound = dMaxValue == 0.0
+                    ? double.MaxValue
                     : aValue / dMaxValue;
-                var adMaxBound = dMinValue == 0.0 
-                    ? double.MaxValue 
+                var adMaxBound = dMinValue == 0.0
+                    ? double.MaxValue
                     : aValue / dMinValue;
                 valid = dbBounds[(short)category!].Item1 <= adMinBound
                         && dbBounds[(short)category].Item2 > adMaxBound;
@@ -1271,7 +1272,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check036
-    
+
     //Дата выпуска + НСС < дата операции
     private static List<CheckError> Check_036(List<Form11> forms, int line)
     {
@@ -1299,8 +1300,8 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "SignedServicePeriod_DB",
                 Value = signedServicePeriod.ToString(),
-                Message = "Для ЗРИ истек НСС, следует продлить НСС либо снять с учета с одновременной постановкой на учет как РАО (при выполнении критериев отнесения к РАО)." 
-                          + $"{Environment.NewLine}Проверьте, что НСС указан в месяцах." 
+                Message = "Для ЗРИ истек НСС, следует продлить НСС либо снять с учета с одновременной постановкой на учет как РАО (при выполнении критериев отнесения к РАО)."
+                          + $"{Environment.NewLine}Проверьте, что НСС указан в месяцах."
             });
         }
         return result;
@@ -1338,6 +1339,7 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var propertyCode = forms[line].PropertyCode_DB;
+        var owner = forms[line].Owner_DB;
         const byte graphNumber = 14;
         byte?[] propertyCodeDBValid = { 2 };
         if (!propertyCodeDBValid.Contains(propertyCode)) return result;
@@ -1364,6 +1366,7 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var propertyCode = forms[line].PropertyCode_DB;
+        var owner = forms[line].Owner_DB;
         const byte graphNumber = 14;
         byte?[] propertyCodeDBValid = { 3 };
         if (!propertyCodeDBValid.Contains(propertyCode)) return result;
@@ -1390,6 +1393,7 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var propertyCode = forms[line].PropertyCode_DB;
+        var owner = forms[line].Owner_DB;
         const byte graphNumber = 14;
         byte?[] propertyCodeDBValid = { 9 };
         if (!propertyCodeDBValid.Contains(propertyCode)) return result;
@@ -1418,12 +1422,13 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         byte?[] propertyCodeValid = { 1, 2, 3, 4 };
         string[] applicableOperationCodes = { "11", "12", "28", "38", "41", "63", "64" };
-        var okpoRep = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB) 
-            ? forms10[1].Okpo_DB 
+        var okpoRep = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
+            ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
         var operationCode = forms[line].OperationCode_DB;
         var owner = forms[line].Owner_DB;
         var propertyCode = forms[line].PropertyCode_DB;
+        if (OperationCode_DB_Check018.Contains(operationCode)) return result;
 
         if (applicableOperationCodes.Contains(operationCode) && okpoRep != owner)
         {
@@ -1436,7 +1441,7 @@ public abstract class CheckF11 : CheckBase
                 Message = $"Для кода операции {operationCode}, код ОКПО правообладателя должен совпадать с ОКПО отчитывающейся организации"
             });
         }
-        
+
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         if (!propertyCodeValid.Contains(propertyCode)) return result;
         var valid = !string.IsNullOrEmpty(owner)
@@ -1458,7 +1463,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check042
-    
+
     //Правообладатель (колонка 15) из справочника ОКСМ, если код формы собственности 5
     private static List<CheckError> Check_042(List<Form11> forms, int line)
     {
@@ -1466,8 +1471,10 @@ public abstract class CheckF11 : CheckBase
         byte?[] propertyCodeValid = { 5 };
         var propertyCode = forms[line].PropertyCode_DB;
         var owner = forms[line].Owner_DB;
+        var operationCode = forms[line].OperationCode_DB;
+        if (OperationCode_DB_Check018.Contains(operationCode)) return result;
         if (!propertyCodeValid.Contains(propertyCode)) return result;
-        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == owner) 
+        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == owner)
                     && !owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -1477,7 +1484,7 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Owner_DB",
                 Value = owner,
-                Message = "Формат ввода данных не соответствует приказу.  В случае, если правообладатель  иностранное государство необходимо указать его краткое наименование в соответствии с ОКСМ"
+                Message = "Формат ввода данных не соответствует приказу. В случае, если правообладатель  иностранное государство необходимо указать его краткое наименование в соответствии с ОКСМ"
             });
         }
         return result;
@@ -1486,7 +1493,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check043
-    
+
     //Правообладатель (колонка 15) из справочника ОКСМ и наличие примечания, если код формы собственности 6
     private static List<CheckError> Check_043(List<Form11> forms, List<Note> notes, int line)
     {
@@ -1495,8 +1502,10 @@ public abstract class CheckF11 : CheckBase
         const byte graphNumber = 15;
         var propertyCode = forms[line].PropertyCode_DB;
         var owner = forms[line].Owner_DB;
+        var operationCode = forms[line].OperationCode_DB;
+        if (OperationCode_DB_Check018.Contains(operationCode)) return result;
         if (!propertyCodeValid.Contains(propertyCode)) return result;
-        if (OKSM.All(oksmEntry => oksmEntry["shortname"] != owner) 
+        if (OKSM.All(oksmEntry => oksmEntry["shortname"] != owner)
             || owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase))
         {
             result.Add(new CheckError
@@ -1527,20 +1536,22 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check044
-    
-    //Если код формы собственности 9, то должно быть примечание, а правообладатель (колонка 15) из ОКСМ или 8/14 цифр
+
+    //Если код формы собственности 9, то должно быть примечание и значение "прим."
     private static List<CheckError> Check_044(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
+        string[] creatorOkpoValid = { "прим.", "прим", "примечание", "примечания" };
         const byte graphNumber = 15;
         short?[] propertyCodeValid = { 9 };
+        string[] nonapplicableOperationCodes = { "11", "12", "15", "28", "38", "41", "63", "64", "65", "73", "81", "85", "88" }; //взяты из Check_018
         var propertyCode = forms[line].PropertyCode_DB;
         var owner = forms[line].Owner_DB;
+        var operationCode = forms[line].OperationCode_DB;
+        if (nonapplicableOperationCodes.Contains(operationCode)) return result;
         if (!propertyCodeValid.Contains(propertyCode)) return result;
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        if ((OKSM.All(oksmEntry => oksmEntry["shortname"] != owner) 
-            || owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase)) 
-            && !okpoRegex.IsMatch(owner))
+        var valid = creatorOkpoValid.Contains(owner?.ToLower());
+        if (!valid)
         {
             result.Add(new CheckError
             {
@@ -1548,11 +1559,10 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Owner_DB",
                 Value = owner,
-                Message = "Необходимо указать в примечании наименование и адрес правообладателя (собственника или обладателя иного вещного права) на ЗРИ."
+                Message = "Необходимо указать \"прим.\" и добавить соответствующее примечание с наименованием и адресом правообладателя (собственника или обладателя иного вещного права) на ЗРИ."
             });
-            return result;
         }
-        var valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
+        valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1570,7 +1580,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check045
-    
+
     //Вид документа от 1 до 15, 19. При виде документа равном 19, должно быть примечание (колонка 16)
     private static List<CheckError> Check_045(List<Form11> forms, List<Note> notes, int line)
     {
@@ -1591,19 +1601,40 @@ public abstract class CheckF11 : CheckBase
             });
             return result;
         }
-        if (documentVid is 19)
-        {
-            valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
-        }
+        valid = forms[line].OperationCode_DB == "10" ? documentVid == 1 : true;
         if (!valid)
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_12",
                 Row = (line + 1).ToString(),
                 Column = "DocumentVid_DB",
-                Value = forms[line].DocumentVid_DB.ToString(),
-                Message = "При коде вида документа равном 19, в примечании к ячейке формы должно быть приведено наименование документа."
+                Value = Convert.ToString(documentVid),
+                Message = "При коде операции инвентаризации вид документа должен быть равен 1."
+            });
+        }
+        valid = forms[line].OperationCode_DB == "41" ? documentVid == 1 : true;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_12",
+                Row = (line + 1).ToString(),
+                Column = "DocumentVid_DB",
+                Value = Convert.ToString(documentVid),
+                Message = "При коде операции 41 вид документа должен быть равен 1."
+            });
+        }
+        valid = forms[line].OperationCode_DB == "66" ? documentVid == 13 : true;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_12",
+                Row = (line + 1).ToString(),
+                Column = "DocumentVid_DB",
+                Value = Convert.ToString(documentVid),
+                Message = "При коде операции 66 вид документа должен быть равен 13."
             });
         }
         return result;
@@ -1612,7 +1643,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check046
-    
+
     //Номер документа не пустой (колонка 17)
     private static List<CheckError> Check_046(List<Form11> forms, int line)
     {
@@ -1636,7 +1667,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check047
-    
+
     //Дата документа <= дате операции для всех кодов операции, кроме 10 и 41
     private static List<CheckError> Check_047(List<Form11> forms, int line)
     {
@@ -1666,7 +1697,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check048
-    
+
     //Дата документа = дате операции, если код операции 41
     private static List<CheckError> Check_048(List<Form11> forms, int line)
     {
@@ -1696,21 +1727,20 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check049
-    
-    //При коде операции 10, отчетный период должен оканчиваться не позднее 10 дней от дата документа (колонка 18)
+
+    //При коде операции 10, дата окончания ОП не позднее даты документа + 10 дней
     private static List<CheckError> Check_049(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "10" };
         var documentDate = forms[line].DocumentDate_DB;
-        var operationCode = forms[line].OperationCode_DB;
-        if (!applicableOperationCodes.Contains(operationCode)) return result;
 
-        var valid = DateTime.TryParse(documentDate, out var documentDateReal)
-                    && DateTime.TryParse(rep.StartPeriod_DB, out var dateBeginReal)
-                    && DateTime.TryParse(rep.EndPeriod_DB, out var dateEndReal)
-                    && documentDateReal >= dateBeginReal
-                    && (dateEndReal - documentDateReal).Days is >= 0 and <= 10;
+        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
+        var pEnd = DateTime.MinValue;
+        var pMid = DateTime.MinValue;
+        if (!(DateTime.TryParse(rep.EndPeriod_DB, out pEnd)
+                && DateTime.TryParse(documentDate, out pMid))) return result;
+        var valid = Workdays_Between_Dates(pMid, pEnd) <= 10;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1719,11 +1749,12 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа выходит за границы периода."
+                Message = "Дата окончания отчетного периода превышает дату акта инвентаризации более, чем на 10 рабочих дней."
             });
         }
         return result;
     }
+
 
     #endregion
 
@@ -1733,7 +1764,7 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_050(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "10", "11", "12", "15", "17", "18", "41", "42", "43", "46", "47", "53", "58", "61", "62", "65", "67", "68", "71", "72", "73", "74", "75", "76", "97", "98", "99" };
+        string[] applicableOperationCodes = { "10", "11", "12", "15", "17", "18", "41", "42", "43", "46", "47", "58", "61", "62", "65", "67", "68", "71", "72", "73", "74", "75", "76", "97", "98", "99" };
         var operationCode = forms[line].OperationCode_DB;
         var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
@@ -1766,7 +1797,7 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_051(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "25","27","28","29","35","37","38","39"};
+        string[] applicableOperationCodes = { "25", "27", "28", "29", "35", "37", "38", "39", "63", "64" };
         var operationCode = forms[line].OperationCode_DB;
         var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
@@ -1799,24 +1830,10 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_052(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "21", "25", "27", "28", "29", "31", "35", "37", "38", "39", "54", "63", "64", "66" };
+        string[] applicableOperationCodes = { "21", "25", "27", "28", "29", "31", "35", "37", "38", "39", "63", "64" };
         var operationCode = forms[line].OperationCode_DB;
         var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
-        var okpoRep = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB) 
-            ? forms10[1].Okpo_DB 
-            : forms10[0].Okpo_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        if (okpoRep == providerOrRecieverOKPO)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "ProviderOrRecieverOKPO_DB",
-                Value = providerOrRecieverOKPO,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО контрагента"
-            });
-        }
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         var valid = okpoRegex.IsMatch(providerOrRecieverOKPO);
         if (!valid)
@@ -1827,7 +1844,7 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOKPO,
-                Message = "Формат ввода данных не соответствует приказу."
+                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО контрагента"
             });
         }
         return result;
@@ -1879,7 +1896,7 @@ public abstract class CheckF11 : CheckBase
         var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = okpoRegex.IsMatch(providerOrRecieverOKPO) 
+        var valid = okpoRegex.IsMatch(providerOrRecieverOKPO)
                     || providerOrRecieverOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -1939,12 +1956,12 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check058
-    
+
     //При определенных кодах операции, код ОКПО перевозчика равен "-" (колонка 20)
     private static List<CheckError> Check_058(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "10", "11", "12", "15", "17", "18", "41", "42", "43", "46", "47","53", "54", "58", "65", "66", "67", "68", "71", "72", "73", "74", "75", "97", "98" };
+        string[] applicableOperationCodes = { "10", "11", "12", "15", "17", "18", "41", "42", "43", "46", "47", "53", "54", "58", "65", "66", "67", "68", "71", "72", "73", "74", "75", "97", "98" };
         if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
         var transporterOKPO = forms[line].TransporterOKPO_DB;
         var valid = transporterOKPO is "-";
@@ -1993,7 +2010,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check060
-    
+
     //Код ОКПО перевозчика состоит из 8/14 чисел или "минобороны" для определенных кодов операции (колонка 20)
     private static List<CheckError> Check_060(List<Form11> forms, int line)
     {
@@ -2003,7 +2020,7 @@ public abstract class CheckF11 : CheckBase
         var transporterOKPO = forms[line].TransporterOKPO_DB;
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = okpoRegex.IsMatch(transporterOKPO) 
+        var valid = okpoRegex.IsMatch(transporterOKPO)
                     || transporterOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -2022,7 +2039,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check061
-    
+
     //Не пустое поле (колонка 21)
     private static List<CheckError> Check_061(List<Form11> forms, int line)
     {
@@ -2046,7 +2063,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check062
-    
+
     //Не пустое поле (колонка 22)
     private static List<CheckError> Check_062(List<Form11> forms, int line)
     {
@@ -2070,7 +2087,7 @@ public abstract class CheckF11 : CheckBase
     #endregion
 
     #region Check063
-    
+
     //Не пустое поле (колонка 23)
     private static List<CheckError> Check_063(List<Form11> forms, int line)
     {
