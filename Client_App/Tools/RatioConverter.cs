@@ -32,7 +32,7 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
         {
             return isHeight
                 ? System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnLinux().Height * par)
-                : System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par);
+                : System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnLinux().Width * par);
         }
         return isHeight ? 600 : 800;
 
