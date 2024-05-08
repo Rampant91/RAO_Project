@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Models.Collections;
+using Models.DBRealization.EntityConfiguration;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
@@ -181,176 +183,7 @@ public class DataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        #region DBObservable
-        
-        modelBuilder.Entity<DBObservable>()
-            .ToTable("DBObservable_DbSet")
-            .HasMany(x => x.Reports_Collection)
-            .WithOne(x => x.DBObservable)
-            .HasForeignKey(x => x.DBObservableId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        #endregion
-
-        #region Reports
-
-        modelBuilder.Entity<Reports>()
-            .ToTable("ReportsCollection_DbSet")
-            .HasOne(x => x.DBObservable)
-            .WithMany(x => x.Reports_Collection)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Reports>()
-            .HasKey(x => x.Id)
-            .HasName("PK_ReportsCollection_DbSet");
-
-        modelBuilder.Entity<Reports>()
-            .HasMany(x => x.Report_Collection)
-            .WithOne(x => x.Reports)
-            .OnDelete(DeleteBehavior.Cascade); 
-        
-        #endregion
-
-        #region Report
-
-        modelBuilder.Entity<Report>()
-            .ToTable("ReportCollection_DbSet")
-            .HasOne(x => x.Reports)
-            .WithMany(x => x.Report_Collection)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows10)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows11)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows12)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows13)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows14)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows15)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows16)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows17)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows18)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows19)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows20)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows21)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows22)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows23)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows24)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows25)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows26)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows27)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows28)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows29)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows210)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows211)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Rows212)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Report>()
-            .HasMany(x => x.Notes)
-            .WithOne(x => x.Report)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        #endregion
-
-        #region Note
-        
-        modelBuilder.Entity<Note>()
-            .ToTable("notes")
-            .HasOne(x => x.Report)
-            .WithMany(x => x.Notes)
-            .HasForeignKey(x => x.ReportId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        #endregion
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         #region Forms
         
@@ -417,6 +250,10 @@ public class DataContext : DbContext
             .WithMany(x => x.Rows15)
             .HasForeignKey(x => x.ReportId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Form15>()
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
 
         #endregion
 

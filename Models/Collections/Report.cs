@@ -20,7 +20,7 @@ using Models.Interfaces;
 namespace Models.Collections;
 
 [Table("ReportCollection_DbSet")]
-[Index(nameof(Reports), IsUnique = true)]
+[Index(nameof(Reports), IsUnique = true, Name = "IX_ReportCollection_DbSet_Repo~")]
 public class Report : IKey, IDataGridColumn
 {
     #region Constructor
@@ -182,7 +182,6 @@ public class Report : IKey, IDataGridColumn
 
     //[ForeignKey(nameof(Reports))]
     //public int? ReportsId { get; set; }
-
 
     #endregion
 

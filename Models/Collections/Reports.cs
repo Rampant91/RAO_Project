@@ -14,8 +14,9 @@ using Models.Interfaces;
 
 namespace Models.Collections;
 
-[Table("ReportsCollection_DbSet")]
-[Index(nameof(DBObservable), IsUnique = true)]
+[Table(name: "ReportsCollection_DbSet")]
+[Index(nameof(DBObservable), IsUnique = false, Name = "IX_ReportsCollection_DbSet_DBO~")]
+[Index(nameof(Master_DB), IsUnique = false, Name = "IX_ReportsCollection_DbSet_Mas~")]
 public class Reports : IKey, IDataGridColumn
 {
     #region Constructor
@@ -53,7 +54,7 @@ public class Reports : IKey, IDataGridColumn
     [ForeignKey(nameof(Report))]
     public int? Master_DBId { get; set; }
 
-    public Report Master_DB { get; set; } 
+    public virtual Report Master_DB { get; set; } 
 
     [NotMapped]
     public Report Master

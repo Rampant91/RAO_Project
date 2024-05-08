@@ -114,7 +114,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (_Storages != value)
             {
                 _Storages = value;
-                NotifyPropertyChanged("Storages");
+                NotifyPropertyChanged();
             }
         }
     }
@@ -173,6 +173,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
     public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
+    public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО (из формы 1.1 в 1.5)
 
     #endregion
 
@@ -343,6 +344,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();
+        SourceTransmission = new SourceTransmissionAsyncCommand(this);
         if (!isSum)
         {
             //Storage.Sort();

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Models.Collections;
 
-[Table("DBObservable_DbSet")]
+[Table(name: "DBObservable_DbSet")]
 public class DBObservable : INotifyPropertyChanged
 {
     #region Id
