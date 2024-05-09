@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using DynamicData;
 using MessageBox.Avalonia.DTO;
 using Models.Classes;
 using Models.DBRealization;
