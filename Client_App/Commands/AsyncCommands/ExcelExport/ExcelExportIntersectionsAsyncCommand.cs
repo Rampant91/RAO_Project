@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -9,6 +10,7 @@ using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -61,7 +63,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
         
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -76,6 +78,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
@@ -130,8 +133,15 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         for (var i = 0; i < listSortRep.Count; i++)
         {
             var rep = listSortRep[i];
+            var order13Date = new DateTime(2022, 1, 1);
             var repStart = rep.StartPeriod;
             var repEnd = rep.EndPeriod;
+            var repStartOriginal = new DateTime();
+            if (repStart < order13Date && repEnd < order13Date)
+            {
+                repStartOriginal = repStart;
+                repStart = repStart.AddDays(-1);
+            }
             var listToCompare = listSortRep
                 .Skip(i + 1)
                 .Where(x => x.RegNoRep == rep.RegNoRep && x.OkpoRep == rep.OkpoRep && x.FormNum == rep.FormNum)
@@ -141,50 +151,49 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             {
                 var repToCompareStart = repToCompare.StartPeriod;
                 var repToCompareEnd = repToCompare.EndPeriod;
+                var repToCompareStartOriginal = new DateTime();
+                if (repToCompareStart < order13Date && repToCompareEnd < order13Date)
+                {
+                    repToCompareStartOriginal = repToCompareStart;
+                    repToCompareStart = repToCompareStart.AddDays(-1);
+                }
                 var minEndDate = repEnd < repToCompareEnd
                     ? repEnd
                     : repToCompareEnd;
-
-                if (repStart == repToCompareStart && repEnd == repToCompareEnd)
+                if ((repStart == repToCompareStart && repEnd == repToCompareEnd
+                     || repStart < repToCompareEnd && repEnd > repToCompareStart
+                     || isNext && repEnd < repToCompareStart)
+                    && !(repToCompareStart == order13Date && repEnd.AddDays(1) == repToCompareStart))
                 {
+                    var repStartToExcel = repStartOriginal == new DateTime() || repStartOriginal == repStart
+                        ? repStart
+                        : repStartOriginal;
+                    var repToCompareStartToExcel = repToCompareStartOriginal == new DateTime() || repToCompareStartOriginal == repToCompareStart
+                        ? repToCompareStart
+                        : repToCompareStartOriginal;
                     Worksheet.Cells[row, 1].Value = rep.RegNoRep;
                     Worksheet.Cells[row, 2].Value = rep.OkpoRep;
                     Worksheet.Cells[row, 3].Value = rep.ShortYr;
                     Worksheet.Cells[row, 4].Value = rep.FormNum;
-                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
-                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
-                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
-                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
-                    Worksheet.Cells[row, 9].Value = $"{repStart.ToShortDateString()}-{repEnd.ToShortDateString()}";
-                    Worksheet.Cells[row, 10].Value = "совпадение";
-                    row++;
-                }
-                else if (repStart < repToCompareEnd && repEnd > repToCompareStart)
-                {
-                    Worksheet.Cells[row, 1].Value = rep.RegNoRep;
-                    Worksheet.Cells[row, 2].Value = rep.OkpoRep;
-                    Worksheet.Cells[row, 3].Value = rep.ShortYr;
-                    Worksheet.Cells[row, 4].Value = rep.FormNum;
-                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
-                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
-                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
-                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
-                    Worksheet.Cells[row, 9].Value = $"{repToCompareStart.ToShortDateString()}-{minEndDate.ToShortDateString()}";
-                    Worksheet.Cells[row, 10].Value = "пересечение";
-                    row++;
-                }
-                else if (isNext && repEnd < repToCompareStart)
-                {
-                    Worksheet.Cells[row, 1].Value = rep.RegNoRep;
-                    Worksheet.Cells[row, 2].Value = rep.OkpoRep;
-                    Worksheet.Cells[row, 3].Value = rep.ShortYr;
-                    Worksheet.Cells[row, 4].Value = rep.FormNum;
-                    Worksheet.Cells[row, 5].Value = repStart.ToShortDateString();
-                    Worksheet.Cells[row, 6].Value = repEnd.ToShortDateString();
-                    Worksheet.Cells[row, 7].Value = repToCompareStart.ToShortDateString();
-                    Worksheet.Cells[row, 8].Value = repToCompareEnd.ToShortDateString();
-                    Worksheet.Cells[row, 9].Value = $"{repEnd.ToShortDateString()}-{repToCompareStart.ToShortDateString()}";
-                    Worksheet.Cells[row, 10].Value = "разрыв";
+                    Worksheet.Cells[row, 5].Value = ConvertToExcelDate(repStartToExcel.ToShortDateString(), Worksheet, row, 5);
+                    Worksheet.Cells[row, 6].Value = ConvertToExcelDate(repEnd.ToShortDateString(), Worksheet, row, 6);
+                    Worksheet.Cells[row, 7].Value = ConvertToExcelDate(repToCompareStartToExcel.ToShortDateString(), Worksheet, row, 7);
+                    Worksheet.Cells[row, 8].Value = ConvertToExcelDate(repToCompareEnd.ToShortDateString(), Worksheet, row, 8);
+                    if (repStart == repToCompareStart && repEnd == repToCompareEnd)
+                    {
+                        Worksheet.Cells[row, 9].Value = $"{repStartToExcel.ToShortDateString()}-{repEnd.ToShortDateString()}";
+                        Worksheet.Cells[row, 10].Value = "совпадение";
+                    }
+                    else if (repStart < repToCompareEnd && repEnd > repToCompareStart)
+                    {
+                        Worksheet.Cells[row, 9].Value = $"{repToCompareStartToExcel.ToShortDateString()}-{minEndDate.ToShortDateString()}";
+                        Worksheet.Cells[row, 10].Value = "пересечение";
+                    }
+                    else if (isNext && repEnd < repToCompareStart)
+                    {
+                        Worksheet.Cells[row, 9].Value = $"{repEnd.ToShortDateString()}-{repToCompareStartToExcel.ToShortDateString()}";
+                        Worksheet.Cells[row, 10].Value = "разрыв";
+                    }
                     row++;
                 }
                 isNext = false;

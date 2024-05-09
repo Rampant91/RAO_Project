@@ -18,11 +18,9 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
-using DynamicData;
-using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System.Threading;
+using Client_App.Commands.SyncCommands.CheckForm;
 
 namespace Client_App.ViewModels;
 
@@ -163,7 +161,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRows { get; set; }                           //  Добавить N строк в форму
     public ICommand AddRowsIn { get; set; }                         //  Добавить N строк в форму перед выбранной строкой
     public ICommand ChangeReportOrder { get; set; }                 //  Поменять местами юр. лицо и обособленное подразделение
-    public ICommand CheckReport { get; set; }                       //  Бесполезная команда, ничего не делает, активируется при нажатии кнопки "Проверить"
+    public ICommand CheckReport { get; set; }                       //  Открывает окно проверки текущей формы при нажатии кнопки "Проверить"
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
     public ICommand CopyPasName { get; set; }                       //  Скопировать в буфер обмена уникальное имя паспорта
     public ICommand CopyRows { get; set; }                          //  Скопировать в буфер обмена уникальное имя паспорта
@@ -302,9 +300,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region Interaction
+
     public Interaction<int, int> ShowDialogIn { get; protected set; }
     public Interaction<object, int> ShowDialog { get; protected set; }
     public Interaction<List<string>, string> ShowMessageT { get; protected set; }
+
     #endregion
 
     private void Init()
@@ -328,7 +328,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
         ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
-        CheckReport = new CheckReportSyncCommand(this);
+        CheckReport = new CheckFormSyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
@@ -340,7 +340,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
         SetNumberOrder = new SetNumberOrderSyncCommand(this);
-
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();

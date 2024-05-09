@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq;
 using Models.Collections;
 using Models.DBRealization;
 using System.Threading.Tasks;
@@ -43,7 +45,15 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
                 ReportsStorage.LocalReports.Reports_Collection.Remove((Reports)item);
             }
         }
-        await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
+
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+
+        }
         //await Local_Reports.Reports_Collection.QuickSortAsync();
     }
 }

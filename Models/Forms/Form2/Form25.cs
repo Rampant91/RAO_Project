@@ -13,7 +13,8 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
-public class Form25 : Form2
+[Table (name: "form_25")]
+public partial class Form25 : Form2
 {
     #region Constructor
     
@@ -69,10 +70,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
+                ((RamAccess<string>)value).Value = StoragePlaceName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
             rm.PropertyChanged += StoragePlaceNameValueChanged;
@@ -118,10 +119,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
+            if (Dictionary.TryGetValue(nameof(StoragePlaceCode), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
-                return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
+                ((RamAccess<string>)value).Value = StoragePlaceCode_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
             rm.PropertyChanged += StoragePlaceCodeValueChanged;
@@ -155,7 +156,7 @@ public class Form25 : Form2
         {
             return true;
         }
-        if (!new Regex("^[0-9]{8}$").IsMatch(value.Value))
+        if (!EightNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -175,10 +176,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CodeOYAT)))
+            if (Dictionary.TryGetValue(nameof(CodeOYAT), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(CodeOYAT)]).Value = CodeOYAT_DB;
-                return (RamAccess<string>)Dictionary[nameof(CodeOYAT)];
+                ((RamAccess<string>)value).Value = CodeOYAT_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CodeOYAT_Validation, CodeOYAT_DB);
             rm.PropertyChanged += CodeOYATValueChanged;
@@ -207,7 +208,7 @@ public class Form25 : Form2
         {
             value.AddError("Поле не заполнено"); return false;
         }
-        if (!new Regex("^[0-9]{5}$").IsMatch(value.Value))
+        if (!FiveNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
@@ -225,10 +226,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FcpNumber)))
+            if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+                ((RamAccess<string>)value).Value = FcpNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
             rm.PropertyChanged += FcpNumberValueChanged;
@@ -268,10 +269,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FuelMass)))
+            if (Dictionary.TryGetValue(nameof(FuelMass), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FuelMass)]).Value = FuelMass_DB;
-                return (RamAccess<string>)Dictionary[nameof(FuelMass)];
+                ((RamAccess<string>)value).Value = FuelMass_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FuelMass_Validation, FuelMass_DB);
             rm.PropertyChanged += FuelMassValueChanged;
@@ -326,7 +327,10 @@ public class Form25 : Form2
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -351,10 +355,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CellMass)))
+            if (Dictionary.TryGetValue(nameof(CellMass), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(CellMass)]).Value = CellMass_DB;
-                return (RamAccess<string>)Dictionary[nameof(CellMass)];
+                ((RamAccess<string>)value).Value = CellMass_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CellMass_Validation, CellMass_DB);
             rm.PropertyChanged += CellMassValueChanged;
@@ -408,8 +412,10 @@ public class Form25 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -434,10 +440,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Quantity)))
+            if (Dictionary.TryGetValue(nameof(Quantity), out var value))
             {
-                ((RamAccess<int?>)Dictionary[nameof(Quantity)]).Value = Quantity_DB;
-                return (RamAccess<int?>)Dictionary[nameof(Quantity)];
+                ((RamAccess<int?>)value).Value = Quantity_DB;
+                return (RamAccess<int?>)value;
             }
             var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
             rm.PropertyChanged += QuantityValueChanged;
@@ -487,10 +493,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(AlphaActivity)))
+            if (Dictionary.TryGetValue(nameof(AlphaActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(AlphaActivity)]).Value = AlphaActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(AlphaActivity)];
+                ((RamAccess<string>)value).Value = AlphaActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
             rm.PropertyChanged += AlphaActivityValueChanged;
@@ -549,8 +555,10 @@ public class Form25 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -575,10 +583,10 @@ public class Form25 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(BetaGammaActivity)))
+            if (Dictionary.TryGetValue(nameof(BetaGammaActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(BetaGammaActivity)]).Value = BetaGammaActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(BetaGammaActivity)];
+                ((RamAccess<string>)value).Value = BetaGammaActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
             rm.PropertyChanged += BetaGammaActivityValueChanged;
@@ -637,8 +645,10 @@ public class Form25 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -875,6 +885,16 @@ public class Form25 : Form2
 
         return _DataGridColumns;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+    
+    [GeneratedRegex("^[0-9]{8}$")]
+    private static partial Regex EightNumRegex();
+
+    [GeneratedRegex("^[0-9]{5}$")]
+    private static partial Regex FiveNumRegex();
 
     #endregion
 }

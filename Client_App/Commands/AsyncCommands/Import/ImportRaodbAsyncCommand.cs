@@ -5,7 +5,6 @@ using Models.DBRealization;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using System.Collections.Generic;
@@ -22,9 +21,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        RepsWhereTitleFormCheckIsCancel.Clear();
         IsFirstLogLine = true;
         CurrentLogLine = 1;
-        string[] extensions = { "raodb", "RAODB" };
+        string[] extensions = ["raodb", "RAODB"];
         var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
         if (answer is null) return;
         SkipNewOrg = false;
@@ -37,7 +37,6 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         var countReadFiles = answer.Length;
 
-        await using var db = new DBModel(StaticConfiguration.DBPath);
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
@@ -100,13 +99,14 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 BaseRepsRegNum = impReps.Master.RegNoRep.Value;
                 BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
+                var impRepsReportList = impReps.Report_Collection.ToList();
                 if (baseReps11 != null)
                 {
-                    await ProcessIfHasReports11(baseReps11, impReps);
+                    await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
                 }
                 else if (baseReps21 != null)
                 {
-                    await ProcessIfHasReports21(baseReps21, impReps);
+                    await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
                 }
                 else if (baseReps11 == null && baseReps21 == null)
                 {
@@ -122,12 +122,12 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             an = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                         new ButtonDefinition { Name = "Да для всех" },
                                         new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    },
+                                    ],
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
@@ -155,11 +155,11 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             an = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Добавить", IsDefault = true },
                                         new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    },
+                                    ],
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
@@ -227,7 +227,14 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         }
 
         await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+
+        }
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
@@ -288,7 +295,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         await db.Database.MigrateAsync();
         await db.LoadTablesAsync();
-        await MainWindowVM.ProcessDataBaseFillEmpty(db);
+        await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);
 
         return db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0
             ? db.DBObservableDbSet.Local.First().Reports_Collection.ToList()

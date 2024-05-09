@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -109,7 +110,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -140,6 +141,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             return;
         }
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
@@ -328,8 +330,8 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
                 Worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
                 Worksheet.Cells[row, 3].Value = rep.FormNum_DB;
-                Worksheet.Cells[row, 4].Value = rep.StartPeriod_DB;
-                Worksheet.Cells[row, 5].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[row, 4].Value = ConvertToExcelDate(rep.StartPeriod_DB, Worksheet, row, 4);
+                Worksheet.Cells[row, 5].Value = ConvertToExcelDate(rep.EndPeriod_DB, Worksheet, row, 5);
                 Worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[row, 7].Value = tuple.Item2; 
                 Worksheet.Cells[row, 8].Value = InventoryCheck(tuple.Item2, tuple.Item3).TrimStart();

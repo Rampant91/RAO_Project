@@ -12,6 +12,7 @@ using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
+using System.Reflection;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -49,7 +50,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         }
 
         ExportType = "Список исполнителей";
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
 
         (string fullPath, bool openTemp) result;
         try
@@ -65,6 +66,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
@@ -73,31 +75,35 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         var repsList = new List<Reports>();
         repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection
             .OrderBy(x => x.Master.RegNoRep.Value));
-
-        HashSet<string> formNums = new();
-        foreach (var rep in repsList
-                     .SelectMany(reps => reps.Report_Collection)
-                     .OrderBy(x => byte.Parse(x.FormNum_DB.Split('.')[0]))
-                     .ThenBy(x => byte.Parse(x.FormNum_DB.Split('.')[1]))
-                     .ToList())
+        
+        _currentRow = 2;
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 1");
+        FillExecutorsHeaders('1');
+        foreach (var reps in repsList)
         {
-            formNums.Add(rep.FormNum_DB);
-        }
-
-        foreach (var formNum in formNums)
-        {
-            _currentRow = 2;
-            Worksheet = excelPackage.Workbook.Worksheets.Add($"Форма {formNum}");
-            FillExecutorsHeaders(formNum[0]);
-            
-            foreach (var reps in repsList)
+            CurrentReports = reps;
+            foreach (var rep in CurrentReports.Report_Collection
+                         .Where(x => x.FormNum_DB.Split('.')[0] == "1")
+                         .OrderBy(x => x.FormNum_DB.Split('.')[1])
+                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
             {
-                CurrentReports = reps;
-                foreach (var rep in CurrentReports.Report_Collection.OrderBy(x => StringReverse(x.StartPeriod_DB)))
-                {
-                    FillExecutors(rep);
-                    _currentRow++;
-                }
+                FillExecutors(rep);
+                _currentRow++;
+            }
+        }
+        _currentRow = 2;
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 2");
+        FillExecutorsHeaders('2');
+        foreach (var reps in repsList)
+        {
+            CurrentReports = reps;
+            foreach (var rep in CurrentReports.Report_Collection
+                         .Where(x => x.FormNum_DB.Split('.')[0] == "2")
+                         .OrderBy(x => x.FormNum_DB.Split('.')[1])
+                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
+            {
+                FillExecutors(rep);
+                _currentRow++;
             }
         }
 
@@ -156,8 +162,8 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[_currentRow, 2].Value = CurrentReports.Master.ShortJurLicoRep.Value;
                 Worksheet.Cells[_currentRow, 3].Value = CurrentReports.Master.OkpoRep.Value;
                 Worksheet.Cells[_currentRow, 4].Value = rep.FormNum_DB;
-                Worksheet.Cells[_currentRow, 5].Value = rep.StartPeriod_DB;
-                Worksheet.Cells[_currentRow, 6].Value = rep.EndPeriod_DB;
+                Worksheet.Cells[_currentRow, 5].Value = ConvertToExcelDate(rep.StartPeriod_DB, Worksheet, _currentRow, 5);
+                Worksheet.Cells[_currentRow, 6].Value = ConvertToExcelDate(rep.EndPeriod_DB, Worksheet, _currentRow, 6);
                 Worksheet.Cells[_currentRow, 7].Value = rep.CorrectionNumber_DB;
                 Worksheet.Cells[_currentRow, 8].Value = rep.FIOexecutor_DB;
                 Worksheet.Cells[_currentRow, 9].Value = rep.GradeExecutor_DB;

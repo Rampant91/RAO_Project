@@ -767,8 +767,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
             case "Paste" or "Del":
                 {
+
                     var answ = new object[3];
                     answ[0] = SelectedItems;
+                    if (SelectedCells.Count is 1)
+                    {
+                        var cell = (Cell)SelectedCells[0];
+                        var textBox = (TextBox)cell.Control;
+                        if (textBox.SelectedText != textBox.Text)
+                        {
+                            answ[0] = null;
+                        }
+                    }
                     answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
                     answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
                     return answ;
@@ -1379,16 +1389,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (Search)
             {
                 var tmp2Coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                var searchText = ((TextBox)
-                    ((Panel)
+                var searchText = 
+                    ((TextBox)
+                        ((Panel)
                         ((Border)
                             ((Grid)
                                 ((Panel)
-                                    Content).
-                                Children[0]).
-                            Children[0]).
-                        Child).
-                    Children[0]).Text;
+                                    Content)
+                                .Children[0]).
+                            Children[0])
+                        .Child)
+                        .Children[0])
+                    .Text;
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     num = Convert.ToInt32(_nowPage);

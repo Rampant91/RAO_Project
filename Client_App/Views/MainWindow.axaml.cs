@@ -66,7 +66,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
     private async Task DoShowDialogAsync(InteractionContext<ChangeOrCreateVM, object> interaction)
     {
         FormChangeOrCreate frm = new(interaction.Input);
-
+        WindowState = WindowState.Minimized;
         await frm.ShowDialog(this);
         interaction.SetOutput(null);
     }
@@ -78,7 +78,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
         par.ContentHeader = interaction.Input[0];
         interaction.Input.RemoveAt(0);
         var lt = interaction.Input
-            .Select(elem => new ButtonDefinition { Type = MessageBox.Avalonia.Enums.ButtonType.Default, Name = elem })
+            .Select(elem => new ButtonDefinition { Name = elem })
             .ToList();
         par.ButtonDefinitions = lt;
         par.ContentTitle = "Уведомление";
@@ -147,12 +147,21 @@ public class MainWindow : BaseWindow<MainWindowVM>
             Command = dataContext.ExportReportsWithDateRange
         });
 
+        //grd1.CommandsList.Add(new KeyCommand
+        //{
+        //    IsDoubleTappedCommand = false,
+        //    IsContextMenuCommand = true,
+        //    ParamName = "SelectedItems",
+        //    ContextMenuText = new[] { "Выгрузить все организации в один файл" },
+        //    Command = dataContext.ExportAllReportsOneFile
+        //});
+
         grd1.CommandsList.Add(new KeyCommand
         {
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузить все организации" },
+            ContextMenuText = new[] { "Выгрузить все организации в отдельные файлы" },
             Command = dataContext.ExportAllReports
         });
 

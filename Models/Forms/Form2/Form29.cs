@@ -13,6 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
+[Table (name: "form_29")]
 public class Form29 : Form2
 {
     #region Constructor
@@ -59,10 +60,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(WasteSourceName)))
+            if (Dictionary.TryGetValue(nameof(WasteSourceName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(WasteSourceName)]).Value = WasteSourceName_DB;
-                return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
+                ((RamAccess<string>)value).Value = WasteSourceName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
             rm.PropertyChanged += WasteSourceNameValueChanged;
@@ -107,10 +108,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RadionuclidName)))
+            if (Dictionary.TryGetValue(nameof(RadionuclidName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
-                return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                ((RamAccess<string>)value).Value = RadionuclidName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
             rm.PropertyChanged += RadionuclidNameValueChanged;
@@ -165,10 +166,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(AllowedActivity)))
+            if (Dictionary.TryGetValue(nameof(AllowedActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(AllowedActivity)]).Value = AllowedActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(AllowedActivity)];
+                ((RamAccess<string>)value).Value = AllowedActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedActivity_Validation, AllowedActivity_DB);
             rm.PropertyChanged += AllowedActivityValueChanged;
@@ -223,8 +224,10 @@ public class Form29 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -249,10 +252,10 @@ public class Form29 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FactedActivity)))
+            if (Dictionary.TryGetValue(nameof(FactedActivity), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FactedActivity)]).Value = FactedActivity_DB;
-                return (RamAccess<string>)Dictionary[nameof(FactedActivity)];
+                ((RamAccess<string>)value).Value = FactedActivity_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactedActivity_Validation, FactedActivity_DB);
             rm.PropertyChanged += FactedActivityValueChanged;
@@ -303,8 +306,10 @@ public class Form29 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;

@@ -5,52 +5,55 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using OfficeOpenXml;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Interfaces;
 
 namespace Models.Collections;
 
+[Table("ReportsCollection_DbSet")]
+[Index(nameof(DBObservable), IsUnique = true)]
 public class Reports : IKey, IDataGridColumn
 {
-    [NotMapped]
-    public long Order
-    {
-        get
-        {
-            try
-            {
-                var num_str = "0";
-                if (Master_DB.RegNoRep.Value.Length >= 5)
-                {
-                    num_str = Master_DB.RegNoRep.Value[..5];
-                }
-                else 
-                {
-                    num_str = Master_DB.RegNoRep.Value;
-                }
-                var num_int = Convert.ToInt64(num_str);
-                return num_int;
-            }
-            catch 
-            {
-                return 0;
-            }
-            //throw new NotImplementedException();
-        }
-    }
+    #region Constructor
+
     public Reports()
     {
         Init();
-    }
+    } 
+    
+
     private void Init()
     {
         Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
         Report_Collection.CollectionChanged += CollectionChanged;
     }
 
-    public Report Master_DB { get; set; }
+    public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Report_Collection));
+    }
+
+    #endregion
+
+    #region DBObservable
+    
+    [ForeignKey(nameof(DBObservable))]
+    public int? DBObservableId { get; set; }
+
+    public virtual DBObservable DBObservable { get; set; }
+
+    #endregion
+
+    #region Master
+    
+    [ForeignKey(nameof(Report))]
+    public int? Master_DBId { get; set; }
+
+    public Report Master_DB { get; set; } 
 
     [NotMapped]
     public Report Master
@@ -63,6 +66,10 @@ public class Reports : IKey, IDataGridColumn
         }
     }
 
+    #endregion
+
+    #region Report_Collection
+    
     ObservableCollectionWithItemPropertyChanged<Report> Report_Collection_DB;
 
     public ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
@@ -75,25 +82,12 @@ public class Reports : IKey, IDataGridColumn
         }
     }
 
-    public void Sort()
-    {
-        Report_Collection.QuickSort();
-    }
-    public async Task SortAsync()
-    {
-        await Report_Collection.QuickSortAsync();
-    }
+    #endregion
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
+    #region Id
+    
+    [Key]
     public int Id { get; set; }
-
-    public void SetOrder(long index) { }
-
-    public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-    {
-        OnPropertyChanged(nameof(Report_Collection));
-    }
 
     public void CleanIds()
     {
@@ -104,7 +98,58 @@ public class Reports : IKey, IDataGridColumn
             item.CleanIds();
         }
     }
+    
+    #endregion
 
+    #region Order
+    
+    [NotMapped]
+    public long Order
+    {
+        get
+        {
+            try
+            {
+                var num_str = "0";
+                if (Master_DB.RegNoRep.Value.Length >= 5)
+                {
+                    num_str = Master_DB.RegNoRep.Value[..5];
+                }
+                else
+                {
+                    num_str = Master_DB.RegNoRep.Value;
+                }
+                var num_int = Convert.ToInt64(num_str);
+                return num_int;
+            }
+            catch
+            {
+                return 0;
+            }
+            //throw new NotImplementedException();
+        }
+    }
+
+    public void SetOrder(long index) { }
+
+    #endregion
+
+    #region Sort
+    
+    public void Sort()
+    {
+        Report_Collection.QuickSort();
+    }
+
+    public async Task SortAsync()
+    {
+        await Report_Collection.QuickSortAsync().ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Validation
+    
     private static bool Master_Validation(RamAccess<Report> value)
     {
         return true;
@@ -115,12 +160,18 @@ public class Reports : IKey, IDataGridColumn
         return true;
     }
 
-    //Property Changed
+    #endregion
+
+    #region OnPropertyChanged
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
     public void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
-    //Property Changed
+
+    #endregion
 
     #region IExcel
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")

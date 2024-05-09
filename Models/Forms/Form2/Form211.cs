@@ -14,7 +14,8 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.11: Радионуклидный состав загрязненных участков территорий")]
-public class Form211 : Form2
+[Table (name: "form_211")]
+public partial class Form211 : Form2
 {
     #region Cobstructor
     
@@ -68,10 +69,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PlotName)))
+            if (Dictionary.TryGetValue(nameof(PlotName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PlotName)]).Value = PlotName_DB;
-                return (RamAccess<string>)Dictionary[nameof(PlotName)];
+                ((RamAccess<string>)value).Value = PlotName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PlotName_Validation, PlotName_DB);
             rm.PropertyChanged += PlotNameValueChanged;
@@ -116,10 +117,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PlotKadastrNumber)))
+            if (Dictionary.TryGetValue(nameof(PlotKadastrNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PlotKadastrNumber)]).Value = PlotKadastrNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(PlotKadastrNumber)];
+                ((RamAccess<string>)value).Value = PlotKadastrNumber_DB;
+                return (RamAccess<string>)value;
             }
 
             var rm = new RamAccess<string>(PlotKadastrNumber_Validation, PlotKadastrNumber_DB);
@@ -165,10 +166,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PlotCode)))
+            if (Dictionary.TryGetValue(nameof(PlotCode), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PlotCode)]).Value = PlotCode_DB;
-                return (RamAccess<string>)Dictionary[nameof(PlotCode)];
+                ((RamAccess<string>)value).Value = PlotCode_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PlotCode_Validation, PlotCode_DB);
             rm.PropertyChanged += PlotCodeValueChanged;
@@ -199,7 +200,7 @@ public class Form211 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!new Regex("^[0-9]{6}$").IsMatch(value.Value))
+        if (!SixNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -219,10 +220,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(InfectedArea)))
+            if (Dictionary.TryGetValue(nameof(InfectedArea), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(InfectedArea)]).Value = InfectedArea_DB;
-                return (RamAccess<string>)Dictionary[nameof(InfectedArea)];
+                ((RamAccess<string>)value).Value = InfectedArea_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(InfectedArea_Validation, InfectedArea_DB);
             rm.PropertyChanged += InfectedAreaValueChanged;
@@ -274,7 +275,10 @@ public class Form211 : Form2
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -299,10 +303,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(Radionuclids)))
+            if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
-                return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                ((RamAccess<string>)value).Value = Radionuclids_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
             rm.PropertyChanged += RadionuclidsValueChanged;
@@ -364,10 +368,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SpecificActivityOfPlot)))
+            if (Dictionary.TryGetValue(nameof(SpecificActivityOfPlot), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(SpecificActivityOfPlot)]).Value = SpecificActivityOfPlot_DB;
-                return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfPlot)];
+                ((RamAccess<string>)value).Value = SpecificActivityOfPlot_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SpecificActivityOfPlot_Validation, SpecificActivityOfPlot_DB);
             rm.PropertyChanged += SpecificActivityOfPlotValueChanged;
@@ -423,7 +427,10 @@ public class Form211 : Form2
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -448,10 +455,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SpecificActivityOfLiquidPart)))
+            if (Dictionary.TryGetValue(nameof(SpecificActivityOfLiquidPart), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(SpecificActivityOfLiquidPart)]).Value = SpecificActivityOfLiquidPart_DB;
-                return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfLiquidPart)];
+                ((RamAccess<string>)value).Value = SpecificActivityOfLiquidPart_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SpecificActivityOfLiquidPart_Validation, SpecificActivityOfLiquidPart_DB);
             rm.PropertyChanged += SpecificActivityOfLiquidPartValueChanged;
@@ -507,7 +514,10 @@ public class Form211 : Form2
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -532,10 +542,10 @@ public class Form211 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(SpecificActivityOfDensePart)))
+            if (Dictionary.TryGetValue(nameof(SpecificActivityOfDensePart), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(SpecificActivityOfDensePart)]).Value = SpecificActivityOfDensePart_DB;
-                return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfDensePart)];
+                ((RamAccess<string>)value).Value = SpecificActivityOfDensePart_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SpecificActivityOfDensePart_Validation, SpecificActivityOfDensePart_DB);
             rm.PropertyChanged += SpecificActivityOfDensePartValueChanged;
@@ -591,7 +601,10 @@ public class Form211 : Form2
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
         const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -813,5 +826,12 @@ public class Form211 : Form2
         return _DataGridColumns;
     }
 
+    #endregion
+
+    #region GeneratedRegex
+    
+    [GeneratedRegex("^[0-9]{6}$")]
+    private static partial Regex SixNumRegex();
+    
     #endregion
 }

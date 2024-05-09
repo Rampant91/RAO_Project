@@ -2,13 +2,14 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Models.Attributes;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 
 namespace Models.Forms.Form2;
 
-public abstract class Form2 : Form
+public abstract partial class Form2 : Form
 {
     [FormProperty(true, "Форма")]
     public Form2()
@@ -30,10 +31,10 @@ public abstract class Form2 : Form
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CorrectionNumber)))
+            if (Dictionary.TryGetValue(nameof(CorrectionNumber), out var value))
             {
-                ((RamAccess<byte>)Dictionary[nameof(CorrectionNumber)]).Value = CorrectionNumber_DB;
-                return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
+                ((RamAccess<byte>)value).Value = CorrectionNumber_DB;
+                return (RamAccess<byte>)value;
             }
             var rm = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
             rm.PropertyChanged += CorrectionNumberValueChanged;
@@ -86,6 +87,19 @@ public abstract class Form2 : Form
             ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
         return 1;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+
+    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{2}$")]
+    protected static partial Regex Date6NumRegex();
+
+    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{4}$")]
+    protected static partial Regex Date8NumRegex();
+
+    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
+    protected static partial Regex OkpoRegex();
 
     #endregion
 }

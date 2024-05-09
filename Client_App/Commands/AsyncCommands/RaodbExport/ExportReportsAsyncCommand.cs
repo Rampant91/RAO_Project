@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -19,7 +20,7 @@ using Models.Interfaces;
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 //  Экспорт организации в файл .raodb
-internal class ExportReportsAsyncCommand : BaseAsyncCommand
+public class ExportReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -28,6 +29,9 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         var dt = DateTime.Now;
         Reports exportOrg;
         string fileNameTmp;
+        //await using var db = new DBModel(StaticConfiguration.DBPath);
+        
+
         switch (parameter)
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
@@ -49,20 +53,23 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
                 return;
         }
 
-        List<Report> repList = new();
+        List<Report> repList = [];
         foreach (var key in exportOrg.Report_Collection)
         {
             var rep = (Report)key;
             repList.Add(await ReportsStorage.Api.GetAsync(rep.Id));
         }
-        exportOrg.Report_Collection.Clear();
-        exportOrg.Report_Collection.AddRangeNoChange(repList);
+        var newReps = new Reports
+        {
+            Master = exportOrg.Master,
+            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>(repList)
+        };
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                        $"_{exportOrg.Master.FormNum_DB[0]}.x" +
-                       $"_{BaseVM.Version}";
+                       $"_{Assembly.GetExecutingAssembly().GetName().Version}";
 
         var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
@@ -102,19 +109,23 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
 
         await Task.Run(async () =>
         {
-            DBModel db = new(fullPathTmp);
+            await using var tempDb = new DBModel(fullPathTmp);
             try
             {
-                await db.Database.MigrateAsync();
-                await db.ReportsCollectionDbSet.AddAsync(exportOrg);
-                await db.SaveChangesAsync();
+                await tempDb.Database.MigrateAsync();
+                await tempDb.ReportsCollectionDbSet.AddAsync(newReps);
+                if (!tempDb.DBObservableDbSet.Any())
+                {
+                    tempDb.DBObservableDbSet.Add(new DBObservable());
+                    tempDb.DBObservableDbSet.Local.First().Reports_Collection.AddRange(tempDb.ReportsCollectionDbSet.Local);
+                }
+                await tempDb.SaveChangesAsync();
 
-                var t = db.Database.GetDbConnection() as FbConnection;
+                var t = tempDb.Database.GetDbConnection() as FbConnection;
                 await t.CloseAsync();
                 await t.DisposeAsync();
 
-                await db.Database.CloseConnectionAsync();
-                await db.DisposeAsync();
+                await tempDb.Database.CloseConnectionAsync();
             }
             catch (Exception e)
             {
@@ -154,11 +165,11 @@ internal class ExportReportsAsyncCommand : BaseAsyncCommand
         var answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Ок", IsDefault = true },
                     new ButtonDefinition { Name = "Открыть расположение файла" }
-                },
+                ],
                 ContentTitle = "Выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage =

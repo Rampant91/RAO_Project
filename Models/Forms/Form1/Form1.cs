@@ -11,7 +11,7 @@ using Spravochniki;
 
 namespace Models.Forms.Form1;
 
-public abstract class Form1 : Form
+public abstract partial class Form1 : Form
 {
     [FormProperty(true,"Форма")]
 
@@ -52,10 +52,10 @@ public abstract class Form1 : Form
         {
             if (!OperationCode_Hidden_Priv)
             {
-                if (Dictionary.ContainsKey(nameof(OperationCode)))
+                if (Dictionary.TryGetValue(nameof(OperationCode), out RamAccess value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(OperationCode)]).Value = OperationCode_DB;
-                    return (RamAccess<string>)Dictionary[nameof(OperationCode)];
+                    ((RamAccess<string>)value).Value = OperationCode_DB;
+                    return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
                 rm.PropertyChanged += OperationCodeValueChanged;
@@ -111,10 +111,10 @@ public abstract class Form1 : Form
         {
             if (!OperationDate_Hidden_Priv)
             {
-                if (Dictionary.ContainsKey(nameof(OperationDate)))
+                if (Dictionary.TryGetValue(nameof(OperationDate), out RamAccess value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(OperationDate)]).Value = OperationDate_DB;
-                    return (RamAccess<string>)Dictionary[nameof(OperationDate)];
+                    ((RamAccess<string>)value).Value = OperationDate_DB;
+                    return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
                 rm.PropertyChanged += OperationDateValueChanged;
@@ -137,7 +137,7 @@ public abstract class Form1 : Form
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value;
-        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
+        if (Date6NumRegex().IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
@@ -154,7 +154,7 @@ public abstract class Form1 : Form
         }
         var tmp = value.Value;
 
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -188,10 +188,10 @@ public abstract class Form1 : Form
         {
             if (!DocumentVid_Hidden_Priv)
             {
-                if (Dictionary.ContainsKey(nameof(DocumentVid)))
+                if (Dictionary.TryGetValue(nameof(DocumentVid), out RamAccess value))
                 {
-                    ((RamAccess<byte?>)Dictionary[nameof(DocumentVid)]).Value = DocumentVid_DB;
-                    return (RamAccess<byte?>)Dictionary[nameof(DocumentVid)];
+                    ((RamAccess<byte?>)value).Value = DocumentVid_DB;
+                    return (RamAccess<byte?>)value;
                 }
                 var rm = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
                 rm.PropertyChanged += DocumentVidValueChanged;
@@ -256,10 +256,10 @@ public abstract class Form1 : Form
         {
             if (!DocumentNumber_Hidden_Priv)
             {
-                if (Dictionary.ContainsKey(nameof(DocumentNumber)))
+                if (Dictionary.TryGetValue(nameof(DocumentNumber), out RamAccess value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(DocumentNumber)]).Value = DocumentNumber_DB;
-                    return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
+                    ((RamAccess<string>)value).Value = DocumentNumber_DB;
+                    return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
                 rm.PropertyChanged += DocumentNumberValueChanged;
@@ -316,10 +316,10 @@ public abstract class Form1 : Form
         {
             if (!DocumentDate_Hidden_Priv)
             {
-                if (Dictionary.ContainsKey(nameof(DocumentDate)))
+                if (Dictionary.TryGetValue(nameof(DocumentDate), out RamAccess value))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(DocumentDate)]).Value = DocumentDate_DB;
-                    return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
+                    ((RamAccess<string>)value).Value = DocumentDate_DB;
+                    return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
                 rm.PropertyChanged += DocumentDateValueChanged;
@@ -343,7 +343,7 @@ public abstract class Form1 : Form
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value;
-        if (new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$").IsMatch(tmp))
+        if (Date6NumRegex().IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
         }
@@ -359,7 +359,7 @@ public abstract class Form1 : Form
             return false;
         }
         var tmp = value.Value;
-        if (!new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$").IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -386,7 +386,7 @@ public abstract class Form1 : Form
     {
         worksheet.Cells[row, column].Value = NumberInOrder_DB;
         worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(OperationCode_DB);
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDate(OperationDate_DB);
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelDate(OperationDate_DB, worksheet, row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0));
         return 3;
     }
 
@@ -403,6 +403,19 @@ public abstract class Form1 : Form
                 ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[1];
         return 3;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+
+    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{2}$")]
+    protected static partial Regex Date6NumRegex();
+
+    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{4}$")]
+    protected static partial Regex Date8NumRegex();
+
+    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
+    protected static partial Regex OkpoRegex();
 
     #endregion
 }

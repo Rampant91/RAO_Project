@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
+#nullable disable
+
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
@@ -15,26 +17,28 @@ namespace Models.DBRealization.Migrations.DataModel
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 31)
-                .HasAnnotation("ProductVersion", "5.0.12")
-                .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn)
+                .HasAnnotation("ProductVersion", "6.0.20")
+                .HasAnnotation("Relational:MaxIdentifierLength", 31);
 
             modelBuilder.Entity("Models.Collections.DBObservable", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.HasKey("Id");
 
-                    b.ToTable("DBObservable_DbSet");
+                    b.ToTable("DBObservable_DbSet", (string)null);
                 });
 
             modelBuilder.Entity("Models.Collections.Report", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Comments_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -145,14 +149,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportsId");
 
-                    b.ToTable("ReportCollection_DbSet");
+                    b.ToTable("ReportCollection_DbSet", (string)null);
                 });
 
             modelBuilder.Entity("Models.Collections.Reports", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("DBObservableId")
                         .HasColumnType("INTEGER");
@@ -166,14 +171,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("Master_DBId");
 
-                    b.ToTable("ReportsCollection_DbSet");
+                    b.ToTable("ReportsCollection_DbSet", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form10", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -248,14 +254,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_10");
+                    b.ToTable("form_10", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form11", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -354,14 +361,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_11");
+                    b.ToTable("form_11", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form12", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreationDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -451,14 +459,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_12");
+                    b.ToTable("form_12", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form13", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -551,14 +560,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_13");
+                    b.ToTable("form_13", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form14", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ActivityMeasurementDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -654,14 +664,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_14");
+                    b.ToTable("form_14", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form15", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -763,14 +774,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_15");
+                    b.ToTable("form_15", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form16", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ActivityMeasurementDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -881,14 +893,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_16");
+                    b.ToTable("form_16", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form17", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AlphaActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1053,14 +1066,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_17");
+                    b.ToTable("form_17", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form18", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AlphaActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1204,14 +1218,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_18");
+                    b.ToTable("form_18", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form19", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1268,14 +1283,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_19");
+                    b.ToTable("form_19", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form20", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1350,14 +1366,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_20");
+                    b.ToTable("form_20", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form21", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AlphaActivityIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1492,14 +1509,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_21");
+                    b.ToTable("form_21", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form210", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AvgGammaRaysDosePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1550,14 +1568,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_210");
+                    b.ToTable("form_210", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form211", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<short>("CorrectionNumber_DB")
                         .HasColumnType("SMALLINT");
@@ -1602,14 +1621,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_211");
+                    b.ToTable("form_211", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form212", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1645,14 +1665,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_212");
+                    b.ToTable("form_212", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form22", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AlphaActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1793,14 +1814,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_22");
+                    b.ToTable("form_22", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form23", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1857,14 +1879,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_23");
+                    b.ToTable("form_23", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form24", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CodeOYAT_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1933,14 +1956,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_24");
+                    b.ToTable("form_24", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form25", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AlphaActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1988,14 +2012,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_25");
+                    b.ToTable("form_25", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form26", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AverageYearConcentration_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2037,14 +2062,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_26");
+                    b.ToTable("form_26", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form27", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AllowedWasteValue_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2080,14 +2106,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_27");
+                    b.ToTable("form_27", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form28", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AllowedWasteRemovalVolume_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2126,14 +2153,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_28");
+                    b.ToTable("form_28", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form29", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AllowedActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2166,14 +2194,15 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_29");
+                    b.ToTable("form_29", (string)null);
                 });
 
             modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Comment_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2194,195 +2223,273 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("notes");
+                    b.ToTable("notes", (string)null);
                 });
 
             modelBuilder.Entity("Models.Collections.Report", b =>
                 {
-                    b.HasOne("Models.Collections.Reports", null)
+                    b.HasOne("Models.Collections.Reports", "Reports")
                         .WithMany("Report_Collection")
-                        .HasForeignKey("ReportsId");
+                        .HasForeignKey("ReportsId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("Models.Collections.Reports", b =>
                 {
-                    b.HasOne("Models.Collections.DBObservable", null)
+                    b.HasOne("Models.Collections.DBObservable", "DBObservable")
                         .WithMany("Reports_Collection")
-                        .HasForeignKey("DBObservableId");
+                        .HasForeignKey("DBObservableId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Collections.Report", "Master_DB")
                         .WithMany()
                         .HasForeignKey("Master_DBId");
+
+                    b.Navigation("DBObservable");
 
                     b.Navigation("Master_DB");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form10", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows10")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form11", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows11")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form12", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows12")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form13", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows13")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form14", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows14")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form15", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows15")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form16", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows16")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form17", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows17")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form18", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows18")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form1.Form19", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows19")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form20", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows20")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form21", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows21")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form210", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows210")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form211", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows211")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form212", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows212")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form22", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows22")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form23", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows23")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form24", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows24")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form25", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows25")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form26", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows26")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form27", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows27")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form28", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows28")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Form2.Form29", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows29")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Forms.Note", b =>
                 {
-                    b.HasOne("Models.Collections.Report", null)
+                    b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Notes")
-                        .HasForeignKey("ReportId");
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Models.Collections.DBObservable", b =>

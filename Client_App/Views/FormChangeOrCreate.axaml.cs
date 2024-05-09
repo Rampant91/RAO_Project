@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
@@ -50,75 +51,90 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 #endif
     }
 
+    #region OnStandartClosing
+    
     System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; }
 
     private void OnStandardClosing(object sender, CancelEventArgs args)
     {
-        if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges()) return;
+        var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
+        try
+        {
+            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            {
+                desktop.MainWindow.WindowState = WindowState.Normal;
+                return;
+            }
+        }
+        catch (Exception e)
+        {
+            //ignore
+        }
+
         if (Answ != null) return;
         var flag = false;
         var tmp = DataContext as ChangeOrCreateVM;
-        Answ = tmp.ShowMessageT.Handle(new List<string> { "Сохранить?", "Да", "Нет" }).GetAwaiter();
+        Answ = tmp.ShowMessageT.Handle(["Сохранить?", "Да", "Нет"]).GetAwaiter();
         Answ.Subscribe(async x =>
         {
+            var dbm = StaticConfiguration.DBModel;
             switch (x)
             {
                 case "Да":
                     flag = true;
-                    await StaticConfiguration.DBModel.SaveChangesAsync();
+                    await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(tmp).AsyncExecute(null);
                     return;
                 case "Нет":
-                {
-                    var a = ReportsStorage.LocalReports;
-                    flag = true;
-                    var dbm = StaticConfiguration.DBModel;
-                    dbm.Restore();
-                    await dbm.SaveChangesAsync();
+                    {
+                        flag = true;
+                        dbm.Restore();
+                        await dbm.SaveChangesAsync();
 
-                    var lst = tmp.Storage[tmp.FormType];
+                        var lst = tmp.Storage[tmp.FormType];
 
-                    foreach (var key in lst)
-                    {
-                        var item = (Form)key;
-                        if (item.Id == 0)
+                        foreach (var key in lst)
                         {
-                            tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
+                            var item = (Form)key;
+                            if (item.Id == 0)
+                            {
+                                tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
+                            }
                         }
-                    }
 
-                    var lstNote = tmp.Storage.Notes.ToList<Note>();
-                    foreach (var item in lstNote.Where(item => item.Id == 0))
-                    {
-                        tmp.Storage.Notes.Remove(item);
-                    }
-                    
-                    if (tmp.FormType is not "1.0" and not "2.0")
-                    {
-                        if (tmp.FormType.Split('.')[0] == "1")
+                        var lstNote = tmp.Storage.Notes.ToList<Note>();
+                        foreach (var item in lstNote.Where(item => item.Id == 0))
                         {
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            tmp.Storage.Notes.Remove(item);
                         }
-                        if (tmp.FormType.Split('.')[0] == "2")
+
+                        if (tmp.FormType is not "1.0" and not "2.0")
                         {
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
-                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            if (tmp.FormType.Split('.')[0] == "1")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
+                            if (tmp.FormType.Split('.')[0] == "2")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
                         }
+                        else
+                        {
+                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
+                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
+                            tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
+                        }
+                        break;
                     }
-                    else
-                    {
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
-                    }
-                    break;
-                }
             }
         });
         Answ.OnCompleted(() =>
         {
+            desktop.MainWindow.WindowState = WindowState.Normal;
             if (flag)
             {
                 Close();
@@ -130,7 +146,9 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
             }
         });
         args.Cancel = true;
-    }
+        }
+
+    #endregion
 
     #region Init
     private void Form1Init(in Panel panel)
@@ -345,7 +363,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                 panel.Children.Add(grd);
                 break;
             }
-                case "1.2":
+            case "1.2":
             {
                 var grd = (ScrollViewer)Form1_Visual.Form12_Visual(this.FindNameScope());
 
@@ -3687,7 +3705,6 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         par.ButtonDefinitions = interaction.Input
             .Select(elem => new ButtonDefinition
             {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
                 Name = elem
             });
         

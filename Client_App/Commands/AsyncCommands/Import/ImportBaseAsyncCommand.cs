@@ -16,6 +16,7 @@ using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -30,12 +31,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
     private protected bool AtLeastOneImportDone;    // Не отменена хотя бы одна операция импорта файлов/организаций/форм
+    private protected bool ExcelImportNewReps;
 
     private protected bool IsFirstLogLine;          // Это первая строчка в логгере ?
     public int CurrentLogLine;                      // Порядковый номер добавляемой формы в логгере для текущей операции
     public FileInfo? SourceFile;                    // Импортируемый файл
     public string Act = "\t\t\t";                   // Действие с формой для логгера
 
+    protected readonly List<(string, string)> RepsWhereTitleFormCheckIsCancel = [];
     public string BaseRepsOkpo = "";
     public string BaseRepsRegNum = "";
     public string BaseRepsShortName = "";
@@ -56,7 +59,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public byte ImpRepCorNum;
     public int ImpRepFormCount;
 
-    private protected DBModel Db = StaticConfiguration.DBModel;
     private protected string TmpImpFilePath = "";
 
     public string OperationDate => IsFirstLogLine
@@ -65,13 +67,18 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region CheckAnswer
 
-    private protected async Task CheckAnswer(string an, Reports baseReps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
+    private protected async Task CheckAnswer(string an, Reports baseReps, Reports impReps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
     {
         switch (an)
         {
             #region Add
 
             case "Да" or "Да для всех" or "Добавить":
+                if (ExcelImportNewReps) ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
@@ -104,6 +111,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region SaveBoth
             
             case "Сохранить оба":
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
@@ -136,7 +147,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Replace
             
             case "Заменить" or "Заменять все формы":
-                if (oldReport is not null) oldReport = await FillReportWithForms(baseReps, oldReport);
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 AtLeastOneImportDone = true;
@@ -167,7 +181,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Supplement
             
             case "Дополнить" when newReport != null && oldReport != null:
-                oldReport = await FillReportWithForms(baseReps, oldReport);
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
@@ -206,10 +223,93 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #region Cancel
 
-            case "Отменить импорт формы":
+            case "Отменить импорт формы" or "Нет":
                 break; 
 
             #endregion
+        }
+    }
+
+    #endregion
+
+    #region CheckTitleForm
+
+    private static async Task CheckTitleFormAsync(Reports baseReps, Reports impReps, List<(string, string)> repsWhereTitleFormCheckIsCancel)
+    {
+        var comparator = new CustomStringTitleFormComparer();
+        if (baseReps.Master.FormNum_DB is "1.0"
+            && (comparator.Compare(baseReps.Master.Rows10[0].SubjectRF_DB, impReps.Master.Rows10[0].SubjectRF_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].JurLico_DB, impReps.Master.Rows10[0].JurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].ShortJurLico_DB, impReps.Master.Rows10[0].ShortJurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].JurLicoAddress_DB, impReps.Master.Rows10[0].JurLicoAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].JurLicoFactAddress_DB, impReps.Master.Rows10[0].JurLicoFactAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].GradeFIO_DB, impReps.Master.Rows10[0].GradeFIO_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Telephone_DB, impReps.Master.Rows10[0].Telephone_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Fax_DB, impReps.Master.Rows10[0].Fax_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Email_DB, impReps.Master.Rows10[0].Email_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okpo_DB, impReps.Master.Rows10[0].Okpo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okved_DB, impReps.Master.Rows10[0].Okved_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okogu_DB, impReps.Master.Rows10[0].Okogu_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Oktmo_DB, impReps.Master.Rows10[0].Oktmo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Inn_DB, impReps.Master.Rows10[0].Inn_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Kpp_DB, impReps.Master.Rows10[0].Kpp_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okopf_DB, impReps.Master.Rows10[0].Okopf_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[0].Okfs_DB, impReps.Master.Rows10[0].Okfs_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].SubjectRF_DB, impReps.Master.Rows10[1].SubjectRF_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].JurLico_DB, impReps.Master.Rows10[1].JurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].ShortJurLico_DB, impReps.Master.Rows10[1].ShortJurLico_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].JurLicoAddress_DB, impReps.Master.Rows10[1].JurLicoAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].JurLicoFactAddress_DB, impReps.Master.Rows10[1].JurLicoFactAddress_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].GradeFIO_DB, impReps.Master.Rows10[1].GradeFIO_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Telephone_DB, impReps.Master.Rows10[1].Telephone_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Fax_DB, impReps.Master.Rows10[1].Fax_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Email_DB, impReps.Master.Rows10[1].Email_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okpo_DB, impReps.Master.Rows10[1].Okpo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okved_DB, impReps.Master.Rows10[1].Okved_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okogu_DB, impReps.Master.Rows10[1].Okogu_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Oktmo_DB, impReps.Master.Rows10[1].Oktmo_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Inn_DB, impReps.Master.Rows10[1].Inn_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Kpp_DB, impReps.Master.Rows10[1].Kpp_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okopf_DB, impReps.Master.Rows10[1].Okopf_DB) != 0
+                || comparator.Compare(baseReps.Master.Rows10[1].Okfs_DB, impReps.Master.Rows10[1].Okfs_DB) != 0)
+            || (baseReps.Master.FormNum_DB is "2.0"
+                && (comparator.Compare(baseReps.Master.Rows20[0].SubjectRF_DB, impReps.Master.Rows20[0].SubjectRF_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].JurLico_DB, impReps.Master.Rows20[0].JurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].ShortJurLico_DB, impReps.Master.Rows20[0].ShortJurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].JurLicoAddress_DB, impReps.Master.Rows20[0].JurLicoAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].JurLicoFactAddress_DB, impReps.Master.Rows20[0].JurLicoFactAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].GradeFIO_DB, impReps.Master.Rows20[0].GradeFIO_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Telephone_DB, impReps.Master.Rows20[0].Telephone_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Fax_DB, impReps.Master.Rows20[0].Fax_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Email_DB, impReps.Master.Rows20[0].Email_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okpo_DB, impReps.Master.Rows20[0].Okpo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okved_DB, impReps.Master.Rows20[0].Okved_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okogu_DB, impReps.Master.Rows20[0].Okogu_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Oktmo_DB, impReps.Master.Rows20[0].Oktmo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Inn_DB, impReps.Master.Rows20[0].Inn_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Kpp_DB, impReps.Master.Rows20[0].Kpp_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okopf_DB, impReps.Master.Rows20[0].Okopf_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[0].Okfs_DB, impReps.Master.Rows20[0].Okfs_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].SubjectRF_DB, impReps.Master.Rows20[1].SubjectRF_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].JurLico_DB, impReps.Master.Rows20[1].JurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].ShortJurLico_DB, impReps.Master.Rows20[1].ShortJurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].JurLicoAddress_DB, impReps.Master.Rows20[1].JurLicoAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].JurLicoFactAddress_DB, impReps.Master.Rows20[1].JurLicoFactAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].GradeFIO_DB, impReps.Master.Rows20[1].GradeFIO_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Telephone_DB, impReps.Master.Rows20[1].Telephone_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Fax_DB, impReps.Master.Rows20[1].Fax_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Email_DB, impReps.Master.Rows20[1].Email_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okpo_DB, impReps.Master.Rows20[1].Okpo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okved_DB, impReps.Master.Rows20[1].Okved_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okogu_DB, impReps.Master.Rows20[1].Okogu_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Oktmo_DB, impReps.Master.Rows20[1].Oktmo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Inn_DB, impReps.Master.Rows20[1].Inn_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Kpp_DB, impReps.Master.Rows20[1].Kpp_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okopf_DB, impReps.Master.Rows20[1].Okopf_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okfs_DB, impReps.Master.Rows20[1].Okfs_DB) != 0)))
+        {
+            var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master, repsWhereTitleFormCheckIsCancel).AsyncExecute(null);
+            baseReps.Master = newTitleRep;
         }
     }
 
@@ -387,15 +487,15 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region GetSelectedFilesFromDialog
 
-    private protected async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
+    private protected static async Task<string[]?> GetSelectedFilesFromDialog(string name, params string[] extensions)
     {
         OpenFileDialog dial = new() { AllowMultiple = true };
         var filter = new FileDialogFilter
         {
             Name = name,
-            Extensions = new List<string>(extensions)
+            Extensions = [..extensions]
         };
-        dial.Filters = new List<FileDialogFilter> { filter };
+        dial.Filters = [filter];
         return await dial.ShowAsync(Desktop.MainWindow);
     }
 
@@ -428,22 +528,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #region ProcessIfHasReports11
 
-    private protected async Task ProcessIfHasReports11(Reports baseReps, Reports? impReps = null, Report? impReport = null)
+    private protected async Task ProcessIfHasReports11(Reports baseReps, Reports impReps, List<Report> impRepList)
     {
         BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
         BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
         BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
 
-        var listImpRep = new List<Report>();
-        if (impReps != null)
-        {
-            listImpRep.AddRange(impReps.Report_Collection);
-        }
-        if (impReport != null)
-        {
-            listImpRep.Add(impReport);
-        }
-        foreach (var impRep in listImpRep) //Для каждого импортируемого отчета
+        foreach (var impRep in impRepList) //Для каждого импортируемого отчета
         {
             ImpRepFormNum = impRep.FormNum_DB;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
@@ -459,43 +550,37 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var baseRep = (Report)key1;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
-                BaseRepFormCount = ReportsStorage.GetReportRowsCount(baseRep);
+                BaseRepFormCount = Math.Max(ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepStartPeriod = baseRep.StartPeriod_DB;
                 BaseRepEndPeriod = baseRep.EndPeriod_DB;
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                
+
                 #region Periods
 
                 var stBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Начало периода у отчета в базе
                 var endBase = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у отчета в базе
-                try
+                if (DateTime.TryParse(BaseRepStartPeriod, out var baseRepStartPeriod)
+                    && DateTime.TryParse(BaseRepEndPeriod, out var baseRepEndPeriod))
                 {
-                    stBase = DateTime.Parse(BaseRepStartPeriod) > DateTime.Parse(BaseRepEndPeriod)
-                        ? DateTime.Parse(BaseRepEndPeriod)
-                        : DateTime.Parse(BaseRepStartPeriod);
-                    endBase = DateTime.Parse(BaseRepStartPeriod) < DateTime.Parse(BaseRepEndPeriod)
-                        ? DateTime.Parse(BaseRepEndPeriod)
-                        : DateTime.Parse(BaseRepStartPeriod);
-                }
-                catch (Exception)
-                {
-                    // ignored
+                    stBase = baseRepStartPeriod > baseRepEndPeriod
+                        ? baseRepEndPeriod
+                        : baseRepStartPeriod;
+                    endBase = baseRepStartPeriod < baseRepEndPeriod
+                        ? baseRepEndPeriod
+                        : baseRepStartPeriod;
                 }
 
                 var stImp = DateTime.Parse(DateTime.Now.ToShortDateString()); //Начало периода у импортируемого отчета
                 var endImp = DateTime.Parse(DateTime.Now.ToShortDateString()); //Конец периода у импортируемого отчета
-                try
+                if (DateTime.TryParse(ImpRepStartPeriod, out var impRepStartPeriod)
+                    && DateTime.TryParse(ImpRepEndPeriod, out var impRepEndPeriod))
                 {
-                    stImp = DateTime.Parse(ImpRepStartPeriod) > DateTime.Parse(ImpRepEndPeriod)
-                        ? DateTime.Parse(ImpRepEndPeriod)
-                        : DateTime.Parse(ImpRepStartPeriod);
-                    endImp = DateTime.Parse(ImpRepStartPeriod) < DateTime.Parse(ImpRepEndPeriod)
-                        ? DateTime.Parse(ImpRepEndPeriod)
-                        : DateTime.Parse(ImpRepStartPeriod);
-                }
-                catch (Exception)
-                {
-                    // ignored
+                    stImp = impRepStartPeriod > impRepEndPeriod
+                        ? impRepEndPeriod
+                        : impRepStartPeriod;
+                    endImp = impRepStartPeriod < impRepEndPeriod
+                        ? impRepEndPeriod
+                        : impRepStartPeriod;
                 }
 
                 #endregion
@@ -504,7 +589,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (stBase == stImp && endBase == endImp && ImpRepFormNum == BaseRepFormNum)
                 {
-
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
                     impInBase = true;
 
                     #region LessCorrectionNumber
@@ -518,12 +603,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
                                     new ButtonDefinition { Name = "Пропустить для всех" }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
@@ -577,14 +662,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                     new ButtonDefinition { Name = "Дополнить" },
                                     new ButtonDefinition { Name = "Сохранить оба" },
                                     new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Импортируемый отчет имеет тот же период, номер корректировки, что и имеющийся в базе." +
@@ -605,10 +690,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
                             .ShowDialog(Desktop.MainWindow);
-                        
+
                         #endregion
 
-                        await CheckAnswer(res, baseReps, baseRep, impRep);
+                        await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                         break;
                     }
 
@@ -626,13 +711,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             res = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                         new ButtonDefinition { Name = "Заменять все формы" },
                                         new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                    },
-                                    ContentTitle = "Импорт из .raodb",
+                                    ],
+                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
                                         "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
@@ -670,12 +755,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             res = await MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
-                                    ButtonDefinitions = new[]
-                                    {
+                                    ButtonDefinitions =
+                                    [
                                         new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                         new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                    },
-                                    ContentTitle = "Импорт из .raodb",
+                                    ],
+                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
                                         "Импортируемый отчет имеет больший номер корректировки чем имеющийся в базе." +
@@ -702,7 +787,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             #endregion
                         }
                     }
-                    await CheckAnswer(res, baseReps, baseRep, impRep);
+                    await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
 
                     #endregion
@@ -714,6 +799,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (stBase < endImp && endBase > stImp && ImpRepFormNum == BaseRepFormNum)
                 {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
                     impInBase = true;
 
                     if (SkipInter) break;
@@ -723,13 +809,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Сохранить оба", IsDefault = true },
                                 new ButtonDefinition { Name = "Отменить для всех пересечений" },
                                 new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Периоды импортируемого и имеющегося в базе отчетов пересекаются, но не совпадают." +
@@ -756,7 +842,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    await CheckAnswer(res, baseReps, null, impRep);
+                    await CheckAnswer(res, baseReps, impReps, null, impRep);
                     break;
                 }
 
@@ -765,7 +851,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #region TryAddEmptyOrg
 
-            if (impReps?.Report_Collection.Count == 0)
+            if (impRepList.Count == 0)
             {
                 impInBase = true;
 
@@ -774,11 +860,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
-                        ButtonDefinitions = new[]
-                        {
+                        ButtonDefinitions =
+                        [
                             new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
-                        },
-                        ContentTitle = "Импорт из .raodb",
+                        ],
+                        ContentTitle = "Импорт из .raodb/.xlsx/.json",
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
@@ -810,13 +896,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Да для всех" },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
@@ -850,12 +936,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
@@ -879,34 +965,25 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
 
-            await CheckAnswer(res, baseReps, null, impRep);
+            await CheckAnswer(res, baseReps, impReps, null, impRep);
 
             #endregion
         }
 
-        await baseReps.SortAsync();
+        await baseReps.SortAsync().ConfigureAwait(false);
     }
 
     #endregion
 
     #region ProcessIfHasReports21
 
-    private protected async Task ProcessIfHasReports21(Reports baseReps, Reports? impReps = null, Report? impReport = null)
+    private protected async Task ProcessIfHasReports21(Reports baseReps, Reports impReps, List<Report> impRepList)
     {
         BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
         BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
         BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
 
-        var listImpRep = new List<Report>();
-        if (impReps != null)
-        {
-            listImpRep.AddRange(impReps.Report_Collection);
-        }
-        if (impReport != null)
-        {
-            listImpRep.Add(impReport);
-        }
-        foreach (var impRep in listImpRep) //Для каждой импортируемой формы
+        foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
             ImpRepFormNum = impRep.FormNum_DB;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
@@ -921,7 +998,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var baseRep = (Report)key1;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
-                BaseRepFormCount = baseRep.Rows.Count;
+                BaseRepFormCount = Math.Max(ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
                 BaseRepYear = baseRep.Year_DB;
 
@@ -939,12 +1016,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
                                 new ButtonDefinition { Name = "Пропустить для всех" }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
@@ -960,8 +1037,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
                                 $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
-                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
                                 $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
@@ -997,14 +1074,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                 new ButtonDefinition { Name = "Дополнить" },
                                 new ButtonDefinition { Name = "Сохранить оба" },
                                 new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортируемый отчет имеет тот же год и номер корректировки, что и имеющийся в базе." +
@@ -1018,8 +1095,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
                                 $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
-                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
@@ -1027,7 +1104,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    await CheckAnswer(res, baseReps, baseRep, impRep);
+                    if (res is "Дополнить" or "Заменить")
+                    {
+                        baseRep = await FillReportWithForms(baseReps, baseRep);
+                    }
+                    await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
                 }
 
@@ -1045,13 +1126,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                     new ButtonDefinition { Name = "Заменять все формы" },
                                     new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
@@ -1067,8 +1148,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                     $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
                                     $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
                                     $"{Environment.NewLine}" +
                                     $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
                                     $"{Environment.NewLine}все формы с меньшим номером корректировки.",
@@ -1088,12 +1169,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         res = await MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
-                                ButtonDefinitions = new[]
-                                {
+                                ButtonDefinitions =
+                                [
                                     new ButtonDefinition { Name = "Заменить", IsDefault = true },
                                     new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                },
-                                ContentTitle = "Импорт из .raodb",
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
                                 ContentHeader = "Уведомление",
                                 ContentMessage =
                                     "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
@@ -1109,8 +1190,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
                                     $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
                                     $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
-                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
@@ -1119,8 +1200,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         #endregion
                     }
                 }
-
-                await CheckAnswer(res, baseReps, baseRep, impRep);
+                if (res is "Заменить" or "Заменять все формы")
+                {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
+                }
+                await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                 break;
 
                 #endregion
@@ -1128,7 +1212,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #region TryAddEmptyOrg
 
-            if (impReps?.Report_Collection.Count == 0)
+            if (impRepList.Count == 0)
             {
                 impInBase = true;
 
@@ -1137,11 +1221,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 await MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
-                        ButtonDefinitions = new[]
-                        {
+                        ButtonDefinitions =
+                        [
                             new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
-                        },
-                        ContentTitle = "Импорт из .raodb",
+                        ],
+                        ContentTitle = "Импорт из .raodb/.xlsx/.json",
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
@@ -1184,13 +1268,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Да для всех" },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
@@ -1203,7 +1287,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
                                 $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}{InventoryCheck(impRep)}" +
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}" +
                                 $"{Environment.NewLine}" +
                                 $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
                                 $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
@@ -1223,12 +1307,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     res = await MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                         {
-                            ButtonDefinitions = new[]
-                            {
+                            ButtonDefinitions =
+                            [
                                 new ButtonDefinition { Name = "Да", IsDefault = true },
                                 new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            },
-                            ContentTitle = "Импорт из .raodb",
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
                             ContentHeader = "Уведомление",
                             ContentMessage =
                                 "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
@@ -1241,7 +1325,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
                                 $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}{InventoryCheck(impRep)}",
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
@@ -1251,12 +1335,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
 
-            await CheckAnswer(res, baseReps, null, impRep);
+            await CheckAnswer(res, baseReps, impReps, null, impRep);
 
             #endregion
         }
 
-        await baseReps.SortAsync();
+        await baseReps.SortAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -1273,7 +1357,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var note = (Note)key1;
                 if (note.Order == 0)
                 {
-                    note.Order = MainWindowVM.GetNumberInOrder(form.Notes);
+                    note.Order = InitializationAsyncCommand.GetNumberInOrder(form.Notes);
                 }
             }
         }
@@ -1285,8 +1369,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     private static async Task<Report> FillReportWithForms(Reports baseReps, Report baseRep)
     {
-        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local.FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
-        if (checkedRep != null && (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
+        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local
+                .FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
+        if (checkedRep != null &&
+            (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
         {
             baseRep = await ReportsStorage.Api.GetAsync(baseRep.Id);
             StaticConfiguration.DBModel.Entry(checkedRep).State = EntityState.Detached;
@@ -1294,6 +1380,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             baseReps.Report_Collection.Replace(checkedRep, baseRep);
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
+        
         return baseRep;
     }
 

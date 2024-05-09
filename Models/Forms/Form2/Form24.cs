@@ -13,7 +13,8 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
-public class Form24 : Form2
+[Table (name: "form_24")]
+public partial class Form24 : Form2
 {
     #region Constructor
 
@@ -83,10 +84,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(CodeOYAT)))
+            if (Dictionary.TryGetValue(nameof(CodeOYAT), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(CodeOYAT)]).Value = CodeOYAT_DB;
-                return (RamAccess<string>)Dictionary[nameof(CodeOYAT)];
+                ((RamAccess<string>)value).Value = CodeOYAT_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CodeOYAT_Validation, CodeOYAT_DB);
             rm.PropertyChanged += CodeOYATValueChanged;
@@ -115,7 +116,7 @@ public class Form24 : Form2
         {
             value.AddError("Поле не заполнено"); return false;
         }
-        if (!new Regex("^[0-9]{5}$").IsMatch(value.Value))
+        if (!FiveNumRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); return false;
         }
@@ -134,10 +135,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(FcpNumber)))
+            if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
-                return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+                ((RamAccess<string>)value).Value = FcpNumber_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
             rm.PropertyChanged += FcpNumberValueChanged;
@@ -177,10 +178,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassCreated)))
+            if (Dictionary.TryGetValue(nameof(MassCreated), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassCreated)]).Value = MassCreated_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassCreated)];
+                ((RamAccess<string>)value).Value = MassCreated_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassCreated_Validation, MassCreated_DB);
             rm.PropertyChanged += MassCreatedValueChanged;
@@ -234,8 +235,10 @@ public class Form24 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -260,10 +263,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityCreated)))
+            if (Dictionary.TryGetValue(nameof(QuantityCreated), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityCreated)]).Value = QuantityCreated_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityCreated)];
+                ((RamAccess<string>)value).Value = QuantityCreated_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityCreated_Validation, QuantityCreated_DB);
             rm.PropertyChanged += QuantityCreatedValueChanged;
@@ -314,10 +317,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassFromAnothers)))
+            if (Dictionary.TryGetValue(nameof(MassFromAnothers), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassFromAnothers)]).Value = MassFromAnothers_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassFromAnothers)];
+                ((RamAccess<string>)value).Value = MassFromAnothers_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassFromAnothers_Validation, MassFromAnothers_DB);
             rm.PropertyChanged += MassFromAnothersValueChanged;
@@ -372,8 +375,10 @@ public class Form24 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -398,10 +403,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityFromAnothers)))
+            if (Dictionary.TryGetValue(nameof(QuantityFromAnothers), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityFromAnothers)]).Value = QuantityFromAnothers_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityFromAnothers)];
+                ((RamAccess<string>)value).Value = QuantityFromAnothers_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityFromAnothers_Validation, QuantityFromAnothers_DB);
             rm.PropertyChanged += QuantityFromAnothersValueChanged;
@@ -451,10 +456,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassFromAnothersImported)))
+            if (Dictionary.TryGetValue(nameof(MassFromAnothersImported), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassFromAnothersImported)]).Value = MassFromAnothersImported_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassFromAnothersImported)];
+                ((RamAccess<string>)value).Value = MassFromAnothersImported_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassFromAnothersImported_Validation, MassFromAnothersImported_DB);
             rm.PropertyChanged += MassFromAnothersImportedValueChanged;
@@ -508,8 +513,10 @@ public class Form24 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -534,10 +541,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityFromAnothersImported)))
+            if (Dictionary.TryGetValue(nameof(QuantityFromAnothersImported), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityFromAnothersImported)]).Value = QuantityFromAnothersImported_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityFromAnothersImported)];
+                ((RamAccess<string>)value).Value = QuantityFromAnothersImported_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityFromAnothersImported_Validation, QuantityFromAnothersImported_DB);
             rm.PropertyChanged += QuantityFromAnothersImportedValueChanged;
@@ -587,10 +594,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassAnotherReasons)))
+            if (Dictionary.TryGetValue(nameof(MassAnotherReasons), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassAnotherReasons)]).Value = MassAnotherReasons_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassAnotherReasons)];
+                ((RamAccess<string>)value).Value = MassAnotherReasons_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassAnotherReasons_Validation, MassAnotherReasons_DB);
             rm.PropertyChanged += MassAnotherReasonsValueChanged;
@@ -644,8 +651,10 @@ public class Form24 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -670,10 +679,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityAnotherReasons)))
+            if (Dictionary.TryGetValue(nameof(QuantityAnotherReasons), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityAnotherReasons)]).Value = QuantityAnotherReasons_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityAnotherReasons)];
+                ((RamAccess<string>)value).Value = QuantityAnotherReasons_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityAnotherReasons_Validation, QuantityAnotherReasons_DB);
             rm.PropertyChanged += QuantityAnotherReasonsValueChanged;
@@ -723,10 +732,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassTransferredToAnother)))
+            if (Dictionary.TryGetValue(nameof(MassTransferredToAnother), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassTransferredToAnother)]).Value = MassTransferredToAnother_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassTransferredToAnother)];
+                ((RamAccess<string>)value).Value = MassTransferredToAnother_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassTransferredToAnother_Validation, MassTransferredToAnother_DB);
             rm.PropertyChanged += MassTransferredToAnotherValueChanged;
@@ -780,8 +789,10 @@ public class Form24 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -806,10 +817,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityTransferredToAnother)))
+            if (Dictionary.TryGetValue(nameof(QuantityTransferredToAnother), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityTransferredToAnother)]).Value = QuantityTransferredToAnother_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityTransferredToAnother)];
+                ((RamAccess<string>)value).Value = QuantityTransferredToAnother_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityTransferredToAnother_Validation, QuantityTransferredToAnother_DB);
             rm.PropertyChanged += QuantityTransferredToAnotherValueChanged;
@@ -860,10 +871,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassRefined)))
+            if (Dictionary.TryGetValue(nameof(MassRefined), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassRefined)]).Value = MassRefined_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassRefined)];
+                ((RamAccess<string>)value).Value = MassRefined_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassRefined_Validation, MassRefined_DB);
             rm.PropertyChanged += MassRefinedValueChanged;
@@ -917,8 +928,10 @@ public class Form24 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -943,10 +956,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityRefined)))
+            if (Dictionary.TryGetValue(nameof(QuantityRefined), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityRefined)]).Value = QuantityRefined_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityRefined)];
+                ((RamAccess<string>)value).Value = QuantityRefined_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityRefined_Validation, QuantityRefined_DB);
             rm.PropertyChanged += QuantityRefinedValueChanged;
@@ -996,10 +1009,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(MassRemovedFromAccount)))
+            if (Dictionary.TryGetValue(nameof(MassRemovedFromAccount), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(MassRemovedFromAccount)]).Value = MassRemovedFromAccount_DB;
-                return (RamAccess<string>)Dictionary[nameof(MassRemovedFromAccount)];
+                ((RamAccess<string>)value).Value = MassRemovedFromAccount_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassRemovedFromAccount_Validation, MassRemovedFromAccount_DB);
             rm.PropertyChanged += MassRemovedFromAccountValueChanged;
@@ -1053,8 +1066,10 @@ public class Form24 : Form2
         {
             value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1079,10 +1094,10 @@ public class Form24 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(QuantityRemovedFromAccount)))
+            if (Dictionary.TryGetValue(nameof(QuantityRemovedFromAccount), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(QuantityRemovedFromAccount)]).Value = QuantityRemovedFromAccount_DB;
-                return (RamAccess<string>)Dictionary[nameof(QuantityRemovedFromAccount)];
+                ((RamAccess<string>)value).Value = QuantityRemovedFromAccount_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityRemovedFromAccount_Validation, QuantityRemovedFromAccount_DB);
             rm.PropertyChanged += QuantityRemovedFromAccountValueChanged;
@@ -1565,6 +1580,13 @@ public class Form24 : Form2
         //_DataGridColumns = MassCreatedR;
         return _DataGridColumns;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+    
+    [GeneratedRegex("^[0-9]{5}$")]
+    private static partial Regex FiveNumRegex();
 
     #endregion
 }

@@ -1,14 +1,30 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm ="clr-namespace:Client_App.ViewModels"
+             xmlns:v ="clr-namespace:Client_App.Views"
              xmlns:local="using:Client_App"
              x:Class="Client_App.App">
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
-  <Application.Styles>
-    <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
-    <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
-    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
-  </Application.Styles>
+    <!--
+    <Application.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type vm:CheckFormVM}">
+                <v:CheckForm/>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+    -->
+
+    <Application.Styles>
+        <!--FluentTheme Mode="Light"/-->
+        <Style Selector="DataGridCell.cell_tooltip">
+            <Setter Property="ToolTip.Tip" Value="{Binding Content.Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
+        </Style>
+        <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
+        <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
+    </Application.Styles>
 </Application>

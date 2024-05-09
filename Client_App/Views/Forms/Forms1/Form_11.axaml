@@ -1,0 +1,182 @@
+<Window
+    x:Class="Client_App.Form_11"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
+    Title="Form_11"
+    d:DesignHeight="450"
+    d:DesignWidth="900"
+    x:DataType="vm:Form_11VM"
+    mc:Ignorable="d">
+
+    <Design.DataContext>
+        <vm:Form_11VM/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="200,*,150">
+
+        <!--#region TopTable-->
+
+        <Grid Grid.Row="0" ColumnDefinitions="440,440">
+            <Border
+                Grid.Column="0"
+                Width="440"
+                Margin="5,5,0,0"
+                Padding="3"
+                HorizontalAlignment="Left"
+                BorderBrush="Black"
+                BorderThickness="1"
+                CornerRadius="5">
+                <Grid RowDefinitions="35,35,35,35">
+                    <Grid Grid.Row="0">
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="Дата окончания предыдущего отчетного периода:"/>
+                        <TextBox
+                            Width="120"
+                            Height="30"
+                            Margin="0,0,5,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text=""/>
+                        <!--  #bind StartPeriod_DB  -->
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="Дата окончания настоящего отчетного периода:"/>
+                        <TextBox
+                            Width="120"
+                            Height="30"
+                            Margin="0,0,5,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text=""/>
+                        <!--  #bind EndPeriod_DB  -->
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <WrapPanel Margin="5">
+                            <TextBlock
+                                Padding="0,0,20,0"
+                                VerticalAlignment="Center"
+                                Text="Номер корректировки:"/>
+                            <TextBox
+                                Height="30"
+                                MinWidth="100"
+                                VerticalAlignment="Center"
+                                Text=""/>
+                            <!--  #bind CorrectionNumber_DB  -->
+                        </WrapPanel>
+                    </Grid>
+                    <Grid Grid.Row="3">
+                        <WrapPanel Margin="5,30">
+                            <Button
+                                Width="80"
+                                Height="30"
+                                Margin="0,0,5,0"
+                                Content="Проверить"/>
+                            <Button
+                                Width="80"
+                                Height="30"
+                                Content="Сохранить"/>
+                        </WrapPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border
+                Grid.Column="1"
+                Width="440"
+                Margin="5,5,0,0"
+                Padding="3"
+                HorizontalAlignment="Left"
+                BorderBrush="Black"
+                BorderThickness="1"
+                CornerRadius="5">
+                <Grid RowDefinitions="35,35,35,35,35">
+                    <Grid Grid.Row="0" ColumnDefinitions="3*,7*">
+                        <TextBlock
+                            Grid.Column="0"
+                            Padding="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="ФИО исполнителя:"/>
+                        <TextBox
+                            Grid.Column="1"
+                            Height="30"
+                            MinWidth="150"
+                            Margin="0,0,10,0"
+                            Padding="3"
+                            VerticalAlignment="Center"
+                            Text=""/>
+                        <!--  #bind FIOexecutor_DB  -->
+                    </Grid>
+                    <Grid Grid.Row="1" ColumnDefinitions="3*,7*">
+                        <TextBlock
+                            Grid.Column="0"
+                            Padding="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="Должность:"/>
+                        <TextBox
+                            Grid.Column="1"
+                            Height="30"
+                            MinWidth="150"
+                            Margin="0,0,10,0"
+                            Padding="3"
+                            VerticalAlignment="Center"
+                            Text=""/>
+                        <!--  #bind GradeExecutor_DB  -->
+                    </Grid>
+                    <Grid Grid.Row="2" ColumnDefinitions="3*,7*">
+                        <TextBlock
+                            Grid.Column="0"
+                            Padding="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="Телефон:"/>
+                        <TextBox
+                            Grid.Column="1"
+                            Height="30"
+                            MinWidth="150"
+                            Margin="0,0,10,0"
+                            Padding="3"
+                            VerticalAlignment="Center"
+                            Text=""/>
+                        <!--  #bind ExecPhone_DB  -->
+                    </Grid>
+                    <Grid Grid.Row="3" ColumnDefinitions="3*,7*">
+                        <TextBlock
+                            Grid.Column="0"
+                            Padding="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="Электронная почта:"/>
+                        <TextBox
+                            Grid.Column="1"
+                            Height="30"
+                            MinWidth="150"
+                            Margin="0,0,10,0"
+                            Padding="3"
+                            VerticalAlignment="Center"
+                            Text=""/>
+                        <!--  #bind ExecEmail_DB  -->
+                    </Grid>
+                    <Grid Grid.Row="4">
+                        <Button
+                            Width="250"
+                            Height="30"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            Content="Скопировать данные предыдущей формы"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--#region FormData-->
+
+        <DataGrid Grid.Row="1" Margin="5,10"/>
+    </Grid>
+</Window>

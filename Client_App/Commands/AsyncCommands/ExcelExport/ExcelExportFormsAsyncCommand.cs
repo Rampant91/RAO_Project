@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ using OfficeOpenXml;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация-Формы 1.x, 2.x
-public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
+public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -29,10 +30,9 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
         var cts = new CancellationTokenSource();
         var findRep = 0;
         string fileName;
-
         var forSelectedOrg = parameter.ToString()!.Contains("Org");
         var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
-        var param = Regex.Replace(parameter.ToString()!, "[^\\d.]", "");
+        var param = OnlyDigitsRegex().Replace(parameter.ToString(), "");
 
         switch (forSelectedOrg)
         {
@@ -86,13 +86,13 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
                 ExportType = $"Выбранная организация_Формы {param}";
                 var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
                 var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             }
             default:
             {
                 ExportType = $"Формы {param}";
-                fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             }
         }
@@ -125,6 +125,7 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
             return;
         }
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
@@ -481,8 +482,10 @@ public class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
             CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
             FillExportForms(param);
         }
-
         Worksheet.View.FreezePanes(2, 1);
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
     }
+
+    [GeneratedRegex(@"[^\d.]")]
+    private static partial Regex OnlyDigitsRegex();
 }

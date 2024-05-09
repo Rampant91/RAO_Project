@@ -3,6 +3,7 @@ using Models.Collections;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Client_App.Commands.AsyncCommands.Save;
 using Models.Forms;
 using Models.Interfaces;
 using ReactiveUI;
@@ -12,14 +13,14 @@ namespace Client_App.Commands.AsyncCommands.Add;
 // Добавить N строк в форму
 internal class AddRowsAsyncCommand : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-    private string FormType => _ChangeOrCreateViewModel.FormType;
-    private Interaction<object, int> ShowDialog => _ChangeOrCreateViewModel.ShowDialog;
+    private readonly ChangeOrCreateVM _changeOrCreateViewModel;
+    private Report Storage => _changeOrCreateViewModel.Storage;
+    private string FormType => _changeOrCreateViewModel.FormType;
+    private Interaction<object, int> ShowDialog => _changeOrCreateViewModel.ShowDialog;
 
     public AddRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
     {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
+        _changeOrCreateViewModel = changeOrCreateViewModel;
     }
 
     public override async Task AsyncExecute(object? parameter)
@@ -36,8 +37,12 @@ internal class AddRowsAsyncCommand : BaseAsyncCommand
                 lst.Add(frm);
                 number++;
             }
-
+            var formContainRowAtStart = Storage.Rows.Count > 0;
             Storage.Rows.AddRange(lst);
+            if (!formContainRowAtStart)
+            {
+                await new SaveReportAsyncCommand(_changeOrCreateViewModel).AsyncExecute(null);
+            }
         }
     }
 

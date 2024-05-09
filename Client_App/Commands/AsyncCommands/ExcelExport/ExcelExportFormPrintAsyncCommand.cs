@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
 using Models.Collections;
 using Models.Interfaces;
 using OfficeOpenXml;
@@ -36,11 +36,11 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             case '1':
                 var startPeriod = RemoveForbiddenChars(exportForm.StartPeriod_DB);
                 var endPeriod = RemoveForbiddenChars(exportForm.EndPeriod_DB);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             case '2':
                 var year = RemoveForbiddenChars(exportForm.Year_DB);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             default:
                 return;
@@ -65,6 +65,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"{formNum}.xlsx");
         #endif
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
         await exportForm.SortAsync();
         var worksheetTitle = excelPackage.Workbook.Worksheets[$"{formNum.Split('.')[0]}.0"];

@@ -17,13 +17,13 @@ public class Form1_Visual
     public static void FormF_Visual(MainWindow v,in Panel pnl0, in Panel pnlx, in Panel pnlb)
     {
         var tp = pnl0.FindNameScope();
-        var grd1 = (DataGridReports)Form0_Visual(tp);
+        var grd1 = Form0_Visual(tp);
         pnl0.Children.Add(grd1);
 
         NameScope scp = new();
         scp.Register(grd1.Name, grd1);
         scp.Complete();
-        var grd2 = (DataGridReport)FormX_Visual(scp);
+        var grd2 = FormX_Visual(scp);
         pnlx.Children.Add(grd2);
 
         Binding bd = new()
@@ -40,7 +40,7 @@ public class Form1_Visual
     }
 
     //Форма 10
-    private static Control Form0_Visual(INameScope scp)
+    private static DataGridReports Form0_Visual(INameScope scp)
     {
         DataGridReports grd = new()
         {
@@ -78,7 +78,7 @@ public class Form1_Visual
     }
 
     //Форма 1X
-    private static Control FormX_Visual(INameScope scp)
+    private static DataGridReport FormX_Visual(INameScope scp)
     {
         DataGridReport grd = new("Form1AllDataGrid_")
         {
@@ -116,7 +116,7 @@ public class Form1_Visual
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
         };
 
-        double h = 33;
+        const double h = 33;
 
         Button btn1 = new()
         {

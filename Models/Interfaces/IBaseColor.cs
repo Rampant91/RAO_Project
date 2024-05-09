@@ -8,6 +8,7 @@ public enum ColorType {
     Green,
     Yellow
 }
+
 public interface IBaseColor
 {
     public static List<Color> ColorTypeList = new()

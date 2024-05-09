@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
@@ -41,11 +42,11 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
             case '1':
                 var startPeriod = RemoveForbiddenChars(exportForm.StartPeriod_DB);
                 var endPeriod = RemoveForbiddenChars(exportForm.EndPeriod_DB);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             case '2':
                 var year = RemoveForbiddenChars(exportForm.Year_DB);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{BaseVM.Version}";
+                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             default:
                 return;
@@ -66,6 +67,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";

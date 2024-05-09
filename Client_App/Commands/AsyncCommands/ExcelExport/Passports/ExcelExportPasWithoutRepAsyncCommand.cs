@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -107,7 +108,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             #endregion
         }
 
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{BaseVM.Version}";
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
         {
@@ -138,6 +139,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             return;
         }
 
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
@@ -179,24 +181,25 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 }))
             .ToListAsync(cancellationToken: cts.Token);
 
+        var i = 0;
         ConcurrentBag<FileInfo> filesToRemove = new();
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
         try
         {
             await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
             {
-                var flag = forms11.Any(form11 =>
-                    ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-                    && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
-                    && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
-                    && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-                    && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4]));
-                if (flag)
+                if (forms11.Any(form11 =>
+                        ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                        && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
+                        && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
+                        && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                        && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
                 {
                     filesToRemove.Add(files.First(file =>
                         file.Name.Remove(file.Name.Length - 4) ==
                         $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
                 }
+                i++;
                 return default;
             });
         }
@@ -217,11 +220,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             var pasName = file.Name.TrimEnd(".pdf".ToCharArray());
             Worksheet.Cells[currentRow, 1].Value = file.DirectoryName;
             Worksheet.Cells[currentRow, 2].Value = pasName;
-            Worksheet.Cells[currentRow, 3].Value = pasName.Split('#')[0];
-            Worksheet.Cells[currentRow, 4].Value = pasName.Split('#')[1];
-            Worksheet.Cells[currentRow, 5].Value = pasName.Split('#')[2];
-            Worksheet.Cells[currentRow, 6].Value = pasName.Split('#')[3];
-            Worksheet.Cells[currentRow, 7].Value = pasName.Split('#')[4];
+            Worksheet.Cells[currentRow, 3].Value = ConvertToExcelString(pasName.Split('#')[0]);
+            Worksheet.Cells[currentRow, 4].Value = ConvertToExcelString(pasName.Split('#')[1]);
+            Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(pasName.Split('#')[2], Worksheet, currentRow, 5);
+            Worksheet.Cells[currentRow, 6].Value = ConvertToExcelString(pasName.Split('#')[3]);
+            Worksheet.Cells[currentRow, 7].Value = ConvertToExcelString(pasName.Split('#')[4]);
             currentRow++;
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -11,16 +10,9 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
-//  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
-internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
+// Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
+internal class ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
 {
-    private readonly MainWindowVM _MainWindowViewModel;
-
-    public ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowViewModel)
-    {
-        _MainWindowViewModel = mainWindowViewModel;
-    }
-
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
@@ -100,15 +92,15 @@ internal class ExportReportsWithDateRangeAsyncCommand : BaseAsyncCommand
                           && DateTime.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
                           && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
             .ToArray();
-        List<Report> repInRangeWithForms = new();
-        foreach (var rep in repInRange)
-        {
-            repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
-        }
+        //List<Report> repInRangeWithForms = [];
+        //foreach (var rep in repInRange)
+        //{
+        //    repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
+        //}
         Reports exportOrg = new() { Master = org.Master };
-        exportOrg.Report_Collection.AddRange(repInRangeWithForms);
+        exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
-        if (_MainWindowViewModel.ExportReports.CanExecute(null))
-            _MainWindowViewModel.ExportReports.Execute(exportOrg);
+        if (mainWindowViewModel.ExportReports.CanExecute(null))
+            mainWindowViewModel.ExportReports.Execute(exportOrg);
     }
 }

@@ -11,93 +11,64 @@ namespace Models.DBRealization;
 
 public class DataContext : DbContext
 {
-    public string _path { get; set; }
-    public DataContext(string Path = "")
+    private string Path { get; set; }
+
+    #region Constructor
+    
+    public DataContext(string path = "")
     {
-        if (Path == "")
+        if (path == "")
         {
             var system = Environment.GetFolderPath(Environment.SpecialFolder.System);
-            var path = System.IO.Path.GetPathRoot(system);
-            var tmp = System.IO.Path.Combine(path, "RAO");
+            var rootPath = System.IO.Path.GetPathRoot(system);
+            var tmp = System.IO.Path.Combine(rootPath, "RAO");
             tmp = System.IO.Path.Combine(tmp, "Local_temp.raodb");
-            _path = tmp;
+            Path = tmp;
         }
         else
         {
-            _path = Path;
+            Path = path;
         }
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-        var lt = RedDataBaseCreation.GetConnectionString(_path);
-        optionsBuilder.UseFirebird(lt);
-    }
+    #endregion
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+    #region DbSets
 
-        modelBuilder.Entity<DBObservable>()
-            .ToTable("DBObservable_DbSet");
+    public DbSet<DBObservable> DBObservableDbSet { get; set; }
+    public DbSet<Reports> ReportsCollectionDbSet { get; set; }
+    public DbSet<Report> ReportCollectionDbSet { get; set; }
+    public DbSet<Note> notes { get; set; }
 
-        modelBuilder.Entity<Reports>()
-            .ToTable("ReportsCollection_DbSet");
-        modelBuilder.Entity<Report>()
-            .ToTable("ReportCollection_DbSet");
-        modelBuilder.Entity<Note>()
-            .ToTable("notes");
+    public DbSet<Form10> form_10 { get; set; }
+    public DbSet<Form11> form_11 { get; set; }
+    public DbSet<Form12> form_12 { get; set; }
+    public DbSet<Form13> form_13 { get; set; }
+    public DbSet<Form14> form_14 { get; set; }
+    public DbSet<Form15> form_15 { get; set; }
+    public DbSet<Form16> form_16 { get; set; }
+    public DbSet<Form17> form_17 { get; set; }
+    public DbSet<Form18> form_18 { get; set; }
+    public DbSet<Form19> form_19 { get; set; }
 
-        modelBuilder.Entity<Form10>()
-            .ToTable("form_10");
-        modelBuilder.Entity<Form11>()
-            .ToTable("form_11");
-        modelBuilder.Entity<Form12>()
-            .ToTable("form_12");
-        modelBuilder.Entity<Form13>()
-            .ToTable("form_13");
-        modelBuilder.Entity<Form14>()
-            .ToTable("form_14");
-        modelBuilder.Entity<Form15>()
-            .ToTable("form_15");
-        modelBuilder.Entity<Form16>()
-            .ToTable("form_16");
-        modelBuilder.Entity<Form17>()
-            .ToTable("form_17");
-        modelBuilder.Entity<Form18>()
-            .ToTable("form_18");
-        modelBuilder.Entity<Form19>()
-            .ToTable("form_19");
+    public DbSet<Form20> form_20 { get; set; }
+    public DbSet<Form21> form_21 { get; set; }
+    public DbSet<Form22> form_22 { get; set; }
+    public DbSet<Form23> form_23 { get; set; }
+    public DbSet<Form24> form_24 { get; set; }
+    public DbSet<Form25> form_25 { get; set; }
+    public DbSet<Form26> form_26 { get; set; }
+    public DbSet<Form27> form_27 { get; set; }
+    public DbSet<Form28> form_28 { get; set; }
+    public DbSet<Form29> form_29 { get; set; }
+    public DbSet<Form210> form_210 { get; set; }
+    public DbSet<Form211> form_211 { get; set; }
+    public DbSet<Form212> form_212 { get; set; }
 
-        modelBuilder.Entity<Form20>()
-            .ToTable("form_20");
-        modelBuilder.Entity<Form21>()
-            .ToTable("form_21");
-        modelBuilder.Entity<Form22>()
-            .ToTable("form_22");
-        modelBuilder.Entity<Form23>()
-            .ToTable("form_23");
-        modelBuilder.Entity<Form24>()
-            .ToTable("form_24");
-        modelBuilder.Entity<Form25>()
-            .ToTable("form_25");
-        modelBuilder.Entity<Form26>()
-            .ToTable("form_26");
-        modelBuilder.Entity<Form27>()
-            .ToTable("form_27");
-        modelBuilder.Entity<Form28>()
-            .ToTable("form_28");
-        modelBuilder.Entity<Form29>()
-            .ToTable("form_29");
-        modelBuilder.Entity<Form210>()
-            .ToTable("form_210");
-        modelBuilder.Entity<Form211>()
-            .ToTable("form_211");
-        modelBuilder.Entity<Form212>()
-            .ToTable("form_212");
-    }
+    #endregion
 
+    #region Load
+    
     public void LoadTables()
     {
         notes.Load();
@@ -191,6 +162,458 @@ public class DataContext : DbContext
         }
     }
 
+    #endregion
+
+    #region OnConfiguring
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        var lt = RedDataBaseCreation.GetConnectionString(Path);
+        optionsBuilder.UseFirebird(lt);
+    }
+
+    #endregion
+
+    #region OnModelCreating
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        #region DBObservable
+        
+        modelBuilder.Entity<DBObservable>()
+            .ToTable("DBObservable_DbSet")
+            .HasMany(x => x.Reports_Collection)
+            .WithOne(x => x.DBObservable)
+            .HasForeignKey(x => x.DBObservableId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Reports
+
+        modelBuilder.Entity<Reports>()
+            .ToTable("ReportsCollection_DbSet")
+            .HasOne(x => x.DBObservable)
+            .WithMany(x => x.Reports_Collection)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Reports>()
+            .HasKey(x => x.Id)
+            .HasName("PK_ReportsCollection_DbSet");
+
+        modelBuilder.Entity<Reports>()
+            .HasMany(x => x.Report_Collection)
+            .WithOne(x => x.Reports)
+            .OnDelete(DeleteBehavior.Cascade); 
+        
+        #endregion
+
+        #region Report
+
+        modelBuilder.Entity<Report>()
+            .ToTable("ReportCollection_DbSet")
+            .HasOne(x => x.Reports)
+            .WithMany(x => x.Report_Collection)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows10)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows11)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows12)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows13)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows14)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows15)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows16)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows17)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows18)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows19)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows20)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows21)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows22)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows23)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows24)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows25)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows26)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows27)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows28)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows29)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows210)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows211)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Rows212)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Report>()
+            .HasMany(x => x.Notes)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Note
+        
+        modelBuilder.Entity<Note>()
+            .ToTable("notes")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Notes)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Forms
+        
+        #region Form10
+
+        modelBuilder.Entity<Form10>()
+            .ToTable("form_10")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows10)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form11
+
+        modelBuilder.Entity<Form11>()
+            .ToTable("form_11")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows11)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form12
+
+        modelBuilder.Entity<Form12>()
+            .ToTable("form_12")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows12)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form13
+
+        modelBuilder.Entity<Form13>()
+            .ToTable("form_13")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows13)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form14
+
+        modelBuilder.Entity<Form14>()
+            .ToTable("form_14")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows14)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form15
+
+        modelBuilder.Entity<Form15>()
+            .ToTable("form_15")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows15)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form16
+
+        modelBuilder.Entity<Form16>()
+            .ToTable("form_16")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows16)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form17
+
+        modelBuilder.Entity<Form17>()
+            .ToTable("form_17")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows17)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form18
+
+        modelBuilder.Entity<Form18>()
+            .ToTable("form_18")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows18)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form19
+
+        modelBuilder.Entity<Form19>()
+            .ToTable("form_19")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows19)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form20
+
+        modelBuilder.Entity<Form20>()
+            .ToTable("form_20")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows20)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form21
+
+        modelBuilder.Entity<Form21>()
+            .ToTable("form_21")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows21)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form22
+
+        modelBuilder.Entity<Form22>()
+            .ToTable("form_22")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows22)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form23
+
+        modelBuilder.Entity<Form23>()
+            .ToTable("form_23")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows23)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form24
+
+        modelBuilder.Entity<Form24>()
+            .ToTable("form_24")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows24)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form25
+
+        modelBuilder.Entity<Form25>()
+            .ToTable("form_25")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows25)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form26
+
+        modelBuilder.Entity<Form26>()
+            .ToTable("form_26")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows26)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form27
+
+        modelBuilder.Entity<Form27>()
+            .ToTable("form_27")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows27)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form28
+
+        modelBuilder.Entity<Form28>()
+            .ToTable("form_28")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows28)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form29
+
+        modelBuilder.Entity<Form29>()
+            .ToTable("form_29")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows29)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form210
+
+        modelBuilder.Entity<Form210>()
+            .ToTable("form_210")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows210)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form211
+
+        modelBuilder.Entity<Form211>()
+            .ToTable("form_211")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows211)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+
+        #region Form212
+
+        modelBuilder.Entity<Form212>()
+            .ToTable("form_212")
+            .HasOne(x => x.Report)
+            .WithMany(x => x.Rows212)
+            .HasForeignKey(x => x.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion 
+        
+        #endregion
+    }
+
+    #endregion
+
+    #region Restore
+    
     public void Restore()
     {
         var changedEntries = ChangeTracker
@@ -211,38 +634,10 @@ public class DataContext : DbContext
                 case EntityState.Deleted:
                     entry.State = EntityState.Unchanged;
                     break;
-                
+
             }
         }
     }
 
-    public DbSet<DBObservable> DBObservableDbSet { get; set; }
-    public DbSet<Reports> ReportsCollectionDbSet { get; set; }
-    public DbSet<Report> ReportCollectionDbSet { get; set; }
-    public DbSet<Note> notes { get; set; }
-
-    public DbSet<Form10> form_10 { get; set; }
-    public DbSet<Form11> form_11 { get; set; }
-    public DbSet<Form12> form_12 { get; set; }
-    public DbSet<Form13> form_13 { get; set; }
-    public DbSet<Form14> form_14 { get; set; }
-    public DbSet<Form15> form_15 { get; set; }
-    public DbSet<Form16> form_16 { get; set; }
-    public DbSet<Form17> form_17 { get; set; }
-    public DbSet<Form18> form_18 { get; set; }
-    public DbSet<Form19> form_19 { get; set; }
-
-    public DbSet<Form20> form_20 { get; set; }
-    public DbSet<Form21> form_21 { get; set; }
-    public DbSet<Form22> form_22 { get; set; }
-    public DbSet<Form23> form_23 { get; set; }
-    public DbSet<Form24> form_24 { get; set; }
-    public DbSet<Form25> form_25 { get; set; }
-    public DbSet<Form26> form_26 { get; set; }
-    public DbSet<Form27> form_27 { get; set; }
-    public DbSet<Form28> form_28 { get; set; }
-    public DbSet<Form29> form_29 { get; set; }
-    public DbSet<Form210> form_210 { get; set; }
-    public DbSet<Form211> form_211 { get; set; }
-    public DbSet<Form212> form_212 { get; set; }
+    #endregion
 }

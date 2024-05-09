@@ -21,6 +21,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
+    private protected CancellationTokenSource Cts = new();
     private protected ExcelWorksheet Worksheet { get; set; }
 
     private protected ExcelWorksheet WorksheetPrim { get; set; }
@@ -32,7 +33,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter));
+            await Task.Run(() => AsyncExecute(parameter), Cts.Token);
         }
         catch (Exception e)
         {
@@ -96,7 +97,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         #region MessageSaveOrOpenTemp
 
         var res =
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
                 ButtonDefinitions = new[]
@@ -111,7 +112,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowDialog(Desktop.MainWindow)).Result;
 
         #endregion
 
@@ -142,6 +143,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 dial.Filters.Add(filter);
                 dial.InitialFileName = fileName;
                 fullPath = await dial.ShowAsync(Desktop.MainWindow);
+                if (fullPath is null)
+                {
+                    cts.Cancel();
+                    cts.Token.ThrowIfCancellationRequested();
+                }
                 if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
                 if (string.IsNullOrEmpty(fullPath))
                 {
@@ -185,7 +191,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
             default:
             {
-                cts.Cancel();
+                await cts.CancelAsync();
                 cts.Token.ThrowIfCancellationRequested();
                 break;
             }

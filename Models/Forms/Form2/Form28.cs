@@ -13,6 +13,7 @@ namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.8: Отведение сточных вод, содержащих радионуклиды")]
+[Table (name: "form_28")]
 public class Form28 : Form2
 {
     #region Constructor
@@ -63,10 +64,10 @@ public class Form28 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(WasteSourceName)))
+            if (Dictionary.TryGetValue(nameof(WasteSourceName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(WasteSourceName)]).Value = WasteSourceName_DB;
-                return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
+                ((RamAccess<string>)value).Value = WasteSourceName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
             rm.PropertyChanged += WasteSourceNameValueChanged;
@@ -111,10 +112,10 @@ public class Form28 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(WasteRecieverName)))
+            if (Dictionary.TryGetValue(nameof(WasteRecieverName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(WasteRecieverName)]).Value = WasteRecieverName_DB;
-                return (RamAccess<string>)Dictionary[nameof(WasteRecieverName)];
+                ((RamAccess<string>)value).Value = WasteRecieverName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
             rm.PropertyChanged += WasteRecieverNameValueChanged;
@@ -159,10 +160,10 @@ public class Form28 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RecieverTypeCode)))
+            if (Dictionary.TryGetValue(nameof(RecieverTypeCode), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(RecieverTypeCode)]).Value = RecieverTypeCode_DB;
-                return (RamAccess<string>)Dictionary[nameof(RecieverTypeCode)];
+                ((RamAccess<string>)value).Value = RecieverTypeCode_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
             rm.PropertyChanged += RecieverTypeCodeValueChanged;
@@ -212,10 +213,10 @@ public class Form28 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(PoolDistrictName)))
+            if (Dictionary.TryGetValue(nameof(PoolDistrictName), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(PoolDistrictName)]).Value = PoolDistrictName_DB;
-                return (RamAccess<string>)Dictionary[nameof(PoolDistrictName)];
+                ((RamAccess<string>)value).Value = PoolDistrictName_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
             rm.PropertyChanged += PoolDistrictNameValueChanged;
@@ -267,10 +268,10 @@ public class Form28 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(AllowedWasteRemovalVolume)))
+            if (Dictionary.TryGetValue(nameof(AllowedWasteRemovalVolume), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)]).Value = AllowedWasteRemovalVolume_DB;
-                return (RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)];
+                ((RamAccess<string>)value).Value = AllowedWasteRemovalVolume_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
             rm.PropertyChanged += AllowedWasteRemovalVolumeValueChanged;
@@ -325,8 +326,10 @@ public class Form28 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -351,10 +354,10 @@ public class Form28 : Form2
     {
         get
         {
-            if (Dictionary.ContainsKey(nameof(RemovedWasteVolume)))
+            if (Dictionary.TryGetValue(nameof(RemovedWasteVolume), out var value))
             {
-                ((RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)]).Value = RemovedWasteVolume_DB;
-                return (RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)];
+                ((RamAccess<string>)value).Value = RemovedWasteVolume_DB;
+                return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
             rm.PropertyChanged += RemovedWasteVolumeValueChanged;
@@ -405,8 +408,10 @@ public class Form28 : Form2
         {
             value1 = value1.Replace("+", "e+").Replace("-", "e-");
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
-        if (!double.TryParse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB"), out var doubleValue))
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
