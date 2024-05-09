@@ -2,13 +2,12 @@
 using Models.Collections;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using MessageBox.Avalonia.DTO;
+using Models.Classes;
 using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Interfaces;
@@ -189,8 +188,13 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                 await db.SaveChangesAsync();
                 var rep15 = await ReportsStorage.Api.GetAsync(repId);
                 SelectedReports.Report_Collection.Add(rep15);
-                await new ChangeFormAsyncCommand().AsyncExecute(
-                    new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep15 }));
+                var window11 = Desktop.Windows.First(x => x.Name == "1.1");
+                var windowParam = new Form11Parameter()
+                {
+                    parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep15 }),
+                    window11 = window11
+                };
+                await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null);
                 break;
             }
         }

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.22" />
     <PackageReference Include="EPPlus" Version="7.0.8" />
     <PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="9.0.2" />
     <PackageReference Include="JsonSubTypes" Version="2.0.1" />

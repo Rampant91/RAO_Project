@@ -17,6 +17,8 @@ public class KeyCommand
     public KeyModifiers KeyModifiers { get; set; }
     public ICommand Command { get; set; }
 
+    public object? CommandParam { get; set; }
+
     public void DoCommand(object param)
     {
         if(Command != null)
