@@ -105,7 +105,6 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
                     break;
                 }
             }
-
             await MainWindowVM.ShowDialog.Handle(frm);
             t.SelectedReports = tmp;
         }

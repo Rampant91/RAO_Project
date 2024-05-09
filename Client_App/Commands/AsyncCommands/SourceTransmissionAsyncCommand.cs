@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using DynamicData;
 using MessageBox.Avalonia.DTO;
 using Models.Classes;
 using Models.DBRealization;
@@ -76,10 +77,17 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                                   && !DateOnly.TryParse(rep.EndPeriod_DB, out _)
                                   && DateOnly.TryParse(SelectedReport.EndPeriod_DB, out var formEndDate)
                                   && repStartDate == formEndDate)))
-            .ToArray();
+            .OrderBy(x => x.EndPeriod_DB)
+            .ToList();
+        if (repInRange.Count == 2 
+            && !DateOnly.TryParse(repInRange[0].EndPeriod_DB, out _) 
+            && DateOnly.TryParse(repInRange[1].EndPeriod_DB, out _))
+        {
+            repInRange.Remove(repInRange[0]);
+        }
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
-        switch (repInRange.Length)
+        switch (repInRange.Count)
         {
             case > 1:   // У организации по ошибке есть несколько отчётов с нужным периодом
             {
@@ -234,7 +242,9 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             #region BindingData
 
                             ReportId = repId,
-                            NumberInOrder_DB = 1
+                            NumberInOrder_DB = 1,
+                            OperationCode_DB = form12.OperationCode_DB,
+                            OperationDate_DB = form12.OperationDate_DB,
 
                             #endregion
                         };
