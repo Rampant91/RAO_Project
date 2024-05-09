@@ -164,6 +164,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                 var grd = (ScrollViewer)Form1_Visual.Form11_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
+
                 var Rgrd = (DataGridForm11)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -271,16 +272,6 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
-                    ParamName = "SelectedItems",
-                    ContextMenuText = ["Передать источник с кодом операции 41                Ctrl+P"],
-                    Command = dataContext.SourceTransmission
-                });
-                Rgrd.CommandsList.Add(new KeyCommand
-                {
-                    Key = Avalonia.Input.Key.P,
-                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
-                    IsDoubleTappedCommand = false,
-                    IsContextMenuCommand = true,
                     ParamName = "Copy",
                     ContextMenuText = ["Открыть паспорт                                      Ctrl+P"],
                     Command = dataContext.OpenPas
@@ -305,6 +296,17 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     ContextMenuText = ["Скопировать в буфер имя паспорта      Ctrl+K"],
                     Command = dataContext.CopyPasName
                 });
+                Rgrd.CommandsList.Add(new KeyCommand
+                {
+                    Key = Avalonia.Input.Key.Z,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = ["Перевести источник в РАО                     Ctrl+Z"],
+                    Command = dataContext.SourceTransmission
+                });
+
                 #endregion
 
                 #region Notes Context Menu
@@ -378,6 +380,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                 var grd = (ScrollViewer)Form1_Visual.Form12_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
+
                 var Rgrd = (DataGridForm12)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -386,7 +389,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectAll",
-                    ContextMenuText = ["Выделить все                    Ctrl+A"],
+                    ContextMenuText = ["Выделить все                         Ctrl+A"],
                     Command = null
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -396,7 +399,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = ["Добавить строку              Ctrl+T"],
+                    ContextMenuText = ["Добавить строку                   Ctrl+T"],
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -406,7 +409,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                    ContextMenuText = ["Добавить N строк                 Ctrl+N"],
                     Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -416,7 +419,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                    ContextMenuText = ["Добавить N строк перед      Ctrl+I"],
                     Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -426,7 +429,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = ["Копировать                      Ctrl+C"],
+                    ContextMenuText = ["Копировать                           Ctrl+C"],
                     Command = dataContext.CopyRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -436,7 +439,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Paste",
-                    ContextMenuText = ["Вставить                            Ctrl+V"],
+                    ContextMenuText = ["Вставить                                 Ctrl+V"],
                     Command = dataContext.PasteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -446,7 +449,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                    ContextMenuText = ["Удалить строки                      Ctrl+D"],
                     Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -456,7 +459,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                    ContextMenuText = ["Выставить номер п/п            Ctrl+O"],
                     Command = dataContext.SetNumberOrder
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -465,12 +468,24 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = ["Очистить ячейки              Delete"],
+                    ContextMenuText = ["Очистить ячейки                   Delete"],
                     Command = dataContext.DeleteDataInRows
                 });
+                Rgrd.CommandsList.Add(new KeyCommand
+                {
+                    Key = Avalonia.Input.Key.Z,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = ["Перевести источник в РАО  Ctrl+Z"],
+                    Command = dataContext.SourceTransmission
+                });
+
                 #endregion
 
                 #region Notes Context Menu
+
                 var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -531,6 +546,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     ContextMenuText = ["Очистить ячейки              Delete"],
                     Command = dataContext.DeleteDataInRows
                 });
+
                 #endregion
 
                 panel.Children.Add(grd);
@@ -541,6 +557,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                 var grd = (ScrollViewer)Form1_Visual.Form13_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
+
                 var Rgrd = (DataGridForm13)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -631,9 +648,11 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     ContextMenuText = ["Очистить ячейки              Delete"],
                     Command = dataContext.DeleteDataInRows
                 });
+
                 #endregion
 
                 #region Notes Context Menu
+
                 var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -694,6 +713,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     ContextMenuText = ["Очистить ячейки              Delete"],
                     Command = dataContext.DeleteDataInRows
                 });
+
                 #endregion
 
                 panel.Children.Add(grd);
@@ -704,6 +724,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                 var grd = (ScrollViewer)Form1_Visual.Form14_Visual(this.FindNameScope());
 
                 #region Rows Context Menu
+
                 var Rgrd = (DataGridForm14)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
@@ -794,9 +815,11 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     ContextMenuText = ["Очистить ячейки              Delete"],
                     Command = dataContext.DeleteDataInRows
                 });
+
                 #endregion
 
                 #region Notes Context Menu
+
                 var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new KeyCommand
                 {
@@ -857,6 +880,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
                     ContextMenuText = ["Очистить ячейки              Delete"],
                     Command = dataContext.DeleteDataInRows
                 });
+
                 #endregion
 
                 panel.Children.Add(grd);

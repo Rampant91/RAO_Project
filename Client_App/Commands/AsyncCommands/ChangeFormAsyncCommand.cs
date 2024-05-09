@@ -14,36 +14,34 @@ using Models.Classes;
 namespace Client_App.Commands.AsyncCommands;
 
 //  Открыть окно редактирования выбранной формы
-public class ChangeFormAsyncCommand(Form11Parameter? form11 = null) : BaseAsyncCommand
+public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter != null)
         {
-            exc(parameter);
+            await Execute(parameter);
         }
-        else
+        else if (form != null)
         {
-            exc(form11.parameter, form11.window11);
+            await Execute(form.Parameter, form.Window);
         }
     }
 
-    private async Task exc(object? parameter, Window? windows = null)
+    private async Task Execute(object? parameter, Window? window = null)
     {
-        if (windows != null)
+        if (window != null)
         {
-            windows.Close();
-            windows.Closed += Windows_Closed;
+            window.Closed += WindowClosed;
+            window.Close();
         }
         else
         {
-            test(parameter);
+            await OpenReport(parameter);
         }
-
-
     }
 
-    private async Task test(object? parameter)
+    private static async Task OpenReport(object? parameter)
     {
         if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> param && param.First() is { } obj)
         {
@@ -113,8 +111,11 @@ public class ChangeFormAsyncCommand(Form11Parameter? form11 = null) : BaseAsyncC
         }
     }
 
-    private async void Windows_Closed(object? sender, System.EventArgs e)
+    private async void WindowClosed(object? sender, System.EventArgs e)
     {
-        await test(form11.parameter);
+        if (form != null)
+        {
+            await OpenReport(form.Parameter).ConfigureAwait(false);
+        }
     }
 }

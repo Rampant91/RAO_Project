@@ -173,7 +173,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
     public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
-    public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО (из формы 1.1 в 1.5)
+    public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО
 
     #endregion
 
