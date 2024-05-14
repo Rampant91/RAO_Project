@@ -199,19 +199,18 @@ public class Report : IKey, IDataGridColumn
                 var cor = Convert.ToInt32(CorrectionNumber_DB);
                 if (FormNum_DB.Split('.')[0] == "1")
                 {
-                    try
+                    if (DateOnly.TryParse(EndPeriod_DB, out var endPeriod))
                     {
-                        var dt = DateTimeOffset.Parse(EndPeriod_DB);
-                        var num = dt.Year.ToString();
-                        num += dt.Month < 10 ? $"0{dt.Month}" : dt.Month.ToString();
-                        num += dt.Day < 10 ? $"0{dt.Day}" : dt.Day.ToString();
+                        var num = endPeriod.Year.ToString();
+                        num += endPeriod.Month < 10 ? $"0{endPeriod.Month}" : endPeriod.Month.ToString();
+                        num += endPeriod.Day < 10 ? $"0{endPeriod.Day}" : endPeriod.Day.ToString();
                         num = num.Insert(0, "1");
                         frm += (int)(1.0 / Convert.ToInt32(num) * 100000000000000000.0);
                         frm += cor;
                     }
-                    catch
+                    else
                     {
-                        frm += "000000000";
+                        frm += "0000000000";
                     }
                     return Convert.ToInt64(frm);
                 }

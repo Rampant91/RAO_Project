@@ -550,7 +550,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var baseRep = (Report)key1;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
-                BaseRepFormCount = Math.Max(ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
+                BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepStartPeriod = baseRep.StartPeriod_DB;
                 BaseRepEndPeriod = baseRep.EndPeriod_DB;
                 BaseRepExpDate = baseRep.ExportDate_DB;
@@ -998,7 +998,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 var baseRep = (Report)key1;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
-                BaseRepFormCount = Math.Max(ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
+                BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
                 BaseRepYear = baseRep.Year_DB;
 

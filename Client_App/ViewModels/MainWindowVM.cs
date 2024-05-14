@@ -92,7 +92,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportPasWithoutRep { get; set; }      //  Excel -> Паспорта -> Паспорта без отчетов
     public ICommand ExcelExportRepWithoutPas { get; set; }      //  Excel -> Паспорта -> Отчеты без паспортов
     public ICommand ExportAllReports { get; set; }              //  Экспорт всех организаций организации в отдельные файлы .raodb
-    public ICommand ExportAllReportsOneFile { get; set; }       //  Экспорт всех организаций организации в один файл .raodb
+    //public ICommand ExportAllReportsOneFile { get; set; }       //  Экспорт всех организаций организации в один файл .raodb
     public ICommand ExportForm { get; set; }                    //  Экспорт формы в файл .raodb
     public ICommand ExportReports { get; set; }                 //  Экспорт организации в файл .raodb
     public ICommand ExportReportsWithDateRange { get; set; }    //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм

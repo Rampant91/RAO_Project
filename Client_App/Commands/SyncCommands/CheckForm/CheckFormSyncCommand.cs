@@ -1,18 +1,23 @@
 ﻿using Client_App.ViewModels;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands;
+using MessageBox.Avalonia.DTO;
 using Models.CheckForm;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
 //  Проверяет открытую форму, открывает окно с отчетом об ошибках, активируется при нажатии кнопки "Проверить"
-internal class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseCommand
+public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     public override bool CanExecute(object? parameter)
     {
         return true;
     }
 
-    public override void Execute(object? parameter)
+    public override async Task AsyncExecute(object? parameter)
     {
         var reps = changeOrCreateViewModel.Storages;
         var rep = changeOrCreateViewModel.Storage;
@@ -47,8 +52,31 @@ internal class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
             //case "1.9":
             //    result.AddRange(CheckF19.Check_Total(reps, rep));
             //    break;
-            default: return;
         }
-        _ = new Views.CheckForm(changeOrCreateViewModel, result);
+
+        if (result.Count == 0)
+        {
+            #region MessageSourceTransmissionFailed
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "По результатам проверки формы, ошибок не выявлено.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+        }
+        else
+        {
+            _ = new Views.CheckForm(changeOrCreateViewModel, result);
+        }
     }
 }

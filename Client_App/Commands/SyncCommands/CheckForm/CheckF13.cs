@@ -706,7 +706,6 @@ public abstract class CheckF13 : CheckBase
         var radionuclids = forms[line].Radionuclids_DB;
         if (string.IsNullOrWhiteSpace(radionuclids)) return result;
         var radArray = radionuclids.Replace(" ", string.Empty).ToLower()
-            .Replace(" ", "")
             .Replace(',', ';')
             .Split(';');
         if (radArray.Length == 1 && string.Equals(radArray[0], "-")) return result;
