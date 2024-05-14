@@ -237,6 +237,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     case "1.3":
                     {
                         var form13 = (Form13)form;
+
                         if (R.Count == 0)
                         {
 #if DEBUG
@@ -245,15 +246,79 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
 #endif
                         }
+
+                        var tritiumActivity = "-";
+                        var betaGammaActivity = "-";
+                        var alphaActivity = "-";
+                        var transuraniumActivity = "-";
+                        var thirdSymbolRaoCode = "0";
+
                         var nuclidsArray = form13.Radionuclids_DB
                             .Replace(" ", string.Empty)
                             .ToLower()
                             .Replace(',', ';')
                             .Split(';');
-                        foreach (var tatata in R)
+
+                        var nuclidTypeArray = R
+                            .Where(x => nuclidsArray.Contains(x["name"]))
+                            .Select(x => x["code"])
+                            .ToArray();
+                        if (nuclidTypeArray.Contains("а")
+                            && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
+                            && nuclidTypeArray.Contains("у"))
                         {
-                            tatata.
+                            thirdSymbolRaoCode = "6";
                         }
+                        else if(nuclidTypeArray.Contains("а")
+                                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
+                                 && !nuclidTypeArray.Contains("у"))
+                        {
+                            thirdSymbolRaoCode = "5";
+                        }
+                        else if (!nuclidTypeArray.Contains("а")
+                                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
+                                 && !nuclidTypeArray.Contains("у"))
+                        {
+                            thirdSymbolRaoCode = "4";
+                        }
+                        else if (nuclidTypeArray.Contains("а")
+                                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
+                                 && nuclidTypeArray.Contains("у"))
+                        {
+                            thirdSymbolRaoCode = "3";
+                        }
+                        else if (nuclidTypeArray.Contains("а")
+                                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
+                                 && !nuclidTypeArray.Contains("у"))
+                        {
+                            thirdSymbolRaoCode = "2";
+                        }
+                        else if (!nuclidTypeArray.Contains("а")
+                                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
+                                 && nuclidTypeArray.Contains("у"))
+                        {
+                            thirdSymbolRaoCode = "1";
+                        }
+
+                        if (nuclidTypeArray.Length == 1 || nuclidTypeArray.Skip(1).All(x => string.Equals(nuclidTypeArray[0], x)))
+                        {
+                            switch (nuclidTypeArray[0])
+                            {
+                                case "а":
+                                    alphaActivity = form13.Activity_DB;
+                                    break;
+                                case "б":
+                                    betaGammaActivity = form13.Activity_DB;
+                                    break;
+                                case "т":
+                                    tritiumActivity = form13.Activity_DB;
+                                    break;
+                                case "у":
+                                    transuraniumActivity = form13.Activity_DB;
+                                    break;
+                            }
+                        }
+
                         var numberInOrder = await db.ReportCollectionDbSet
                             .AsNoTracking()
                             .AsSplitQuery()
@@ -265,7 +330,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                         var agrState = form13.AggregateState_DB != null 
                             ? form13.AggregateState_DB.ToString()![..1] 
                             : "";
-                        var codeRao = $"{agrState}__{1}__{0}{0}{84}_";
+                        var codeRao = $"{agrState}_{thirdSymbolRaoCode}{1}__{0}{0}{84}_";
 
                         var newForm16 = new Form16
                         {
@@ -278,10 +343,10 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             CodeRAO_DB = codeRao,
                             QuantityOZIII_DB = "-",
                             MainRadionuclids_DB = form13.Radionuclids_DB,
-                            TritiumActivity_DB = "",
-                            BetaGammaActivity_DB = "",
-                            AlphaActivity_DB = "",
-                            TransuraniumActivity_DB = "",
+                            TritiumActivity_DB = tritiumActivity,
+                            BetaGammaActivity_DB = betaGammaActivity,
+                            AlphaActivity_DB = alphaActivity,
+                            TransuraniumActivity_DB = transuraniumActivity,
                             ActivityMeasurementDate_DB = form13.CreationDate_DB,
                             DocumentVid_DB = form13.DocumentVid_DB,
                             DocumentNumber_DB = form13.DocumentNumber_DB,
@@ -587,8 +652,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
             R.Add(new Dictionary<string, string>
             {
                 {"name", worksheet.Cells[i, 1].Text},
-                {"code", worksheet.Cells[i, 8].Text},
-                {"Num", worksheet.Cells[i, 9].Text}
+                {"code", worksheet.Cells[i, 8].Text}
             });
             i++;
         }
