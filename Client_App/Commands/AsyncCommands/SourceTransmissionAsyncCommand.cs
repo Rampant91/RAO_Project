@@ -16,7 +16,7 @@ using Models.Forms.Form1;
 using Models.Interfaces;
 using OfficeOpenXml;
 using System.IO;
-using DynamicData;
+using MessageBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -24,7 +24,6 @@ namespace Client_App.Commands.AsyncCommands;
 public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Reports SelectedReports => changeOrCreateViewModel.Storages;
-    private Report SelectedReport => changeOrCreateViewModel.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -126,19 +125,20 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     case "1.1":
                     {
                         var form11 = (Form11)form;
+                        var numberInOrder = await db.ReportCollectionDbSet
+                            .AsNoTracking()
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Where(x => x.Id == rep.Id)
+                            .Include(x => x.Rows15)
+                            .SelectMany(x => x.Rows15)
+                            .CountAsync() + 1;
                         var newForm15 = new Form15
                         {
                             #region BindingData
                 
                             ReportId = rep.Id,
-                            NumberInOrder_DB = await db.ReportCollectionDbSet
-                                .AsNoTracking()
-                                .AsSplitQuery()
-                                .AsQueryable()
-                                .Where(x => x.Id == rep.Id)
-                                .Include(x => x.Rows15)
-                                .SelectMany(x => x.Rows15)
-                                .CountAsync() + 1,
+                            NumberInOrder_DB = numberInOrder,
                             OperationCode_DB = form11.OperationCode_DB,
                             OperationDate_DB = form11.OperationDate_DB,
                             PassportNumber_DB = form11.PassportNumber_DB,
@@ -236,89 +236,8 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     }
                     case "1.3":
                     {
+                        R_Populate_From_File();
                         var form13 = (Form13)form;
-
-                        if (R.Count == 0)
-                        {
-#if DEBUG
-                            R_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx"));
-#else
-                            R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
-#endif
-                        }
-
-                        var tritiumActivity = "-";
-                        var betaGammaActivity = "-";
-                        var alphaActivity = "-";
-                        var transuraniumActivity = "-";
-                        var thirdSymbolRaoCode = "0";
-
-                        var nuclidsArray = form13.Radionuclids_DB
-                            .Replace(" ", string.Empty)
-                            .ToLower()
-                            .Replace(',', ';')
-                            .Split(';');
-
-                        var nuclidTypeArray = R
-                            .Where(x => nuclidsArray.Contains(x["name"]))
-                            .Select(x => x["code"])
-                            .ToArray();
-                        if (nuclidTypeArray.Contains("а")
-                            && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
-                            && nuclidTypeArray.Contains("у"))
-                        {
-                            thirdSymbolRaoCode = "6";
-                        }
-                        else if(nuclidTypeArray.Contains("а")
-                                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
-                                 && !nuclidTypeArray.Contains("у"))
-                        {
-                            thirdSymbolRaoCode = "5";
-                        }
-                        else if (!nuclidTypeArray.Contains("а")
-                                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
-                                 && !nuclidTypeArray.Contains("у"))
-                        {
-                            thirdSymbolRaoCode = "4";
-                        }
-                        else if (nuclidTypeArray.Contains("а")
-                                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
-                                 && nuclidTypeArray.Contains("у"))
-                        {
-                            thirdSymbolRaoCode = "3";
-                        }
-                        else if (nuclidTypeArray.Contains("а")
-                                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
-                                 && !nuclidTypeArray.Contains("у"))
-                        {
-                            thirdSymbolRaoCode = "2";
-                        }
-                        else if (!nuclidTypeArray.Contains("а")
-                                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
-                                 && nuclidTypeArray.Contains("у"))
-                        {
-                            thirdSymbolRaoCode = "1";
-                        }
-
-                        if (nuclidTypeArray.Length == 1 || nuclidTypeArray.Skip(1).All(x => string.Equals(nuclidTypeArray[0], x)))
-                        {
-                            switch (nuclidTypeArray[0])
-                            {
-                                case "а":
-                                    alphaActivity = form13.Activity_DB;
-                                    break;
-                                case "б":
-                                    betaGammaActivity = form13.Activity_DB;
-                                    break;
-                                case "т":
-                                    tritiumActivity = form13.Activity_DB;
-                                    break;
-                                case "у":
-                                    transuraniumActivity = form13.Activity_DB;
-                                    break;
-                            }
-                        }
-
                         var numberInOrder = await db.ReportCollectionDbSet
                             .AsNoTracking()
                             .AsSplitQuery()
@@ -327,10 +246,18 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             .Include(x => x.Rows16)
                             .SelectMany(x => x.Rows16)
                             .CountAsync() + 1;
-                        var agrState = form13.AggregateState_DB != null 
-                            ? form13.AggregateState_DB.ToString()![..1] 
-                            : "";
-                        var codeRao = $"{agrState}_{thirdSymbolRaoCode}{1}__{0}{0}{84}_";
+                        var nuclidsArray = form13.Radionuclids_DB
+                            .Replace(" ", string.Empty)
+                            .ToLower()
+                            .Replace(',', ';')
+                            .Split(';');
+                        var nuclidTypeArray = R
+                            .Where(x => nuclidsArray.Contains(x["name"]))
+                            .Select(x => x["code"])
+                            .ToArray();
+
+                        var codeRao = GetCodeRao(form13, nuclidsArray, nuclidTypeArray);
+                        var activitiesDictionary = GetActivities(form13, nuclidTypeArray);
 
                         var newForm16 = new Form16
                         {
@@ -341,12 +268,13 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             OperationCode_DB = form13.OperationCode_DB,
                             OperationDate_DB = form13.OperationDate_DB,
                             CodeRAO_DB = codeRao,
+                            StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                             QuantityOZIII_DB = "-",
                             MainRadionuclids_DB = form13.Radionuclids_DB,
-                            TritiumActivity_DB = tritiumActivity,
-                            BetaGammaActivity_DB = betaGammaActivity,
-                            AlphaActivity_DB = alphaActivity,
-                            TransuraniumActivity_DB = transuraniumActivity,
+                            TritiumActivity_DB = activitiesDictionary["tritium"],
+                            BetaGammaActivity_DB = activitiesDictionary["beta"],
+                            AlphaActivity_DB = activitiesDictionary["alpha"],
+                            TransuraniumActivity_DB = activitiesDictionary["transuranium"],
                             ActivityMeasurementDate_DB = form13.CreationDate_DB,
                             DocumentVid_DB = form13.DocumentVid_DB,
                             DocumentNumber_DB = form13.DocumentNumber_DB,
@@ -367,22 +295,68 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     }
                     case "1.4":
                     {
+                        R_Populate_From_File();
                         var form14 = (Form14)form;
+                        var numberInOrder = await db.ReportCollectionDbSet
+                            .AsNoTracking()
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Where(x => x.Id == rep.Id)
+                            .Include(x => x.Rows16)
+                            .SelectMany(x => x.Rows16)
+                            .CountAsync() + 1;
+                        var nuclidsArray = form14.Radionuclids_DB
+                            .Replace(" ", string.Empty)
+                            .ToLower()
+                            .Replace(',', ';')
+                            .Split(';');
+                        var nuclidTypeArray = R
+                            .Where(x => nuclidsArray.Contains(x["name"]))
+                            .Select(x => x["code"])
+                            .ToArray();
+                        var massTmp = (form14.Mass_DB ?? "")
+                            .Replace(".", ",")
+                            .Replace("(", "")
+                            .Replace(")", "");
+                        var massTon = double.TryParse(massTmp, 
+                            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                            CultureInfo.CreateSpecificCulture("ru-RU"),
+                            out var massDoubleValue)
+                            ? $"{massDoubleValue / 1000 :0.######################################################e+00}"
+                            : "";
+
+                        var codeRao = GetCodeRao(form14, nuclidsArray, nuclidTypeArray);
+                        var activitiesDictionary = GetActivities(form14, nuclidTypeArray);
+
                         var newForm16 = new Form16
                         {
                             #region BindingData
 
                             ReportId = rep.Id,
-                            NumberInOrder_DB = await db.ReportCollectionDbSet
-                                .AsNoTracking()
-                                .AsSplitQuery()
-                                .AsQueryable()
-                                .Where(x => x.Id == rep.Id)
-                                .Include(x => x.Rows16)
-                                .SelectMany(x => x.Rows16)
-                                .CountAsync() + 1,
+                            NumberInOrder_DB = numberInOrder,
                             OperationCode_DB = form14.OperationCode_DB,
                             OperationDate_DB = form14.OperationDate_DB,
+                            CodeRAO_DB = codeRao,
+                            Volume_DB = form14.Volume_DB,
+                            Mass_DB = massTon,
+                            QuantityOZIII_DB = "-",
+                            MainRadionuclids_DB = form14.Radionuclids_DB,
+                            TritiumActivity_DB = activitiesDictionary["tritium"],
+                            BetaGammaActivity_DB = activitiesDictionary["beta"],
+                            AlphaActivity_DB = activitiesDictionary["alpha"],
+                            TransuraniumActivity_DB = activitiesDictionary["transuranium"],
+                            ActivityMeasurementDate_DB = form14.ActivityMeasurementDate_DB,
+                            DocumentVid_DB = form14.DocumentVid_DB,
+                            DocumentNumber_DB = form14.DocumentNumber_DB,
+                            DocumentDate_DB = form14.DocumentDate_DB,
+                            ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                            TransporterOKPO_DB = "-",
+                            RefineOrSortRAOCode_DB = "-",
+                            PackName_DB = form14.PackName_DB,
+                            PackType_DB = form14.PackType_DB,
+                            PackNumber_DB = form14.PackNumber_DB,
+                            Subsidy_DB = "-",
+                            FcpNumber_DB = "-"
 
                             #endregion
                         };
@@ -391,6 +365,34 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     }
                 }
                 var report = await ReportsStorage.GetReportAsync(rep.Id);
+                if (report.ExportDate_DB != "")
+                {
+                    var appropriateFormNum = form.FormNum_DB is "1.1" 
+                        ? "1.5" 
+                        : "1.6";
+
+                    #region ChangeCorrectionNumber
+
+                    var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Да" },
+                                new ButtonDefinition { Name = "Нет" }
+                            ],
+                            ContentTitle = "Перевод источника в РАО",
+                            ContentHeader = "Уведомление",
+                            ContentMessage = $"Изменить номер корректировки в форме {form.FormNum_DB} с соответствующим периодом?",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow)).Result;
+
+                    #endregion
+
+                    if (res is "Да") report.CorrectionNumber_DB++;
+                }
                 await db.SaveChangesAsync();
                 await CloseWindowAndOpenNew(report);
                 break;
@@ -425,18 +427,27 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             {
                                 FormNum_DB = "1.5",
                                 StartPeriod_DB = lastRep15.EndPeriod_DB,
+                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
                                 CorrectionNumber_DB = 0
                             };
                         }
                         var entityEntry = db.ReportCollectionDbSet.Add(newRep15);
                         await db.SaveChangesAsync();
                         repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
+                        var numberInOrder = await db.ReportCollectionDbSet
+                            .AsNoTracking()
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Where(x => x.Id == repId)
+                            .Include(x => x.Rows15)
+                            .SelectMany(x => x.Rows15)
+                            .CountAsync() + 1;
                         var newForm15 = new Form15
                         {
                             #region BindingData
                 
                             ReportId = repId,
-                            NumberInOrder_DB = 1,
+                            NumberInOrder_DB = numberInOrder,
                             OperationCode_DB = form11.OperationCode_DB,
                             OperationDate_DB = form11.OperationDate_DB,
                             PassportNumber_DB = form11.PassportNumber_DB,
@@ -489,6 +500,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             {
                                 FormNum_DB = "1.6",
                                 StartPeriod_DB = lastRep16.EndPeriod_DB,
+                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
                                 CorrectionNumber_DB = 0
                             };
                         }
@@ -518,13 +530,13 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
                             CultureInfo.CreateSpecificCulture("ru-RU"),
                             out var betaActivityDoubleValue)
-                            ? $"{betaActivityDoubleValue * 25_000_000_000:0.######################################################e+00}"
+                            ? $"{betaActivityDoubleValue * 25_000_000_000 :0.######################################################e+00}"
                             : "";
                         var alphaActivity = double.TryParse(massTon,
                             NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
                             CultureInfo.CreateSpecificCulture("ru-RU"),
                             out var alphaActivityDoubleValue)
-                            ? $"{alphaActivityDoubleValue * 16_100_000_000:0.######################################################e+00}"
+                            ? $"{alphaActivityDoubleValue * 16_100_000_000 :0.######################################################e+00}"
                             : "";
                         var newForm16 = new Form16
                         {
@@ -563,24 +575,86 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     }
                     case "1.3":
                     {
+                        R_Populate_From_File();
                         var form13 = (Form13)form;
-                        var newRep16 = new Report
+                        Report newRep16;
+                        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != "1.6"))
                         {
-                            FormNum_DB = "1.6",
-                            StartPeriod_DB = SelectedReport.EndPeriod_DB,
-                            CorrectionNumber_DB = 0
-                        };
+                            newRep16 = new Report
+                            {
+                                FormNum_DB = "1.6",
+                                StartPeriod_DB = $"01.01.{DateTime.Now.Year}",
+                                CorrectionNumber_DB = 0
+                            };
+                        }
+                        else
+                        {
+                            var lastRep16 = SelectedReports.Report_Collection
+                                .Where(x => x.FormNum_DB == "1.6")
+                                .OrderByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDateTo) 
+                                    ? StaticStringMethods.StringDateReverse(startDateTo.ToShortDateString()) 
+                                    : x.StartPeriod_DB)
+                                .First();
+                            newRep16 = new Report
+                            {
+                                FormNum_DB = "1.6",
+                                StartPeriod_DB = lastRep16.EndPeriod_DB,
+                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
+                                CorrectionNumber_DB = 0
+                            };
+                        }
                         var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                         await db.SaveChangesAsync();
                         repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
+                        var numberInOrder = await db.ReportCollectionDbSet
+                            .AsNoTracking()
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Where(x => x.Id == repId)
+                            .Include(x => x.Rows16)
+                            .SelectMany(x => x.Rows16)
+                            .CountAsync() + 1;
+                        var nuclidsArray = form13.Radionuclids_DB
+                            .Replace(" ", string.Empty)
+                            .ToLower()
+                            .Replace(',', ';')
+                            .Split(';');
+                        var nuclidTypeArray = R
+                            .Where(x => nuclidsArray.Contains(x["name"]))
+                            .Select(x => x["code"])
+                            .ToArray();
+
+                        var codeRao = GetCodeRao(form13, nuclidsArray, nuclidTypeArray);
+                        var activitiesDictionary = GetActivities(form13, nuclidTypeArray);
+
                         var newForm16 = new Form16
                         {
                             #region BindingData
 
                             ReportId = repId,
-                            NumberInOrder_DB = 1,
+                            NumberInOrder_DB = numberInOrder,
                             OperationCode_DB = form13.OperationCode_DB,
                             OperationDate_DB = form13.OperationDate_DB,
+                            CodeRAO_DB = codeRao,
+                            StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                            QuantityOZIII_DB = "-",
+                            MainRadionuclids_DB = form13.Radionuclids_DB,
+                            TritiumActivity_DB = activitiesDictionary["tritium"],
+                            BetaGammaActivity_DB = activitiesDictionary["beta"],
+                            AlphaActivity_DB = activitiesDictionary["alpha"],
+                            TransuraniumActivity_DB = activitiesDictionary["transuranium"],
+                            ActivityMeasurementDate_DB = form13.CreationDate_DB,
+                            DocumentVid_DB = form13.DocumentVid_DB,
+                            DocumentNumber_DB = form13.DocumentNumber_DB,
+                            DocumentDate_DB = form13.DocumentDate_DB,
+                            ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                            TransporterOKPO_DB = "-",
+                            RefineOrSortRAOCode_DB = "-",
+                            PackName_DB = form13.PackName_DB,
+                            PackType_DB = form13.PackType_DB,
+                            PackNumber_DB = form13.PackNumber_DB,
+                            Subsidy_DB = "-",
+                            FcpNumber_DB = "-"
 
                             #endregion
                         };
@@ -589,24 +663,98 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     }
                     case "1.4":
                     {
+                        R_Populate_From_File();
                         var form14 = (Form14)form;
-                        var newRep16 = new Report
+                        Report newRep16;
+                        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != "1.6"))
                         {
-                            FormNum_DB = "1.6",
-                            StartPeriod_DB = SelectedReport.EndPeriod_DB,
-                            CorrectionNumber_DB = 0
-                        };
+                            newRep16 = new Report
+                            {
+                                FormNum_DB = "1.6",
+                                StartPeriod_DB = $"01.01.{DateTime.Now.Year}",
+                                CorrectionNumber_DB = 0
+                            };
+                        }
+                        else
+                        {
+                            var lastRep16 = SelectedReports.Report_Collection
+                                .Where(x => x.FormNum_DB == "1.6")
+                                .OrderByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDateTo) 
+                                    ? StaticStringMethods.StringDateReverse(startDateTo.ToShortDateString()) 
+                                    : x.StartPeriod_DB)
+                                .First();
+                            newRep16 = new Report
+                            {
+                                FormNum_DB = "1.6",
+                                StartPeriod_DB = lastRep16.EndPeriod_DB,
+                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
+                                CorrectionNumber_DB = 0
+                            };
+                        }
                         var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                         await db.SaveChangesAsync();
                         repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
+
+                        var numberInOrder = await db.ReportCollectionDbSet
+                            .AsNoTracking()
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Where(x => x.Id == repId)
+                            .Include(x => x.Rows16)
+                            .SelectMany(x => x.Rows16)
+                            .CountAsync() + 1;
+                        var nuclidsArray = form14.Radionuclids_DB
+                            .Replace(" ", string.Empty)
+                            .ToLower()
+                            .Replace(',', ';')
+                            .Split(';');
+                        var nuclidTypeArray = R
+                            .Where(x => nuclidsArray.Contains(x["name"]))
+                            .Select(x => x["code"])
+                            .ToArray();
+                        var massTmp = (form14.Mass_DB ?? "")
+                            .Replace(".", ",")
+                            .Replace("(", "")
+                            .Replace(")", "");
+                        var massTon = double.TryParse(massTmp, 
+                            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                            CultureInfo.CreateSpecificCulture("ru-RU"),
+                            out var massDoubleValue)
+                            ? $"{massDoubleValue / 1000 :0.######################################################e+00}"
+                            : "";
+
+                        var codeRao = GetCodeRao(form14, nuclidsArray, nuclidTypeArray);
+                        var activitiesDictionary = GetActivities(form14, nuclidTypeArray);
+
                         var newForm16 = new Form16
                         {
                             #region BindingData
 
                             ReportId = repId,
-                            NumberInOrder_DB = 1,
+                            NumberInOrder_DB = numberInOrder,
                             OperationCode_DB = form14.OperationCode_DB,
                             OperationDate_DB = form14.OperationDate_DB,
+                            CodeRAO_DB = codeRao,
+                            Volume_DB = form14.Volume_DB,
+                            Mass_DB = massTon,
+                            QuantityOZIII_DB = "-",
+                            MainRadionuclids_DB = form14.Radionuclids_DB,
+                            TritiumActivity_DB = activitiesDictionary["tritium"],
+                            BetaGammaActivity_DB = activitiesDictionary["beta"],
+                            AlphaActivity_DB = activitiesDictionary["alpha"],
+                            TransuraniumActivity_DB = activitiesDictionary["transuranium"],
+                            ActivityMeasurementDate_DB = form14.ActivityMeasurementDate_DB,
+                            DocumentVid_DB = form14.DocumentVid_DB,
+                            DocumentNumber_DB = form14.DocumentNumber_DB,
+                            DocumentDate_DB = form14.DocumentDate_DB,
+                            ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                            TransporterOKPO_DB = "-",
+                            RefineOrSortRAOCode_DB = "-",
+                            PackName_DB = form14.PackName_DB,
+                            PackType_DB = form14.PackType_DB,
+                            PackNumber_DB = form14.PackNumber_DB,
+                            Subsidy_DB = "-",
+                            FcpNumber_DB = "-"
 
                             #endregion
                         };
@@ -623,6 +771,8 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
         }
     }
 
+    #region CloseWindowAndOpenNew
+    
     private static async Task CloseWindowAndOpenNew(Report rep)
     {
         var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
@@ -634,12 +784,202 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
         await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
     }
 
+    #endregion
+
+    #region GetActivities
+
+    private static Dictionary<string, string> GetActivities(Form1 form1, IReadOnlyList<string> nuclidTypeArray)
+    {
+        var tritiumActivity = "-";
+        var betaGammaActivity = "-";
+        var alphaActivity = "-";
+        var transuraniumActivity = "-";
+
+        var activityTmp = form1 switch
+        {
+            Form13 form13 => form13.Activity_DB ?? "",
+            Form14 form14 => form14.Activity_DB ?? "",
+            _ => "-"
+        };
+        activityTmp = activityTmp
+            .Replace(".", ",")
+            .Replace("(", "")
+            .Replace(")", "");
+
+        var activity = double.TryParse(activityTmp, 
+            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+            CultureInfo.CreateSpecificCulture("ru-RU"),
+            out var activityDoubleValue)
+            ? $"{activityDoubleValue :0.######################################################e+00}"
+            : activityTmp;
+
+        if (nuclidTypeArray.Count == 1
+            || nuclidTypeArray.Count > 1
+            && nuclidTypeArray
+                .Skip(1)
+                .All(x => string.Equals(nuclidTypeArray[0], x)))
+        {
+            switch (nuclidTypeArray[0])
+            {
+                case "а":
+                    alphaActivity = activity;
+                    break;
+                case "б":
+                    betaGammaActivity = activity;
+                    break;
+                case "т":
+                    tritiumActivity = activity;
+                    break;
+                case "у":
+                    transuraniumActivity = activity;
+                    break;
+            }
+        }
+        return new Dictionary<string, string>
+        {
+            { "alpha", alphaActivity },
+            { "beta", betaGammaActivity },
+            { "tritium", tritiumActivity },
+            { "transuranium", transuraniumActivity }
+        };
+    }
+    
+    #endregion
+
+    #region GetCodeRao
+
+    private static string GetCodeRao(Form1 form, IEnumerable<string> nuclidsArray, string[] nuclidTypeArray)
+    {
+        var thirdSymbolCodeRao = GetThirdSymbolCodeRao(nuclidTypeArray);
+        var fifthSymbolCodeRao = GetFifthSymbolCodeRao(nuclidsArray);
+        var ninthTenthSymbols = "__";
+        var agrState = "_";
+        switch (form)
+        {
+            case Form13 form13:
+            {
+                agrState = form13.AggregateState_DB != null
+                    ? form13.AggregateState_DB.ToString()![..1]
+                    : "";
+                ninthTenthSymbols = "84";
+                break;
+            }
+            case Form14 form14:
+            {
+                agrState = form14.AggregateState_DB != null
+                    ? form14.AggregateState_DB.ToString()![..1]
+                    : "";
+                break;
+            }
+        }
+        return $"{agrState}_{thirdSymbolCodeRao}1{fifthSymbolCodeRao}_00{ninthTenthSymbols}_";
+    }
+
+    #region GetThirdSymbolCodeRao
+
+    private static string GetThirdSymbolCodeRao(string[] nuclidTypeArray)
+    {
+        var thirdSymbolCodeRao = "0";
+        if (nuclidTypeArray.Contains("а")
+            && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
+            && nuclidTypeArray.Contains("у"))
+        {
+            thirdSymbolCodeRao = "6";
+        }
+        else if (nuclidTypeArray.Contains("а")
+                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
+                 && !nuclidTypeArray.Contains("у"))
+        {
+            thirdSymbolCodeRao = "5";
+        }
+        else if (!nuclidTypeArray.Contains("а")
+                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
+                 && !nuclidTypeArray.Contains("у"))
+        {
+            thirdSymbolCodeRao = "4";
+        }
+        else if (nuclidTypeArray.Contains("а")
+                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
+                 && nuclidTypeArray.Contains("у"))
+        {
+            thirdSymbolCodeRao = "3";
+        }
+        else if (nuclidTypeArray.Contains("а")
+                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
+                 && !nuclidTypeArray.Contains("у"))
+        {
+            thirdSymbolCodeRao = "2";
+        }
+        else if (!nuclidTypeArray.Contains("а")
+                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
+                 && nuclidTypeArray.Contains("у"))
+        {
+            thirdSymbolCodeRao = "1";
+        }
+        return thirdSymbolCodeRao;
+    }
+
+    #endregion
+
+    #region GetFifthSymbolCodeRao
+
+    private static string GetFifthSymbolCodeRao(IEnumerable<string> nuclidsArray)
+    {
+        double maxPeriod = 0;
+        foreach (var nuclidName in nuclidsArray)
+        {
+            var nuclidDictionary = R.FirstOrDefault(x => x["name"] == nuclidName);
+            if (nuclidDictionary == null) continue;
+
+            var unit = nuclidDictionary["periodUnit"];
+            var periodValue = nuclidDictionary["periodValue"].Replace('.', ',');
+            if (!double.TryParse(periodValue,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    out var halfLife
+                )) continue;
+            switch (unit)
+            {
+                case "лет":
+                    break;
+                case "сут":
+                    halfLife /= 365;
+                    break;
+                case "час":
+                    halfLife /= 8760;   //365*24
+                    break;
+                case "мин":
+                    halfLife /= 525_600;   //365*24*60
+                    break;
+                default: continue;
+            }
+            if (halfLife > maxPeriod)
+            {
+                maxPeriod = halfLife;
+            }
+        }
+        return maxPeriod > 31
+            ? "1"
+            : "2";
+    }
+
+    #endregion
+
+    #endregion
+
     #region RFromFile
 
     private static List<Dictionary<string, string>> R = new();
 
-    private static void R_Populate_From_File(string filePath)
+    private static void R_Populate_From_File()
     {
+        if (R.Count != 0) return;
+        var filePath = string.Empty;
+#if DEBUG
+        filePath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx");
+#else
+        filePath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx");
+#endif
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(filePath)) return;
         FileInfo excelImportFile = new(filePath);
@@ -652,6 +992,8 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
             R.Add(new Dictionary<string, string>
             {
                 {"name", worksheet.Cells[i, 1].Text},
+                {"periodValue", worksheet.Cells[i, 5].Text},
+                {"periodUnit", worksheet.Cells[i, 6].Text},
                 {"code", worksheet.Cells[i, 8].Text}
             });
             i++;

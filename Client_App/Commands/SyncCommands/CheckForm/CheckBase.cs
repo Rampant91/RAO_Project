@@ -241,7 +241,7 @@ public abstract class CheckBase
 
     private protected static void R_Populate_From_File(string filePath)
     {
-        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(filePath)) return;
         FileInfo excelImportFile = new(filePath);
         var xls = new ExcelPackage(excelImportFile);
