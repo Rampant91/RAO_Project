@@ -79,10 +79,10 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                            || form.FormNum_DB == "1.4" && rep.FormNum_DB == "1.6")
                           && (DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDate)
                               && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDate)
-                              && opDate >= repStartDate && opDate <= repEndDate
+                              && opDate > repStartDate && opDate <= repEndDate
                               || (DateOnly.TryParse(rep.StartPeriod_DB, out repStartDate) 
                                   && !DateOnly.TryParse(rep.EndPeriod_DB, out _)
-                                  && opDate >= repStartDate)))
+                                  && opDate > repStartDate)))
             .OrderBy(x => x.EndPeriod_DB)
             .ToList();
         if (repInRange.Count == 2 
@@ -373,7 +373,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
 
                     #region ChangeCorrectionNumber
 
-                    var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
                         {
                             ButtonDefinitions =
@@ -383,11 +383,12 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             ],
                             ContentTitle = "Перевод источника в РАО",
                             ContentHeader = "Уведомление",
-                            ContentMessage = $"Изменить номер корректировки в форме {form.FormNum_DB} с соответствующим периодом?",
+                            ContentMessage = $"Изменить номер корректировки в форме {appropriateFormNum} " +
+                                             $"{Environment.NewLine}с соответствующим периодом?",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow)).Result;
+                        .ShowDialog(Desktop.MainWindow));
 
                     #endregion
 
