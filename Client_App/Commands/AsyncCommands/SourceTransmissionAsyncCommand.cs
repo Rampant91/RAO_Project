@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Resources;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.Classes;
@@ -24,6 +23,7 @@ namespace Client_App.Commands.AsyncCommands;
 public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Reports SelectedReports => changeOrCreateViewModel.Storages;
+    private Report SelectedReport => changeOrCreateViewModel.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -406,32 +406,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     case "1.1":
                     {
                         var form11 = (Form11)form;
-                        Report newRep15;
-                        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != "1.5"))
-                        {
-                            newRep15 = new Report
-                            {
-                                FormNum_DB = "1.5",
-                                StartPeriod_DB = $"01.01.{DateTime.Now.Year}",
-                                CorrectionNumber_DB = 0
-                            };
-                        }
-                        else
-                        {
-                            var lastRep15 = SelectedReports.Report_Collection
-                                .Where(x => x.FormNum_DB == "1.5")
-                                .OrderByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDateTo) 
-                                    ? StaticStringMethods.StringDateReverse(startDateTo.ToShortDateString()) 
-                                    : x.StartPeriod_DB)
-                                .First();
-                            newRep15 = new Report
-                            {
-                                FormNum_DB = "1.5",
-                                StartPeriod_DB = lastRep15.EndPeriod_DB,
-                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
-                                CorrectionNumber_DB = 0
-                            };
-                        }
+                        var newRep15 = GetNewReport(opDate, form11.FormNum_DB);
                         var entityEntry = db.ReportCollectionDbSet.Add(newRep15);
                         await db.SaveChangesAsync();
                         repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -479,32 +454,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     case "1.2":
                     {
                         var form12 = (Form12)form;
-                        Report newRep16;
-                        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != "1.6"))
-                        {
-                            newRep16 = new Report
-                            {
-                                FormNum_DB = "1.6",
-                                StartPeriod_DB = $"01.01.{DateTime.Now.Year}",
-                                CorrectionNumber_DB = 0
-                            };
-                        }
-                        else
-                        {
-                            var lastRep16 = SelectedReports.Report_Collection
-                                .Where(x => x.FormNum_DB == "1.6")
-                                .OrderByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDateTo) 
-                                    ? StaticStringMethods.StringDateReverse(startDateTo.ToShortDateString()) 
-                                    : x.StartPeriod_DB)
-                                .First();
-                            newRep16 = new Report
-                            {
-                                FormNum_DB = "1.6",
-                                StartPeriod_DB = lastRep16.EndPeriod_DB,
-                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
-                                CorrectionNumber_DB = 0
-                            };
-                        }
+                        var newRep16 = GetNewReport(opDate, form12.FormNum_DB);
                         var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                         await db.SaveChangesAsync();
                         repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -529,8 +479,8 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                             : "";
                         var betaGammaActivity = double.TryParse(massTon,
                             NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
-                            CultureInfo.CreateSpecificCulture("ru-RU"),
-                            out var betaActivityDoubleValue)
+                            CultureInfo.CreateSpecificCulture("ru-RU"), 
+                            out var betaActivityDoubleValue) 
                             ? $"{betaActivityDoubleValue * 25_000_000_000 :0.######################################################e+00}"
                             : "";
                         var alphaActivity = double.TryParse(massTon,
@@ -578,32 +528,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     {
                         R_Populate_From_File();
                         var form13 = (Form13)form;
-                        Report newRep16;
-                        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != "1.6"))
-                        {
-                            newRep16 = new Report
-                            {
-                                FormNum_DB = "1.6",
-                                StartPeriod_DB = $"01.01.{DateTime.Now.Year}",
-                                CorrectionNumber_DB = 0
-                            };
-                        }
-                        else
-                        {
-                            var lastRep16 = SelectedReports.Report_Collection
-                                .Where(x => x.FormNum_DB == "1.6")
-                                .OrderByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDateTo) 
-                                    ? StaticStringMethods.StringDateReverse(startDateTo.ToShortDateString()) 
-                                    : x.StartPeriod_DB)
-                                .First();
-                            newRep16 = new Report
-                            {
-                                FormNum_DB = "1.6",
-                                StartPeriod_DB = lastRep16.EndPeriod_DB,
-                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
-                                CorrectionNumber_DB = 0
-                            };
-                        }
+                        var newRep16 = GetNewReport(opDate, form13.FormNum_DB);
                         var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                         await db.SaveChangesAsync();
                         repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -666,32 +591,7 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                     {
                         R_Populate_From_File();
                         var form14 = (Form14)form;
-                        Report newRep16;
-                        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != "1.6"))
-                        {
-                            newRep16 = new Report
-                            {
-                                FormNum_DB = "1.6",
-                                StartPeriod_DB = $"01.01.{DateTime.Now.Year}",
-                                CorrectionNumber_DB = 0
-                            };
-                        }
-                        else
-                        {
-                            var lastRep16 = SelectedReports.Report_Collection
-                                .Where(x => x.FormNum_DB == "1.6")
-                                .OrderByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDateTo) 
-                                    ? StaticStringMethods.StringDateReverse(startDateTo.ToShortDateString()) 
-                                    : x.StartPeriod_DB)
-                                .First();
-                            newRep16 = new Report
-                            {
-                                FormNum_DB = "1.6",
-                                StartPeriod_DB = lastRep16.EndPeriod_DB,
-                                EndPeriod_DB = DateTime.Now.ToShortDateString(),
-                                CorrectionNumber_DB = 0
-                            };
-                        }
+                        var newRep16 = GetNewReport(opDate, form14.FormNum_DB);
                         var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                         await db.SaveChangesAsync();
                         repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -965,6 +865,88 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
     }
 
     #endregion
+
+    #endregion
+
+    #region GetNewReport
+
+    private Report GetNewReport(DateOnly opDate, string formNum)
+    {
+        var relevantFormNum = formNum == "1.1" 
+            ? "1.5" 
+            : "1.6";
+
+        #region GetDates
+                        
+        var startDateList = SelectedReports.Report_Collection
+            .Where(x => x.FormNum_DB == relevantFormNum)
+            .Select(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDate)
+                ? startDate
+                : DateOnly.MinValue)
+            .ToList();
+        var endDateList = SelectedReports.Report_Collection
+            .Where(x => x.FormNum_DB == relevantFormNum)
+            .Select(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate)
+                ? endDate
+                : DateOnly.MinValue)
+            .ToList();
+        var closestStartDate = startDateList.Any(x => x >= opDate) 
+            ? startDateList
+                .Where(x => x >= opDate)
+                .Min()
+            : DateOnly.MaxValue;
+        var closestEndDate = endDateList.Any(x => x < opDate) 
+            ? endDateList
+                .Where(x => x < opDate)
+                .Max() 
+            : DateOnly.MinValue;
+        var firstRepStartDate = SelectedReports.Report_Collection
+            .Where(x => x.FormNum_DB == relevantFormNum)
+            .Select(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDate)
+                ? startDate
+                : DateOnly.MaxValue)
+            .Min();
+        var lastRepEndDate = SelectedReports.Report_Collection
+            .Where(x => x.FormNum_DB == relevantFormNum)
+            .Select(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate)
+                ? endDate
+                : DateOnly.MinValue)
+            .Max(); 
+        
+        #endregion
+
+        var newRep = new Report()
+        {
+            FormNum_DB = relevantFormNum,
+            CorrectionNumber_DB = 0,
+            ExecEmail_DB = SelectedReport.ExecEmail_DB,
+            ExecPhone_DB = SelectedReport.ExecPhone_DB,
+            GradeExecutor_DB = SelectedReport.GradeExecutor_DB,
+            FIOexecutor_DB = SelectedReport.FIOexecutor_DB
+        };
+        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != relevantFormNum) 
+            || firstRepStartDate == DateOnly.MaxValue)  //Форм нет или не парсится ни одна дата начала
+        {
+            newRep.StartPeriod_DB = $"01.01.{opDate.Year}";
+            newRep.EndPeriod_DB = DateTime.Now.ToShortDateString();
+        }
+        else if (firstRepStartDate > opDate)    //Самая ранняя форма начинается позднее даты операции
+        {
+            newRep.StartPeriod_DB = $"01.01.{opDate.Year}";
+            newRep.EndPeriod_DB = firstRepStartDate.ToShortDateString();
+        }
+        else if (lastRepEndDate < opDate)   //Самая поздняя форма заканчивается ранее даты операции
+        {
+            newRep.StartPeriod_DB = lastRepEndDate.ToShortDateString();
+            newRep.EndPeriod_DB = DateTime.Now.ToShortDateString();
+        }
+        else   //Дата операции в разрыве между формами
+        {
+            newRep.StartPeriod_DB = closestEndDate.ToShortDateString();
+            newRep.EndPeriod_DB = closestStartDate.ToShortDateString();
+        }
+        return newRep;
+    }
 
     #endregion
 
