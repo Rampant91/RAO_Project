@@ -47,21 +47,19 @@ public abstract class CheckBase
     };
 
     //собственно функция импорта праздничных дат из справочника
-    private protected static void Holidays_Populate_From_File(string file_address)
+    private protected static void Holidays_Populate_From_File(string fileAddress)
     {
-        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-        if (!File.Exists(file_address)) return;
-        FileInfo excel_import_file = new(file_address);
-        var xls = new ExcelPackage(excel_import_file);
-        var wrksht1 = xls.Workbook.Worksheets["Лист1"];
-        string value_date;
-        DateTime fix_date;
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(fileAddress)) return;
+        FileInfo excelImportFile = new(fileAddress);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet1 = xls.Workbook.Worksheets["Лист1"];
         var i = 1;
         holidays_specific.Clear();
-        while (wrksht1.Cells[i, 1].Text != string.Empty)
+        while (worksheet1.Cells[i, 1].Text != string.Empty)
         {
-            value_date = wrksht1.Cells[i, 1].Text;
-            if (DateTime.TryParse(value_date, out fix_date))
+            var valueDate = worksheet1.Cells[i, 1].Text;
+            if (DateTime.TryParse(valueDate, out var fix_date))
             {
                 holidays_specific.Add(fix_date);
             }
@@ -71,26 +69,26 @@ public abstract class CheckBase
 
     //расчет кол-ва рабочих дней между двумя датами
     //strict_order - ожидать даты в правильном порядке
-    private protected static int Workdays_Between_Dates(DateTime date1, DateTime date2, bool strict_order = true)
+    private protected static int Workdays_Between_Dates(DateTime date1, DateTime date2, bool strictOrder = true)
     {
-        int result = 0;
-        DateTime date_min;
-        DateTime date_max;
-        if (strict_order)
+        var result = 0;
+        DateTime dateMin;
+        DateTime dateMax;
+        if (strictOrder)
         {
-            date_min = date1;
-            date_max = date2;
+            dateMin = date1;
+            dateMax = date2;
         }
         else
         {
-            date_min = (date1 < date2 ? date1 : date2);
-            date_max = (date_min == date2 ? date1 : date2);
+            dateMin = (date1 < date2 ? date1 : date2);
+            dateMax = (dateMin == date2 ? date1 : date2);
         }
-        if (date_min > date_max)
+        if (dateMin > dateMax)
         {
             return int.MaxValue;
         }
-        for (var day = date_min.Date; day < date_max.Date; day = day.AddDays(1))
+        for (var day = dateMin.Date; day < dateMax.Date; day = day.AddDays(1))
         {
             if (!(day.DayOfWeek == DayOfWeek.Saturday
                 || day.DayOfWeek == DayOfWeek.Sunday
@@ -160,17 +158,15 @@ public abstract class CheckBase
         if (!File.Exists(file_address)) return;
         FileInfo excel_import_file = new(file_address);
         var xls = new ExcelPackage(excel_import_file);
-        var wrksht1 = xls.Workbook.Worksheets["Лист1"];
+        var worksheet1 = xls.Workbook.Worksheets["Лист1"];
         var i = 2;
         string name_1, name_2, name_base, name_real;
         name_base = "аврорий";
-        string value_base;
-        double value_real;
         D.Clear();
-        while (wrksht1.Cells[i, 1].Text != string.Empty)
+        while (worksheet1.Cells[i, 1].Text != string.Empty)
         {
-            name_1 = wrksht1.Cells[i, 2].Text;
-            name_2 = wrksht1.Cells[i, 3].Text;
+            name_1 = worksheet1.Cells[i, 2].Text;
+            name_2 = worksheet1.Cells[i, 3].Text;
             if (name_1 != string.Empty)
             {
                 name_base = name_1.ToLower();
@@ -185,23 +181,24 @@ public abstract class CheckBase
                 {
                     name_real = name_base + name_2[name_2.IndexOf('-')..];
                 }
-                value_base = wrksht1.Cells[i, 4].Text;
-                if (value_base.Contains("Неограниченно"))
+                var valueBase = worksheet1.Cells[i, 4].Text;
+                double valueReal;
+                if (valueBase.Contains("Неограниченно"))
                 {
-                    value_real = double.MaxValue;
+                    valueReal = double.MaxValue;
                 }
                 else
                 {
-                    value_real = 1e12 * double.Parse(value_base[..6].Replace(" ", ""), NumberStyles.Float);
+                    valueReal = 1e12 * double.Parse(valueBase[..6].Replace(" ", ""), NumberStyles.Float);
                 }
-                D[name_real] = value_real;
+                D[name_real] = valueReal;
                 if (name_real.Contains("йод"))
                 {
-                    D[name_real.Replace('й', 'и')] = value_real;
+                    D[name_real.Replace('й', 'и')] = valueReal;
                 }
                 else if (name_real.Contains("иод"))
                 {
-                    D[name_real.Replace('и', 'й')] = value_real;
+                    D[name_real.Replace('и', 'й')] = valueReal;
                 }
             }
             i++;
@@ -218,18 +215,18 @@ public abstract class CheckBase
         if (!File.Exists(fileAddress)) return;
         FileInfo excel_import_file = new(fileAddress);
         var xls = new ExcelPackage(excel_import_file);
-        var wrksht1 = xls.Workbook.Worksheets["Лист1"];
+        var worksheet1 = xls.Workbook.Worksheets["Лист1"];
         var i = 8;
         OKSM.Clear();
-        while (wrksht1.Cells[i, 1].Text != string.Empty)
+        while (worksheet1.Cells[i, 1].Text != string.Empty)
         {
             OKSM.Add(new Dictionary<string, string>
             {
-                {"kod", wrksht1.Cells[i, 2].Text},
-                {"shortname", wrksht1.Cells[i, 3].Text},
-                {"longname", wrksht1.Cells[i, 4].Text},
-                {"alpha2", wrksht1.Cells[i, 5].Text},
-                {"alpha3", wrksht1.Cells[i, 6].Text}
+                {"kod", worksheet1.Cells[i, 2].Text},
+                {"shortname", worksheet1.Cells[i, 3].Text},
+                {"longname", worksheet1.Cells[i, 4].Text},
+                {"alpha2", worksheet1.Cells[i, 5].Text},
+                {"alpha3", worksheet1.Cells[i, 6].Text}
             });
             i++;
         }

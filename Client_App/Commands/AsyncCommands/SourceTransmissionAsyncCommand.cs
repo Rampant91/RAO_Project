@@ -901,17 +901,23 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
                 .Max() 
             : DateOnly.MinValue;
         var firstRepStartDate = SelectedReports.Report_Collection
-            .Where(x => x.FormNum_DB == relevantFormNum)
-            .Select(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDate)
-                ? startDate
-                : DateOnly.MaxValue)
-            .Min();
+            .Any(x => x.FormNum_DB == relevantFormNum) 
+            ? SelectedReports.Report_Collection
+                .Where(x => x.FormNum_DB == relevantFormNum)
+                .Select(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDate)
+                    ? startDate
+                    : DateOnly.MaxValue)
+                .Min()
+            : DateOnly.MaxValue;
         var lastRepEndDate = SelectedReports.Report_Collection
-            .Where(x => x.FormNum_DB == relevantFormNum)
-            .Select(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate)
-                ? endDate
-                : DateOnly.MinValue)
-            .Max(); 
+            .Any(x => x.FormNum_DB == relevantFormNum)
+            ? SelectedReports.Report_Collection
+                .Where(x => x.FormNum_DB == relevantFormNum)
+                .Select(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate)
+                    ? endDate
+                    : DateOnly.MinValue)
+                .Max()
+            : DateOnly.MinValue;
         
         #endregion
 
@@ -933,17 +939,25 @@ public class SourceTransmissionAsyncCommand(ChangeOrCreateVM changeOrCreateViewM
         else if (firstRepStartDate > opDate)    //Самая ранняя форма начинается позднее даты операции
         {
             newRep.StartPeriod_DB = $"01.01.{opDate.Year}";
-            newRep.EndPeriod_DB = firstRepStartDate.ToShortDateString();
+            newRep.EndPeriod_DB = firstRepStartDate is { Day: 1, Month: 1 } 
+                ? firstRepStartDate.AddDays(-1).ToShortDateString() 
+                : firstRepStartDate.ToShortDateString();
         }
         else if (lastRepEndDate < opDate)   //Самая поздняя форма заканчивается ранее даты операции
         {
-            newRep.StartPeriod_DB = lastRepEndDate.ToShortDateString();
+            newRep.StartPeriod_DB = lastRepEndDate is { Day: 31, Month: 12 } 
+                ? lastRepEndDate.AddDays(1).ToShortDateString()
+                : lastRepEndDate.ToShortDateString();
             newRep.EndPeriod_DB = DateTime.Now.ToShortDateString();
         }
         else   //Дата операции в разрыве между формами
         {
-            newRep.StartPeriod_DB = closestEndDate.ToShortDateString();
-            newRep.EndPeriod_DB = closestStartDate.ToShortDateString();
+            newRep.StartPeriod_DB = closestEndDate is { Day: 31, Month: 12 }  
+                ? closestEndDate.AddDays(1).ToShortDateString()
+                : closestEndDate.ToShortDateString();
+            newRep.EndPeriod_DB = closestStartDate is { Day: 1, Month: 1 } 
+                    ? closestStartDate.AddDays(-1).ToShortDateString() 
+                    : closestStartDate.ToShortDateString();
         }
         return newRep;
     }

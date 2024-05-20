@@ -54,10 +54,10 @@ public abstract class CheckF12 : CheckBase
             Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
 #endif
         }
+        var formsList = rep.Rows12.ToList<Form12>();
         foreach (var key in rep.Rows12)
         {
             var form = (Form12)key;
-            var formsList = rep.Rows12.ToList<Form12>();
             var notes = rep.Notes.ToList<Note>();
             var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
             errorList.AddRange(Check_001(formsList, currentFormLine));
@@ -118,6 +118,7 @@ public abstract class CheckF12 : CheckBase
 
             currentFormLine++;
         }
+        errorList.AddRange(Check_056(formsList));
 
         var index = 0;
         foreach (var error in errorList)
@@ -444,10 +445,10 @@ public abstract class CheckF12 : CheckBase
         string[] applicableOperationCodes = { "11", "12", "28", "38", "41", "63", "64", "73", "81", "85" };
         if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
         var owner = forms[line].Owner_DB;
-        var repOkpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB
-            : forms10[0].Okpo_DB;
-        var valid = owner == repOkpo;
+        var okpoRepJur = forms10[0].Okpo_DB ?? "";
+        var okpoRepTerPodr = forms10[1].Okpo_DB ?? "";
+        var valid = !string.IsNullOrWhiteSpace(owner) 
+                    && (owner == okpoRepTerPodr || owner == okpoRepJur);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1624,6 +1625,57 @@ public abstract class CheckF12 : CheckBase
                 Column = "PackNumber_DB",
                 Value = packNumber,
                 Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check056
+
+    //Наличие строк дубликатов
+    private static List<CheckError> Check_056(List<Form12> forms)
+    {
+        List<CheckError> result = new();
+        HashSet<int> duplicatesLinesSet = new();
+        for (var i = 0; i < forms.Count; i++)
+        {
+            var currentForm = forms[i];
+            for (var j = i + 1; j < forms.Count;j++)
+            {
+                var formToCompare = forms[j];
+                var isDuplicate = formToCompare.OperationCode_DB == currentForm.OperationCode_DB 
+                                  && formToCompare.OperationDate_DB == currentForm.OperationDate_DB
+                                  && formToCompare.PassportNumber_DB == currentForm.PassportNumber_DB
+                                  && formToCompare.NameIOU_DB == currentForm.NameIOU_DB
+                                  && formToCompare.FactoryNumber_DB == currentForm.FactoryNumber_DB
+                                  && formToCompare.Mass_DB == currentForm.Mass_DB
+                                  && formToCompare.CreatorOKPO_DB == currentForm.CreatorOKPO_DB
+                                  && formToCompare.CreationDate_DB == currentForm.CreationDate_DB
+                                  && formToCompare.SignedServicePeriod_DB == currentForm.SignedServicePeriod_DB
+                                  && formToCompare.PropertyCode_DB == currentForm.PropertyCode_DB
+                                  && formToCompare.Owner_DB == currentForm.Owner_DB
+                                  && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
+                                  && formToCompare.DocumentNumber_DB == currentForm.DocumentNumber_DB
+                                  && formToCompare.DocumentDate_DB == currentForm.DocumentDate_DB
+                                  && formToCompare.ProviderOrRecieverOKPO_DB == currentForm.ProviderOrRecieverOKPO_DB;
+                if (!isDuplicate) continue;
+                duplicatesLinesSet.Add(i + 1);
+                duplicatesLinesSet.Add(j + 1);
+            }
+        }
+        var duplicateLines = string.Join(", ", duplicatesLinesSet.Order());
+        if (duplicatesLinesSet.Count != 0)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_12",
+                Row = duplicateLines,
+                Column = "2 - 16",
+                Value = "",
+                Message = $"Данные граф 2-16 в строках {duplicateLines} продублированы. " +
+                          $"{Environment.NewLine}Следует проверить правильность предоставления данных."
             });
         }
         return result;

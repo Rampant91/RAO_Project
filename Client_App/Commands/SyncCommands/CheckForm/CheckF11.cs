@@ -8,6 +8,7 @@ using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -101,10 +102,11 @@ public abstract partial class CheckF11 : CheckBase
             Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
 #endif
         }
+        var formsList = rep.Rows11.ToList<Form11>();
         foreach (var key in rep.Rows11)
         {
             var form = (Form11)key;
-            var formsList = rep.Rows11.ToList<Form11>();
+            
             var notes = rep.Notes.ToList<Note>();
             var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
             errorList.AddRange(Check_001(formsList, currentFormLine));
@@ -168,9 +170,10 @@ public abstract partial class CheckF11 : CheckBase
             errorList.AddRange(Check_061(formsList, currentFormLine));
             errorList.AddRange(Check_062(formsList, currentFormLine));
             errorList.AddRange(Check_063(formsList, currentFormLine));
-
+            
             currentFormLine++;
         }
+        errorList.AddRange(Check_064(formsList));
 
         var index = 0;
         foreach (var error in errorList)
@@ -636,12 +639,11 @@ public abstract partial class CheckF11 : CheckBase
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
         if (!OperationCode_DB_Check018.Contains(operationCode)) return result;
-        var okpoRep = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB
-            : forms10[0].Okpo_DB;
+        var okpoRepJur = forms10[0].Okpo_DB ?? "";
+        var okpoRepTerPodr = forms10[1].Okpo_DB ?? "";
         var owner = forms[line].Owner_DB;
-        var valid = !string.IsNullOrWhiteSpace(owner)
-                    && owner == okpoRep;
+        var valid = !string.IsNullOrWhiteSpace(owner) 
+                    && (owner == okpoRepTerPodr || owner == okpoRepJur);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2104,6 +2106,60 @@ public abstract partial class CheckF11 : CheckBase
                 Column = "PackNumber_DB",
                 Value = packNumber,
                 Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой"
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check064
+
+    //Наличие строк дубликатов
+    private static List<CheckError> Check_064(List<Form11> forms)
+    {
+        List<CheckError> result = new();
+        HashSet<int> duplicatesLinesSet = new();
+        for (var i = 0; i < forms.Count; i++)
+        {
+            var currentForm = forms[i];
+            for (var j = i + 1; j < forms.Count;j++)
+            {
+                var formToCompare = forms[j];
+                var isDuplicate = formToCompare.OperationCode_DB == currentForm.OperationCode_DB 
+                                  && formToCompare.OperationDate_DB == currentForm.OperationDate_DB
+                                  && formToCompare.PassportNumber_DB == currentForm.PassportNumber_DB
+                                  && formToCompare.Type_DB == currentForm.Type_DB
+                                  && formToCompare.Radionuclids_DB == currentForm.Radionuclids_DB
+                                  && formToCompare.FactoryNumber_DB == currentForm.FactoryNumber_DB
+                                  && formToCompare.Quantity_DB == currentForm.Quantity_DB
+                                  && formToCompare.Activity_DB == currentForm.Activity_DB
+                                  && formToCompare.CreatorOKPO_DB == currentForm.CreatorOKPO_DB
+                                  && formToCompare.CreationDate_DB == currentForm.CreationDate_DB
+                                  && formToCompare.Category_DB == currentForm.Category_DB
+                                  && formToCompare.SignedServicePeriod_DB.Equals(currentForm.SignedServicePeriod_DB)
+                                  && formToCompare.PropertyCode_DB == currentForm.PropertyCode_DB
+                                  && formToCompare.Owner_DB == currentForm.Owner_DB
+                                  && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
+                                  && formToCompare.DocumentNumber_DB == currentForm.DocumentNumber_DB
+                                  && formToCompare.DocumentDate_DB == currentForm.DocumentDate_DB
+                                  && formToCompare.ProviderOrRecieverOKPO_DB == currentForm.ProviderOrRecieverOKPO_DB;
+                if (!isDuplicate) continue;
+                duplicatesLinesSet.Add(i + 1);
+                duplicatesLinesSet.Add(j + 1);
+            }
+        }
+        var duplicateLines = string.Join(", ", duplicatesLinesSet.Order());
+        if (duplicatesLinesSet.Count != 0)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = duplicateLines,
+                Column = "2 - 19",
+                Value = "",
+                Message = $"Данные граф 2-19 в строках {duplicateLines} продублированы. " +
+                          $"{Environment.NewLine}Следует проверить правильность предоставления данных."
             });
         }
         return result;
