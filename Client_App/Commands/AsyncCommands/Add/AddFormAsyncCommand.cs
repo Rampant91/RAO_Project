@@ -13,7 +13,7 @@ using Models.Interfaces;
 namespace Client_App.Commands.AsyncCommands.Add;
 
 //  Создать и открыть новое окно формы для выбранной организации
-internal class AddFormAsyncCommand : BaseAsyncCommand
+public class AddFormAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {

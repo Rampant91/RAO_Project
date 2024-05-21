@@ -13,18 +13,13 @@ using Models.Collections;
 namespace Client_App.Commands.AsyncCommands.Delete;
 
 //  Удалить выбранные строчки из формы
-internal class DeleteRowsAsyncCommand : BaseAsyncCommand
+public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-
-    public DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {
+        if (parameter is null) return;
         var param = ((IEnumerable<IKey>)parameter).ToArray();
 
         #region MessageDeleteLine
@@ -32,11 +27,11 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
         var answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Да", IsDefault = true },
                     new ButtonDefinition { Name = "Нет", IsCancel = true }
-                },
+                ],
                 ContentTitle = "Удаление строки",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Вы действительно хотите удалить строчку?",
@@ -60,8 +55,9 @@ internal class DeleteRowsAsyncCommand : BaseAsyncCommand
 
             var rows = Storage[Storage.FormNum_DB]
                 .GetEnumerable()
+                .Cast<Form>()
                 .ToList();
-            switch ((rows.FirstOrDefault() as Form).FormNum_DB)
+            switch (rows.First().FormNum_DB)
             {
                 case "2.1":
                 {

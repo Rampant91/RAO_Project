@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -20,7 +21,7 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Выгрузка в Excel истории движения источника
-internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
+internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
 {
     private ExcelExportProgressBar progressBar;
 
@@ -507,4 +508,18 @@ internal class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncComm
         progressBarVM.ValueBar = 100;
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
+
+    #region RemoveForbiddenChars
+
+    private static string RemoveForbiddenChars(string str)
+    {
+        str = str.Replace(" ", "").Replace(Environment.NewLine, "");
+        str = ForbiddenCharsRegex().Replace(str, "_");
+        return str;
+    }
+
+    [GeneratedRegex("[\\\\/:*?\"<>|]")]
+    private static partial Regex ForbiddenCharsRegex();
+
+    #endregion
 }

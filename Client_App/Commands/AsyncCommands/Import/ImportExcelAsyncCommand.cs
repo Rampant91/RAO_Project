@@ -22,13 +22,13 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     {
         RepsWhereTitleFormCheckIsCancel.Clear();
         IsFirstLogLine = true;
-        ExcelImportNewReps = false;
         CurrentLogLine = 1;
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
         foreach (var res in answer) // Для каждого импортируемого файла
         {
+            ExcelImportNewReps = false;
             if (res is "") continue;
             SourceFile = new FileInfo(res);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

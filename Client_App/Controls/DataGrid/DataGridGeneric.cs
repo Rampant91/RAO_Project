@@ -642,7 +642,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
             var rep = SelectedItems.Get<Report>(0);
             if (rep is null) return;
-            var countR = ReportsStorage.GetReportRowsCount(rep);
+            var countR = ReportsStorage.GetReportRowsCount(rep).Result;
             SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
         }
     }
@@ -2298,6 +2298,4 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
 
     #endregion
-
-    
 }
