@@ -23,7 +23,7 @@ public abstract class Form : IKey, IDataGridColumn
     public virtual Report? Report { get; set; }
 
     [NotMapped]
-    protected Dictionary<string, RamAccess> Dictionary { get; set; } = new();
+    protected Dictionary<string, RamAccess> Dictionary { get; set; } = [];
 
     #region FormNum
     public string FormNum_DB { get; set; } = "";

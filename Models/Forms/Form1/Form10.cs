@@ -11,7 +11,7 @@ using OfficeOpenXml;
 namespace Models.Forms.Form1;
 
 [Serializable]
-[Form_Class("Форма 1.0: Титульный лист организации")]
+[Form_Class(name: "Форма 1.0: Титульный лист организации")]
 [Table (name: "form_10")]
 public partial class Form10 : Form
 {
@@ -24,45 +24,9 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region PropertyChanged
-    
-    protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
-    {
-        OnPropertyChanged(args.PropertyName);
-    }
-
-    #endregion
-
-    #region Validation
-
-    public override bool Object_Validation()
-    {
-        return !(Okfs.HasErrors ||
-                 Okpo.HasErrors ||
-                 Okved.HasErrors ||
-                 Oktmo.HasErrors ||
-                 Okogu.HasErrors ||
-                 Okopf.HasErrors ||
-                 Inn.HasErrors ||
-                 Kpp.HasErrors ||
-                 RegNo.HasErrors ||
-                 OrganUprav.HasErrors ||
-                 SubjectRF.HasErrors ||
-                 JurLico.HasErrors ||
-                 ShortJurLico.HasErrors ||
-                 JurLicoAddress.HasErrors ||
-                 JurLicoFactAddress.HasErrors ||
-                 GradeFIO.HasErrors ||
-                 Telephone.HasErrors ||
-                 Fax.HasErrors ||
-                 Email.HasErrors);
-    }
-
-    #endregion
-
     #region Properties
 
-    #region RegNo
+    #region RegNo (2)
 
     public string RegNo_DB { get; set; } = "";
 
@@ -120,7 +84,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region OrganUprav
+    #region OrganUprav (3)
 
     public string OrganUprav_DB { get; set; } = "";
 
@@ -163,7 +127,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region SubjectRF
+    #region SubjectRF (4)
 
     public string SubjectRF_DB { get; set; } = "";
 
@@ -206,7 +170,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region JurLico
+    #region JurLico (5)
 
     public string JurLico_DB { get; set; } = "";
 
@@ -249,7 +213,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region ShortJurLico
+    #region ShortJurLico (6)
 
     public string ShortJurLico_DB { get; set; } = "";
 
@@ -292,7 +256,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region JurLicoAddress
+    #region JurLicoAddress (7)
 
     public string JurLicoAddress_DB { get; set; } = "";
 
@@ -336,7 +300,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region JurLicoFactAddress
+    #region JurLicoFactAddress (8)
 
     public string JurLicoFactAddress_DB { get; set; } = "";
 
@@ -379,7 +343,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region GradeFIO
+    #region GradeFIO (9)
 
     public string GradeFIO_DB { get; set; } = "";
 
@@ -422,7 +386,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Telephone
+    #region Telephone (10)
 
     public string Telephone_DB { get; set; } = "";
 
@@ -465,7 +429,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Fax
+    #region Fax (11)
 
     public string Fax_DB { get; set; } = "";
 
@@ -508,7 +472,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Email
+    #region Email (12)
 
     public string Email_DB { get; set; } = "";
 
@@ -551,7 +515,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Okpo
+    #region Okpo (13)
 
     public string Okpo_DB { get; set; } = "";
 
@@ -605,7 +569,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Okved
+    #region Okved (14)
 
     public string Okved_DB { get; set; } = "";
 
@@ -658,7 +622,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Okogu
+    #region Okogu (15)
 
     public string Okogu_DB { get; set; } = "";
 
@@ -712,7 +676,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Oktmo
+    #region Oktmo (16)
 
     public string Oktmo_DB { get; set; } = "";
 
@@ -765,7 +729,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Inn
+    #region Inn (17)
 
     public string Inn_DB { get; set; } = "";
 
@@ -818,7 +782,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Kpp
+    #region Kpp (18)
 
     public string Kpp_DB { get; set; } = "";
 
@@ -871,7 +835,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Okopf
+    #region Okopf (19)
 
     public string Okopf_DB { get; set; } = "";
 
@@ -924,7 +888,7 @@ public partial class Form10 : Form
 
     #endregion
 
-    #region Okfs
+    #region Okfs (20)
 
     public string Okfs_DB { get; set; } = "";
 
@@ -976,6 +940,42 @@ public partial class Form10 : Form
     }
 
     #endregion 
+
+    #endregion
+
+    #region PropertyChanged
+    
+    protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+    {
+        OnPropertyChanged(args.PropertyName);
+    }
+
+    #endregion
+
+    #region Validation
+
+    public override bool Object_Validation()
+    {
+        return !(Okfs.HasErrors ||
+                 Okpo.HasErrors ||
+                 Okved.HasErrors ||
+                 Oktmo.HasErrors ||
+                 Okogu.HasErrors ||
+                 Okopf.HasErrors ||
+                 Inn.HasErrors ||
+                 Kpp.HasErrors ||
+                 RegNo.HasErrors ||
+                 OrganUprav.HasErrors ||
+                 SubjectRF.HasErrors ||
+                 JurLico.HasErrors ||
+                 ShortJurLico.HasErrors ||
+                 JurLicoAddress.HasErrors ||
+                 JurLicoFactAddress.HasErrors ||
+                 GradeFIO.HasErrors ||
+                 Telephone.HasErrors ||
+                 Fax.HasErrors ||
+                 Email.HasErrors);
+    }
 
     #endregion
 

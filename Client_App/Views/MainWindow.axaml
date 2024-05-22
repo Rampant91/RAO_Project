@@ -234,6 +234,8 @@
                         CommandParameter="SelectedOrg"
                         Header="Все формы"/>
                 </MenuItem>
+                <MenuItem Command="{Binding ExcelExportMaxGraphsLength, Mode=OneTime}"
+                          Header="Максимальная длинна граф"/>
             </MenuItem>
         </Menu>
         <Panel
