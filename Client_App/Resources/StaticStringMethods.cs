@@ -102,7 +102,19 @@ internal static partial class StaticStringMethods
     {
         return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
             .Replace("(", "").Replace(")", "").Replace(".", ",");
-    } 
+    }
+
+    #endregion
+
+    #region ConvertStringtoExponential
+
+    public static string ConvertStringToExponential(string str) =>
+        str.ToLower()
+            .Replace(".", ",")
+            .Replace("(", "")
+            .Replace(")", "")
+            .Replace('е', 'e')
+            .Trim();
 
     #endregion
 

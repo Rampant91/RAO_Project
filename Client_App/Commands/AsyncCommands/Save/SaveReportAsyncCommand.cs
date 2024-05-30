@@ -6,21 +6,15 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands.Save;
 
 //  Сохранить отчет
-internal class SaveReportAsyncCommand : BaseAsyncCommand
+public class SaveReportAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-    private Reports Storages => _ChangeOrCreateViewModel.Storages;
-    private string FormType => _ChangeOrCreateViewModel.FormType;
-
-    public SaveReportAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
+    private Reports Storages => changeOrCreateViewModel.Storages;
+    private string FormType => changeOrCreateViewModel.FormType;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (_ChangeOrCreateViewModel.DBO != null)
+        if (changeOrCreateViewModel.DBO != null)
         {
             var tmp = new Reports { Master = Storage };
             if (tmp.Master.Rows10.Count != 0)
@@ -33,8 +27,8 @@ internal class SaveReportAsyncCommand : BaseAsyncCommand
                 tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
             }
-            _ChangeOrCreateViewModel.DBO.Reports_Collection.Add(tmp);
-            _ChangeOrCreateViewModel.DBO = null;
+            changeOrCreateViewModel.DBO.Reports_Collection.Add(tmp);
+            changeOrCreateViewModel.DBO = null;
         }
         else if (Storages != null && FormType is not ("1.0" or "2.0") && !Storages.Report_Collection.Contains(Storage))
         {
@@ -60,7 +54,7 @@ internal class SaveReportAsyncCommand : BaseAsyncCommand
         try
         {
             await dbm.SaveChangesAsync();
-            _ChangeOrCreateViewModel.IsCanSaveReportEnabled = false;
+            changeOrCreateViewModel.IsCanSaveReportEnabled = false;
         }
         catch
         {

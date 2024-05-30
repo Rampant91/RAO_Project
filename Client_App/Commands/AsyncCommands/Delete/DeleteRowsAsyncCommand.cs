@@ -24,6 +24,7 @@ public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
 
         #region MessageDeleteLine
 
+        var suffix = param.Length == 1 ? 'у' : 'и';
         var answer = await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
@@ -34,7 +35,7 @@ public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
                 ],
                 ContentTitle = "Удаление строки",
                 ContentHeader = "Уведомление",
-                ContentMessage = "Вы действительно хотите удалить строчку?",
+                ContentMessage = $"Вы действительно хотите удалить строчк{suffix}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })

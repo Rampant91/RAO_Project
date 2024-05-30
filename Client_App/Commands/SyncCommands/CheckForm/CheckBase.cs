@@ -5,6 +5,7 @@ using OfficeOpenXml;
 using System.Globalization;
 using System.IO;
 using System;
+using System.Drawing;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -17,92 +18,6 @@ public abstract class CheckBase
     private protected static List<Dictionary<string, string>> R = new();
 
     private protected static bool DB_Ignore = true;
-
-    #region OverdueCalculations
-    //вычисление нарушения сроков предоставления отчётов с учетом праздников
-
-    //праздники из года в год
-    private protected static List<DateTime> holidays_generic = new()
-    {
-        new DateTime(1,1,1), //1 января
-        new DateTime(1,1,2), //2 января
-        new DateTime(1,1,3), //3 января
-        new DateTime(1,1,4), //4 января
-        new DateTime(1,1,5), //5 января
-        new DateTime(1,1,6), //6 января
-        new DateTime(1,1,7), //7 января
-        new DateTime(1,1,8), //8 января
-        new DateTime(1,2,23), //23 февраля
-        new DateTime(1,3,8), //8 марта
-        new DateTime(1,5,1), //1 мая
-        new DateTime(1,5,9), //9 мая
-        new DateTime(1,6,12), //12 июня
-        new DateTime(1,11,4), //4 ноября
-    };
-
-    //праздники конкретных годов, берутся из файла ./Spravochniki/Holidays.xlsx
-    private protected static List<DateTime> holidays_specific = new()
-    {
-
-    };
-
-    //собственно функция импорта праздничных дат из справочника
-    private protected static void Holidays_Populate_From_File(string fileAddress)
-    {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        if (!File.Exists(fileAddress)) return;
-        FileInfo excelImportFile = new(fileAddress);
-        var xls = new ExcelPackage(excelImportFile);
-        var worksheet1 = xls.Workbook.Worksheets["Лист1"];
-        var i = 1;
-        holidays_specific.Clear();
-        while (worksheet1.Cells[i, 1].Text != string.Empty)
-        {
-            var valueDate = worksheet1.Cells[i, 1].Text;
-            if (DateTime.TryParse(valueDate, out var fix_date))
-            {
-                holidays_specific.Add(fix_date);
-            }
-            i++;
-        }
-    }
-
-    //расчет кол-ва рабочих дней между двумя датами
-    //strict_order - ожидать даты в правильном порядке
-    private protected static int Workdays_Between_Dates(DateTime date1, DateTime date2, bool strictOrder = true)
-    {
-        var result = 0;
-        DateTime dateMin;
-        DateTime dateMax;
-        if (strictOrder)
-        {
-            dateMin = date1;
-            dateMax = date2;
-        }
-        else
-        {
-            dateMin = (date1 < date2 ? date1 : date2);
-            dateMax = (dateMin == date2 ? date1 : date2);
-        }
-        if (dateMin > dateMax)
-        {
-            return int.MaxValue;
-        }
-        for (var day = dateMin.Date; day < dateMax.Date; day = day.AddDays(1))
-        {
-            if (!(day.DayOfWeek == DayOfWeek.Saturday
-                || day.DayOfWeek == DayOfWeek.Sunday
-                || holidays_specific.Any(x => Equals(x.Date, day.Date))
-                || holidays_generic.Any(x => Equals(x.Date.Month, day.Date.Month) && Equals(x.Date.Day, day.Date.Day))
-                ))
-            {
-                result++;
-            }
-        }
-        return result;
-    }
-
-    #endregion
 
     #region CheckNotePresence
 
@@ -149,6 +64,37 @@ public abstract class CheckBase
     }
 
     #endregion
+
+    #region ConvertStringToExponential
+
+    protected static string ConvertStringToExponential(string? str)
+    {
+        str ??= "";
+        return str.ToLower()
+            .Replace(".", ",")
+            .Replace("(", "")
+            .Replace(")", "")
+            .Replace('е', 'e')
+            .Trim();
+    }
+
+    #endregion
+
+    #region CustomComparator
+
+    private protected class CustomNullStringWithTrimComparer : IComparer<string>
+    {
+        public int Compare(string? x, string? y)
+        {
+            var strA = (x ?? string.Empty).Trim();
+            var strB = (y ?? string.Empty).Trim();
+            return string.CompareOrdinal(strA, strB);
+        }
+    }
+
+    #endregion
+
+    #region LoadDictionaries
 
     #region DFromFile
 
@@ -207,6 +153,43 @@ public abstract class CheckBase
 
     #endregion
 
+    #region  HolidaysFromFile
+
+    //функция импорта праздничных и рабочих дат из справочника
+    private protected static void Holidays_Populate_From_File(string fileAddress)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(fileAddress)) return;
+        FileInfo excelImportFile = new(fileAddress);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet1 = xls.Workbook.Worksheets["Выходные"];
+        var i = 1;
+        HolidaysSpecific.Clear();
+        while (worksheet1.Cells[i, 1].Text != string.Empty)
+        {
+            var valueDate = worksheet1.Cells[i, 1].Text;
+            if (DateOnly.TryParse(valueDate, out var fixDate))
+            {
+                HolidaysSpecific.Add(fixDate);
+            }
+            i++;
+        }
+        var worksheet2 = xls.Workbook.Worksheets["Рабочие"];
+        i = 1;
+        WorkDaysSpecific.Clear();
+        while (worksheet2.Cells[i, 1].Text != string.Empty)
+        {
+            var valueDate = worksheet2.Cells[i, 1].Text;
+            if (DateOnly.TryParse(valueDate, out var fixDate))
+            {
+                WorkDaysSpecific.Add(fixDate);
+            }
+            i++;
+        }
+    }
+
+    #endregion
+
     #region OKSMFromFile
 
     private protected static void OKSM_Populate_From_File(string fileAddress)
@@ -255,6 +238,73 @@ public abstract class CheckBase
             });
             i++;
         }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region OverdueCalculations
+    //вычисление нарушения сроков предоставления отчётов с учетом праздников
+
+    //праздники из года в год
+    private static readonly List<DateOnly> HolidaysGeneric = new()
+    {
+        new DateOnly(1,1,1), //1 января
+        new DateOnly(1,1,2), //2 января
+        new DateOnly(1,1,3), //3 января
+        new DateOnly(1,1,4), //4 января
+        new DateOnly(1,1,5), //5 января
+        new DateOnly(1,1,6), //6 января
+        new DateOnly(1,1,7), //7 января
+        new DateOnly(1,1,8), //8 января
+        new DateOnly(1,2,23), //23 февраля
+        new DateOnly(1,3,8), //8 марта
+        new DateOnly(1,5,1), //1 мая
+        new DateOnly(1,5,9), //9 мая
+        new DateOnly(1,6,12), //12 июня
+        new DateOnly(1,11,4), //4 ноября
+    };
+
+    //рабочие дни по выходным, уникальные для каждого года, берутся из файла ./Spravochniki/Holidays.xlsx
+    private static readonly List<DateOnly> WorkDaysSpecific = new();
+
+    //праздники конкретных годов, берутся из файла ./Spravochniki/Holidays.xlsx
+    private protected static readonly List<DateOnly> HolidaysSpecific = new();
+
+    //расчет кол-ва рабочих дней между двумя датами
+    //strict_order - ожидать даты в правильном порядке
+    private protected static int WorkdaysBetweenDates(DateOnly date1, DateOnly date2, bool strictOrder = true)
+    {
+        var result = 0;
+        DateOnly dateMin;
+        DateOnly dateMax;
+        if (strictOrder)
+        {
+            dateMin = date1;
+            dateMax = date2;
+        }
+        else
+        {
+            dateMin = date1 < date2 ? date1 : date2;
+            dateMax = dateMin == date2 ? date1 : date2;
+        }
+        if (dateMin > dateMax)
+        {
+            return int.MaxValue;
+        }
+        for (var day = dateMin; day <= dateMax; day = day.AddDays(1))
+        {
+            var isWorkingDay = WorkDaysSpecific.Any(x => Equals(x, day)) 
+                               || !(day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday 
+                                    || HolidaysSpecific.Any(x => Equals(x, day)) 
+                                    || HolidaysGeneric.Any(x => Equals(x.Month, day.Month) && Equals(x.Day, day.Day)));
+            if (isWorkingDay)
+            {
+                result++;
+            }
+        }
+        return result;
     }
 
     #endregion

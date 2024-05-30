@@ -20,6 +20,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Models.DBRealization;
 using System.Threading;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands.CheckForm;
 
 namespace Client_App.ViewModels;
@@ -174,6 +175,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
     public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
     public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО
+    public ICommand SourceTransmissionAll { get; set; }             //  Перевод всех источников в форме из РВ в РАО
 
     #endregion
 
@@ -310,17 +312,17 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     private void Init()
     {
-        var a = FormType.Replace(".", "");
+        var formNum = FormType.Replace(".", "");
         if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] is "1" or "2")
         {
-            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
+            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
                            + $"{Storages.Master_DB.RegNoRep.Value} "
                            + $"{Storages.Master_DB.ShortJurLicoRep.Value} "
                            + $"{Storages.Master_DB.OkpoRep.Value}";
         }
         else if (FormType is "1.0" or "2.0")
         {
-            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
 
         AddNote = new AddNoteAsyncCommand(this);
@@ -344,7 +346,13 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();
-        SourceTransmission = new SourceTransmissionAsyncCommand(this);
+        SourceTransmission = new SourceTransmissionAsyncCommand()
+        {
+            ChangeOrCreateViewModel = this
+        };
+        SourceTransmissionAll = new SourceTransmissionAllAsyncCommand(){
+            ChangeOrCreateViewModel = this
+        };
         if (!isSum)
         {
             //Storage.Sort();

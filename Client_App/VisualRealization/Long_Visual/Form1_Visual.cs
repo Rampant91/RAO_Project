@@ -479,8 +479,22 @@ public class Form1_Visual
         rigthStP.Children.Add(content);
         #endregion
 
+        #region Right2
+
+        StackPanel rigthStP2 = new()
+        {
+            Orientation = Orientation.Vertical,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            Margin = Thickness.Parse("5,5,5,10")
+        };
+        rigthStP2.Children.Add(CreateButton("Перевести все РВ в РАО", "5,0,0,3", 30, "SourceTransmissionAll"));
+
+
+        #endregion
+
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
+        topPnl1.Children.Add(rigthStP2);
         maingrid.Children.Add(topPnl1);
         #endregion
 
