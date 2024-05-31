@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
-public class CheckF16 : CheckBase
+public abstract class CheckF16 : CheckBase
 {
     #region Properties
 
@@ -88,7 +88,7 @@ public class CheckF16 : CheckBase
             R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
 #endif
         }
-        if (holidays_specific.Count == 0)
+        if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG
             Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "Holidays.xlsx"));
@@ -599,10 +599,10 @@ public class CheckF16 : CheckBase
         List<CheckError> result = new();
         var nonApplicableOperationCodes = new string[] { "11", "12", "13", "14", "28", "38", "41", "76" };
         var operationCode = forms[line].OperationCode_DB;
-        if (!nonApplicableOperationCodes.Contains(operationCode)) return result;
+        if (nonApplicableOperationCodes.Contains(operationCode)) return result;
         var applicableRAOStatuses = new string[] { "1", "2", "3", "4", "7", "9" };
         var StatusRAO_DB = forms[line].StatusRAO_DB;
-        var valid = applicableRAOStatuses.Contains(StatusRAO_DB);
+        var valid = applicableRAOStatuses.Contains(StatusRAO_DB) || StatusRAO_DB.Length >= 8;
         if (!valid)
         {
             result.Add(new CheckError
@@ -625,7 +625,10 @@ public class CheckF16 : CheckBase
         List<CheckError> result = new();
         var Volume_DB = forms[line].Volume_DB;
         Volume_DB = Volume_DB.Trim().TrimStart('(').TrimEnd(')');
-        var valid = float.TryParse(Volume_DB, out var value) && value > 0;
+        var valid = float.TryParse(Volume_DB.Replace(".", ",").Replace("е", "e"),
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                CultureInfo.CreateSpecificCulture("ru-RU"),
+                out var value) && value > 0;
         if (!valid)
         {
             result.Add(new CheckError
@@ -652,7 +655,10 @@ public class CheckF16 : CheckBase
         Volume_DB = Volume_DB.Trim().TrimStart('(').TrimEnd(')');
         float Mass_Real;
         float Volume_Real;
-        var valid = float.TryParse(Mass_DB, out Mass_Real) && Mass_Real > 0;
+        var valid = float.TryParse(Mass_DB.Replace(".", ",").Replace("е", "e"),
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                CultureInfo.CreateSpecificCulture("ru-RU"),
+                out Mass_Real) && Mass_Real > 0;
         if (!valid)
         {
             result.Add(new CheckError
@@ -827,9 +833,9 @@ public class CheckF16 : CheckBase
             .Replace(" ", "")
             .Replace(',', ';')
             .Split(';');
-        if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == "тритий"))) return result;
+        if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "т"))) return result;
         var activityReal = 1.0;
-        if (!double.TryParse(activity,
+        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out activityReal))
@@ -875,10 +881,9 @@ public class CheckF16 : CheckBase
             .Replace(" ", "")
             .Replace(',', ';')
             .Split(';');
-        if (!radArray.Any(rad => R.Any(phEntry => (phEntry["type"] == "бета" || phEntry["type"] == "гамма") && int.TryParse(phEntry["mass"], out var mass) && mass <= 92))
-            ) return result;
+        if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "б"))) return result;
         var activityReal = 1.0;
-        if (!double.TryParse(activity,
+        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out activityReal))
@@ -925,10 +930,9 @@ public class CheckF16 : CheckBase
             .Replace(" ", "")
             .Replace(',', ';')
             .Split(';');
-        if (!radArray.Any(rad => R.Any(phEntry => (phEntry["type"] == "альфа") && int.TryParse(phEntry["mass"], out var mass) && mass <= 92))
-            ) return result;
+        if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "а"))) return result;
         var activityReal = 1.0;
-        if (!double.TryParse(activity,
+        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out activityReal))
@@ -975,13 +979,12 @@ public class CheckF16 : CheckBase
             .Replace(" ", "")
             .Replace(',', ';')
             .Split(';');
-        if (!radArray.Any(rad => R.Any(phEntry => int.TryParse(phEntry["mass"], out var mass) && mass > 92))
-            ) return result;
-        var activityReal = 1.0;
-        if (!double.TryParse(activity,
+        if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "у"))) 
+            return result;
+        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
-                out activityReal))
+                out var activityReal))
         {
             if (activityReal is <= 10e+01 or > 10e+20)
             {

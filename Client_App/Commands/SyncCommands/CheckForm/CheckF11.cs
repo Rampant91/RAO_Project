@@ -93,7 +93,7 @@ public abstract class CheckF11 : CheckBase
             D_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"D.xlsx"));
 #endif
         }
-        if (holidays_specific.Count == 0)
+        if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG
             Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "Holidays.xlsx"));
@@ -101,10 +101,11 @@ public abstract class CheckF11 : CheckBase
             Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
 #endif
         }
+        var formsList = rep.Rows11.ToList<Form11>();
         foreach (var key in rep.Rows11)
         {
             var form = (Form11)key;
-            var formsList = rep.Rows11.ToList<Form11>();
+            
             var notes = rep.Notes.ToList<Note>();
             var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
             errorList.AddRange(Check_001(formsList, currentFormLine));
@@ -168,9 +169,10 @@ public abstract class CheckF11 : CheckBase
             errorList.AddRange(Check_061(formsList, currentFormLine));
             errorList.AddRange(Check_062(formsList, currentFormLine));
             errorList.AddRange(Check_063(formsList, currentFormLine));
-
+            
             currentFormLine++;
         }
+        errorList.AddRange(Check_064(formsList));
 
         var index = 0;
         foreach (var error in errorList)
@@ -440,7 +442,7 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "53" };
         if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB ?? "";
         var repOkpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
@@ -582,7 +584,7 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "81", "82", "87", "88" };
         var operationCode = forms[line].OperationCode_DB;
-        var сreatorOKPO = forms[line].CreatorOKPO_DB;
+        var сreatorOKPO = forms[line].CreatorOKPO_DB ?? "";
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         var valid = okpoRegex.IsMatch(сreatorOKPO);
@@ -610,8 +612,9 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "83", "84", "85", "86" };
         if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var valid = !(OKSM.All(oksmEntry => oksmEntry["shortname"] != forms[line].CreatorOKPO_DB)
-                    || forms[line].CreatorOKPO_DB.ToLower() is "россия");
+        var creatorOKPO = forms[line].CreatorOKPO_DB ?? "";
+        var valid = !(OKSM.All(oksmEntry => oksmEntry["shortname"] != creatorOKPO)
+                    || creatorOKPO.ToLower() is "россия");
         if (!valid)
         {
             result.Add(new CheckError
@@ -635,12 +638,11 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
         if (!OperationCode_DB_Check018.Contains(operationCode)) return result;
-        var okpoRep = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB
-            : forms10[0].Okpo_DB;
+        var okpoRepJur = forms10[0].Okpo_DB ?? "";
+        var okpoRepTerPodr = forms10[1].Okpo_DB ?? "";
         var owner = forms[line].Owner_DB;
-        var valid = !string.IsNullOrWhiteSpace(owner)
-                    && owner == okpoRep;
+        var valid = !string.IsNullOrWhiteSpace(owner) 
+                    && (owner == okpoRepTerPodr || owner == okpoRepJur);
         if (!valid)
         {
             result.Add(new CheckError
@@ -667,13 +669,14 @@ public abstract class CheckF11 : CheckBase
         var opCode = forms[line].OperationCode_DB;
         if (nonApplicableOperationCodes.Contains(opCode)) return result;
         var valid = forms[line].OperationDate_DB != null;
-        var pEnd = DateTime.MinValue;
-        var pMid = DateTime.MinValue;
+        var pEnd = DateOnly.MinValue;
+        var pMid = DateOnly.MinValue;
+        
         if (valid && rep is { StartPeriod_DB: not null, EndPeriod_DB: not null })
         {
-            valid = DateTime.TryParse(rep.StartPeriod_DB, out var pStart)
-                    && DateTime.TryParse(rep.EndPeriod_DB, out pEnd)
-                    && DateTime.TryParse(forms[line].OperationDate_DB!, out pMid)
+            valid = DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
+                    && DateOnly.TryParse(rep.EndPeriod_DB, out pEnd)
+                    && DateOnly.TryParse(forms[line].OperationDate_DB!, out pMid)
                     && pMid >= pStart && pMid <= pEnd;
         }
         if (!valid)
@@ -697,7 +700,7 @@ public abstract class CheckF11 : CheckBase
                 "41", "42", "43", "46", "47", "48", "53", "54", "58", "61", "62", "63", "64", "65", "66", "67", "68",
                 "72", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
             };
-            if (operationCodeWithDeadline10.Contains(opCode) && (pEnd - pMid).Days > 10)
+            if (operationCodeWithDeadline10.Contains(opCode) && WorkdaysBetweenDates(pMid, pEnd) > 10)
             {
                 result.Add(new CheckError
                 {
@@ -708,7 +711,7 @@ public abstract class CheckF11 : CheckBase
                     Message = "Дата окончания отчетного периода превышает дату операции более чем на 10 дней."
                 });
             }
-            else if (operationCodeWithDeadline5.Contains(opCode) && (pEnd - pMid).Days > 5)
+            else if (operationCodeWithDeadline5.Contains(opCode) && WorkdaysBetweenDates(pMid, pEnd) > 5)
             {
                 result.Add(new CheckError
                 {
@@ -719,7 +722,7 @@ public abstract class CheckF11 : CheckBase
                     Message = "Дата окончания отчетного периода превышает дату операции более чем на 5 дней."
                 });
             }
-            else if (operationCodeWithDeadline1.Contains(opCode) && (pEnd - pMid).Days > 1)
+            else if (operationCodeWithDeadline1.Contains(opCode) && WorkdaysBetweenDates(pMid, pEnd) > 1)
             {
                 result.Add(new CheckError
                 {
@@ -747,9 +750,9 @@ public abstract class CheckF11 : CheckBase
         var operationCode = forms[line].OperationCode_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
 
-        var valid = DateTime.TryParse(documentDate, out var documentDateReal)
-                    && DateTime.TryParse(rep.StartPeriod_DB, out var dateBeginReal)
-                    && DateTime.TryParse(rep.EndPeriod_DB, out var dateEndReal)
+        var valid = DateOnly.TryParse(documentDate, out var documentDateReal)
+                    && DateOnly.TryParse(rep.StartPeriod_DB, out var dateBeginReal)
+                    && DateOnly.TryParse(rep.EndPeriod_DB, out var dateEndReal)
                     && documentDateReal >= dateBeginReal && documentDateReal <= dateEndReal;
         if (!valid)
         {
@@ -943,8 +946,7 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         if (MZA_Ignore) return result;
         if (string.IsNullOrEmpty(forms[line].Radionuclids_DB)
-            || forms[line].Activity_DB == null || forms[line].Activity_DB == string.Empty
-            || forms[line].Activity_DB == "-") return result;
+            || forms[line].Activity_DB is null or "" or "-") return result;
         var nuclidsList = forms[line].Radionuclids_DB!.ToLower().Replace(" ", string.Empty).Split(';');
         if (nuclidsList.Length != 1) return result;
         if (!Radionuclids_DB_Valids.Contains(nuclidsList[0])) return result;
@@ -979,9 +981,7 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         if (MZA_Ignore) return result;
         if (string.IsNullOrEmpty(forms[line].Radionuclids_DB)
-            || forms[line].Activity_DB == null
-            || forms[line].Activity_DB == string.Empty
-            || forms[line].Activity_DB == "-") return result;
+            || forms[line].Activity_DB is null or "" or "-") return result;
         var nuclidsList = forms[line].Radionuclids_DB!.ToLower().Replace(" ", string.Empty).Split(';');
         if (nuclidsList.Length == 1) return result;
         if (nuclidsList.Any(nuclid => !Radionuclids_DB_Valids.Contains(nuclid)))
@@ -1037,12 +1037,9 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_030(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var activity = forms[line].Activity_DB;
+        var activity = forms[line].Activity_DB ?? "";
         if (string.IsNullOrEmpty(activity) || activity == "-") return result;
-        activity = forms[line].Activity_DB
-            !.Replace(".", ",")
-            .Replace("(", "")
-            .Replace(")", "");
+        activity = ConvertStringToExponential(activity);
         if (!double.TryParse(activity,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
@@ -1055,7 +1052,7 @@ public abstract class CheckF11 : CheckBase
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
-                Value = forms[line].Activity_DB,
+                Value = activity,
                 Message = "Проверьте правильность предоставления сведений по суммарной активности."
             });
         }
@@ -1156,8 +1153,8 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_034(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var valid = DateTime.TryParse(forms[line].OperationDate_DB, out var operDate)
-                    && DateTime.TryParse(forms[line].CreationDate_DB, out var createDate)
+        var valid = DateOnly.TryParse(forms[line].OperationDate_DB, out var operDate)
+                    && DateOnly.TryParse(forms[line].CreationDate_DB, out var createDate)
                     && createDate <= operDate;
         if (!valid)
         {
@@ -1189,7 +1186,7 @@ public abstract class CheckF11 : CheckBase
             { 4, (0.01, 1) },
             { 5, (0, 0.01) }
         };
-        var activity = forms[line].Activity_DB;
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
         var category = forms[line].Category_DB;
         var quantity = forms[line].Quantity_DB;
         var radionuclids = forms[line].Radionuclids_DB;
@@ -1199,10 +1196,8 @@ public abstract class CheckF11 : CheckBase
             .Replace(" ", string.Empty)
             .Split(';');
         var valid = category != null
-                    && activity != null
                     && dbBounds.ContainsKey((short)category)
                     && nuclidsList.Length > 0;
-
         if (valid)
         {
             foreach (var nuclid in nuclidsList)
@@ -1239,7 +1234,7 @@ public abstract class CheckF11 : CheckBase
             }
             var dMinValue = dValueList.Min();
             var dMaxValue = dValueList.Max();
-            valid = double.TryParse(activity!.Replace(".", ","),
+            valid = double.TryParse(activity,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var aValue);
@@ -1277,19 +1272,18 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_036(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var signedServicePeriod = forms[line].SignedServicePeriod_DB;
+        var signedServicePeriod = forms[line].SignedServicePeriod_DB ?? 0;
         var creationDate = forms[line].CreationDate_DB;
         var operationDate = forms[line].OperationDate_DB;
 
         var valid = false;
-        if (signedServicePeriod != null
-            && !string.IsNullOrEmpty(creationDate)
+        if (!string.IsNullOrEmpty(creationDate)
             && !string.IsNullOrEmpty(operationDate)
-            && DateTime.TryParse(creationDate, out var creationDateReal)
-            && DateTime.TryParse(operationDate, out var operationDateReal))
+            && DateOnly.TryParse(creationDate, out var creationDateReal)
+            && DateOnly.TryParse(operationDate, out var operationDateReal))
         {
-            creationDateReal = creationDateReal.AddMonths((int)signedServicePeriod!);
-            creationDateReal = creationDateReal.AddDays(Math.Round((double)(30 * (signedServicePeriod % 1.0))));
+            creationDateReal = creationDateReal.AddMonths((int)signedServicePeriod);
+            creationDateReal = creationDateReal.AddDays((int)Math.Round(30 * (signedServicePeriod % 1.0)));
             valid = creationDateReal >= operationDateReal;
         }
         if (!valid)
@@ -1677,8 +1671,8 @@ public abstract class CheckF11 : CheckBase
         var operationDate = forms[line].OperationDate_DB;
         var documentDate = forms[line].DocumentDate_DB;
         if (excludedOperationCodes.Contains(operationCode)) return result;
-        var valid = DateTime.TryParse(documentDate, out var documentDateReal)
-                    && DateTime.TryParse(operationDate, out var operationDateReal)
+        var valid = DateOnly.TryParse(documentDate, out var documentDateReal)
+                    && DateOnly.TryParse(operationDate, out var operationDateReal)
                     && documentDateReal <= operationDateReal;
         if (!valid)
         {
@@ -1707,8 +1701,8 @@ public abstract class CheckF11 : CheckBase
         var operationCode = forms[line].OperationCode_DB;
         var operationDate = forms[line].OperationDate_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = DateTime.TryParse(documentDate, out var documentDateReal)
-                    && DateTime.TryParse(operationDate, out var operationDateReal)
+        var valid = DateOnly.TryParse(documentDate, out var documentDateReal)
+                    && DateOnly.TryParse(operationDate, out var operationDateReal)
                     && documentDateReal == operationDateReal;
         if (!valid)
         {
@@ -1735,12 +1729,11 @@ public abstract class CheckF11 : CheckBase
         string[] applicableOperationCodes = { "10" };
         var documentDate = forms[line].DocumentDate_DB;
 
-        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var pEnd = DateTime.MinValue;
-        var pMid = DateTime.MinValue;
-        if (!(DateTime.TryParse(rep.EndPeriod_DB, out pEnd)
-                && DateTime.TryParse(documentDate, out pMid))) return result;
-        var valid = Workdays_Between_Dates(pMid, pEnd) <= 10;
+        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)
+            || !(DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
+                 && DateOnly.TryParse(documentDate, out var pMid))) return result;
+
+        var valid = WorkdaysBetweenDates(pMid, pEnd) <= 10;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1766,15 +1759,15 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "10", "11", "12", "15", "17", "18", "41", "42", "43", "46", "47", "58", "61", "62", "65", "67", "68", "71", "72", "73", "74", "75", "76", "97", "98", "99" };
         var operationCode = forms[line].OperationCode_DB;
-        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB ?? "";
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-
+        
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         var valid = okpoRegex.IsMatch(providerOrRecieverOKPO)
-                     && providerOrRecieverOKPO == repOKPO;
+                    && providerOrRecieverOKPO == repOKPO;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1858,9 +1851,9 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_053(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "66" };
+        string[] applicableOperationCodes = {                                 "66" };
         var operationCode = forms[line].OperationCode_DB;
-        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB ?? "";
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
@@ -2103,6 +2096,61 @@ public abstract class CheckF11 : CheckBase
                 Column = "PackNumber_DB",
                 Value = packNumber,
                 Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой"
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check064
+
+    //Наличие строк дубликатов
+    private static List<CheckError> Check_064(List<Form11> forms)
+    {
+        List<CheckError> result = new();
+        HashSet<int> duplicatesLinesSet = new();
+        var comparator = new CustomNullStringWithTrimComparer();
+        for (var i = 0; i < forms.Count; i++)
+        {
+            var currentForm = forms[i];
+            for (var j = i + 1; j < forms.Count;j++)
+            {
+                var formToCompare = forms[j];
+                var isDuplicate = comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
+                                  && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
+                                  && comparator.Compare(formToCompare.PassportNumber_DB, currentForm.PassportNumber_DB) == 0
+                                  && comparator.Compare(formToCompare.Type_DB, currentForm.Type_DB) == 0
+                                  && comparator.Compare(formToCompare.Radionuclids_DB, currentForm.Radionuclids_DB) == 0
+                                  && comparator.Compare(formToCompare.FactoryNumber_DB, currentForm.FactoryNumber_DB) == 0
+                                  && formToCompare.Quantity_DB == currentForm.Quantity_DB
+                                  && comparator.Compare(formToCompare.Activity_DB, currentForm.Activity_DB) == 0
+                                  && comparator.Compare(formToCompare.CreatorOKPO_DB, currentForm.CreatorOKPO_DB) == 0
+                                  && comparator.Compare(formToCompare.CreationDate_DB, currentForm.CreationDate_DB) == 0
+                                  && formToCompare.Category_DB == currentForm.Category_DB
+                                  && formToCompare.SignedServicePeriod_DB.Equals(currentForm.SignedServicePeriod_DB)
+                                  && formToCompare.PropertyCode_DB == currentForm.PropertyCode_DB
+                                  && comparator.Compare(formToCompare.Owner_DB, currentForm.Owner_DB) == 0
+                                  && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
+                                  && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
+                                  && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
+                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
+                if (!isDuplicate) continue;
+                duplicatesLinesSet.Add(i + 1);
+                duplicatesLinesSet.Add(j + 1);
+            }
+        }
+        var duplicateLines = string.Join(", ", duplicatesLinesSet.Order());
+        if (duplicatesLinesSet.Count != 0)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = duplicateLines,
+                Column = "2 - 19",
+                Value = "",
+                Message = $"Данные граф 2-19 в строках {duplicateLines} продублированы. " +
+                          $"{Environment.NewLine}Следует проверить правильность предоставления данных."
             });
         }
         return result;
