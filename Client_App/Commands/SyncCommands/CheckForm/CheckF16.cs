@@ -543,14 +543,12 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_005_11(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new string[] { "11", "12", "13", "14", "28", "38", "41" };
+        var applicableOperationCodes = new string[] { "11", "12", "13", "14", "41" };
         var operationCode = forms[line].OperationCode_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var StatusRAO_DB = forms[line].StatusRAO_DB;
-        var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB
-            : forms10[0].Okpo_DB;
-        var valid = StatusRAO_DB == repOKPO;
+        var repOKPO_List = forms10.Select(x => x.Okpo_DB).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        var valid = repOKPO_List.Contains(StatusRAO_DB);
         if (!valid)
         {
             result.Add(new CheckError
@@ -559,7 +557,137 @@ public abstract class CheckF16 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "StatusRAO_DB",
                 Value = StatusRAO_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для данного кода операции статус РАО должен быть равен коду ОКПО отчитывающейся организации"
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При данном коде операции, статус РАО должен быть равен коду ОКПО отчитывающейся организации или юридического лица (РАО, образовавшиеся после 15.07.2011, находятся в собственности организации, в результате деятельности которой они образовались)."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check005_26
+    private static List<CheckError> Check_005_26(List<Form16> forms, List<Form10> forms10, int line)
+    {
+        List<CheckError> result = new();
+        var applicableOperationCodes = new string[] { "26", "28", "63" };
+        var operationCode = forms[line].OperationCode_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var StatusRAO_DB = forms[line].StatusRAO_DB;
+        var repOKPO_List = forms10.Select(x => x.Okpo_DB).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        var valid = repOKPO_List.Contains(StatusRAO_DB);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_16",
+                Row = (line + 1).ToString(),
+                Column = "StatusRAO_DB",
+                Value = StatusRAO_DB,
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При данном коде операции, статус РАО должен быть равен коду ОКПО отчитывающейся организации или юридического лица (операция, соответствующая выбранному коду, может использоватся только для собственных РАО)."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check005_38
+    private static List<CheckError> Check_005_38(List<Form16> forms, List<Form10> forms10, int line)
+    {
+        List<CheckError> result = new();
+        var applicableOperationCodes = new string[] { "38", "64" };
+        var operationCode = forms[line].OperationCode_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var StatusRAO_DB = forms[line].StatusRAO_DB;
+        var repOKPO_List = forms10.Select(x => x.Okpo_DB).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        var valid = repOKPO_List.Contains(StatusRAO_DB);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_16",
+                Row = (line + 1).ToString(),
+                Column = "StatusRAO_DB",
+                Value = StatusRAO_DB,
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При операциях, связанных с получением права собственности, в графе статус РАО необходимо отразить код ОКПО отчитывающейся организации."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check005_42
+    private static List<CheckError> Check_005_42(List<Form16> forms, List<Form10> forms10, int line)
+    {
+        List<CheckError> result = new();
+        var applicableOperationCodes = new string[] { "42", "43", "73", "97", "98" };
+        var operationCode = forms[line].OperationCode_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var StatusRAO_DB = forms[line].StatusRAO_DB;
+        var repOKPO_List = forms10.Select(x => x.Okpo_DB).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        var valid = repOKPO_List.Contains(StatusRAO_DB);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_16",
+                Row = (line + 1).ToString(),
+                Column = "StatusRAO_DB",
+                Value = StatusRAO_DB,
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При данном коде операции, статус РАО должен быть равен коду ОКПО отчитывающейся организации или юридического лица"
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check005_22
+    private static List<CheckError> Check_005_22(List<Form16> forms, int line)
+    {
+        List<CheckError> result = new();
+        var applicableOperationCodes = new string[] { "22", "23" };
+        var operationCode = forms[line].OperationCode_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var StatusRAO_DB = forms[line].StatusRAO_DB;
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        var valid = okpoRegex.IsMatch(StatusRAO_DB) || StatusRAO_DB == "1";
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_16",
+                Row = (line + 1).ToString(),
+                Column = "StatusRAO_DB",
+                Value = StatusRAO_DB,
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность статуса РАО"
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check005_16
+    private static List<CheckError> Check_005_16(List<Form16> forms, int line)
+    {
+        List<CheckError> result = new();
+        var applicableOperationCodes = new string[] { "16" };
+        var operationCode = forms[line].OperationCode_DB;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var StatusRAO_DB = forms[line].StatusRAO_DB;
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        var valid = okpoRegex.IsMatch(StatusRAO_DB) || StatusRAO_DB == "2";
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_16",
+                Row = (line + 1).ToString(),
+                Column = "StatusRAO_DB",
+                Value = StatusRAO_DB,
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность статуса РАО"
             });
         }
         return result;
@@ -575,7 +703,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = forms[line].OperationCode_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var StatusRAO_DB = forms[line].StatusRAO_DB;
-        var valid = StatusRAO_DB == "6";
+        var valid = StatusRAO_DB is "6" or "9";
         if (!valid)
         {
             result.Add(new CheckError
@@ -584,7 +712,7 @@ public abstract class CheckF16 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "StatusRAO_DB",
                 Value = StatusRAO_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для данного кода операции статус РАО должен быть равен 6"
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность статуса РАО"
             });
         }
         return result;
@@ -597,12 +725,13 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_005_Other(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
-        var nonApplicableOperationCodes = new string[] { "11", "12", "13", "14", "28", "38", "41", "76" };
+        var applicableOperationCodes = new string[] { "10", "18", "21", "25", "27", "29", "31", "35", "36", "37", "39", "44", "45", "48", "49", "51", "52", "56", "57", "59", "68", "71", "74", "75" };
         var operationCode = forms[line].OperationCode_DB;
-        if (nonApplicableOperationCodes.Contains(operationCode)) return result;
-        var applicableRAOStatuses = new string[] { "1", "2", "3", "4", "7", "9" };
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
+        var applicableRAOStatuses = new string[] { "1", "2", "3", "4", "6", "9" };
         var StatusRAO_DB = forms[line].StatusRAO_DB;
-        var valid = applicableRAOStatuses.Contains(StatusRAO_DB) || StatusRAO_DB.Length >= 8;
+        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
+        var valid = okpoRegex.IsMatch(StatusRAO_DB) || applicableRAOStatuses.Contains(StatusRAO_DB);
         if (!valid)
         {
             result.Add(new CheckError
@@ -611,7 +740,7 @@ public abstract class CheckF16 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "StatusRAO_DB",
                 Value = StatusRAO_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность заполнения статуса РАО."
+                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Заполнение графы 5 не соответствует требованиям приказа Госкорпорации \"Росатом\" от 07.12.2020 № 1/13-НПА"
             });
         }
         return result;
@@ -624,8 +753,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var Volume_DB = forms[line].Volume_DB;
-        Volume_DB = Volume_DB.Trim().TrimStart('(').TrimEnd(')');
-        var valid = float.TryParse(Volume_DB.Replace(".", ",").Replace("е", "e"),
+        var valid = float.TryParse(ConvertStringToExponential(Volume_DB),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var value) && value > 0;
@@ -651,11 +779,9 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var Mass_DB = forms[line].Mass_DB;
         var Volume_DB = forms[line].Volume_DB;
-        Mass_DB = Mass_DB.Trim().TrimStart('(').TrimEnd(')');
-        Volume_DB = Volume_DB.Trim().TrimStart('(').TrimEnd(')');
         float Mass_Real;
         float Volume_Real;
-        var valid = float.TryParse(Mass_DB.Replace(".", ",").Replace("е", "e"),
+        var valid = float.TryParse(ConvertStringToExponential(Mass_DB),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out Mass_Real) && Mass_Real > 0;
@@ -671,7 +797,7 @@ public abstract class CheckF16 : CheckBase
             });
             return result;
         }
-        if (!float.TryParse(Volume_DB, out Volume_Real)) return result;
+        if (!float.TryParse(ConvertStringToExponential(Volume_DB), out Volume_Real)) return result;
         if (Volume_Real == 0.0) return result;
         var Density_Real = Mass_Real / Volume_Real;
         if (Density_Real > 21.0)
@@ -824,10 +950,6 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var activity = forms[line].TritiumActivity_DB;
-        activity = activity
-            .Replace(".", ",")
-            .Replace("(", "")
-            .Replace(")", "");
         var radionuclids = forms[line].MainRadionuclids_DB;
         var radArray = radionuclids.Replace(" ", string.Empty).ToLower()
             .Replace(" ", "")
@@ -835,7 +957,7 @@ public abstract class CheckF16 : CheckBase
             .Split(';');
         if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "т"))) return result;
         var activityReal = 1.0;
-        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
+        if (!double.TryParse(ConvertStringToExponential(activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out activityReal))
@@ -872,10 +994,6 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var activity = forms[line].BetaGammaActivity_DB;
-        activity = activity
-            .Replace(".", ",")
-            .Replace("(", "")
-            .Replace(")", "");
         var radionuclids = forms[line].MainRadionuclids_DB;
         var radArray = radionuclids.Replace(" ", string.Empty).ToLower()
             .Replace(" ", "")
@@ -883,7 +1001,7 @@ public abstract class CheckF16 : CheckBase
             .Split(';');
         if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "б"))) return result;
         var activityReal = 1.0;
-        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
+        if (!double.TryParse(ConvertStringToExponential(activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out activityReal))
@@ -921,10 +1039,6 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var activity = forms[line].AlphaActivity_DB;
-        activity = activity
-            .Replace(".", ",")
-            .Replace("(", "")
-            .Replace(")", "");
         var radionuclids = forms[line].MainRadionuclids_DB;
         var radArray = radionuclids.Replace(" ", string.Empty).ToLower()
             .Replace(" ", "")
@@ -932,7 +1046,7 @@ public abstract class CheckF16 : CheckBase
             .Split(';');
         if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "а"))) return result;
         var activityReal = 1.0;
-        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
+        if (!double.TryParse(ConvertStringToExponential(activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out activityReal))
@@ -970,18 +1084,14 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var activity = forms[line].TransuraniumActivity_DB;
-        activity = activity
-            .Replace(".", ",")
-            .Replace("(", "")
-            .Replace(")", "");
         var radionuclids = forms[line].MainRadionuclids_DB;
         var radArray = radionuclids.Replace(" ", string.Empty).ToLower()
             .Replace(" ", "")
             .Replace(',', ';')
             .Split(';');
-        if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "у"))) 
+        if (!radArray.Any(rad => R.Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "у")))
             return result;
-        if (!double.TryParse(activity.Replace(".", ",").Replace("е", "e"),
+        if (!double.TryParse(ConvertStringToExponential(activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var activityReal))
