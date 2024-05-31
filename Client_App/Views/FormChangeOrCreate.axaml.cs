@@ -75,7 +75,7 @@ public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
         if (Answ != null) return;
         var flag = false;
         var tmp = DataContext as ChangeOrCreateVM;
-        Answ = tmp.ShowMessageT.Handle(["Сохранить?", "Да", "Нет"]).GetAwaiter();
+        Answ = tmp.ShowMessageT.Handle([$"Сохранить форму {tmp.FormType}?", "Да", "Нет"]).GetAwaiter();
         Answ.Subscribe(async x =>
         {
             var dbm = StaticConfiguration.DBModel;
