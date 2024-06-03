@@ -801,6 +801,7 @@ public abstract class CheckF15 : CheckBase
 
     #endregion
 
+    //Надо сделать
     #region Check011_41
     private static List<CheckError> Check_011_41(List<Form15> forms, int line)
     {
@@ -814,7 +815,7 @@ public abstract class CheckF15 : CheckBase
     private static List<CheckError> Check_011_misc(List<Form15> forms, int line)
     {
         List<CheckError> result = new();
-        string[] nonApplicableOperationCodes = { "14", "28", "38", "76" };
+        string[] nonApplicableOperationCodes = { "14", "28", "38", "41", "76" };
         string[] validStatus = { "1", "2", "3", "4", "6", "7", "9" };
         var operationCode = forms[line].OperationCode_DB;
         if (nonApplicableOperationCodes.Contains(operationCode)) return result;

@@ -588,7 +588,7 @@ public partial class Form15 : Form1
         }
         if (value.Value.Length == 1)
         {
-            if (!int.TryParse(value.Value, out var intValue) || intValue < 1 || (intValue > 4 && intValue != 6 && intValue != 9))
+            if (!int.TryParse(value.Value, out var intValue) || intValue is not (1 or 2 or 3 or 4 or 6 or 7 or 9))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1130,10 +1130,6 @@ public partial class Form15 : Form1
     private bool Subsidy_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            return true;
-        }
         if (value.Value.Equals("-"))
         {
             return true;
@@ -1187,6 +1183,11 @@ public partial class Form15 : Form1
     private bool FcpNumber_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
         return true;
     }
 

@@ -14,6 +14,7 @@ using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Commands.AsyncCommands.Hidden;
 
 namespace Client_App.ViewModels;
 
@@ -89,7 +90,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportListOfForms1 { get; set; }           //  Excel -> Список форм 1
     public ICommand ExcelExportListOfForms2 { get; set; }           //  Excel -> Список форм 2
     public ICommand ExcelExportListOfOrgs { get; set; }             //  Excel -> Список организаций
-    public ICommand ExcelExportMaxGraphsLength { get; set; }        //  Excel -> Максимальное число символов в каждой колонке
     public ICommand ExcelExportPasWithoutRep { get; set; }          //  Excel -> Паспорта -> Паспорта без отчетов
     public ICommand ExcelExportRepWithoutPas { get; set; }          //  Excel -> Паспорта -> Отчеты без паспортов
     public ICommand ExportAllReports { get; set; }                  //  Экспорт всех организаций организации в отдельные файлы .raodb
@@ -100,7 +100,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ImportExcel { get; set; }                       //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
+    public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
+    public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
 
     #endregion
 
@@ -123,7 +125,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportListOfForms1 = new ExcelExportListOfForms1AsyncCommand();
         ExcelExportListOfForms2 = new ExcelExportListOfForms2AsyncCommand();
         ExcelExportListOfOrgs = new ExcelExportListOfOrgsAsyncCommand();
-        ExcelExportMaxGraphsLength = new ExcelExportMaxGraphsLengthAsyncCommand();
         ExcelExportPasWithoutRep = new ExcelExportPasWithoutRepAsyncCommand();
         ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
         ExcelExportAll = new ExcelExportAllAsyncCommandAsyncCommand();
@@ -135,7 +136,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();
+        MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
+        UnaccountedRad = new UnaccountedRadAsyncCommand();
     }
 
     #endregion

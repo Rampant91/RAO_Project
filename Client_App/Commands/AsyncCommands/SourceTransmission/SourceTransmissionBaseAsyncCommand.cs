@@ -124,7 +124,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     BetaGammaActivity_DB = betaGammaActivity,
                     AlphaActivity_DB = alphaActivity,
                     TransuraniumActivity_DB = "-",
-                    ActivityMeasurementDate_DB = $"({DateTime.Now.ToShortDateString()})",
+                    ActivityMeasurementDate_DB = form12.OperationDate_DB,
                     DocumentVid_DB = form12.DocumentVid_DB,
                     DocumentNumber_DB = form12.DocumentNumber_DB,
                     DocumentDate_DB = form12.DocumentDate_DB,
@@ -398,7 +398,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     BetaGammaActivity_DB = betaGammaActivity,
                     AlphaActivity_DB = alphaActivity,
                     TransuraniumActivity_DB = "-",
-                    ActivityMeasurementDate_DB = $"({DateTime.Now.ToShortDateString()})",
+                    ActivityMeasurementDate_DB = form12.OperationDate_DB,
                     DocumentVid_DB = form12.DocumentVid_DB,
                     DocumentNumber_DB = form12.DocumentNumber_DB,
                     DocumentDate_DB = form12.DocumentDate_DB,
@@ -523,33 +523,33 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 {
                     #region BindingData
 
-                            ReportId = repId,
-                            NumberInOrder_DB = numberInOrder,
-                            OperationCode_DB = form14.OperationCode_DB,
-                            OperationDate_DB = form14.OperationDate_DB,
-                            CodeRAO_DB = codeRao,
-                            Volume_DB = form14.Volume_DB,
-                            Mass_DB = massTon,
-                            QuantityOZIII_DB = "-",
-                            MainRadionuclids_DB = form14.Radionuclids_DB,
-                            TritiumActivity_DB = activitiesDictionary["tritium"],
-                            BetaGammaActivity_DB = activitiesDictionary["beta"],
-                            AlphaActivity_DB = activitiesDictionary["alpha"],
-                            TransuraniumActivity_DB = activitiesDictionary["transuranium"],
-                            ActivityMeasurementDate_DB = form14.ActivityMeasurementDate_DB,
-                            DocumentVid_DB = form14.DocumentVid_DB,
-                            DocumentNumber_DB = form14.DocumentNumber_DB,
-                            DocumentDate_DB = form14.DocumentDate_DB,
-                            ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
-                            TransporterOKPO_DB = "-",
-                            RefineOrSortRAOCode_DB = "-",
-                            PackName_DB = form14.PackName_DB,
-                            PackType_DB = form14.PackType_DB,
-                            PackNumber_DB = form14.PackNumber_DB,
-                            Subsidy_DB = "-",
-                            FcpNumber_DB = "-"
+                    ReportId = repId,
+                    NumberInOrder_DB = numberInOrder,
+                    OperationCode_DB = form14.OperationCode_DB,
+                    OperationDate_DB = form14.OperationDate_DB,
+                    CodeRAO_DB = codeRao,
+                    Volume_DB = form14.Volume_DB,
+                    Mass_DB = massTon,
+                    QuantityOZIII_DB = "-",
+                    MainRadionuclids_DB = form14.Radionuclids_DB,
+                    TritiumActivity_DB = activitiesDictionary["tritium"],
+                    BetaGammaActivity_DB = activitiesDictionary["beta"],
+                    AlphaActivity_DB = activitiesDictionary["alpha"],
+                    TransuraniumActivity_DB = activitiesDictionary["transuranium"],
+                    ActivityMeasurementDate_DB = form14.ActivityMeasurementDate_DB,
+                    DocumentVid_DB = form14.DocumentVid_DB,
+                    DocumentNumber_DB = form14.DocumentNumber_DB,
+                    DocumentDate_DB = form14.DocumentDate_DB,
+                    ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    TransporterOKPO_DB = "-",
+                    RefineOrSortRAOCode_DB = "-",
+                    PackName_DB = form14.PackName_DB,
+                    PackType_DB = form14.PackType_DB,
+                    PackNumber_DB = form14.PackNumber_DB,
+                    Subsidy_DB = "-",
+                    FcpNumber_DB = "-"
 
-                            #endregion
+                    #endregion
                 };
                 db.form_16.Add(newForm16);
                 break;
@@ -579,7 +579,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region CustomForm11ToForm15Comparer
     
-    private protected class CustomForm11ToForm15Comparer : IComparer<Form15>
+    private class CustomForm11ToForm15Comparer : IComparer<Form15>
     {
         public int Compare(Form15? x, Form15? y)
         {
@@ -614,7 +614,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region CustomForm12And13ToForm16Comparer
 
-    private protected class CustomForm12And13ToForm16Comparer : IComparer<Form16>
+    private class CustomForm12And13ToForm16Comparer : IComparer<Form16>
     {
         public int Compare(Form16? x, Form16? y)
         {
@@ -651,7 +651,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region CustomForm14ToForm16Comparer
     
-    private protected class CustomForm14ToForm16Comparer : IComparer<Form16>
+    private class CustomForm14ToForm16Comparer : IComparer<Form16>
     {
         public int Compare(Form16? x, Form16? y)
         {
@@ -690,7 +690,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region GetActivities
 
-    private protected static Dictionary<string, string> GetActivities(Form1 form1, IReadOnlyList<string> nuclidTypeArray)
+    private static Dictionary<string, string> GetActivities(Form1 form1, IReadOnlyList<string> nuclidTypeArray)
     {
         var tritiumActivity = "-";
         var betaGammaActivity = "-";
@@ -750,7 +750,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region GetCodeRao
 
-    private protected static string GetCodeRao(Form1 form, IEnumerable<string> nuclidsArray, string[] nuclidTypeArray)
+    private static string GetCodeRao(Form1 form, IEnumerable<string> nuclidsArray, string[] nuclidTypeArray)
     {
         var thirdSymbolCodeRao = GetThirdSymbolCodeRao(nuclidTypeArray);
         var fifthSymbolCodeRao = GetFifthSymbolCodeRao(nuclidsArray);
@@ -871,7 +871,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region GetNewReport
 
-    private protected Report GetNewReport(DateOnly opDate, string formNum)
+    private Report GetNewReport(DateOnly opDate, string formNum)
     {
         var relevantFormNum = formNum == "1.1"
             ? "1.5"
@@ -959,9 +959,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region RFromFile
 
-    private protected static List<Dictionary<string, string>> R = new();
+    private static List<Dictionary<string, string>> R = new();
 
-    private protected static void R_Populate_From_File()
+    private static void R_Populate_From_File()
     {
         if (R.Count != 0) return;
         var filePath = string.Empty;

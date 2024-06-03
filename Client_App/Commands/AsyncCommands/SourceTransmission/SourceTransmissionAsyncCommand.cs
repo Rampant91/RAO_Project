@@ -107,8 +107,8 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
                             ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                             ContentTitle = "Перевод источника в РАО",
                             ContentHeader = "Ошибка",
-                            ContentMessage = "У выбранной организации присутствуют отчёты по форме 1.5 с пересекающимися периодами. " +
-                                             $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода источника в РАО.",
+                            ContentMessage = $"У выбранной организации присутствуют отчёты по форме {form.FormNum_DB} с пересекающимися периодами. " +
+                                             $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода РВ в РАО.",
                             MinWidth = 400,
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner

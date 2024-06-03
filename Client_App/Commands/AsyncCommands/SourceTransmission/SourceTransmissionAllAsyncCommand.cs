@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using Models.Forms.Form1;
-using System.Globalization;
 using Models.DBRealization;
 using Models.Classes;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
