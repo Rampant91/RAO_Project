@@ -34,8 +34,57 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
-        var radsFromDictionaryHashSet = RadsFromFile();
         await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        var radsFromDictionaryHashSet = RadsFromFile();
+        var form11Rads = db.form_11
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Select(x => x.Radionuclids_DB)
+            .ToArray()
+            .SelectMany(x => x
+                .Replace(" ", string.Empty)
+                .ToLower()
+                .Replace(',', ';')
+                .Split(';'))
+            .ToHashSet();
+        var form13Rads = db.form_13
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Select(x => x.Radionuclids_DB)
+            .ToArray()
+            .SelectMany(x => x
+                .Replace(" ", string.Empty)
+                .ToLower()
+                .Replace(',', ';')
+                .Split(';'))
+            .ToHashSet();
+        var form14Rads = db.form_14
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Select(x => x.Radionuclids_DB)
+            .ToArray()
+            .SelectMany(x => x
+                .Replace(" ", string.Empty)
+                .ToLower()
+                .Replace(',', ';')
+                .Split(';'))
+            .ToHashSet();
+        var form15Rads = db.form_15
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Select(x => x.Radionuclids_DB)
+            .ToArray()
+            .SelectMany(x => x
+                .Replace(" ", string.Empty)
+                .ToLower()
+                .Replace(',', ';')
+                .Split(';'))
+            .ToHashSet();
         var form16Rads = db.form_16
             .AsNoTracking()
             .AsSplitQuery()
@@ -47,9 +96,52 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 .ToLower()
                 .Replace(',', ';')
                 .Split(';'))
+        .ToHashSet();
+        var form17Rads = db.form_17
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Select(x => x.Radionuclids_DB)
+            .ToArray()
+            .SelectMany(x => x
+                .Replace(" ", string.Empty)
+                .ToLower()
+                .Replace(',', ';')
+                .Split(';'))
             .ToHashSet();
-
-        var uniqRads = form16Rads
+        var form18Rads = db.form_18
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Select(x => x.Radionuclids_DB)
+            .ToArray()
+            .SelectMany(x => x
+                .Replace(" ", string.Empty)
+                .ToLower()
+                .Replace(',', ';')
+                .Split(';'))
+            .ToHashSet();
+        var form19Rads = db.form_19
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Select(x => x.Radionuclids_DB)
+            .ToArray()
+            .SelectMany(x => x
+                .Replace(" ", string.Empty)
+                .ToLower()
+                .Replace(',', ';')
+                .Split(';'))
+            .ToHashSet();
+        var formsRads = form11Rads
+            .Union(form13Rads)
+            .Union(form14Rads)
+            .Union(form15Rads)
+            .Union(form16Rads)
+            .Union(form17Rads)
+            .Union(form18Rads)
+            .Union(form19Rads);
+        var uniqRads = formsRads
             .Where(x => !radsFromDictionaryHashSet.Contains(x))
             .ToArray();
 
