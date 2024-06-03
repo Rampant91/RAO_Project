@@ -153,7 +153,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
         Worksheet = excelPackage.Workbook.Worksheets.Add("Отсутствующие радионуклиды");
 
         var line = 2;
-        Worksheet.Cells[1, 1].Value = "1.6";
+        Worksheet.Cells[1, 1].Value = "Наименование";
         foreach (var rad in uniqRads)
         {
             Worksheet.Cells[line, 1].Value = rad;
