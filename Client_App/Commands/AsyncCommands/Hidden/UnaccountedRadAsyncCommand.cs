@@ -55,6 +55,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.Radionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
@@ -93,6 +94,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.Radionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
@@ -131,6 +133,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.Radionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
@@ -169,6 +172,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.Radionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
@@ -207,6 +211,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.MainRadionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
@@ -245,6 +250,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.Radionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
@@ -283,6 +289,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.Radionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
@@ -321,6 +328,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                 Rad = x.Radionuclids_DB
             })
             .ToArray()
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad)
             .Select(dto => new
             {
