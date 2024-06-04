@@ -76,6 +76,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dto13List = db.form_13
@@ -115,6 +116,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dto14List = db.form_14
@@ -154,6 +156,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dto15List = db.form_15
@@ -193,6 +196,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dto16List = db.form_16
@@ -232,6 +236,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dto17List = db.form_17
@@ -271,6 +276,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dto18List = db.form_18
@@ -310,6 +316,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dto19List = db.form_19
@@ -349,6 +356,7 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
                     FormNum = x.dto.FormNum,
                     Rad = rad
                 })
+            .Where(x => !radsFromDictionaryHashSet.Contains(x.Rad))
             .DistinctBy(x => x.RegNo + x.OKPO + x.StartPeriod + x.EndPeriod + x.FormNum + x.Rad);
 
         var dtoList = new List<UnaccountedRadsDTO>();
@@ -360,115 +368,6 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
         dtoList.AddRange(dto17List);
         dtoList.AddRange(dto18List);
         dtoList.AddRange(dto19List);
-        var b = dtoList.GroupBy(x => x.Rad);
-
-        //var form11Rads = db.form_11
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.Radionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //    .ToHashSet();
-        //var form13Rads = db.form_13
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.Radionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //    .ToHashSet();
-        //var form14Rads = db.form_14
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.Radionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //    .ToHashSet();
-        //var form15Rads = db.form_15
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.Radionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //    .ToHashSet();
-        //var form16Rads = db.form_16
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.MainRadionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //.ToHashSet();
-        //var form17Rads = db.form_17
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.Radionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //    .ToHashSet();
-        //var form18Rads = db.form_18
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.Radionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //    .ToHashSet();
-        //var form19Rads = db.form_19
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Select(x => x.Radionuclids_DB)
-        //    .ToArray()
-        //    .SelectMany(x => x
-        //        .Replace(" ", string.Empty)
-        //        .ToLower()
-        //        .Replace(',', ';')
-        //        .Split(';'))
-        //    .ToHashSet();
-        //var formsRads = form11Rads
-        //    .Union(form13Rads)
-        //    .Union(form14Rads)
-        //    .Union(form15Rads)
-        //    .Union(form16Rads)
-        //    .Union(form17Rads)
-        //    .Union(form18Rads)
-        //    .Union(form19Rads);
-        //var uniqRads = formsRads
-        //    .Where(x => !radsFromDictionaryHashSet.Contains(x))
-        //    .ToArray();
 
         #endregion
 
@@ -486,36 +385,15 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 4].Value = "Начало периода";
         Worksheet.Cells[1, 5].Value = "Конец периода";
         Worksheet.Cells[1, 6].Value = "Номер формы";
-        foreach (var group in b)
+        foreach (var dto in dtoList)
         {
-            foreach (var dto in group)
-            {
-                    Worksheet.Cells[line, 1].Value = dto.Rad;
-                    Worksheet.Cells[line, 2].Value = dto.RegNo;
-                    Worksheet.Cells[line, 3].Value = dto.OKPO;
-                    Worksheet.Cells[line, 4].Value = dto.StartPeriod;
-                    Worksheet.Cells[line, 5].Value = dto.EndPeriod;
-                    Worksheet.Cells[line, 6].Value = dto.FormNum;
-                    line++;
-            }
-            
-            //var regNoList = db.ReportsCollectionDbSet
-            //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            //    .AsNoTracking()
-            //    .AsSplitQuery()
-            //    .AsQueryable()
-            //    .Where(reps => reps.Report_Collection
-            //        .Any(rep => rep.Rows11.Any(form11 => form11.Radionuclids_DB == rad)
-            //                    || rep.Rows13.Any(form13 => form13.Radionuclids_DB == rad)
-            //                    || rep.Rows14.Any(form14 => form14.Radionuclids_DB == rad)
-            //                    || rep.Rows15.Any(form15 => form15.Radionuclids_DB == rad)
-            //                    || rep.Rows16.Any(form16 => form16.MainRadionuclids_DB == rad)
-            //                    || rep.Rows17.Any(form17 => form17.Radionuclids_DB == rad)
-            //                    || rep.Rows18.Any(form18 => form18.Radionuclids_DB == rad)
-            //                    || rep.Rows19.Any(form19 => form19.Radionuclids_DB == rad)))
-            //    .Select(x => x.Master_DB.RegNoRep.Value)
-            //    .ToList();
-            //Worksheet.Cells[line, 2].Value = string.Join(", ", regNoList);
+            Worksheet.Cells[line, 1].Value = dto.Rad;
+            Worksheet.Cells[line, 2].Value = dto.RegNo;
+            Worksheet.Cells[line, 3].Value = dto.OKPO;
+            Worksheet.Cells[line, 4].Value = dto.StartPeriod;
+            Worksheet.Cells[line, 5].Value = dto.EndPeriod;
+            Worksheet.Cells[line, 6].Value = dto.FormNum;
+            line++;
         }
         Worksheet.View.FreezePanes(2, 1);
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
