@@ -914,7 +914,7 @@ public abstract partial class CheckF11 : CheckBase
             {
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
-                Column = "Quantity_DB",
+                Column = "FactoryNumber_DB",
                 Value = quantity?.ToString(),
                 Message = "Формат ввода данных не соответствует приказу. Номера ЗРИ должны быть разделены точкой с запятой"
             });
