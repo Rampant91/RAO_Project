@@ -1256,7 +1256,7 @@ public class CheckF16 : CheckBase
                     Row = (line + 1).ToString(),
                     Column = "DocumentDate_DB",
                     Value = Convert.ToString(documentDate),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Даат документа не может быть позже даты операции"
+                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Дата документа не может быть позже даты операции"
                 });
             }
         }
@@ -1797,9 +1797,9 @@ public class CheckF16 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_15",
+                FormNum = "form_16",
                 Row = duplicateLines,
-                Column = "2 - 15",
+                Column = "2 - 18",
                 Value = "",
                 Message = $"Данные граф 2-18 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
             });
