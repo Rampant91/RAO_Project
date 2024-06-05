@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
@@ -261,17 +260,22 @@ public class Form212 : Form2
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 Activity_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
                 value1 = $"{doubleValue:0.######################################################e+00}";
             }
@@ -282,19 +286,24 @@ public class Form212 : Form2
     private bool Activity_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (value.Value == null)
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+        if (value.Value.Equals("прим."))
         {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            return false;
         }
-        const NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
                 out var doubleValue))
         {

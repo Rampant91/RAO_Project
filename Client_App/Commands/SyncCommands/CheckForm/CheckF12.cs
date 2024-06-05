@@ -877,8 +877,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "SignedServicePeriod_DB",
                 Value = signedServicePeriod,
-                Message = "Для ИОУ истек НСС, следует продлить НСС либо снять с учета с одновременной постановкой на учет как РАО (при выполнении критериев отнесения к РАО)."
-                          + $"{Environment.NewLine}Проверьте, что НСС указан в месяцах."
+                Message = "Для ИОУ истек НСС, следует продлить НСС либо снять с учета с одновременной постановкой на учет как РАО (при выполнении критериев отнесения к РАО). " +
+                          "Проверьте, что НСС указан в месяцах."
             });
         }
         return result;
@@ -1672,8 +1672,7 @@ public abstract class CheckF12 : CheckBase
                 Row = duplicateLines,
                 Column = "2 - 16",
                 Value = "",
-                Message = $"Данные граф 2-16 в строках {duplicateLines} продублированы. " +
-                          $"{Environment.NewLine}Следует проверить правильность предоставления данных."
+                Message = $"Данные граф 2-16 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
             });
         }
         return result;

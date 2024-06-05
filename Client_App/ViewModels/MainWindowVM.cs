@@ -102,7 +102,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
     public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
-    public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
+    //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
 
     #endregion
 
@@ -138,7 +138,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportRaodb = new ImportRaodbAsyncCommand();
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
-        UnaccountedRad = new UnaccountedRadAsyncCommand();
+        //UnaccountedRad = new UnaccountedRadAsyncCommand();
     }
 
     #endregion

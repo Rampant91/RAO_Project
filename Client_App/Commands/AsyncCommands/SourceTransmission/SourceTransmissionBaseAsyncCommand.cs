@@ -27,6 +27,8 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
     {
         switch (form.FormNum_DB)
         {
+            #region 1.1
+
             case "1.1":
             {
                 var form11 = (Form11)form;
@@ -74,6 +76,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 if (!isDuplicate) db.form_15.Add(newForm15);
                 break;
             }
+
+            #endregion
+
+            #region 1.2
+            
             case "1.2":
             {
                 var form12 = (Form12)form;
@@ -145,6 +152,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 if (!isDuplicate) db.form_16.Add(newForm16);
                 break;
             }
+
+            #endregion
+
+            #region 1.3
+            
             case "1.3":
             {
                 R_Populate_From_File();
@@ -207,6 +219,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 if (!isDuplicate) db.form_16.Add(newForm16);
                 break;
             }
+
+            #endregion
+
+            #region 1.4
+            
             case "1.4":
             {
                 R_Populate_From_File();
@@ -254,6 +271,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form14.OperationCode_DB,
                     OperationDate_DB = form14.OperationDate_DB,
                     CodeRAO_DB = codeRao,
+                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     Volume_DB = form14.Volume_DB,
                     Mass_DB = massTon,
                     QuantityOZIII_DB = "-",
@@ -282,7 +300,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .Any(currentForm => comparator.Compare(newForm16, currentForm) == 0);
                 if (!isDuplicate) db.form_16.Add(newForm16);
                 break;
-            }
+            } 
+            
+            #endregion
         }
     }
 
@@ -295,6 +315,8 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
         var repId = 0;
         switch (form.FormNum_DB)
         {
+            #region 1.1
+            
             case "1.1":
             {
                 var form11 = (Form11)form;
@@ -343,6 +365,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 db.form_15.Add(newForm15);
                 break;
             }
+
+            #endregion
+
+            #region 1.2
+            
             case "1.2":
             {
                 var form12 = (Form12)form;
@@ -416,6 +443,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 db.form_16.Add(newForm16);
                 break;
             }
+
+            #endregion
+
+            #region 1.3
+            
             case "1.3":
             {
                 R_Populate_From_File();
@@ -479,6 +511,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 db.form_16.Add(newForm16);
                 break;
             }
+
+            #endregion
+
+            #region 1.4
+            
             case "1.4":
             {
                 R_Populate_From_File();
@@ -528,6 +565,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form14.OperationCode_DB,
                     OperationDate_DB = form14.OperationDate_DB,
                     CodeRAO_DB = codeRao,
+                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     Volume_DB = form14.Volume_DB,
                     Mass_DB = massTon,
                     QuantityOZIII_DB = "-",
@@ -554,8 +592,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 db.form_16.Add(newForm16);
                 break;
             }
-        }
 
+            #endregion
+        }
         return repId;
     }
 

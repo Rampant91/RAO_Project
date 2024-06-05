@@ -93,6 +93,14 @@ public abstract partial class CheckF11 : CheckBase
             D_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"D.xlsx"));
 #endif
         }
+        if (R.Count == 0)
+        {
+#if DEBUG
+            R_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "R.xlsx"));
+#else
+            R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
+#endif
+        }
         if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG
@@ -661,7 +669,7 @@ public abstract partial class CheckF11 : CheckBase
 
     #region Check019
 
-    //Дата документа входит в отчетный период с учетом срока подачи отчета в днях (колонка 3)
+    //Дата операции входит в отчетный период с учетом срока подачи отчета в днях (колонка 3)
     private static List<CheckError> Check_019(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -1202,24 +1210,26 @@ public abstract partial class CheckF11 : CheckBase
         {
             foreach (var nuclid in nuclidsList)
             {
-                if (D.TryGetValue(nuclid, out var value))
+                var expFromR = ConvertStringToExponential(R.First(x => x["name"] == nuclid)["D"]);
+                if (R.Any(x => x["name"] == nuclid) 
+                    && float.TryParse(expFromR, out var value))
                 {
-                    dValueList.Add(value);
+                    dValueList.Add(value * 1e12);
                 }
             }
-            if (dValueList.Count == 0)
-            {
-                foreach (var nuclid in nuclidsList)
-                {
-                    foreach (var key in D.Keys.Where(key => key.Contains(nuclid)))
-                    {
-                        dValueList.Add(D[key] / (quantity != null && quantity != 0
-                            ? (double)quantity
-                            : 1.0));
-                        break;
-                    }
-                }
-            }
+            //if (dValueList.Count == 0)
+            //{
+            //    foreach (var nuclid in nuclidsList)
+            //    {
+            //        foreach (var key in D.Keys.Where(key => key.Contains(nuclid)))
+            //        {
+            //            dValueList.Add(D[key] / (quantity != null && quantity != 0
+            //                ? (double)quantity
+            //                : 1.0));
+            //            break;
+            //        }
+            //    }
+            //}
             if (dValueList.Count == 0)
             {
                 result.Add(new CheckError
@@ -1238,6 +1248,7 @@ public abstract partial class CheckF11 : CheckBase
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var aValue);
+            aValue /= quantity != null && quantity != 0 ? (double)quantity : 1.0;
             if (valid)
             {
                 var adMinBound = dMaxValue == 0.0
@@ -1272,10 +1283,11 @@ public abstract partial class CheckF11 : CheckBase
     private static List<CheckError> Check_036(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
+        var opCode = forms[line].OperationCode_DB ?? "";
         var signedServicePeriod = forms[line].SignedServicePeriod_DB ?? 0;
         var creationDate = forms[line].CreationDate_DB;
         var operationDate = forms[line].OperationDate_DB;
-
+        if (opCode == "41") return result;
         var valid = false;
         if (!string.IsNullOrEmpty(creationDate)
             && !string.IsNullOrEmpty(operationDate)
@@ -1294,8 +1306,8 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "SignedServicePeriod_DB",
                 Value = signedServicePeriod.ToString(),
-                Message = "Для ЗРИ истек НСС, следует продлить НСС либо снять с учета с одновременной постановкой на учет как РАО (при выполнении критериев отнесения к РАО)."
-                          + $"{Environment.NewLine}Проверьте, что НСС указан в месяцах."
+                Message = "Для ЗРИ истек НСС, следует продлить НСС либо снять с учета с одновременной постановкой на учет как РАО (при выполнении критериев отнесения к РАО). " +
+                          "Проверьте, что НСС указан в месяцах."
             });
         }
         return result;
@@ -1319,7 +1331,7 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "PropertyCode_DB",
                 Value = propertyCode.ToString(),
-                Message = "Формат ввода данных не соответствует приказу. Выберите идентификатор, соотвествующий форме собственности ЗРИ"
+                Message = "Формат ввода данных не соответствует приказу. Выберите идентификатор, соответствующий форме собственности ЗРИ"
             });
         }
         return result;
@@ -1851,7 +1863,7 @@ public abstract partial class CheckF11 : CheckBase
     private static List<CheckError> Check_053(List<Form11> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = {                                 "66" };
+        string[] applicableOperationCodes = { "66" };
         var operationCode = forms[line].OperationCode_DB;
         var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB ?? "";
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
@@ -2114,7 +2126,7 @@ public abstract partial class CheckF11 : CheckBase
         for (var i = 0; i < forms.Count; i++)
         {
             var currentForm = forms[i];
-            for (var j = i + 1; j < forms.Count;j++)
+            for (var j = i + 1; j < forms.Count; j++)
             {
                 var formToCompare = forms[j];
                 var isDuplicate = comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
@@ -2149,8 +2161,7 @@ public abstract partial class CheckF11 : CheckBase
                 Row = duplicateLines,
                 Column = "2 - 19",
                 Value = "",
-                Message = $"Данные граф 2-19 в строках {duplicateLines} продублированы. " +
-                          $"{Environment.NewLine}Следует проверить правильность предоставления данных."
+                Message = $"Данные граф 2-19 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
             });
         }
         return result;

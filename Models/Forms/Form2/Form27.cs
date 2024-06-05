@@ -191,17 +191,22 @@ public class Form27 : Form2
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 AllowedWasteValue_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
                 value1 = $"{doubleValue:0.######################################################e+00}";
             }
@@ -219,15 +224,17 @@ public class Form27 : Form2
         }
         if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
                 out var doubleValue))
         {
@@ -271,23 +278,28 @@ public class Form27 : Form2
         }
     }
 
-    private void FactedWasteValueValueChanged(object Value, PropertyChangedEventArgs args)
+    private void FactedWasteValueValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)Value).Value;
+        var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 FactedWasteValue_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
                 value1 = $"{doubleValue:0.######################################################e+00}";
             }
@@ -303,21 +315,19 @@ public class Form27 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-"))
+        if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (value1[0] == '(' && value1[^1] == ')')
-        {
-            value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
                 out var doubleValue))
         {
@@ -367,17 +377,22 @@ public class Form27 : Form2
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 WasteOutbreakPreviousYear_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
                 value1 = $"{doubleValue:0.######################################################e+00}";
             }
@@ -393,21 +408,19 @@ public class Form27 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-"))
+        if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (value1[0] == '(' && value1[^1] == ')')
-        {
-            value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
                 out var doubleValue))
         {

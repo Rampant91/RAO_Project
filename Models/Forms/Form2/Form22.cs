@@ -996,19 +996,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 VolumeOutOfPack_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, out var valueDbl))
-            {
-                value1 = $"{valueDbl:0.######################################################e+00}";
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         VolumeOutOfPack_DB = value1;
@@ -1022,31 +1027,28 @@ public partial class Form22 : Form2, IBaseColor
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-"))
+        if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        var tmp = value1;
-        if (tmp[0] == '(' && tmp[^1] == ')')
-        {
-            tmp = tmp.Remove(tmp.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var tmpDouble))
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1119,15 +1121,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 VolumeInPack_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         VolumeInPack_DB = value1;
@@ -1138,31 +1149,31 @@ public partial class Form22 : Form2, IBaseColor
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
         {
-            return true;
+            value.AddError("Поле не заполнено");
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (value1.Equals("-"))
+        if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        var tmp = value1;
-        if (tmp[0] == '(' && tmp[^1] == ')')
-        {
-            tmp = tmp.Remove(tmp.Length - 1, 1).Remove(0, 1);
-        }
-
-        if (!double.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("ru-RU"), out var tmpDouble))
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1203,19 +1214,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 MassOutOfPack_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, out var valueDbl))
-            {
-                value1 = $"{valueDbl:0.######################################################e+00}";
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         MassOutOfPack_DB = value1;
@@ -1229,31 +1245,28 @@ public partial class Form22 : Form2, IBaseColor
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-"))
+        if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        var tmp = value1;
-        if (tmp[0] == '(' && tmp[^1] == ')')
-        {
-            tmp = tmp.Remove(tmp.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var tmpDouble))
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1327,15 +1340,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 MassInPack_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         MassInPack_DB = value1;
@@ -1346,33 +1368,31 @@ public partial class Form22 : Form2, IBaseColor
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
         {
-            return true;
+            value.AddError("Поле не заполнено");
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (value1.Equals("-"))
+        if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        var tmp = value1;
-        if (tmp[0] == '(' && tmp[^1] == ')')
-        {
-            tmp = tmp.Remove(tmp.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var tmpDouble))
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1476,19 +1496,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 TritiumActivity_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, out var valueDbl))
-            {
-                value1 = $"{valueDbl:0.######################################################e+00}";
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         TritiumActivity_DB = value1;
@@ -1497,36 +1522,33 @@ public partial class Form22 : Form2, IBaseColor
     private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (value.Value == "-")
-        {
-            return true;
-        }
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmp = value.Value;
-        tmp = tmp.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!tmp.Contains('e') && tmp.Contains('+') ^ tmp.Contains('-'))
+        if (value.Value.Equals("прим."))
         {
-            tmp = tmp.Replace("+", "e+").Replace("-", "e-");
+            return false;
         }
-        if (tmp[0] == '(' && tmp[^1] == ')')
-        {
-            tmp = tmp.Remove(tmp.Length - 1, 1).Remove(0, 1);
-        }
-        if (!double.TryParse(tmp, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
+        if (!double.TryParse(value1, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var tmpDouble))
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1567,19 +1589,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 BetaGammaActivity_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, out var valueDbl))
-            {
-                value1 = $"{valueDbl:0.######################################################e+00}";
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         BetaGammaActivity_DB = value1;
@@ -1593,30 +1620,28 @@ public partial class Form22 : Form2, IBaseColor
             value.AddError("Поле не заполнено");
             return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+        if (value.Value.Equals("прим."))
         {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            return false;
         }
-        if (value.Value == "-")
-        {
-            return true;
-        }
-        if (value1[0] == '(' && value1[^1] == ')')
-        {
-            value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var tmpDouble))
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1657,19 +1682,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 AlphaActivity_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, out var valueDbl))
-            {
-                value1 = $"{valueDbl:0.######################################################e+00}";
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         AlphaActivity_DB = value1;
@@ -1683,30 +1713,28 @@ public partial class Form22 : Form2, IBaseColor
             value.AddError("Поле не заполнено");
             return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+        if (value.Value.Equals("прим."))
         {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            return false;
         }
-        if (value.Value == "-")
-        {
-            return true;
-        }
-        if (value1[0] == '(' && value1[^1] == ')')
-        {
-            value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var tmpDouble))
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;
@@ -1747,19 +1775,24 @@ public partial class Form22 : Form2, IBaseColor
         var value1 = ((RamAccess<string>)value).Value;
         if (value1 != null)
         {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1
+                .Trim()
+                .TrimStart('(')
+                .TrimEnd(')')
+                .ToLower()
+                .Replace('.', ',')
+                .Replace('е', 'e');
             if (value1.Equals("-"))
             {
                 TransuraniumActivity_DB = value1;
                 return;
             }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
+            if (double.TryParse(value1, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                    CultureInfo.CreateSpecificCulture("ru-RU"), 
+                    out var doubleValue))
             {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, out var valueDbl))
-            {
-                value1 = $"{valueDbl:0.######################################################e+00}";
+                value1 = $"{doubleValue:0.######################################################e+00}";
             }
         }
         TransuraniumActivity_DB = value1;
@@ -1773,30 +1806,28 @@ public partial class Form22 : Form2, IBaseColor
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value == "-")
+        if (value.Value.Equals("прим."))
         {
-            return true;
+            return false;
         }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (value1[0] == '(' && value1[^1] == ')')
-        {
-            value1 = value1.Remove(value1.Length - 1, 1).Remove(0, 1);
-        }
+        var value1 = value.Value
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
         if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var tmpDouble))
+                out var doubleValue))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (tmpDouble <= 0)
+        if (doubleValue <= 0)
         {
-            value.AddError("Число должно быть больше нуля");
+            value.AddError("Число должно быть больше нуля"); 
             return false;
         }
         return true;

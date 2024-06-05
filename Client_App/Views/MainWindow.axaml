@@ -236,10 +236,9 @@
                 </MenuItem>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
-                          Header="Максимальная длинна граф"/>-->
+                          Header="Максимальная длинна граф"/>
                 <MenuItem Command="{Binding UnaccountedRad, Mode=OneTime}"
-                          Header="Радионуклиды отсутствующие в справочнике"/>
-                          
+                          Header="Радионуклиды отсутствующие в справочнике"/>-->
             </MenuItem>
         </Menu>
         <Panel
