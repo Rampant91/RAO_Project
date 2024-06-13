@@ -22,11 +22,15 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
         var par = float.TryParse(parameter?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var floatPar)
             ? floatPar
             : 1;
+        var scale = DisplayTools.GetScalingFactor();
         if (OperatingSystem.IsWindows())
         {
-            return isHeight
-                ? System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par)
-                : System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par);
+            var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par / scale);
+            var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par / scale);
+            var size = isHeight
+                ? height
+                : width;
+            return size;
         }
         if (OperatingSystem.IsLinux())
         {
@@ -92,6 +96,18 @@ internal static partial class DisplayTools
             Height = int.Parse(h)
         };
         return r;
+    }
+
+    public static float GetScalingFactor()
+    {
+        using var g = Graphics.FromHwnd(IntPtr.Zero);
+        var desktop = g.GetHdc();
+        var logpixelsy = GetDeviceCaps(desktop, 90);
+        g.ReleaseHdc(desktop);
+
+        var dpiScalingFactor = (float)logpixelsy / 96;
+
+        return dpiScalingFactor;
     }
 
     [System.Text.RegularExpressions.GeneratedRegex(@"(\d+)x(\d+)\+0\+0")]

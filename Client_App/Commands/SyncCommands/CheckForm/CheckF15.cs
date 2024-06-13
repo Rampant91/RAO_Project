@@ -849,6 +849,8 @@ public abstract class CheckF15 : CheckBase
     #endregion
 
     #region Check011_misc
+
+    //TODO добавь код ОКПО
     private static List<CheckError> Check_011_misc(List<Form15> forms, int line)
     {
         List<CheckError> result = new();
