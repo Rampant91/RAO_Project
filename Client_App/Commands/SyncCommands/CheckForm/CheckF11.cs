@@ -218,71 +218,10 @@ public abstract partial class CheckF11 : CheckBase
     #region Check002
 
     //Проверка даты окончания периода
-    private static List<CheckError> Check_002(List<Form11> forms, Report rep)
+    private static List<CheckError> Check_002(List<Form11> forms11, Report rep)
     {
-        List<CheckError> result = new();
-        if (!DateOnly.TryParse(rep.EndPeriod_DB, out var endPeriod)) return result;
-        var minOpDate = DateOnly.MinValue;
-        var opCode = string.Empty;
-        var line = 0;
-        string[] operationCodeWithDeadline1 = { "71" };
-        string[] operationCodeWithDeadline5 = { "73", "74", "75" };
-        string[] operationCodeWithDeadline10 =
-        {
-            "11", "12", "15", "17", "18", "21", "22", "25", "27", "28", "29", "31", "32", "35", "37", "38", "39",
-            "41", "42", "43", "46", "47", "48", "53", "54", "58", "61", "62", "63", "64", "65", "66", "67", "68",
-            "72", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
-        };
-        foreach (var form in forms)
-        {
-            var curOpCode = form.OperationCode_DB ?? string.Empty;
-            var opDatePlus = DateOnly.MinValue;
-            if (!DateOnly.TryParse(form.OperationDate_DB, out var opDate)) continue;
-            if (operationCodeWithDeadline1.Contains(curOpCode)) opDatePlus = opDate.AddDays(1);
-            if (operationCodeWithDeadline5.Contains(curOpCode)) opDatePlus = opDate.AddDays(5);
-            if (operationCodeWithDeadline10.Contains(curOpCode)) opDatePlus = opDate.AddDays(10);
-            if (opDatePlus > minOpDate)
-            {
-                minOpDate = opDate;
-                opCode = form.OperationCode_DB ?? string.Empty;
-                line = form.NumberInOrder_DB;
-            }
-        }
-        if (operationCodeWithDeadline10.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 10)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "OperationDate_DB",
-                Value = forms[line].OperationDate_DB,
-                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции более чем на 10 рабочих дней."
-            });
-        }
-        else if (operationCodeWithDeadline5.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 5)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "OperationDate_DB",
-                Value = forms[line].OperationDate_DB,
-                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции более чем на 5 рабочих дней."
-            });
-        }
-        else if (operationCodeWithDeadline1.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 1)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "OperationDate_DB",
-                Value = forms[line].OperationDate_DB,
-                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции более чем на 1 рабочий день."
-            });
-        }
-
-        return result;
+        var forms = forms11.Cast<Form1>().ToList();
+        return CheckRepPeriod(forms, rep);
     }
 
     #endregion
@@ -1026,7 +965,6 @@ public abstract partial class CheckF11 : CheckBase
                 "Наименование радионуклида указывается названием химического элемента на русском языке " +
                 "с указанием через дефис массового числа изотопа, радионуклиды перечисляются через точку с запятой."
             });
-            return result;
         }
         return result;
     }
