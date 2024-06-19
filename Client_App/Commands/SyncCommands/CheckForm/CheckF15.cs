@@ -1,12 +1,13 @@
 ﻿using Models.CheckForm;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.JSON;
+using Note = Models.Forms.Note;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -184,14 +185,14 @@ public abstract class CheckF15 : CheckBase
     private static List<CheckError> Check_004(List<Form15> forms, int line)
     {
         List<CheckError> result = new();
-        var operationCode = forms[line].OperationCode_DB;
+        var operationCode = forms[line].OperationCode_DB ?? string.Empty;
         var operationCodeValid = new []
         {
             "01","10","14","21","22","25","26","27","28","29","31","32","35","36","37",
             "38","39","41","43","44","45","49","51","52","57","59","63","64","71","72",
             "73","74","75","76","84","88","97","98","99"
         };
-        var valid = operationCode != null && operationCodeValid.Contains(operationCode);
+        var valid = operationCodeValid.Contains(operationCode);
         if (!valid)
         {
             result.Add(new CheckError
@@ -200,7 +201,7 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "Код операции не может быть использован в форме 1.1."
+                Message = "Код операции не может быть использован в форме 1.5."
             });
         }
         return result;
@@ -225,7 +226,7 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "Сведения, представленные в инвентаризации, не соответствуют СНК"
+                Message = "Сведения, представленные в инвентаризации, не соответствуют СНК."
             });
         }
         return result;
@@ -239,7 +240,7 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
-        var applicableOperationCodes = new[] { "29,39,49,59,97,98,99" };
+        var applicableOperationCodes = new[] { "29","39","49","59","97","98","99" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         const byte graphNumber = 2;
         var valid = CheckNotePresence(notes, line, graphNumber);
@@ -265,7 +266,10 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
-        var applicableOperationCodes = new[] { "21,22,25,26,27,28,29,42,43,44,45,49,51,71,72,84,98" };
+        var applicableOperationCodes = new[]
+        {
+            "21","22","25","26","27","28","29","42","43","44","45","49","51","71","72","84","98"
+        };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = true;
         if (!valid)
@@ -276,7 +280,8 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "Учетной единицы с такими параметрами нет в организации. Проверьте правильность указываемых сведений для ОЗРИ."
+                Message = "Учетной единицы с такими параметрами нет в организации. " +
+                          "Проверьте правильность указываемых сведений для ОЗРИ."
             });
         }
         return result;
@@ -301,7 +306,8 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "В отчетах не найдена строка об осуществлении передачи учетной единицы. Проверьте правильность выбранного кода операции."
+                Message = "В отчетах не найдена строка об осуществлении передачи учетной единицы. " +
+                          "Проверьте правильность выбранного кода операции."
             });
         }
         return result;
@@ -310,7 +316,7 @@ public abstract class CheckF15 : CheckBase
     #endregion
 
     #region Check004_41
-    //эта проверка по идее никогда не выдаст ошибку, т.к. проверке все равно, появился ли 41 код вручную или автоматически.
+    //Эта проверка по идее никогда не выдаст ошибку, т.к. проверке все равно, появился ли 41 код вручную или автоматически.
     private static List<CheckError> Check_004_41(List<Form15> forms, int line)
     {
         List<CheckError> result = new();
@@ -374,7 +380,8 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "В отчетах не найдена строка об изъятии РАО из пункта хранения. Проверьте правильность выбранного кода операции."
+                Message = "В отчетах не найдена строка об изъятии РАО из пункта хранения. " +
+                          "Проверьте правильность выбранного кода операции."
             });
         }
         return result;
@@ -398,7 +405,8 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "В отчетах не найдена строка снятии учетной единицы для упаковки/переупаковки. Проверьте правильность выбранного кода операции"
+                Message = "В отчетах не найдена строка снятии учетной единицы для упаковки/переупаковки. " +
+                          "Проверьте правильность выбранного кода операции."
             });
         }
         return result;
@@ -448,7 +456,34 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "К отчету необходимо приложить скан-копию документа характеризующего операцию."
+                Message = "К отчету необходимо приложить скан-копию документа, характеризующего операцию."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check004_9
+
+    //Для кодов операции оканчивающихся на 9 должно быть примечание.
+    private static List<CheckError> Check_004_9(List<Form15> forms, List<Note> notes, int line)
+    {
+        List<CheckError> result = new();
+        var operationCode = forms[line].OperationCode_DB;
+        const byte graphNumber = 2;
+        if (!operationCode.EndsWith('9')) return result;
+        var valid = CheckNotePresence(notes, line, graphNumber);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_15",
+                Row = (line + 1).ToString(),
+                Column = "OperationCode_DB",
+                Value = operationCode,
+                Message = "Для кодов операции, оканчивающихся на 9, " +
+                          "в примечании к ячейке \"Код операции\" необходимо дать пояснение об осуществлённой операции."
             });
         }
         return result;
@@ -494,7 +529,7 @@ public abstract class CheckF15 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_11",
+                    FormNum = "form_15",
                     Row = (line + 1).ToString(),
                     Column = "DocumentDate_DB",
                     Value = documentDate,
@@ -703,7 +738,7 @@ public abstract class CheckF15 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_15",
                 Row = (line + 1).ToString(),
                 Column = "Quantity_DB",
                 Value = quantity.ToString(),
@@ -719,18 +754,13 @@ public abstract class CheckF15 : CheckBase
     private static List<CheckError> Check_011(List<Form15> forms, int line)
     {
         List<CheckError> result = new();
-        var activity = forms[line].Activity_DB;
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
         if (string.IsNullOrEmpty(activity) || activity == "-") return result;
-        activity = activity
-            .Replace(".", ",")
-            .Replace("(", "")
-            .Replace(")", "");
         if (!double.TryParse(activity,
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var activityReal)
-            || activity.Contains('-')
-            || activityReal is <= 0 or > 10e+20)
+            || activity.Contains('-'))
         {
             result.Add(new CheckError
             {
@@ -738,7 +768,30 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
                 Value = Convert.ToString(forms[line].Activity_DB),
-                Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ. Оценочные сведения приводятся в круглых скобках"
+                Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ. " +
+                          "Оценочные сведения приводятся в круглых скобках."
+            });
+        }
+        else if (activityReal <= 0)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_15",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = Convert.ToString(forms[line].Activity_DB),
+                Message = "Суммарная активность должна быть более нуля. Проверьте правильность введённых данных."
+            });
+        }
+        else if (activityReal > 10e+20)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_15",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = Convert.ToString(forms[line].Activity_DB),
+                Message = "Указано слишком большое значение суммарной активности. Проверьте правильность введённых данных."
             });
         }
         return result;
@@ -1184,7 +1237,8 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOkpo),
-                Message = "Формат ввода данных не соответствует приказу."
+                Message = "При операциях, связанных с перемещением ОЗИИИ через государственную границу Российской Федерации, " +
+                          "необходимо указывать краткое наименование государства в соответствии с ОКСМ."
             });
         }
         valid = CheckNotePresence(notes, line, graphNumber);
