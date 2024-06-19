@@ -7,15 +7,9 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands.Add;
 
 //  Добавить примечание в форму
-internal class AddNoteAsyncCommand : BaseAsyncCommand
+internal class AddNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-
-    public AddNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {

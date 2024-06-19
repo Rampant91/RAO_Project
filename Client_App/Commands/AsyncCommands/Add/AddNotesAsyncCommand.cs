@@ -10,16 +10,10 @@ using Models.Forms;
 namespace Client_App.Commands.AsyncCommands.Add;
 
 //  Добавить N примечаний в форму
-internal class AddNotesAsyncCommand : BaseAsyncCommand
+internal class AddNotesAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-    private Interaction<object, int> ShowDialog => _ChangeOrCreateViewModel.ShowDialog;
-
-    public AddNotesAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
+    private Interaction<object, int> ShowDialog => changeOrCreateViewModel.ShowDialog;
 
     public override async Task AsyncExecute(object? parameter)
     {

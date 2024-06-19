@@ -13,8 +13,6 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public abstract class CheckBase
 {
-    private protected static Dictionary<string, double> D = new();
-
     private protected static List<Dictionary<string, string>> OKSM = new();
 
     private protected static List<Dictionary<string, string>> R = new();
@@ -95,7 +93,7 @@ public abstract class CheckBase
 
     #region CheckNotePresence
 
-    private protected static bool CheckNotePresence(List<Form> forms, List<Note> notes, int line, byte graphNumber)
+    private protected static bool CheckNotePresence(List<Note> notes, int line, byte graphNumber)
     {
         var valid = false;
         foreach (var note in notes)
@@ -171,62 +169,33 @@ public abstract class CheckBase
 
     #region LoadDictionaries
 
-    #region DFromFile
-
-    private protected static void D_Populate_From_File(string file_address)
+    private protected static void LoadDictionaries()
     {
-        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-        if (!File.Exists(file_address)) return;
-        FileInfo excel_import_file = new(file_address);
-        var xls = new ExcelPackage(excel_import_file);
-        var worksheet1 = xls.Workbook.Worksheets["Лист1"];
-        var i = 2;
-        string name_1, name_2, name_base, name_real;
-        name_base = "арконий";
-        D.Clear();
-        while (worksheet1.Cells[i, 1].Text != string.Empty)
+        if (OKSM.Count == 0)
         {
-            name_1 = worksheet1.Cells[i, 2].Text;
-            name_2 = worksheet1.Cells[i, 3].Text;
-            if (name_1 != string.Empty)
-            {
-                name_base = name_1.ToLower();
-            }
-            if (name_2.Contains('-'))
-            {
-                if (name_2.Contains('+'))
-                {
-                    name_real = name_base + name_2[name_2.IndexOf('-')..name_2.IndexOf('+')];
-                }
-                else
-                {
-                    name_real = name_base + name_2[name_2.IndexOf('-')..];
-                }
-                var valueBase = worksheet1.Cells[i, 4].Text;
-                double valueReal;
-                if (valueBase.Contains("Неограниченно"))
-                {
-                    valueReal = double.MaxValue;
-                }
-                else
-                {
-                    valueReal = 1e12 * double.Parse(valueBase[..6].Replace(" ", ""), NumberStyles.Float);
-                }
-                D[name_real] = valueReal;
-                if (name_real.Contains("йод"))
-                {
-                    D[name_real.Replace('й', 'и')] = valueReal;
-                }
-                else if (name_real.Contains("иод"))
-                {
-                    D[name_real.Replace('и', 'й')] = valueReal;
-                }
-            }
-            i++;
+#if DEBUG
+            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "oksm.xlsx"));
+#else
+            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"oksm.xlsx"));
+#endif
+        }
+        if (R.Count == 0)
+        {
+#if DEBUG
+            R_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx"));
+#else
+            R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
+#endif
+        }
+        if (HolidaysSpecific.Count == 0)
+        {
+#if DEBUG
+            Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Holidays.xlsx"));
+#else
+            Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
+#endif
         }
     }
-
-    #endregion
 
     #region  HolidaysFromFile
 
@@ -269,7 +238,7 @@ public abstract class CheckBase
 
     private protected static void OKSM_Populate_From_File(string fileAddress)
     {
-        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(fileAddress)) return;
         FileInfo excel_import_file = new(fileAddress);
         var xls = new ExcelPackage(excel_import_file);

@@ -7,12 +7,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
-public class CheckF16 : CheckBase
+public abstract class CheckF16 : CheckBase
 {
     #region Properties
 
@@ -179,7 +178,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "NumberInOrder_DB",
                 Value = forms[line].NumberInOrder_DB.ToString(),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров"
+                Message = "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров"
             });
         }
         return result;
@@ -202,7 +201,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Код операции не может быть использован в форме 1.6."
+                Message = "Код операции не может быть использован в форме 1.6."
             });
         }
         return result;
@@ -228,7 +227,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для вновь образованных РАО код типа РАО «99» не может быть использован"
+                Message = "Для вновь образованных РАО код типа РАО «99» не может быть использован"
             });
         }
         return result;
@@ -264,7 +263,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "MainRadionuclids_DB",
                 Value = forms[line].MainRadionuclids_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "В графе 9 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. Проверьте правильность выбранного кода операции"
+                Message = "В графе 9 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. Проверьте правильность выбранного кода операции"
             });
         }
         return result;
@@ -281,7 +280,7 @@ public class CheckF16 : CheckBase
         var applicableOperationCodes = new string[] { "29", "39", "49", "59", "97", "98", "99" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         const byte graphNumber = 2;
-        var valid = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
+        var valid = CheckNotePresence(notes, line, graphNumber);
         if (!valid)
         {
             result.Add(new CheckError
@@ -290,7 +289,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо дать пояснение об осуществленной операции."
+                Message = "Необходимо дать пояснение об осуществленной операции."
             });
         }
         return result;
@@ -315,7 +314,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + ""
+                Message = ""
             });
         }
         return result;
@@ -340,7 +339,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "В отчетах не найдена строка об осуществлении передачи учетной единицы. Проверьте правильность выбранного кода операции"
+                Message = "В отчетах не найдена строка об осуществлении передачи учетной единицы. Проверьте правильность выбранного кода операции"
             });
         }
         return result;
@@ -364,7 +363,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "В отчетах не найдена строка снятии учетной единицы для упаковки/переупаковки. Проверьте правильность выбранного кода операции"
+                Message = "В отчетах не найдена строка снятии учетной единицы для упаковки/переупаковки. Проверьте правильность выбранного кода операции"
             });
         }
         return result;
@@ -406,7 +405,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "По сведениям, представленным в строке, отходы не относятся к РАО"
+                Message = "По сведениям, представленным в строке, отходы не относятся к РАО"
             });
         }
         return result;
@@ -431,7 +430,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Код операции не соответствует коду переработки/сортировки, указанному в графе 22"
+                Message = "Код операции не соответствует коду переработки/сортировки, указанному в графе 22"
             });
         }
         return result;
@@ -456,7 +455,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "К отчету необходимо приложить скан-копию документа характеризующего операцию"
+                Message = "К отчету необходимо приложить скан-копию документа характеризующего операцию"
             });
         }
         return result;
@@ -490,7 +489,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(operationDate),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Дата операции не входит в отчетный период."
+                Message = "Дата операции не входит в отчетный период."
             });
         }
         return result;
@@ -524,7 +523,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentDate_DB",
                 Value = Convert.ToString(documentDate),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Дата документа не входит в отчетный период. Для операции инвентаризации срок предоставления отчета исчисляется с даты утверждения акта инвентаризации"
+                Message = "Дата документа не входит в отчетный период. Для операции инвентаризации срок предоставления отчета исчисляется с даты утверждения акта инвентаризации"
             });
         }
         return result;
@@ -547,7 +546,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность заполнения кода РАО."
+                Message = "Проверьте правильность заполнения кода РАО."
             });
             return result;
         }
@@ -589,7 +588,7 @@ public class CheckF16 : CheckBase
             }
         }
         const byte graphNumber = 4;
-        var noteExists = CheckNotePresence(new List<Form>(forms), notes, line, graphNumber);
+        var noteExists = CheckNotePresence(notes, line, graphNumber);
 
         #endregion
 
@@ -651,7 +650,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_1_MatterState,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 1-го символа кода РАО."
+                Message = "Недопустимое значение 1-го символа кода РАО."
             });
         }
         else
@@ -691,7 +690,7 @@ public class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = CodeRAO_DB,
-                            Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
+                            Message = "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
                         });
                     }
                     break;
@@ -704,7 +703,7 @@ public class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = CodeRAO_DB,
-                            Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
+                            Message = "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
                         });
                     }
                     break;
@@ -717,7 +716,7 @@ public class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = CodeRAO_DB,
-                            Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
+                            Message = "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
                         });
                     }
                     break;
@@ -735,7 +734,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_2_RAOCategory,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 2-го символа кода РАО."
+                Message = "Недопустимое значение 2-го символа кода РАО."
             });
         }
         else
@@ -752,7 +751,7 @@ public class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = CodeRAO_2_RAOCategory,
-                            Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
+                            Message = "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
                         });
                     }
                     break;
@@ -765,7 +764,7 @@ public class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = CodeRAO_2_RAOCategory,
-                            Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо дать пояснение для 2-го символа кода РАО."
+                            Message = "Необходимо дать пояснение для 2-го символа кода РАО."
                         });
                     }
                     break;
@@ -779,7 +778,7 @@ public class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = CodeRAO_2_RAOCategory,
-                            Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Неправильно указана категория РАО."
+                            Message = "Неправильно указана категория РАО."
                         });
                     }
                     else
@@ -872,7 +871,7 @@ public class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = CodeRAO_2_RAOCategory,
-                                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте категорию РАО и суммарную активность."
+                                Message = "Проверьте категорию РАО и суммарную активность."
                             });
                         }
                         else if (code_max != -1 && (CodeRAO_2_RAOCategory == "9" || CodeRAO_2_RAOCategory != code_max.ToString("D1")))
@@ -883,7 +882,7 @@ public class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = CodeRAO_2_RAOCategory,
-                                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {code_max}."
+                                Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {code_max}."
                             });
                         }
                     }
@@ -902,7 +901,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_3_NuclidTypes,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 3-го символа кода РАО."
+                Message = "Недопустимое значение 3-го символа кода РАО."
             });
         }
         else
@@ -917,7 +916,7 @@ public class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = CodeRAO_3_NuclidTypes,
-                        Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0."
+                        Message = "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0."
                     });
                 }
             }
@@ -946,7 +945,7 @@ public class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = CodeRAO_3_NuclidTypes,
-                        Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, указанным в графе 9"
+                        Message = "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, указанным в графе 9"
                     });
                 }
             }
@@ -964,7 +963,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_4_HasNuclears,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 4-го символа кода РАО."
+                Message = "Недопустимое значение 4-го символа кода РАО."
             });
         }
         else
@@ -978,7 +977,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = CodeRAO_4_HasNuclears,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "4-ый символ кода РАО равен 2 только при указании радионуклидов, которые могут быть отнесены к ЯМ."
+                    Message = "4-ый символ кода РАО равен 2 только при указании радионуклидов, которые могут быть отнесены к ЯМ."
                 });
             }
             else if (CodeRAO_4_HasNuclears == "1" && radArray.Any(x => nuclears.Contains(x.ToLower())))
@@ -989,7 +988,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = CodeRAO_4_HasNuclears,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "4-ый символ кода РАО равен 1 только при отсутствии радионуклидов, которые могут быть отнесены к ЯМ."
+                    Message = "4-ый символ кода РАО равен 1 только при отсутствии радионуклидов, которые могут быть отнесены к ЯМ."
                 });
             }
         }
@@ -1005,7 +1004,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_5_HalfLife,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 5-го символа кода РАО."
+                Message = "Недопустимое значение 5-го символа кода РАО."
             });
         }
         else
@@ -1018,7 +1017,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = CodeRAO_5_HalfLife,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО (период полураспада) должен быть равен 2."
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО (период полураспада) должен быть равен 2."
                 });
             }
             else if (CodeRAO_5_HalfLife != "1" && (int)halflife_max > 31)
@@ -1029,7 +1028,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = CodeRAO_5_HalfLife,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО (период полураспада) должен быть равен 1."
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО (период полураспада) должен быть равен 1."
                 });
             }
         }
@@ -1045,7 +1044,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_6_DangerPeriod,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 6-го символа кода РАО."
+                Message = "Недопустимое значение 6-го символа кода РАО."
             });
         }
         else if (CodeRAO_1_MatterState != "3")
@@ -1062,7 +1061,7 @@ public class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = CodeRAO_6_DangerPeriod,
-                            Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Укажите причины невозможности определения периода потенциальной опасности."
+                            Message = "Укажите причины невозможности определения периода потенциальной опасности."
                         });
                     }
                 }
@@ -1116,7 +1115,7 @@ public class CheckF16 : CheckBase
                                     Row = forms[line].NumberInOrder_DB.ToString(),
                                     Column = "CodeRAO_DB",
                                     Value = CodeRAO_6_DangerPeriod,
-                                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + $"Расчетное значение периода потенциальной опасности (в годах): {expectedPeriod} (6-ой символ кода РАО {expectedValue})."
+                                    Message = $"Расчетное значение периода потенциальной опасности (в годах): {expectedPeriod} (6-ой символ кода РАО {expectedValue})."
                                 });
                             }
                             else
@@ -1127,7 +1126,7 @@ public class CheckF16 : CheckBase
                                     Row = forms[line].NumberInOrder_DB.ToString(),
                                     Column = "CodeRAO_DB",
                                     Value = CodeRAO_6_DangerPeriod,
-                                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + $"(Справочное сообщение, не обязательно к исправлению) Расчетное значение периода потенциальной опасности для приведенного полинуклидного состава (в годах): {expectedPeriod} (6-ой символ кода РАО предположительно {expectedValue})."
+                                    Message = $"(Справочное сообщение, не обязательно к исправлению) Расчетное значение периода потенциальной опасности для приведенного полинуклидного состава (в годах): {expectedPeriod} (6-ой символ кода РАО предположительно {expectedValue})."
                                 });
                             }
                         }
@@ -1147,7 +1146,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_7_RecycleMethod,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 7-го символа кода РАО."
+                Message = "Недопустимое значение 7-го символа кода РАО."
             });
         }
         else
@@ -1160,7 +1159,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = CodeRAO_7_RecycleMethod,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для жидких РАО 7-ой символ кода РАО не может быть равным 1, 2, 3, 4, 9."
+                    Message = "Для жидких РАО 7-ой символ кода РАО не может быть равным 1, 2, 3, 4, 9."
                 });
             }
             else if (forms[line].OperationCode_DB == "56")
@@ -1212,7 +1211,7 @@ public class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = CodeRAO_7_RecycleMethod,
-                        Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "7-ой символ кода РАО не соответствует коду переработки/сортировки, указанному в графе 22."
+                        Message = "7-ой символ кода РАО не соответствует коду переработки/сортировки, указанному в графе 22."
                     });
                 }
             }
@@ -1229,7 +1228,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_8_RAOClass,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 8-го символа кода РАО."
+                Message = "Недопустимое значение 8-го символа кода РАО."
             });
         }
         else
@@ -1243,7 +1242,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = CodeRAO_8_RAOClass,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Сведения о кондиционированных отходах необходимо представлять в формах 1.7 и 1.8."
+                    Message = "Сведения о кондиционированных отходах необходимо представлять в формах 1.7 и 1.8."
                 });
             }
             else if (CodeRAO_8_RAOClass == "7")
@@ -1258,7 +1257,7 @@ public class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = CodeRAO_8_RAOClass,
-                        Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Особые РАО могут быть размещены только в ПРОРАО либо ПКОРАО."
+                        Message = "Особые РАО могут быть размещены только в ПРОРАО либо ПКОРАО."
                     });
                 }
             }
@@ -1273,7 +1272,7 @@ public class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = CodeRAO_8_RAOClass,
-                        Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Идентификатор 9 используется только для тех РАО, по которым решение об отнесении к особым или удаляемым отложено в ходе проведения первичной регистрации."
+                        Message = "Идентификатор 9 используется только для тех РАО, по которым решение об отнесении к особым или удаляемым отложено в ходе проведения первичной регистрации."
                     });
                 }
             }
@@ -1290,7 +1289,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_910_TypeCode,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 9-10 символов кода РАО."
+                Message = "Недопустимое значение 9-10 символов кода РАО."
             });
         }
         else
@@ -1303,7 +1302,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = CodeRAO_910_TypeCode,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Сведения о РАО, подготовленных для передачи национальному оператору, предоставляются с форме 1.8."
+                    Message = "Сведения о РАО, подготовленных для передачи национальному оператору, предоставляются с форме 1.8."
                 });
             }
             else
@@ -1317,7 +1316,7 @@ public class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = CodeRAO_910_TypeCode,
-                        Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо заполнить примечание к коду типа РАО."
+                        Message = "Необходимо заполнить примечание к коду типа РАО."
                     });
                 }
             }
@@ -1334,7 +1333,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = CodeRAO_11_Flammability,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Недопустимое значение 11-го символа кода РАО."
+                Message = "Недопустимое значение 11-го символа кода РАО."
             });
         }
         else
@@ -1366,7 +1365,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = StatusRAO_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При данном коде операции, статус РАО должен быть равен коду ОКПО отчитывающейся организации или юридического лица (РАО, образовавшиеся после 15.07.2011, находятся в собственности организации, в результате деятельности которой они образовались)."
+                Message = "При данном коде операции, статус РАО должен быть равен коду ОКПО отчитывающейся организации или юридического лица (РАО, образовавшиеся после 15.07.2011, находятся в собственности организации, в результате деятельности которой они образовались)."
             });
         }
         return result;
@@ -1391,7 +1390,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = StatusRAO_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность статуса РАО"
+                Message = "Проверьте правильность статуса РАО"
             });
         }
         return result;
@@ -1419,7 +1418,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = StatusRAO_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Заполнение графы 5 не соответствует требованиям приказа Госкорпорации \"Росатом\" от 07.12.2020 № 1/13-НПА"
+                Message = "Заполнение графы 5 не соответствует требованиям приказа Госкорпорации \"Росатом\" от 07.12.2020 № 1/13-НПА"
             });
         }
         return result;
@@ -1441,7 +1440,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "Volume_DB",
                 Value = Volume_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо заполнить сведения об объеме РАО, если представляемые данные являются расчетными, то соответствующие значения указываются в круглых скобках"
+                Message = "Необходимо заполнить сведения об объеме РАО, если представляемые данные являются расчетными, то соответствующие значения указываются в круглых скобках"
             });
         }
         return result;
@@ -1466,7 +1465,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "Mass_DB",
                 Value = Mass_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо заполнить сведения о массе РАО, если представляемые данные являются расчетными, то соответствующие значения указываются в круглых скобках"
+                Message = "Необходимо заполнить сведения о массе РАО, если представляемые данные являются расчетными, то соответствующие значения указываются в круглых скобках"
             });
             return result;
         }
@@ -1481,7 +1480,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "Mass_DB",
                 Value = Density_Real.ToString(),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение массы и объема. Расчетное значение плотности слишком большое"
+                Message = "Проверьте значение массы и объема. Расчетное значение плотности слишком большое"
             });
         }
         else if (Density_Real < 0.005)
@@ -1492,7 +1491,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "Mass_DB",
                 Value = Density_Real.ToString(),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение массы и объема. Расчетное значение плотности слишком маленькое"
+                Message = "Проверьте значение массы и объема. Расчетное значение плотности слишком маленькое"
             });
         }
         return result;
@@ -1522,7 +1521,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "QuantityOZIII_DB",
                     Value = QuantityOZIII_DB,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо заполнить сведения о количестве ОЗИИИ"
+                    Message = "Необходимо заполнить сведения о количестве ОЗИИИ"
                 });
             }
         }
@@ -1536,7 +1535,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "QuantityOZIII_DB",
                     Value = QuantityOZIII_DB,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо заполнить сведения о количестве ОЗИИИ"
+                    Message = "Необходимо заполнить сведения о количестве ОЗИИИ"
                 });
             }
         }
@@ -1550,7 +1549,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "QuantityOZIII_DB",
                     Value = QuantityOZIII_DB,
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Графа заполняется только для ОЗИИИ. Поставьте прочерк."
+                    Message = "Графа заполняется только для ОЗИИИ. Поставьте прочерк."
                 });
             }
         }
@@ -1572,7 +1571,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "Radionuclids_DB",
                 Value = Convert.ToString(radionuclids),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Заполните графу 9 «Основные радионуклиды»"
+                Message = "Заполните графу 9 «Основные радионуклиды»"
             });
             return result;
         }
@@ -1591,7 +1590,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Radionuclids_DB",
                     Value = Convert.ToString(radionuclids),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Заполните графу 9 «Основные радионуклиды»"
+                    Message = "Заполните графу 9 «Основные радионуклиды»"
                 });
                 return result;
             }
@@ -1609,7 +1608,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Radionuclids_DB",
                     Value = Convert.ToString(radionuclids),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Формат ввода данных не соответствует приказу. Наименование радионуклида указывается названием химического элемента на русском языке с указанием через дефис массового числа изотопа"
+                    Message = "Формат ввода данных не соответствует приказу. Наименование радионуклида указывается названием химического элемента на русском языке с указанием через дефис массового числа изотопа"
                 });
             }
         }
@@ -1643,7 +1642,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TritiumActivity_DB",
                     Value = Convert.ToString(forms[line].TritiumActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 10"
+                    Message = "Проверьте значение суммарной активности в графе 10"
                 });
             }
             else if (activityReal > 10e+20)
@@ -1654,7 +1653,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TritiumActivity_DB",
                     Value = Convert.ToString(forms[line].TritiumActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 10. Указанная суммарная активность превышает предельное значение"
+                    Message = "Проверьте значение суммарной активности в графе 10. Указанная суммарная активность превышает предельное значение"
                 });
             }
             else
@@ -1665,7 +1664,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TritiumActivity_DB",
                     Value = Convert.ToString(forms[line].TritiumActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 10"
+                    Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 10"
                 });
             }
         }
@@ -1698,7 +1697,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "BetaGammaActivity_DB",
                     Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 11"
+                    Message = "Проверьте значение суммарной активности в графе 11"
                 });
             }
             else if (activityReal > 10e+20)
@@ -1709,7 +1708,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "BetaGammaActivity_DB",
                     Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 11. Указанная суммарная активность превышает предельное значение"
+                    Message = "Проверьте значение суммарной активности в графе 11. Указанная суммарная активность превышает предельное значение"
                 });
             }
             else
@@ -1720,7 +1719,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "BetaGammaActivity_DB",
                     Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 11"
+                    Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 11"
                 });
             }
         }
@@ -1754,7 +1753,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "AlphaActivity_DB",
                     Value = Convert.ToString(forms[line].AlphaActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 12"
+                    Message = "Проверьте значение суммарной активности в графе 12"
                 });
             }
             else if (activityReal > 10e+20)
@@ -1765,7 +1764,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "AlphaActivity_DB",
                     Value = Convert.ToString(forms[line].AlphaActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 12. Указанная суммарная активность превышает предельное значение"
+                    Message = "Проверьте значение суммарной активности в графе 12. Указанная суммарная активность превышает предельное значение"
                 });
             }
             else
@@ -1776,7 +1775,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "AlphaActivity_DB",
                     Value = Convert.ToString(forms[line].AlphaActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 12"
+                    Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 12"
                 });
             }
         }
@@ -1810,7 +1809,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TransuraniumActivity_DB",
                     Value = Convert.ToString(forms[line].TransuraniumActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 13"
+                    Message = "Проверьте значение суммарной активности в графе 13"
                 });
             }
             else if (activityReal > 10e+20)
@@ -1821,7 +1820,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TransuraniumActivity_DB",
                     Value = Convert.ToString(forms[line].TransuraniumActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение суммарной активности в графе 13. Указанная суммарная активность превышает предельное значение"
+                    Message = "Проверьте значение суммарной активности в графе 13. Указанная суммарная активность превышает предельное значение"
                 });
             }
             else
@@ -1832,7 +1831,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TransuraniumActivity_DB",
                     Value = Convert.ToString(forms[line].TransuraniumActivity_DB),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 13"
+                    Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 13"
                 });
             }
         }
@@ -1862,7 +1861,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ActivityMeasurementDate_DB",
                 Value = activityDate,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность указанной даты измерения активности. Дата не может быть позже даты операции"
+                Message = "Проверьте правильность указанной даты измерения активности. Дата не может быть позже даты операции"
             });
         }
         return result;
@@ -1885,7 +1884,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentVid_DB",
                 Value = DocumentVid_DB.ToString(),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте правильность заполнения графы 15"
+                Message = "Проверьте правильность заполнения графы 15"
             });
         }
         return result;
@@ -1907,7 +1906,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentNumber_DB",
                 Value = Convert.ToString(documentNumberDB),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Графа должна быть заполнена."
+                Message = "Графа должна быть заполнена."
             });
         }
         return result;
@@ -1938,7 +1937,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "DocumentDate_DB",
                     Value = Convert.ToString(documentDate),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Дата документа должна соответствовать дате операции"
+                    Message = "Дата документа должна соответствовать дате операции"
                 });
             }
         }
@@ -1956,7 +1955,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "DocumentDate_DB",
                     Value = Convert.ToString(documentDate),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Дата документа выходит за границы периода"
+                    Message = "Дата документа выходит за границы периода"
                 });
             }
         }
@@ -1973,7 +1972,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "DocumentDate_DB",
                     Value = Convert.ToString(documentDate),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Дата документа не может быть позже даты операции"
+                    Message = "Дата документа не может быть позже даты операции"
                 });
             }
         }
@@ -2006,7 +2005,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для выбранного кода операции указывается код ОКПО отчитывающейся организации."
+                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации."
             });
         }
         return result;
@@ -2038,7 +2037,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Значение может состоять только из 8 или 14 символов"
+                Message = "Значение может состоять только из 8 или 14 символов"
             });
         }
         valid = providerOrRecieverOKPO != repOKPO;
@@ -2050,7 +2049,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Для выбранного кода операции указывается код ОКПО контрагента."
+                Message = "Для выбранного кода операции указывается код ОКПО контрагента."
             });
         }
         return result;
@@ -2078,7 +2077,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Формат ввода данных не соответствует приказу. Следует указать код ОКПО контрагента, либо \"Минобороны\" без кавычек."
+                Message = "Формат ввода данных не соответствует приказу. Следует указать код ОКПО контрагента, либо \"Минобороны\" без кавычек."
             });
         }
         return result;
@@ -2107,7 +2106,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При выбранном коде операции транспортирование не производится, в графе 19 должен стоять прочерк."
+                Message = "При выбранном коде операции транспортирование не производится, в графе 19 должен стоять прочерк."
             });
         }
         return result;
@@ -2138,7 +2137,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Значение может состоять только из 8 или 14 символов"
+                Message = "Значение может состоять только из 8 или 14 символов"
             });
         }
         return result;
@@ -2167,7 +2166,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек."
+                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек."
             });
         }
         return result;
@@ -2189,7 +2188,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StoragePlaceName_DB",
                 Value = Convert.ToString(StoragePlaceName_DB),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Графа 20 должна быть заполнена."
+                Message = "Графа 20 должна быть заполнена."
             });
         }
         return result;
@@ -2211,7 +2210,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StoragePlaceCode_DB",
                 Value = Convert.ToString(StoragePlaceCode_DB),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Графа 21 должна быть заполнена."
+                Message = "Графа 21 должна быть заполнена."
             });
         }
         return result;
@@ -2246,7 +2245,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = forms[line].RefineOrSortRAOCode_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + $"Для кода операции {operationCode} код переработки/сортировки {RefineOrSortRAOCode_DB} недопустим."
+                Message = $"Для кода операции {operationCode} код переработки/сортировки {RefineOrSortRAOCode_DB} недопустим."
             });
         }
         return result;
@@ -2272,7 +2271,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = forms[line].RefineOrSortRAOCode_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Коду операции упаковка/переупаковка не соответствует код переработки/сортировки"
+                Message = "Коду операции упаковка/переупаковка не соответствует код переработки/сортировки"
             });
         }
         return result;
@@ -2298,7 +2297,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = forms[line].RefineOrSortRAOCode_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Коду операции сортировка соответствуют коды сортировки 52, 72, 74"
+                Message = "Коду операции сортировка соответствуют коды сортировки 52, 72, 74"
             });
         }
         return result;
@@ -2324,7 +2323,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = forms[line].RefineOrSortRAOCode_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "При данном коде операции для кода переработки/сортировки используется символ «-»"
+                Message = "При данном коде операции для кода переработки/сортировки используется символ «-»"
             });
         }
         return result;
@@ -2349,7 +2348,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = forms[line].RefineOrSortRAOCode_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "РАО направлены на установку сжигания. Проверьте значение 11 символа кода РАО"
+                Message = "РАО направлены на установку сжигания. Проверьте значение 11 символа кода РАО"
             });
         }
         return result;
@@ -2374,7 +2373,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = forms[line].RefineOrSortRAOCode_DB,
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "РАО направлены на переработку на установке сжигания. Проверьте значение кода типа РАО в коде РАО."
+                Message = "РАО направлены на переработку на установке сжигания. Проверьте значение кода типа РАО в коде РАО."
             });
         }
         return result;
@@ -2396,7 +2395,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "PackName_DB",
                 Value = Convert.ToString(field_value),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Заполните сведения об упаковке РАО. Если РАО размещены без упаковки, то в графе 23 указывается «без упаковки»."
+                Message = "Заполните сведения об упаковке РАО. Если РАО размещены без упаковки, то в графе 23 указывается «без упаковки»."
             });
         }
         return result;
@@ -2418,7 +2417,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "PackType_DB",
                 Value = Convert.ToString(field_value),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Заполните сведения в графе 24. В случае, если тип отсутствует, укажите символ «-» без кавычек."
+                Message = "Заполните сведения в графе 24. В случае, если тип отсутствует, укажите символ «-» без кавычек."
             });
         }
         return result;
@@ -2440,7 +2439,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "PackNumber_DB",
                 Value = Convert.ToString(field_value),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Заполните сведения о заводском номере упаковки. Если заводской номер отсутствует необходимо привести в круглых скобках номер, присвоенный в организации."
+                Message = "Заполните сведения о заводском номере упаковки. Если заводской номер отсутствует необходимо привести в круглых скобках номер, присвоенный в организации."
             });
         }
         return result;
@@ -2464,7 +2463,7 @@ public class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Subsidy_DB",
                     Value = Convert.ToString(field_value),
-                    Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Проверьте значение субсидии."
+                    Message = "Проверьте значение субсидии."
                 });
             }
         }
@@ -2488,7 +2487,7 @@ public class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "FcpNumber_DB",
                 Value = Convert.ToString(field_value),
-                Message = $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " + "Графа должна быть заполнена."
+                Message = "Графа должна быть заполнена."
             });
         }
         return result;

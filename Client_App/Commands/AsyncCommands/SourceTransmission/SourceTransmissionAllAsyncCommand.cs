@@ -50,6 +50,27 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                 .ShowDialog(Desktop.MainWindow));
 
             #endregion
+             
+            return;
+        }
+        if (formsWithCode41.Count == 0)
+        {
+            #region MessageSourceTransmissionFailed
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Перевод источников",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "В данной форме отсутствуют записи с кодом операции 41.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
 
             return;
         }
