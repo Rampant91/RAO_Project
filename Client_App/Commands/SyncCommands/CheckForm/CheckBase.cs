@@ -5,6 +5,7 @@ using OfficeOpenXml;
 using System.Globalization;
 using System.IO;
 using System;
+using System.Text.RegularExpressions;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
@@ -17,7 +18,13 @@ public abstract class CheckBase
 
     private protected static List<Dictionary<string, string>> R = new();
 
-    private protected static bool DB_Ignore = true;
+    private protected static readonly bool DB_Ignore = true;
+
+    private protected static readonly bool ZRI_Ignore = true;
+
+    private protected static readonly bool MZA_Ignore = true;
+
+    private protected static readonly Regex OkpoRegex = new(@"^\d{8}([0123456789_]\d{5})?$");
 
     #region CheckRepPeriod
 
@@ -60,7 +67,8 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = forms[line].OperationDate_DB,
-                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} более чем на 10 рабочих дней."
+                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
+                          $"более чем на 10 рабочих дней."
             });
         }
         else if (operationCodeWithDeadline5.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 5)
@@ -71,7 +79,8 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = forms[line].OperationDate_DB,
-                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} более чем на 5 рабочих дней."
+                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
+                          $"более чем на 5 рабочих дней."
             });
         }
         else if (operationCodeWithDeadline1.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 1)
@@ -82,7 +91,8 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = forms[line].OperationDate_DB,
-                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} более чем на 1 рабочий дней."
+                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
+                          $"более чем на 1 рабочий день."
             });
         }
 
