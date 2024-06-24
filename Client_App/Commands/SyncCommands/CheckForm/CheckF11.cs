@@ -984,6 +984,7 @@ public abstract class CheckF11 : CheckBase
             return result;
         }
         if (rads.Contains(',') 
+            || rads.Contains('+')
             || !radsSet
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad)))

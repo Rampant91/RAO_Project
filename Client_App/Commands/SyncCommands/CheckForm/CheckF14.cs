@@ -854,7 +854,9 @@ public abstract class CheckF14 : CheckBase
             });
             return result;
         }
-        if (rads.Contains(',') || !radsSet
+        if (rads.Contains(',') 
+            || rads.Contains('+') 
+            || !radsSet
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad)))
         {
@@ -1473,26 +1475,26 @@ public abstract class CheckF14 : CheckBase
     private static List<CheckError> Check_052(List<Form14> forms, int line)
     {
         List<CheckError> result = new();
-        var opDate = forms[line].DocumentDate_DB ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(opDate) || opDate is "-")
+        var docDate = forms[line].DocumentDate_DB ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(docDate) || docDate is "-")
         {
             result.Add(new CheckError
             {
                 FormNum = "form_14",
                 Row = (line + 1).ToString(),
-                Column = "OperationDate_DB",
-                Value = Convert.ToString(opDate),
+                Column = "DocumentDate_DB",
+                Value = Convert.ToString(docDate),
                 Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
             });
         }
-        else if (!DateOnly.TryParse(opDate, out _))
+        else if (!DateOnly.TryParse(docDate, out _))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_14",
                 Row = (line + 1).ToString(),
-                Column = "OperationDate_DB",
-                Value = Convert.ToString(opDate),
+                Column = "DocumentDate_DB",
+                Value = Convert.ToString(docDate),
                 Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата документа."
             });
         }

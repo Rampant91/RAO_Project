@@ -814,7 +814,9 @@ public abstract class CheckF13 : CheckBase
             });
             return result;
         }
-        if (rads.Contains(',') || !radsSet
+        if (rads.Contains(',') 
+            || rads.Contains('+')
+            || !radsSet
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad)))
         {
