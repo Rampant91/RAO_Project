@@ -75,86 +75,114 @@ public class JsonOrgConverter : JsonConverter
         var jo = JObject.Load(reader);
         var deserializeObject = JsonConvert
             .DeserializeObject<Dictionary<string, dynamic>>(jo.ToString(), SpecifiedSubclassConversion);
-
-        return deserializeObject
-            .Select(org => org.Value.Count > 1
+        List<JsonReports[]> test = [];
+        var temp = deserializeObject.Select(org =>
+        org.Value[0]["attrs"]);
+        test = deserializeObject
+            .Select(org => 
+            org.Value.Count > 1
                 ? new JsonReports[]
                 {
-                    new()
-                    {
-                        Id = org.Value[0]["record_id"],
-                        RegNo = org.Value[0]["KOD_ORG"],
-                        OrganUprav = org.Value[0]["KOD_IAE"],
-                        SubjectRF = org.Value[0]["KOD_SRF"],
-                        JurLico = org.Value[0]["NAME_FULL"],
-                        ShortJurLico = org.Value[0]["NAME_SHORT"],
-                        JurLicoAddress = org.Value[0]["ADDRESS_U"],
-                        JurLicoFactAddress = org.Value[0]["ADDRESS_P"],
-                        GradeFIO = org.Value[0]["RUKOVODITEL"],
-                        Telephone = org.Value[0]["attrs"]?["TLFON"],
-                        Fax = org.Value[0]["attrs"]?["FAX"],
-                        Email = org.Value[0]["attrs"]?["EMAIL"],
-                        Okpo = org.Value[0]["OKPO"],
-                        Okved = org.Value[0]["OKVED"],
-                        Okogu = org.Value[0]["attrs"]?["OKOGU"],
-                        Oktmo = org.Value[0]["OKTMO"],
-                        Inn = org.Value[0]["INN"],
-                        Kpp = org.Value[0]["KPP"],
-                        Okopf = org.Value[0]["OKOPF"],
-                        Okfs = org.Value[0]["OKFS"]
-                    },
-                    new()
-                    {
-                        Id = org.Value[1]["record_id"],
-                        RegNo = org.Value[1]["KOD_ORG"],
-                        OrganUprav = org.Value[1]["KOD_IAE"],
-                        SubjectRF = org.Value[1]["KOD_SRF"],
-                        JurLico = org.Value[1]["NAME_FULL"],
-                        ShortJurLico = org.Value[1]["NAME_SHORT"],
-                        JurLicoAddress = org.Value[1]["ADDRESS_U"],
-                        JurLicoFactAddress = org.Value[1]["ADDRESS_P"],
-                        GradeFIO = org.Value[1]["RUKOVODITEL"],
-                        Telephone = org.Value[1]["attrs"]?["TLFON"],
-                        Fax = org.Value[1]["attrs"]?["FAX"],
-                        Email = org.Value[1]["attrs"]?["EMAIL"],
-                        Okpo = org.Value[1]["OKPO"],
-                        Okved = org.Value[1]["OKVED"],
-                        Okogu = org.Value[1]["attrs"]?["OKOGU"],
-                        Oktmo = org.Value[1]["OKTMO"],
-                        Inn = org.Value[1]["INN"],
-                        Kpp = org.Value[1]["KPP"],
-                        Okopf = org.Value[1]["OKOPF"],
-                        Okfs = org.Value[1]["OKFS"]
-                    }
-                }
-                : new JsonReports[]
+                new()
                 {
-                    new()
-                    {
-                        Id = org.Value[0]["record_id"],
-                        RegNo = org.Value[0]["KOD_ORG"],
-                        OrganUprav = org.Value[0]["KOD_IAE"],
-                        SubjectRF = org.Value[0]["KOD_SRF"],
-                        JurLico = org.Value[0]["NAME_FULL"],
-                        ShortJurLico = org.Value[0]["NAME_SHORT"],
-                        JurLicoAddress = org.Value[0]["ADDRESS_U"],
-                        JurLicoFactAddress = org.Value[0]["ADDRESS_P"],
-                        GradeFIO = org.Value[0]["RUKOVODITEL"],
-                        Telephone = org.Value[0]["attrs"]?["TLFON"],
-                        Fax = org.Value[0]["attrs"]?["FAX"],
-                        Email = org.Value[0]["attrs"]?["EMAIL"],
-                        Okpo = org.Value[0]["OKPO"],
-                        Okved = org.Value[0]["OKVED"],
-                        Okogu = org.Value[0]["attrs"]?["OKOGU"],
-                        Oktmo = org.Value[0]["OKTMO"],
-                        Inn = org.Value[0]["INN"],
-                        Kpp = org.Value[0]["KPP"],
-                        Okopf = org.Value[0]["OKOPF"],
-                        Okfs = org.Value[0]["OKFS"]
-                    }
-                })
+                    Id = org.Value[0]["record_id"],
+                    RegNo = org.Value[0]["KOD_ORG"],
+                    OrganUprav = org.Value[0]["KOD_IAE"],
+                    SubjectRF = org.Value[0]["KOD_SRF"],
+                    JurLico = org.Value[0]["NAME_FULL"],
+                    ShortJurLico = org.Value[0]["NAME_SHORT"],
+                    JurLicoAddress = org.Value[0]["ADDRESS_U"],
+                    JurLicoFactAddress = org.Value[0]["ADDRESS_P"],
+                    GradeFIO = org.Value[0]["RUKOVODITEL"],
+                    Telephone = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["TLFON"]
+                        : string.Empty,
+                    Fax = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["FAX"]
+                        : string.Empty,
+                    Email = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["EMAIL"]
+                        : string.Empty,
+                    Okpo = org.Value[0]["OKPO"],
+                    Okved = org.Value[0]["OKVED"],
+                    Okogu = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["OKOGU"]
+                        : string.Empty,
+                    Oktmo = org.Value[0]["OKTMO"],
+                    Inn = org.Value[0]["INN"],
+                    Kpp = org.Value[0]["KPP"],
+                    Okopf = org.Value[0]["OKOPF"],
+                    Okfs = org.Value[0]["OKFS"]
+                },
+                new()
+                {
+                    Id = org.Value[1]["record_id"],
+                    RegNo = org.Value[1]["KOD_ORG"],
+                    OrganUprav = org.Value[1]["KOD_IAE"],
+                    SubjectRF = org.Value[1]["KOD_SRF"],
+                    JurLico = org.Value[1]["NAME_FULL"],
+                    ShortJurLico = org.Value[1]["NAME_SHORT"],
+                    JurLicoAddress = org.Value[1]["ADDRESS_U"],
+                    JurLicoFactAddress = org.Value[1]["ADDRESS_P"],
+                    GradeFIO = org.Value[1]["RUKOVODITEL"],
+                    Telephone = org.Value[1]["attrs"].Value is not null
+                        ? org.Value[1]["attrs"]["TLFON"]
+                        : string.Empty,
+                    Fax = org.Value[1]["attrs"].Value is not null
+                        ? org.Value[1]["attrs"]["FAX"]
+                        : string.Empty,
+                    Email = org.Value[1]["attrs"].Value is not null
+                        ? org.Value[1]["attrs"]["EMAIL"]
+                        : string.Empty,
+                    Okpo = org.Value[1]["OKPO"],
+                    Okved = org.Value[1]["OKVED"],
+                    Okogu = org.Value[1]["attrs"].Value is not null
+                        ? org.Value[1]["attrs"]["OKOGU"]
+                        : string.Empty,
+                    Oktmo = org.Value[1]["OKTMO"],
+                    Inn = org.Value[1]["INN"],
+                    Kpp = org.Value[1]["KPP"],
+                    Okopf = org.Value[1]["OKOPF"],
+                    Okfs = org.Value[1]["OKFS"]
+                }
+                }
+                : 
+                [
+                new()
+                {
+                    Id = org.Value[0]["record_id"],
+                    RegNo = org.Value[0]["KOD_ORG"],
+                    OrganUprav = org.Value[0]["KOD_IAE"],
+                    SubjectRF = org.Value[0]["KOD_SRF"],
+                    JurLico = org.Value[0]["NAME_FULL"],
+                    ShortJurLico = org.Value[0]["NAME_SHORT"],
+                    JurLicoAddress = org.Value[0]["ADDRESS_U"],
+                    JurLicoFactAddress = org.Value[0]["ADDRESS_P"],
+                    GradeFIO = org.Value[0]["RUKOVODITEL"],
+                    Telephone = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["TLFON"]
+                        : string.Empty,
+                    Fax = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["FAX"]
+                        : string.Empty,
+                    Email = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["EMAIL"]
+                        : string.Empty,
+                    Okpo = org.Value[0]["OKPO"],
+                    Okved = org.Value[0]["OKVED"],
+                    Okogu = org.Value[0]["attrs"].Value is not null
+                        ? org.Value[0]["attrs"]["OKOGU"]
+                        : string.Empty,
+                    Oktmo = org.Value[0]["OKTMO"],
+                    Inn = org.Value[0]["INN"],
+                    Kpp = org.Value[0]["KPP"],
+                    Okopf = org.Value[0]["OKOPF"],
+                    Okfs = org.Value[0]["OKFS"]
+                }
+                ])
             .OrderBy(reps => reps[^1].RegNo)
             .ToList();
+        return test;
     }
 
     public override bool CanWrite => false;
