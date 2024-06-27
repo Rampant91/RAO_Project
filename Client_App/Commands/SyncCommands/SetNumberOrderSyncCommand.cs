@@ -1,19 +1,13 @@
-﻿using Client_App.ViewModels;
-using System.Linq;
+﻿using System.Linq;
+using Client_App.ViewModels;
 using Models.Collections;
 
 namespace Client_App.Commands.SyncCommands;
 
 //  Выставление порядкового номера
-internal class SetNumberOrderSyncCommand : BaseCommand
+public class SetNumberOrderSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-
-    public SetNumberOrderSyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
 
     public override bool CanExecute(object? parameter)
     {
@@ -22,6 +16,7 @@ internal class SetNumberOrderSyncCommand : BaseCommand
 
     public override void Execute(object? parameter)
     {
+        Storage.Sort();
         var count = 1;
         var rows = Storage.Rows
             .GetEnumerable()

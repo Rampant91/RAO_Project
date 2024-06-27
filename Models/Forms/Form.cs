@@ -75,7 +75,7 @@ public abstract class Form : IKey, IDataGridColumn
         if (NumberInOrder_DB != (int)index)
         {
             NumberInOrder_DB = (int)index;
-            OnPropertyChanged(nameof(NumberInOrder));
+            OnPropertyChanged(nameof(NumberInOrder_DB));
             OnPropertyChanged(nameof(Order));
         }
     }
@@ -85,12 +85,12 @@ public abstract class Form : IKey, IDataGridColumn
     public int NumberInOrder_DB { get; set; }
 
     [NotMapped]
-    [Attributes.FormProperty(true, "null-1-1", "null-1","№ п/п","1")]
+    [Attributes.FormProperty(true, "null-1-1", "null-1", "№ п/п", "1")]
     public RamAccess<int> NumberInOrder
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(NumberInOrder), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(NumberInOrder), out var value))
             {
                 ((RamAccess<int>)value).Value = NumberInOrder_DB;
                 return (RamAccess<int>)value;

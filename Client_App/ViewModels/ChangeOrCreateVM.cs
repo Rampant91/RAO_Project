@@ -174,6 +174,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
     public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
+    public ICommand SortForm { get; set; }                          //  Сортировка по порядковому номеру
     public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО
     public ICommand SourceTransmissionAll { get; set; }             //  Перевод всех источников в форме из РВ в РАО
 
@@ -343,6 +344,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
         SetNumberOrder = new SetNumberOrderSyncCommand(this);
+        SortForm = new SortFormSyncCommand(this);
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();

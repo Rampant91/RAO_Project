@@ -72,7 +72,7 @@ public static class ReportsStorage
     public static async Task<int> GetReportRowsCount(Report rep)
     {
         while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
-        var db = StaticConfiguration.DBModel;
+        await using var db = new DBModel(StaticConfiguration.DBPath);
         return rep.FormNum_DB switch
             {
                 "1.1" => await db.ReportCollectionDbSet

@@ -1,8 +1,6 @@
 ﻿using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Models.Forms.Form2;
-using Models.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,59 +51,7 @@ public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
                     Storage.Rows.Remove(item);
                 }
             }
-
-            var rows = Storage[Storage.FormNum_DB]
-                .GetEnumerable()
-                .Cast<Form>()
-                .ToList();
-            switch (rows.First().FormNum_DB)
-            {
-                case "2.1":
-                {
-                    var count = 1;
-                    foreach (var key in rows)
-                    {
-                        var row = (Form21)key;
-                        row.NumberInOrder_DB = count;
-                        count++;
-                        row.NumberInOrderSum_DB = "";
-                        //row.NumberInOrderSum = new RamAccess<string>(null, "");   //выполняется 0.2c. на итерацию, вроде работает и с заменой выше
-                    }
-
-                    break;
-                }
-                case "2.2":
-                {
-                    var count = 1;
-                    foreach (var key in rows)
-                    {
-                        var row = (Form22)key;
-                        row.NumberInOrder_DB = count;
-                        count++;
-                        row.NumberInOrderSum_DB = "";
-                    }
-
-                    break;
-                }
-                default:
-                {
-                    await Storage.SortAsync();
-                    var itemQ = Storage.Rows
-                        .GetEnumerable()
-                        .Where(x => x.Order > minItem)
-                        .Select(x => x as Form)
-                        .ToList();
-                    foreach (var form in itemQ)
-                    {
-                        //form.SetOrder(minItem);   //выполняется полсекунды на итерацию, вроде работает и с заменой ниже
-                        form.NumberInOrder_DB = (int)minItem;
-                        form.NumberInOrder.OnPropertyChanged();
-                        minItem++;
-                    }
-
-                    break;
-                }
-            }
+            changeOrCreateViewModel.SortForm.Execute(minItem);
         }
     }
 }

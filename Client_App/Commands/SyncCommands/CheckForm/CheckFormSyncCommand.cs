@@ -64,8 +64,7 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                     ContentHeader = "Уведомление",
-                    ContentMessage =
-                        "По результатам проверки формы, ошибок не выявлено.",
+                    ContentMessage = "По результатам проверки формы, ошибок не выявлено.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
