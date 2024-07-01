@@ -422,10 +422,6 @@ public abstract class CheckBase
             }
             day = day.AddDays(1); 
         }
-        while (!IsWorkingDay(day.AddDays(1))) 
-        {
-            day = day.AddDays(1); 
-        }
         return day;
     }
 

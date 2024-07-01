@@ -450,6 +450,122 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 }
 
                 #endregion
+
+                #region 2.3
+
+                case "2.3":
+                {
+                    var form = (Form23)key;
+                    if (string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                        && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
+                        && string.IsNullOrWhiteSpace(form.ProjectVolume_DB)
+                        && string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                        && string.IsNullOrWhiteSpace(form.Volume_DB)
+                        && string.IsNullOrWhiteSpace(form.Mass_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityOZIII_DB)
+                        && string.IsNullOrWhiteSpace(form.SummaryActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.ExpirationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentName_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
+                    break;
+                }
+
+                #endregion
+
+                #region 2.4
+
+                case "2.4":
+                {
+                    var form = (Form24)key;
+                    if (string.IsNullOrWhiteSpace(form.CodeOYAT_DB)
+                        && string.IsNullOrWhiteSpace(form.FcpNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.MassCreated_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityCreated_DB)
+                        && string.IsNullOrWhiteSpace(form.MassFromAnothers_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityFromAnothers_DB)
+                        && string.IsNullOrWhiteSpace(form.MassFromAnothersImported_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityFromAnothersImported_DB)
+                        && string.IsNullOrWhiteSpace(form.MassAnotherReasons_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityAnotherReasons_DB)
+                        && string.IsNullOrWhiteSpace(form.MassTransferredToAnother_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityTransferredToAnother_DB)
+                        && string.IsNullOrWhiteSpace(form.MassRefined_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityRefined_DB)
+                        && string.IsNullOrWhiteSpace(form.MassRemovedFromAccount_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityRemovedFromAccount_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
+                    break;
+                }
+
+                #endregion
+
+                #region 2.5
+
+                case "2.5":
+                {
+                    var form = (Form25)key;
+                    if (string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                        && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
+                        && string.IsNullOrWhiteSpace(form.CodeOYAT_DB)
+                        && string.IsNullOrWhiteSpace(form.FcpNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.FuelMass_DB)
+                        && string.IsNullOrWhiteSpace(form.CellMass_DB)
+                        && form.Quantity_DB is null
+                        && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.BetaGammaActivity_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
+                    break;
+                }
+
+                #endregion
+
+                #region 2.6
+
+                case "2.6":
+                {
+                    var form = (Form26)key;
+                    if (string.IsNullOrWhiteSpace(form.ObservedSourceNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.ControlledAreaName_DB)
+                        && string.IsNullOrWhiteSpace(form.SupposedWasteSource_DB)
+                        && string.IsNullOrWhiteSpace(form.DistanceToWasteSource_DB)
+                        && string.IsNullOrWhiteSpace(form.TestDepth_DB)
+                        && string.IsNullOrWhiteSpace(form.RadionuclidName_DB)
+                        && string.IsNullOrWhiteSpace(form.AverageYearConcentration_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
+                    break;
+                }
+
+                #endregion
+
+                #region 2.7
+
+                case "2.7":
+                {
+                    var form = (Form27)key;
+                    if (string.IsNullOrWhiteSpace(form.ObservedSourceNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.RadionuclidName_DB)
+                        && string.IsNullOrWhiteSpace(form.AllowedWasteValue_DB)
+                        && string.IsNullOrWhiteSpace(form.FactedWasteValue_DB)
+                        && string.IsNullOrWhiteSpace(form.WasteOutbreakPreviousYear_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
+                    break;
+                }
+
+                #endregion
+
+
             }
         }
         
