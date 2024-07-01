@@ -856,10 +856,7 @@ public abstract class CheckF15 : CheckBase
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         if (string.IsNullOrEmpty(activity) 
             || activity == "-"
-            || !double.TryParse(activity,
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
-                out var activityReal))
+            || !TryParseDoubleExtended(activity, out var activityReal))
         {
             result.Add(new CheckError
             {
@@ -1796,10 +1793,7 @@ public abstract class CheckF15 : CheckBase
         List<CheckError> result = new();
         var subsidy = ConvertStringToExponential(forms[line].Subsidy_DB);
         var valid = subsidy is "-" or "" 
-                    || (double.TryParse(subsidy,
-                            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                            CultureInfo.CreateSpecificCulture("ru-RU"),
-                            out var subsidyNum)
+                    || (TryParseDoubleExtended(subsidy, out var subsidyNum) 
                         && subsidyNum is >= 0 and <= 100);
         if (!valid)
         {
@@ -1824,11 +1818,7 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var fcpNum = ConvertStringToExponential(forms[line].FcpNumber_DB);
-        var valid = fcpNum is "-" or ""
-                    || (double.TryParse(fcpNum,
-                            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                            CultureInfo.CreateSpecificCulture("ru-RU"),
-                            out _));
+        var valid = fcpNum is "-" or "" || TryParseDoubleExtended(fcpNum, out _);
         if (!valid)
         {
             result.Add(new CheckError

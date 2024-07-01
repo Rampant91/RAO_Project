@@ -1167,10 +1167,7 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         if (string.IsNullOrEmpty(activity) || activity == "-") return result;
-        if (!double.TryParse(activity,
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
-                out var activityReal)
+        if (!TryParseDoubleExtended(activity, out var activityReal)
             || activity.Contains('-'))
         {
             result.Add(new CheckError
@@ -1423,10 +1420,7 @@ public abstract class CheckF11 : CheckBase
             }
             var dMinValue = dValueList.Min();
             var dMaxValue = dValueList.Max();
-            valid = double.TryParse(activity,
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
-                out var aValue);
+            valid = TryParseDoubleExtended(activity, out var aValue);
             aValue /= quantity != null && quantity != 0 ? (double)quantity : 1.0;
             if (valid)
             {

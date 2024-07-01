@@ -20,6 +20,7 @@ using Models.Forms;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using Models.Forms.Form1;
+using Models.Forms.Form2;
 
 namespace Client_App.Views;
 
@@ -281,7 +282,41 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
                 case "1.7":
                 {
-
+                    var form = (Form17)key;
+                    if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
+                        && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.PackName_DB)
+                        && string.IsNullOrWhiteSpace(form.PackType_DB)
+                        && string.IsNullOrWhiteSpace(form.PackFactoryNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.PackNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.FormingDate_DB)
+                        && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.Volume_DB)
+                        && string.IsNullOrWhiteSpace(form.Mass_DB)
+                        && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
+                        && string.IsNullOrWhiteSpace(form.SpecificActivity_DB)
+                        && form.DocumentVid_DB is null
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                        && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
+                        && string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                        && string.IsNullOrWhiteSpace(form.StatusRAO_DB)
+                        && string.IsNullOrWhiteSpace(form.VolumeOutOfPack_DB)
+                        && string.IsNullOrWhiteSpace(form.MassOutOfPack_DB)
+                        && string.IsNullOrWhiteSpace(form.Quantity_DB)
+                        && string.IsNullOrWhiteSpace(form.TritiumActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.BetaGammaActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.TransuraniumActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)
+                        && string.IsNullOrWhiteSpace(form.Subsidy_DB)
+                        && string.IsNullOrWhiteSpace(form.FcpNumber_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
                     break;
                 }
 
@@ -291,7 +326,37 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
                 case "1.8":
                 {
-
+                    var form = (Form18)key;
+                    if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
+                        && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.IndividualNumberZHRO_DB)
+                        && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.Volume6_DB)
+                        && string.IsNullOrWhiteSpace(form.Mass7_DB)
+                        && string.IsNullOrWhiteSpace(form.SaltConcentration_DB)
+                        && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
+                        && string.IsNullOrWhiteSpace(form.SpecificActivity_DB)
+                        && form.DocumentVid_DB is null
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                        && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
+                        && string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                        && string.IsNullOrWhiteSpace(form.StatusRAO_DB)
+                        && string.IsNullOrWhiteSpace(form.Volume20_DB)
+                        && string.IsNullOrWhiteSpace(form.Mass21_DB)
+                        && string.IsNullOrWhiteSpace(form.TritiumActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.BetaGammaActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.TransuraniumActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)
+                        && string.IsNullOrWhiteSpace(form.Subsidy_DB)
+                        && string.IsNullOrWhiteSpace(form.FcpNumber_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
                     break;
                 }
 
@@ -301,7 +366,86 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
                 case "1.9":
                 {
+                    var form = (Form19)key;
+                    if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
+                        && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                        && form.DocumentVid_DB is null
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && form.CodeTypeAccObject_DB is null
+                        && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
+                        && string.IsNullOrWhiteSpace(form.Activity_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
+                    break;
+                }
 
+                #endregion
+
+                #region 2.1
+
+                case "2.1":
+                {
+                    var form = (Form21)key;
+                    if (string.IsNullOrWhiteSpace(form.RefineMachineName_DB)
+                        && form.MachineCode_DB is null
+                        && string.IsNullOrWhiteSpace(form.MachinePower_DB)
+                        && string.IsNullOrWhiteSpace(form.NumberOfHoursPerYear_DB)
+                        && string.IsNullOrWhiteSpace(form.CodeRAOIn_DB)
+                        && string.IsNullOrWhiteSpace(form.StatusRAOIn_DB)
+                        && string.IsNullOrWhiteSpace(form.VolumeIn_DB)
+                        && string.IsNullOrWhiteSpace(form.MassIn_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityIn_DB)
+                        && string.IsNullOrWhiteSpace(form.TritiumActivityIn_DB)
+                        && string.IsNullOrWhiteSpace(form.BetaGammaActivityIn_DB)
+                        && string.IsNullOrWhiteSpace(form.AlphaActivityIn_DB)
+                        && string.IsNullOrWhiteSpace(form.TransuraniumActivityIn_DB)
+                        && string.IsNullOrWhiteSpace(form.CodeRAOout_DB)
+                        && string.IsNullOrWhiteSpace(form.StatusRAOout_DB)
+                        && string.IsNullOrWhiteSpace(form.VolumeOut_DB)
+                        && string.IsNullOrWhiteSpace(form.MassOut_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityOZIIIout_DB)
+                        && string.IsNullOrWhiteSpace(form.TritiumActivityOut_DB)
+                        && string.IsNullOrWhiteSpace(form.BetaGammaActivityOut_DB)
+                        && string.IsNullOrWhiteSpace(form.AlphaActivityOut_DB)
+                        && string.IsNullOrWhiteSpace(form.TransuraniumActivityOut_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
+                    break;
+                }
+
+                #endregion
+
+                #region 2.2
+
+                case "2.2":
+                {
+                    var form = (Form22)key;
+                    if (string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                        && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
+                        && string.IsNullOrWhiteSpace(form.PackName_DB)
+                        && string.IsNullOrWhiteSpace(form.PackType_DB)
+                        && string.IsNullOrWhiteSpace(form.PackQuantity_DB)
+                        && string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                        && string.IsNullOrWhiteSpace(form.StatusRAO_DB)
+                        && string.IsNullOrWhiteSpace(form.VolumeOutOfPack_DB)
+                        && string.IsNullOrWhiteSpace(form.VolumeInPack_DB)
+                        && string.IsNullOrWhiteSpace(form.MassOutOfPack_DB)
+                        && string.IsNullOrWhiteSpace(form.MassInPack_DB)
+                        && string.IsNullOrWhiteSpace(form.QuantityOZIII_DB)
+                        && string.IsNullOrWhiteSpace(form.TritiumActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.BetaGammaActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.TransuraniumActivity_DB)
+                        && string.IsNullOrWhiteSpace(form.MainRadionuclids_DB)
+                        && string.IsNullOrWhiteSpace(form.Subsidy_DB)
+                        && string.IsNullOrWhiteSpace(form.FcpNumber_DB))
+                    {
+                        formToDeleteList.Add(form);
+                    }
                     break;
                 }
 
@@ -339,7 +483,6 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 {
                     vm.Storage.Rows.Remove(form);
                 }
-
                 var minItem = formToDeleteList.Min(x => x.Order);
                 await vm.Storage.SortAsync();
                 var itemQ = vm.Storage.Rows

@@ -893,10 +893,7 @@ public abstract class CheckF14 : CheckBase
             if (phEntry is null) return result;
             var unit = phEntry["unit"];
             var value = phEntry["value"].Replace('.', ',');
-            if (!double.TryParse(value,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                    out var halfLife)) return result;
+            if (!TryParseDoubleExtended(value, out var halfLife)) return result;
             switch (unit)
             {
                 case "лет":
@@ -947,11 +944,7 @@ public abstract class CheckF14 : CheckBase
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         if (string.IsNullOrEmpty(activity) || activity == "-") return result;
-        if (!double.TryParse(activity,
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
-                out var activityReal)
-            || activity.Contains('-'))
+        if (!TryParseDoubleExtended(activity, out var activityReal) || activity.Contains('-'))
         {
             result.Add(new CheckError
             {
@@ -1124,11 +1117,7 @@ public abstract class CheckF14 : CheckBase
         var volume = ConvertStringToExponential(forms[line].Volume_DB);
         var aggregateState = forms[line].AggregateState_DB;
         if (aggregateState is not 3) return result;
-        var valid = double.TryParse(volume,
-            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
-            out var volumeValue) 
-                    && volumeValue > 0;
+        var valid = TryParseDoubleExtended(volume, out var volumeValue) && volumeValue > 0;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1165,10 +1154,7 @@ public abstract class CheckF14 : CheckBase
                 Message = "Графа не может быть пустой. При отсутствии сведений в круглых скобках указывается оценочное значение."
             });
         }
-        else if (!double.TryParse(mass,
-                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                     CultureInfo.CreateSpecificCulture("ru-RU"),
-                     out var massValue))
+        else if (!TryParseDoubleExtended(mass, out var massValue))
         {
             result.Add(new CheckError
             {

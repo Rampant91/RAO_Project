@@ -805,10 +805,7 @@ public abstract class CheckF12 : CheckBase
     {
         List<CheckError> result = new();
         var mass = ConvertStringToExponential(forms[line].Mass_DB);
-        double.TryParse(mass,
-            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
-            out var massTrue);
+        TryParseDoubleExtended(mass, out var massTrue);
         var valid = !string.IsNullOrWhiteSpace(forms[line].Mass_DB) && massTrue > 0;
         if (!valid)
         {
@@ -835,10 +832,7 @@ public abstract class CheckF12 : CheckBase
         List<CheckError> result = new();
         if (string.IsNullOrWhiteSpace(forms[line].Mass_DB)) return result;
         var mass = ConvertStringToExponential(forms[line].Mass_DB);
-        var valid = double.TryParse(mass,
-            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
-            out var massTrue);
+        var valid = TryParseDoubleExtended(mass, out var massTrue);
         if (!valid || massTrue > 10e05)
         {
             result.Add(new CheckError

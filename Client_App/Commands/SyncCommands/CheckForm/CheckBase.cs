@@ -39,9 +39,9 @@ public abstract class CheckBase
         string[] operationCodeWithDeadline5 = { "73", "74", "75" };
         string[] operationCodeWithDeadline10 =
         {
-            "11", "12", "15", "17", "18", "21", "22", "25", "27", "28", "29", "31", "32", "35", "37", "38", "39",
-            "41", "42", "43", "46", "47", "48", "53", "54", "58", "61", "62", "63", "64", "65", "66", "67", "68",
-            "72", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
+            "11", "12", "15", "17", "18", "21", "22", "25", "27", "28", "29", "31", "32", "35", "37", "38", 
+            "39", "41", "42", "43", "46", "47", "48", "53", "54", "58", "61", "62", "63", "64", "65", "66", 
+            "67", "68", "72", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
         };
         var formNum = rep.FormNum_DB.Replace(".", "");
         foreach (var form in forms)
@@ -56,7 +56,7 @@ public abstract class CheckBase
             {
                 minOpDate = opDate;
                 opCode = form.OperationCode_DB ?? string.Empty;
-                line = form.NumberInOrder_DB;
+                line = form.NumberInOrder_DB - 1;
             }
         }
         if (operationCodeWithDeadline10.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 10)
@@ -66,7 +66,7 @@ public abstract class CheckBase
                 FormNum = $"form_{formNum}",
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
-                Value = forms[line].OperationDate_DB,
+                Value = Convert.ToString(forms[line].OperationDate_DB),
                 Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
                           $"более чем на 10 рабочих дней."
             });
@@ -78,7 +78,7 @@ public abstract class CheckBase
                 FormNum = $"form_{formNum}",
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
-                Value = forms[line].OperationDate_DB,
+                Value = Convert.ToString(forms[line].OperationDate_DB),
                 Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
                           $"более чем на 5 рабочих дней."
             });
@@ -90,12 +90,11 @@ public abstract class CheckBase
                 FormNum = $"form_{formNum}",
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
-                Value = forms[line].OperationDate_DB,
+                Value = Convert.ToString(forms[line].OperationDate_DB),
                 Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
                           $"более чем на 1 рабочий день."
             });
         }
-
         return result;
     }
 
@@ -314,7 +313,6 @@ public abstract class CheckBase
 
     protected static readonly Dictionary<string, int> OverduePeriods_RV = new()
     {
-
         { "10", 10 },{ "11", 10 },{ "12", 10 },                          { "15", 10 },             { "17", 10 },{ "18", 10 },
                      { "21", 10 },{ "22", 10 },                          { "25", 10 },             { "27", 10 },{ "28", 10 },{ "29", 10 },
                      { "31", 10 },{ "32", 10 },                          { "35", 10 },             { "37", 10 },{ "38", 10 },{ "39", 10 },
@@ -407,6 +405,18 @@ public abstract class CheckBase
     protected static bool TryParseFloatExtended(string? str, out float val)
     {
         return float.TryParse(ConvertStringToExponential(str),
+            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+            CultureInfo.CreateSpecificCulture("ru-RU"),
+            out val);
+    }
+
+    #endregion
+
+    #region TryParseFloatExtended
+
+    protected static bool TryParseDoubleExtended(string? str, out double val)
+    {
+        return double.TryParse(ConvertStringToExponential(str),
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
             CultureInfo.CreateSpecificCulture("ru-RU"),
             out val);

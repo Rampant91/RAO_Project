@@ -907,10 +907,7 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         if (activity is null or "" or "-") return result;
-        if (!double.TryParse(activity,
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
-                out var activityReal)
+        if (!TryParseDoubleExtended(activity, out var activityReal)
             || activity.Contains('-'))
         {
             result.Add(new CheckError
