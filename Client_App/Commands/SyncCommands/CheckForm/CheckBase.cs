@@ -32,7 +32,8 @@ public abstract class CheckBase
     {
         List<CheckError> result = new();
         if (!DateOnly.TryParse(rep.EndPeriod_DB, out var endPeriod)) return result;
-        var minOpDate = DateOnly.MinValue;
+        DateOnly minOpDate = new();
+        DateOnly maxEndPeriodDate = new();
         var opCode = string.Empty;
         var line = 0;
         string[] operationCodeWithDeadline1 = { "71" };
@@ -47,19 +48,20 @@ public abstract class CheckBase
         foreach (var form in forms)
         {
             var curOpCode = form.OperationCode_DB ?? string.Empty;
-            var opDatePlus = DateOnly.MinValue;
+            DateOnly curMaxEndPeriodDate = new();
             if (!DateOnly.TryParse(form.OperationDate_DB, out var opDate)) continue;
-            if (operationCodeWithDeadline1.Contains(curOpCode)) opDatePlus = opDate.AddDays(1);
-            if (operationCodeWithDeadline5.Contains(curOpCode)) opDatePlus = opDate.AddDays(5);
-            if (operationCodeWithDeadline10.Contains(curOpCode)) opDatePlus = opDate.AddDays(10);
-            if (opDatePlus > minOpDate)
+            if (operationCodeWithDeadline1.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 1);
+            if (operationCodeWithDeadline5.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 5);
+            if (operationCodeWithDeadline10.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 10);
+            if (minOpDate == DateOnly.MinValue || curMaxEndPeriodDate < maxEndPeriodDate)
             {
                 minOpDate = opDate;
+                maxEndPeriodDate = curMaxEndPeriodDate;
                 opCode = form.OperationCode_DB ?? string.Empty;
                 line = form.NumberInOrder_DB - 1;
             }
         }
-        if (operationCodeWithDeadline10.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 10)
+        if (operationCodeWithDeadline10.Contains(opCode) && endPeriod > maxEndPeriodDate)
         {
             result.Add(new CheckError
             {
@@ -67,11 +69,11 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(forms[line].OperationDate_DB),
-                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
+                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
                           $"более чем на 10 рабочих дней."
             });
         }
-        else if (operationCodeWithDeadline5.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 5)
+        else if (operationCodeWithDeadline5.Contains(opCode) && endPeriod > maxEndPeriodDate)
         {
             result.Add(new CheckError
             {
@@ -79,11 +81,11 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(forms[line].OperationDate_DB),
-                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
+                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
                           $"более чем на 5 рабочих дней."
             });
         }
-        else if (operationCodeWithDeadline1.Contains(opCode) && WorkdaysBetweenDates(minOpDate, endPeriod) > 1)
+        else if (operationCodeWithDeadline1.Contains(opCode) && endPeriod > maxEndPeriodDate)
         {
             result.Add(new CheckError
             {
@@ -91,7 +93,7 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(forms[line].OperationDate_DB),
-                Message = $"Дата операции {minOpDate} превышает дату окончания отчетного периода {rep.EndPeriod_DB} " +
+                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
                           $"более чем на 1 рабочий день."
             });
         }
@@ -386,16 +388,45 @@ public abstract class CheckBase
         }
         for (var day = dateMin.AddDays(1); day <= dateMax; day = day.AddDays(1))
         {
-            var isWorkingDay = WorkDaysSpecific.Any(x => Equals(x, day))
-                               || !(day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday
-                                    || HolidaysSpecific.Any(x => Equals(x, day))
-                                    || HolidaysGeneric.Any(x => Equals(x.Month, day.Month) && Equals(x.Day, day.Day)));
-            if (isWorkingDay)
+            if (IsWorkingDay(day))
             {
                 result++;
             }
         }
         return result;
+    }
+
+    #endregion
+
+    #region IsWorkingDay
+
+    private static bool IsWorkingDay(DateOnly day)
+    {
+        return WorkDaysSpecific.Any(x => Equals(x, day)) 
+                || !(day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday 
+                    || HolidaysSpecific.Any(x => Equals(x, day))
+                    || HolidaysGeneric.Any(x => Equals(x.Month, day.Month) && Equals(x.Day, day.Day)));
+    }
+
+    #endregion
+
+    #region AddNWorkingDays
+
+    private static DateOnly AddNWorkingDays(DateOnly day, int daysNum)
+    {
+        for (var i = 1; i <= daysNum; i++)
+        {
+            while (!IsWorkingDay(day.AddDays(1))) 
+            {
+                day = day.AddDays(1); 
+            }
+            day = day.AddDays(1); 
+        }
+        while (!IsWorkingDay(day.AddDays(1))) 
+        {
+            day = day.AddDays(1); 
+        }
+        return day;
     }
 
     #endregion
