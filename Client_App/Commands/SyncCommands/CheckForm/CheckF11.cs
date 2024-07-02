@@ -1357,7 +1357,7 @@ public abstract class CheckF11 : CheckBase
 
     #region Check042
 
-    //Соответствие категории ЗРИ (колонка 12)
+    //Соответствие категории ЗРИ (графа 12)
     private static List<CheckError> Check_042(List<Form11> forms, int line)
     {
         List<CheckError> result = new();

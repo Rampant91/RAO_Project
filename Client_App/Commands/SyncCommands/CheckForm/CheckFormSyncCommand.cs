@@ -1,5 +1,7 @@
 ﻿using Client_App.ViewModels;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -46,9 +48,9 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
             //case "1.7":
             //    result.AddRange(CheckF17.Check_Total(reps, rep));
             //    break;
-            case "1.8":
-                result.AddRange(CheckF18.Check_Total(reps, rep));
-                break;
+            //case "1.8":
+            //    result.AddRange(CheckF18.Check_Total(reps, rep));
+            //    break;
             //case "1.9":
             //    result.AddRange(CheckF19.Check_Total(reps, rep));
             //    break;
@@ -75,6 +77,10 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
         }
         else
         {
+            if (Desktop.Windows.Any(x => x.Name == "FormCheckerWindow"))
+            {
+                Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
+            }
             _ = new Views.CheckForm(changeOrCreateViewModel, result);
         }
     }

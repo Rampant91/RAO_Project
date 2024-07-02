@@ -123,22 +123,22 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
-            rm.PropertyChanged += PassportNumberValueChanged;
+            rm.PropertyChanged += PassportNumber_ValueChanged;
             Dictionary.Add(nameof(PassportNumber), rm);
             return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
         }
         set
         {
-            PassportNumber_DB = value.Value; OnPropertyChanged(nameof(PassportNumber));
+            PassportNumber_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
 
-    private void PassportNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void PassportNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            PassportNumber_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        PassportNumber_DB = tmp.Trim();
     }
 
     private bool PassportNumber_Validation(RamAccess<string> value)
@@ -176,22 +176,22 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(NameIOU_Validation, NameIOU_DB);
-            rm.PropertyChanged += NameIOUValueChanged;
+            rm.PropertyChanged += NameIOU_ValueChanged;
             Dictionary.Add(nameof(NameIOU), rm);
             return (RamAccess<string>)Dictionary[nameof(NameIOU)];
         }
         set
         {
-            NameIOU_DB = value.Value; OnPropertyChanged(nameof(NameIOU));
+            NameIOU_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
 
-    private void NameIOUValueChanged(object value, PropertyChangedEventArgs args)
+    private void NameIOU_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            NameIOU_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        NameIOU_DB = tmp.Trim();
     }
 
     private bool NameIOU_Validation(RamAccess<string> value)//TODO
@@ -223,23 +223,22 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactoryNumber_Validation, FactoryNumber_DB);
-            rm.PropertyChanged += FactoryNumberValueChanged;
+            rm.PropertyChanged += FactoryNumber_ValueChanged;
             Dictionary.Add(nameof(FactoryNumber), rm);
             return (RamAccess<string>)Dictionary[nameof(FactoryNumber)];
         }
         set
         {
             FactoryNumber_DB = value.Value;
-            OnPropertyChanged(nameof(FactoryNumber));
+            OnPropertyChanged();
         }
     }
 
-    private void FactoryNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void FactoryNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            FactoryNumber_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        FactoryNumber_DB = tmp.Trim();
     }
 
     private bool FactoryNumber_Validation(RamAccess<string> value)
@@ -271,43 +270,40 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
-            rm.PropertyChanged += MassValueChanged;
+            rm.PropertyChanged += Mass_ValueChanged;
             Dictionary.Add(nameof(Mass), rm);
             return (RamAccess<string>)Dictionary[nameof(Mass)];
         }
         set
         {
-            Mass_DB = value.Value; OnPropertyChanged(nameof(Mass));
+            Mass_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
 
-    private void MassValueChanged(object value, PropertyChangedEventArgs args)
+    private void Mass_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
+        if (tmp.Equals("-"))
         {
-            value1 = value1
-                .Trim()
-                .TrimStart('(')
-                .TrimEnd(')')
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                Mass_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
+            Mass_DB = tmp;
+            return;
         }
-        Mass_DB = value1;
+        if (double.TryParse(tmp, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
+            {
+                tmp = $"{doubleValue:0.######################################################e+00}";
+            }
+        Mass_DB = tmp;
     }
 
     private bool Mass_Validation(RamAccess<string> value)//TODO
@@ -320,16 +316,16 @@ public partial class Form12 : Form1
         }
         if (value.Value.Equals("прим."))
         {
-            return false;
+            return true;
         }
-        var value1 = value.Value
+        var tmp = value.Value
             .Trim()
             .TrimStart('(')
             .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
-        if (!double.TryParse(value1, 
+        if (!double.TryParse(tmp, 
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
                 out var doubleValue))
@@ -363,27 +359,28 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CreatorOKPO_Validation, CreatorOKPO_DB);
-            rm.PropertyChanged += CreatorOKPOValueChanged;
+            rm.PropertyChanged += CreatorOKPO_ValueChanged;
             Dictionary.Add(nameof(CreatorOKPO), rm);
             return (RamAccess<string>)Dictionary[nameof(CreatorOKPO)];
         }
         set
         {
-            CreatorOKPO_DB = value.Value; OnPropertyChanged(nameof(CreatorOKPO));
+            CreatorOKPO_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void CreatorOKPOValueChanged(object value, PropertyChangedEventArgs args)
+    private void CreatorOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-            {
-                value1 = value1.ToUpper();
-            }
-        CreatorOKPO_DB = value1;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        {
+            tmp = tmp.ToUpper();
+        }
+        CreatorOKPO_DB = tmp;
     }
 
     private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
@@ -431,29 +428,26 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CreationDate_Validation, CreationDate_DB);
-            rm.PropertyChanged += CreationDateValueChanged;
+            rm.PropertyChanged += CreationDate_ValueChanged;
             Dictionary.Add(nameof(CreationDate), rm);
             return (RamAccess<string>)Dictionary[nameof(CreationDate)];
         }
         set
         {
-            CreationDate_DB = value.Value; OnPropertyChanged(nameof(CreationDate));
+            CreationDate_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void CreationDateValueChanged(object value, PropertyChangedEventArgs args)
+    private void CreationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value;
-        if (!tmp.Equals("прим."))
-        {
-            if (Date6NumRegex().IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-        }
-        CreationDate_DB = tmp;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim();
+        CreationDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+            ? date.ToShortDateString()
+            : tmp;
     }
 
     private bool CreationDate_Validation(RamAccess<string> value)//Ready
@@ -470,12 +464,8 @@ public partial class Form12 : Form1
             //        value.AddError( "Заполните примечание");
             return true;
         }
-        var tmp = value.Value;
-        if (Date6NumRegex().IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        var tmp = value.Value.Trim();
+        if (!Date8NumRegex().IsMatch(tmp) || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -501,22 +491,22 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
-            rm.PropertyChanged += SignedServicePeriodValueChanged;
+            rm.PropertyChanged += SignedServicePeriod_ValueChanged;
             Dictionary.Add(nameof(SignedServicePeriod), rm);
             return (RamAccess<string>)Dictionary[nameof(SignedServicePeriod)];
         }
         set
         {
-            SignedServicePeriod_DB = value.Value; OnPropertyChanged(nameof(SignedServicePeriod));
+            SignedServicePeriod_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
 
-    private void SignedServicePeriodValueChanged(object value, PropertyChangedEventArgs args)
+    private void SignedServicePeriod_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            SignedServicePeriod_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        SignedServicePeriod_DB = tmp.Trim();
     }
 
     private bool SignedServicePeriod_Validation(RamAccess<string> value)//Ready
@@ -527,19 +517,17 @@ public partial class Form12 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        try
+        var tmp = value.Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (!double.TryParse(tmp,
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+                CultureInfo.CreateSpecificCulture("ru-RU"),
+                out var floatValue) 
+            || floatValue <= 0)
         {
-            if (Convert.ToSingle(value.Value) <= 0)
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
-        catch
-        {
-            // ignored
-        }
-
         return true;
     }
 
@@ -561,23 +549,21 @@ public partial class Form12 : Form1
                 return (RamAccess<byte?>)value;
             }
             var rm = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
-            rm.PropertyChanged += PropertyCodeValueChanged;
+            rm.PropertyChanged += PropertyCode_ValueChanged;
             Dictionary.Add(nameof(PropertyCode), rm);
             return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
         }
         set
         {
             PropertyCode_DB = value.Value;
-            OnPropertyChanged(nameof(PropertyCode));
+            OnPropertyChanged();
         }
     }
 
-    private void PropertyCodeValueChanged(object value, PropertyChangedEventArgs args)
+    private void PropertyCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            PropertyCode_DB = ((RamAccess<byte?>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        PropertyCode_DB = ((RamAccess<byte?>)value).Value;
     }
 
     private bool PropertyCode_Validation(RamAccess<byte?> value)//Ready
@@ -618,49 +604,51 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Owner_Validation, Owner_DB);
-            rm.PropertyChanged += OwnerValueChanged;
+            rm.PropertyChanged += Owner_ValueChanged;
             Dictionary.Add(nameof(Owner), rm);
             return (RamAccess<string>)Dictionary[nameof(Owner)];
         }
         set
         {
             Owner_DB = value.Value; 
-            OnPropertyChanged(nameof(Owner));
+            OnPropertyChanged();
         }
     }
     //if change this change validation
-    private void OwnerValueChanged(object value, PropertyChangedEventArgs args)
+    private void Owner_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-            {
-                value1 = value1.ToUpper();
-            }
-        Owner_DB = value1;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        {
+            tmp = tmp.ToUpper();
+        }
+        Owner_DB = tmp;
     }
 
     private bool Owner_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        var tmp = value.Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (string.IsNullOrEmpty(tmp))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             return true;
         }
-        if (value.Value.Equals("прим."))
+        if (tmp.Equals("прим."))
         {
             //if ((OwnerNote.Value == null) || (OwnerNote.Value == ""))
             //    value.AddError( "Заполните примечание");
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14
-            || !OkpoRegex().IsMatch(value.Value))
+        if (tmp.Length != 8 && tmp.Length != 14
+            || !OkpoRegex().IsMatch(tmp))
         {
             value.AddError("Недопустимое значение"); 
             return false;
@@ -686,60 +674,45 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-            rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+            rm.PropertyChanged += ProviderOrRecieverOKPO_ValueChanged;
             Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
             return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
         }
         set
         {
             ProviderOrRecieverOKPO_DB = value.Value;
-            OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
+            OnPropertyChanged();
         }
     }
 
-    private void ProviderOrRecieverOKPOValueChanged(object value, PropertyChangedEventArgs args)
+    private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-            {
-                value1 = value1.ToUpper();
-            }
-        ProviderOrRecieverOKPO_DB = value1;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        {
+            tmp = tmp.ToUpper();
+        }
+        ProviderOrRecieverOKPO_DB = tmp;
     }
 
     private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        var tmp = value.Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (string.IsNullOrEmpty(tmp))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("Минобороны") || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (tmp.Equals("Минобороны") || tmp.Equals("прим.") || Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             return true;
         }
-        if (value.Value.Equals("прим."))
-        {
-            //if ((ProviderOrRecieverOKPONote.Value == null) || ProviderOrRecieverOKPONote.Value.Equals(""))
-            //    value.AddError( "Заполните примечания");
-            return true;
-        }
-
-        //var a = int.Parse(OperationCode.Value) >= 10 && int.Parse(OperationCode.Value) <= 12;
-        //var b = int.Parse(OperationCode.Value) >= 41 && int.Parse(OperationCode.Value) <= 43;
-        //var c = int.Parse(OperationCode.Value) >= 71 && int.Parse(OperationCode.Value) <= 73;
-        //var d = OperationCode.Value is "15" or "17" or "18" or "46" or "47" or "48" or "53" or "54" or "58" or "61" or "62" or "65" or "67" or "68" or "75" or "76";
-        //if (a || b || c || d)
-        //{
-        //    //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-        //    //return false;
-        //}
-
-        if (value.Value.Length != 8 && value.Value.Length != 14
-            || !OkpoRegex().IsMatch(value.Value))
+        if (tmp.Length != 8 && value.Value.Length != 14
+            || !OkpoRegex().IsMatch(tmp))
         {
             value.AddError("Недопустимое значение"); 
             return false;
@@ -765,51 +738,48 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
-            rm.PropertyChanged += TransporterOKPOValueChanged;
+            rm.PropertyChanged += TransporterOKPO_ValueChanged;
             Dictionary.Add(nameof(TransporterOKPO), rm);
             return (RamAccess<string>)Dictionary[nameof(TransporterOKPO)];
         }
         set
         {
             TransporterOKPO_DB = value.Value; 
-            OnPropertyChanged(nameof(TransporterOKPO));
+            OnPropertyChanged();
         }
     }
 
-    private void TransporterOKPOValueChanged(object value, PropertyChangedEventArgs args)
+    private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-            {
-                value1 = value1.ToUpper();
-            }
-        TransporterOKPO_DB = value1;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        {
+            tmp = tmp.ToUpper();
+        }
+        TransporterOKPO_DB = tmp;
     }
 
     private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        var tmp = value.Value ?? string.Empty;
+        tmp = tmp.Trim();
+        if (string.IsNullOrEmpty(tmp))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-") || value.Value.Equals("Минобороны") || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (tmp.Equals("-") || tmp.Equals("Минобороны") || tmp.Equals("прим.") || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
         {
-            return true;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            //if ((TransporterOKPONote.Value == null) || TransporterOKPONote.Value.Equals(""))
-            //    value.AddError( "Заполните примечание");
             return true;
         }
         if (value.Value.Length != 8 && value.Value.Length != 14
             || !OkpoRegex().IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение"); 
+            return false;
 
         }
         return true;
@@ -833,22 +803,22 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
-            rm.PropertyChanged += PackNameValueChanged;
+            rm.PropertyChanged += PackName_ValueChanged;
             Dictionary.Add(nameof(PackName), rm);
             return (RamAccess<string>)Dictionary[nameof(PackName)];
         }
         set
         {
-            PackName_DB = value.Value; OnPropertyChanged(nameof(PackName));
+            PackName_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
 
-    private void PackNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void PackName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            PackName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        PackName_DB = tmp.Trim();
     }
 
     private bool PackName_Validation(RamAccess<string> value)
@@ -861,8 +831,6 @@ public partial class Form12 : Form1
         }
         if (value.Value.Equals("прим."))
         {
-            //if ((PackNameNote == null) || PackNameNote.Equals(""))
-            //    value.AddError( "Заполните примечание");//to do note handling
             return true;
         }
         return true;
@@ -886,23 +854,23 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
-            rm.PropertyChanged += PackTypeValueChanged;
+            rm.PropertyChanged += PackType_ValueChanged;
             Dictionary.Add(nameof(PackType), rm);
             return (RamAccess<string>)Dictionary[nameof(PackType)];
         }
         set
         {
-            PackType_DB = value.Value; OnPropertyChanged(nameof(PackType));
+            PackType_DB = value.Value; 
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void PackTypeValueChanged(object value, PropertyChangedEventArgs args)
+    private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            PackType_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        PackType_DB = tmp.Trim();
     }
 
     private bool PackType_Validation(RamAccess<string> value)//Ready
@@ -940,24 +908,23 @@ public partial class Form12 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
-            rm.PropertyChanged += PackNumberValueChanged;
+            rm.PropertyChanged += PackNumber_ValueChanged;
             Dictionary.Add(nameof(PackNumber), rm);
             return (RamAccess<string>)Dictionary[nameof(PackNumber)];
         }
         set
         {
             PackNumber_DB = value.Value;
-            OnPropertyChanged(nameof(PackNumber));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void PackNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void PackNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            PackNumber_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        PackNumber_DB = tmp.Trim();
     }
 
     private bool PackNumber_Validation(RamAccess<string> value)//Ready

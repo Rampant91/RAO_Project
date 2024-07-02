@@ -439,7 +439,7 @@ public abstract class CheckBase
 
     #endregion
 
-    #region TryParseFloatExtended
+    #region TryParseDoubleExtended
 
     protected static bool TryParseDoubleExtended(string? str, out double val)
     {

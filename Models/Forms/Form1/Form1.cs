@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Models.Attributes;
@@ -14,7 +15,7 @@ namespace Models.Forms.Form1;
 public abstract partial class Form1 : Form
 {
     [FormProperty(true,"Форма")]
-
+    
     [NotMapped]
     public bool flag = false;
     
@@ -23,7 +24,7 @@ public abstract partial class Form1 : Form
         OnPropertyChanged(args.PropertyName);
     }
 
-    public DataGridColumns GetDataGridColumn() 
+    public static DataGridColumns GetDataGridColumn() 
     {
         return null;
     }
@@ -58,7 +59,7 @@ public abstract partial class Form1 : Form
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
-                rm.PropertyChanged += OperationCodeValueChanged;
+                rm.PropertyChanged += OperationCode_ValueChanged;
                 Dictionary.Add(nameof(OperationCode), rm);
                 return (RamAccess<string>)Dictionary[nameof(OperationCode)];
             }
@@ -74,13 +75,14 @@ public abstract partial class Form1 : Form
             }
         }
     }
-    private void OperationCodeValueChanged(object value, PropertyChangedEventArgs args)
+
+    private void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            OperationCode_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        OperationCode_DB = value1.Trim();
     }
+
     protected virtual bool OperationCode_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
@@ -117,7 +119,7 @@ public abstract partial class Form1 : Form
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
-                rm.PropertyChanged += OperationDateValueChanged;
+                rm.PropertyChanged += OperationDate_ValueChanged;
                 Dictionary.Add(nameof(OperationDate), rm);
                 return (RamAccess<string>)Dictionary[nameof(OperationDate)];
             }
@@ -133,10 +135,12 @@ public abstract partial class Form1 : Form
             }
         }
     }
-    private void OperationDateValueChanged(object value, PropertyChangedEventArgs args)
+
+    private void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim();
         if (Date6NumRegex().IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
@@ -152,9 +156,9 @@ public abstract partial class Form1 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmp = value.Value;
+        var tmp = value.Value.Trim();
 
-        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        if (!Date8NumRegex().IsMatch(tmp) || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -194,7 +198,7 @@ public abstract partial class Form1 : Form
                     return (RamAccess<byte?>)value;
                 }
                 var rm = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
-                rm.PropertyChanged += DocumentVidValueChanged;
+                rm.PropertyChanged += DocumentVid_ValueChanged;
                 Dictionary.Add(nameof(DocumentVid), rm);
                 return (RamAccess<byte?>)Dictionary[nameof(DocumentVid)];
             }
@@ -208,12 +212,10 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void DocumentVidValueChanged(object value, PropertyChangedEventArgs args)
+    private void DocumentVid_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            DocumentVid_DB = ((RamAccess<byte?>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        DocumentVid_DB = ((RamAccess<byte?>)value).Value;
     }
 
     protected virtual bool DocumentVid_Validation(RamAccess<byte?> value)//Ready
@@ -262,7 +264,7 @@ public abstract partial class Form1 : Form
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
-                rm.PropertyChanged += DocumentNumberValueChanged;
+                rm.PropertyChanged += DocumentNumber_ValueChanged;
                 Dictionary.Add(nameof(DocumentNumber), rm);
                 return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
             }
@@ -279,12 +281,11 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void DocumentNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void DocumentNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            DocumentNumber_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        DocumentNumber_DB = tmp.Trim();
     }
 
     protected virtual bool DocumentNumber_Validation(RamAccess<string> value) //Ready
@@ -322,7 +323,7 @@ public abstract partial class Form1 : Form
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
-                rm.PropertyChanged += DocumentDateValueChanged;
+                rm.PropertyChanged += DocumentDate_ValueChanged;
                 Dictionary.Add(nameof(DocumentDate), rm);
                 return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
             }
@@ -339,10 +340,11 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void DocumentDateValueChanged(object value, PropertyChangedEventArgs args)
+    private void DocumentDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp.Trim();
         if (Date6NumRegex().IsMatch(tmp))
         {
             tmp = tmp.Insert(6, "20");
@@ -358,8 +360,8 @@ public abstract partial class Form1 : Form
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmp = value.Value;
-        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        var tmp = value.Value.Trim();
+        if (!Date8NumRegex().IsMatch(tmp) || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
