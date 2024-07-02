@@ -127,25 +127,23 @@ public class Form14 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
-            rm.PropertyChanged += PassportNumberValueChanged;
+            rm.PropertyChanged += PassportNumber_ValueChanged;
             Dictionary.Add(nameof(PassportNumber), rm);
             return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
         }
         set
         {
             PassportNumber_DB = value.Value;
-            OnPropertyChanged(nameof(PassportNumber));
+            OnPropertyChanged();
         }
     }
 
-    private void PassportNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void PassportNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            PassportNumber_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        PassportNumber_DB = tmp.Trim();
     }
-
 
     private static bool PassportNumber_Validation(RamAccess<string> value)
     {
@@ -910,7 +908,7 @@ public class Form14 : Form1
         if (value.Value.Equals("прим."))
         {
             //if ((ProviderOrRecieverOKPONote.Value == null) || ProviderOrRecieverOKPONote.Value.Equals(""))
-            //    value.AddError( "Заполните примечание");
+            //    value.AddError("Заполните примечание");
             return true;
         }
         //try

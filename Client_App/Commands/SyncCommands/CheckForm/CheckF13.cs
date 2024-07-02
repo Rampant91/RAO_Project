@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Models.Forms;
 using System.Linq;
-using System.Globalization;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 

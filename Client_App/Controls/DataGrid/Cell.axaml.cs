@@ -60,6 +60,7 @@ public class Cell : UserControl
     #endregion
 
     #region Row
+
     public static readonly DirectProperty<Cell, int> RowProperty =
         AvaloniaProperty.RegisterDirect<Cell, int>(
             nameof(Row),
@@ -72,9 +73,11 @@ public class Cell : UserControl
         get => _Row;
         set => SetAndRaise(RowProperty, ref _Row, value);
     }
+
     #endregion
 
     #region Column
+
     public static readonly DirectProperty<Cell, int> ColumnProperty =
         AvaloniaProperty.RegisterDirect<Cell, int>(
             nameof(Column),
@@ -82,15 +85,19 @@ public class Cell : UserControl
             (o, v) => o.Column = v);
 
     private int _Column = -1;
+
     public int Column
     {
         get => _Column;
         set => SetAndRaise(ColumnProperty, ref _Column, value);
     }
+
     #endregion
 
     #region Control
+
     IControl _Control;
+
     public IControl Control 
     {
         get => _Control;

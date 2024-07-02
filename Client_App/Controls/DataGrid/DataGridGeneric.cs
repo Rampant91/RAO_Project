@@ -1507,8 +1507,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             case Key.Left:
             {
-                LastPressedItem[1] = LastPressedItem[1] == 1 
-                    ? LastPressedItem[1] 
+                if (args.Source is TextBox textBox
+                    && textBox.SelectionStart != 0)
+                {
+                    break;
+                }
+                LastPressedItem[1] = LastPressedItem[1] == 1
+                    ? LastPressedItem[1]
                     : LastPressedItem[1] - 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
@@ -1533,6 +1538,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             case Key.Right:
             {
+                if (args.Source is TextBox textBox
+                    && textBox.SelectionStart != textBox.Text.Length)
+                {
+                    break;
+                }
                 if (LastPressedItem[1] != Rows[0].Children.Count - 1)
                     LastPressedItem[1]++;
                 if (args.KeyModifiers != KeyModifiers.Shift)

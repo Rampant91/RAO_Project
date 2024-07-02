@@ -40,10 +40,12 @@ public abstract class CheckBase
         string[] operationCodeWithDeadline5 = { "73", "74", "75" };
         string[] operationCodeWithDeadline10 =
         {
-            "11", "12", "15", "17", "18", "21", "22", "25", "27", "28", "29", "31", "32", "35", "37", "38", 
-            "39", "41", "42", "43", "46", "47", "48", "53", "54", "58", "61", "62", "63", "64", "65", "66", 
-            "67", "68", "72", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
+            "10", "11", "12", "13", "14", "15", "16", "17", "18", "21", "22", "25", "26", "27", "28", "29", 
+            "31", "32", "35", "37", "38", "39", "41", "42", "43", "44", "45", "46", "47", "48", "49", "51", 
+            "52", "53", "54", "55", "56", "57", "58", "59", "61", "62", "63", "64", "65", "66", "67", "68", 
+            "72", "76", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
         };
+        string[] operationCodeWithDeadline90 = { "01" };
         var formNum = rep.FormNum_DB.Replace(".", "");
         foreach (var form in forms)
         {
@@ -53,6 +55,7 @@ public abstract class CheckBase
             if (operationCodeWithDeadline1.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 1);
             if (operationCodeWithDeadline5.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 5);
             if (operationCodeWithDeadline10.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 10);
+            if (operationCodeWithDeadline90.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 90);
             if (minOpDate == DateOnly.MinValue || curMaxEndPeriodDate < maxEndPeriodDate)
             {
                 minOpDate = opDate;
@@ -60,6 +63,18 @@ public abstract class CheckBase
                 opCode = form.OperationCode_DB ?? string.Empty;
                 line = form.NumberInOrder_DB - 1;
             }
+        }
+        if (operationCodeWithDeadline90.Contains(opCode) && endPeriod > maxEndPeriodDate)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = $"form_{formNum}",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = Convert.ToString(forms[line].OperationDate_DB),
+                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
+                          $"более чем на 90 рабочих дней."
+            });
         }
         if (operationCodeWithDeadline10.Contains(opCode) && endPeriod > maxEndPeriodDate)
         {

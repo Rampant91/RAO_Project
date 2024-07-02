@@ -1,12 +1,9 @@
-﻿using Microsoft.VisualBasic;
-using Models.CheckForm;
+﻿using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection.Emit;
 using Note = Models.Forms.Note;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
