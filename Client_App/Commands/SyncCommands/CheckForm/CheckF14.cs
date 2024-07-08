@@ -1184,7 +1184,17 @@ public abstract class CheckF14 : CheckBase
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad))) return result;
 
-        var baseRad = radsArray[0];
+        var baseRad = EquilibriumRadionuclids.First(x =>
+            {
+                x = x.Replace(" ", string.Empty);
+                var eqRadsArray = x.Split(',');
+                return radsArray
+                    .All(rad => eqRadsArray
+                        .Contains(rad) && radsArray.Length == eqRadsArray.Length);
+            })
+            .Replace(" ", string.Empty)
+            .Split(',')[0];
+
         var mza = R.First(x => x["name"] == baseRad)["MZA"];
         var mzua = R.First(x => x["name"] == baseRad)["MZUA"];
         if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)

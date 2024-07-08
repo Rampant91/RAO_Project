@@ -999,7 +999,7 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        var radsSet = rads
+        var radsArray = rads
             .ToLower()
             .Replace(" ", string.Empty)
             .Replace(',', ';')
@@ -1009,18 +1009,28 @@ public abstract class CheckF13 : CheckBase
             x = x.Replace(" ", "");
             var eqSet = x.Split(',');
 
-            return radsSet.All(rad => eqSet.Contains(rad));
+            return radsArray.All(rad => eqSet.Contains(rad));
         });
 
-        if (radsSet.Length == 1
+        if (radsArray.Length == 1
             || !isEqRads
             || !TryParseDoubleExtended(activity, out var activityDoubleValue)
             || activityDoubleValue <= 0
-            || !radsSet
+            || !radsArray
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad))) return result;
 
-        var baseRad = radsSet[0];
+        var baseRad = EquilibriumRadionuclids.First(x =>
+            {
+                x = x.Replace(" ", string.Empty);
+                var eqRadsArray = x.Split(',');
+                return radsArray
+                    .All(rad => eqRadsArray
+                        .Contains(rad) && radsArray.Length == eqRadsArray.Length);
+            })
+            .Replace(" ", string.Empty)
+            .Split(',')[0];
+
         var mza = R.First(x => x["name"] == baseRad)["MZA"];
         if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) return result;
 
