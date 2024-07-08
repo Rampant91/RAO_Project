@@ -99,23 +99,29 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
         {
             case > 1:   // У организации по ошибке есть несколько отчётов с нужным периодом
             {
+                var repFormNum = form.FormNum_DB switch
+                {
+                    "1.1" => "1.5",
+                    _ => "1.6"
+                };
+
                 #region MessageSourceTransmissionFailed
 
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Перевод источника в РАО",
-                            ContentHeader = "Ошибка",
-                            ContentMessage = $"У выбранной организации присутствуют отчёты по форме {form.FormNum_DB} с пересекающимися периодами. " +
-                                             $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода РВ в РАО.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Перевод источника в РАО",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = $"У выбранной организации присутствуют отчёты по форме {repFormNum} с пересекающимися периодами. " +
+                                         $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода РВ в РАО.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
 
-                    #endregion
+                #endregion
 
                 return;
             }
@@ -132,24 +138,24 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
 
                     #region ChangeCorrectionNumber
 
-                        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                ButtonDefinitions =
-                                [
-                                    new ButtonDefinition { Name = "Да" },
-                                new ButtonDefinition { Name = "Нет" }
-                                ],
-                                ContentTitle = "Перевод источника в РАО",
-                                ContentHeader = "Уведомление",
-                                ContentMessage = $"Изменить номер корректировки в форме {appropriateFormNum} " +
-                                                 $"{Environment.NewLine}с соответствующим периодом?",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(Desktop.MainWindow));
+                    var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Да" },
+                            new ButtonDefinition { Name = "Нет" }
+                            ],
+                            ContentTitle = "Перевод источника в РАО",
+                            ContentHeader = "Уведомление",
+                            ContentMessage = $"Изменить номер корректировки в форме {appropriateFormNum} " +
+                                             $"{Environment.NewLine}с соответствующим периодом?",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
 
-                        #endregion
+                    #endregion
 
                     if (res is "Да") report.CorrectionNumber_DB++;
                 }

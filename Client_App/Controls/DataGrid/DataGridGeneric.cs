@@ -1830,7 +1830,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         var f22 = item.Binding is "PackQuantity" or "VolumeInPack" or "MassInPack" or "Comments";
                         if (f22)
                         {
-                            textBox = new TextBox()
+                            textBox = new TextBox
                             {
                                 [!DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
@@ -1848,7 +1848,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         }
                         else
                         {
-                            textBox = new TextBlock()
+                            textBox = new TextBlock
                             {
                                 [!DataContextProperty] = new Binding(item.Binding),
                                 [!TextBlock.TextProperty] = new Binding("Value"),
@@ -1869,7 +1869,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     }
                     else
                     {
-                        textBox = new TextBlock()
+                        textBox = new TextBlock
                         {
                             [!DataContextProperty] = new Binding(item.Binding),
                             [!TextBlock.TextProperty] = new Binding("Value"),
@@ -1890,16 +1890,17 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
                 else
                 {
-                    textBox = new TextBox()
-                    {
-                        [!DataContextProperty] = new Binding(item.Binding),
-                        [!TextBox.TextProperty] = new Binding("Value"),
-                        [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
-                    };
+                    
+                    textBox = new TextBox
+                        {
+                            [!DataContextProperty] = new Binding(item.Binding),
+                            [!TextBox.TextProperty] = new Binding("Value"),
+                            [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            ContextMenu = new ContextMenu { Width = 0, Height = 0 }
+                        };
                     ((TextBox)textBox).TextAlignment = TextAlignment.Left;
-                    textBox.VerticalAlignment = VerticalAlignment.Stretch;
-                    textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                    textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                     if (item.IsTextWrapping)
                     {
                         ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;

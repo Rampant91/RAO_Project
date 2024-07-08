@@ -310,7 +310,7 @@ public class Form14 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("прим."))
+        if (value.Value.Equals("прим.") || value.Value.Equals("-"))
         {
             return true;
         }
@@ -320,10 +320,10 @@ public class Form14 : Form1
             nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
         }
         var flag = true;
-        foreach (var nucl in nuclids)
+        foreach (var nuclid in nuclids)
         {
             var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nucl == item.Item1)
+                .Where(item => nuclid == item.Item1)
                 .Select(item => item.Item1);
             if (!tmp.Any())
                 flag = false;

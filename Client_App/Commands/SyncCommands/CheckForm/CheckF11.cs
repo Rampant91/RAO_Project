@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Models.CheckForm;
 using Models.Collections;
@@ -1087,49 +1086,23 @@ public abstract class CheckF11 : CheckBase
 
     #region Check033
 
-    //TODO 
     //Суммарная активность из справочника для одного радионуклида
     private static List<CheckError> Check_033(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        if (MZA_Ignore) return result;
-        return result;
-    }
+        var rad = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var quantity = forms[line].Quantity_DB ?? 0;
 
-    #endregion
+        if (R.All(x => x["name"] != rad) 
+            || quantity <= 0
+            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+            || activityDoubleValue <= 0) return result;
 
-    #region Check034
+        var mza = R.First(x => x["name"] == rad)["MZA"];
+        if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) return result;
 
-    //TODO
-    //Суммарная активность из справочника для нескольких радионуклидов
-    private static List<CheckError> Check_034(List<Form11> forms, int line)
-    {
-        List<CheckError> result = new();
-        if (MZA_Ignore) return result;
-        if (string.IsNullOrEmpty(forms[line].Radionuclids_DB)
-            || forms[line].Activity_DB is null or "" or "-") return result;
-        var nuclidsList = forms[line].Radionuclids_DB!.ToLower().Replace(" ", string.Empty).Split(';');
-        if (nuclidsList.Length == 1) return result;
-        if (nuclidsList.Any(nuclid => !Radionuclids_DB_Valids.Contains(nuclid)))
-        {
-            return result;
-        }
-        //find the minimum activity
-        var activityMinimum = double.MaxValue;
-        foreach (var nuclid in nuclidsList)
-        {
-            double activityConsidered = float.MaxValue;
-            //if (D.TryGetValue(nuclid, out var value)) переделай на R
-            //{
-            //    activityConsidered = value;
-            //}
-            if (activityConsidered < activityMinimum)
-            {
-                activityMinimum = activityConsidered;
-            }
-        }
-        var activityReal = double.Parse(forms[line].Activity_DB!.Replace(".", ","), NumberStyles.Float);
-        var valid = activityReal >= activityMinimum;
+        var valid = activityDoubleValue / quantity >= mzaDoubleValue;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1137,8 +1110,75 @@ public abstract class CheckF11 : CheckBase
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
-                Value = forms[line].Activity_DB,
-                Message = "Активность ниже МЗА, ЗРИ не является объектом учета СГУК РВ и РАО."
+                Value = activity,
+                Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
+                          "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
+                          "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк)."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check034
+
+    //Суммарная активность из справочника для нескольких радионуклидов
+    private static List<CheckError> Check_034(List<Form11> forms, int line)
+    {
+        List<CheckError> result = new();
+        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var quantity = forms[line].Quantity_DB ?? 0;
+        var radsArray = rads
+            .ToLower()
+            .Replace(" ", string.Empty)
+            .Replace(',', ';')
+            .Split(';');
+        var isEqRads = EquilibriumRadionuclids.Any(x =>
+        {
+            x = x.Replace(" ", "");
+            var eqRadsArray = x.Split(',');
+            return radsArray
+                .All(rad => eqRadsArray
+                    .Contains(rad) && radsArray.Length == eqRadsArray.Length);
+        });
+
+        if (radsArray.Length == 1
+            || isEqRads
+            || quantity <= 0
+            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+            || activityDoubleValue <= 0
+            || !radsArray
+                .All(rad => R
+                    .Any(phEntry => phEntry["name"] == rad))) return result;
+
+        var minimumActivity = double.MaxValue;
+        var anyMza = false;
+        foreach (var rad in radsArray)
+        {
+            var mza = R.First(x => x["name"] == rad)["MZA"];
+            if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) continue;
+            if (mzaDoubleValue < minimumActivity)
+            {
+                minimumActivity = mzaDoubleValue;
+            }
+            anyMza = true;
+        }
+        if (!anyMza) return result;
+
+        var valid = activityDoubleValue / quantity >= minimumActivity;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = activity,
+                Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
+                          "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
+                          "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк)."
             });
         }
         return result;
@@ -1148,12 +1188,53 @@ public abstract class CheckF11 : CheckBase
 
     #region Check035
 
-    //TODO
     //Суммарная активность из справочника для равновесных радионуклидов
     private static List<CheckError> Check_035(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        if (MZA_Ignore) return result;
+        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var quantity = forms[line].Quantity_DB ?? 0;
+        var radsArray = rads
+            .ToLower()
+            .Replace(" ", string.Empty)
+            .Replace(',', ';')
+            .Split(';');
+        var isEqRads = EquilibriumRadionuclids.Any(x =>
+        {
+            x = x.Replace(" ", "");
+            var eqSet = x.Split(',');
+
+            return radsArray.All(rad => eqSet.Contains(rad));
+        });
+
+        if (radsArray.Length == 1
+            || !isEqRads
+            || quantity <= 0
+            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+            || activityDoubleValue <= 0
+            || !radsArray
+                .All(rad => R
+                    .Any(phEntry => phEntry["name"] == rad))) return result;
+
+        var baseRad = radsArray[0];
+        var mza = R.First(x => x["name"] == baseRad)["MZA"];
+        if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) return result;
+
+        var valid = activityDoubleValue / quantity >= mzaDoubleValue;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = activity,
+                Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
+                          "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
+                          "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк)."
+            });
+        }
         return result;
     }
 

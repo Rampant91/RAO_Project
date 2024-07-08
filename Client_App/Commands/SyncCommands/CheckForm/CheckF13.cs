@@ -676,14 +676,13 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         var opCode = forms[line].OperationCode_DB ?? string.Empty;
         if (opCode is not "10" 
-            || !DateOnly.TryParse(forms[line].DocumentDate_DB, out var documentDateReal)
-            || !DateOnly.TryParse(rep.StartPeriod_DB, out var dateBeginReal)
-            || !DateOnly.TryParse(rep.EndPeriod_DB, out var dateEndReal))
+            || !DateOnly.TryParse(forms[line].DocumentDate_DB, out var docDate)
+            || !DateOnly.TryParse(rep.StartPeriod_DB, out var stDate)
+            || !DateOnly.TryParse(rep.EndPeriod_DB, out var endDate))
         {
             return result;
         }
-        var valid = documentDateReal >= dateBeginReal && documentDateReal <= dateEndReal;
-        if (!valid)
+        if (docDate < stDate)
         {
             result.Add(new CheckError
             {
@@ -691,8 +690,20 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = Convert.ToString(forms[line].DocumentDate_DB),
-                Message = "Дата документа не входит в отчетный период. Для операции инвентаризации, " +
-                          "срок предоставления отчета исчисляется с даты утверждения акта инвентаризации."
+                Message = $"Дата документа не входит в отчетный период. " +
+                          $"Дата документа ({docDate} не может быть ранее даты начала отчётного периода {stDate}.)"
+            });
+        }
+        if (docDate > endDate)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "DocumentDate_DB",
+                Value = Convert.ToString(forms[line].DocumentDate_DB),
+                Message = $"Дата документа не входит в отчетный период. " +
+                          $"Дата документа ({docDate} не может быть позднее даты окончания отчётного периода {endDate}.)"
             });
         }
         return result;
@@ -732,13 +743,13 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         var type = forms[line].Type_DB;
-        if (string.IsNullOrWhiteSpace(type) || type is "-")
+        if (string.IsNullOrWhiteSpace(type))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_13",
                 Row = (line + 1).ToString(),
-                Column = "PassportNumber_DB",
+                Column = "Type_DB",
                 Value = Convert.ToString(type),
                 Message = "Формат ввода не соответствует приказу. Графа не может быть пустой."
             });
@@ -750,12 +761,59 @@ public abstract class CheckF13 : CheckBase
 
     #region Check028
 
-    //TODO
     //Сверка со справочником радионуклидов
     private static List<CheckError> Check_028(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        if (DB_Ignore) return result;
+        var radionuclids = forms[line].Radionuclids_DB ?? string.Empty;
+        var radArray = radionuclids.Replace(" ", string.Empty).ToLower().Split(';');
+        var valid = true;
+        var shortRad = string.Empty;
+        double shortRadHalfLife = 0;
+        foreach (var rad in radArray)
+        {
+            var phEntry = R.FirstOrDefault(phEntry => phEntry["name"] == rad);
+            if (phEntry is null) return result;
+            var unit = phEntry["unit"];
+            var value = phEntry["value"].Replace('.', ',');
+            if (!TryParseDoubleExtended(value, out var halfLife)) return result;
+            switch (unit)
+            {
+                case "лет":
+                    halfLife *= 365;
+                    break;
+                case "сут":
+                    break;
+                case "час":
+                    halfLife /= 24;
+                    break;
+                case "мин":
+                    halfLife /= 1440;
+                    break;
+                default:
+                    return result;
+            }
+            if (halfLife < 60 && rad != "иод-125")
+            {
+                shortRad = rad;
+                shortRadHalfLife = halfLife;
+                valid = false;
+                break;
+            }
+        }
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "Radionuclids_DB",
+                Value = Convert.ToString(radionuclids),
+                Message = $"Период полураспада должен быть более 60 суток. " +
+                          $"Введенный вами радионуклид {shortRad} имеет период полураспада {shortRadHalfLife} суток. " +
+                          $"ОРИ на основе короткоживущих радионуклидов учитываются в формах 1.9 и 2.12."
+            });
+        }
         return result;
     }
 
@@ -837,12 +895,34 @@ public abstract class CheckF13 : CheckBase
 
     #region Check031
 
-    //TODO
     //Сверка с МЗА для одного радионуклида (графа 8)
     private static List<CheckError> Check_031(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        if (DB_Ignore) return result;
+        var rad = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
+
+        if (R.All(x => x["name"] != rad)
+            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+            || activityDoubleValue <= 0) return result;
+
+        var mza = R.First(x => x["name"] == rad)["MZA"];
+        if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) return result;
+
+        var valid = activityDoubleValue >= mzaDoubleValue;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = activity,
+                Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
+                          "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
+                          "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк)."
+            });
+        }
         return result;
     }
 
@@ -854,7 +934,58 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_032(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        if (DB_Ignore) return result;
+        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var radsArray = rads
+            .ToLower()
+            .Replace(" ", string.Empty)
+            .Replace(',', ';')
+            .Split(';');
+        var isEqRads = EquilibriumRadionuclids.Any(x =>
+        {
+            x = x.Replace(" ", "");
+            var eqRadsArray = x.Split(',');
+            return radsArray
+                .All(rad => eqRadsArray
+                    .Contains(rad) && radsArray.Length == eqRadsArray.Length);
+        });
+
+        if (radsArray.Length == 1
+            || isEqRads
+            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+            || activityDoubleValue <= 0
+            || !radsArray
+                .All(rad => R
+                    .Any(phEntry => phEntry["name"] == rad))) return result;
+
+        var minimumActivity = double.MaxValue;
+        var anyMza = false;
+        foreach (var rad in radsArray)
+        {
+            var mza = R.First(x => x["name"] == rad)["MZA"];
+            if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) continue;
+            if (mzaDoubleValue < minimumActivity)
+            {
+                minimumActivity = mzaDoubleValue;
+            }
+            anyMza = true;
+        }
+        if (!anyMza) return result;
+
+        var valid = activityDoubleValue >= minimumActivity;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = activity,
+                Message = "Сведения, указанные в графе 8 (Суммарная активность) ниже МЗА. " +
+                          "Сверьте сведения, указанные в отчёте, с паспортом на ОРИ. " +
+                          "Обратите внимание на размерность активности, указанной в паспорте на ОРИ (Бк, МБк, ТБк)."
+            });
+        }
         return result;
     }
 
@@ -862,12 +993,51 @@ public abstract class CheckF13 : CheckBase
 
     #region Check033
 
-    //TODO
     //Сверка с МЗА для равновесных радионуклидов
     private static List<CheckError> Check_033(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        if (DB_Ignore) return result;
+        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var radsSet = rads
+            .ToLower()
+            .Replace(" ", string.Empty)
+            .Replace(',', ';')
+            .Split(';');
+        var isEqRads = EquilibriumRadionuclids.Any(x =>
+        {
+            x = x.Replace(" ", "");
+            var eqSet = x.Split(',');
+
+            return radsSet.All(rad => eqSet.Contains(rad));
+        });
+
+        if (radsSet.Length == 1
+            || !isEqRads
+            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+            || activityDoubleValue <= 0
+            || !radsSet
+                .All(rad => R
+                    .Any(phEntry => phEntry["name"] == rad))) return result;
+
+        var baseRad = radsSet[0];
+        var mza = R.First(x => x["name"] == baseRad)["MZA"];
+        if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) return result;
+
+        var valid = activityDoubleValue >= mzaDoubleValue;
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = activity,
+                Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
+                          "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
+                          "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк)."
+            });
+        }
         return result;
     }
 
@@ -905,9 +1075,7 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        if (activity is null or "" or "-") return result;
-        if (!TryParseDoubleExtended(activity, out var activityReal)
-            || activity.Contains('-'))
+        if (!TryParseDoubleExtended(activity, out var activityReal))
         {
             result.Add(new CheckError
             {
@@ -1496,7 +1664,7 @@ public abstract class CheckF13 : CheckBase
                 Column = "DocumentDate_DB",
                 Value = Convert.ToString(forms[line].DocumentDate_DB),
                 Message = "Дата документа не входит в отчетный период. Для операции инвентаризации, " +
-                          "срок предоставления отчета исчисляется с даты утверждения акта инвентаризации."
+                          "срок предоставления отчета (10 рабочих дней) исчисляется с даты утверждения акта инвентаризации."
             });
         }
         return result;
