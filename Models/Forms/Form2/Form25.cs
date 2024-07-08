@@ -115,7 +115,7 @@ public partial class Form25 : Form2
 
     [NotMapped]
     [FormProperty(true, "Пункт хранения ОЯТ", "код", "3")]
-    public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+    public RamAccess<string> StoragePlaceCode //8 digits code or - .
     {
         get
         {
@@ -132,7 +132,7 @@ public partial class Form25 : Form2
         set
         {
             StoragePlaceCode_DB = value.Value;
-            OnPropertyChanged(nameof(StoragePlaceCode));
+            OnPropertyChanged();
         }
     }
 

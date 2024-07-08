@@ -465,7 +465,7 @@ public partial class Form12 : Form1
             return true;
         }
         var tmp = value.Value.Trim();
-        if (!Date8NumRegex().IsMatch(tmp) || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -578,7 +578,7 @@ public partial class Form12 : Form1
         //{
         //    value.AddError( "Поле не заполнено");
         //}
-        if (value.Value is not (>= 1 and <= 9))
+        if (value.Value is not ( >= 1 and <= 6 or 9))
         {
             value.AddError("Недопустимое значение"); 
             return false;
@@ -647,7 +647,7 @@ public partial class Form12 : Form1
             //    value.AddError( "Заполните примечание");
             return true;
         }
-        if (tmp.Length != 8 && tmp.Length != 14
+        if (tmp.Length is not (8 or 14)
             || !OkpoRegex().IsMatch(tmp))
         {
             value.AddError("Недопустимое значение"); 

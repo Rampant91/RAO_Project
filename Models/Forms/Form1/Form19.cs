@@ -67,12 +67,8 @@ public class Form19 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmp = value.Value;
-        if (Date6NumRegex().IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        if (!Date8NumRegex().IsMatch(tmp) || !DateTimeOffset.TryParse(tmp, out _))
+        var tmp = value.Value.Trim();
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -88,12 +84,8 @@ public class Form19 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmp = value.Value;
-        if (Date6NumRegex().IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        if (!Date8NumRegex().IsMatch(tmp)  || !DateTimeOffset.TryParse(tmp, out _))
+        var tmp = value.Value.Trim();
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -130,29 +122,27 @@ public class Form19 : Form1
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(CodeTypeAccObject), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(CodeTypeAccObject), out var value))
             {
                 ((RamAccess<short?>)value).Value = CodeTypeAccObject_DB;
                 return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(CodeTypeAccObject_Validation, CodeTypeAccObject_DB);
-            rm.PropertyChanged += CodeTypeAccObjectValueChanged;
+            rm.PropertyChanged += CodeTypeAccObject_ValueChanged;
             Dictionary.Add(nameof(CodeTypeAccObject), rm);
             return (RamAccess<short?>)Dictionary[nameof(CodeTypeAccObject)];
         }
         set
         {
             CodeTypeAccObject_DB = value.Value;
-            OnPropertyChanged(nameof(CodeTypeAccObject));
+            OnPropertyChanged();
         }
     }
 
-    private void CodeTypeAccObjectValueChanged(object value, PropertyChangedEventArgs args)
+    private void CodeTypeAccObject_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            CodeTypeAccObject_DB = ((RamAccess<short?>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        CodeTypeAccObject_DB = ((RamAccess<short?>)value).Value;
     }
 
     private static bool CodeTypeAccObject_Validation(RamAccess<short?> value)//TODO
@@ -183,29 +173,28 @@ public class Form19 : Form1
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Radionuclids), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
             {
                 ((RamAccess<string>)value).Value = Radionuclids_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
-            rm.PropertyChanged += RadionuclidsValueChanged;
+            rm.PropertyChanged += Radionuclids_ValueChanged;
             Dictionary.Add(nameof(Radionuclids), rm);
             return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
         }
         set
         {
             Radionuclids_DB = value.Value;
-            OnPropertyChanged(nameof(Radionuclids));
+            OnPropertyChanged();
         }
     }//If change this change validation
 
-    private void RadionuclidsValueChanged(object value, PropertyChangedEventArgs args)
+    private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            Radionuclids_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        Radionuclids_DB = tmp;
     }
 
     private static bool Radionuclids_Validation(RamAccess<string> value)//TODO
@@ -218,10 +207,10 @@ public class Form19 : Form1
         }
         var nuclids = value.Value.Split("; ");
         var flag = true;
-        foreach (var nuc in nuclids)
+        foreach (var nuclid in nuclids)
         {
             if (!Spravochniks.SprRadionuclids
-                    .Where(item => nuc == item.Item1)
+                    .Where(item => nuclid == item.Item1)
                     .Select(item => item.Item1)
                     .Any())
                 flag = false;
@@ -246,13 +235,13 @@ public class Form19 : Form1
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Activity), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Activity), out var value))
             {
                 ((RamAccess<string>)value).Value = Activity_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
-            rm.PropertyChanged += ActivityValueChanged;
+            rm.PropertyChanged += Activity_ValueChanged;
             Dictionary.Add(nameof(Activity), rm);
             return (RamAccess<string>)Dictionary[nameof(Activity)];
         }
@@ -263,33 +252,30 @@ public class Form19 : Form1
         }
     }
 
-    private void ActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        tmp = tmp
+            .Trim()
+            .TrimStart('(')
+            .TrimEnd(')')
+            .ToLower()
+            .Replace('.', ',')
+            .Replace('е', 'e');
+        if (tmp.Equals("-"))
         {
-            value1 = value1
-                .Trim()
-                .TrimStart('(')
-                .TrimEnd(')')
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                Activity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
+            Activity_DB = tmp;
+            return;
         }
-        Activity_DB = value1;
+        if (double.TryParse(tmp, 
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
+                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                out var doubleValue))
+        {
+            tmp = $"{doubleValue:0.######################################################e+00}";
+        }
+        Activity_DB = tmp;
     }
 
     private static bool Activity_Validation(RamAccess<string> value)//Ready
@@ -300,18 +286,19 @@ public class Form19 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
+        
+        var tmp = value.Value
             .Trim()
             .TrimStart('(')
             .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
-        if (!double.TryParse(value1, 
+        if (value.Value.Equals("прим."))
+        {
+            return false;
+        }
+        if (!double.TryParse(tmp, 
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
                 CultureInfo.CreateSpecificCulture("ru-RU"), 
                 out var doubleValue))

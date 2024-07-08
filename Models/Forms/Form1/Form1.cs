@@ -139,13 +139,10 @@ public abstract partial class Form1 : Form
     private void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
-        if (Date6NumRegex().IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        OperationDate_DB = tmp;
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        OperationDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+            ? date.ToShortDateString()
+            : tmp;
     }
 
     protected virtual bool OperationDate_Validation(RamAccess<string> value)//Ready
@@ -158,7 +155,7 @@ public abstract partial class Form1 : Form
         }
         var tmp = value.Value.Trim();
 
-        if (!Date8NumRegex().IsMatch(tmp) || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -343,13 +340,10 @@ public abstract partial class Form1 : Form
     private void DocumentDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
-        if (Date6NumRegex().IsMatch(tmp))
-        {
-            tmp = tmp.Insert(6, "20");
-        }
-        DocumentDate_DB = tmp;
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        DocumentDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+            ? date.ToShortDateString()
+            : tmp;
     }
 
     protected virtual bool DocumentDate_Validation(RamAccess<string> value)//Ready
@@ -361,7 +355,7 @@ public abstract partial class Form1 : Form
             return false;
         }
         var tmp = value.Value.Trim();
-        if (!Date8NumRegex().IsMatch(tmp) || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -409,12 +403,6 @@ public abstract partial class Form1 : Form
     #endregion
 
     #region GeneratedRegex
-
-    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{2}$")]
-    protected static partial Regex Date6NumRegex();
-
-    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{4}$")]
-    protected static partial Regex Date8NumRegex();
 
     [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
     protected static partial Regex OkpoRegex();

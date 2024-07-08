@@ -390,7 +390,7 @@ public partial class Form22 : Form2, IBaseColor
 
     [NotMapped]
     [FormProperty(true, "Пункт хранения", "код", "3")]
-    public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+    public RamAccess<string> StoragePlaceCode //8 digits code or - .
     {
         get
         {
@@ -893,7 +893,7 @@ public partial class Form22 : Form2, IBaseColor
 
     [NotMapped]
     [FormProperty(true, "null-8", "Статус РАО", "8")]
-    public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
+    public RamAccess<string> StatusRAO  //1 digit or OKPO.
     {
         get
         {

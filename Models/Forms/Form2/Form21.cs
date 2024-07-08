@@ -838,7 +838,7 @@ public partial class Form21 : Form2, IBaseColor
 
     [NotMapped]
     [FormProperty(true, "Поступило РАО на переработку, кондиционирование", "статус РАО", "7")]
-    public RamAccess<string> StatusRAOIn  //1 cyfer or OKPO.
+    public RamAccess<string> StatusRAOIn  //1 digit or OKPO.
     {
         get
         {
@@ -1643,7 +1643,7 @@ public partial class Form21 : Form2, IBaseColor
 
     [NotMapped]
     [FormProperty(true, "Образовалось РАО после переработки, кондиционирования", "статус РАО", "16")]
-    public RamAccess<string> StatusRAOout  //1 cyfer or OKPO.
+    public RamAccess<string> StatusRAOout  //1 digit or OKPO.
     {
         get
         {

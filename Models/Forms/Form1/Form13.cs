@@ -550,8 +550,7 @@ public partial class Form13 : Form1
             return true;
         }
         var tmp = value.Value.Trim(); ;
-        if (!Date8NumRegex().IsMatch(tmp) 
-            || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;

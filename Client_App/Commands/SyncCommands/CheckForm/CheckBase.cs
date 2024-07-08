@@ -22,8 +22,6 @@ public abstract class CheckBase
 
     private protected static readonly bool ZRI_Ignore = true;
 
-    private protected static readonly bool MZA_Ignore = true;
-
     private protected static readonly Regex OkpoRegex = new(@"^\d{8}([0123456789_]\d{5})?$");
 
     private protected static readonly string[] EquilibriumRadionuclids =

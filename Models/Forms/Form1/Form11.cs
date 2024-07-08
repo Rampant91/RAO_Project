@@ -275,10 +275,10 @@ public partial class Form11 : Form1
             nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
         }
         var flag = true;
-        foreach (var nucl in nuclids)
+        foreach (var nuclid in nuclids)
         {
             var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nucl == item.Item1)
+                .Where(item => nuclid == item.Item1)
                 .Select(item => item.Item1);
             if (!tmp.Any())
                 flag = false;
@@ -511,8 +511,7 @@ public partial class Form11 : Form1
     private void CreatorOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -538,7 +537,7 @@ public partial class Form11 : Form1
         {
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14
+        if (value.Value.Length is not (8 or 14)
             || !OkpoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
@@ -579,8 +578,7 @@ public partial class Form11 : Form1
     private void CreationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
         CreationDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
             ? date.ToShortDateString()
             : tmp;
@@ -601,8 +599,7 @@ public partial class Form11 : Form1
             return true;
         }
         var tmp = value.Value.Trim();
-        if (!Date8NumRegex().IsMatch(tmp) 
-            || !DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
