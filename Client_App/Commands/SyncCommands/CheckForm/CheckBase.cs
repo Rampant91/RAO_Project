@@ -85,7 +85,8 @@ public abstract class CheckBase
     private protected static List<CheckError> CheckRepPeriod(List<Form1> forms, Report rep)
     {
         List<CheckError> result = new();
-        if (!DateOnly.TryParse(rep.EndPeriod_DB, out var endPeriod)) return result;
+        var endPerString = (rep.EndPeriod_DB ?? string.Empty).Trim();
+        if (!DateOnly.TryParse(endPerString, out var endPeriod)) return result;
         DateOnly minOpDate = new();
         DateOnly maxEndPeriodDate = new();
         var opCode = string.Empty;
@@ -103,9 +104,10 @@ public abstract class CheckBase
         var formNum = rep.FormNum_DB.Replace(".", "");
         foreach (var form in forms)
         {
-            var curOpCode = form.OperationCode_DB ?? string.Empty;
+            var curOpCode = (form.OperationCode_DB ?? string.Empty).Trim();
+            var curOpDate = (form.OperationDate_DB ?? string.Empty).Trim();
             DateOnly curMaxEndPeriodDate = new();
-            if (!DateOnly.TryParse(form.OperationDate_DB, out var opDate)) continue;
+            if (!DateOnly.TryParse(curOpDate, out var opDate)) continue;
             if (operationCodeWithDeadline1.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 1);
             if (operationCodeWithDeadline5.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 5);
             if (operationCodeWithDeadline10.Contains(curOpCode)) curMaxEndPeriodDate = AddNWorkingDays(opDate, 10);
@@ -126,7 +128,7 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(forms[line].OperationDate_DB),
-                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
+                Message = $"Дата окончания отчетного периода {endPerString} превышает дату операции {minOpDate} " +
                           $"более чем на 90 рабочих дней."
             });
         }
@@ -138,7 +140,7 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(forms[line].OperationDate_DB),
-                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
+                Message = $"Дата окончания отчетного периода {endPerString} превышает дату операции {minOpDate} " +
                           $"более чем на 10 рабочих дней."
             });
         }
@@ -150,7 +152,7 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(forms[line].OperationDate_DB),
-                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
+                Message = $"Дата окончания отчетного периода {endPerString} превышает дату операции {minOpDate} " +
                           $"более чем на 5 рабочих дней."
             });
         }
@@ -162,7 +164,7 @@ public abstract class CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = Convert.ToString(forms[line].OperationDate_DB),
-                Message = $"Дата окончания отчетного периода {rep.EndPeriod_DB} превышает дату операции {minOpDate} " +
+                Message = $"Дата окончания отчетного периода {endPerString} превышает дату операции {minOpDate} " +
                           $"более чем на 1 рабочий день."
             });
         }
@@ -370,7 +372,7 @@ public abstract class CheckBase
             });
             if (string.IsNullOrWhiteSpace(R[^1]["D"]) || !double.TryParse(R[^1]["D"], out var val1) || val1 < 0)
             {
-                R[^1]["D"] = double.MaxValue.ToString();
+                R[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
             }
             i++;
         }
