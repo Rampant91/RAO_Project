@@ -123,30 +123,32 @@ public abstract class CheckF12 : CheckBase
     private static List<CheckError> Check_002(Report rep)
     {
         List<CheckError> result = new();
-        if (!DateOnly.TryParse(rep.StartPeriod_DB, out var stPer))
+        var stPerStr = (rep.StartPeriod_DB ?? string.Empty).Trim();
+        var endPerStr = (rep.EndPeriod_DB ?? string.Empty).Trim();
+        if (!DateOnly.TryParse(stPerStr, out _))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_12",
                 Row = string.Empty,
                 Column = string.Empty,
-                Value = rep.StartPeriod_DB,
+                Value = stPerStr,
                 Message = "Некорректно введена дата начала периода."
             });
         }
-        if (!DateOnly.TryParse(rep.EndPeriod_DB, out var endPer))
+        if (!DateOnly.TryParse(endPerStr, out _))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_12",
                 Row = string.Empty,
                 Column = string.Empty,
-                Value = rep.EndPeriod_DB,
+                Value = endPerStr,
                 Message = "Некорректно введена дата окончания периода."
             });
         }
-        if (DateOnly.TryParse(rep.StartPeriod_DB, out _)
-            && DateOnly.TryParse(rep.EndPeriod_DB, out _)
+        if (DateOnly.TryParse(stPerStr, out var stPer)
+            && DateOnly.TryParse(endPerStr, out var endPer)
             && stPer > endPer)
         {
             result.Add(new CheckError
@@ -154,7 +156,7 @@ public abstract class CheckF12 : CheckBase
                 FormNum = "form_12",
                 Row = string.Empty,
                 Column = string.Empty,
-                Value = $"{rep.StartPeriod_DB} - {rep.EndPeriod_DB}",
+                Value = $"{stPerStr} - {endPerStr}",
                 Message = "Дата начала периода превышает дату окончания периода."
             });
         }
@@ -217,7 +219,8 @@ public abstract class CheckF12 : CheckBase
                 Row = duplicateLines,
                 Column = "2 - 16",
                 Value = "",
-                Message = $"Данные граф 2-16 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
+                Message = $"Данные граф 2-16 в строках {duplicateLines} продублированы. " +
+                          $"Следует проверить правильность предоставления данных."
             });
         }
         return result;

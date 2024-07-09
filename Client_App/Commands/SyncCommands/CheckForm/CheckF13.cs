@@ -793,7 +793,7 @@ public abstract class CheckF13 : CheckBase
                 default:
                     return result;
             }
-            if (halfLife < 60 && rad != "иод-125")
+            if (halfLife < 60 || rad == "иод-125")
             {
                 shortRad = rad;
                 shortRadHalfLife = halfLife;
@@ -811,7 +811,7 @@ public abstract class CheckF13 : CheckBase
                 Value = Convert.ToString(radionuclids),
                 Message = $"Период полураспада должен быть более 60 суток. " +
                           $"Введенный вами радионуклид {shortRad} имеет период полураспада {shortRadHalfLife} суток. " +
-                          $"ОРИ на основе короткоживущих радионуклидов учитываются в формах 1.9 и 2.12."
+                          $"ОРИ на основе короткоживущих радионуклидов (включая иод-125) учитываются в формах 1.9 и 2.12."
             });
         }
         return result;
