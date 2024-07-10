@@ -221,17 +221,14 @@ public abstract class CheckBase
 
     #region ConvertStringToExponential
 
-    protected static string ConvertStringToExponential(string? str)
-    {
-        str ??= "";
-        return str
-            .ToLower()
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .Replace(".", ",")
-            .Replace('е', 'e');
-    }
+    protected static string ConvertStringToExponential(string? str) =>
+        (str ?? string.Empty)
+        .ToLower()
+        .Trim()
+        .TrimStart('(')
+        .TrimEnd(')')
+        .Replace(".", ",")
+        .Replace('е', 'e');
 
     #endregion
 

@@ -328,7 +328,7 @@ public abstract class CheckF11 : CheckBase
         var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var valid = Radionuclids_DB_Valids.Any(nuclid =>
-            radionuclids?.Contains(nuclid, StringComparison.CurrentCultureIgnoreCase) == true);
+            radionuclids.Contains(nuclid, StringComparison.CurrentCultureIgnoreCase));
         if (!valid)
         {
             result.Add(new CheckError
@@ -1062,7 +1062,7 @@ public abstract class CheckF11 : CheckBase
                 FormNum = "form_11",
                 Row = (line + 1).ToString(),
                 Column = "FactoryNumber_DB",
-                Value = quantity?.ToString(),
+                Value = factoryNum,
                 Message = "Заполните сведения о заводском номере ЗРИ. Если номер отсутствует, " +
                 "в ячейке следует указать символ \"-\" без кавычек. Для упаковки однотипных ЗРИ, " +
                 "имеющей один паспорт (сертификат) заводские номера в списке разделяются точкой с запятой."
@@ -1089,7 +1089,7 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Quantity_DB",
                 Value = quantity.ToString(),
-                Message = "Укажите количество ЗРИ"
+                Message = "Укажите количество ЗРИ."
             });
         }
         return result;
@@ -1103,7 +1103,7 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_033(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var rad = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var rad = (forms[line].Radionuclids_DB ?? string.Empty).Trim().ToLower();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         var quantity = forms[line].Quantity_DB ?? 0;
 
@@ -1529,7 +1529,9 @@ public abstract class CheckF11 : CheckBase
             var dMinValue = dValueList.Min();
             var dMaxValue = dValueList.Max();
             valid = TryParseDoubleExtended(activity, out var aValue);
-            aValue /= quantity != null && quantity != 0 ? (double)quantity : 1.0;
+            aValue /= quantity != null && quantity != 0 
+                ? (double)quantity 
+                : 1.0;
             if (valid)
             {
                 var adMinBound = dMaxValue == 0.0
