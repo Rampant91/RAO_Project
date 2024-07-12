@@ -754,7 +754,8 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         var type = (forms[line].Type_DB ?? string.Empty).Trim();
-        if (type != string.Empty)
+        var valid = type != string.Empty;
+        if (!valid)
         {
             result.Add(new CheckError
             {
