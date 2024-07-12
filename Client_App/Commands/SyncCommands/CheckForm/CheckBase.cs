@@ -6,9 +6,11 @@ using System.Globalization;
 using System.IO;
 using System;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -95,10 +97,10 @@ public abstract class CheckBase
         string[] operationCodeWithDeadline5 = { "73", "74", "75" };
         string[] operationCodeWithDeadline10 =
         {
-            "10", "11", "12", "13", "14", "15", "16", "17", "18", "21", "22", "25", "26", "27", "28", "29", 
-            "31", "32", "35", "37", "38", "39", "41", "42", "43", "44", "45", "46", "47", "48", "49", "51", 
-            "52", "53", "54", "55", "56", "57", "58", "59", "61", "62", "63", "64", "65", "66", "67", "68", 
-            "72", "76", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
+            "11", "12", "13", "14", "15", "16", "17", "18", "21", "22", "25", "26", "27", "28", "29", 
+            "31", "32", "35", "37", "38", "39", "41", "42", "43", "44", "45", "46", "47", "48", "49", 
+            "51", "52", "53", "54", "55", "56", "57", "58", "59", "61", "62", "63", "64", "65", "66", 
+            "67", "68", "72", "76", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
         };
         string[] operationCodeWithDeadline90 = { "01" };
         var formNum = rep.FormNum_DB.Replace(".", "");
@@ -181,33 +183,11 @@ public abstract class CheckBase
         foreach (var note in notes)
         {
             if (note.RowNumber_DB == null) continue;
-            var noteRowsReal = note.RowNumber_DB.Replace(" ", string.Empty);
-            List<int> noteRowsFinalInt = new();
-            List<string> noteRowsRealStr = new(noteRowsReal.Split(','));
-            foreach (var noteRowCluster in noteRowsRealStr)
-            {
-                if (noteRowCluster.Contains('-'))
-                {
-                    var noteRowBounds = noteRowCluster.Split('-');
-                    if (noteRowBounds.Length != 2
-                        || !int.TryParse(noteRowBounds[0], out var noteRowsBegin)
-                        || !int.TryParse(noteRowBounds[1], out var noteRowsEnd)) continue;
-                    for (var i = noteRowsBegin; i <= noteRowsEnd; i++)
-                    {
-                        noteRowsFinalInt.Add(i);
-                    }
-                }
-                else
-                {
-                    if (int.TryParse(noteRowCluster, out var noteRowClusterInt))
-                    {
-                        noteRowsFinalInt.Add(noteRowClusterInt);
-                    }
-                }
-            }
-            if (noteRowsFinalInt.Any(noteRowNumber =>
+            var noteRowsSet = GetNumSetFromSequence(note.RowNumber_DB);
+            var noteGraphSet = GetNumSetFromSequence(note.GraphNumber_DB);
+            if (noteRowsSet.Any(noteRowNumber =>
                     noteRowNumber == line + 1
-                    && note.GraphNumber_DB == graphNumber.ToString()
+                    && noteGraphSet.Contains(graphNumber)
                     && !string.IsNullOrWhiteSpace(note.Comment_DB)))
             {
                 valid = true;
@@ -215,6 +195,35 @@ public abstract class CheckBase
             }
         }
         return valid;
+    }
+
+    private static HashSet<int> GetNumSetFromSequence(string? sequence)
+    {
+        var numSet = new HashSet<int>();
+        var clusters = (sequence ?? string.Empty)
+            .Replace(" ", string.Empty)
+            .Replace(';', ',')
+            .Split(',')
+            .ToHashSet();
+        foreach (var cluster in clusters)
+        {
+            if (cluster.Contains('-'))
+            {
+                var bounds = cluster.Split('-');
+                if (bounds.Length != 2
+                    || !int.TryParse(bounds[0], out var boundBegin)
+                    || !int.TryParse(bounds[1], out var boundEnd)) continue;
+                for (var i = boundBegin; i <= boundEnd; i++)
+                {
+                    numSet.Add(i);
+                }
+            }
+            else if (int.TryParse(cluster, out var clusterIntValue))
+            {
+                numSet.Add(clusterIntValue);
+            }
+        }
+        return numSet;
     }
 
     #endregion

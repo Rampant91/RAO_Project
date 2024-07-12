@@ -37,6 +37,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
     #endregion
 
     #region Contructures
+
     public MainWindow(MainWindowVM dataContext)
     {
         DataContext = dataContext;
@@ -60,9 +61,11 @@ public class MainWindow : BaseWindow<MainWindowVM>
     {
         AvaloniaXamlLoader.Load(this);
     }
+
     #endregion
 
     #region ShowDialog
+
     private async Task DoShowDialogAsync(InteractionContext<ChangeOrCreateVM, object> interaction)
     {
         FormChangeOrCreate frm = new(interaction.Input);
@@ -88,24 +91,27 @@ public class MainWindow : BaseWindow<MainWindowVM>
             
         interaction.SetOutput(answer);
     }
+
     #endregion
 
     #region Events
+
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
         ShowInit();
     }
+
     protected override void OnClosing(CancelEventArgs e)
     {
         base.OnClosing(e);
     }
+
     #endregion
 
     #region ShowInit_Контекстное меню и не только
 
-    private static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal,
-        MainWindowVM dataContext)
+    private static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, MainWindowVM dataContext)
     {
         #region Grd1_Список организаций_Контекстное меню
 
@@ -264,5 +270,6 @@ public class MainWindow : BaseWindow<MainWindowVM>
         SetCommandList(grd3, grd4, "2.0", dataContext);
         #endregion
     }
+
     #endregion
 }

@@ -907,7 +907,6 @@ public abstract class CheckF14 : CheckBase
             .Replace(" ", string.Empty)
             .ToLower()
             .Split(';');
-        var valid = true;
         var shortRad = string.Empty;
         double shortRadHalfLife = 0;
         foreach (var rad in radArray)
@@ -916,7 +915,7 @@ public abstract class CheckF14 : CheckBase
             if (phEntry is null) return result;
             var unit = phEntry["unit"];
             var value = phEntry["value"].Replace('.', ',');
-            if (!TryParseDoubleExtended(value, out var halfLife)) return result;
+            if (!TryParseDoubleExtended(value, out var halfLife)) continue;
             switch (unit)
             {
                 case "лет":
@@ -931,29 +930,26 @@ public abstract class CheckF14 : CheckBase
                     halfLife /= 1440;
                     break;
                 default:
-                    return result;
+                    continue;
             }
             if (halfLife < 60 || rad == "иод-125")
             {
                 shortRad = rad;
                 shortRadHalfLife = halfLife;
-                valid = false;
-                break;
+                continue;
             }
+            return result;
         }
-        if (!valid)
+        result.Add(new CheckError
         {
-            result.Add(new CheckError
-            {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Radionuclids_DB",
-                Value = radionuclids,
-                Message = $"Период полураспада должен быть более 60 суток. " +
-                          $"Введенный вами радионуклид {shortRad} имеет период полураспада {shortRadHalfLife} суток. " +
-                          $"ОРИ на основе короткоживущих радионуклидов (включая иод-125) учитываются в формах 1.9 и 2.12."
-            });
-        }
+            FormNum = "form_14",
+            Row = (line + 1).ToString(),
+            Column = "Radionuclids_DB",
+            Value = radionuclids,
+            Message = $"Период полураспада должен быть более 60 суток. " +
+                      $"Введенный вами радионуклид {shortRad} имеет период полураспада {shortRadHalfLife} суток. " +
+                      $"ОРИ на основе короткоживущих радионуклидов (включая иод-125) учитываются в формах 1.9 и 2.12."
+        });
         return result;
     }
 
@@ -1100,9 +1096,7 @@ public abstract class CheckF14 : CheckBase
         if (radsArray.Length == 1
             || isEqRads
             || !TryParseDoubleExtended(activity, out var activityDoubleValue)
-            || !TryParseDoubleExtended(mass, out var massDoubleValue)
             || activityDoubleValue <= 0
-            || massDoubleValue <= 0
             || !radsArray
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad))) return result;
@@ -1128,6 +1122,20 @@ public abstract class CheckF14 : CheckBase
         }
         if (!anyMza) return result;
 
+        if(!TryParseDoubleExtended(mass, out var massDoubleValue) && activityDoubleValue < minimumMza)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_14",
+                Row = (line + 1).ToString(),
+                Column = "Activity_DB",
+                Value = activity,
+                Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
+            });
+            return result;
+        }
+        if (massDoubleValue <= 0) return result;
+
         if (activityDoubleValue < minimumMza
             && activityDoubleValue / massDoubleValue < minimumMzua)
         {
@@ -1141,7 +1149,7 @@ public abstract class CheckF14 : CheckBase
             });
             return result;
         }
-        if (activityDoubleValue < minimumMza)
+        if (activityDoubleValue < minimumMza )
         {
             result.Add(new CheckError
             {
