@@ -629,8 +629,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -737,8 +735,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -892,8 +888,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -1453,8 +1447,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -1526,7 +1518,7 @@ public partial class Form17 : Form1
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
-            rm.PropertyChanged += MassOutOfPackValueChanged;
+            rm.PropertyChanged += MassOutOfPack_ValueChanged;
             Dictionary.Add(nameof(MassOutOfPack), rm);
             return (RamAccess<string>)Dictionary[nameof(MassOutOfPack)];
         }
@@ -1537,14 +1529,12 @@ public partial class Form17 : Form1
         }
     }
 
-    private void MassOutOfPackValueChanged(object value, PropertyChangedEventArgs args)
+    private void MassOutOfPack_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -1695,8 +1685,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -1784,8 +1772,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -1874,8 +1860,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -1964,8 +1948,6 @@ public partial class Form17 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');

@@ -286,8 +286,6 @@ public partial class Form12 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp.Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');

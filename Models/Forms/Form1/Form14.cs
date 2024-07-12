@@ -367,8 +367,6 @@ public class Form14 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -516,8 +514,6 @@ public class Form14 : Form1
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         value1 = value1
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
@@ -606,8 +602,6 @@ public class Form14 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');

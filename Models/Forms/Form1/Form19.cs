@@ -258,8 +258,6 @@ public class Form19 : Form1
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');

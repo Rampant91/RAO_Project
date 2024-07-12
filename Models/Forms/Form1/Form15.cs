@@ -422,8 +422,6 @@ public partial class Form15 : Form1
         var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
         value1 = value1
             .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');

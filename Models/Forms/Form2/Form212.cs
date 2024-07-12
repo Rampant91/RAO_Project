@@ -262,8 +262,6 @@ public class Form212 : Form2
         {
             value1 = value1
                 .Trim()
-                .TrimStart('(')
-                .TrimEnd(')')
                 .ToLower()
                 .Replace('.', ',')
                 .Replace('е', 'e');
