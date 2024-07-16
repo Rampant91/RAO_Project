@@ -22,6 +22,7 @@ using Models.DBRealization;
 using System.Threading;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.PassportFill;
 
 namespace Client_App.ViewModels;
 
@@ -177,13 +178,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand SortForm { get; set; }                          //  Сортировка по порядковому номеру
     public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО
     public ICommand SourceTransmissionAll { get; set; }             //  Перевод всех источников в форме из РВ в РАО
+    public ICommand PassportFill { get; set; }                      //  Заполнение шаблона паспорта в 1.7 из выделенных строк
+    public ICommand PassportFillAll { get; set; }                   //  Заполнения шаблона паспорта в 1.7 из всех строк
 
     #endregion
 
     #region Constructor
 
     #region ChangeFormOrOrg
-    
+
     public ChangeOrCreateVM(string param, in Report rep)
     {
         if (rep.FormNum_DB is "1.0" or "2.0")
@@ -345,6 +348,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         SaveReport = new SaveReportAsyncCommand(this);
         SetNumberOrder = new SetNumberOrderSyncCommand(this);
         SortForm = new SortFormSyncCommand(this);
+        PassportFill = new PassportFillSyncCommand(this);
+        PassportFillAll = new PassportFillAllSyncCommand(this);
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();

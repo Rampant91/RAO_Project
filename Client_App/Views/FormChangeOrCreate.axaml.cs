@@ -2075,9 +2075,29 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         ContextMenuText = ["Очистить ячейки              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
+                    Rgrd.CommandsList.Add(new KeyCommand
+                    {
+                        Key = Avalonia.Input.Key.P,
+                        KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                        IsDoubleTappedCommand = false,
+                        IsContextMenuCommand = true,
+                        ParamName = "SelectedItems",
+                        ContextMenuText = ["Паспорт для упаковки                    Ctrl+P"],
+                        Command = dataContext.PassportFill
+                    });
+                    Rgrd.CommandsList.Add(new KeyCommand
+                    {
+                        Key = Avalonia.Input.Key.P,
+                        KeyModifiers = Avalonia.Input.KeyModifiers.Control | Avalonia.Input.KeyModifiers.Shift,
+                        IsDoubleTappedCommand = false,
+                        IsContextMenuCommand = true,
+                        ParamName = "",
+                        ContextMenuText = ["Паспорта для всех упаковок              Ctrl+Shift+P"],
+                        Command = dataContext.PassportFillAll
+                    });
                     #endregion
 
-                #region Notes Context Menu
+                    #region Notes Context Menu
                     var Ngrd = (DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                     Ngrd.CommandsList.Add(new KeyCommand
                     {
