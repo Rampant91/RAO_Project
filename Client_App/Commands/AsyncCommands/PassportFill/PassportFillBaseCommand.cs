@@ -42,13 +42,13 @@ namespace Client_App.Commands.AsyncCommands.PassportFill
             {
                 try
                 {
-                    int lineIndex = Storage.Rows17.IndexOf(collection.ToList<Models.Forms.Form1.Form17>()[i]);
+                    int lineIndex = Storage.Rows17.IndexOf(collection.ToList()[i]);
                     if (lineIndex < 0) continue;
                     int lineIndexParent = lineIndex;
                     while (lineIndexParent >= 0)
                     {
-                        if (!string.IsNullOrWhiteSpace(Storage.Rows17[lineIndexParent].PackType_DB) && Storage.Rows17[lineIndexParent].PackFactoryNumber_DB.Trim() != "-"
-                            && !string.IsNullOrWhiteSpace(Storage.Rows17[lineIndexParent].PackNumber_DB) && Storage.Rows17[lineIndexParent].PackFactoryNumber_DB.Trim() != "-")
+                        if (!string.IsNullOrWhiteSpace(Storage.Rows17[lineIndexParent].PackType_DB) && Storage.Rows17[lineIndexParent].PackType_DB.Trim() != "-"
+                            && !string.IsNullOrWhiteSpace(Storage.Rows17[lineIndexParent].PackNumber_DB) && Storage.Rows17[lineIndexParent].PackNumber_DB.Trim() != "-")
                         {
                             break;
                         }
@@ -58,12 +58,27 @@ namespace Client_App.Commands.AsyncCommands.PassportFill
                     if (!applicableOperationCodes.Contains(Storage.Rows17[lineIndexParent].OperationCode_DB)) continue;
                     string packIdentity = $"{Storage.Rows17[lineIndexParent].PackType_DB}_{Storage.Rows17[lineIndexParent].PackFactoryNumber_DB}";
                     if (!packageData.ContainsKey(packIdentity)) packageData.Add(packIdentity, []);
-                    packageData[packIdentity].Add(lineIndex);
+                    if (packageData[packIdentity].Contains(lineIndex)) continue;
+                    lineIndex = lineIndexParent;
+                    while (lineIndex < Storage.Rows17.Count)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Storage.Rows17[lineIndex].PackType_DB) && Storage.Rows17[lineIndex].PackFactoryNumber_DB.Trim() != "-"
+                            && !string.IsNullOrWhiteSpace(Storage.Rows17[lineIndex].PackNumber_DB) && Storage.Rows17[lineIndex].PackFactoryNumber_DB.Trim() != "-")
+                        {
+                            if (lineIndex != lineIndexParent) break;
+                        }
+                        packageData[packIdentity].Add(lineIndex);
+                        lineIndex++;
+                    }
                 }
                 catch (Exception)
                 {
                     continue;
                 }
+            }
+            foreach (string key in packageData.Keys.ToList())
+            {
+                if (packageData[key].Count == 0) packageData.Remove(key);
             }
             if (packageData.Count == 0)
             {
@@ -179,7 +194,7 @@ namespace Client_App.Commands.AsyncCommands.PassportFill
                     excelPackage.Workbook.Worksheets[0].Cells["G23"].Value = entry.FormingDate_DB;
                     excelPackage.Workbook.Worksheets[0].Cells["Q25"].Value = entry.FormingDate_DB;
                     excelPackage.Workbook.Worksheets[0].Cells["G3"].Value = entry.PassportNumber_DB;
-                    excelPackage.Workbook.Worksheets[0].Cells["L24"].Value = $"({entry.Volume_DB})";
+                    excelPackage.Workbook.Worksheets[0].Cells["L24"].Value = $"({(TryParseDoubleExtended(entry.Volume_DB, out double volume) ? volume.ToString("0.00") : entry.Volume_DB)})";
                     excelPackage.Workbook.Worksheets[0].Cells["L23"].Value = TryParseDoubleExtended(entry.Mass_DB ?? string.Empty, out double mass)
                         ? (mass * 1000).ToString("0.00") : "-";
                     for (int i = 0; i < nuclids.Count; i++)
@@ -224,19 +239,19 @@ namespace Client_App.Commands.AsyncCommands.PassportFill
                     excelPackage.Workbook.Worksheets[0].Cells["G13"].Value = $"{Storage.Reports.Master.ShortJurLicoRep.Value} ОКПО {entry.ProviderOrRecieverOKPO_DB}";
                     excelPackage.Workbook.Worksheets[0].Cells["C31"].Value = entry.CodeRAO_DB;
                     excelPackage.Workbook.Worksheets[0].Cells["C7"].Value = entry.StatusRAO_DB;
-                    excelPackage.Workbook.Worksheets[0].Cells["M24"].Value = $"({entry.VolumeOutOfPack_DB})";
+                    excelPackage.Workbook.Worksheets[0].Cells["M24"].Value = $"({(TryParseDoubleExtended(entry.VolumeOutOfPack_DB,out double volumeOutOfPack)?volumeOutOfPack.ToString("0.00"):entry.VolumeOutOfPack_DB)})";
                     excelPackage.Workbook.Worksheets[0].Cells["M23"].Value = TryParseDoubleExtended(entry.MassOutOfPack_DB ?? string.Empty, out double mass_b)
                         ? (mass_b * 1000).ToString("0.00") : "-";
                     if (TryParseDoubleExtended(entry.MassOutOfPack_DB ?? string.Empty, out double mass_nuclids) && mass_nuclids != 0)
                     {
                         excelPackage.Workbook.Worksheets[0].Cells["P34"].Value = tNuclidActivityExists
-                            ? (tNuclidActivity / mass_nuclids / 1000000).ToString("0.00E00") : "0";
+                            ? ToExpString(tNuclidActivity / mass_nuclids / 1000000) : "0";
                         excelPackage.Workbook.Worksheets[0].Cells["P33"].Value = bNuclidActivityExists
-                            ? (bNuclidActivity / mass_nuclids / 1000000).ToString("0.00E00") : "0";
+                            ? ToExpString(bNuclidActivity / mass_nuclids / 1000000) : "0";
                         excelPackage.Workbook.Worksheets[0].Cells["P32"].Value = aNuclidActivityExists
-                            ? (aNuclidActivity / mass_nuclids / 1000000).ToString("0.00E00") : "0";
+                            ? ToExpString(aNuclidActivity / mass_nuclids / 1000000) : "0";
                         excelPackage.Workbook.Worksheets[0].Cells["P31"].Value = uNuclidActivityExists
-                            ? (uNuclidActivity / mass_nuclids / 1000000).ToString("0.00E00") : "0";
+                            ? ToExpString(uNuclidActivity / mass_nuclids / 1000000) : "0";
                     }
                     string? CodeRAO_2 = entry.CodeRAO_DB.Length >= 2 ? entry.CodeRAO_DB.Substring(1, 1) : null;
                     string? CodeRAO_7 = entry.CodeRAO_DB.Length >= 7 ? entry.CodeRAO_DB.Substring(6, 1) : null;
@@ -388,8 +403,8 @@ namespace Client_App.Commands.AsyncCommands.PassportFill
                         $"{Environment.NewLine}Инфицирующие (патогенные) вещества - отсутствуют.";
                     excelPackage.Workbook.Worksheets[0].Cells["J30"].Value = "Самовозгорающиеся и легковоспламеняющиеся вещества - отсутствуют.";
 
-                    excelPackage.Workbook.Worksheets[0].Cells["P30"].Value = $"{longNuclidActivitySum}";
-                    excelPackage.Workbook.Worksheets[0].Cells["Q30"].Value = $"{(tNuclidActivity + aNuclidActivity + bNuclidActivity + uNuclidActivity).ToString("0.00E00")}";
+                    excelPackage.Workbook.Worksheets[0].Cells["P30"].Value = $"{ToExpString(longNuclidActivitySum)}";
+                    excelPackage.Workbook.Worksheets[0].Cells["Q30"].Value = $"{ToExpString(tNuclidActivity + aNuclidActivity + bNuclidActivity + uNuclidActivity)}";
                     excelPackage.Workbook.Worksheets[0].Cells["R30"].Value = "отсутствуют";
                     excelPackage.Workbook.Worksheets[0].Cells[$"N{39 + rowShift}"].Value = "активность приведена на";
                     excelPackage.Save();
@@ -406,8 +421,7 @@ namespace Client_App.Commands.AsyncCommands.PassportFill
                     ContentTitle = msgTitle,
                     ContentHeader = "Уведомление",
                     ContentMessage =
-                        $"Паспорт{suffix1} успешно сформирован{suffix4}." +
-                        $"{Environment.NewLine}и помещён{suffix4} в" +
+                        $"Паспорт{suffix1} успешно сформирован{suffix4} и помещён{suffix4} в" +
                         $"{Environment.NewLine}{folderPath}.",
                     MinWidth = 400,
                     MinHeight = 150,
@@ -428,6 +442,12 @@ namespace Client_App.Commands.AsyncCommands.PassportFill
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(Desktop.MainWindow));
+        }
+        protected static string ToExpString(double val)
+        {
+            string res = val.ToString("0.00E00");
+            if (res.Contains("E-")) res = res.Replace("E-", "e"); else res = res.Replace("E", "e+");
+            return res;
         }
         protected static string ConvertStringToExponential(string? str) =>
             (str ?? string.Empty)

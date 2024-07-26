@@ -10,15 +10,18 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.CodeAnalysis;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public abstract class CheckBase
 {
+    protected static bool checkNumPrint = true;
     private protected static List<Dictionary<string, string>> OKSM = new();
 
     private protected static List<Dictionary<string, string>> R = new();
+
+    private protected static List<Dictionary<string, string>> Packs = new();
 
     private protected static readonly bool DB_Ignore = true;
 
@@ -237,6 +240,7 @@ public abstract class CheckBase
         .TrimStart('(')
         .TrimEnd(')')
         .Replace(".", ",")
+        .Replace("*", "")
         .Replace('е', 'e');
 
     #endregion
@@ -247,8 +251,8 @@ public abstract class CheckBase
     {
         public int Compare(string? x, string? y)
         {
-            var strA = (x ?? string.Empty).Trim();
-            var strB = (y ?? string.Empty).Trim();
+            var strA = (x ?? string.Empty).ToLower().Trim();
+            var strB = (y ?? string.Empty).ToLower().Trim();
             return string.CompareOrdinal(strA, strB);
         }
     }
@@ -273,6 +277,14 @@ public abstract class CheckBase
             R_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx"));
 #else
             R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
+#endif
+        }
+        if (Packs.Count == 0)
+        {
+#if DEBUG
+            Packs_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Packs.xlsx"));
+#else
+            Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
 #endif
         }
         if (HolidaysSpecific.Count == 0)
@@ -367,19 +379,50 @@ public abstract class CheckBase
                 {"name", worksheet.Cells[i, 1].Text},
                 {"value", worksheet.Cells[i, 5].Text},
                 {"unit", worksheet.Cells[i, 6].Text},
+                {"decay", worksheet.Cells[i, 7].Text},
                 {"code", worksheet.Cells[i, 8].Text},
                 {"D", worksheet.Cells[i, 15].Text},
                 {"MZUA", worksheet.Cells[i, 16].Text},
                 {"MZA", worksheet.Cells[i, 17].Text},
-                {"A_Solid", worksheet.Cells[i, 18].Text},
-                {"A_Liquid", worksheet.Cells[i, 20].Text},
+                {"A_Solid", worksheet.Cells[i, 20].Text},
+                {"A_Liquid", worksheet.Cells[i, 18].Text},
                 {"OSPORB_Solid", worksheet.Cells[i, 22].Text},
-                {"OSPORB_Liquid", worksheet.Cells[i, 23].Text}
+                {"OSPORB_Liquid", worksheet.Cells[i, 23].Text},
+                {"Ki", worksheet.Cells[i, 25].Text}
             });
             if (string.IsNullOrWhiteSpace(R[^1]["D"]) || !double.TryParse(R[^1]["D"], out var val1) || val1 < 0)
             {
                 R[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
             }
+            i++;
+        }
+    }
+
+    #endregion
+
+    #region PacksFromFile
+
+    private protected static void Packs_Populate_From_File(string filePath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(filePath)) return;
+        FileInfo excelImportFile = new(filePath);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet = xls.Workbook.Worksheets["Лист1"];
+        var i = 2;
+        Packs.Clear();
+        while (worksheet.Cells[i, 1].Text != string.Empty)
+        {
+            Packs.Add(new Dictionary<string, string>
+            {
+                {"name", worksheet.Cells[i, 1].Text},
+                {"dimensions", worksheet.Cells[i, 2].Text},
+                {"volume", worksheet.Cells[i, 3].Text},
+                {"mass", worksheet.Cells[i, 4].Text},
+                {"coef", worksheet.Cells[i, 5].Text},
+                {"class", worksheet.Cells[i, 6].Text},
+                {"mass_total", worksheet.Cells[i, 7].Text}
+            });
             i++;
         }
     }

@@ -45,9 +45,9 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
             case "1.6":
                 result.AddRange(CheckF16.Check_Total(reps, rep));
                 break;
-            //case "1.7":
-            //    result.AddRange(CheckF17.Check_Total(reps, rep));
-            //    break;
+            case "1.7":
+                result.AddRange(CheckF17.Check_Total(reps, rep));
+                break;
             //case "1.8":
             //    result.AddRange(CheckF18.Check_Total(reps, rep));
             //    break;
