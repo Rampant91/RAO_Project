@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Найти и открыть соответствующий файл паспорта в сетевом хранилище 
+//  Найти и открыть соответствующий файл паспорта в сетевом хранилище
 internal class OpenPasAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)

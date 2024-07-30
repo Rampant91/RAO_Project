@@ -139,53 +139,144 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         #endregion
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        var dto11List = dbReadOnly.ReportsCollectionDbSet
+        //var dto11List = dbReadOnly.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+        //    .ToArrayAsync(cancellationToken: cts.Token).Result
+        //    .SelectMany(reps => reps.Report_Collection
+        //        .Where(rep => rep.FormNum_DB == "1.1")
+        //        .SelectMany(rep => rep.Rows11
+        //            .Where(form11 => 
+        //                ComparePasParam(form11.PassportNumber_DB + form11.FactoryNumber_DB, pasNum + factoryNum))
+        //            .Select(form11 => new Form11DTO
+        //            {
+        //                RegNoRep = reps.Master.RegNoRep.Value,
+        //                ShortJurLico = reps.Master.ShortJurLicoRep.Value,
+        //                OkpoRep = reps.Master.OkpoRep.Value,
+        //                FormNum = rep.FormNum_DB,
+        //                StartPeriod = rep.StartPeriod_DB,
+        //                EndPeriod = rep.EndPeriod_DB,
+        //                CorrectionNumber = rep.CorrectionNumber_DB,
+        //                RowCount = rep.Rows11.Count,
+        //                NumberInOrder = form11.NumberInOrder_DB,
+        //                OperationCode = form11.OperationCode_DB,
+        //                OperationDate = form11.OperationDate_DB,
+        //                PassportNumber = form11.PassportNumber_DB,
+        //                Type = form11.Type_DB,
+        //                Radionuclids = form11.Radionuclids_DB,
+        //                FactoryNumber = form11.FactoryNumber_DB,
+        //                Activity = form11.Activity_DB,
+        //                Quantity = form11.Quantity_DB,
+        //                CreatorOKPO = form11.CreatorOKPO_DB,
+        //                CreationDate = form11.CreationDate_DB,
+        //                Category = form11.Category_DB,
+        //                SignedServicePeriod = form11.SignedServicePeriod_DB,
+        //                PropertyCode = form11.PropertyCode_DB,
+        //                Owner = form11.Owner_DB,
+        //                DocumentVid = form11.DocumentVid_DB,
+        //                DocumentNumber = form11.DocumentNumber_DB,
+        //                DocumentDate = form11.DocumentDate_DB,
+        //                ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
+        //                TransporterOKPO = form11.TransporterOKPO_DB,
+        //                PackName = form11.PackName_DB,
+        //                PackType = form11.PackType_DB,
+        //                PackNumber = form11.PackNumber_DB
+        //            })))
+        //    .ToList();
+
+        //var dto11List = dbReadOnly.ReportCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Rows11)
+        //    .Where(x => x.FormNum_DB == "1.1")
+        //    .ToArrayAsync(cancellationToken: cts.Token).Result
+        //    .SelectMany(rep => rep.Rows11
+        //        .Where(form11 =>
+        //            ComparePasParam(form11.PassportNumber_DB + form11.FactoryNumber_DB, pasNum + factoryNum))
+        //        .Select(form11 => new Form11DTO
+        //        {
+        //            RegNoRep = rep.Reports.Master.RegNoRep.Value,
+        //            ShortJurLico = rep.Reports.Master.ShortJurLicoRep.Value,
+        //            OkpoRep = rep.Reports.Master.OkpoRep.Value,
+        //            FormNum = rep.FormNum_DB,
+        //            StartPeriod = rep.StartPeriod_DB,
+        //            EndPeriod = rep.EndPeriod_DB,
+        //            CorrectionNumber = rep.CorrectionNumber_DB,
+        //            RowCount = rep.Rows11.Count,
+        //            NumberInOrder = form11.NumberInOrder_DB,
+        //            OperationCode = form11.OperationCode_DB,
+        //            OperationDate = form11.OperationDate_DB,
+        //            PassportNumber = form11.PassportNumber_DB,
+        //            Type = form11.Type_DB,
+        //            Radionuclids = form11.Radionuclids_DB,
+        //            FactoryNumber = form11.FactoryNumber_DB,
+        //            Activity = form11.Activity_DB,
+        //            Quantity = form11.Quantity_DB,
+        //            CreatorOKPO = form11.CreatorOKPO_DB,
+        //            CreationDate = form11.CreationDate_DB,
+        //            Category = form11.Category_DB,
+        //            SignedServicePeriod = form11.SignedServicePeriod_DB,
+        //            PropertyCode = form11.PropertyCode_DB,
+        //            Owner = form11.Owner_DB,
+        //            DocumentVid = form11.DocumentVid_DB,
+        //            DocumentNumber = form11.DocumentNumber_DB,
+        //            DocumentDate = form11.DocumentDate_DB,
+        //            ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
+        //            TransporterOKPO = form11.TransporterOKPO_DB,
+        //            PackName = form11.PackName_DB,
+        //            PackType = form11.PackType_DB,
+        //            PackNumber = form11.PackNumber_DB
+        //        }))
+        //    .ToList();
+
+        var dto11List = dbReadOnly.form_11
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+            .Include(x => x.Report).ThenInclude(x => x.Reports)
+            .Where(x => x.FormNum_DB == "1.1")
             .ToArrayAsync(cancellationToken: cts.Token).Result
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1")
-                .SelectMany(rep => rep.Rows11
-                    .Where(form11 => ComparePasParam(form11.PassportNumber_DB, pasNum)
-                                     && ComparePasParam(form11.FactoryNumber_DB, factoryNum))
-                    .Select(form11 => new Form11DTO
-                    {
-                        RegNoRep = reps.Master.RegNoRep.Value,
-                        ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-                        OkpoRep = reps.Master.OkpoRep.Value,
-                        FormNum = rep.FormNum_DB,
-                        StartPeriod = rep.StartPeriod_DB,
-                        EndPeriod = rep.EndPeriod_DB,
-                        CorrectionNumber = rep.CorrectionNumber_DB,
-                        RowCount = rep.Rows11.Count,
-                        NumberInOrder = form11.NumberInOrder_DB,
-                        OperationCode = form11.OperationCode_DB,
-                        OperationDate = form11.OperationDate_DB,
-                        PassportNumber = form11.PassportNumber_DB,
-                        Type = form11.Type_DB,
-                        Radionuclids = form11.Radionuclids_DB,
-                        FactoryNumber = form11.FactoryNumber_DB,
-                        Activity = form11.Activity_DB,
-                        Quantity = form11.Quantity_DB,
-                        CreatorOKPO = form11.CreatorOKPO_DB,
-                        CreationDate = form11.CreationDate_DB,
-                        Category = form11.Category_DB,
-                        SignedServicePeriod = form11.SignedServicePeriod_DB,
-                        PropertyCode = form11.PropertyCode_DB,
-                        Owner = form11.Owner_DB,
-                        DocumentVid = form11.DocumentVid_DB,
-                        DocumentNumber = form11.DocumentNumber_DB,
-                        DocumentDate = form11.DocumentDate_DB,
-                        ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
-                        TransporterOKPO = form11.TransporterOKPO_DB,
-                        PackName = form11.PackName_DB,
-                        PackType = form11.PackType_DB,
-                        PackNumber = form11.PackNumber_DB
-                    })))
+            .Where(form11 => form11.Report is { Reports: not null } 
+                             && ComparePasParam(form11.PassportNumber_DB + form11.FactoryNumber_DB, pasNum + factoryNum))
+            .Select(form11 => new Form11DTO
+            {
+                RegNoRep = form11.Report.Reports.Master.RegNoRep.Value,
+                ShortJurLico = form11.Report.Reports.Master.ShortJurLicoRep.Value,
+                OkpoRep = form11.Report.Reports.Master.OkpoRep.Value,
+                FormNum = form11.Report.FormNum_DB,
+                StartPeriod = form11.Report.StartPeriod_DB,
+                EndPeriod = form11.Report.EndPeriod_DB,
+                CorrectionNumber = form11.Report.CorrectionNumber_DB,
+                RowCount = form11.Report.Rows11.Count,
+                NumberInOrder = form11.NumberInOrder_DB,
+                OperationCode = form11.OperationCode_DB,
+                OperationDate = form11.OperationDate_DB,
+                PassportNumber = form11.PassportNumber_DB,
+                Type = form11.Type_DB,
+                Radionuclids = form11.Radionuclids_DB,
+                FactoryNumber = form11.FactoryNumber_DB,
+                Activity = form11.Activity_DB,
+                Quantity = form11.Quantity_DB,
+                CreatorOKPO = form11.CreatorOKPO_DB,
+                CreationDate = form11.CreationDate_DB,
+                Category = form11.Category_DB,
+                SignedServicePeriod = form11.SignedServicePeriod_DB,
+                PropertyCode = form11.PropertyCode_DB,
+                Owner = form11.Owner_DB,
+                DocumentVid = form11.DocumentVid_DB,
+                DocumentNumber = form11.DocumentNumber_DB,
+                DocumentDate = form11.DocumentDate_DB,
+                ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
+                TransporterOKPO = form11.TransporterOKPO_DB,
+                PackName = form11.PackName_DB,
+                PackType = form11.PackType_DB,
+                PackNumber = form11.PackNumber_DB
+            })
             .ToList();
 
         progressBarVM.LoadStatus = "Заполнение форм 1.1";
@@ -340,55 +431,100 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         
         #endregion
 
-        var dto15List = dbReadOnly.ReportsCollectionDbSet
+        //var dto15List = dbReadOnly.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+        //    .ToArray()
+        //    .SelectMany(reps => reps.Report_Collection
+        //            .Where(rep => rep.FormNum_DB == "1.5")
+        //            .SelectMany(rep => rep.Rows15
+        //                .Where(form15 => 
+        //                    ComparePasParam(form15.PassportNumber_DB + form15.FactoryNumber_DB, pasNum + factoryNum))
+        //                .Select(form15 => new Form15DTO
+        //                {
+        //                    RegNoRep = reps.Master.RegNoRep.Value,
+        //                    ShortJurLico = reps.Master.ShortJurLicoRep.Value,
+        //                    OkpoRep = reps.Master.OkpoRep.Value,
+        //                    FormNum = rep.FormNum_DB,
+        //                    StartPeriod = rep.StartPeriod_DB,
+        //                    EndPeriod = rep.EndPeriod_DB,
+        //                    CorrectionNumber = rep.CorrectionNumber_DB,
+        //                    RowCount = rep.Rows11.Count,
+        //                    NumberInOrder = form15.NumberInOrder_DB,
+        //                    OperationCode = form15.OperationCode_DB,
+        //                    OperationDate = form15.OperationDate_DB,
+        //                    PassportNumber = form15.PassportNumber_DB,
+        //                    Type = form15.Type_DB,
+        //                    Radionuclids = form15.Radionuclids_DB,
+        //                    FactoryNumber = form15.FactoryNumber_DB,
+        //                    Activity = form15.Activity_DB,
+        //                    Quantity = form15.Quantity_DB,
+        //                    CreationDate = form15.CreationDate_DB,
+        //                    StatusRAO = form15.StatusRAO_DB,
+        //                    DocumentVid = form15.DocumentVid_DB,
+        //                    DocumentNumber = form15.DocumentNumber_DB,
+        //                    DocumentDate = form15.DocumentDate_DB,
+        //                    ProviderOrRecieverOKPO = form15.ProviderOrRecieverOKPO_DB,
+        //                    TransporterOKPO = form15.TransporterOKPO_DB,
+        //                    PackName = form15.PackName_DB,
+        //                    PackType = form15.PackType_DB,
+        //                    PackNumber = form15.PackNumber_DB,
+        //                    StoragePlaceName = form15.StoragePlaceName_DB,
+        //                    StoragePlaceCode = form15.StoragePlaceCode_DB,
+        //                    RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
+        //                    Subsidy = form15.Subsidy_DB,
+        //                    FcpNumber = form15.FcpNumber_DB
+        //                })))
+        //        .ToList();
+
+        var dto15List = dbReadOnly.form_15
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+            .Include(x => x.Report).ThenInclude(x => x.Reports)
             .ToArray()
-            .SelectMany(reps => reps.Report_Collection
-                    .Where(rep => rep.FormNum_DB == "1.5")
-                    .SelectMany(rep => rep.Rows15
-                        .Where(form15 => ComparePasParam(form15.PassportNumber_DB, pasNum)
-                                         && ComparePasParam(form15.FactoryNumber_DB, factoryNum))
-                        .Select(form15 => new Form15DTO
-                        {
-                            RegNoRep = reps.Master.RegNoRep.Value,
-                            ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-                            OkpoRep = reps.Master.OkpoRep.Value,
-                            FormNum = rep.FormNum_DB,
-                            StartPeriod = rep.StartPeriod_DB,
-                            EndPeriod = rep.EndPeriod_DB,
-                            CorrectionNumber = rep.CorrectionNumber_DB,
-                            RowCount = rep.Rows11.Count,
-                            NumberInOrder = form15.NumberInOrder_DB,
-                            OperationCode = form15.OperationCode_DB,
-                            OperationDate = form15.OperationDate_DB,
-                            PassportNumber = form15.PassportNumber_DB,
-                            Type = form15.Type_DB,
-                            Radionuclids = form15.Radionuclids_DB,
-                            FactoryNumber = form15.FactoryNumber_DB,
-                            Activity = form15.Activity_DB,
-                            Quantity = form15.Quantity_DB,
-                            CreationDate = form15.CreationDate_DB,
-                            StatusRAO = form15.StatusRAO_DB,
-                            DocumentVid = form15.DocumentVid_DB,
-                            DocumentNumber = form15.DocumentNumber_DB,
-                            DocumentDate = form15.DocumentDate_DB,
-                            ProviderOrRecieverOKPO = form15.ProviderOrRecieverOKPO_DB,
-                            TransporterOKPO = form15.TransporterOKPO_DB,
-                            PackName = form15.PackName_DB,
-                            PackType = form15.PackType_DB,
-                            PackNumber = form15.PackNumber_DB,
-                            StoragePlaceName = form15.StoragePlaceName_DB,
-                            StoragePlaceCode = form15.StoragePlaceCode_DB,
-                            RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
-                            Subsidy = form15.Subsidy_DB,
-                            FcpNumber = form15.FcpNumber_DB
-                        })))
-                .ToList();
+            .Where(form15 => form15.Report is { Reports: not null } 
+                             && ComparePasParam(form15.PassportNumber_DB + form15.FactoryNumber_DB, pasNum + factoryNum))
+            .Select(form15 => new Form15DTO
+            {
+                RegNoRep = form15.Report.Reports.Master.RegNoRep.Value,
+                ShortJurLico = form15.Report.Reports.Master.ShortJurLicoRep.Value,
+                OkpoRep = form15.Report.Reports.Master.OkpoRep.Value,
+                FormNum = form15.Report.FormNum_DB,
+                StartPeriod = form15.Report.StartPeriod_DB,
+                EndPeriod = form15.Report.EndPeriod_DB,
+                CorrectionNumber = form15.Report.CorrectionNumber_DB,
+                RowCount = form15.Report.Rows11.Count,
+                NumberInOrder = form15.NumberInOrder_DB,
+                OperationCode = form15.OperationCode_DB,
+                OperationDate = form15.OperationDate_DB,
+                PassportNumber = form15.PassportNumber_DB,
+                Type = form15.Type_DB,
+                Radionuclids = form15.Radionuclids_DB,
+                FactoryNumber = form15.FactoryNumber_DB,
+                Activity = form15.Activity_DB,
+                Quantity = form15.Quantity_DB,
+                CreationDate = form15.CreationDate_DB,
+                StatusRAO = form15.StatusRAO_DB,
+                DocumentVid = form15.DocumentVid_DB,
+                DocumentNumber = form15.DocumentNumber_DB,
+                DocumentDate = form15.DocumentDate_DB,
+                ProviderOrRecieverOKPO = form15.ProviderOrRecieverOKPO_DB,
+                TransporterOKPO = form15.TransporterOKPO_DB,
+                PackName = form15.PackName_DB,
+                PackType = form15.PackType_DB,
+                PackNumber = form15.PackNumber_DB,
+                StoragePlaceName = form15.StoragePlaceName_DB,
+                StoragePlaceCode = form15.StoragePlaceCode_DB,
+                RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
+                Subsidy = form15.Subsidy_DB,
+                FcpNumber = form15.FcpNumber_DB
+            })
+            .ToList();
 
         progressBarVM.LoadStatus = "Заполнение форм 1.5";
         progressBarVM.ValueBar = 90;

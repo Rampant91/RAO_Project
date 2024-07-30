@@ -6,17 +6,16 @@ using System.Globalization;
 using System.IO;
 using System;
 using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
-using Microsoft.CodeAnalysis;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public abstract class CheckBase
 {
     protected static bool checkNumPrint = true;
+
     private protected static List<Dictionary<string, string>> OKSM = new();
 
     private protected static List<Dictionary<string, string>> R = new();

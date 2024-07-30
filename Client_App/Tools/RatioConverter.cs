@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 using Client_App.Tools.ConverterType;
@@ -22,15 +23,15 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
         var par = float.TryParse(parameter?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var floatPar)
             ? floatPar
             : 1;
-        //var scale = DisplayTools.GetScalingFactor();
+
         if (OperatingSystem.IsWindows())
         {
-            var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par/* / scale*/);
-            var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par/* / scale*/);
-            var size = isHeight
+            var scale = DisplayTools.GetScalingFactorOnWindows();
+            var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par / scale);
+            var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par / scale);
+            return isHeight
                 ? height
                 : width;
-            return size;
         }
         if (OperatingSystem.IsLinux())
         {
@@ -68,7 +69,8 @@ internal static partial class DisplayTools
 
     public static Size GetDisplaySizeOnWindows()
     {
-        var g = Graphics.FromHwnd(IntPtr.Zero);
+        if (!OperatingSystem.IsWindows()) return new Size(600, 800);
+        using var g = Graphics.FromHwnd(IntPtr.Zero);
         var desktop = g.GetHdc();
 
         var physicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DesktopVerticalRes);
@@ -98,8 +100,9 @@ internal static partial class DisplayTools
         return r;
     }
 
-    /*public static float GetScalingFactor()
+    public static float GetScalingFactorOnWindows()
     {
+        if (!OperatingSystem.IsWindows()) return 1;
         using var g = Graphics.FromHwnd(IntPtr.Zero);
         var desktop = g.GetHdc();
         var logpixelsy = GetDeviceCaps(desktop, 90);
@@ -108,8 +111,8 @@ internal static partial class DisplayTools
         var dpiScalingFactor = (float)logpixelsy / 96;
 
         return dpiScalingFactor;
-    }*/
+    }
 
-    [System.Text.RegularExpressions.GeneratedRegex(@"(\d+)x(\d+)\+0\+0")]
-    private static partial System.Text.RegularExpressions.Regex DisplayRegex();
+    [GeneratedRegex(@"(\d+)x(\d+)\+0\+0")]
+    private static partial Regex DisplayRegex();
 }

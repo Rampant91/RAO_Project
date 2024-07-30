@@ -421,12 +421,28 @@ public partial class Form11 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
+
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp
             .Trim()
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
+
+        var tmpNumWithoutSign = tmp.StartsWith('+') || tmp.StartsWith('-') 
+            ? tmp[1..] 
+            : tmp;
+        var sign = tmp.StartsWith('-') 
+            ? "-" 
+            : string.Empty;
+
+        if (!tmp.Contains('e') 
+            && (tmpNumWithoutSign.Count(x => x == '+') == 1 || tmpNumWithoutSign.Count(x => x == '-') == 1) 
+            && tmp.Contains('+') ^ tmp.Contains('-'))
+        {
+            tmp = sign + tmpNumWithoutSign.Replace("+", "e+").Replace("-", "e-");
+        }
+
         if (tmp.Equals("-"))
         {
             Activity_DB = tmp;

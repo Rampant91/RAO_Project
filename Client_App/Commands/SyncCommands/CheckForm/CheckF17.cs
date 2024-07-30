@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
-public class CheckF17 : CheckBase
+public abstract class CheckF17 : CheckBase
 {
     #region Properties
 
