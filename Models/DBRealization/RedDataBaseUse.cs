@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace Models.DBRealization;
 
-public class RedDataBaseCreation
+public static class RedDataBaseCreation
 {
     public static DbConnection GetConnectionString(string _path)
     {

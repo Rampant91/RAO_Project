@@ -655,9 +655,9 @@ public partial class Form17 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("прим."))
+        if (value.Value.Equals("прим.") || value.Value.Equals("-"))
         {
-            return false;
+            return true;
         }
         var tmp = value.Value
             .Trim()
@@ -761,9 +761,9 @@ public partial class Form17 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("прим."))
+        if (value.Value.Equals("прим.") || value.Value.Equals("-"))
         {
-            return false;
+            return true;
         }
         var tmp = value.Value
             .Trim()
@@ -831,17 +831,18 @@ public partial class Form17 : Form1
         {
             return true;
         }
-        var nuclids = value.Value.Split(";");
-        for (var k = 0; k < nuclids.Length; k++)
-        {
-            nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
-        }
+        var nuclids = (value.Value ?? string.Empty)
+            .Trim()
+            .ToLower()
+            .Replace(',', ';')
+            .Replace("; ", ";")
+            .Split(";");
         var flag = true;
         foreach (var nuclid in nuclids)
         {
             var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nuclid == item.Item1)
-                .Select(item => item.Item1);
+                .Where(item => nuclid == item.name)
+                .Select(item => item.name);
             if (!tmp.Any())
                 flag = false;
         }

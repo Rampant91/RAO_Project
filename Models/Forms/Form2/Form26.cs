@@ -398,19 +398,19 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
-            rm.PropertyChanged += RadionuclidNameValueChanged;
+            rm.PropertyChanged += RadionuclidName_ValueChanged;
             Dictionary.Add(nameof(RadionuclidName), rm);
             return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
         }
         set
         {
             RadionuclidName_DB = value.Value;
-            OnPropertyChanged(nameof(RadionuclidName));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void RadionuclidNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void RadionuclidName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -426,11 +426,22 @@ public class Form26 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmpstr = value.Value.ToLower().Replace(" ", "");
-        if (!Spravochniks.SprRadionuclids
-                .Where(item => item.Item1 == tmpstr)
-                .Select(item => item.Item1)
-                .Any())
+        var nuclids = (value.Value ?? string.Empty)
+            .Trim()
+            .ToLower()
+            .Replace(',', ';')
+            .Replace("; ", ";")
+            .Split(";");
+        var flag = true;
+        foreach (var nuclid in nuclids)
+        {
+            var tmp = Spravochniks.SprRadionuclids
+                .Where(item => nuclid == item.name)
+                .Select(item => item.name);
+            if (!tmp.Any())
+                flag = false;
+        }
+        if (!flag)
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -456,7 +467,7 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
-            rm.PropertyChanged += AverageYearConcentrationValueChanged;
+            rm.PropertyChanged += AverageYearConcentration_ValueChanged;
             Dictionary.Add(nameof(AverageYearConcentration), rm);
             return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
         }
@@ -467,7 +478,7 @@ public class Form26 : Form2
         }
     }
 
-    private void AverageYearConcentrationValueChanged(object value, PropertyChangedEventArgs args)
+    private void AverageYearConcentration_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;

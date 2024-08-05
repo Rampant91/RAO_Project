@@ -265,21 +265,26 @@ public partial class Form11 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
+        if (value.Value.Contains(','))
+        {
+            value.AddError("При перечислении необходимо использовать \";\"");
+            return false;
+        }
         if (value.Value.Equals("прим."))
         {
             return true;
         }
-        var nuclids = value.Value.Split(";");
-        for (var k = 0; k < nuclids.Length; k++)
-        {
-            nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
-        }
+        var nuclids = (value.Value ?? string.Empty)
+            .ToLower()
+            .Split(";")
+            .Select(x => x.Trim())
+            .ToHashSet();
         var flag = true;
         foreach (var nuclid in nuclids)
         {
             var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nuclid == item.Item1)
-                .Select(item => item.Item1);
+                .Where(item => nuclid == item.name)
+                .Select(item => item.name);
             if (!tmp.Any())
                 flag = false;
         }
@@ -414,7 +419,7 @@ public partial class Form11 : Form1
         set
         {
             Activity_DB = value.Value;
-            OnPropertyChanged(nameof(Activity));
+            OnPropertyChanged();
         }
     }
 

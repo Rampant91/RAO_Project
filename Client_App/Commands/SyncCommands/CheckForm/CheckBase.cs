@@ -14,7 +14,7 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public abstract class CheckBase
 {
-    protected static bool checkNumPrint = true;
+    protected static bool checkNumPrint = false;
 
     private protected static List<Dictionary<string, string>> OKSM = new();
 
@@ -383,8 +383,8 @@ public abstract class CheckBase
                 {"D", worksheet.Cells[i, 15].Text},
                 {"MZUA", worksheet.Cells[i, 16].Text},
                 {"MZA", worksheet.Cells[i, 17].Text},
-                {"A_Solid", worksheet.Cells[i, 20].Text},
                 {"A_Liquid", worksheet.Cells[i, 18].Text},
+                {"A_Solid", worksheet.Cells[i, 20].Text},
                 {"OSPORB_Solid", worksheet.Cells[i, 22].Text},
                 {"OSPORB_Liquid", worksheet.Cells[i, 23].Text},
                 {"Ki", worksheet.Cells[i, 25].Text}

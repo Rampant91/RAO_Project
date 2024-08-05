@@ -267,25 +267,22 @@ public partial class Form13 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
+        if (value.Value.Contains(','))
+        {
+            value.AddError("При перечислении необходимо использовать \";\"");
+            return false;
+        }
         if (value.Value.Equals("прим.") || value.Value.Equals("-"))
         {
             return true;
         }
-        var nuclids = value.Value.Split(";");
-        for (var k = 0; k < nuclids.Length; k++)
-        {
-            nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
-        }
-        var flag = true;
-        foreach (var nuclid in nuclids)
-        {
-            if (!Spravochniks.SprRadionuclids
-                    .Where(item => nuclid == item.Item1)
-                    .Select(item => item.Item1)
-                    .Any())
-                flag = false;
-        }
-        if (!flag)
+        var nuclids = (value.Value ?? string.Empty)
+            .ToLower()
+            .Split(";")
+            .Select(x => x.Trim())
+            .ToHashSet();
+
+        if (!nuclids.All(nuclid => Spravochniks.SprRadionuclids.Any(item => item.name == nuclid)))
         {
             value.AddError("Недопустимое значение");
             return false;

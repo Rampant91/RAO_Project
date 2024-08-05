@@ -205,13 +205,18 @@ public class Form19 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        var nuclids = value.Value.Split("; ");
+        var nuclids = (value.Value ?? string.Empty)
+            .Trim()
+            .ToLower()
+            .Replace(',', ';')
+            .Replace("; ", ";")
+            .Split(";");
         var flag = true;
         foreach (var nuclid in nuclids)
         {
             if (!Spravochniks.SprRadionuclids
-                    .Where(item => nuclid == item.Item1)
-                    .Select(item => item.Item1)
+                    .Where(item => nuclid == item.name)
+                    .Select(item => item.name)
                     .Any())
                 flag = false;
         }

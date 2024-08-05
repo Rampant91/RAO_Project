@@ -319,7 +319,7 @@ public partial class Form211 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
-            rm.PropertyChanged += RadionuclidsValueChanged;
+            rm.PropertyChanged += Radionuclids_ValueChanged;
             Dictionary.Add(nameof(Radionuclids), rm);
             return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
         }
@@ -331,7 +331,7 @@ public partial class Form211 : Form2
     }
     //If change this change validation
 
-    private void RadionuclidsValueChanged(object value, PropertyChangedEventArgs args)
+    private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -348,13 +348,18 @@ public partial class Form211 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        var nuclids = value.Value.Split("; ");
+        var nuclids = (value.Value ?? string.Empty)
+            .Trim()
+            .ToLower()
+            .Replace(',', ';')
+            .Replace("; ", ";")
+            .Split(";");
         var flag = true;
-        foreach (var nucl in nuclids)
+        foreach (var nuclid in nuclids)
         {
             if (!Spravochniks.SprRadionuclids
-                    .Where(item => nucl == item.Item1)
-                    .Select(item => item.Item1)
+                    .Where(item => nuclid == item.name)
+                    .Select(item => item.name)
                     .Any())
                 flag = false;
         }

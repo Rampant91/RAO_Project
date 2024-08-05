@@ -1,7 +1,6 @@
 ﻿using Client_App.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -54,6 +53,7 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
             //case "1.9":
             //    result.AddRange(CheckF19.Check_Total(reps, rep));
             //    break;
+            default: return;
         }
 
         if (result.Count == 0)

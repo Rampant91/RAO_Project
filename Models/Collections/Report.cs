@@ -187,6 +187,7 @@ public class Report : IKey, IDataGridColumn
 
     #region Order
 
+    //Отвечает за сортировку отчётов
     public void SetOrder(long index) { }
 
     public long Order
@@ -206,7 +207,7 @@ public class Report : IKey, IDataGridColumn
                         num += endPeriod.Day < 10 ? $"0{endPeriod.Day}" : endPeriod.Day.ToString();
                         num = num.Insert(0, "1");
                         frm += (int)(1.0 / Convert.ToInt32(num) * 100000000000000000.0);
-                        frm += cor;
+                        frm += cor < 10 ? $"0{cor}" : cor;  //костыль, для сортировки отчётов с двухзначным номером корректировки
                     }
                     else
                     {
@@ -219,7 +220,7 @@ public class Report : IKey, IDataGridColumn
                 if (Year_DB != null && year != 0)
                 {
                     frm += (int)(1.0 / year * 10000000);
-                    frm += cor;
+                    frm += cor < 10 ? $"0{cor}" : cor;
                 }
                 return Convert.ToInt32(frm);
             }

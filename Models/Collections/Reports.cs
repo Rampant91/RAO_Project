@@ -111,17 +111,11 @@ public class Reports : IKey, IDataGridColumn
         {
             try
             {
-                var num_str = "0";
-                if (Master_DB.RegNoRep.Value.Length >= 5)
-                {
-                    num_str = Master_DB.RegNoRep.Value[..5];
-                }
-                else
-                {
-                    num_str = Master_DB.RegNoRep.Value;
-                }
-                var num_int = Convert.ToInt64(num_str);
-                return num_int;
+                var numStr = Master_DB.RegNoRep.Value.Length >= 5 
+                    ? Master_DB.RegNoRep.Value[..5] 
+                    : Master_DB.RegNoRep.Value;
+                var numInt = Convert.ToInt64(numStr);
+                return numInt;
             }
             catch
             {

@@ -68,38 +68,7 @@ public abstract class CheckF17 : CheckBase
     {
         var currentFormLine = 0;
         List<CheckError> errorList = new();
-        if (OKSM.Count == 0)
-        {
-#if DEBUG
-            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "oksm.xlsx"));
-#else
-            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"oksm.xlsx"));
-#endif
-        }
-        if (R.Count == 0)
-        {
-#if DEBUG
-            R_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx"));
-#else
-            R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
-#endif
-        }
-        if (Packs.Count == 0)
-        {
-#if DEBUG
-            Packs_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Packs.xlsx"));
-#else
-            Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
-#endif
-        }
-        if (HolidaysSpecific.Count == 0)
-        {
-#if DEBUG
-            Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Spravochniki", "Holidays.xlsx"));
-#else
-            Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
-#endif
-        }
+        LoadDictionaries();
         var formsList = rep.Rows17.ToList<Form17>();
         var notes = rep.Notes.ToList<Note>();
         var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
@@ -1522,23 +1491,23 @@ public abstract class CheckF17 : CheckBase
 
         #endregion
 
-        foreach (int line in lines)
+        foreach (var line in lines)
         {
-            var nuclid_activity_t = forms[line].TritiumActivity_DB;
-            var nuclid_activity_a = forms[line].AlphaActivity_DB;
-            var nuclid_activity_b = forms[line].BetaGammaActivity_DB;
-            var nuclid_activity_u = forms[line].TransuraniumActivity_DB;
-            var nuclid_mass = forms[line].Mass_DB;
-            var nuclids_exist_t = TryParseFloatExtended(nuclid_activity_t, out float nuclid_activity_t_real);
-            var nuclids_exist_a = TryParseFloatExtended(nuclid_activity_a, out float nuclid_activity_a_real);
-            var nuclids_exist_b = TryParseFloatExtended(nuclid_activity_b, out float nuclid_activity_b_real);
-            var nuclids_exist_u = TryParseFloatExtended(nuclid_activity_u, out float nuclid_activity_u_real);
-            var nuclid_mass_exists = TryParseFloatExtended(nuclid_mass, out float nuclid_mass_real);
+            var nuclidActivityT = forms[line].TritiumActivity_DB;
+            var nuclidActivityA = forms[line].AlphaActivity_DB;
+            var nuclidActivityB = forms[line].BetaGammaActivity_DB;
+            var nuclidActivityU = forms[line].TransuraniumActivity_DB;
+            var nuclidMass = forms[line].Mass_DB;
+            var nuclidsExistT = TryParseFloatExtended(nuclidActivityT, out var nuclidActivityTReal);
+            var nuclidsExistA = TryParseFloatExtended(nuclidActivityA, out var nuclidActivityAReal);
+            var nuclidsExistB = TryParseFloatExtended(nuclidActivityB, out var nuclidActivityBReal);
+            var nuclidsExistU = TryParseFloatExtended(nuclidActivityU, out var nuclidActivityUReal);
+            var nuclidMassExists = TryParseFloatExtended(nuclidMass, out var nuclidMassReal);
             const byte graphNumber = 21;
             var noteExists = CheckNotePresence(notes, line, graphNumber);
-            var CodeRAO_DB = forms[line].CodeRAO_DB.Trim();
-            if (string.IsNullOrWhiteSpace(CodeRAO_DB) || CodeRAO_DB.Trim() == "-") continue;
-            var valid = CodeRAO_DB.Length == 11 && CodeRAO_DB.All(char.IsDigit);
+            var codeRaoDB = forms[line].CodeRAO_DB.Trim();
+            if (string.IsNullOrWhiteSpace(codeRaoDB) || codeRaoDB.Trim() == "-") continue;
+            var valid = codeRaoDB.Length == 11 && codeRaoDB.All(char.IsDigit);
             if (!valid)
             {
                 result.Add(new CheckError
@@ -1546,73 +1515,76 @@ public abstract class CheckF17 : CheckBase
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = CodeRAO_DB,
+                    Value = codeRaoDB,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте правильность заполнения кода РАО."
                 });
                 continue;
             }
             #region setup
 
-            var CodeRAO_1_MatterState = CodeRAO_DB.Substring(0, 1);
-            var CodeRAO_2_RAOCategory = CodeRAO_DB.Substring(1, 1);
-            var CodeRAO_3_NuclidTypes = CodeRAO_DB.Substring(2, 1);
-            var CodeRAO_4_HasNuclears = CodeRAO_DB.Substring(3, 1);
-            var CodeRAO_5_HalfLife = CodeRAO_DB.Substring(4, 1);
-            var CodeRAO_6_DangerPeriod = CodeRAO_DB.Substring(5, 1);
-            var CodeRAO_7_RecycleMethod = CodeRAO_DB.Substring(6, 1);
-            var CodeRAO_8_RAOClass = CodeRAO_DB.Substring(7, 1);
-            var CodeRAO_910_TypeCode = CodeRAO_DB.Substring(8, 2);
-            var CodeRAO_11_Flammability = CodeRAO_DB.Substring(10, 1);
-            var CodeRAO_1_Allowed = new string[] { "2" };
-            var CodeRAO_2_Allowed = new string[] { "0", "1", "2", "3", "4" };
-            var CodeRAO_3_Allowed = new string[] { "1", "2", "3", "4", "5", "6" };
-            var CodeRAO_4_Allowed = new string[] { "1", "2" };
-            var CodeRAO_5_Allowed = new string[] { "1", "2" };
-            var CodeRAO_6_Allowed = new string[] { "1", "2", "3" };
-            var CodeRAO_7_Allowed = new string[] { "0", "1", "2", "3", "4", "9" };
-            var CodeRAO_8_Allowed = new string[] { "1", "2", "3", "4", "6" };
-            var CodeRAO_910_Allowed = new string[]
+            var codeRao1MatterState = codeRaoDB[..1];
+            var codeRao2RaoCategory = codeRaoDB.Substring(1, 1);
+            var codeRao3NuclidTypes = codeRaoDB.Substring(2, 1);
+            var codeRao4HasNuclears = codeRaoDB.Substring(3, 1);
+            var codeRao5HalfLife = codeRaoDB.Substring(4, 1);
+            var codeRao6DangerPeriod = codeRaoDB.Substring(5, 1);
+            var codeRao7RecycleMethod = codeRaoDB.Substring(6, 1);
+            var codeRao8RaoClass = codeRaoDB.Substring(7, 1);
+            var codeRao910TypeCode = codeRaoDB.Substring(8, 2);
+            var codeRao11Flammability = codeRaoDB.Substring(10, 1);
+            var codeRao1Allowed = new [] { "2" };
+            var codeRao2Allowed = new [] { "0", "1", "2", "3", "4" };
+            var codeRao3Allowed = new [] { "1", "2", "3", "4", "5", "6" };
+            var codeRao4Allowed = new [] { "1", "2" };
+            var codeRao5Allowed = new [] { "1", "2" };
+            var codeRao6Allowed = new [] { "1", "2", "3" };
+            var codeRao7Allowed = new [] { "0", "1", "2", "3", "4", "9" };
+            var codeRao8Allowed = new [] { "1", "2", "3", "4", "6" };
+            var codeRao910Allowed = new []
             {
-            "01",
-            "11","12","13","14","15","16","17","18","19",
-            "21","22","23","24","25","26",          "29",
-            "31","32","33","34","35","36","37","38","39",
-            "41","42","43","44","45","46",
-            "51","52","53","54","55","56","57","58","59",
-            "61","62","63","64","65","66","67","68","69",
-            "71","72","73","74","75","76","77","78","79",
-            "81","82","83","84","85","86","87","88","89",
-            "91","92","93","94","95","96","97","98","99"
+                "01",
+                "11","12","13","14","15","16","17","18","19",
+                "21","22","23","24","25","26",          "29",
+                "31","32","33","34","35","36","37","38","39",
+                "41","42","43","44","45","46",
+                "51","52","53","54","55","56","57","58","59",
+                "61","62","63","64","65","66","67","68","69",
+                "71","72","73","74","75","76","77","78","79",
+                "81","82","83","84","85","86","87","88","89",
+                "91","92","93","94","95","96","97","98","99"
             };
-            var CodeRAO_11_Allowed = new string[] { "1", "2" };
+            var codeRao11Allowed = new [] { "1", "2" };
 
-            var CodeRAO_1_Valid = CodeRAO_1_Allowed.Contains(CodeRAO_1_MatterState);
-            var CodeRAO_2_Valid = CodeRAO_2_Allowed.Contains(CodeRAO_2_RAOCategory);
-            var CodeRAO_3_Valid = CodeRAO_3_Allowed.Contains(CodeRAO_3_NuclidTypes);
-            var CodeRAO_4_Valid = CodeRAO_4_Allowed.Contains(CodeRAO_4_HasNuclears);
-            var CodeRAO_5_Valid = CodeRAO_5_Allowed.Contains(CodeRAO_5_HalfLife);
-            var CodeRAO_6_Valid = CodeRAO_6_Allowed.Contains(CodeRAO_6_DangerPeriod);
-            var CodeRAO_7_Valid = CodeRAO_7_Allowed.Contains(CodeRAO_7_RecycleMethod);
-            var CodeRAO_8_Valid = CodeRAO_8_Allowed.Contains(CodeRAO_8_RAOClass);
-            var CodeRAO_910_Valid = CodeRAO_910_Allowed.Contains(CodeRAO_910_TypeCode);
-            var CodeRAO_11_Valid = CodeRAO_11_Allowed.Contains(CodeRAO_11_Flammability);
+            var codeRao1Valid = codeRao1Allowed.Contains(codeRao1MatterState);
+            var codeRao2Valid = codeRao2Allowed.Contains(codeRao2RaoCategory);
+            var codeRao3Valid = codeRao3Allowed.Contains(codeRao3NuclidTypes);
+            var codeRao4Valid = codeRao4Allowed.Contains(codeRao4HasNuclears);
+            var codeRao5Valid = codeRao5Allowed.Contains(codeRao5HalfLife);
+            var codeRao6Valid = codeRao6Allowed.Contains(codeRao6DangerPeriod);
+            var codeRao7Valid = codeRao7Allowed.Contains(codeRao7RecycleMethod);
+            var codeRao8Valid = codeRao8Allowed.Contains(codeRao8RaoClass);
+            var codeRao910Valid = codeRao910Allowed.Contains(codeRao910TypeCode);
+            var codeRao11Valid = codeRao11Allowed.Contains(codeRao11Flammability);
 
-            var RecyclingTypes = new string[] { "11","12","13","14","15","16","17","18","19",
-                                       "20","21","22","23","24","25","26","27","28","29",
-                                       "30","31","32","33","34","35","36","37","38","39" };
+            var recyclingTypes = new [] 
+            { 
+                     "11","12","13","14","15","16","17","18","19",
+                "20","21","22","23","24","25","26","27","28","29",
+                "30","31","32","33","34","35","36","37","38","39"
+            };
 
             #endregion
 
             #region symbol 1
 
-            if (!CodeRAO_1_Valid)
+            if (!codeRao1Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_1_MatterState} (1-ый символ кода РАО), {CodeRAO_910_TypeCode} (9-10 символы кода РАО)",
+                    Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "В форме 1.7 приводятся сведения только о твердых кондиционированных РАО (1-й символ кода РАО 2)"
                 });
             }
@@ -1624,25 +1596,25 @@ public abstract class CheckF17 : CheckBase
                 {
                     validTypeCode_Solid.Add(i.ToString("D2"));
                 }
-                if (CodeRAO_1_MatterState != "2")
+                if (codeRao1MatterState != "2")
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = $"{CodeRAO_1_MatterState} (1-ый символ кода РАО)",
+                        Value = $"{codeRao1MatterState} (1-ый символ кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "В форме 1.7 приводятся сведения только о твердых кондиционированных РАО."
                     });
                 }
-                else if (validTypeCode_Solid.Contains(CodeRAO_910_TypeCode) && CodeRAO_7_RecycleMethod == "0")
+                else if (validTypeCode_Solid.Contains(codeRao910TypeCode) && codeRao7RecycleMethod == "0")
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = $"{CodeRAO_7_RecycleMethod} (7 символ кода РАО), {CodeRAO_910_TypeCode} (9-10 символы кода РАО)",
+                        Value = $"{codeRao7RecycleMethod} (7 символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "В форме 1.7 приводятся сведения только о твердых кондиционированных РАО."
                     });
                 }
@@ -1650,31 +1622,31 @@ public abstract class CheckF17 : CheckBase
             #endregion
 
             #region symbol 2
-            if (!CodeRAO_2_Valid)
+            if (!codeRao2Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_2_RAOCategory} (2-ой символ кода РАО)",
+                    Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Недопустимое значение 2-го символа кода РАО."
                 });
             }
             else
             {
-                switch (CodeRAO_2_RAOCategory)
+                switch (codeRao2RaoCategory)
                 {
                     case "4":
                         var validTypeCode = new string[] { "81", "82", "85", "86", "87", "88", "89" };
-                        if (!validTypeCode.Contains(CodeRAO_910_TypeCode))
+                        if (!validTypeCode.Contains(codeRao910TypeCode))
                         {
                             result.Add(new CheckError
                             {
                                 FormNum = "form_17",
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
-                                Value = $"{CodeRAO_2_RAOCategory} (2-ой символ кода РАО)",
+                                Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
                                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
                             });
                         }
@@ -1685,7 +1657,7 @@ public abstract class CheckF17 : CheckBase
                             FormNum = "form_17",
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
-                            Value = $"{CodeRAO_2_RAOCategory} (2-ой символ кода РАО)",
+                            Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
                             Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Для кондиционированных РАО должна быть определена категория"
                         });
                         break;
@@ -1693,13 +1665,13 @@ public abstract class CheckF17 : CheckBase
                         // 0, 1, 2, 3, 9
                         {
                             var code_max = -1;
-                            if (nuclid_mass_exists && nuclid_mass_real > 0)
+                            if (nuclidMassExists && nuclidMassReal > 0)
                             {
                                 #region A for tritium
-                                if (nuclids_exist_t)
+                                if (nuclidsExistT)
                                 {
-                                    var A = nuclid_activity_t_real / (nuclid_mass_real * 1e6);
-                                    if (CodeRAO_1_MatterState == "2")
+                                    var A = nuclidActivityTReal / (nuclidMassReal * 1e6);
+                                    if (codeRao1MatterState == "2")
                                     {
                                         if (A < 1e07) { if (code_max < 0) code_max = 0; }
                                         else if (A < 1e08) { if (code_max < 1) code_max = 1; }
@@ -1709,10 +1681,10 @@ public abstract class CheckF17 : CheckBase
                                 }
                                 #endregion
                                 #region A for beta-gamma
-                                if (nuclids_exist_b)
+                                if (nuclidsExistB)
                                 {
-                                    var A = nuclid_activity_b_real / (nuclid_mass_real * 1e6);
-                                    if (CodeRAO_1_MatterState == "2")
+                                    var A = nuclidActivityBReal / (nuclidMassReal * 1e6);
+                                    if (codeRao1MatterState == "2")
                                     {
                                         if (A < 1e03) { if (code_max < 0) code_max = 0; }
                                         else if (A < 1e04) { if (code_max < 1) code_max = 1; }
@@ -1722,10 +1694,10 @@ public abstract class CheckF17 : CheckBase
                                 }
                                 #endregion
                                 #region A for alpha
-                                if (nuclids_exist_a)
+                                if (nuclidsExistA)
                                 {
-                                    var A = nuclid_activity_a_real / (nuclid_mass_real * 1e6);
-                                    if (CodeRAO_1_MatterState == "2")
+                                    var A = nuclidActivityAReal / (nuclidMassReal * 1e6);
+                                    if (codeRao1MatterState == "2")
                                     {
                                         if (A < 1e02) { if (code_max < 0) code_max = 0; }
                                         else if (A < 1e03) { if (code_max < 1) code_max = 1; }
@@ -1735,10 +1707,10 @@ public abstract class CheckF17 : CheckBase
                                 }
                                 #endregion
                                 #region A for transuraniums
-                                if (nuclids_exist_u)
+                                if (nuclidsExistU)
                                 {
-                                    var A = nuclid_activity_u_real / (nuclid_mass_real * 1e6);
-                                    if (CodeRAO_1_MatterState == "2")
+                                    var A = nuclidActivityUReal / (nuclidMassReal * 1e6);
+                                    if (codeRao1MatterState == "2")
                                     {
                                         if (A < 1e01) { if (code_max < 0) code_max = 0; }
                                         else if (A < 1e02) { if (code_max < 1) code_max = 1; }
@@ -1748,25 +1720,25 @@ public abstract class CheckF17 : CheckBase
                                 }
                                 #endregion
                             }
-                            if (code_max == -1 && CodeRAO_2_RAOCategory != "9")
+                            if (code_max == -1 && codeRao2RaoCategory != "9")
                             {
                                 result.Add(new CheckError
                                 {
                                     FormNum = "form_17",
                                     Row = forms[line].NumberInOrder_DB.ToString(),
                                     Column = "CodeRAO_DB",
-                                    Value = $"{CodeRAO_2_RAOCategory} (2-ой символ кода РАО)",
+                                    Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
                                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте категорию РАО и суммарную активность."
                                 });
                             }
-                            else if (code_max != -1 && (CodeRAO_2_RAOCategory == "9" || CodeRAO_2_RAOCategory != code_max.ToString("D1")))
+                            else if (code_max != -1 && (codeRao2RaoCategory == "9" || codeRao2RaoCategory != code_max.ToString("D1")))
                             {
                                 result.Add(new CheckError
                                 {
                                     FormNum = "form_17",
                                     Row = forms[line].NumberInOrder_DB.ToString(),
                                     Column = "CodeRAO_DB",
-                                    Value = $"{CodeRAO_2_RAOCategory} (2-ой символ кода РАО)",
+                                    Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
                                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {code_max}."
                                 });
                             }
@@ -1777,36 +1749,36 @@ public abstract class CheckF17 : CheckBase
             #endregion
 
             #region symbol 3
-            if (!CodeRAO_3_Valid)
+            if (!codeRao3Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_3_NuclidTypes} (3-ий символ кода РАО)",
+                    Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Недопустимое значение 3-го символа кода РАО."
                 });
             }
             else
             {
-                if (CodeRAO_3_NuclidTypes == "0")
+                if (codeRao3NuclidTypes == "0")
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = $"{CodeRAO_3_NuclidTypes} (3-ий символ кода РАО)",
+                        Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Укажите 3-й символ кода РАО в соответствии с радионуклидным составом"
                     });
                 }
                 else
                 {
-                    var contains_b = nuclids_exist_b && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "б") == 0));
-                    var contains_a = nuclids_exist_a && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "а") == 0));
-                    var contains_u = nuclids_exist_u && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "у") == 0));
-                    var contains_t = nuclids_exist_t && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "т") == 0));
+                    var contains_b = nuclidsExistB && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "б") == 0));
+                    var contains_a = nuclidsExistA && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "а") == 0));
+                    var contains_u = nuclidsExistU && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "у") == 0));
+                    var contains_t = nuclidsExistT && radArray.Any(x => R.Any(y => comparator.Compare(y["name"], x.Item1) == 0 && comparator.Compare(y["code"], "т") == 0));
                     var expectedValue = "0";
                     if (!contains_t && !contains_b && !contains_a && contains_u) expectedValue = "1";
                     else if (!contains_t && !contains_b && contains_a && !contains_u) expectedValue = "2";
@@ -1815,14 +1787,14 @@ public abstract class CheckF17 : CheckBase
                     else if (!contains_t && contains_b && contains_a && !contains_u) expectedValue = "5";
                     else if (contains_t && contains_b && contains_a && !contains_u) expectedValue = "5";
                     else if (contains_u) expectedValue = "6";
-                    if (expectedValue != CodeRAO_3_NuclidTypes)
+                    if (expectedValue != codeRao3NuclidTypes)
                     {
                         result.Add(new CheckError
                         {
                             FormNum = "form_17",
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
-                            Value = $"{CodeRAO_3_NuclidTypes} (3-ий символ кода РАО)",
+                            Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
                             Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Радионуклиды, указанные в графе 12 не соответствуют 3-му символу кода РАО"
                         });
                     }
@@ -1833,14 +1805,14 @@ public abstract class CheckF17 : CheckBase
 
             #region symbol 4
 
-            if (!CodeRAO_4_Valid)
+            if (!codeRao4Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_4_HasNuclears} (4-ый символ кода РАО)",
+                    Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Недопустимое значение 4-го символа кода РАО."
                 });
             }
@@ -1850,7 +1822,7 @@ public abstract class CheckF17 : CheckBase
                 var operations_12 = new string[] { "12" };
                 var operations_11 = new string[] { "11", "13", "14", "16", "41" };
                 bool nuclears_exist = radArray.Any(x => nuclears.Any(y => x.Item1.ToLower().Contains(y)));
-                if (CodeRAO_4_HasNuclears == "1")
+                if (codeRao4HasNuclears == "1")
                 {
                     if (operations_12.Contains(operationCode))
                     {
@@ -1859,7 +1831,7 @@ public abstract class CheckF17 : CheckBase
                             FormNum = "form_17",
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
-                            Value = CodeRAO_4_HasNuclears,
+                            Value = codeRao4HasNuclears,
                             Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "4-ый символ кода РАО не может быть равен 1 при коде операции 12."
                         });
                     }
@@ -1872,7 +1844,7 @@ public abstract class CheckF17 : CheckBase
                         //anything is allowed
                     }
                 }
-                else if (CodeRAO_4_HasNuclears == "2")
+                else if (codeRao4HasNuclears == "2")
                 {
                     if (operations_12.Contains(operationCode))
                     {
@@ -1883,7 +1855,7 @@ public abstract class CheckF17 : CheckBase
                                 FormNum = "form_17",
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
-                                Value = $"{CodeRAO_4_HasNuclears} (4-ый символ кода РАО)",
+                                Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
                                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "4-ый символ кода РАО может быть равен 2 при коде операции 12 только при указании радионуклидов, которые могут быть отнесены к ЯМ."
                             });
                         }
@@ -1895,7 +1867,7 @@ public abstract class CheckF17 : CheckBase
                             FormNum = "form_17",
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
-                            Value = $"{CodeRAO_4_HasNuclears} (4-ый символ кода РАО)",
+                            Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
                             Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "4-ый символ кода РАО не может быть равен 2 при кодах операции 11, 13, 14, 16 и 41."
                         });
                     }
@@ -1908,7 +1880,7 @@ public abstract class CheckF17 : CheckBase
                                 FormNum = "form_17",
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
-                                Value = $"{CodeRAO_4_HasNuclears} (4-ый символ кода РАО)",
+                                Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
                                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "4-ый символ кода РАО может быть равен 2 при данном коде операции только при указании радионуклидов, которые могут быть отнесены к ЯМ."
                             });
                         }
@@ -1919,38 +1891,38 @@ public abstract class CheckF17 : CheckBase
 
             #region symbol 5
 
-            if (!CodeRAO_5_Valid)
+            if (!codeRao5Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_5_HalfLife} (5-ый символ кода РАО)",
+                    Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Недопустимое значение 5-го символа кода РАО."
                 });
             }
             else
             {
-                if (CodeRAO_5_HalfLife != "2" && (long)halflife_max <= 31)
+                if (codeRao5HalfLife != "2" && (long)halflife_max <= 31)
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = $"{CodeRAO_5_HalfLife} (5-ый символ кода РАО)",
+                        Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО (период полураспада) должен быть равен 2."
                     });
                 }
-                else if (CodeRAO_5_HalfLife != "1" && (long)halflife_max > 31)
+                else if (codeRao5HalfLife != "1" && (long)halflife_max > 31)
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = $"{CodeRAO_5_HalfLife} (5-ый символ кода РАО)",
+                        Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО (период полураспада) должен быть равен 1."
                     });
                 }
@@ -1959,87 +1931,103 @@ public abstract class CheckF17 : CheckBase
 
             #region symbol 6
 
-            if (!CodeRAO_6_Valid)
+            if (!codeRao6Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_6_DangerPeriod} (6-ой символ кода РАО)",
-                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Недопустимое значение 6-го символа кода РАО."
+                    Value = $"{codeRao6DangerPeriod} (6-ой символ кода РАО)",
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Недопустимое значение 6-го символа кода РАО."
                 });
             }
-            if (CodeRAO_1_MatterState is "2")
+            if (codeRao1MatterState is "2" && radArray.Count > 0)
             {
-                if (radArray.Count > 0)
+                var monoNuclid = radArray.Count == 1;
+                var expectedPeriod = float.MaxValue;
+                int expectedValue;
+                if (monoNuclid)
                 {
-                    var mononuclid = radArray.Count == 1;
-                    float expectedPeriod = float.MaxValue;
-                    int expectedValue = 0;
-                    if (mononuclid)
+                    var nuclidData = R.FirstOrDefault(x => comparator.Compare(x["name"], radArray[0].Item1) == 0, []);
+                    if (nuclidData.Count > 0 
+                        && TryParseFloatExtended(radArray[0].Item2, out var nuclidActivity) 
+                        && TryParseFloatExtended(nuclidData["value"], out var T) 
+                        && validUnits.TryGetValue(nuclidData["unit"], out var unitAdjustment)
+                        && nuclidActivity > 0.0f
+                        && TryParseFloatExtended(nuclidData["OSPORB_Solid"], out var a)
+                        && a > 0)
                     {
-                        var nuclid_data = R.FirstOrDefault(x => comparator.Compare(x["name"], radArray[0].Item1) == 0, []);
-                        if (nuclid_data.Count > 0 && TryParseFloatExtended(radArray[0].Item2, out var nuclid_activity) && TryParseFloatExtended(nuclid_data["value"], out var T) && validUnits.TryGetValue(nuclid_data["unit"], out var unit_adjustment))
+                        expectedPeriod = (T / unitAdjustment) * (float)(Math.Log(nuclidActivity / (nuclidMassReal * 1e6) / a) * 1.44f);
+                    }
+
+                    expectedValue = expectedPeriod switch
+                    {
+                        > 500.0f => 3,
+                        >= 100.0f => 2,
+                        >= 0.0f => 1,
+                        _ => 0
+                    };
+                }
+                else
+                {
+                    var controlValue100 = 0.0f;
+                    var controlValue500 = 0.0f;
+                    foreach (var nuclid in radArray)
+                    {
+                        var nuclidData = R.FirstOrDefault(x => comparator.Compare(x["name"], nuclid.Item1) == 0, []);
+                        
+                        float a;
+                        if (TryParseFloatExtended(nuclidData["OSPORB_Solid"], out var osporbA) && osporbA > 0)
                         {
-                            if (nuclid_activity > 0.0f)
-                            {
-                                if (TryParseFloatExtended(nuclid_data["OSPORB_Solid"], out var A) && A > 0)
-                                {
-                                    expectedPeriod = (T / unit_adjustment) * (float)(Math.Log(nuclid_activity / (nuclid_mass_real * 1e6) / A) * 1.44f);
-                                }
-                            }
+                            a = osporbA;
                         }
-                        if (expectedPeriod > 500.0f) expectedValue = 3;
-                        else if (expectedPeriod >= 100.0f) expectedValue = 2;
-                        else if (expectedPeriod >= 0.0f) expectedValue = 1;
-                        else expectedValue = 0;
-                    }
-                    else
-                    {
-                        float controlValue100 = 0.0f;
-                        float controlValue500 = 0.0f;
-                        foreach ((string, string) nuclid in radArray)
+                        else if (TryParseFloatExtended(nuclidData["A_Solid"], out var solidA) && solidA > 0)
                         {
-                            var nuclid_data = R.FirstOrDefault(x => comparator.Compare(x["name"], nuclid.Item1) == 0, []);
-                            if (nuclid_data.Count > 0 && TryParseFloatExtended(nuclid.Item2, out var nuclid_activity) && TryParseFloatExtended(nuclid_data["value"], out var T) && validUnits.TryGetValue(nuclid_data["unit"], out var unit_adjustment))
-                            {
-                                if (nuclid_activity > 0.0f && TryParseFloatExtended(nuclid_data["OSPORB_Solid"], out var A) && A > 0)
-                                {
-                                    controlValue100 += nuclid_activity / (float)Math.Pow(2,100/ (T / unit_adjustment)) / A;
-                                    controlValue500 += nuclid_activity / (float)Math.Pow(2,500/ (T / unit_adjustment)) / A;
-                                }
-                            }
+                            a = solidA;
                         }
-                        if (controlValue100 < 1.0f) expectedValue = 1;
-                        else if (controlValue500 < 1.0f) expectedValue = 2;
-                        else expectedValue = 3;
-                    }
-                    if (expectedValue.ToString("D1") != CodeRAO_6_DangerPeriod)
-                    {
-                        result.Add(new CheckError
+                        else return result;
+
+                        if (nuclidData.Count > 0 
+                            && TryParseFloatExtended(nuclid.Item2, out var nuclidActivity) 
+                            && TryParseFloatExtended(nuclidData["value"], out var T) 
+                            && validUnits.TryGetValue(nuclidData["unit"], out var unitAdjustment)
+                            && nuclidActivity > 0.0f)
                         {
-                            FormNum = "form_17",
-                            Row = forms[line].NumberInOrder_DB.ToString(),
-                            Column = "CodeRAO_DB",
-                            Value = $"{CodeRAO_6_DangerPeriod} (6-ой символ кода РАО)",
-                            Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + $"Расчетное значение периода потенциальной опасности (в годах): {expectedPeriod} (6-ой символ кода РАО {expectedValue})."
-                        });
+                            controlValue100 += nuclidActivity / (float)Math.Pow(2,100/ (T / unitAdjustment)) / a;
+                            controlValue500 += nuclidActivity / (float)Math.Pow(2,500/ (T / unitAdjustment)) / a;
+                        }
                     }
+                    if (controlValue100 < 1.0f) expectedValue = 1;
+                    else if (controlValue500 < 1.0f) expectedValue = 2;
+                    else expectedValue = 3;
+                }
+                if (expectedValue.ToString("D1") != codeRao6DangerPeriod)
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_17",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "CodeRAO_DB",
+                        Value = $"{codeRao6DangerPeriod} (6-ой символ кода РАО)",
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + $"Расчетное значение периода потенциальной опасности (в годах): {expectedPeriod} (6-ой символ кода РАО {expectedValue})."
+                    });
                 }
             }
+            
             #endregion
 
             #region symbol 7
 
-            if (!CodeRAO_7_Valid)
+            if (!codeRao7Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_7_RecycleMethod} (7-ой символ кода РАО)",
+                    Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Недопустимое значение 7-го символа кода РАО."
                 });
             }
@@ -2083,14 +2071,14 @@ public abstract class CheckF17 : CheckBase
                         }
                     }
                 };
-                    if (!validRecycles[CodeRAO_7_RecycleMethod].Contains(forms[line].RefineOrSortRAOCode_DB))
+                    if (!validRecycles[codeRao7RecycleMethod].Contains(forms[line].RefineOrSortRAOCode_DB))
                     {
                         result.Add(new CheckError
                         {
                             FormNum = "form_17",
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
-                            Value = $"{CodeRAO_7_RecycleMethod} (7-ой символ кода РАО), {forms[line].RefineOrSortRAOCode_DB} (код переработки/сортировки)",
+                            Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО), {forms[line].RefineOrSortRAOCode_DB} (код переработки/сортировки)",
                             Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "7-ой символ кода РАО не соответствует коду переработки/сортировки, указанному в графе 30."
                         });
                     }
@@ -2100,14 +2088,14 @@ public abstract class CheckF17 : CheckBase
 
             #region symbol 8
 
-            if (!CodeRAO_8_Valid)
+            if (!codeRao8Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_8_RAOClass} (8-ой символ кода РАО)",
+                    Value = $"{codeRao8RaoClass} (8-ой символ кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Сведения о некондиционированных отходах необходимо представлять в формах 1.5 и 1.6"
                 });
             }
@@ -2269,7 +2257,7 @@ public abstract class CheckF17 : CheckBase
                                 nuclidClass.Add("1");
                         }
                     }
-                    valid = nuclidClass.Contains(CodeRAO_8_RAOClass);
+                    valid = nuclidClass.Contains(codeRao8RaoClass);
                     if (!valid)
                     {
                         result.Add(new CheckError
@@ -2277,7 +2265,7 @@ public abstract class CheckF17 : CheckBase
                             FormNum = "form_17",
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
-                            Value = $"{CodeRAO_8_RAOClass} (8 символ кода РАО)",
+                            Value = $"{codeRao8RaoClass} (8 символ кода РАО)",
                             Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + $"Проверьте правильность выбора класса РАО (ожидается {string.Join(", ",nuclidClass)})"
                         });
                     }
@@ -2286,41 +2274,41 @@ public abstract class CheckF17 : CheckBase
             #endregion
 
             #region symbols 9-10
-            if (!CodeRAO_910_Valid)
+            if (!codeRao910Valid)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = $"{CodeRAO_910_TypeCode} (9-10 символы кода РАО)",
+                    Value = $"{codeRao910TypeCode} (9-10 символы кода РАО)",
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Недопустимое значение 9-10 символов кода РАО."
                 });
             }
             else
             {
-                if (CodeRAO_910_TypeCode == "94")
+                if (codeRao910TypeCode == "94")
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = $"{CodeRAO_910_TypeCode} (9-10 символы кода РАО)",
+                        Value = $"{codeRao910TypeCode} (9-10 символы кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Сведения о РАО, подготовленных для передачи национальному оператору, предоставляются с форме 1.8."
                     });
                 }
                 else
                 {
                     var requiresNote = new string[] { "19", "29", "39", "59", "69", "78", "79", "89" };
-                    if (requiresNote.Contains(CodeRAO_910_TypeCode) && !noteExists)
+                    if (requiresNote.Contains(codeRao910TypeCode) && !noteExists)
                     {
                         result.Add(new CheckError
                         {
                             FormNum = "form_17",
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
-                            Value = $"{CodeRAO_910_TypeCode} (9-10 символы кода РАО)",
+                            Value = $"{codeRao910TypeCode} (9-10 символы кода РАО)",
                             Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Необходимо заполнить примечание к коду типа РАО."
                         });
                     }

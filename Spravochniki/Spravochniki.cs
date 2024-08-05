@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
+using OfficeOpenXml;
 
 namespace Spravochniki;
 
@@ -79,15 +80,6 @@ public static class Spravochniks
         "42", "43", "49", "51", "52", "53", "54", "55", "61", "62", "63", "71", "72", "73", "74", "79", "99"
     ];
 
-    public static List<Tuple<string, long, long>> SprRadionuclids
-    {
-        get => SprRadionuclidsTask.Result;
-        private set
-        {
-
-        }
-    }
-
     public static readonly List<Tuple<byte?, string>> SprDocumentVidName =
     [
         new Tuple<byte?, string>(0, ""),
@@ -110,16 +102,24 @@ public static class Spravochniks
         new Tuple<byte?, string>(null, "")
     ];
 
+    public static List<(string name, long mzua, long mza)> SprRadionuclids => SprRadionuclidsTask.Result;
+
     public static List<Tuple<string, string>> SprTypesToRadionuclids => SprTypesToRadionuclidsTask.Result;
 
-#if DEBUG
-    private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask
+    private static Task<List<(string name, long mzua, long mza)>> SprRadionuclidsTask
     {
         get
         {
-            var tmp = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")),
-                "data", "Spravochniki", "RadionuclidsActivities.csv");
-            return ReadCsvAsync(tmp);
+            var tmp =
+#if DEBUG
+                Path.Combine(
+                    Path.GetFullPath(
+                        Path.Combine(
+                            AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx");
+#else
+                Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", "R.xlsx");
+#endif
+            return ReadRAsync(tmp);
         }
     }
 
@@ -127,40 +127,21 @@ public static class Spravochniks
     {
         get
         {
-            var tmp = Path.Combine(
-                Path.GetFullPath(
-                    Path.Combine(
-                        AppContext.BaseDirectory, @"..\..\..\..\")), "data");
-            tmp = Path.Combine(tmp, "Spravochniki", "TypeToRadionuclids.csv");
+            var tmp =
+#if DEBUG
+                Path.Combine(
+                    Path.GetFullPath(
+                        Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "TypeToRadionuclids.csv");
+#else
+            Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", "TypeToRadionuclids.csv");
+#endif
             return ReadCsvAsync1(tmp);
         }
     }
 
-#else
-        private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask
-        {
-            get
-            {
-                var tmp = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),
-                    "data","Spravochniki","RadionuclidsActivities.csv");
-                return ReadCsvAsync(tmp);
-            }
-        }
-
-        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask
-        {
-            get
-            {
-                var tmp = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),
-                    "data", "Spravochniki", "TypeToRadionuclids.csv");
-                return ReadCsvAsync1(tmp);
-            }
-        }
-#endif
-
-    private static Task<List<Tuple<string, long, long>>> ReadCsvAsync(string path)
+    private static Task<List<(string name, long mzua, long mza)>> ReadRAsync(string path)
     {
-        return Task.Run(() => ReadCsv(path));
+        return Task.Run(() => ReadR(path));
     }
 
     private static Task<List<Tuple<string, string>>> ReadCsvAsync1(string path)
@@ -168,17 +149,21 @@ public static class Spravochniks
         return Task.Run(() => ReadCsv1(path));
     }
 
-    private static List<Tuple<string, long, long>> ReadCsv(string path)
+    private static List<(string name, long mzua, long mza)> ReadR(string path)
     {
-        var res = new List<Tuple<string, long, long>>();
-        var rows = File.ReadAllLines(path);
-        for (var k = 1; k < rows.Length; k++)
+        var res = new List<(string, long, long)>();
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        FileInfo excelImportFile = new(path);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet = xls.Workbook.Worksheets["Лист1"];
+        var i = 2;
+        while (worksheet.Cells[i, 1].Text != string.Empty)
         {
-            var tmp = rows[k].Split(";");
-            var i1 = tmp[0];
-            var i2 = long.Parse(tmp[1]);
-            var i3 = long.Parse(tmp[2]);
-            res.Add(new Tuple<string, long, long>(i1, i2, i3));
+            var i1 = worksheet.Cells[i, 1].Text;
+            var i2 = long.TryParse(worksheet.Cells[i, 15].Text, out var mzua) ? mzua : 0;
+            var i3 = long.TryParse(worksheet.Cells[i, 16].Text, out var mza) ? mza : 0;
+            res.Add(new ValueTuple<string, long, long>(i1, i2, i3));
+            i++;
         }
         return res;
     }

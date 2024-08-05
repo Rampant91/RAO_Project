@@ -1010,14 +1010,15 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
-        if (string.IsNullOrWhiteSpace(rads) || rads.Trim() == "-") return result;
+        if (string.IsNullOrWhiteSpace(rads) || rads == "-") return result;
         var radsSet = rads
             .ToLower()
-            .Replace(" ", string.Empty)
             .Replace(',', ';')
             .Split(';')
+            .Select(x => x.Trim())
             .ToHashSet();
-        if (radsSet.Count == 1 && R.All(phEntry => phEntry["name"] != radsSet.First()))
+        if (radsSet.Count == 1 
+            && R.All(phEntry => phEntry["name"] != radsSet.First()))
         {
             result.Add(new CheckError
             {
@@ -1186,7 +1187,7 @@ public abstract class CheckF11 : CheckBase
             .Split(';');
         var isEqRads = EquilibriumRadionuclids.Any(x =>
         {
-            x = x.Replace(" ", "");
+            x = x.Replace(" ", string.Empty);
             var eqRadsArray = x.Split(',');
             return radsArray
                 .All(rad => eqRadsArray
@@ -1315,7 +1316,7 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
                 Value = Convert.ToString(forms[line].Activity_DB),
-                Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ. " +
+                Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ." +
                           "Оценочные сведения приводятся в круглых скобках."
             });
         }
