@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.PassportFill;
 
-internal class PassportFillSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : PassportFillBaseCommand(changeOrCreateViewModel)
+public class PassportFillSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : PassportFillBaseCommand(changeOrCreateViewModel)
 {
     public override async Task AsyncExecute(object? parameter)
     {

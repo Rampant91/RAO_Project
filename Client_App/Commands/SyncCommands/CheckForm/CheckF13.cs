@@ -777,14 +777,16 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_028(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var radionuclids = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
-        var radArray = radionuclids
-            .Replace(" ", string.Empty)
+        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var radsSet = rads
             .ToLower()
-            .Split(';');
+            .Replace(',', ';')
+            .Split(';')
+            .Select(x => x.Trim())
+            .ToHashSet();
         var shortRad = string.Empty;
         double shortRadHalfLife = 0;
-        foreach (var rad in radArray)
+        foreach (var rad in radsSet)
         {
             var phEntry = R.FirstOrDefault(phEntry => phEntry["name"] == rad);
             if (phEntry is null) return result;
@@ -820,7 +822,7 @@ public abstract class CheckF13 : CheckBase
             FormNum = "form_14",
             Row = (line + 1).ToString(),
             Column = "Radionuclids_DB",
-            Value = radionuclids,
+            Value = rads,
             Message = $"Период полураспада должен быть более 60 суток. " +
                       $"Введенный вами радионуклид {shortRad} имеет период полураспада {shortRadHalfLife} суток. " +
                       $"ОРИ на основе короткоживущих радионуклидов (включая иод-125) учитываются в формах 1.9 и 2.12."
@@ -864,9 +866,9 @@ public abstract class CheckF13 : CheckBase
         if (rads is "" or "-") return result;
         var radsSet = rads
             .ToLower()
-            .Replace(" ", string.Empty)
             .Replace(',', ';')
             .Split(';')
+            .Select(x => x.Trim())
             .ToHashSet();
         if (radsSet.Count == 1 && R.All(phEntry => phEntry["name"] != radsSet.First()))
         {
@@ -946,31 +948,32 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        var radsArray = rads
+        var radsSet = rads
             .ToLower()
-            .Replace(" ", string.Empty)
             .Replace(',', ';')
-            .Split(';');
+            .Split(';')
+            .Select(x => x.Trim())
+            .ToHashSet();
         var isEqRads = EquilibriumRadionuclids.Any(x =>
         {
             x = x.Replace(" ", "");
             var eqRadsArray = x.Split(',');
-            return radsArray
+            return radsSet
                 .All(rad => eqRadsArray
-                    .Contains(rad) && radsArray.Length == eqRadsArray.Length);
+                    .Contains(rad) && radsSet.Count == eqRadsArray.Length);
         });
 
-        if (radsArray.Length == 1
+        if (radsSet.Count == 1
             || isEqRads
             || !TryParseDoubleExtended(activity, out var activityDoubleValue)
             || activityDoubleValue <= 0
-            || !radsArray
+            || !radsSet
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad))) return result;
 
         var minimumActivity = double.MaxValue;
         var anyMza = false;
-        foreach (var rad in radsArray)
+        foreach (var rad in radsSet)
         {
             var mza = R.First(x => x["name"] == rad)["MZA"];
             if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) continue;
@@ -1009,23 +1012,24 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        var radsArray = rads
+        var radsSet = rads
             .ToLower()
-            .Replace(" ", string.Empty)
             .Replace(',', ';')
-            .Split(';');
+            .Split(';')
+            .Select(x => x.Trim())
+            .ToHashSet();
         var isEqRads = EquilibriumRadionuclids.Any(x =>
         {
             x = x.Replace(" ", "");
             var eqSet = x.Split(',');
-            return radsArray.All(rad => eqSet.Contains(rad));
+            return radsSet.All(rad => eqSet.Contains(rad));
         });
 
-        if (radsArray.Length == 1
+        if (radsSet.Count == 1
             || !isEqRads
             || !TryParseDoubleExtended(activity, out var activityDoubleValue)
             || activityDoubleValue <= 0
-            || !radsArray
+            || !radsSet
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad))) return result;
 
@@ -1033,9 +1037,9 @@ public abstract class CheckF13 : CheckBase
             {
                 x = x.Replace(" ", string.Empty);
                 var eqRadsArray = x.Split(',');
-                return radsArray
+                return radsSet
                     .All(rad => eqRadsArray
-                        .Contains(rad) && radsArray.Length == eqRadsArray.Length);
+                        .Contains(rad) && radsSet.Count == eqRadsArray.Length);
             })
             .Replace(" ", string.Empty)
             .Split(',')[0];

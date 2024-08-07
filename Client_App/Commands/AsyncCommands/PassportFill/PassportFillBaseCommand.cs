@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.PassportFill;
 
-internal abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     protected Report Storage => changeOrCreateViewModel.Storage;
     protected List<Form17> Collection;
@@ -28,6 +28,9 @@ internal abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateV
         if (Collection.Count == 0) return;
         Dictionary<string, List<int>> packageData = [];
         List<Dictionary<string, string>> R;
+
+        #region ReadDictionaries
+
 #if DEBUG
         R = R_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx"));
 #else
@@ -38,6 +41,9 @@ internal abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateV
 #else
             var templatePath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "PassportTemplates", "Template_1.7.xlsx");
 #endif
+
+        #endregion
+
         for (var i = 0; i < Collection.Count; i++)
         {
             try
@@ -62,8 +68,10 @@ internal abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateV
                 lineIndex = lineIndexParent;
                 while (lineIndex < Storage.Rows17.Count)
                 {
-                    if (!string.IsNullOrWhiteSpace(Storage.Rows17[lineIndex].PackType_DB) && Storage.Rows17[lineIndex].PackFactoryNumber_DB.Trim() != "-"
-                        && !string.IsNullOrWhiteSpace(Storage.Rows17[lineIndex].PackNumber_DB) && Storage.Rows17[lineIndex].PackFactoryNumber_DB.Trim() != "-")
+                    if (!string.IsNullOrWhiteSpace(Storage.Rows17[lineIndex].PackType_DB) 
+                        && Storage.Rows17[lineIndex].PackFactoryNumber_DB.Trim() != "-"
+                        && !string.IsNullOrWhiteSpace(Storage.Rows17[lineIndex].PackNumber_DB) 
+                        && Storage.Rows17[lineIndex].PackFactoryNumber_DB.Trim() != "-")
                     {
                         if (lineIndex != lineIndexParent) break;
                     }
@@ -73,7 +81,7 @@ internal abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateV
             }
             catch (Exception)
             {
-                continue;
+                //ignore
             }
         }
         foreach (var key in packageData.Keys
@@ -445,7 +453,7 @@ internal abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateV
             }
             catch (Exception)
             {
-                continue;
+                //ignore
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager

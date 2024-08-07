@@ -1200,6 +1200,7 @@ public partial class Form15 : Form1
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 23].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 24].Value);
     }
+    
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         var cnt = base.ExcelRow(worksheet, row, column, transpose);

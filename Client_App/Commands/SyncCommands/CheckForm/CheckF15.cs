@@ -719,9 +719,9 @@ public abstract class CheckF15 : CheckBase
         if (rads is not ("" or "-")) return result;
         var radsSet = rads
             .ToLower()
-            .Replace(" ", string.Empty)
             .Replace(',', ';')
             .Split(';')
+            .Select(x => x.Trim())
             .ToHashSet();
         if (radsSet.Count == 1 && R.All(phEntry => phEntry["name"] != radsSet.First()))
         {
