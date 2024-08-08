@@ -14,7 +14,7 @@ namespace Models.Forms.Form1;
 [Serializable]
 [Form_Class("Форма 1.2: Сведения об изделиях из обедненного урана")]
 [Table (name: "form_12")]
-public partial class Form12 : Form1
+public class Form12 : Form1
 {
     #region Constructor
     
@@ -285,10 +285,14 @@ public partial class Form12 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim()
+        tmp = tmp
+            .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             Mass_DB = tmp;

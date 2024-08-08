@@ -1318,7 +1318,7 @@ public abstract class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
                 Value = Convert.ToString(forms[line].Activity_DB),
-                Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ." +
+                Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ. " +
                           "Оценочные сведения приводятся в круглых скобках."
             });
         }

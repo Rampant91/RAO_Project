@@ -424,8 +424,11 @@ public partial class Form15 : Form1
         value1 = value1
             .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (value1 != "прим.")
+        {
+            value1 = value1.Replace('.', ',');
+        }
         if (value1.Equals("-"))
         {
             Activity_DB = value1;
@@ -451,7 +454,7 @@ public partial class Form15 : Form1
         }
         if (value.Value.Equals("прим."))
         {
-            return false;
+            return true;
         }
         var value1 = value.Value
             .Trim()

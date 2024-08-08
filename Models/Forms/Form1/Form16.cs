@@ -308,8 +308,11 @@ public partial class Form16 : Form1
         tmp = tmp
             .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             Volume_DB = tmp;
@@ -396,8 +399,11 @@ public partial class Form16 : Form1
         tmp = tmp
             .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             Mass_DB = tmp;
@@ -615,8 +621,11 @@ public partial class Form16 : Form1
         tmp = tmp
             .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             TritiumActivity_DB = tmp;
@@ -703,8 +712,11 @@ public partial class Form16 : Form1
         tmp = tmp
             .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             BetaGammaActivity_DB = tmp;
@@ -791,8 +803,11 @@ public partial class Form16 : Form1
         tmp = tmp
             .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             AlphaActivity_DB = tmp;
@@ -879,8 +894,11 @@ public partial class Form16 : Form1
         tmp = tmp
             .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             TransuraniumActivity_DB = tmp;

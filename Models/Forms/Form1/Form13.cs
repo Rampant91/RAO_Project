@@ -14,7 +14,7 @@ namespace Models.Forms.Form1;
 [Serializable]
 [Form_Class("Форма 1.3: Сведения об ОРИ в виде отдельных изделий")]
 [Table (name: "form_13")]
-public partial class Form13 : Form1
+public class Form13 : Form1
 {
     #region Constructor
     
@@ -370,10 +370,14 @@ public partial class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim()
+        tmp = tmp
+            .Trim()
             .ToLower()
-            .Replace('.', ',')
             .Replace('е', 'e');
+        if (tmp != "прим.")
+        {
+            tmp = tmp.Replace('.', ',');
+        }
         if (tmp.Equals("-"))
         {
             Activity_DB = tmp;
@@ -399,7 +403,7 @@ public partial class Form13 : Form1
         }
         if (value.Value.Equals("прим."))
         {
-            return false;
+            return true;
         }
         var value1 = value.Value
             .Trim()
