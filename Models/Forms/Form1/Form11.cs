@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
-using System.Security.AccessControl;
 using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
@@ -254,49 +251,7 @@ public class Form11 : Form1
         Radionuclids_DB = tmp.Trim();
     }
 
-    private bool Radionuclids_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (AutoRn)
-        {
-            AutoRn = false;
-            return true;
-        }
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Contains(','))
-        {
-            value.AddError("При перечислении необходимо использовать \";\"");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return true;
-        }
-        var nuclids = (value.Value ?? string.Empty)
-            .ToLower()
-            .Split(";")
-            .Select(x => x.Trim())
-            .ToHashSet();
-        var flag = true;
-        foreach (var nuclid in nuclids)
-        {
-            var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nuclid == item.name)
-                .Select(item => item.name);
-            if (!tmp.Any())
-                flag = false;
-        }
-        if (!flag)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
 
     #endregion
 
@@ -431,11 +386,7 @@ public class Form11 : Form1
         Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool Activity_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        return ExponentialString_Validation(value);
-    }
+    private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -536,16 +487,10 @@ public class Form11 : Form1
     private void CreationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        CreationDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
-            ? date.ToShortDateString()
-            : tmp;
+        CreationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool CreationDate_Validation(RamAccess<string> value)//Ready
-    {
-        return DateString_Validation(value);
-    }
+    private bool CreationDate_Validation(RamAccess<string> value) => DateString_Validation(value);
 
     #endregion
 
@@ -796,7 +741,7 @@ public class Form11 : Form1
         set
         {
             ProviderOrRecieverOKPO_DB = value.Value;
-            OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
+            OnPropertyChanged();
         }
     }
 

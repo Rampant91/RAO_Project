@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Models.Attributes;
@@ -9,7 +8,6 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
-using Spravochniki;
 
 namespace Models.Forms.Form2;
 
@@ -116,7 +114,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<bool>)value;
             }
             var rm = new RamAccess<bool>(Sum_Validation, Sum_DB);
-            rm.PropertyChanged += SumValueChanged;
+            rm.PropertyChanged += Sum_ValueChanged;
             Dictionary.Add(nameof(Sum), rm);
             return (RamAccess<bool>)Dictionary[nameof(Sum)];
         }
@@ -127,7 +125,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void SumValueChanged(object value, PropertyChangedEventArgs args)
+    private void Sum_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -153,7 +151,7 @@ public partial class Form22 : Form2, IBaseColor
         get
         {
             var tmp = new RamAccess<bool>(SumGroup_Validation, SumGroup_DB);
-            tmp.PropertyChanged += SumGroupValueChanged;
+            tmp.PropertyChanged += SumGroup_ValueChanged;
             return tmp;
         }
         set
@@ -163,7 +161,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void SumGroupValueChanged(object value, PropertyChangedEventArgs args)
+    private void SumGroup_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -199,7 +197,7 @@ public partial class Form22 : Form2, IBaseColor
             var rm = !string.IsNullOrEmpty(NumberInOrderSum_DB)
                 ? new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrderSum_DB)
                 : new RamAccess<string>(NumberInOrderSum_Validation, NumberInOrder_DB.ToString());
-            rm.PropertyChanged += NumberInOrderSumValueChanged;
+            rm.PropertyChanged += NumberInOrderSum_ValueChanged;
             Dictionary.Add(nameof(NumberInOrderSum), rm);
             return (RamAccess<string>)Dictionary[nameof(NumberInOrderSum)];
         }
@@ -210,7 +208,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void NumberInOrderSumValueChanged(object value, PropertyChangedEventArgs args)
+    private void NumberInOrderSum_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -292,7 +290,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB, StoragePlaceName_Hidden_Get, StoragePlaceName_Hidden_Set);
-            rm.PropertyChanged += StoragePlaceNameValueChanged;
+            rm.PropertyChanged += StoragePlaceName_ValueChanged;
             Dictionary.Add(nameof(StoragePlaceName), rm);
             return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
         }
@@ -305,7 +303,7 @@ public partial class Form22 : Form2, IBaseColor
     }
     //If change this change validation
 
-    private void StoragePlaceNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void StoragePlaceName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         if (_StoragePlaceName_Hidden_Set)
@@ -400,7 +398,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB, StoragePlaceCode_Hidden_Get, StoragePlaceCode_Hidden_Set);
-            rm.PropertyChanged += StoragePlaceCodeValueChanged;
+            rm.PropertyChanged += StoragePlaceCode_ValueChanged;
             Dictionary.Add(nameof(StoragePlaceCode), rm);
             return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
         }
@@ -413,7 +411,7 @@ public partial class Form22 : Form2, IBaseColor
     }
     //if change this change validation
 
-    private void StoragePlaceCodeValueChanged(object value, PropertyChangedEventArgs args)
+    private void StoragePlaceCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         if (_StoragePlaceCode_Hidden_Set)
@@ -544,7 +542,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackName_Validation, PackName_DB, PackName_Hidden_Get, PackName_Hidden_Set);
-            rm.PropertyChanged += PackNameValueChanged;
+            rm.PropertyChanged += PackName_ValueChanged;
             Dictionary.Add(nameof(PackName), rm);
             return (RamAccess<string>)Dictionary[nameof(PackName)];
         }
@@ -556,7 +554,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void PackNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void PackName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         if (_PackName_Hidden_Set)
@@ -653,7 +651,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackType_Validation, PackType_DB, PackType_Hidden_Get, PackType_Hidden_Set);
-            rm.PropertyChanged += PackTypeValueChanged;
+            rm.PropertyChanged += PackType_ValueChanged;
             Dictionary.Add(nameof(PackType), rm);
             return (RamAccess<string>)Dictionary[nameof(PackType)];
         }
@@ -666,7 +664,7 @@ public partial class Form22 : Form2, IBaseColor
     }
     //If change this change validation
 
-    private void PackTypeValueChanged(object value, PropertyChangedEventArgs args)
+    private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         if (_PackType_Hidden_Set)
@@ -719,19 +717,19 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackQuantity_Validation, PackQuantity_DB);
-            rm.PropertyChanged += PackQuantityValueChanged;
+            rm.PropertyChanged += PackQuantity_ValueChanged;
             Dictionary.Add(nameof(PackQuantity), rm);
             return (RamAccess<string>)Dictionary[nameof(PackQuantity)];
         }
         set
         {
             PackQuantity_DB = value.Value;
-            OnPropertyChanged(nameof(PackQuantity));
+            OnPropertyChanged();
         }
     }
     // positive int.
 
-    private void PackQuantityValueChanged(object value, PropertyChangedEventArgs args)
+    private void PackQuantity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -788,7 +786,7 @@ public partial class Form22 : Form2, IBaseColor
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
-                rm.PropertyChanged += CodeRAOValueChanged;
+                rm.PropertyChanged += CodeRAO_ValueChanged;
                 Dictionary.Add(nameof(CodeRAO), rm);
                 return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
             }
@@ -811,7 +809,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void CodeRAOValueChanged(object value, PropertyChangedEventArgs args)
+    private void CodeRAO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         CodeRAO_DB = ((RamAccess<string>)value).Value.ToLower().Replace("х", "x");
@@ -905,7 +903,7 @@ public partial class Form22 : Form2, IBaseColor
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(StatusRAO_Validation, StatusRAO_DB);
-                rm.PropertyChanged += StatusRAOValueChanged;
+                rm.PropertyChanged += StatusRAO_ValueChanged;
                 Dictionary.Add(nameof(StatusRAO), rm);
                 return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
             }
@@ -928,7 +926,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void StatusRAOValueChanged(object value, PropertyChangedEventArgs args)
+    private void StatusRAO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -979,7 +977,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
-            rm.PropertyChanged += VolumeOutOfPackValueChanged;
+            rm.PropertyChanged += VolumeOutOfPack_ValueChanged;
             Dictionary.Add(nameof(VolumeOutOfPack), rm);
             return (RamAccess<string>)Dictionary[nameof(VolumeOutOfPack)];
         }
@@ -990,67 +988,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void VolumeOutOfPackValueChanged(object value, PropertyChangedEventArgs args)
+    private void VolumeOutOfPack_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                VolumeOutOfPack_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        VolumeOutOfPack_DB = value1;
+        VolumeOutOfPack_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool VolumeOutOfPack_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1090,7 +1034,7 @@ public partial class Form22 : Form2, IBaseColor
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
-                rm.PropertyChanged += VolumeInPackValueChanged;
+                rm.PropertyChanged += VolumeInPack_ValueChanged;
                 Dictionary.Add(nameof(VolumeInPack), rm);
                 return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
             }
@@ -1113,67 +1057,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void VolumeInPackValueChanged(object value, PropertyChangedEventArgs args)
+    private void VolumeInPack_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                VolumeInPack_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        VolumeInPack_DB = value1;
+        VolumeInPack_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool VolumeInPack_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1193,7 +1083,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
-            rm.PropertyChanged += MassOutOfPackValueChanged;
+            rm.PropertyChanged += MassOutOfPack_ValueChanged;
             Dictionary.Add(nameof(MassOutOfPack), rm);
             return (RamAccess<string>)Dictionary[nameof(MassOutOfPack)];
         }
@@ -1204,67 +1094,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void MassOutOfPackValueChanged(object value, PropertyChangedEventArgs args)
+    private void MassOutOfPack_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                MassOutOfPack_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        MassOutOfPack_DB = value1;
+        MassOutOfPack_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool MassOutOfPack_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1305,7 +1141,7 @@ public partial class Form22 : Form2, IBaseColor
                 }
 
                 var rm = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
-                rm.PropertyChanged += MassInPackValueChanged;
+                rm.PropertyChanged += MassInPack_ValueChanged;
                 Dictionary.Add(nameof(MassInPack), rm);
                 return (RamAccess<string>)Dictionary[nameof(MassInPack)];
             }
@@ -1328,67 +1164,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void MassInPackValueChanged(object value, PropertyChangedEventArgs args)
+    private void MassInPack_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                MassInPack_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        MassInPack_DB = value1;
+        MassInPack_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool MassInPack_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool MassInPack_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1408,7 +1190,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
-            rm.PropertyChanged += QuantityOZIIIValueChanged;
+            rm.PropertyChanged += QuantityOZIII_ValueChanged;
             Dictionary.Add(nameof(QuantityOZIII), rm);
             return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
         }
@@ -1420,7 +1202,7 @@ public partial class Form22 : Form2, IBaseColor
     }
     // positive int.
 
-    private void QuantityOZIIIValueChanged(object value, PropertyChangedEventArgs args)
+    private void QuantityOZIII_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -1471,7 +1253,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TritiumActivity_Validation, TritiumActivity_DB);
-            rm.PropertyChanged += TritiumActivityValueChanged;
+            rm.PropertyChanged += TritiumActivity_ValueChanged;
             Dictionary.Add(nameof(TritiumActivity), rm);
             return (RamAccess<string>)Dictionary[nameof(TritiumActivity)];
         }
@@ -1482,67 +1264,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void TritiumActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void TritiumActivity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                TritiumActivity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        TritiumActivity_DB = value1;
+        ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool TritiumActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1562,7 +1290,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
-            rm.PropertyChanged += BetaGammaActivityValueChanged;
+            rm.PropertyChanged += BetaGammaActivity_ValueChanged;
             Dictionary.Add(nameof(BetaGammaActivity), rm);
             return (RamAccess<string>)Dictionary[nameof(BetaGammaActivity)];
         }
@@ -1573,67 +1301,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void BetaGammaActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void BetaGammaActivity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                BetaGammaActivity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        BetaGammaActivity_DB = value1;
+        BetaGammaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool BetaGammaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1653,7 +1327,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
-            rm.PropertyChanged += AlphaActivityValueChanged;
+            rm.PropertyChanged += AlphaActivity_ValueChanged;
             Dictionary.Add(nameof(AlphaActivity), rm);
             return (RamAccess<string>)Dictionary[nameof(AlphaActivity)];
         }
@@ -1664,67 +1338,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void AlphaActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void AlphaActivity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                AlphaActivity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        AlphaActivity_DB = value1;
+        AlphaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool AlphaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1744,7 +1364,7 @@ public partial class Form22 : Form2, IBaseColor
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransuraniumActivity_Validation, TransuraniumActivity_DB);
-            rm.PropertyChanged += TransuraniumActivityValueChanged;
+            rm.PropertyChanged += TransuraniumActivity_ValueChanged;
             Dictionary.Add(nameof(TransuraniumActivity), rm);
             return (RamAccess<string>)Dictionary[nameof(TransuraniumActivity)];
         }
@@ -1755,67 +1375,13 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void TransuraniumActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void TransuraniumActivity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                TransuraniumActivity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        TransuraniumActivity_DB = value1;
+        TransuraniumActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool TransuraniumActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -1879,35 +1445,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var nuclids = (value.Value ?? string.Empty)
-            .Trim()
-            .ToLower()
-            .Replace(',', ';')
-            .Replace("; ", ";")
-            .Split(";");
-        var flag = true;
-        foreach (var nuclid in nuclids)
-        {
-            var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nuclid == item.name)
-                .Select(item => item.name);
-            if (!tmp.Any()) flag = false;
-        }
-        if (!flag)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool MainRadionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
 
     #endregion
 
@@ -1939,7 +1477,7 @@ public partial class Form22 : Form2, IBaseColor
                 }
 
                 var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
-                rm.PropertyChanged += SubsidyValueChanged;
+                rm.PropertyChanged += Subsidy_ValueChanged;
                 Dictionary.Add(nameof(Subsidy), rm);
                 return (RamAccess<string>)Dictionary[nameof(Subsidy)];
             }
@@ -1962,7 +1500,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void SubsidyValueChanged(object value, PropertyChangedEventArgs args)
+    private void Subsidy_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -2015,7 +1553,7 @@ public partial class Form22 : Form2, IBaseColor
                 }
 
                 var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
-                rm.PropertyChanged += FcpNumberValueChanged;
+                rm.PropertyChanged += FcpNumber_ValueChanged;
                 Dictionary.Add(nameof(FcpNumber), rm);
                 return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
             }
@@ -2038,7 +1576,7 @@ public partial class Form22 : Form2, IBaseColor
         }
     }
 
-    private void FcpNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void FcpNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {

@@ -10,6 +10,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
+using Spravochniki;
 
 namespace Models.Forms;
 
@@ -199,6 +200,7 @@ public abstract class Form : IKey, IDataGridColumn
     
     private protected static bool ExponentialString_Validation(RamAccess<string> value)
     {
+        value.ClearErrors();
         if (string.IsNullOrWhiteSpace(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -218,7 +220,8 @@ public abstract class Form : IKey, IDataGridColumn
         if (!double.TryParse(value1,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
-                out var doubleValue))
+                out var doubleValue)
+            || value1.StartsWith('(') ^ value1.EndsWith(')'))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -238,17 +241,55 @@ public abstract class Form : IKey, IDataGridColumn
     private protected static bool DateString_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
-        if (string.IsNullOrWhiteSpace(value.Value))
+        var tmp = (value.Value ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(tmp))
         {
             value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (tmp.Equals("прим.") || tmp.Equals("-"))
+        {
+            return true;
+        }
+        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+            || date.Year < 1945)
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        return true;
+    }
+
+    #endregion
+
+    #region NuclidString
+
+    private protected static bool NuclidString_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        if (string.IsNullOrEmpty(value.Value))
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (value.Value.Contains(','))
+        {
+            value.AddError("При перечислении необходимо использовать \";\"");
             return false;
         }
         if (value.Value.Equals("прим.") || value.Value.Equals("-"))
         {
             return true;
         }
-        if (!DateOnly.TryParse(value.Value.Trim(), CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
-            || date.Year < 1950)
+        var nuclids = (value.Value ?? string.Empty)
+            .ToLower()
+            .Split(";")
+            .Select(x => x.Trim())
+            .ToHashSet();
+        var allNuclidsInSpr = nuclids
+            .All(nuclid => Spravochniks.SprRadionuclids
+                .Any(nameInSpr => nameInSpr.name == nuclid));
+        if (!allNuclidsInSpr)
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -276,6 +317,14 @@ public abstract class Form : IKey, IDataGridColumn
         {
             return tmp;
         }
+        var doubleStartsWithBrackets = false;
+        if (tmp.StartsWith('(') && tmp.EndsWith(')'))
+        {
+            doubleStartsWithBrackets = true;
+            tmp = tmp
+                .TrimStart('(')
+                .TrimEnd(')');
+        }
         var tmpNumWithoutSign = tmp.StartsWith('+') || tmp.StartsWith('-')
             ? tmp[1..]
             : tmp;
@@ -294,7 +343,17 @@ public abstract class Form : IKey, IDataGridColumn
         {
             tmp = $"{doubleValue:0.######################################################e+00}";
         }
-        return tmp;
+        return doubleStartsWithBrackets 
+            ? $"({tmp})" 
+            : tmp;
+    }
+
+    private protected static string DateString_ValueChanged(string value)
+    {
+        var tmp = (value ?? string.Empty).Trim();
+        return DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date) 
+            ? date.ToShortDateString()
+            : tmp;
     }
 
     #endregion

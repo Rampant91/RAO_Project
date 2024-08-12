@@ -284,64 +284,10 @@ public class Form12 : Form1
     private void Mass_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp
-            .Trim()
-            .ToLower()
-            .Replace('е', 'e');
-        if (tmp != "прим.")
-        {
-            tmp = tmp.Replace('.', ',');
-        }
-        if (tmp.Equals("-"))
-        {
-            Mass_DB = tmp;
-            return;
-        }
-        if (double.TryParse(tmp, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-            {
-                tmp = $"{doubleValue:0.######################################################e+00}";
-            }
-        Mass_DB = tmp;
+        Mass_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool Mass_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return true;
-        }
-        var tmp = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(tmp, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool Mass_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -440,40 +386,14 @@ public class Form12 : Form1
             OnPropertyChanged();
         }
     }
-    //If change this change validation
 
     private void CreationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
-        CreationDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
-            ? date.ToShortDateString()
-            : tmp;
+        CreationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool CreationDate_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            //    if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
-            //        value.AddError( "Заполните примечание");
-            return true;
-        }
-        var tmp = value.Value.Trim();
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool CreationDate_Validation(RamAccess<string> value) => DateString_Validation(value);
 
     #endregion
 

@@ -197,36 +197,7 @@ public class Form19 : Form1
         Radionuclids_DB = tmp;
     }
 
-    private static bool Radionuclids_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var nuclids = (value.Value ?? string.Empty)
-            .Trim()
-            .ToLower()
-            .Replace(',', ';')
-            .Replace("; ", ";")
-            .Split(";");
-        var flag = true;
-        foreach (var nuclid in nuclids)
-        {
-            if (!Spravochniks.SprRadionuclids
-                    .Where(item => nuclid == item.name)
-                    .Select(item => item.name)
-                    .Any())
-                flag = false;
-        }
-        if (flag)
-        {
-            return true;
-        }
-        value.AddError("Недопустимое значение");
-        return false;
-    }
+    private static bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
 
     #endregion
 
@@ -260,62 +231,10 @@ public class Form19 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp
-            .Trim()
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (tmp.Equals("-"))
-        {
-            Activity_DB = tmp;
-            return;
-        }
-        if (double.TryParse(tmp, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            tmp = $"{doubleValue:0.######################################################e+00}";
-        }
-        Activity_DB = tmp;
+        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Activity_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        
-        var tmp = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        if (!double.TryParse(tmp, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private static bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 

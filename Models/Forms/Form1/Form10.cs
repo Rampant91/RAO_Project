@@ -36,14 +36,14 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(RegNo), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(RegNo), out var value))
             {
                 ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = RegNo_DB;
                 return (RamAccess<string>)value;
             }
 
             var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
-            rm.PropertyChanged += RegNoValueChanged;
+            rm.PropertyChanged += RegNo_ValueChanged;
             Dictionary.Add(nameof(RegNo), rm);
             return (RamAccess<string>)Dictionary[nameof(RegNo)];
         }
@@ -54,7 +54,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void RegNoValueChanged(object value, PropertyChangedEventArgs args)
+    private void RegNo_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -94,13 +94,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(OrganUprav), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(OrganUprav), out var value))
             {
                 ((RamAccess<string>)value).Value = OrganUprav_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
-            rm.PropertyChanged += OrganUpravValueChanged;
+            rm.PropertyChanged += OrganUprav_ValueChanged;
             Dictionary.Add(nameof(OrganUprav), rm);
             return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
         }
@@ -111,7 +111,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void OrganUpravValueChanged(object value, PropertyChangedEventArgs args)
+    private void OrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -137,13 +137,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(SubjectRF), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(SubjectRF), out var value))
             {
                 ((RamAccess<string>)value).Value = SubjectRF_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
-            rm.PropertyChanged += SubjectRFValueChanged;
+            rm.PropertyChanged += SubjectRF_ValueChanged;
             Dictionary.Add(nameof(SubjectRF), rm);
             return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
         }
@@ -154,7 +154,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void SubjectRFValueChanged(object value, PropertyChangedEventArgs args)
+    private void SubjectRF_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -180,13 +180,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(JurLico), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(JurLico), out var value))
             {
                 ((RamAccess<string>)value).Value = JurLico_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(JurLico_Validation, JurLico_DB);
-            rm.PropertyChanged += JurLicoValueChanged;
+            rm.PropertyChanged += JurLico_ValueChanged;
             Dictionary.Add(nameof(JurLico), rm);
             return (RamAccess<string>)Dictionary[nameof(JurLico)];
         }
@@ -197,7 +197,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void JurLicoValueChanged(object value, PropertyChangedEventArgs args)
+    private void JurLico_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -223,13 +223,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(ShortJurLico), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(ShortJurLico), out var value))
             {
                 ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = ShortJurLico_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
-            rm.PropertyChanged += ShortJurLicoValueChanged;
+            rm.PropertyChanged += ShortJurLico_ValueChanged;
             Dictionary.Add(nameof(ShortJurLico), rm);
             return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
         }
@@ -240,7 +240,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void ShortJurLicoValueChanged(object value, PropertyChangedEventArgs args)
+    private void ShortJurLico_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -266,13 +266,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(JurLicoAddress), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(JurLicoAddress), out var value))
             {
                 ((RamAccess<string>)value).Value = JurLicoAddress_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
-            rm.PropertyChanged += JurLicoAddressValueChanged;
+            rm.PropertyChanged += JurLicoAddress_ValueChanged;
             Dictionary.Add(nameof(JurLicoAddress), rm);
             return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
         }
@@ -284,7 +284,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void JurLicoAddressValueChanged(object value, PropertyChangedEventArgs args)
+    private void JurLicoAddress_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -310,13 +310,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(JurLicoFactAddress), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(JurLicoFactAddress), out var value))
             {
                 ((RamAccess<string>)value).Value = JurLicoFactAddress_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
-            rm.PropertyChanged += JurLicoFactAddressValueChanged;
+            rm.PropertyChanged += JurLicoFactAddress_ValueChanged;
             Dictionary.Add(nameof(JurLicoFactAddress), rm);
             return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
         }
@@ -327,7 +327,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void JurLicoFactAddressValueChanged(object value, PropertyChangedEventArgs args)
+    private void JurLicoFactAddress_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -353,13 +353,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(GradeFIO), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(GradeFIO), out var value))
             {
                 ((RamAccess<string>)value).Value = GradeFIO_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
-            rm.PropertyChanged += GradeFIOValueChanged;
+            rm.PropertyChanged += GradeFIO_ValueChanged;
             Dictionary.Add(nameof(GradeFIO), rm);
             return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
         }
@@ -370,7 +370,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void GradeFIOValueChanged(object value, PropertyChangedEventArgs args)
+    private void GradeFIO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -396,13 +396,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Telephone), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Telephone), out var value))
             {
                 ((RamAccess<string>)value).Value = Telephone_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
-            rm.PropertyChanged += TelephoneValueChanged;
+            rm.PropertyChanged += Telephone_ValueChanged;
             Dictionary.Add(nameof(Telephone), rm);
             return (RamAccess<string>)Dictionary[nameof(Telephone)];
         }
@@ -413,7 +413,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void TelephoneValueChanged(object value, PropertyChangedEventArgs args)
+    private void Telephone_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -439,13 +439,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Fax), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Fax), out var value))
             {
                 ((RamAccess<string>)value).Value = Fax_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
-            rm.PropertyChanged += FaxValueChanged;
+            rm.PropertyChanged += Fax_ValueChanged;
             Dictionary.Add(nameof(Fax), rm);
             return (RamAccess<string>)Dictionary[nameof(Fax)];
         }
@@ -456,7 +456,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void FaxValueChanged(object value, PropertyChangedEventArgs args)
+    private void Fax_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -482,7 +482,7 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Email), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Email), out var value))
             {
                 ((RamAccess<string>)value).Value = Email_DB;
                 return (RamAccess<string>)value;
@@ -525,13 +525,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Okpo), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Okpo), out var value))
             {
                 ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = Okpo_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
-            rm.PropertyChanged += OkpoValueChanged;
+            rm.PropertyChanged += Okpo_ValueChanged;
             Dictionary.Add(nameof(Okpo), rm);
             return (RamAccess<string>)Dictionary[nameof(Okpo)];
         }
@@ -542,7 +542,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void OkpoValueChanged(object value, PropertyChangedEventArgs args)
+    private void Okpo_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -579,13 +579,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Okved), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Okved), out var value))
             {
                 ((RamAccess<string>)value).Value = Okved_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okved_Validation, Okved_DB);
-            rm.PropertyChanged += OkvedValueChanged;
+            rm.PropertyChanged += Okved_ValueChanged;
             Dictionary.Add(nameof(Okved), rm);
             return (RamAccess<string>)Dictionary[nameof(Okved)];
         }
@@ -596,7 +596,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void OkvedValueChanged(object value, PropertyChangedEventArgs args)
+    private void Okved_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -632,14 +632,14 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Okogu), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Okogu), out var value))
             {
                 ((RamAccess<string>)value).Value = Okogu_DB;
                 return (RamAccess<string>)value;
             }
 
             var rm = new RamAccess<string>(Okogu_Validation, Okogu_DB);
-            rm.PropertyChanged += OkoguValueChanged;
+            rm.PropertyChanged += Okogu_ValueChanged;
             Dictionary.Add(nameof(Okogu), rm);
             return (RamAccess<string>)Dictionary[nameof(Okogu)];
         }
@@ -650,7 +650,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void OkoguValueChanged(object value, PropertyChangedEventArgs args)
+    private void Okogu_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -686,13 +686,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Oktmo), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Oktmo), out var value))
             {
                 ((RamAccess<string>)value).Value = Oktmo_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
-            rm.PropertyChanged += OktmoValueChanged;
+            rm.PropertyChanged += Oktmo_ValueChanged;
             Dictionary.Add(nameof(Oktmo), rm);
             return (RamAccess<string>)Dictionary[nameof(Oktmo)];
         }
@@ -703,7 +703,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void OktmoValueChanged(object value, PropertyChangedEventArgs args)
+    private void Oktmo_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -739,13 +739,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Inn), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Inn), out var value))
             {
                 ((RamAccess<string>)value).Value = Inn_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Inn_Validation, Inn_DB);
-            rm.PropertyChanged += InnValueChanged;
+            rm.PropertyChanged += Inn_ValueChanged;
             Dictionary.Add(nameof(Inn), rm);
             return (RamAccess<string>)Dictionary[nameof(Inn)];
         }
@@ -756,7 +756,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void InnValueChanged(object value, PropertyChangedEventArgs args)
+    private void Inn_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -792,13 +792,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Kpp), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Kpp), out var value))
             {
                 ((RamAccess<string>)value).Value = Kpp_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Kpp_Validation, Kpp_DB);
-            rm.PropertyChanged += KppValueChanged;
+            rm.PropertyChanged += Kpp_ValueChanged;
             Dictionary.Add(nameof(Kpp), rm);
             return (RamAccess<string>)Dictionary[nameof(Kpp)];
         }
@@ -809,7 +809,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void KppValueChanged(object value, PropertyChangedEventArgs args)
+    private void Kpp_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -845,13 +845,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Okopf), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Okopf), out var value))
             {
                 ((RamAccess<string>)value).Value = Okopf_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okopf_Validation, Okopf_DB);
-            rm.PropertyChanged += OkopfValueChanged;
+            rm.PropertyChanged += Okopf_ValueChanged;
             Dictionary.Add(nameof(Okopf), rm);
             return (RamAccess<string>)Dictionary[nameof(Okopf)];
         }
@@ -862,7 +862,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void OkopfValueChanged(object value, PropertyChangedEventArgs args)
+    private void Okopf_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -898,13 +898,13 @@ public partial class Form10 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Okfs), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Okfs), out var value))
             {
                 ((RamAccess<string>)value).Value = Okfs_DB;
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okfs_Validation, Okfs_DB);
-            rm.PropertyChanged += OkfsValueChanged;
+            rm.PropertyChanged += Okfs_ValueChanged;
             Dictionary.Add(nameof(Okfs), rm);
             return (RamAccess<string>)Dictionary[nameof(Okfs)];
         }
@@ -915,7 +915,7 @@ public partial class Form10 : Form
         }
     }
 
-    private void OkfsValueChanged(object value, PropertyChangedEventArgs args)
+    private void Okfs_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {

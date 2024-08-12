@@ -902,15 +902,13 @@ public abstract class CheckF14 : CheckBase
     private static List<CheckError> Check_032(List<Form14> forms, int line)
     {
         List<CheckError> result = new();
-        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var rads = forms[line].Radionuclids_DB ?? string.Empty;
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
             .Split(';')
             .Select(x => x.Trim())
             .ToHashSet();
-        var shortRad = string.Empty;
-        double shortRadHalfLife = 0;
         foreach (var rad in radsSet)
         {
             var phEntry = R.FirstOrDefault(phEntry => phEntry["name"] == rad);
@@ -934,13 +932,7 @@ public abstract class CheckF14 : CheckBase
                 default:
                     continue;
             }
-            if (halfLife < 60 || rad == "иод-125")
-            {
-                shortRad = rad;
-                shortRadHalfLife = halfLife;
-                continue;
-            }
-            return result;
+            if (halfLife >= 60 && rad != "иод-125") return result;  //Если встречаем хоть один не короткоживущий - ошибки нет
         }
         result.Add(new CheckError
         {
@@ -948,8 +940,7 @@ public abstract class CheckF14 : CheckBase
             Row = (line + 1).ToString(),
             Column = "Radionuclids_DB",
             Value = rads,
-            Message = $"Период полураспада должен быть более 60 суток. " +
-                      $"Введенный вами радионуклид {shortRad} имеет период полураспада {shortRadHalfLife} суток. " +
+            Message = $"Все указанные радионуклиды являются короткоживущими. " +
                       $"ОРИ на основе короткоживущих радионуклидов (включая иод-125) учитываются в формах 1.9 и 2.12."
         });
         return result;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Models.Attributes;
@@ -255,41 +254,7 @@ public partial class Form15 : Form1
         Radionuclids_DB = tmp;
     }
 
-    private bool Radionuclids_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (AutoRn)
-        {
-            AutoRn = false;
-            return true;
-        }
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var nuclids = (value.Value ?? string.Empty)
-            .Trim()
-            .ToLower()
-            .Replace(',', ';')
-            .Replace("; ", ";")
-            .Split(";");
-        var flag2 = true;
-        foreach (var nuclid in nuclids)
-        {
-            var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nuclid == item.name)
-                .Select(item => item.name);
-            if (!tmp.Any())
-                flag2 = false;
-        }
-        if (!flag2)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
 
     #endregion
 
@@ -420,64 +385,10 @@ public partial class Form15 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        value1 = value1
-            .Trim()
-            .ToLower()
-            .Replace('е', 'e');
-        if (value1 != "прим.")
-        {
-            value1 = value1.Replace('.', ',');
-        }
-        if (value1.Equals("-"))
-        {
-            Activity_DB = value1;
-            return;
-        }
-        if (double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value1 = $"{doubleValue:0.######################################################e+00}";
-        }
-        Activity_DB = value1;
+        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool Activity_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return true;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -506,33 +417,15 @@ public partial class Form15 : Form1
             CreationDate_DB = value.Value;
             OnPropertyChanged();
         }
-    }//If change this change validation
+    }
 
     private void CreationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        CreationDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
-            ? date.ToShortDateString()
-            : tmp;
+        CreationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool CreationDate_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var tmp = value.Value.Trim();
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool CreationDate_Validation(RamAccess<string> value) => DateString_Validation(value);
 
     #endregion
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Models.Attributes;
@@ -139,29 +138,11 @@ public abstract partial class Form1 : Form
     private void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        OperationDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
-            ? date.ToShortDateString()
-            : tmp;
+        OperationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    protected virtual bool OperationDate_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var tmp = value.Value.Trim();
+    protected virtual bool OperationDate_Validation(RamAccess<string> value) => DateString_Validation(value);
 
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
     #endregion
 
     #region DocumentVid
@@ -340,28 +321,10 @@ public abstract partial class Form1 : Form
     private void DocumentDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        DocumentDate_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
-            ? date.ToShortDateString()
-            : tmp;
+        DocumentDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    protected virtual bool DocumentDate_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var tmp = value.Value.Trim();
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    protected virtual bool DocumentDate_Validation(RamAccess<string> value) => DateString_Validation(value);
 
     #endregion 
 

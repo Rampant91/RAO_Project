@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.Save;
 using Models.CheckForm;
 
 namespace Client_App.ViewModels;
@@ -15,7 +18,15 @@ public class CheckFormVM : BaseVM, INotifyPropertyChanged
     {
         ChangeOrCreateVM = changeOrCreateVM;
         CheckError = checkError;
+
+        ExcelExportCheckForm = new ExcelExportCheckFormAsyncCommand();
     }
+
+    #endregion
+
+    #region Commands
+
+    public ICommand ExcelExportCheckForm { get; set; }            //  Создать и открыть новое окно формы для выбранной организации
 
     #endregion
 
