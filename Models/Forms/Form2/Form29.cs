@@ -1,13 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
-using Spravochniki;
 
 namespace Models.Forms.Form2;
 
@@ -66,23 +64,21 @@ public class Form29 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
-            rm.PropertyChanged += WasteSourceNameValueChanged;
+            rm.PropertyChanged += WasteSourceName_ValueChanged;
             Dictionary.Add(nameof(WasteSourceName), rm);
             return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
         }
         set
         {
             WasteSourceName_DB = value.Value;
-            OnPropertyChanged(nameof(WasteSourceName));
+            OnPropertyChanged();
         }
     }
 
-    private void WasteSourceNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void WasteSourceName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            WasteSourceName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        WasteSourceName_DB = ((RamAccess<string>)value).Value;
     }
 
     private bool WasteSourceName_Validation(RamAccess<string> value)
@@ -124,46 +120,14 @@ public class Form29 : Form2
             OnPropertyChanged();
         }
     }
-    //If change this change validation
 
     private void RadionuclidName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            RadionuclidName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        RadionuclidName_DB = ((RamAccess<string>)value).Value;
     }
 
-    private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var nuclids = (value.Value ?? string.Empty)
-            .Trim()
-            .ToLower()
-            .Replace(',', ';')
-            .Replace("; ", ";")
-            .Split(";");
-        var flag = true;
-        foreach (var nuclid in nuclids)
-        {
-            var tmp = Spravochniks.SprRadionuclids
-                .Where(item => nuclid == item.name)
-                .Select(item => item.name);
-            if (!tmp.Any())
-                flag = false;
-        }
-        if (!flag)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool RadionuclidName_Validation(RamAccess<string> value) => NuclidString_Validation(value);
 
     #endregion
 
@@ -183,78 +147,24 @@ public class Form29 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedActivity_Validation, AllowedActivity_DB);
-            rm.PropertyChanged += AllowedActivityValueChanged;
+            rm.PropertyChanged += AllowedActivity_ValueChanged;
             Dictionary.Add(nameof(AllowedActivity), rm);
             return (RamAccess<string>)Dictionary[nameof(AllowedActivity)];
         }
         set
         {
             AllowedActivity_DB = value.Value;
-            OnPropertyChanged(nameof(AllowedActivity));
+            OnPropertyChanged();
         }
     }
 
-    private void AllowedActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void AllowedActivity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                AllowedActivity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        AllowedActivity_DB = value1;
+        AllowedActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool AllowedActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -281,74 +191,20 @@ public class Form29 : Form2
         set
         {
             FactedActivity_DB = value.Value;
-            OnPropertyChanged(nameof(FactedActivity));
+            OnPropertyChanged();
         }
     }
 
     private void FactedActivityValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                FactedActivity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        FactedActivity_DB = value1;
+        FactedActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool FactedActivity_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool FactedActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
-    #endregion 
-    
+    #endregion
+
     #endregion
 
     #region IExcel

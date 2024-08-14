@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using Models.Attributes;
 using Models.Collections;
@@ -68,23 +67,21 @@ public class Form212 : Form2
                 return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
-            rm.PropertyChanged += OperationCodeValueChanged;
+            rm.PropertyChanged += OperationCode_ValueChanged;
             Dictionary.Add(nameof(OperationCode), rm);
             return (RamAccess<short?>)Dictionary[nameof(OperationCode)];
         }
         set
         {
             OperationCode_DB = value.Value;
-            OnPropertyChanged(nameof(OperationCode));
+            OnPropertyChanged();
         }
     }
 
-    private void OperationCodeValueChanged(object value, PropertyChangedEventArgs args)
+    private void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            OperationCode_DB = ((RamAccess<short?>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        OperationCode_DB = ((RamAccess<short?>)value).Value;
     }
 
     private bool OperationCode_Validation(RamAccess<short?> value)
@@ -121,24 +118,22 @@ public class Form212 : Form2
                 return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
-            rm.PropertyChanged += ObjectTypeCodeValueChanged;
+            rm.PropertyChanged += ObjectTypeCode_ValueChanged;
             Dictionary.Add(nameof(ObjectTypeCode), rm);
             return (RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)];
         }
         set
         {
             ObjectTypeCode_DB = value.Value;
-            OnPropertyChanged(nameof(ObjectTypeCode));
+            OnPropertyChanged();
         }
     }
     //2 digit code
 
-    private void ObjectTypeCodeValueChanged(object value, PropertyChangedEventArgs args)
+    private void ObjectTypeCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            ObjectTypeCode_DB = ((RamAccess<short?>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        ObjectTypeCode_DB = ((RamAccess<short?>)value).Value;
     }
 
     private bool ObjectTypeCode_Validation(RamAccess<short?> value)//TODO
@@ -182,49 +177,18 @@ public class Form212 : Form2
         set
         {
             Radionuclids_DB = value.Value;
-            OnPropertyChanged(nameof(Radionuclids));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
     private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            Radionuclids_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        Radionuclids_DB = ((RamAccess<string>)value).Value;
     }
 
-    private bool Radionuclids_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var nuclids = (value.Value ?? string.Empty)
-            .Trim()
-            .ToLower()
-            .Replace(',', ';')
-            .Replace("; ", ";")
-            .Split(";");
-        var flag = true;
-        foreach (var nuclid in nuclids)
-        {
-            if (!Spravochniks.SprRadionuclids
-                    .Where(item => nuclid == item.name)
-                    .Select(item => item.name)
-                    .Any())
-                flag = false;
-        }
-        if (!flag)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
 
     #endregion
 
@@ -244,78 +208,24 @@ public class Form212 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
-            rm.PropertyChanged += ActivityValueChanged;
+            rm.PropertyChanged += Activity_ValueChanged;
             Dictionary.Add(nameof(Activity), rm);
             return (RamAccess<string>)Dictionary[nameof(Activity)];
         }
         set
         {
             Activity_DB = value.Value;
-            OnPropertyChanged(nameof(Activity));
+            OnPropertyChanged();
         }
     }
 
-    private void ActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                Activity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        Activity_DB = value1;
+        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool Activity_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -335,26 +245,25 @@ public class Form212 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-            rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+            rm.PropertyChanged += ProviderOrRecieverOKPO_ValueChanged;
             Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
             return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
         }
         set
         {
             ProviderOrRecieverOKPO_DB = value.Value;
-            OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
+            OnPropertyChanged();
         }
     }
 
-    private void ProviderOrRecieverOKPOValueChanged(object value, PropertyChangedEventArgs args)
+    private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-            if (Spravochniks.OKSM.Contains(value1.ToUpper()))
-            {
-                value1 = value1.ToUpper();
-            }
+        if (value1 != null && Spravochniks.OKSM.Contains(value1.ToUpper()))
+        {
+            value1 = value1.ToUpper();
+        }
         ProviderOrRecieverOKPO_DB = value1;
     }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Models.Attributes;
@@ -206,11 +205,13 @@ public partial class Form25 : Form2
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
         {
-            value.AddError("Поле не заполнено"); return false;
+            value.AddError("Поле не заполнено"); 
+            return false;
         }
         if (!FiveNumRegex().IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); return false;
+            value.AddError("Недопустимое значение"); 
+            return false;
         }
         return true;
     }
@@ -360,7 +361,6 @@ public partial class Form25 : Form2
             OnPropertyChanged();
         }
     }
-    // positive int.
 
     private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
@@ -370,7 +370,7 @@ public partial class Form25 : Form2
         }
     }
 
-    private bool Quantity_Validation(RamAccess<int?> value)//Ready
+    private bool Quantity_Validation(RamAccess<int?> value)
     {
         value.ClearErrors();
         if (value.Value == null)
@@ -420,40 +420,7 @@ public partial class Form25 : Form2
         AlphaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool AlphaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion 
 
@@ -473,78 +440,24 @@ public partial class Form25 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
-            rm.PropertyChanged += BetaGammaActivityValueChanged;
+            rm.PropertyChanged += BetaGammaActivity_ValueChanged;
             Dictionary.Add(nameof(BetaGammaActivity), rm);
             return (RamAccess<string>)Dictionary[nameof(BetaGammaActivity)];
         }
         set
         {
             BetaGammaActivity_DB = value.Value;
-            OnPropertyChanged(nameof(BetaGammaActivity));
+            OnPropertyChanged();
         }
     }
 
-    private void BetaGammaActivityValueChanged(object value, PropertyChangedEventArgs args)
+    private void BetaGammaActivity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1
-                .Trim()
-                .ToLower()
-                .Replace('.', ',')
-                .Replace('е', 'e');
-            if (value1.Equals("-"))
-            {
-                BetaGammaActivity_DB = value1;
-                return;
-            }
-            if (double.TryParse(value1, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                    CultureInfo.CreateSpecificCulture("ru-RU"), 
-                    out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        BetaGammaActivity_DB = value1;
+        BetaGammaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return false;
-        }
-        var value1 = value.Value
-            .Trim()
-            .TrimStart('(')
-            .TrimEnd(')')
-            .ToLower()
-            .Replace('.', ',')
-            .Replace('е', 'e');
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool BetaGammaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 

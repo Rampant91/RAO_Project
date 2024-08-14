@@ -1127,15 +1127,15 @@ public abstract class CheckF16 : CheckBase
         }
         else
         {
-            var nuclears = new []
+            var nuclids = new []
             {
                 "плутоний", "уран-233", "уран-235", "уран-238", "нептуний-237", "америций-241", 
                 "америций-243", "калифорний-252", "торий", "литий-6", "тритий"
             };
             var operations11 = new[] { "11", "13", "14", "16", "41" };
             var operations12 = new [] { "12" };
-            var nuclearsExist = radsSet
-                .Any(x => nuclears
+            var nuclidsExist = radsSet
+                .Any(x => nuclids
                     .Any(y => x.Contains(y, StringComparison.CurrentCultureIgnoreCase)));
             if (codeRao4HasNuclears == "1")
             {
@@ -1151,20 +1151,20 @@ public abstract class CheckF16 : CheckBase
                                   "4-ый символ кода РАО не может быть равен 1 при коде операции 12."
                     });
                 }
-                else if (operations11.Contains(operationCode))
-                {
-                    //anything is allowed
-                }
-                else
-                {
-                    //anything is allowed
-                }
+                //else if (operations11.Contains(operationCode))
+                //{
+                //    //anything is allowed
+                //}
+                //else
+                //{
+                //    //anything is allowed
+                //}
             }
             else if (codeRao4HasNuclears == "2")
             {
                 if (operations12.Contains(operationCode))
                 {
-                    if (!nuclearsExist)
+                    if (!nuclidsExist)
                     {
                         result.Add(new CheckError
                         {
@@ -1192,7 +1192,7 @@ public abstract class CheckF16 : CheckBase
                 }
                 else
                 {
-                    if (!nuclearsExist)
+                    if (!nuclidsExist)
                     {
                         result.Add(new CheckError
                         {
@@ -1937,7 +1937,7 @@ public abstract class CheckF16 : CheckBase
             {
                 FormNum = "form_16",
                 Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "Mass_DB",
+                Column = "Плотность (07 - масса / 06 - объём)",
                 Value = mass,
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "Необходимо заполнить сведения о массе РАО, если представляемые данные являются расчетными, " +
@@ -1954,7 +1954,7 @@ public abstract class CheckF16 : CheckBase
             {
                 FormNum = "form_16",
                 Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "Mass_DB",
+                Column = "Плотность (07 - Масса / 06 - Объём)",
                 Value = densityReal.ToString(),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "Проверьте значение массы и объема. Расчетное значение плотности слишком большое."
@@ -1966,7 +1966,7 @@ public abstract class CheckF16 : CheckBase
             {
                 FormNum = "form_16",
                 Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "Mass_DB",
+                Column = "Плотность (07 - Масса / 06 - Объём)",
                 Value = densityReal.ToString(),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "Проверьте значение массы и объема. Расчетное значение плотности слишком маленькое."
@@ -1984,8 +1984,8 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var codeRao = forms[line].CodeRAO_DB.Trim();
         var quantityOziii = forms[line].QuantityOZIII_DB.Trim();
-        var quantityOziiiExists = int.TryParse(quantityOziii, out var QuantityOZIII_Real);
-        var raoTypes1 = new [] { "81", "82", "84", "85", "86", "87", "88", "89" };
+        var quantityOziiiExists = int.TryParse(quantityOziii, out _);
+        var raoTypes1 = new [] { "81", "82", "85", "86", "87", "88", "89" };
         var raoTypes2 = new [] { "99" };
         if (codeRao.Length < 10) return result;
         var typeRao = codeRao.Substring(8, 2);
@@ -2020,20 +2020,20 @@ public abstract class CheckF16 : CheckBase
                 });
             }
         }
-        else
+        else if (quantityOziii != "-" || quantityOziiiExists)
         {
-            if (quantityOziii != "-" || (quantityOziiiExists && stateRao == "2"))
+            var msg = stateRao == "2" 
+                ? " (справочное сообщение о возможной ошибке)" 
+                : string.Empty;
+            result.Add(new CheckError
             {
-                result.Add(new CheckError
-                {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "QuantityOZIII_DB",
-                    Value = quantityOziii,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Графа заполняется только для ОЗИИИ. Поставьте прочерк."
-                });
-            }
+                FormNum = "form_16",
+                Row = forms[line].NumberInOrder_DB.ToString(),
+                Column = "QuantityOZIII_DB",
+                Value = quantityOziii,
+                Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                          "Графа заполняется только для ОЗИИИ. Поставьте прочерк." + msg
+            });
         }
         return result;
     }
@@ -2077,16 +2077,21 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Radionuclids_DB",
                     Value = Convert.ToString(rads),
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + "Заполните графу 9 «Основные радионуклиды»"
+                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                              "Заполните графу 9 «Основные радионуклиды»"
                 });
                 return result;
             }
         }
         else
         {
-            var unknown_nuclids = new List<string>();
-            unknown_nuclids.AddRange(radsSet.Where(rad => R.All(phEntry => phEntry["name"].Replace(" ", string.Empty) != rad)));
-            var valid = unknown_nuclids.Count == 0;
+            var unknownNuclids = new List<string>();
+            unknownNuclids
+                .AddRange(radsSet
+                    .Where(rad => R
+                        .All(phEntry => phEntry["name"]
+                            .Replace(" ", string.Empty) != rad)));
+            var valid = unknownNuclids.Count == 0;
             if (!valid)
             {
                 result.Add(new CheckError
@@ -2095,7 +2100,10 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Radionuclids_DB",
                     Value = Convert.ToString(rads),
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + "Формат ввода данных не соответствует приказу. Наименование радионуклида указывается названием химического элемента на русском языке с указанием через дефис массового числа изотопа"
+                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                              "Формат ввода данных не соответствует приказу. " +
+                              "Наименование радионуклида указывается названием химического элемента на русском языке, " +
+                              "с указанием через дефис массового числа изотопа"
                 });
             }
         }
@@ -2127,7 +2135,9 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TritiumActivity_DB",
                     Value = tritiumActivity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + "Проверьте перечень основных радионуклидов: указана суммарная активность для трития, но тритий не приведен в перечне радионуклидов."
+                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                              "Проверьте перечень основных радионуклидов: указана суммарная активность для трития, " +
+                              "но тритий не приведен в перечне радионуклидов."
                 });
             }
             return result;
@@ -2144,37 +2154,48 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TritiumActivity_DB",
                 Value = Convert.ToString(forms[line].TritiumActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 10"
+                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                          "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 10."
             });
             return result;
         }
-        if (activityReal is <= 10e+01 or > 10e+20)
+        switch (activityReal)
         {
-            result.Add(new CheckError
+            case <= 10e+01:
             {
-                FormNum = "form_16",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "TritiumActivity_DB",
-                Value = Convert.ToString(forms[line].TritiumActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте значение суммарной активности в графе 10"
-            });
-        }
-        else if (activityReal > 10e+20)
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_16",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "TritiumActivity_DB",
+                    Value = Convert.ToString(forms[line].TritiumActivity_DB),
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Проверьте значение суммарной активности в графе 10."
+                });
+                break;
+            }
+            case > 10e+20:
             {
-                FormNum = "form_16",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "TritiumActivity_DB",
-                Value = Convert.ToString(forms[line].TritiumActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте значение суммарной активности в графе 10. Указанная суммарная активность превышает предельное значение"
-            });
+                result.Add(new CheckError
+                {
+                    FormNum = "form_16",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "TritiumActivity_DB",
+                    Value = Convert.ToString(forms[line].TritiumActivity_DB),
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Проверьте значение суммарной активности в графе 10. " +
+                              "Указанная суммарная активность превышает предельное значение."
+                });
+                break;
+            }
         }
         return result;
     }
+
     #endregion
 
     #region Check011
+
     private static List<CheckError> Check_011(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
@@ -2198,7 +2219,9 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "BetaGammaActivity_DB",
                     Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + "Проверьте перечень основных радионуклидов: указана суммарная активность для бета-, гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов."
+                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                              "Проверьте перечень основных радионуклидов: указана суммарная активность для бета-, " +
+                              "гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов."
                 });
             }
             return result;
@@ -2215,31 +2238,40 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "BetaGammaActivity_DB",
                 Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 11"
+                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                          "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 11."
             });
             return result;
         }
-        if (activityReal is <= 10e+01 or > 10e+20)
+        switch (activityReal)
         {
-            result.Add(new CheckError
+            case <= 10e+01:
             {
-                FormNum = "form_16",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "BetaGammaActivity_DB",
-                Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте значение суммарной активности в графе 11"
-            });
-        }
-        else if (activityReal > 10e+20)
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_16",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "BetaGammaActivity_DB",
+                    Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Проверьте значение суммарной активности в графе 11."
+                });
+                break;
+            }
+            case > 10e+20:
             {
-                FormNum = "form_16",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "BetaGammaActivity_DB",
-                Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте значение суммарной активности в графе 11. Указанная суммарная активность превышает предельное значение"
-            });
+                result.Add(new CheckError
+                {
+                    FormNum = "form_16",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "BetaGammaActivity_DB",
+                    Value = Convert.ToString(forms[line].BetaGammaActivity_DB),
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Проверьте значение суммарной активности в графе 11. " +
+                              "Указанная суммарная активность превышает предельное значение."
+                });
+                break;
+            }
         }
         return result;
     }
@@ -2271,7 +2303,9 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "AlphaActivity_DB",
                     Value = Convert.ToString(forms[line].AlphaActivity_DB),
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + "Проверьте перечень основных радионуклидов: указана суммарная активность для альфа-излучающих радионуклидов, но альфа-излучающие радионуклиды не приведены в перечне радионуклидов."
+                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                              "Проверьте перечень основных радионуклидов: указана суммарная активность для альфа-излучающих радионуклидов, " +
+                              "но альфа-излучающие радионуклиды не приведены в перечне радионуклидов."
                 });
             }
             return result;
@@ -2288,31 +2322,40 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "AlphaActivity_DB",
                 Value = Convert.ToString(forms[line].AlphaActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 12"
+                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                          "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 12."
             });
             return result;
         }
-        if (activityReal is <= 10e+01 or > 10e+20)
+        switch (activityReal)
         {
-            result.Add(new CheckError
+            case <= 10e+01:
             {
-                FormNum = "form_16",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "AlphaActivity_DB",
-                Value = Convert.ToString(forms[line].AlphaActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте значение суммарной активности в графе 12"
-            });
-        }
-        else if (activityReal > 10e+20)
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_16",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "AlphaActivity_DB",
+                    Value = Convert.ToString(forms[line].AlphaActivity_DB),
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Проверьте значение суммарной активности в графе 12."
+                });
+                break;
+            }
+            case > 10e+20:
             {
-                FormNum = "form_16",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "AlphaActivity_DB",
-                Value = Convert.ToString(forms[line].AlphaActivity_DB),
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + "Проверьте значение суммарной активности в графе 12. Указанная суммарная активность превышает предельное значение"
-            });
+                result.Add(new CheckError
+                {
+                    FormNum = "form_16",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "AlphaActivity_DB",
+                    Value = Convert.ToString(forms[line].AlphaActivity_DB),
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Проверьте значение суммарной активности в графе 12. " +
+                              "Указанная суммарная активность превышает предельное значение."
+                });
+                break;
+            }
         }
         return result;
     }
@@ -2355,6 +2398,7 @@ public abstract class CheckF16 : CheckBase
             switch (activityReal)
             {
                 case <= 10e+01f:
+                {
                     result.Add(new CheckError
                     {
                         FormNum = "form_16",
@@ -2365,7 +2409,9 @@ public abstract class CheckF16 : CheckBase
                                   "Проверьте значение суммарной активности в графе 13."
                     });
                     break;
+                }
                 case > 10e+20f:
+                {
                     result.Add(new CheckError
                     {
                         FormNum = "form_16",
@@ -2373,9 +2419,11 @@ public abstract class CheckF16 : CheckBase
                         Column = "TransuraniumActivity_DB",
                         Value = Convert.ToString(forms[line].TransuraniumActivity_DB),
                         Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                                  "Проверьте значение суммарной активности в графе 13. Указанная суммарная активность превышает предельное значение."
+                                  "Проверьте значение суммарной активности в графе 13. " +
+                                  "Указанная суммарная активность превышает предельное значение."
                     });
                     break;
+                }
             }
         }
         else
@@ -2723,7 +2771,7 @@ public abstract class CheckF16 : CheckBase
         const byte graphNumber = 19;
         var noteExists = CheckNotePresence(notes, line, graphNumber);
         var valid = okpoRegex.IsMatch(transporterOKPO) 
-                    || transporterOKPO.Replace(".", "").Equals("прим", StringComparison.CurrentCultureIgnoreCase);
+                    || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2733,10 +2781,10 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "Необходимо указать код ОКПО организации перевозчика, либо \"прим\" без кавычек."
+                          "Необходимо указать код ОКПО организации перевозчика, либо \"прим.\" без кавычек."
             });
         }
-        else if (transporterOKPO.Replace(".", "").Equals("прим", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
+        else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
         {
             result.Add(new CheckError
             {
@@ -2745,7 +2793,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "При указании \"прим\" требуется примечание к ячейке."
+                          "При указании \"прим.\" требуется примечание к ячейке."
             });
         }
         return result;
@@ -2768,7 +2816,7 @@ public abstract class CheckF16 : CheckBase
         var noteExists = CheckNotePresence(notes, line, graphNumber);
         var valid = okpoRegex.IsMatch(transporterOKPO)
                     || transporterOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase)
-                    || transporterOKPO.Replace(".", "").Equals("прим", StringComparison.CurrentCultureIgnoreCase);
+                    || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2778,10 +2826,10 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек, либо \"прим\" без кавычек."
+                          "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек, либо \"прим.\" без кавычек."
             });
         }
-        else if (transporterOKPO.Replace(".", "").Equals("прим", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
+        else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
         {
             result.Add(new CheckError
             {
@@ -2790,7 +2838,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "При указании \"прим\" требуется примечание к ячейке."
+                          "При указании \"прим.\" требуется примечание к ячейке."
             });
         }
         return result;
@@ -2813,7 +2861,7 @@ public abstract class CheckF16 : CheckBase
         var noteExists = CheckNotePresence(notes, line, graphNumber);
         var valid = okpoRegex.IsMatch(transporterOKPO)
                     || transporterOKPO.Equals("-", StringComparison.CurrentCultureIgnoreCase)
-                    || transporterOKPO.Replace(".", "").Equals("прим", StringComparison.CurrentCultureIgnoreCase);
+                    || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2823,10 +2871,10 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "Необходимо указать код ОКПО организации перевозчика, либо \"-\" без кавычек, либо \"прим\" без кавычек."
+                          "Необходимо указать код ОКПО организации перевозчика, либо \"-\" без кавычек, либо \"прим.\" без кавычек."
             });
         }
-        else if (transporterOKPO.Replace(".", "").Equals("прим", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
+        else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
         {
             result.Add(new CheckError
             {
@@ -2835,7 +2883,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = Convert.ToString(transporterOKPO),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "При указании \"прим\" требуется примечание к ячейке."
+                          "При указании \"прим.\" требуется примечание к ячейке."
             });
         }
         return result;
