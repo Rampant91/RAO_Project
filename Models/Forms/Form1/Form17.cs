@@ -1516,7 +1516,7 @@ public partial class Form17 : Form1
 
     [NotMapped]
     [FormProperty(true, "Сведения о РАО", "null-30", "Код переработки/сортировки РАО", "30")]
-    public RamAccess<string> RefineOrSortRAOCode //2 digits code or empty.
+    public RamAccess<string> RefineOrSortRAOCode
     {
         get
         {
@@ -1535,7 +1535,7 @@ public partial class Form17 : Form1
             RefineOrSortRAOCode_DB = value.Value;
             OnPropertyChanged();
         }
-    }//If change this change validation
+    }
 
     private void RefineOrSortRAOCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
@@ -1547,11 +1547,11 @@ public partial class Form17 : Form1
     private static bool RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        if (value.Value is null or "" or "-")
         {
             return true;
         }
-        if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
+        if (!Spravochniks.SprRefineOrSortCodes.Contains(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;

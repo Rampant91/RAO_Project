@@ -1301,7 +1301,7 @@ public partial class Form18 : Form1
         }
         if (OperationCode.Value == "55")
         {
-            if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
+            if (!Spravochniks.SprRefineOrSortCodes.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

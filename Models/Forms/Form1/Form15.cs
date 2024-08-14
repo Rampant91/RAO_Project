@@ -959,7 +959,7 @@ public partial class Form15 : Form1
         {
             return true;
         }
-        if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
+        if (!Spravochniks.SprRefineOrSortCodes.Contains(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;

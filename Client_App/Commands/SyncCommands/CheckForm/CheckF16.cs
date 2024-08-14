@@ -336,7 +336,8 @@ public abstract class CheckF16 : CheckBase
                 Column = "OperationCode_DB",
                 Value = operationCode,
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "В отчетах не найдена строка об осуществлении передачи учетной единицы. Проверьте правильность выбранного кода операции."
+                          "В отчетах не найдена строка об осуществлении передачи учетной единицы. " +
+                          "Проверьте правильность выбранного кода операции."
             });
         }
         return result;
@@ -363,8 +364,8 @@ public abstract class CheckF16 : CheckBase
                 Column = "OperationCode_DB",
                 Value = operationCode,
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "В отчетах не найдена строка снятии учетной единицы для упаковки/переупаковки." +
-                          " Проверьте правильность выбранного кода операции"
+                          "В отчетах не найдена строка снятии учетной единицы для упаковки/переупаковки. " +
+                          "Проверьте правильность выбранного кода операции."
             });
         }
         return result;
@@ -2103,7 +2104,7 @@ public abstract class CheckF16 : CheckBase
                     Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                               "Формат ввода данных не соответствует приказу. " +
                               "Наименование радионуклида указывается названием химического элемента на русском языке, " +
-                              "с указанием через дефис массового числа изотопа"
+                              "с указанием через дефис массового числа изотопа."
                 });
             }
         }
