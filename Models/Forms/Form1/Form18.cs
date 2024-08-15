@@ -718,7 +718,6 @@ public partial class Form18 : Form1
         {
             return true;
         }
-
         var tmp = value.Value.Trim();
         if (tmp.Equals("-") || tmp.Equals("Минобороны"))
         {

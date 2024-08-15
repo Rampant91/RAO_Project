@@ -541,20 +541,22 @@ public partial class Form15 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("прим.") || Spravochniks.OKSM.Contains(value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
+        if (value.Value.Equals("прим.") 
+            || Spravochniks.OKSM.Contains(value.Value.ToUpper()) 
+            || value.Value.Equals("Минобороны"))
         {
             return true;
         }
-        if (OperationCode.Value != null)
-        {
-            var tmp = short.Parse(OperationCode.Value);
-            if (tmp is 1 or >= 10 and <= 14 or 16 or 18 or >= 41 and <= 45 or 48 or 49
-                or 51 or 52 or >= 55 and <= 57 or 59 or 68 or >= 71 and <= 73 or 75 or 76)
-            {
-                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                //return true;
-            }
-        }
+        //if (OperationCode.Value != null)
+        //{
+        //    var tmp = short.Parse(OperationCode.Value);
+        //    if (tmp is 1 or >= 10 and <= 14 or 16 or 18 or >= 41 and <= 45 or 48 or 49
+        //        or 51 or 52 or >= 55 and <= 57 or 59 or 68 or >= 71 and <= 73 or 75 or 76)
+        //    {
+        //        //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+        //        //return true;
+        //    }
+        //}
         if (value.Value.Length is not (8 or 14)
             || !OkpoRegex().IsMatch(value.Value))
         {

@@ -1054,7 +1054,7 @@ public partial class Form17 : Form1
         //    value.AddError("Недопустимое значение"); return false;
         //}
         //return true;
-        if (string.IsNullOrEmpty(value.Value) || value.Value == "-")
+        if (value.Value is null or "" or "-")
         {
             return true;
         }
@@ -1333,16 +1333,11 @@ public partial class Form17 : Form1
     private static bool Quantity_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var tmp = value.Value.Trim();
-        if (tmp.Equals("-"))
+        if (value.Value is null or "-" or "") 
         {
             return true;
         }
+        var tmp = value.Value.Trim();
         if (!int.TryParse(tmp, out var intValue))
         {
             value.AddError("Недопустимое значение");

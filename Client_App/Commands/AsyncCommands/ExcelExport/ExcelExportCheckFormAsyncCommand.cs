@@ -13,19 +13,7 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
     {
         if (parameter is not CheckFormVM checkFormVM) return;
         var cts = new CancellationTokenSource();
-        ExportType = checkFormVM.TitleName;
-
-        var reps = checkFormVM.ChangeOrCreateVM.Storages;
-        var rep = checkFormVM.ChangeOrCreateVM.Storage;
-        var regNum = reps.Master_DB.RegNoRep.Value;
-        var okpo = reps.Master_DB.OkpoRep.Value;
-        var formNum = checkFormVM.FormNum;
-        var startPeriod = rep.StartPeriod_DB;
-        var endPeriod = rep.EndPeriod_DB;
-        var corNum = rep.CorrectionNumber_DB;
-
-        var fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}";
-
+        var fileName = checkFormVM.TitleName;
         (string fullPath, bool openTemp) result;
         try
         {

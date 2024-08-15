@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
@@ -55,7 +56,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _items;
         set
         {
-            if (value != null && Math.Ceiling(value.Count / 10.0 ) < int.Parse(NowPage) && NowPage != "1" && _items?.GetEnumerable().FirstOrDefault() is Report) //жуткий костыль, чтобы страница сбрасывалась при смене организации, но не сбрасывалась при её открытии
+            if (value != null 
+                && int.TryParse(NowPage, out var nowPage)
+                && Math.Ceiling(value.Count / 10.0 ) < nowPage
+                && NowPage != "1" 
+                && _items?.GetEnumerable().FirstOrDefault() is Report) //жуткий костыль, чтобы страница сбрасывалась при смене организации, но не сбрасывалась при её открытии
             {
                 NowPage = "1";
             }
@@ -1421,7 +1426,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 tmp2Coll.Add(it);
                             }
                         }
-                        if (int.Parse(NowPage) > (tmp2Coll.Count / PageSize + 1))
+                        if (int.TryParse(NowPage, out var nowPage) 
+                            && nowPage > tmp2Coll.Count / PageSize + 1)
                         {
                             SetAndRaise(NowPageProperty, ref _nowPage, "1");
                             offsetMax = 5;

@@ -230,6 +230,55 @@ public abstract class CheckBase
 
     #endregion
 
+    #region ConvertSequenceToRangeStringList
+    
+    private protected static List<string> ConvertSequenceToRangeStringList(List<List<int>> groups)
+    {
+        var formattedGroups = new List<string>();
+        foreach (var group in groups)
+        {
+            // Отсортируем группу (если она не отсортирована изначально)
+            var sortedGroup = group
+                .OrderBy(x => x)
+                .ToList();
+            
+            var start = sortedGroup[0];
+            var end = sortedGroup[0];
+            var ranges = new List<string>();
+            for (var i = 1; i < sortedGroup.Count; i++)
+            {
+                if (sortedGroup[i] == end + 1)
+                {
+                    end = sortedGroup[i]; // продолжаем диапазон
+                }
+                else
+                {
+                    // добавляем текущий диапазон в список
+                    ranges.Add(start == end
+                        ? start.ToString()
+                        : end == start + 1 
+                            ? $"{start}, {end}"
+                            : $"{start}-{end}");
+                    // начинаем новый диапазон
+                    start = sortedGroup[i];
+                    end = sortedGroup[i];
+                }
+            }
+            // добавляем последний диапазон
+            ranges.Add(start == end
+                ? start.ToString()
+                : end == start + 1
+                    ? $"{start}, {end}"
+                    : $"{start}-{end}");
+            // объединяем диапазоны в строку и добавляем в общий список
+            formattedGroups.Add(string.Join(", ", ranges));
+        }
+        // объединяем все группы в одну строку
+        return formattedGroups;
+    }
+
+    #endregion
+
     #region ConvertStringToExponential
 
     protected static string ConvertStringToExponential(string? str) =>

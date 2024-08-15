@@ -248,7 +248,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         {
                             var ty = reps.Report_Collection
                                 .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
-                                .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
+                                .OrderBy(t => DateOnly.Parse(t.EndPeriod_DB))
                                 .Select(t => t.EndPeriod_DB)
                                 .LastOrDefault();
                             FormType = param;

@@ -2172,7 +2172,7 @@ public abstract class CheckF17 : CheckBase
                         && TryParseFloatExtended(nuclidData["OSPORB_Solid"], out var a)
                         && a > 0)
                     {
-                        expectedPeriod = T / unitAdjustment * (float)(Math.Log(nuclidActivity / (nuclidMassOutOfPackReal * 1e6) / a) / Math.Log(2));
+                        expectedPeriod = T / unitAdjustment * (float)(Math.Log(nuclidActivity / a) / Math.Log(2));
                     }
 
                     expectedValue = expectedPeriod switch
@@ -2255,7 +2255,8 @@ public abstract class CheckF17 : CheckBase
                         {
                             "21","22","23","24","29",
                             "51","52","53","54","55",
-                            "72","73","74","79","99"
+                            "72","73","74","79","99",
+                            "-"
                         }
                     },
                     { "1", new[]
@@ -2284,8 +2285,7 @@ public abstract class CheckF17 : CheckBase
                         }
                     }
                 };
-                valid = validRecycles[codeRao7RecycleMethod].Contains(refineOrSortRaoCode)
-                        || refineOrSortRaoCode == "-";
+                valid = validRecycles[codeRao7RecycleMethod].Contains(refineOrSortRaoCode);
                 if (!valid)
                 {
                     result.Add(new CheckError

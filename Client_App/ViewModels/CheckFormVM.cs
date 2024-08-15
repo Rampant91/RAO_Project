@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.Commands.AsyncCommands.Save;
 using Models.CheckForm;
 
 namespace Client_App.ViewModels;
@@ -37,7 +36,10 @@ public class CheckFormVM : BaseVM, INotifyPropertyChanged
     private string _titleName;
     public string TitleName
     {
-        get => $"Проверка формы {ChangeOrCreateVM.Storage.FormNum_DB}";
+        get => $"Проверка формы {ChangeOrCreateVM.Storages.Master_DB.RegNoRep.Value}_" +
+               $"{ChangeOrCreateVM.Storages.Master_DB.OkpoRep.Value}_" +
+               $"{ChangeOrCreateVM.Storage.FormNum_DB}_" +
+               $"{ChangeOrCreateVM.Storage.StartPeriod_DB}-{ChangeOrCreateVM.Storage.EndPeriod_DB}";
         set
         {
             if (_titleName == value) return;
