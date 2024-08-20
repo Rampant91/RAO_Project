@@ -499,7 +499,7 @@ public abstract class CheckF17 : CheckBase
         else
         {
             var comparator = new CustomNullStringWithTrimComparer();
-            if (Packs.All(phEntry => comparator.Compare(phEntry["name"], graph5) != 0))
+            if (Packs.All(phEntry => comparator.Compare(StringRemoveSpecials(phEntry["name"]), StringRemoveSpecials(graph5)) != 0))
             {
                 result.Add(new CheckError
                 {
@@ -507,8 +507,8 @@ public abstract class CheckF17 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "PackType_DB",
                     Value = graph5,
-                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                              "Указанное наименование упаковки не найдено в справочнике."
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                              "Указанный тип контейнера (емкости) не найден в справочнике контейнеров, соответствующих частным критериям приемлемости для захоронения РАО существующих ППЗРО"
                 });
             }
         }
@@ -1632,6 +1632,14 @@ public abstract class CheckF17 : CheckBase
 
         #endregion
 
+        List<string> codeRaoDBs = new();
+        foreach (var line in lines)
+        {
+            var codeRaoDB = forms[line].CodeRAO_DB.Trim();
+            if (string.IsNullOrWhiteSpace(codeRaoDB) || codeRaoDB.Trim() == "-") continue;
+            codeRaoDBs.Add(codeRaoDB);
+        }
+
         #endregion
 
         foreach (var line in lines)
@@ -1772,7 +1780,10 @@ public abstract class CheckF17 : CheckBase
             #endregion
 
             #region symbol 2
+            if (line == 24811)
+            {
 
+            }
             if (!codeRao2Valid)
             {
                 result.Add(new CheckError
@@ -1784,6 +1795,10 @@ public abstract class CheckF17 : CheckBase
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Недопустимое значение 2-го символа кода РАО."
                 });
+            }
+            else if (codeRaoDBs.Count > 1)
+            {
+
             }
             else switch (codeRao2RaoCategory)
             {
@@ -2159,6 +2174,7 @@ public abstract class CheckF17 : CheckBase
             {
                 var monoNuclid = radArray.Count == 1;
                 var expectedPeriod = float.MaxValue;
+                string expectedPeriodOutput = "";
                 int expectedValue;
                 if (monoNuclid)
                 {
@@ -2173,6 +2189,7 @@ public abstract class CheckF17 : CheckBase
                         && a > 0)
                     {
                         expectedPeriod = T / unitAdjustment * (float)(Math.Log(nuclidActivity / a) / Math.Log(2));
+                        expectedPeriodOutput = expectedPeriod.ToString();
                     }
 
                     expectedValue = expectedPeriod switch
@@ -2213,9 +2230,21 @@ public abstract class CheckF17 : CheckBase
                             controlValue500 += nuclidActivity / (float)Math.Pow(2,500/ (T / unitAdjustment)) / a;
                         }
                     }
-                    if (controlValue100 < 1.0f) expectedValue = 1;
-                    else if (controlValue500 < 1.0f) expectedValue = 2;
-                    else expectedValue = 3;
+                    if (controlValue100 < 1.0f)
+                    {
+                        expectedValue = 1;
+                        expectedPeriodOutput = "менее 100";
+                    }
+                    else if (controlValue500 < 1.0f)
+                    {
+                        expectedValue = 2;
+                        expectedPeriodOutput = "100-500";
+                    }
+                    else
+                    {
+                        expectedValue = 3;
+                        expectedPeriodOutput = "более 500";
+                    }
                 }
                 if (expectedValue.ToString("D1") != codeRao6DangerPeriod)
                 {
@@ -2226,7 +2255,7 @@ public abstract class CheckF17 : CheckBase
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao6DangerPeriod} (6-ой символ кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                                  $"Расчетное значение периода потенциальной опасности (в годах): {expectedPeriod} (6-ой символ кода РАО {expectedValue})."
+                                  $"Расчетное значение периода потенциальной опасности (в годах): {expectedPeriodOutput} (6-ой символ кода РАО {expectedValue})."
                     });
                 }
             }
@@ -2318,8 +2347,8 @@ public abstract class CheckF17 : CheckBase
             }
             else
             {
-                var documentDateDB = forms[lines[0]].DocumentDate_DB;
-                if (DateOnly.TryParse(documentDateDB, out var documentDateReal))
+                var formingDateDB = forms[lines[0]].FormingDate_DB;
+                if (DateOnly.TryParse(formingDateDB, out var formingDateReal))
                 {
                     List<(string, string, float)> nuclidsAShort = new();
                     List<(string, string, float)> nuclidsBShort = new();
@@ -2345,7 +2374,7 @@ public abstract class CheckF17 : CheckBase
                     var nuclidActivitySumUAlphaLong = 0.0f;
                     var wattSum = 0.0f;
                     var nuclidActivityClass = 0;
-                    var nuclidsLongExist = "1";
+                    var nuclidsLongExist = "2";
                     const float yearEdge = 31.0f;
                     List<string> nuclidClass = new();
                     foreach (var nuclid in radArray)
@@ -2356,7 +2385,7 @@ public abstract class CheckF17 : CheckBase
                             || !validUnits.TryGetValue(R[nuclidId]["unit"], out var halfLifeUnit)) continue;
                         TryParseFloatExtended(R[nuclidId]["Ki"], out var watt);
                         var nuclidLong = halfLifeVal / halfLifeUnit > yearEdge;
-                        if (nuclidLong) nuclidsLongExist = "2";
+                        if (nuclidLong) nuclidsLongExist = "1";
                         if (comparator.Compare("стронций-90", nuclid.Item1) == 0)
                         {
                             nuclidsSr90.Add((nuclid.Item1,nuclid.Item2,watt));
@@ -2446,7 +2475,7 @@ public abstract class CheckF17 : CheckBase
                         nuclidActivitySumUBetaLong += nuclidActivityReal; 
                         wattSum += nuclid.Item3;
                     }
-                    if (documentDateReal.Year < 2024)
+                    if (formingDateReal.Year < 2024)
                     {
                         //old classification
                         var nuclidActivityTotalA = nuclidActivitySumAShort + nuclidActivitySumALong;

@@ -293,6 +293,27 @@ public abstract class CheckBase
 
     #endregion
 
+    #region StringRemoveSpecials
+
+    protected static string StringRemoveSpecials(string? str) =>
+        (str ?? string.Empty)
+        .Replace("\\", "")
+        .Replace("(", "")
+        .Replace(")", "")
+        .Replace("/", "")
+        .Replace(".", "")
+        .Replace(",", "")
+        .Replace("-", "")
+        .Replace("_", "")
+        .Replace(" ", "")
+        .Replace("`", "")
+        .Replace("'", "")
+        .Replace("\"", "")
+        .Replace("ё", "е")
+        .Replace("—", "");
+
+    #endregion
+
     #region CustomComparator
 
     private protected class CustomNullStringWithTrimComparer : IComparer<string>
