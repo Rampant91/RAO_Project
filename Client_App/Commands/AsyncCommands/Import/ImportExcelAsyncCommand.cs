@@ -23,6 +23,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         RepsWhereTitleFormCheckIsCancel.Clear();
         IsFirstLogLine = true;
         CurrentLogLine = 1;
+        var readAnyExcel = false;
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
@@ -66,6 +67,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                 continue;
             }
+            readAnyExcel = true;
 
             var timeCreate = new List<string>()
             {
@@ -236,7 +238,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
                 : "ов";
-        if (AtLeastOneImportDone)
+        if (AtLeastOneImportDone && readAnyExcel)
         {
             #region MessageImportDone
 
