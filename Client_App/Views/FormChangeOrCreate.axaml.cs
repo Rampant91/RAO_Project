@@ -12,6 +12,7 @@ using System.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Commands.SyncCommands;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Long_Visual;
@@ -4695,7 +4696,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        var vm = DataContext as ChangeOrCreateVM;
+        if (DataContext is not ChangeOrCreateVM vm) return;
         await RemoveEmptyForms(vm);
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
@@ -4712,7 +4713,6 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         }
 
         var flag = false;
-        var tmp = DataContext as ChangeOrCreateVM;
 
         #region MessageRemoveEmptyForms
 
@@ -4740,9 +4740,8 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         {
             case "Да":
             {
-                flag = true;
                 await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(tmp).AsyncExecute(null);
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 if (desktop.Windows.Count == 1)
                 {
                     desktop.MainWindow.WindowState = WindowState.Normal;
@@ -4753,44 +4752,45 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
             {
                 flag = true;
                 dbm.Restore();
+                new SortFormSyncCommand(vm).Execute(null);
                 await dbm.SaveChangesAsync();
 
-                var lst = tmp.Storage[tmp.FormType];
+                var lst = vm.Storage[vm.FormType];
 
                 foreach (var key in lst)
                 {
                     var item = (Form)key;
                     if (item.Id == 0)
                     {
-                        tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
+                        vm.Storage[vm.Storage.FormNum_DB].Remove(item);
                     }
                 }
 
-                var lstNote = tmp.Storage.Notes.ToList<Note>();
+                var lstNote = vm.Storage.Notes.ToList<Note>();
                 foreach (var item in lstNote.Where(item => item.Id == 0))
                 {
-                    tmp.Storage.Notes.Remove(item);
+                    vm.Storage.Notes.Remove(item);
                 }
 
-                if (tmp.FormType is not "1.0" and not "2.0")
+                if (vm.FormType is not "1.0" and not "2.0")
                 {
-                    if (tmp.FormType.Split('.')[0] == "1")
+                    if (vm.FormType.Split('.')[0] == "1")
                     {
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.StartPeriod));
+                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.EndPeriod));
+                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.CorrectionNumber));
                     }
-                    else if (tmp.FormType.Split('.')[0] == "2")
+                    else if (vm.FormType.Split('.')[0] == "2")
                     {
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
-                        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.Year));
+                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.CorrectionNumber));
                     }
                 }
                 else
                 {
-                    tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
-                    tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
-                    tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
+                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.RegNoRep));
+                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.ShortJurLicoRep));
+                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.OkpoRep));
                 }
 
                 break;
