@@ -15,6 +15,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Interfaces.Logger;
 using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.Models;
 using Models.Forms;
@@ -4707,9 +4708,11 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 return;
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            //ignore
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
         }
 
         var flag = false;

@@ -243,7 +243,7 @@ public abstract class CheckF14 : CheckBase
                 FormNum = "form_14",
                 Row = (line + 1).ToString(),
                 Column = "NumberInOrder_DB",
-                Value = forms[line].Id.ToString(),
+                Value = forms[line].NumberInOrder_DB.ToString(),
                 Message = "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров. " +
                           $"{Environment.NewLine}Для устранения ошибки воспользуйтесь либо кнопкой сортировки " +
                           $"(строки будут отсортированы по №п/п, поменяв свою позицию), " +
