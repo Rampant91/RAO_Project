@@ -230,10 +230,22 @@ public abstract class CheckBase
 
     #endregion
 
-    #region ConvertSequenceToRangeStringList
+    #region ConvertSequenceSetToRangeStringList
     
-    private protected static List<string> ConvertSequenceToRangeStringList(List<List<int>> groups)
+    private protected static List<string> ConvertSequenceSetToRangeStringList(HashSet<int> duplicatesLinesSet)
     {
+        var duplicatesLinesList = duplicatesLinesSet.ToList();
+        var groups = new List<List<int>>();
+        var singleGroup = new List<int>();
+        for (var lineNum = 0; lineNum < duplicatesLinesList.Count; lineNum++)
+        {
+            singleGroup.Add(duplicatesLinesList[lineNum]);
+            if (lineNum != duplicatesLinesList.Count - 1
+                && duplicatesLinesList[lineNum + 1] >= duplicatesLinesList[lineNum]) continue;
+            groups.Add(new List<int>(singleGroup));
+            singleGroup.Clear();
+        }
+
         var formattedGroups = new List<string>();
         foreach (var group in groups)
         {

@@ -209,16 +209,16 @@ public abstract class CheckF13 : CheckBase
                 duplicatesLinesSet.Add(j + 1);
             }
         }
-        var duplicateLines = string.Join(", ", duplicatesLinesSet.Order());
-        if (duplicatesLinesSet.Count != 0)
+        var dupStrByGroups = ConvertSequenceSetToRangeStringList(duplicatesLinesSet);
+        foreach (var group in dupStrByGroups)
         {
             result.Add(new CheckError
             {
                 FormNum = "form_13",
-                Row = duplicateLines,
+                Row = group,
                 Column = "2 - 17",
                 Value = "",
-                Message = $"Данные граф 2-17 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
+                Message = $"Данные граф 2-17 в строках {group} продублированы. Следует проверить правильность предоставления данных."
             });
         }
         return result;

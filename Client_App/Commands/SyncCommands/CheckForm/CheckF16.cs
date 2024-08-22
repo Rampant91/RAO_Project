@@ -67,34 +67,35 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> errorList = new();
         LoadDictionaries();
         var formsList = rep.Rows16.ToList<Form16>();
+
+        errorList.AddRange(Check_001(formsList));
         foreach (var key in rep.Rows16)
         {
             var form = (Form16)key;
             var notes = rep.Notes.ToList<Note>();
             var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
-            errorList.AddRange(Check_001(formsList, currentFormLine));
             errorList.AddRange(Check_002(formsList, currentFormLine));
-            errorList.AddRange(Check_002_11(formsList, currentFormLine));
-            errorList.AddRange(Check_002_12(formsList, currentFormLine));
-            errorList.AddRange(Check_002_29(formsList, notes, currentFormLine));
-            errorList.AddRange(Check_002_51(formsList, currentFormLine));
-            errorList.AddRange(Check_002_52(formsList, currentFormLine));
-            errorList.AddRange(Check_002_57(formsList, currentFormLine));
-            errorList.AddRange(Check_002_10(formsList, currentFormLine));
-            errorList.AddRange(Check_002_49(formsList, currentFormLine));
-            errorList.AddRange(Check_002_71(formsList, currentFormLine));
-            errorList.AddRange(Check_003_non10(formsList, rep, currentFormLine));
-            errorList.AddRange(Check_003_10(formsList, rep, currentFormLine));
-            errorList.AddRange(Check_004(formsList, notes, currentFormLine));
-            errorList.AddRange(Check_005_11(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_005_26(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_005_38(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_005_42(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_005_22(formsList, currentFormLine));
-            errorList.AddRange(Check_005_16(formsList, currentFormLine));
-            errorList.AddRange(Check_005_76(formsList, currentFormLine));
-            errorList.AddRange(Check_005_Other(formsList, currentFormLine));
-            errorList.AddRange(Check_006(formsList, currentFormLine));
+            errorList.AddRange(Check_003(formsList, currentFormLine));
+            errorList.AddRange(Check_003_11(formsList, currentFormLine));
+            errorList.AddRange(Check_003_12(formsList, currentFormLine));
+            errorList.AddRange(Check_003_29(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_003_51(formsList, currentFormLine));
+            errorList.AddRange(Check_003_52(formsList, currentFormLine));
+            errorList.AddRange(Check_003_57(formsList, currentFormLine));
+            errorList.AddRange(Check_003_10(formsList, currentFormLine));
+            errorList.AddRange(Check_003_49(formsList, currentFormLine));
+            errorList.AddRange(Check_003_71(formsList, currentFormLine));
+            errorList.AddRange(Check_004_non10(formsList, rep, currentFormLine));
+            errorList.AddRange(Check_004_10(formsList, rep, currentFormLine));
+            errorList.AddRange(Check_005(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_006_11(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_006_26(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_006_38(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_006_42(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_006_22(formsList, currentFormLine));
+            errorList.AddRange(Check_006_16(formsList, currentFormLine));
+            errorList.AddRange(Check_006_76(formsList, currentFormLine));
+            errorList.AddRange(Check_006_Other(formsList, currentFormLine));
             errorList.AddRange(Check_007(formsList, currentFormLine));
             errorList.AddRange(Check_008(formsList, currentFormLine));
             errorList.AddRange(Check_009(formsList, currentFormLine));
@@ -103,32 +104,32 @@ public abstract class CheckF16 : CheckBase
             errorList.AddRange(Check_012(formsList, currentFormLine));
             errorList.AddRange(Check_013(formsList, currentFormLine));
             errorList.AddRange(Check_014(formsList, currentFormLine));
-            errorList.AddRange(Check_015(formsList, notes, currentFormLine));
-            errorList.AddRange(Check_016(formsList, currentFormLine));
-            errorList.AddRange(Check_017(formsList, rep, currentFormLine));
-            errorList.AddRange(Check_018_10(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_018_21(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_018_22(formsList, currentFormLine));
-            errorList.AddRange(Check_019_01(formsList, currentFormLine));
-            errorList.AddRange(Check_019_21(formsList, notes, currentFormLine));
-            errorList.AddRange(Check_019_22(formsList, notes, currentFormLine));
-            errorList.AddRange(Check_019_29(formsList, notes, currentFormLine));
-            errorList.AddRange(Check_020(formsList, currentFormLine));
+            errorList.AddRange(Check_015(formsList, currentFormLine));
+            errorList.AddRange(Check_016(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_017(formsList, currentFormLine));
+            errorList.AddRange(Check_018(formsList, rep, currentFormLine));
+            errorList.AddRange(Check_019_10(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_019_21(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_019_22(formsList, currentFormLine));
+            errorList.AddRange(Check_020_01(formsList, currentFormLine));
+            errorList.AddRange(Check_020_21(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_020_22(formsList, notes, currentFormLine));
+            errorList.AddRange(Check_020_29(formsList, notes, currentFormLine));
             errorList.AddRange(Check_021(formsList, currentFormLine));
-            errorList.AddRange(Check_022_44(formsList, currentFormLine));
-            errorList.AddRange(Check_022_45(formsList, currentFormLine));
-            errorList.AddRange(Check_022_49(formsList, currentFormLine));
-            errorList.AddRange(Check_022_10(formsList, currentFormLine));
-            errorList.AddRange(Check_022_22_44(formsList, currentFormLine));
-            errorList.AddRange(Check_022_22_56(formsList, currentFormLine));
-            errorList.AddRange(Check_023(formsList, currentFormLine));
+            errorList.AddRange(Check_022(formsList, currentFormLine));
+            errorList.AddRange(Check_023_44(formsList, currentFormLine));
+            errorList.AddRange(Check_023_45(formsList, currentFormLine));
+            errorList.AddRange(Check_023_49(formsList, currentFormLine));
+            errorList.AddRange(Check_023_10(formsList, currentFormLine));
+            errorList.AddRange(Check_023_22_44(formsList, currentFormLine));
+            errorList.AddRange(Check_023_22_56(formsList, currentFormLine));
             errorList.AddRange(Check_024(formsList, currentFormLine));
             errorList.AddRange(Check_025(formsList, currentFormLine));
             errorList.AddRange(Check_026(formsList, currentFormLine));
             errorList.AddRange(Check_027(formsList, currentFormLine));
+            errorList.AddRange(Check_028(formsList, currentFormLine));
             currentFormLine++;
         }
-        errorList.AddRange(Check_028(formsList));
         errorList.AddRange(Check_029(formsList, rep));
         var index = 0;
         foreach (var error in errorList)
@@ -149,7 +150,60 @@ public abstract class CheckF16 : CheckBase
 
     #region Check001
 
-    private static List<CheckError> Check_001(List<Form16> forms, int line)
+    //Наличие строк дубликатов
+    private static List<CheckError> Check_001(List<Form16> forms)
+    {
+        List<CheckError> result = new();
+        HashSet<int> duplicatesLinesSet = new();
+        var comparator = new CustomNullStringWithTrimComparer();
+        for (var i = 0; i < forms.Count; i++)
+        {
+            var currentForm = forms[i];
+            for (var j = i + 1; j < forms.Count; j++)
+            {
+                var formToCompare = forms[j];
+                var isDuplicate = comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
+                                  && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
+                                  && comparator.Compare(formToCompare.CodeRAO_DB, currentForm.CodeRAO_DB) == 0
+                                  && comparator.Compare(formToCompare.StatusRAO_DB, currentForm.StatusRAO_DB) == 0
+                                  && comparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
+                                  && comparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
+                                  && formToCompare.QuantityOZIII_DB == currentForm.QuantityOZIII_DB
+                                  && comparator.Compare(formToCompare.MainRadionuclids_DB, currentForm.MainRadionuclids_DB) == 0
+                                  && comparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.ActivityMeasurementDate_DB, currentForm.ActivityMeasurementDate_DB) == 0
+                                  && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
+                                  && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
+                                  && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
+                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
+                if (!isDuplicate) continue;
+                duplicatesLinesSet.Add(i + 1);
+                duplicatesLinesSet.Add(j + 1);
+            }
+        }
+        var dupStrByGroups = ConvertSequenceSetToRangeStringList(duplicatesLinesSet);
+        foreach (var group in dupStrByGroups)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_16",
+                Row = group,
+                Column = "2 - 18",
+                Value = "",
+                Message = $"Данные граф 2-18 в строках {group} продублированы. Следует проверить правильность предоставления данных."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check002
+
+    private static List<CheckError> Check_002(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var valid = line == 0 && forms[line].NumberInOrder_DB is 1 or 0 
@@ -171,9 +225,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002
+    #region Check003
 
-    private static List<CheckError> Check_002(List<Form16> forms, int line)
+    private static List<CheckError> Check_003(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
@@ -195,9 +249,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_11
+    #region Check003_11
 
-    private static List<CheckError> Check_002_11(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_11(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
@@ -222,9 +276,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_12
+    #region Check003_12
 
-    private static List<CheckError> Check_002_12(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_12(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -264,9 +318,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_29
+    #region Check003_29
 
-    private static List<CheckError> Check_002_29(List<Form16> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_003_29(List<Form16> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -291,10 +345,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_51
+    #region Check003_51
 
     //TODO
-    private static List<CheckError> Check_002_51(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_51(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -317,10 +371,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_52
+    #region Check003_52
 
     //TODO
-    private static List<CheckError> Check_002_52(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_52(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -345,10 +399,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_57
+    #region Check003_57
 
     //TODO
-    private static List<CheckError> Check_002_57(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_57(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -373,9 +427,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_10
+    #region Check003_10
 
-    private static List<CheckError> Check_002_10(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_10(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -518,9 +572,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_49
+    #region Check003_49
 
-    private static List<CheckError> Check_002_49(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_49(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -545,11 +599,11 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check002_71
+    #region Check003_71
 
     //TODO
     //Справочная "ошибка" - т.е. даже не ошибка.
-    private static List<CheckError> Check_002_71(List<Form16> forms, int line)
+    private static List<CheckError> Check_003_71(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -573,9 +627,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check003_non10
+    #region Check004_non10
 
-    private static List<CheckError> Check_003_non10(List<Form16> forms, Report rep, int line)
+    private static List<CheckError> Check_004_non10(List<Form16> forms, Report rep, int line)
     {
         List<CheckError> result = new();
         string[] nonApplicableOperationCodes = { "10" };
@@ -607,9 +661,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check003_10
+    #region Check004_10
 
-    private static List<CheckError> Check_003_10(List<Form16> forms, Report rep, int line)
+    private static List<CheckError> Check_004_10(List<Form16> forms, Report rep, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "10" };
@@ -642,9 +696,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check004
+    #region Check005
 
-    private static List<CheckError> Check_004(List<Form16> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_005(List<Form16> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         var comparator = new CustomNullStringWithTrimComparer();
@@ -1656,9 +1710,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_11
+    #region Check006_11
 
-    private static List<CheckError> Check_005_11(List<Form16> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_006_11(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "11", "12", "13", "14", "41" };
@@ -1688,9 +1742,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_26
+    #region Check006_26
 
-    private static List<CheckError> Check_005_26(List<Form16> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_006_26(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "26", "28", "63" };
@@ -1719,9 +1773,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_38
+    #region Check006_38
 
-    private static List<CheckError> Check_005_38(List<Form16> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_006_38(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "38", "64" };
@@ -1751,9 +1805,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_42
+    #region Check006_42
 
-    private static List<CheckError> Check_005_42(List<Form16> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_006_42(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "42", "43", "73", "97", "98" };
@@ -1782,8 +1836,8 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_22
-    private static List<CheckError> Check_005_22(List<Form16> forms, int line)
+    #region Check006_22
+    private static List<CheckError> Check_006_22(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "22", "32" };
@@ -1810,9 +1864,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_16
+    #region Check006_16
 
-    private static List<CheckError> Check_005_16(List<Form16> forms, int line)
+    private static List<CheckError> Check_006_16(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "16" };
@@ -1839,9 +1893,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_76
+    #region Check006_76
 
-    private static List<CheckError> Check_005_76(List<Form16> forms, int line)
+    private static List<CheckError> Check_006_76(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "76" };
@@ -1866,9 +1920,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check005_Other
+    #region Check006_Other
 
-    private static List<CheckError> Check_005_Other(List<Form16> forms, int line)
+    private static List<CheckError> Check_006_Other(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new []
@@ -1899,9 +1953,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check006
+    #region Check007
 
-    private static List<CheckError> Check_006(List<Form16> forms, int line)
+    private static List<CheckError> Check_007(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var volume = forms[line].Volume_DB;
@@ -1924,9 +1978,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check007
+    #region Check008
 
-    private static List<CheckError> Check_007(List<Form16> forms, int line)
+    private static List<CheckError> Check_008(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var mass = forms[line].Mass_DB;
@@ -1978,9 +2032,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check008
+    #region Check009
 
-    private static List<CheckError> Check_008(List<Form16> forms, int line)
+    private static List<CheckError> Check_009(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var codeRao = forms[line].CodeRAO_DB.Trim();
@@ -2041,9 +2095,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check009
+    #region Check010
 
-    private static List<CheckError> Check_009(List<Form16> forms, int line)
+    private static List<CheckError> Check_010(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var rads = forms[line].MainRadionuclids_DB;
@@ -2112,8 +2166,8 @@ public abstract class CheckF16 : CheckBase
     }
     #endregion
 
-    #region Check010
-    private static List<CheckError> Check_010(List<Form16> forms, int line)
+    #region Check011
+    private static List<CheckError> Check_011(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var tritiumActivity = ConvertStringToExponential(forms[line].TritiumActivity_DB);
@@ -2195,9 +2249,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check011
+    #region Check012
 
-    private static List<CheckError> Check_011(List<Form16> forms, int line)
+    private static List<CheckError> Check_012(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].BetaGammaActivity_DB);
@@ -2279,9 +2333,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check012
+    #region Check013
 
-    private static List<CheckError> Check_012(List<Form16> forms, int line)
+    private static List<CheckError> Check_013(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].AlphaActivity_DB);
@@ -2363,8 +2417,8 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check013
-    private static List<CheckError> Check_013(List<Form16> forms, int line)
+    #region Check014
+    private static List<CheckError> Check_014(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].TransuraniumActivity_DB);
@@ -2444,9 +2498,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check014
+    #region Check015
 
-    private static List<CheckError> Check_014(List<Form16> forms, int line)
+    private static List<CheckError> Check_015(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var activityDate = forms[line].ActivityMeasurementDate_DB;
@@ -2475,9 +2529,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check015
+    #region Check016
 
-    private static List<CheckError> Check_015(List<Form16> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_016(List<Form16> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         byte?[] validDocument = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19 };
@@ -2515,9 +2569,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check016
+    #region Check017
 
-    private static List<CheckError> Check_016(List<Form16> forms, int line)
+    private static List<CheckError> Check_017(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var documentNumberDB = forms[line].DocumentNumber_DB;
@@ -2539,9 +2593,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check017
+    #region Check018
 
-    private static List<CheckError> Check_017(List<Form16> forms, Report rep, int line)
+    private static List<CheckError> Check_018(List<Form16> forms, Report rep, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -2615,10 +2669,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check018_10
+    #region Check019_10
 
     //Код ОКПО поставщика/получателя не равен коду ОКПО отчитывающейся организации + 8/14 цифр (колонка 18)
-    private static List<CheckError> Check_018_10(List<Form16> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_019_10(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes =
@@ -2652,10 +2706,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check018_21
+    #region Check019_21
 
     //Код ОКПО поставщика/получателя не равен коду ОКПО отчитывающейся организации + 8/14 цифр (колонка 18)
-    private static List<CheckError> Check_018_21(List<Form16> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_019_21(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "21", "25", "26", "27", "28", "29", "31", "35", "36", "37", "38", "39", "99" };
@@ -2698,10 +2752,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check018_22
+    #region Check019_22
 
     //Код ОКПО поставщика/получателя состоит из 8/14 чисел или "минобороны" (колонка 18)
-    private static List<CheckError> Check_018_22(List<Form16> forms, int line)
+    private static List<CheckError> Check_019_22(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
@@ -2727,10 +2781,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check019_01
+    #region Check020_01
 
     //При определенных кодах операции, код ОКПО перевозчика равен "-"
-    private static List<CheckError> Check_019_01(List<Form16> forms, int line)
+    private static List<CheckError> Check_020_01(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = 
@@ -2758,10 +2812,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check019_21
+    #region Check020_21
 
     //При определенных кодах операции, код ОКПО перевозчика равен 8/14 цифр, либо прим
-    private static List<CheckError> Check_019_21(List<Form16> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_020_21(List<Form16> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "21","25","26","27","28","31","35","36","37","38" };
@@ -2802,10 +2856,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check019_22
+    #region Check020_22
 
     //Код ОКПО перевозчика состоит из 8/14 чисел или "минобороны" или "прим"
-    private static List<CheckError> Check_019_22(List<Form16> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_020_22(List<Form16> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "22", "32" };
@@ -2847,10 +2901,10 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check019_29
+    #region Check020_29
 
     //Код ОКПО перевозчика состоит из 8/14 чисел или "-" или "прим"
-    private static List<CheckError> Check_019_29(List<Form16> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_020_29(List<Form16> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "29", "39" };
@@ -2892,9 +2946,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check020
+    #region Check021
 
-    private static List<CheckError> Check_020(List<Form16> forms, int line)
+    private static List<CheckError> Check_021(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var storagePlaceNameDB = forms[line].StoragePlaceName_DB;
@@ -2916,9 +2970,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check021
+    #region Check022
 
-    private static List<CheckError> Check_021(List<Form16> forms, int line)
+    private static List<CheckError> Check_022(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var storagePlaceCodeDB = forms[line].StoragePlaceCode_DB;
@@ -2940,9 +2994,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check022_44
+    #region Check023_44
 
-    private static List<CheckError> Check_022_44(List<Form16> forms, int line)
+    private static List<CheckError> Check_023_44(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new string[] { "44" };
@@ -2977,9 +3031,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check022_45
+    #region Check023_45
 
-    private static List<CheckError> Check_022_45(List<Form16> forms, int line)
+    private static List<CheckError> Check_023_45(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "45", "57" };
@@ -3005,9 +3059,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check022_49
+    #region Check023_49
 
-    private static List<CheckError> Check_022_49(List<Form16> forms, int line)
+    private static List<CheckError> Check_023_49(List<Form16> forms, int line)
     {   
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "49", "59" };
@@ -3033,9 +3087,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check022_10
+    #region Check023_10
 
-    private static List<CheckError> Check_022_10(List<Form16> forms, int line)
+    private static List<CheckError> Check_023_10(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new string[] { "10","11","12","13","14","16","18","21","22","25","26","27","28","29","31","32","35",
@@ -3061,9 +3115,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check022_22_44
+    #region Check023_22_44
 
-    private static List<CheckError> Check_022_22_44(List<Form16> forms, int line)
+    private static List<CheckError> Check_023_22_44(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         if (forms[line].RefineOrSortRAOCode_DB != "22") return result;
@@ -3088,9 +3142,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check022_22_56
+    #region Check023_22_56
 
-    private static List<CheckError> Check_022_22_56(List<Form16> forms, int line)
+    private static List<CheckError> Check_023_22_56(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         if (forms[line].RefineOrSortRAOCode_DB != "22") return result;
@@ -3116,9 +3170,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check023
+    #region Check024
 
-    private static List<CheckError> Check_023(List<Form16> forms, int line)
+    private static List<CheckError> Check_024(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var packName = forms[line].PackName_DB;
@@ -3140,9 +3194,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check024
+    #region Check025
 
-    private static List<CheckError> Check_024(List<Form16> forms, int line)
+    private static List<CheckError> Check_025(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var packType = forms[line].PackType_DB;
@@ -3164,9 +3218,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check025
+    #region Check026
 
-    private static List<CheckError> Check_025(List<Form16> forms, int line)
+    private static List<CheckError> Check_026(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var packNum = forms[line].PackNumber_DB;
@@ -3204,9 +3258,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check026
+    #region Check027
 
-    private static List<CheckError> Check_026(List<Form16> forms, int line)
+    private static List<CheckError> Check_027(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var subsidy = (forms[line].Subsidy_DB ?? string.Empty).Trim();
@@ -3229,9 +3283,9 @@ public abstract class CheckF16 : CheckBase
 
     #endregion
 
-    #region Check027
+    #region Check028
 
-    private static List<CheckError> Check_027(List<Form16> forms, int line)
+    private static List<CheckError> Check_028(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
         var fcpNum = (forms[line].FcpNumber_DB ?? string.Empty).Trim();
@@ -3247,70 +3301,6 @@ public abstract class CheckF16 : CheckBase
                 Value = Convert.ToString(fcpNum),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "Графу 27 следует либо не заполнять, либо указать числовое значение или прочерк."
-            });
-        }
-        return result;
-    }
-
-    #endregion
-
-    #region Check028
-
-    //Наличие строк дубликатов
-    private static List<CheckError> Check_028(List<Form16> forms)
-    {
-        List<CheckError> result = new();
-        HashSet<HashSet<int>> duplicatesLinesSubset = new();
-        var comparator = new CustomNullStringWithTrimComparer();
-        for (var i = 0; i < forms.Count; i++)
-        {
-            var currentForm = forms[i];
-            for (var j = i + 1; j < forms.Count; j++)
-            {
-                var formToCompare = forms[j];
-                var isDuplicate = comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
-                                  && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
-                                  && comparator.Compare(formToCompare.CodeRAO_DB, currentForm.CodeRAO_DB) == 0
-                                  && comparator.Compare(formToCompare.StatusRAO_DB, currentForm.StatusRAO_DB) == 0
-                                  && comparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
-                                  && comparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
-                                  && formToCompare.QuantityOZIII_DB == currentForm.QuantityOZIII_DB
-                                  && comparator.Compare(formToCompare.MainRadionuclids_DB, currentForm.MainRadionuclids_DB) == 0
-                                  && comparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.ActivityMeasurementDate_DB, currentForm.ActivityMeasurementDate_DB) == 0
-                                  && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
-                                  && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
-                                  && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
-                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
-                if (!isDuplicate) continue;
-                var new_line = true;
-                foreach (var subset in duplicatesLinesSubset
-                             .Where(subset => subset.Contains(i + 1)))
-                {
-                    subset.Add(j + 1);
-                    new_line = false;
-                    break;
-                }
-                if (new_line)
-                {
-                    HashSet<int> new_subset = [i + 1, j + 1];
-                    duplicatesLinesSubset.Add(new_subset);
-                }
-            }
-        }
-        foreach (var subset in duplicatesLinesSubset)
-        {
-            var duplicateLines = string.Join(", ", subset.Order());
-            result.Add(new CheckError
-            {
-                FormNum = "form_16",
-                Row = duplicateLines,
-                Column = "2 - 18",
-                Value = "",
-                Message = $"Данные граф 2-18 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
             });
         }
         return result;

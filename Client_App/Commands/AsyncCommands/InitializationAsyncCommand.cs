@@ -19,6 +19,8 @@ using Spravochniki;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.ViewModels.BaseVM;
 using System.Reflection;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -110,18 +112,15 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
     {
         try
         {
-            if (OperatingSystem.IsWindows())
-            {
-                SystemDirectory = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!;
-            }
-            if (OperatingSystem.IsLinux())
-            {
-                SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            }
+            SystemDirectory = OperatingSystem.IsWindows()
+                ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
+                : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            //ignore
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
         }
     }
 
@@ -139,9 +138,11 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             Directory.CreateDirectory(LogsDirectory);
             Directory.CreateDirectory(TmpDirectory);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            //ignore
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
         }
 
         var fl = Directory.GetFiles(TmpDirectory, ".");
@@ -151,9 +152,11 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             {
                 File.Delete(file);
             }
-            catch
+            catch (Exception ex)
             {
-                // ignored
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                           $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
             }
         }
 
@@ -190,20 +193,34 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             {
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+                mainWindowViewModel.Current_Db =
+                    $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
                 await dbm.Database.MigrateAsync();
                 return;
             }
+            catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
+            {
+                loadDbFileError = true;
+                var msg = $"{Environment.NewLine}Message: {fbEx.Message}" +
+                          $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
+                          $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
+                          $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+            }
             catch (Exception ex)
             {
                 loadDbFileError = true;
+                var msg =  $"{Environment.NewLine}Message: {ex.Message}" + 
+                           $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
             }
         }
         DbFileName = $"Local_{i}";
-        mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+        mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
+                                         $"Текущая база данных - {DbFileName}";
         StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
         StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
         dbm = StaticConfiguration.DBModel;
@@ -217,7 +234,8 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                              .Where(x => x.Name.ToLower().EndsWith(".raodb")))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
-                    File.Copy(fileInfo.FullName, Path.Combine(reservePath, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
+                    File.Copy(fileInfo.FullName, 
+                        Path.Combine(reservePath, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
                     File.Delete(fileInfo.FullName);
                 }
                 
@@ -242,7 +260,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
                 #endregion
             }
-            catch (Exception e)
+            catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
             {
                 #region MessageFailedToCreateFile
 
@@ -250,18 +268,48 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Создание файла .raodb",
+                        ContentTitle = "Импорт из .raodb",
                         ContentHeader = "Ошибка",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
+                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
                 #endregion
 
-                Console.WriteLine(e.Message);
+                var msg = $"{Environment.NewLine}Message: {fbEx.Message}" +
+                          $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
+                          $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
+                          $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                Console.WriteLine(fbEx.Message);
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                #region MessageFailedToCreateFile
+
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Импорт из .raodb",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = $"Не удалось создать файл базы данных." +
+                                         $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+
+                #endregion
+
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                Console.WriteLine(ex.Message);
                 Environment.Exit(0);
             }
         }
@@ -270,7 +318,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         {
             await dbm.Database.MigrateAsync();
         }
-        catch (Exception e)
+        catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
         {
             #region MessageFailedToCreateFile
 
@@ -285,11 +333,42 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
+                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
             #endregion
 
-            Console.WriteLine(e.Message);
+            var msg = $"{Environment.NewLine}Message: {fbEx.Message}" +
+                      $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
+                      $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
+                      $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+            Console.WriteLine(fbEx.Message);
+            Environment.Exit(0);
+        }
+        catch (Exception ex)
+        {
+
+            #region MessageFailedToCreateFile
+
+            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .raodb",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = $"Не удалось создать файл базы данных." +
+                                     $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+
+            #endregion
+            
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+            Console.WriteLine(ex.Message);
             Environment.Exit(0);
         }
     }

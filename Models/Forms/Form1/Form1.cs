@@ -46,7 +46,7 @@ public abstract partial class Form1 : Form
 
     [NotMapped]
     [FormProperty(true, "Сведения об операции", "код", "2")]
-    public RamAccess<string> OperationCode
+    public virtual RamAccess<string> OperationCode
     {
         get
         {
@@ -75,7 +75,7 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
+    private protected void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
@@ -106,7 +106,7 @@ public abstract partial class Form1 : Form
 
     [NotMapped]
     [FormProperty(true, "Сведения об операции", "дата", "3")]
-    public RamAccess<string> OperationDate
+    public virtual RamAccess<string> OperationDate
     {
         get
         {
@@ -135,7 +135,7 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
+    private protected void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         OperationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
@@ -164,7 +164,7 @@ public abstract partial class Form1 : Form
 
     [NotMapped]
     [FormProperty(true, "Документ", "вид", "16")]
-    public RamAccess<byte?> DocumentVid
+    public virtual RamAccess<byte?> DocumentVid
     {
         get
         {
@@ -190,7 +190,7 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void DocumentVid_ValueChanged(object value, PropertyChangedEventArgs args)
+    private protected void DocumentVid_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         DocumentVid_DB = ((RamAccess<byte?>)value).Value;
@@ -230,7 +230,7 @@ public abstract partial class Form1 : Form
 
     [NotMapped]
     [FormProperty(true, "Документ", "номер", "17")]
-    public RamAccess<string> DocumentNumber
+    public virtual RamAccess<string> DocumentNumber
     {
         get
         {
@@ -259,7 +259,7 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void DocumentNumber_ValueChanged(object value, PropertyChangedEventArgs args)
+    private protected void DocumentNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
@@ -289,7 +289,7 @@ public abstract partial class Form1 : Form
 
     [NotMapped]
     [FormProperty(true, "Документ", "дата", "18")]
-    public RamAccess<string> DocumentDate
+    public virtual RamAccess<string> DocumentDate
     {
         get
         {
@@ -318,7 +318,7 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private void DocumentDate_ValueChanged(object value, PropertyChangedEventArgs args)
+    private protected void DocumentDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         DocumentDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);

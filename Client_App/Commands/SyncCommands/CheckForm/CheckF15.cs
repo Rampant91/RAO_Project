@@ -1,11 +1,9 @@
-﻿using DynamicData;
-using Models.CheckForm;
+﻿using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Note = Models.Forms.Note;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
@@ -160,7 +158,6 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         HashSet<int> duplicatesLinesSet = new();
-        HashSet<HashSet<int>> duplicatesLinesSubset = new();
         var comparator = new CustomNullStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
@@ -196,21 +193,7 @@ public abstract class CheckF15 : CheckBase
                 duplicatesLinesSet.Add(j + 1);
             }
         }
-
-        var duplicatesLinesList = duplicatesLinesSet.ToList();
-        var aa = new List<List<int>>();
-        var bb = new List<int>();
-        for (var lineNum = 0; lineNum < duplicatesLinesList.Count; lineNum++)
-        {
-            bb.Add(duplicatesLinesList[lineNum]);
-            if (lineNum != duplicatesLinesList.Count - 1
-                && duplicatesLinesList[lineNum + 1] >= duplicatesLinesList[lineNum]) continue;
-            aa.Add(new List<int> { bb });
-            bb.Clear();
-        }
-
-        var dupStrByGroups = ConvertSequenceToRangeStringList(aa);
-
+        var dupStrByGroups = ConvertSequenceSetToRangeStringList(duplicatesLinesSet);
         foreach (var group in dupStrByGroups)
         {
             result.Add(new CheckError
@@ -1891,45 +1874,4 @@ public abstract class CheckF15 : CheckBase
     };
 
     #endregion
-
-    //private static string ConvertToRangeString(List<List<int>> groups)
-    //{
-    //    var formattedGroups = new List<string>();
-
-    //    foreach (var group in groups)
-    //    {
-    //        // Отсортируем группу (если она не отсортирована изначально)
-    //        var sortedGroup = group.OrderBy(x => x).ToList();
-    //        var ranges = new List<string>();
-    //        var start = sortedGroup[0];
-    //        var end = sortedGroup[0];
-
-    //        for (var i = 1; i < sortedGroup.Count; i++)
-    //        {
-    //            if (sortedGroup[i] == end + 1)
-    //            {
-    //                end = sortedGroup[i]; // продолжаем диапазон
-    //            }
-    //            else
-    //            {
-    //                // добавляем текущий диапазон в список
-    //                ranges.Add(start == end 
-    //                    ? start.ToString() 
-    //                    : $"{start}-{end}");
-    //                // начинаем новый диапазон
-    //                start = sortedGroup[i];
-    //                end = sortedGroup[i];
-    //            }
-    //        }
-
-    //        // добавляем последний диапазон
-    //        ranges.Add(start == end 
-    //            ? start.ToString() 
-    //            : $"{start} - {end}");
-    //        // объединяем диапазоны в строку и добавляем в общий список
-    //        formattedGroups.Add("(" + string.Join(", ", ranges) + ")");
-    //    }
-    //    // объединяем все группы в одну строку
-    //    return string.Join(", ", formattedGroups);
-    //}
 }

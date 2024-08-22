@@ -42,7 +42,7 @@ internal class CopyRowsAsyncCommand : BaseAsyncCommand
                 if (attr == null) continue;
 
                 byte newNum;
-                if (attr.Names.Length <= 1 || attr.Names[0] == "null-1-1")
+                if (attr.Names.Length <= 1 || attr.Names[0] == "null-1-1" && attr.Names[^1] == "1")
                 {
                     _ = byte.TryParse(attr.Number, out newNum);
                 }

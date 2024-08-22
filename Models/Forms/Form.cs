@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
@@ -50,7 +51,7 @@ public abstract class Form : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(FormNum), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(FormNum), out var value))
             {
                 ((RamAccess<string>)value).Value = FormNum_DB;
                 return (RamAccess<string>)value;
@@ -63,16 +64,14 @@ public abstract class Form : IKey, IDataGridColumn
         set
         {
             FormNum_DB = value.Value;
-            OnPropertyChanged(nameof(FormNum));
+            OnPropertyChanged();
         }
     }
 
     private void FormNum_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            FormNum_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        FormNum_DB = ((RamAccess<string>)value).Value;
     }
 
     private static bool FormNum_Validation(RamAccess<string> value)//Ready
@@ -129,10 +128,8 @@ public abstract class Form : IKey, IDataGridColumn
 
     private void NumberInOrderValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            NumberInOrder_DB = ((RamAccess<int>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        NumberInOrder_DB = ((RamAccess<int>)value).Value;
     }
 
     private static bool NumberInOrder_Validation(RamAccess<int> value)//Ready
@@ -201,27 +198,29 @@ public abstract class Form : IKey, IDataGridColumn
     private protected static bool ExponentialString_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
-        if (string.IsNullOrWhiteSpace(value.Value))
+        var tmp = value.Value;
+        tmp = ReplaceDashes(tmp);
+        if (string.IsNullOrWhiteSpace(tmp))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("прим.") || value.Value.Equals("-"))
+        if (tmp is "прим." or "-")
         {
             return true;
         }
-        var value1 = value.Value
+        tmp = tmp
             .Trim()
             .TrimStart('(')
             .TrimEnd(')')
             .ToLower()
             .Replace('.', ',')
             .Replace('е', 'e');
-        if (!double.TryParse(value1,
+        if (!double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var doubleValue)
-            || value1.StartsWith('(') ^ value1.EndsWith(')'))
+            || tmp.StartsWith('(') ^ tmp.EndsWith(')'))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -242,6 +241,7 @@ public abstract class Form : IKey, IDataGridColumn
     {
         value.ClearErrors();
         var tmp = (value.Value ?? string.Empty).Trim();
+        tmp = ReplaceDashes(tmp);
         if (string.IsNullOrWhiteSpace(tmp))
         {
             value.AddError("Поле не заполнено");
@@ -267,21 +267,23 @@ public abstract class Form : IKey, IDataGridColumn
     private protected static bool NuclidString_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        var tmp = value.Value;
+        tmp = ReplaceDashes(tmp);
+        if (string.IsNullOrEmpty(tmp))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Contains(','))
+        if (tmp.Contains(','))
         {
             value.AddError("При перечислении необходимо использовать \";\"");
             return false;
         }
-        if (value.Value.Equals("прим.") || value.Value.Equals("-"))
+        if (tmp.Equals("прим.") || tmp.Equals("-"))
         {
             return true;
         }
-        var nuclids = (value.Value ?? string.Empty)
+        var nuclids = tmp
             .ToLower()
             .Split(";")
             .Select(x => x.Trim())
@@ -309,11 +311,12 @@ public abstract class Form : IKey, IDataGridColumn
             .Trim()
             .ToLower()
             .Replace('е', 'e');
+        tmp = ReplaceDashes(tmp);
         if (tmp != "прим.")
         {
             tmp = tmp.Replace('.', ',');
         }
-        if (tmp is "-" or "прим.")
+        if (tmp is "прим." or "-")
         {
             return tmp;
         }
@@ -355,6 +358,13 @@ public abstract class Form : IKey, IDataGridColumn
             ? date.ToShortDateString()
             : tmp;
     }
+
+    private protected static string ReplaceDashes(string value) =>
+        value switch
+        {
+            null => string.Empty,
+            _ => Regex.Replace(value, "[-᠆‐‑‒–—―⸺⸻－﹘﹣－]", "-")
+        };
 
     #endregion
 

@@ -135,6 +135,37 @@ public partial class Form17 : Form1
 
     #region OpecationCode (2)
 
+    [NotMapped]
+    [FormProperty(true, "null-1-1", "Сведения об операции", "код", "2")]
+    public override RamAccess<string> OperationCode
+    {
+        get
+        {
+            if (!OperationCode_Hidden_Priv)
+            {
+                if (Dictionary.TryGetValue(nameof(OperationCode), out var value))
+                {
+                    ((RamAccess<string>)value).Value = OperationCode_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
+                rm.PropertyChanged += OperationCode_ValueChanged;
+                Dictionary.Add(nameof(OperationCode), rm);
+                return (RamAccess<string>)Dictionary[nameof(OperationCode)];
+            }
+            var tmp = new RamAccess<string>(null, null);
+            return tmp;
+        }
+        set
+        {
+            if (!OperationCode_Hidden_Priv)
+            {
+                OperationCode_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     protected override bool OperationCode_Validation(RamAccess<string> value)//OK
     {
         value.ClearErrors();
@@ -161,6 +192,37 @@ public partial class Form17 : Form1
     #endregion
 
     #region OperationDate (3)
+
+    [NotMapped]
+    [FormProperty(true, "null-1-1", "Сведения об операции", "дата", "3")]
+    public override RamAccess<string> OperationDate
+    {
+        get
+        {
+            if (!OperationDate_Hidden_Priv)
+            {
+                if (Dictionary.TryGetValue(nameof(OperationDate), out RamAccess value))
+                {
+                    ((RamAccess<string>)value).Value = OperationDate_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
+                rm.PropertyChanged += OperationDate_ValueChanged;
+                Dictionary.Add(nameof(OperationDate), rm);
+                return (RamAccess<string>)Dictionary[nameof(OperationDate)];
+            }
+            var tmp = new RamAccess<string>(null, null);
+            return tmp;
+        }
+        set
+        {
+            if (!OperationDate_Hidden_Priv)
+            {
+                OperationDate_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     protected override bool OperationDate_Validation(RamAccess<string> value)
         => string.IsNullOrWhiteSpace(value.Value) || DateString_Validation(value);
@@ -719,6 +781,34 @@ public partial class Form17 : Form1
 
     #region DocumentVid (14)
 
+    [NotMapped]
+    [FormProperty(true, "null-n", "Документ", "вид", "14")]
+    public override RamAccess<byte?> DocumentVid
+    {
+        get
+        {
+            if (!DocumentVid_Hidden_Priv)
+            {
+                if (Dictionary.TryGetValue(nameof(DocumentVid), out RamAccess value))
+                {
+                    ((RamAccess<byte?>)value).Value = DocumentVid_DB;
+                    return (RamAccess<byte?>)value;
+                }
+                var rm = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
+                rm.PropertyChanged += DocumentVid_ValueChanged;
+                Dictionary.Add(nameof(DocumentVid), rm);
+                return (RamAccess<byte?>)Dictionary[nameof(DocumentVid)];
+            }
+            var tmp = new RamAccess<byte?>(null, null);
+            return tmp;
+        }
+        set
+        {
+            DocumentVid_DB = value.Value;
+            OnPropertyChanged();
+        }
+    }
+
     protected override bool DocumentVid_Validation(RamAccess<byte?> value)
     {
         value.ClearErrors();
@@ -734,6 +824,37 @@ public partial class Form17 : Form1
 
     #region DocumentNumber (15)
 
+    [NotMapped]
+    [FormProperty(true, "null-n", "Документ", "номер", "15")]
+    public override RamAccess<string> DocumentNumber
+    {
+        get
+        {
+            if (!DocumentNumber_Hidden_Priv)
+            {
+                if (Dictionary.TryGetValue(nameof(DocumentNumber), out RamAccess value))
+                {
+                    ((RamAccess<string>)value).Value = DocumentNumber_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
+                rm.PropertyChanged += DocumentNumber_ValueChanged;
+                Dictionary.Add(nameof(DocumentNumber), rm);
+                return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
+            }
+            var tmp = new RamAccess<string>(null, null);
+            return tmp;
+        }
+        set
+        {
+            if (!DocumentNumber_Hidden_Priv)
+            {
+                DocumentNumber_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     protected override bool DocumentNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -743,6 +864,37 @@ public partial class Form17 : Form1
     #endregion
 
     #region DocumentDate (16)
+
+    [NotMapped]
+    [FormProperty(true, "null-n", "Документ", "дата", "16")]
+    public override RamAccess<string> DocumentDate
+    {
+        get
+        {
+            if (!DocumentDate_Hidden_Priv)
+            {
+                if (Dictionary.TryGetValue(nameof(DocumentDate), out RamAccess value))
+                {
+                    ((RamAccess<string>)value).Value = DocumentDate_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
+                rm.PropertyChanged += DocumentDate_ValueChanged;
+                Dictionary.Add(nameof(DocumentDate), rm);
+                return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
+            }
+            var tmp = new RamAccess<string>(null, null);
+            return tmp;
+        }
+        set
+        {
+            if (!DocumentDate_Hidden_Priv)
+            {
+                DocumentDate_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     protected override bool DocumentDate_Validation(RamAccess<string> value)
         => value.Value is null or "" || DateString_Validation(value);

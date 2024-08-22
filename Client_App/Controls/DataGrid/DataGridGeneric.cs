@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
@@ -672,8 +671,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             try
             {
-                var val = Convert.ToInt32(value);
-                if (val == null) return;
+                if (!int.TryParse(value, out var val))
+                {
+                    SelectedCells.Clear();
+                    return;
+                }
                 var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
                 var maxPage = searchText == ""
                     ? Items != null
@@ -692,6 +694,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 if (val.ToString() == _nowPage) return;
                 if (val <= maxPage && val >= 1)
                 {
+                    SelectedCells.Clear();
                     SetAndRaise(NowPageProperty, ref _nowPage, value);
                     UpdateCells();
                 }
@@ -701,12 +704,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     {
                         if (_nowPage != maxPage.ToString())
                         {
+                            SelectedCells.Clear();
                             SetAndRaise(NowPageProperty, ref _nowPage, maxPage.ToString());
                             UpdateCells();
                         }
                     }
                     if (val < 1 && _nowPage != "1")
                     {
+                        SelectedCells.Clear();
                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
                         UpdateCells();
                     }
@@ -763,48 +768,47 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             case "FormType":
                 return SelectedCells;
             case "Copy":
-                {
-                    var answ = new object[3];
-                    answ[0] = SelectedItems;
-                    answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                    answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                    return answ;
-                }
+            {
+                var answ = new object[3];
+                answ[0] = SelectedItems;
+                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                return answ;
+            }
             case "Paste" or "Del":
+            {
+                var answ = new object[3];
+                answ[0] = SelectedItems;
+                if (SelectedCells.Count is 1)
                 {
-
-                    var answ = new object[3];
-                    answ[0] = SelectedItems;
-                    if (SelectedCells.Count is 1)
+                    var cell = (Cell)SelectedCells[0];
+                    var textBox = (TextBox)cell.Control;
+                    if (textBox.SelectedText != textBox.Text)
                     {
-                        var cell = (Cell)SelectedCells[0];
-                        var textBox = (TextBox)cell.Control;
-                        if (textBox.SelectedText != textBox.Text)
-                        {
-                            answ[0] = null;
-                        }
+                        answ[0] = null;
                     }
-                    answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                    answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                    return answ;
                 }
+                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                return answ;
+            }
             case "SelectAll":
+            {
+                var maxRow = PageSize;
+                var maxColumn = Rows[0].Children.Count;
+                FirstPressedItem[0] = 0;
+                FirstPressedItem[1] = 0;
+                LastPressedItem[0] = maxRow - 1;
+                LastPressedItem[1] = maxColumn - 1;
+                SetSelectedControls();
+                ObservableCollectionWithItemPropertyChanged<IKey> lst = new();
+                foreach (var item in Items)
                 {
-                    var maxRow = PageSize;
-                    var maxColumn = Rows[0].Children.Count;
-                    FirstPressedItem[0] = 0;
-                    FirstPressedItem[1] = 0;
-                    LastPressedItem[0] = maxRow - 1;
-                    LastPressedItem[1] = maxColumn - 1;
-                    SetSelectedControls();
-                    ObservableCollectionWithItemPropertyChanged<IKey> lst = new();
-                    foreach (var item in Items)
-                    {
-                        lst.Add(item);
-                    }
-                    SelectedItems = lst;
-                    break;
+                    lst.Add(item);
                 }
+                SelectedItems = lst;
+                break;
+            }
         }
 
         if (string.IsNullOrEmpty(param.ParamName))

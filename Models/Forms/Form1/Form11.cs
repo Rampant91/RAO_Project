@@ -818,8 +818,7 @@ public class Form11 : Form1
     private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -830,12 +829,13 @@ public class Form11 : Form1
     private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        var tmp = ReplaceDashes(value.Value);
+        if (string.IsNullOrEmpty(tmp))
         {
             value.AddError("Поле не заполнено");
             return false;
         }
-        switch (value.Value)
+        switch (tmp)
         {
             case "-":
             //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
@@ -844,12 +844,12 @@ public class Form11 : Form1
             case "Минобороны":
                 return true;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             return true;
         }
-        if (value.Value.Length is not (8 or 14)
-            || !OkpoRegex().IsMatch(value.Value))
+        if (tmp.Length is not (8 or 14)
+            || !OkpoRegex().IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
             return false;
