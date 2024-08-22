@@ -67,7 +67,9 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         }
         catch (Exception ex)
         {
-            //ignore
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
         }
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";

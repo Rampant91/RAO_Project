@@ -461,7 +461,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //ignore
             }
