@@ -216,8 +216,12 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "NumberInOrder_DB",
                 Value = forms[line].NumberInOrder_DB.ToString(),
-                Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров"
+                Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") +
+                          "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров. " +
+                          $"{Environment.NewLine}Для устранения ошибки воспользуйтесь либо кнопкой сортировки " +
+                          $"(строки будут отсортированы по №п/п, поменяв свою позицию), " +
+                          $"{Environment.NewLine}либо кнопкой выставить порядок строк " +
+                          $"(у строк будет изменён №п/п, но они при этом не поменяют свой порядок)."
             });
         }
         return result;

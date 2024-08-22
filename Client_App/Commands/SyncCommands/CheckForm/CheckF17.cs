@@ -174,8 +174,12 @@ public abstract class CheckF17 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "NumberInOrder_DB",
                 Value = forms[line].NumberInOrder_DB.ToString(),
-                Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров."
+                Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") +
+                          "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров. " +
+                          $"{Environment.NewLine}Для устранения ошибки воспользуйтесь либо кнопкой сортировки " +
+                          $"(строки будут отсортированы по №п/п, поменяв свою позицию), " +
+                          $"{Environment.NewLine}либо кнопкой выставить порядок строк " +
+                          $"(у строк будет изменён №п/п, но они при этом не поменяют свой порядок)."
             });
         }
         return result;
@@ -728,7 +732,7 @@ public abstract class CheckF17 : CheckBase
         var packVolume = Packs.First(phEntry => comparator.Compare(phEntry["name"], packName) == 0)["volume"];
         if (!TryParseFloatExtended(graph10, out var graph10Real) ||
             !TryParseFloatExtended(packVolume, out var packVolumeReal)) return result;
-        if (graph10Real > packVolumeReal * 1.1f || graph10Real < packVolumeReal / 1.1f)
+        if (graph10Real > packVolumeReal * 1.1f || graph10Real < packVolumeReal * 0.9f)
         {
             result.Add(new CheckError
             {
