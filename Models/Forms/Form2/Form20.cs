@@ -15,43 +15,23 @@ namespace Models.Forms.Form2;
 [Table (name: "form_20")]
 public partial class Form20 : Form
 {
+    #region Constructor
+
     public Form20()
     {
         FormNum.Value = "2.0";
     }
-    protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
-    {
-        OnPropertyChanged(args.PropertyName);
-    }
-    public override bool Object_Validation()
-    {
-        return !(Okfs.HasErrors ||
-                 Okpo.HasErrors ||
-                 Okved.HasErrors ||
-                 Oktmo.HasErrors ||
-                 Okogu.HasErrors ||
-                 Okopf.HasErrors ||
-                 Inn.HasErrors ||
-                 Kpp.HasErrors ||
-                 RegNo.HasErrors ||
-                 OrganUprav.HasErrors ||
-                 SubjectRF.HasErrors ||
-                 JurLico.HasErrors ||
-                 ShortJurLico.HasErrors ||
-                 JurLicoAddress.HasErrors ||
-                 JurLicoFactAddress.HasErrors ||
-                 GradeFIO.HasErrors ||
-                 Telephone.HasErrors ||
-                 Fax.HasErrors ||
-                 Email.HasErrors);
-    }
 
-    #region RegNo
+    #endregion
+
+    #region Properties
+
+    #region RegNo (2)
 
     public string RegNo_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"Рег. №")]
+    [FormProperty(true, "Рег. №")]
     public RamAccess<string> RegNo
     {
         get
@@ -77,7 +57,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            RegNo_DB = ((RamAccess<string>) value).Value;
+            RegNo_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -110,12 +90,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region OrganUprav
+    #region OrganUprav (3)
 
     public string OrganUprav_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"Орган управления использованием атомной энергии")]
+    [FormProperty(true, "Орган управления использованием атомной энергии")]
     public RamAccess<string> OrganUprav
     {
         get
@@ -141,7 +121,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            OrganUprav_DB = ((RamAccess<string>) value).Value;
+            OrganUprav_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -154,7 +134,7 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region SubjectRF
+    #region SubjectRF (4)
 
     public string SubjectRF_DB { get; set; } = "";
 
@@ -185,7 +165,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            SubjectRF_DB = ParseInnerText(((RamAccess<string>) value).Value);
+            SubjectRF_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -198,7 +178,7 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region JurLico
+    #region JurLico (5)
 
     public string JurLico_DB { get; set; } = "";
 
@@ -229,7 +209,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            JurLico_DB = ParseInnerText(((RamAccess<string>) value).Value);
+            JurLico_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -242,7 +222,7 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region ShortJurLico
+    #region ShortJurLico (6)
 
     public string ShortJurLico_DB { get; set; } = "";
 
@@ -274,7 +254,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            ShortJurLico_DB = ParseInnerText(((RamAccess<string>) value).Value);
+            ShortJurLico_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -287,7 +267,7 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region JurLicoAddress
+    #region JurLicoAddress (7)
 
     public string JurLicoAddress_DB { get; set; } = "";
 
@@ -318,7 +298,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            JurLicoAddress_DB = ParseInnerText(((RamAccess<string>) value).Value);
+            JurLicoAddress_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -331,7 +311,7 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region JurLicoFactAddress
+    #region JurLicoFactAddress (8)
 
     public string JurLicoFactAddress_DB { get; set; } = "";
 
@@ -362,7 +342,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            JurLicoFactAddress_DB = ParseInnerText(((RamAccess<string>) value).Value);
+            JurLicoFactAddress_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -375,12 +355,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region GradeFIO
+    #region GradeFIO (9)
 
     public string GradeFIO_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ФИО, должность руководителя", "ФИО, должность руководителя")]
+    [FormProperty(true, "ФИО, должность руководителя", "ФИО, должность руководителя")]
     public RamAccess<string> GradeFIO
     {
         get
@@ -406,7 +386,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            GradeFIO_DB = ParseInnerText(((RamAccess<string>) value).Value);
+            GradeFIO_DB = ParseInnerText(((RamAccess<string>)value).Value);
         }
     }
 
@@ -419,12 +399,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Telephone
+    #region Telephone (10)
 
     public string Telephone_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"Телефон организации", "Телефон организации")]
+    [FormProperty(true, "Телефон организации", "Телефон организации")]
     public RamAccess<string> Telephone
     {
         get
@@ -450,7 +430,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Telephone_DB = ((RamAccess<string>) value).Value;
+            Telephone_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -463,12 +443,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Fax
+    #region Fax (11)
 
     public string Fax_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"Факс организации", "Факс организации")]
+    [FormProperty(true, "Факс организации", "Факс организации")]
     public RamAccess<string> Fax
     {
         get
@@ -494,7 +474,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Fax_DB = ((RamAccess<string>) value).Value;
+            Fax_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -507,12 +487,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Email
+    #region Email (12)
 
     public string Email_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"Эл. почта организации", "Эл. почта организации")]
+    [FormProperty(true, "Эл. почта организации", "Эл. почта организации")]
     public RamAccess<string> Email
     {
         get
@@ -538,7 +518,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Email_DB = ((RamAccess<string>) value).Value;
+            Email_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -551,12 +531,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Okpo
+    #region Okpo (13)
 
     public string Okpo_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ОКПО", "ОКПО")]
+    [FormProperty(true, "ОКПО", "ОКПО")]
     public RamAccess<string> Okpo
     {
         get
@@ -582,7 +562,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Okpo_DB = ((RamAccess<string>) value).Value;
+            Okpo_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -611,12 +591,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Okved
+    #region Okved (14)
 
     public string Okved_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ОКВЭД", "ОКВЭД")]
+    [FormProperty(true, "ОКВЭД", "ОКВЭД")]
     public RamAccess<string> Okved
     {
         get
@@ -642,7 +622,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Okved_DB = ((RamAccess<string>) value).Value;
+            Okved_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -666,12 +646,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Okogu
+    #region Okogu (15)
 
     public string Okogu_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ОКОГУ", "ОКОГУ")]
+    [FormProperty(true, "ОКОГУ", "ОКОГУ")]
     public RamAccess<string> Okogu
     {
         get
@@ -697,7 +677,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Okogu_DB = ((RamAccess<string>) value).Value;
+            Okogu_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -721,12 +701,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Oktmo
+    #region Oktmo (16)
 
     public string Oktmo_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ОКТМО", "ОКТМО")]
+    [FormProperty(true, "ОКТМО", "ОКТМО")]
     public RamAccess<string> Oktmo
     {
         get
@@ -752,7 +732,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Oktmo_DB = ((RamAccess<string>) value).Value;
+            Oktmo_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -778,12 +758,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Inn
+    #region Inn (17)
 
     public string Inn_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ИНН", "ИНН")]
+    [FormProperty(true, "ИНН", "ИНН")]
     public RamAccess<string> Inn
     {
         get
@@ -809,7 +789,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Inn_DB = ((RamAccess<string>) value).Value;
+            Inn_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -833,12 +813,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Kpp
+    #region Kpp (18)
 
     public string Kpp_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"КПП", "КПП")]
+    [FormProperty(true, "КПП", "КПП")]
     public RamAccess<string> Kpp
     {
         get
@@ -864,7 +844,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Kpp_DB = ((RamAccess<string>) value).Value;
+            Kpp_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -888,12 +868,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Okopf
+    #region Okopf (19)
 
     public string Okopf_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ОКОПФ", "ОКОПФ")]
+    [FormProperty(true, "ОКОПФ", "ОКОПФ")]
     public RamAccess<string> Okopf
     {
         get
@@ -919,7 +899,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Okopf_DB = ((RamAccess<string>) value).Value;
+            Okopf_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -943,12 +923,12 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region Okfs
+    #region Okfs (20)
 
     public string Okfs_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true,"ОКФС", "ОКФС")]
+    [FormProperty(true, "ОКФС", "ОКФС")]
     public RamAccess<string> Okfs
     {
         get
@@ -974,7 +954,7 @@ public partial class Form20 : Form
     {
         if (args.PropertyName == "Value")
         {
-            Okfs_DB = ((RamAccess<string>) value).Value;
+            Okfs_DB = ((RamAccess<string>)value).Value;
         }
     }
 
@@ -998,12 +978,50 @@ public partial class Form20 : Form
 
     #endregion
 
+    #endregion
+
+    #region PropertyChanged
+    
+    protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+    {
+        OnPropertyChanged(args.PropertyName);
+    }
+
+    #endregion
+
+    #region Validation
+    
+    public override bool Object_Validation()
+    {
+        return !(Okfs.HasErrors ||
+                 Okpo.HasErrors ||
+                 Okved.HasErrors ||
+                 Oktmo.HasErrors ||
+                 Okogu.HasErrors ||
+                 Okopf.HasErrors ||
+                 Inn.HasErrors ||
+                 Kpp.HasErrors ||
+                 RegNo.HasErrors ||
+                 OrganUprav.HasErrors ||
+                 SubjectRF.HasErrors ||
+                 JurLico.HasErrors ||
+                 ShortJurLico.HasErrors ||
+                 JurLicoAddress.HasErrors ||
+                 JurLicoFactAddress.HasErrors ||
+                 GradeFIO.HasErrors ||
+                 Telephone.HasErrors ||
+                 Fax.HasErrors ||
+                 Email.HasErrors);
+    }
+
+    #endregion
+
     #region ParseInnerText
 
-    private static string ParseInnerText(string text)
-    {
-        return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
-    }
+    private static string ParseInnerText(string text) => text
+        .Replace("\r", " ")
+        .Replace("\n", " ")
+        .Replace("\t", " ");
 
     #endregion
 

@@ -14,7 +14,6 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
-using ReactiveUI;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -462,7 +461,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //ignore
             }

@@ -55,7 +55,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _items;
         set
         {
-            if (value != null && Math.Ceiling(value.Count / 10.0 ) < int.Parse(NowPage) && NowPage != "1" && _items?.GetEnumerable().FirstOrDefault() is Report) //жуткий костыль, чтобы страница сбрасывалась при смене организации, но не сбрасывалась при её открытии
+            if (value != null 
+                && int.TryParse(NowPage, out var nowPage)
+                && Math.Ceiling(value.Count / 10.0 ) < nowPage
+                && NowPage != "1" 
+                && _items?.GetEnumerable().FirstOrDefault() is Report) //жуткий костыль, чтобы страница сбрасывалась при смене организации, но не сбрасывалась при её открытии
             {
                 NowPage = "1";
             }
@@ -642,7 +646,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
             var rep = SelectedItems.Get<Report>(0);
             if (rep is null) return;
-            var countR = ReportsStorage.GetReportRowsCount(rep);
+            var countR = ReportsStorage.GetReportRowsCount(rep).Result;
             SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
         }
     }
@@ -667,8 +671,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             try
             {
-                var val = Convert.ToInt32(value);
-                if (val == null) return;
+                if (!int.TryParse(value, out var val))
+                {
+                    SelectedCells.Clear();
+                    return;
+                }
                 var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
                 var maxPage = searchText == ""
                     ? Items != null
@@ -687,6 +694,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 if (val.ToString() == _nowPage) return;
                 if (val <= maxPage && val >= 1)
                 {
+                    SelectedCells.Clear();
                     SetAndRaise(NowPageProperty, ref _nowPage, value);
                     UpdateCells();
                 }
@@ -696,12 +704,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     {
                         if (_nowPage != maxPage.ToString())
                         {
+                            SelectedCells.Clear();
                             SetAndRaise(NowPageProperty, ref _nowPage, maxPage.ToString());
                             UpdateCells();
                         }
                     }
                     if (val < 1 && _nowPage != "1")
                     {
+                        SelectedCells.Clear();
                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
                         UpdateCells();
                     }
@@ -758,48 +768,47 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             case "FormType":
                 return SelectedCells;
             case "Copy":
-                {
-                    var answ = new object[3];
-                    answ[0] = SelectedItems;
-                    answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                    answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                    return answ;
-                }
+            {
+                var answ = new object[3];
+                answ[0] = SelectedItems;
+                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                return answ;
+            }
             case "Paste" or "Del":
+            {
+                var answ = new object[3];
+                answ[0] = SelectedItems;
+                if (SelectedCells.Count is 1)
                 {
-
-                    var answ = new object[3];
-                    answ[0] = SelectedItems;
-                    if (SelectedCells.Count is 1)
+                    var cell = (Cell)SelectedCells[0];
+                    var textBox = (TextBox)cell.Control;
+                    if (textBox.SelectedText != textBox.Text)
                     {
-                        var cell = (Cell)SelectedCells[0];
-                        var textBox = (TextBox)cell.Control;
-                        if (textBox.SelectedText != textBox.Text)
-                        {
-                            answ[0] = null;
-                        }
+                        answ[0] = null;
                     }
-                    answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                    answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                    return answ;
                 }
+                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                return answ;
+            }
             case "SelectAll":
+            {
+                var maxRow = PageSize;
+                var maxColumn = Rows[0].Children.Count;
+                FirstPressedItem[0] = 0;
+                FirstPressedItem[1] = 0;
+                LastPressedItem[0] = maxRow - 1;
+                LastPressedItem[1] = maxColumn - 1;
+                SetSelectedControls();
+                ObservableCollectionWithItemPropertyChanged<IKey> lst = new();
+                foreach (var item in Items)
                 {
-                    var maxRow = PageSize;
-                    var maxColumn = Rows[0].Children.Count;
-                    FirstPressedItem[0] = 0;
-                    FirstPressedItem[1] = 0;
-                    LastPressedItem[0] = maxRow - 1;
-                    LastPressedItem[1] = maxColumn - 1;
-                    SetSelectedControls();
-                    ObservableCollectionWithItemPropertyChanged<IKey> lst = new();
-                    foreach (var item in Items)
-                    {
-                        lst.Add(item);
-                    }
-                    SelectedItems = lst;
-                    break;
+                    lst.Add(item);
                 }
+                SelectedItems = lst;
+                break;
+            }
         }
 
         if (string.IsNullOrEmpty(param.ParamName))
@@ -1421,7 +1430,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 tmp2Coll.Add(it);
                             }
                         }
-                        if (int.Parse(NowPage) > (tmp2Coll.Count / PageSize + 1))
+                        if (int.TryParse(NowPage, out var nowPage) 
+                            && nowPage > tmp2Coll.Count / PageSize + 1)
                         {
                             SetAndRaise(NowPageProperty, ref _nowPage, "1");
                             offsetMax = 5;
@@ -1507,8 +1517,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             case Key.Left:
             {
-                LastPressedItem[1] = LastPressedItem[1] == 1 
-                    ? LastPressedItem[1] 
+                if (args.Source is TextBox textBox
+                    && textBox.SelectionStart != 0)
+                {
+                    break;
+                }
+                LastPressedItem[1] = LastPressedItem[1] == 1
+                    ? LastPressedItem[1]
                     : LastPressedItem[1] - 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
@@ -1533,6 +1548,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             case Key.Right:
             {
+                if (args.Source is TextBox textBox
+                    && textBox.SelectionStart != textBox.Text.Length)
+                {
+                    break;
+                }
                 if (LastPressedItem[1] != Rows[0].Children.Count - 1)
                     LastPressedItem[1]++;
                 if (args.KeyModifiers != KeyModifiers.Shift)
@@ -1820,7 +1840,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         var f22 = item.Binding is "PackQuantity" or "VolumeInPack" or "MassInPack" or "Comments";
                         if (f22)
                         {
-                            textBox = new TextBox()
+                            textBox = new TextBox
                             {
                                 [!DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
@@ -1838,7 +1858,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         }
                         else
                         {
-                            textBox = new TextBlock()
+                            textBox = new TextBlock
                             {
                                 [!DataContextProperty] = new Binding(item.Binding),
                                 [!TextBlock.TextProperty] = new Binding("Value"),
@@ -1859,7 +1879,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     }
                     else
                     {
-                        textBox = new TextBlock()
+                        textBox = new TextBlock
                         {
                             [!DataContextProperty] = new Binding(item.Binding),
                             [!TextBlock.TextProperty] = new Binding("Value"),
@@ -1880,16 +1900,17 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
                 else
                 {
-                    textBox = new TextBox()
-                    {
-                        [!DataContextProperty] = new Binding(item.Binding),
-                        [!TextBox.TextProperty] = new Binding("Value"),
-                        [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
-                    };
+                    
+                    textBox = new TextBox
+                        {
+                            [!DataContextProperty] = new Binding(item.Binding),
+                            [!TextBox.TextProperty] = new Binding("Value"),
+                            [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            ContextMenu = new ContextMenu { Width = 0, Height = 0 }
+                        };
                     ((TextBox)textBox).TextAlignment = TextAlignment.Left;
-                    textBox.VerticalAlignment = VerticalAlignment.Stretch;
-                    textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                    textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                     if (item.IsTextWrapping)
                     {
                         ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
@@ -2298,6 +2319,4 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
 
     #endregion
-
-    
 }

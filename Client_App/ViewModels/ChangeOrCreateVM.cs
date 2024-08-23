@@ -20,7 +20,9 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Models.DBRealization;
 using System.Threading;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.PassportFill;
 
 namespace Client_App.ViewModels;
 
@@ -114,7 +116,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (_Storages != value)
             {
                 _Storages = value;
-                NotifyPropertyChanged("Storages");
+                NotifyPropertyChanged();
             }
         }
     }
@@ -173,13 +175,18 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
     public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
+    public ICommand SortForm { get; set; }                          //  Сортировка по порядковому номеру
+    public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО
+    public ICommand SourceTransmissionAll { get; set; }             //  Перевод всех источников в форме из РВ в РАО
+    public ICommand PassportFill { get; set; }                      //  Заполнение шаблона паспорта в 1.7 из выделенных строк
+    public ICommand PassportFillAll { get; set; }                   //  Заполнения шаблона паспорта в 1.7 из всех строк
 
     #endregion
 
     #region Constructor
 
     #region ChangeFormOrOrg
-    
+
     public ChangeOrCreateVM(string param, in Report rep)
     {
         if (rep.FormNum_DB is "1.0" or "2.0")
@@ -241,7 +248,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                         {
                             var ty = reps.Report_Collection
                                 .Where(t => t.FormNum_DB == param && t.EndPeriod_DB != "")
-                                .OrderBy(t => DateTimeOffset.Parse(t.EndPeriod_DB))
+                                .OrderBy(t => DateOnly.Parse(t.EndPeriod_DB))
                                 .Select(t => t.EndPeriod_DB)
                                 .LastOrDefault();
                             FormType = param;
@@ -309,17 +316,17 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     private void Init()
     {
-        var a = FormType.Replace(".", "");
+        var formNum = FormType.Replace(".", "");
         if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] is "1" or "2")
         {
-            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
+            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
                            + $"{Storages.Master_DB.RegNoRep.Value} "
                            + $"{Storages.Master_DB.ShortJurLicoRep.Value} "
                            + $"{Storages.Master_DB.OkpoRep.Value}";
         }
         else if (FormType is "1.0" or "2.0")
         {
-            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{a[0]}.Form{a},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
         }
 
         AddNote = new AddNoteAsyncCommand(this);
@@ -340,9 +347,14 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
         SetNumberOrder = new SetNumberOrderSyncCommand(this);
+        SortForm = new SortFormSyncCommand(this);
+        PassportFill = new PassportFillSyncCommand(this);
+        PassportFillAll = new PassportFillAllSyncCommand(this);
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();
+        SourceTransmission = new SourceTransmissionAsyncCommand(this);
+        SourceTransmissionAll = new SourceTransmissionAllAsyncCommand(this);
         if (!isSum)
         {
             //Storage.Sort();

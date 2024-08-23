@@ -4,8 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converters="clr-namespace:Client_App.VisualRealization.Converters"
-    xmlns:v="clr-namespace:Client_App.Views"
     xmlns:vm="clr-namespace:Client_App.ViewModels"
     Name="FormCheckerWindow"
     Title="{Binding Path=TitleName, Mode=OneWay}"
@@ -19,8 +17,17 @@
         <vm:CheckFormVM/>
     </Design.DataContext>
 
-    <Grid>
+    <Grid RowDefinitions="40,*">
+        <Grid Row="0">
+            <Button
+                Width="200"
+                Margin="5"
+                Content="Сохранить отчёт"
+                Command="{Binding Path=ExcelExportCheckForm}"
+                CommandParameter="{Binding }"/>
+        </Grid>
         <DataGrid
+            Grid.Row="1"
             Name="DtgCheck"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"

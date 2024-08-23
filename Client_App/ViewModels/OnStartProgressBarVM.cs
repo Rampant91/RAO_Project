@@ -12,12 +12,14 @@ namespace Client_App.ViewModels;
 public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 {
     private Task MainTask { get; set; }
+
     public OnStartProgressBarVM(IBackgroundLoader backgroundWorker)
     {
         ShowDialog = new Interaction<MainWindowVM, object>();
         backgroundWorker.BackgroundWorker(() =>
         {
             ServiceExtension.LoggerManager.CreateFile("Import.log");
+            ServiceExtension.LoggerManager.CreateFile("Crash.log");
         }, () =>
         {
             MainTask = new Task(async () => await Start().ConfigureAwait(false));
@@ -25,6 +27,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             MainTask.Start();
         });
     }
+
     private double _onStartProgressBar;
     public double OnStartProgressBar
     {

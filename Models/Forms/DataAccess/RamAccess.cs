@@ -136,19 +136,25 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
     #endregion
 
     #region INotifyDataErrorInfo
+
     protected readonly List<string> _errorsByPropertyName = new();
+
     public bool HasErrors => _errorsByPropertyName.Any();
+
     public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
     public IEnumerable GetErrors(string propertyName)
     {
         var tmp = _errorsByPropertyName.Count > 0 ?
             _errorsByPropertyName : null;
         return tmp?.Select(item => new Exception(item)).ToList();
     }
+
     protected void OnErrorsChanged(string propertyName)
     {
         ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
     }
+
     protected void ClearErrors(string propertyName)
     {
         if (_errorsByPropertyName.Count > 0)
@@ -157,6 +163,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
             OnErrorsChanged(propertyName);
         }
     }
+
     protected void AddError(string propertyName, string error)
     {
         if (!_errorsByPropertyName.Contains(error))
@@ -165,6 +172,7 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
             OnErrorsChanged(propertyName);
         }
     }
+
     #endregion
 
     #region IExcel

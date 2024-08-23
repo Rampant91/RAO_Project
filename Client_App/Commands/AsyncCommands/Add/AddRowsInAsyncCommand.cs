@@ -11,17 +11,11 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands.Add;
 
 //  Добавить N строк в форму перед выбранной строкой
-internal class AddRowsInAsyncCommand : BaseAsyncCommand
+internal class AddRowsInAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-    private string FormType => _ChangeOrCreateViewModel.FormType;
-    private Interaction<int, int> ShowDialogIn => _ChangeOrCreateViewModel.ShowDialogIn;
-
-    public AddRowsInAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
+    private string FormType => changeOrCreateViewModel.FormType;
+    private Interaction<int, int> ShowDialogIn => changeOrCreateViewModel.ShowDialogIn;
 
     public override async Task AsyncExecute(object? parameter)
     {

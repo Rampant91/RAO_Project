@@ -14,8 +14,9 @@ using Models.Interfaces;
 
 namespace Models.Collections;
 
-[Table("ReportsCollection_DbSet")]
-[Index(nameof(DBObservable), IsUnique = true)]
+[Table(name: "ReportsCollection_DbSet")]
+[Index(nameof(DBObservable), IsUnique = false, Name = "IX_ReportsCollection_DbSet_DBO~")]
+[Index(nameof(Master_DB), IsUnique = false, Name = "IX_ReportsCollection_DbSet_Mas~")]
 public class Reports : IKey, IDataGridColumn
 {
     #region Constructor
@@ -53,7 +54,7 @@ public class Reports : IKey, IDataGridColumn
     [ForeignKey(nameof(Report))]
     public int? Master_DBId { get; set; }
 
-    public Report Master_DB { get; set; } 
+    public virtual Report Master_DB { get; set; } 
 
     [NotMapped]
     public Report Master
@@ -110,17 +111,11 @@ public class Reports : IKey, IDataGridColumn
         {
             try
             {
-                var num_str = "0";
-                if (Master_DB.RegNoRep.Value.Length >= 5)
-                {
-                    num_str = Master_DB.RegNoRep.Value[..5];
-                }
-                else
-                {
-                    num_str = Master_DB.RegNoRep.Value;
-                }
-                var num_int = Convert.ToInt64(num_str);
-                return num_int;
+                var numStr = Master_DB.RegNoRep.Value.Length >= 5 
+                    ? Master_DB.RegNoRep.Value[..5] 
+                    : Master_DB.RegNoRep.Value;
+                var numInt = Convert.ToInt64(numStr);
+                return numInt;
             }
             catch
             {

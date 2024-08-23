@@ -51,7 +51,7 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         if (IsSelectedOrg)
         {
             var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
-            if (selectedReports is null || !selectedReports.Report_Collection.Any())
+            if (selectedReports is null || selectedReports.Report_Collection.Count == 0)
             {
                 #region MessageExcelExportFail
 

@@ -5,15 +5,9 @@ using Models.Collections;
 namespace Client_App.Commands.AsyncCommands;
 
 //  Поменять местами юр. лицо и обособленное подразделение
-internal class ChangeReportOrderAsyncCommand : BaseAsyncCommand
+internal class ChangeReportOrderAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-
-    public ChangeReportOrderAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {

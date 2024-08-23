@@ -1,13 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
-using Spravochniki;
 
 namespace Models.Forms.Form2;
 
@@ -72,24 +70,22 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
-            rm.PropertyChanged += ObservedSourceNumberValueChanged;
+            rm.PropertyChanged += ObservedSourceNumber_ValueChanged;
             Dictionary.Add(nameof(ObservedSourceNumber), rm);
             return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
         }
         set
         {
             ObservedSourceNumber_DB = value.Value;
-            OnPropertyChanged(nameof(ObservedSourceNumber));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void ObservedSourceNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void ObservedSourceNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            ObservedSourceNumber_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        ObservedSourceNumber_DB = ((RamAccess<string>)value).Value;
     }
 
     private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
@@ -115,24 +111,22 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
-            rm.PropertyChanged += ControlledAreaNameValueChanged;
+            rm.PropertyChanged += ControlledAreaName_ValueChanged;
             Dictionary.Add(nameof(ControlledAreaName), rm);
             return (RamAccess<string>)Dictionary[nameof(ControlledAreaName)];
         }
         set
         {
             ControlledAreaName_DB = value.Value;
-            OnPropertyChanged(nameof(ControlledAreaName));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void ControlledAreaNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void ControlledAreaName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            ControlledAreaName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        ControlledAreaName_DB = ((RamAccess<string>)value).Value;
     }
 
     private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
@@ -147,7 +141,7 @@ public class Form26 : Form2
         {
             return true;
         }
-        if (!new[]{"ПП", "СЗЗ", "ЗН", "прим."}.Contains(value.Value))
+        if (!ControlledAreaNameArray.Contains(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -173,18 +167,18 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
-            rm.PropertyChanged += SupposedWasteSourceValueChanged;
+            rm.PropertyChanged += SupposedWasteSource_ValueChanged;
             Dictionary.Add(nameof(SupposedWasteSource), rm);
             return (RamAccess<string>)Dictionary[nameof(SupposedWasteSource)];
         }
         set
         {
             SupposedWasteSource_DB = value.Value;
-            OnPropertyChanged(nameof(SupposedWasteSource));
+            OnPropertyChanged();
         }
     }
 
-    private void SupposedWasteSourceValueChanged(object value, PropertyChangedEventArgs args)
+    private void SupposedWasteSource_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == "Value")
         {
@@ -216,73 +210,24 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
-            rm.PropertyChanged += DistanceToWasteSourceValueChanged;
+            rm.PropertyChanged += DistanceToWasteSource_ValueChanged;
             Dictionary.Add(nameof(DistanceToWasteSource), rm);
             return (RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)];
         }
         set
         {
             DistanceToWasteSource_DB = value.Value;
-            OnPropertyChanged(nameof(DistanceToWasteSource));
+            OnPropertyChanged();
         }
     }
 
-    private void DistanceToWasteSourceValueChanged(object value, PropertyChangedEventArgs args)
+    private void DistanceToWasteSource_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if (value1.Equals("-"))
-            {
-                DistanceToWasteSource_DB = value1;
-                return;
-            }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        DistanceToWasteSource_DB = value1;
+        DistanceToWasteSource_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value is "-" or "прим.")
-        {
-            return true;
-        }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool DistanceToWasteSource_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -302,73 +247,24 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
-            rm.PropertyChanged += TestDepthValueChanged;
+            rm.PropertyChanged += TestDepth_ValueChanged;
             Dictionary.Add(nameof(TestDepth), rm);
             return (RamAccess<string>)Dictionary[nameof(TestDepth)];
         }
         set
         {
             TestDepth_DB = value.Value;
-            OnPropertyChanged(nameof(TestDepth));
+            OnPropertyChanged();
         }
     }
 
-    private void TestDepthValueChanged(object value, PropertyChangedEventArgs args)
+    private void TestDepth_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if (value1.Equals("-"))
-            {
-                TestDepth_DB = value1;
-                return;
-            }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        TestDepth_DB = value1;
+        TestDepth_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool TestDepth_Validation(RamAccess<string> value)//Ready
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value is "-" or "прим.")
-        {
-            return true;
-        }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool TestDepth_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -388,45 +284,25 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
-            rm.PropertyChanged += RadionuclidNameValueChanged;
+            rm.PropertyChanged += RadionuclidName_ValueChanged;
             Dictionary.Add(nameof(RadionuclidName), rm);
             return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
         }
         set
         {
             RadionuclidName_DB = value.Value;
-            OnPropertyChanged(nameof(RadionuclidName));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
-    private void RadionuclidNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void RadionuclidName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            RadionuclidName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        RadionuclidName_DB = ((RamAccess<string>)value).Value;
     }
 
-    private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var tmpstr = value.Value.ToLower().Replace(" ", "");
-        if (!Spravochniks.SprRadionuclids
-                .Where(item => item.Item1 == tmpstr)
-                .Select(item => item.Item1)
-                .Any())
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        return true;
-    }
+    private bool RadionuclidName_Validation(RamAccess<string> value) => NuclidString_Validation(value);
 
     #endregion
 
@@ -446,76 +322,27 @@ public class Form26 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
-            rm.PropertyChanged += AverageYearConcentrationValueChanged;
+            rm.PropertyChanged += AverageYearConcentration_ValueChanged;
             Dictionary.Add(nameof(AverageYearConcentration), rm);
             return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
         }
         set
         {
             AverageYearConcentration_DB = value.Value;
-            OnPropertyChanged(nameof(AverageYearConcentration));
+            OnPropertyChanged();
         }
     }
 
-    private void AverageYearConcentrationValueChanged(object value, PropertyChangedEventArgs args)
+    private void AverageYearConcentration_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if (value1.Equals("-"))
-            {
-                AverageYearConcentration_DB = value1;
-                return;
-            }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        AverageYearConcentration_DB = value1;
+        AverageYearConcentration_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool AverageYearConcentration_Validation(RamAccess<string> value)//TODO
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (value1.Equals("-"))
-        {
-            return true;
-        }
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool AverageYearConcentration_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
-    #endregion 
-    
+    #endregion
+
     #endregion
 
     #region IExcel
@@ -572,6 +399,8 @@ public class Form26 : Form2
     #region IDataGridColumn
 
     private static DataGridColumns _DataGridColumns { get; set; }
+
+    private static readonly string[] ControlledAreaNameArray = ["ПП", "СЗЗ", "ЗН", "прим."];
 
     public override DataGridColumns GetColumnStructure(string param = "")
     {

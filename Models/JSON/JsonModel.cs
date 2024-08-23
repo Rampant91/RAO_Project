@@ -75,9 +75,9 @@ public class JsonOrgConverter : JsonConverter
         var jo = JObject.Load(reader);
         var deserializeObject = JsonConvert
             .DeserializeObject<Dictionary<string, dynamic>>(jo.ToString(), SpecifiedSubclassConversion);
-
         return deserializeObject
-            .Select(org => org.Value.Count > 1
+            .Select(org => 
+            org.Value.Count > 1
                 ? new JsonReports[]
                 {
                     new()
@@ -91,12 +91,20 @@ public class JsonOrgConverter : JsonConverter
                         JurLicoAddress = org.Value[0]["ADDRESS_U"],
                         JurLicoFactAddress = org.Value[0]["ADDRESS_P"],
                         GradeFIO = org.Value[0]["RUKOVODITEL"],
-                        Telephone = org.Value[0]["attrs"]?["TLFON"],
-                        Fax = org.Value[0]["attrs"]?["FAX"],
-                        Email = org.Value[0]["attrs"]?["EMAIL"],
+                        Telephone = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["TLFON"]
+                            : string.Empty,
+                        Fax = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["FAX"]
+                            : string.Empty,
+                        Email = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["EMAIL"]
+                            : string.Empty,
                         Okpo = org.Value[0]["OKPO"],
                         Okved = org.Value[0]["OKVED"],
-                        Okogu = org.Value[0]["attrs"]?["OKOGU"],
+                        Okogu = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["OKOGU"]
+                            : string.Empty,
                         Oktmo = org.Value[0]["OKTMO"],
                         Inn = org.Value[0]["INN"],
                         Kpp = org.Value[0]["KPP"],
@@ -114,12 +122,20 @@ public class JsonOrgConverter : JsonConverter
                         JurLicoAddress = org.Value[1]["ADDRESS_U"],
                         JurLicoFactAddress = org.Value[1]["ADDRESS_P"],
                         GradeFIO = org.Value[1]["RUKOVODITEL"],
-                        Telephone = org.Value[1]["attrs"]?["TLFON"],
-                        Fax = org.Value[1]["attrs"]?["FAX"],
-                        Email = org.Value[1]["attrs"]?["EMAIL"],
+                        Telephone = org.Value[1]["attrs"].Value is not null
+                            ? org.Value[1]["attrs"]["TLFON"]
+                            : string.Empty,
+                        Fax = org.Value[1]["attrs"].Value is not null
+                            ? org.Value[1]["attrs"]["FAX"]
+                            : string.Empty,
+                        Email = org.Value[1]["attrs"].Value is not null
+                            ? org.Value[1]["attrs"]["EMAIL"]
+                            : string.Empty,
                         Okpo = org.Value[1]["OKPO"],
                         Okved = org.Value[1]["OKVED"],
-                        Okogu = org.Value[1]["attrs"]?["OKOGU"],
+                        Okogu = org.Value[1]["attrs"].Value is not null
+                            ? org.Value[1]["attrs"]["OKOGU"]
+                            : string.Empty,
                         Oktmo = org.Value[1]["OKTMO"],
                         Inn = org.Value[1]["INN"],
                         Kpp = org.Value[1]["KPP"],
@@ -127,9 +143,9 @@ public class JsonOrgConverter : JsonConverter
                         Okfs = org.Value[1]["OKFS"]
                     }
                 }
-                : new JsonReports[]
-                {
-                    new()
+                : 
+                [
+                    new JsonReports
                     {
                         Id = org.Value[0]["record_id"],
                         RegNo = org.Value[0]["KOD_ORG"],
@@ -140,19 +156,27 @@ public class JsonOrgConverter : JsonConverter
                         JurLicoAddress = org.Value[0]["ADDRESS_U"],
                         JurLicoFactAddress = org.Value[0]["ADDRESS_P"],
                         GradeFIO = org.Value[0]["RUKOVODITEL"],
-                        Telephone = org.Value[0]["attrs"]?["TLFON"],
-                        Fax = org.Value[0]["attrs"]?["FAX"],
-                        Email = org.Value[0]["attrs"]?["EMAIL"],
+                        Telephone = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["TLFON"]
+                            : string.Empty,
+                        Fax = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["FAX"]
+                            : string.Empty,
+                        Email = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["EMAIL"]
+                            : string.Empty,
                         Okpo = org.Value[0]["OKPO"],
                         Okved = org.Value[0]["OKVED"],
-                        Okogu = org.Value[0]["attrs"]?["OKOGU"],
+                        Okogu = org.Value[0]["attrs"].Value is not null
+                            ? org.Value[0]["attrs"]["OKOGU"]
+                            : string.Empty,
                         Oktmo = org.Value[0]["OKTMO"],
                         Inn = org.Value[0]["INN"],
                         Kpp = org.Value[0]["KPP"],
                         Okopf = org.Value[0]["OKOPF"],
                         Okfs = org.Value[0]["OKFS"]
                     }
-                })
+                ])
             .OrderBy(reps => reps[^1].RegNo)
             .ToList();
     }

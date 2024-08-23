@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using Models.Attributes;
 using Models.Collections;
@@ -70,23 +69,21 @@ public class Form28 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
-            rm.PropertyChanged += WasteSourceNameValueChanged;
+            rm.PropertyChanged += WasteSourceName_ValueChanged;
             Dictionary.Add(nameof(WasteSourceName), rm);
             return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
         }
         set
         {
             WasteSourceName_DB = value.Value;
-            OnPropertyChanged(nameof(WasteSourceName));
+            OnPropertyChanged();
         }
     }
 
-    private void WasteSourceNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void WasteSourceName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            WasteSourceName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        WasteSourceName_DB = ((RamAccess<string>)value).Value;
     }
 
     private bool WasteSourceName_Validation(RamAccess<string> value)
@@ -118,23 +115,21 @@ public class Form28 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
-            rm.PropertyChanged += WasteRecieverNameValueChanged;
+            rm.PropertyChanged += WasteRecieverName_ValueChanged;
             Dictionary.Add(nameof(WasteRecieverName), rm);
             return (RamAccess<string>)Dictionary[nameof(WasteRecieverName)];
         }
         set
         {
             WasteRecieverName_DB = value.Value;
-            OnPropertyChanged(nameof(WasteRecieverName));
+            OnPropertyChanged();
         }
     }
 
-    private void WasteRecieverNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void WasteRecieverName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            WasteRecieverName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        WasteRecieverName_DB = ((RamAccess<string>)value).Value;
     }
 
     private bool WasteRecieverName_Validation(RamAccess<string> value)
@@ -166,23 +161,21 @@ public class Form28 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
-            rm.PropertyChanged += RecieverTypeCodeValueChanged;
+            rm.PropertyChanged += RecieverTypeCode_ValueChanged;
             Dictionary.Add(nameof(RecieverTypeCode), rm);
             return (RamAccess<string>)Dictionary[nameof(RecieverTypeCode)];
         }
         set
         {
             RecieverTypeCode_DB = value.Value;
-            OnPropertyChanged(nameof(RecieverTypeCode));
+            OnPropertyChanged();
         }
     }
 
-    private void RecieverTypeCodeValueChanged(object value, PropertyChangedEventArgs args)
+    private void RecieverTypeCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            RecieverTypeCode_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        RecieverTypeCode_DB = ((RamAccess<string>)value).Value;
     }
 
     private bool RecieverTypeCode_Validation(RamAccess<string> value)
@@ -219,23 +212,21 @@ public class Form28 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
-            rm.PropertyChanged += PoolDistrictNameValueChanged;
+            rm.PropertyChanged += PoolDistrictName_ValueChanged;
             Dictionary.Add(nameof(PoolDistrictName), rm);
             return (RamAccess<string>)Dictionary[nameof(PoolDistrictName)];
         }
         set
         {
             PoolDistrictName_DB = value.Value;
-            OnPropertyChanged(nameof(PoolDistrictName));
+            OnPropertyChanged();
         }
     }
 
-    private void PoolDistrictNameValueChanged(object value, PropertyChangedEventArgs args)
+    private void PoolDistrictName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            PoolDistrictName_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        PoolDistrictName_DB = ((RamAccess<string>)value).Value;
     }
 
     private bool PoolDistrictName_Validation(RamAccess<string> value)
@@ -274,73 +265,24 @@ public class Form28 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
-            rm.PropertyChanged += AllowedWasteRemovalVolumeValueChanged;
+            rm.PropertyChanged += AllowedWasteRemovalVolume_ValueChanged;
             Dictionary.Add(nameof(AllowedWasteRemovalVolume), rm);
             return (RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)];
         }
         set
         {
             AllowedWasteRemovalVolume_DB = value.Value;
-            OnPropertyChanged(nameof(AllowedWasteRemovalVolume));
+            OnPropertyChanged();
         }
     }
 
-    private void AllowedWasteRemovalVolumeValueChanged(object value, PropertyChangedEventArgs args)
+    private void AllowedWasteRemovalVolume_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if (value1.Equals("-"))
-            {
-                AllowedWasteRemovalVolume_DB = value1;
-                return;
-            }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        AllowedWasteRemovalVolume_DB = value1;
+        AllowedWasteRemovalVolume_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return true;
-        }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 
@@ -360,69 +302,24 @@ public class Form28 : Form2
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
-            rm.PropertyChanged += RemovedWasteVolumeValueChanged;
+            rm.PropertyChanged += RemovedWasteVolume_ValueChanged;
             Dictionary.Add(nameof(RemovedWasteVolume), rm);
             return (RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)];
         }
         set
         {
             RemovedWasteVolume_DB = value.Value;
-            OnPropertyChanged(nameof(RemovedWasteVolume));
+            OnPropertyChanged();
         }
     }
 
-    private void RemovedWasteVolumeValueChanged(object value, PropertyChangedEventArgs args)
+    private void RemovedWasteVolume_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null)
-        {
-            value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-            if (value1.Equals("-"))
-            {
-                RemovedWasteVolume_DB = value1;
-                return;
-            }
-            if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-            {
-                value1 = value1.Replace("+", "e+").Replace("-", "e-");
-            }
-            if (double.TryParse(value1, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                value1 = $"{doubleValue:0.######################################################e+00}";
-            }
-        }
-        RemovedWasteVolume_DB = value1;
+        RemovedWasteVolume_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private bool RemovedWasteVolume_Validation(RamAccess<string> value)
-    {
-        value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-        if (!value1.Contains('e') && value1.Contains('+') ^ value1.Contains('-'))
-        {
-            value1 = value1.Replace("+", "e+").Replace("-", "e-");
-        }
-        if (!double.TryParse(value1, 
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent, 
-                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                out var doubleValue))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (doubleValue <= 0)
-        {
-            value.AddError("Число должно быть больше нуля"); 
-            return false;
-        }
-        return true;
-    }
+    private bool RemovedWasteVolume_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
     #endregion
 

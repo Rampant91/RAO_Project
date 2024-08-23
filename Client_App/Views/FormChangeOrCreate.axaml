@@ -9,6 +9,7 @@
         xmlns:vm="using:Client_App.ViewModels"
         Icon="/Assets/logo.png"
         Title="{Binding WindowHeader, Mode = OneWay}"
+        Name="{Binding FormType, Mode = OneWay}"
         WindowStartupLocation="CenterScreen">
 
     <Design.DataContext>

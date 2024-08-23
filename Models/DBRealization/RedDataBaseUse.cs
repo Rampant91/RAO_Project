@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace Models.DBRealization;
 
-public class RedDataBaseCreation
+public static class RedDataBaseCreation
 {
     public static DbConnection GetConnectionString(string _path)
     {
@@ -65,7 +65,7 @@ public class RedDataBaseCreation
             }
 #endif
         Console.WriteLine(_path);
-        var connstring = new FbConnectionStringBuilder
+        var connectionString = new FbConnectionStringBuilder
         {
             Database = _path,
             ServerType = FbServerType.Embedded,
@@ -76,6 +76,6 @@ public class RedDataBaseCreation
             ClientLibrary = Path.GetFullPath(pth)
         }.ToString();
 
-        return new FbConnection(connstring);
+        return new FbConnection(connectionString);
     }
 }

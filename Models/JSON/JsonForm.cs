@@ -407,55 +407,55 @@ public abstract class JsonForm
 
 #region JsonForm1
 
-public abstract class JsonForm1 : JsonForm { }
+public abstract class JsonForm1 : JsonForm;
 
-public class JsonForm11 : JsonForm1 { }
+public class JsonForm11 : JsonForm1;
 
-public class JsonForm12 : JsonForm1 { }
+public class JsonForm12 : JsonForm1;
 
-public class JsonForm13 : JsonForm1 { }
+public class JsonForm13 : JsonForm1;
 
-public class JsonForm14 : JsonForm1 { }
+public class JsonForm14 : JsonForm1;
 
-public class JsonForm15 : JsonForm1 { }
+public class JsonForm15 : JsonForm1;
 
-public class JsonForm16 : JsonForm1 { }
+public class JsonForm16 : JsonForm1;
 
-public class JsonForm17 : JsonForm1 { }
+public class JsonForm17 : JsonForm1;
 
-public class JsonForm18 : JsonForm1 { }
+public class JsonForm18 : JsonForm1;
 
-public class JsonForm19 : JsonForm1 { }
+public class JsonForm19 : JsonForm1;
 
 #endregion
 
 #region JsonForm2
 
-public abstract class JsonForm2 : JsonForm { }
+public abstract class JsonForm2 : JsonForm;
 
-public class JsonForm21 : JsonForm2 { }
+public class JsonForm21 : JsonForm2;
 
-public class JsonForm22 : JsonForm2 { }
+public class JsonForm22 : JsonForm2;
 
-public class JsonForm23 : JsonForm2 { }
+public class JsonForm23 : JsonForm2;
 
-public class JsonForm24 : JsonForm2 { }
+public class JsonForm24 : JsonForm2;
 
-public class JsonForm25 : JsonForm2 { }
+public class JsonForm25 : JsonForm2;
 
-public class JsonForm26 : JsonForm2 { }
+public class JsonForm26 : JsonForm2;
 
-public class JsonForm27 : JsonForm2 { }
+public class JsonForm27 : JsonForm2;
 
-public class JsonForm28 : JsonForm2 { }
+public class JsonForm28 : JsonForm2;
 
-public class JsonForm29 : JsonForm2 { }
+public class JsonForm29 : JsonForm2;
 
-public class JsonForm210 : JsonForm2 { }
+public class JsonForm210 : JsonForm2;
 
-public class JsonForm211 : JsonForm2 { }
+public class JsonForm211 : JsonForm2;
 
-public class JsonForm212 : JsonForm2 { }
+public class JsonForm212 : JsonForm2;
 
 #endregion
 

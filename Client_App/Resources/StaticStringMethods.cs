@@ -16,11 +16,43 @@ internal static partial class StaticStringMethods
         {
             return nameDb == null && namePas == null;
         }
-        nameDb = RestrictedSymbolsRegex().Replace(nameDb, "");
-        namePas = RestrictedSymbolsRegex().Replace(namePas, "");
-        return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase)
-               || TranslateToEng(nameDb).Equals(TranslateToEng(namePas), StringComparison.OrdinalIgnoreCase)
-               || TranslateToRus(nameDb).Equals(TranslateToRus(namePas), StringComparison.OrdinalIgnoreCase);
+
+        nameDb = RestrictedSymbolsRegex()
+            .Replace(nameDb, string.Empty)
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('в', 'b')
+            .Replace('г', 'r')
+            .Replace('е', 'e')
+            .Replace('ё', 'e')
+            .Replace('к', 'k')
+            .Replace('м', 'm')
+            .Replace('о', 'o')
+            .Replace('о', '0')
+            .Replace('р', 'p')
+            .Replace('с', 'c')
+            .Replace('т', 't')
+            .Replace('у', 'y')
+            .Replace('х', 'x');
+
+        namePas = RestrictedSymbolsRegex().Replace(namePas, string.Empty).Replace(nameDb, string.Empty)
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('в', 'b')
+            .Replace('г', 'r')
+            .Replace('е', 'e')
+            .Replace('ё', 'e')
+            .Replace('к', 'k')
+            .Replace('м', 'm')
+            .Replace('о', 'o')
+            .Replace('о', '0')
+            .Replace('р', 'p')
+            .Replace('с', 'c')
+            .Replace('т', 't')
+            .Replace('у', 'y')
+            .Replace('х', 'x');
+
+        return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase);
     }
 
     #endregion
@@ -102,7 +134,19 @@ internal static partial class StaticStringMethods
     {
         return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
             .Replace("(", "").Replace(")", "").Replace(".", ",");
-    } 
+    }
+
+    #endregion
+
+    #region ConvertStringtoExponential
+
+    public static string ConvertStringToExponential(string str) =>
+        str.ToLower()
+            .Replace(".", ",")
+            .Replace("(", "")
+            .Replace(")", "")
+            .Replace('е', 'e')
+            .Trim();
 
     #endregion
 

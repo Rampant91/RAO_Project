@@ -479,12 +479,27 @@ public class Form1_Visual
         rigthStP.Children.Add(content);
         #endregion
 
+        #region Right2
+
+        StackPanel rightStP2 = new()
+        {
+            Orientation = Orientation.Vertical,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            Margin = Thickness.Parse("5,5,5,10")
+        };
+        rightStP2.Children.Add(CreateButton("Перевести все РВ в РАО", "5,0,0,3", 30, "SourceTransmissionAll"));
+
+        #endregion
+
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
+        topPnl1.Children.Add(rightStP2);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Center
+
         DataGridForm11 grd = new()
         {
             Name = "Form11Data_",
@@ -510,7 +525,6 @@ public class Form1_Visual
             NameScope = new WeakReference<INameScope>(scp)
         };
         grd.Bind(DataGridForm11.ItemsProperty, b);
-
         maingrid.Children.Add(grd);
 
         Grid? topPnl22 = new()
@@ -707,9 +721,23 @@ public class Form1_Visual
         rigthStP.Children.Add(content);
         #endregion
 
+        #region Right2
+
+        StackPanel rightStP2 = new()
+        {
+            Orientation = Orientation.Vertical,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            Margin = Thickness.Parse("5,5,5,10")
+        };
+        rightStP2.Children.Add(CreateButton("Перевести все РВ в РАО", "5,0,0,3", 30, "SourceTransmissionAll"));
+
+        #endregion
+
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
+        topPnl1.Children.Add(rightStP2);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
@@ -936,9 +964,23 @@ public class Form1_Visual
         rigthStP.Children.Add(content);
         #endregion
 
+        #region Right2
+
+        StackPanel rightStP2 = new()
+        {
+            Orientation = Orientation.Vertical,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            Margin = Thickness.Parse("5,5,5,10")
+        };
+        rightStP2.Children.Add(CreateButton("Перевести все РВ в РАО", "5,0,0,3", 30, "SourceTransmissionAll"));
+
+        #endregion
+
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
+        topPnl1.Children.Add(rightStP2);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
@@ -1165,12 +1207,27 @@ public class Form1_Visual
         rigthStP.Children.Add(content);
         #endregion
 
+        #region Right2
+
+        StackPanel rightStP2 = new()
+        {
+            Orientation = Orientation.Vertical,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            Margin = Thickness.Parse("5,5,5,10")
+        };
+        rightStP2.Children.Add(CreateButton("Перевести все РВ в РАО", "5,0,0,3", 30, "SourceTransmissionAll"));
+
+        #endregion
+
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
+        topPnl1.Children.Add(rightStP2);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
+
         DataGridForm14 grd = new()
         {
             Name = "Form14Data_",
@@ -1215,6 +1272,7 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot

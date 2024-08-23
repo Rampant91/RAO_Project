@@ -83,8 +83,12 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         if (res.Button is null or "Отмена") return;
         try
         {
-            categories = Regex.Replace(res.Message, "[^\\d,]", "")
-                .Split(',').Select(short.Parse).Cast<short?>().ToList();
+            categories = Regex
+                .Replace(res.Message, "[^\\d,]", "")
+                .Split(',')
+                .Select(short.Parse)
+                .Cast<short?>()
+                .ToList();
         }
         catch
         {

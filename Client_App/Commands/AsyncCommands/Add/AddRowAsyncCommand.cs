@@ -3,22 +3,15 @@ using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
 using System.Threading.Tasks;
-using Models.DBRealization;
 using Client_App.Commands.AsyncCommands.Save;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
 // Добавить строку в форму
-internal class AddRowAsyncCommand : BaseAsyncCommand
+public class AddRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _changeOrCreateViewModel;
-    private Report Storage => _changeOrCreateViewModel.Storage;
-    private string FormType => _changeOrCreateViewModel.FormType;
-
-    public AddRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _changeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
+    private string FormType => changeOrCreateViewModel.FormType;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -29,7 +22,7 @@ internal class AddRowAsyncCommand : BaseAsyncCommand
         await Storage.SortAsync();
         if (!formContainRowAtStart)
         {
-            await new SaveReportAsyncCommand(_changeOrCreateViewModel).AsyncExecute(null);
+            await new SaveReportAsyncCommand(changeOrCreateViewModel).AsyncExecute(null);
         }
     }
 
