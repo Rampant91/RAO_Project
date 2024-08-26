@@ -99,7 +99,9 @@ public static partial class EssenceMethods
         #endregion
 
         #region MethodsRealizationAsync
+
         #region PostAsync
+
         async Task<T> IEssenceMethods.PostAsync<T>(T obj) where T : class
         {
             if (!CheckType(obj) || (obj as Reports).Id != 0) return null;
@@ -109,9 +111,11 @@ public static partial class EssenceMethods
             await db.SaveChangesAsync(ReportsStorage.cancellationToken);
             return obj;
         }
+
         #endregion
 
         #region GetAsync
+
         async Task<T?> IEssenceMethods.GetAsync<T>(int id) where T : class
         {
             if (!CheckType(typeof(T))) return null;
@@ -157,9 +161,11 @@ public static partial class EssenceMethods
 
             return tmp;
         }
+
         #endregion
 
         #region GetAllAsync
+
         async Task<List<T>> IEssenceMethods.GetAllAsync<T>(string param) where T : class
         {
             if (!CheckType(typeof(T))) return null;
@@ -183,9 +189,11 @@ public static partial class EssenceMethods
 
             return null;
         }
+
         #endregion
 
         #region UpdateAsync
+
         async Task<bool> IEssenceMethods.UpdateAsync<T>(T obj) where T : class
         {
             if (!CheckType(obj)) return false;
@@ -195,9 +203,11 @@ public static partial class EssenceMethods
             await db.SaveChangesAsync(ReportsStorage.cancellationToken);
             return true;
         }
+
         #endregion
 
         #region DeleteAsync
+
         async Task<bool> IEssenceMethods.DeleteAsync<T>(int id) where T : class
         {
             if (!CheckType(typeof(T))) return false;
@@ -213,7 +223,9 @@ public static partial class EssenceMethods
             }
             return true;
         } 
+
         #endregion
+
         #endregion
     }
 }

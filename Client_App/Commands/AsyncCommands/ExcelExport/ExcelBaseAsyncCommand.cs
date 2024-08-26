@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -35,9 +37,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             await Task.Run(() => AsyncExecute(parameter), Cts.Token);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            // ignored
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
+                            $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
         }
         IsExecute = false;
     }

@@ -186,7 +186,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             .ToListAsync(cancellationToken: cts.Token);
 
         var i = 0;
-        ConcurrentBag<FileInfo> filesToRemove = new();
+        ConcurrentBag<FileInfo> filesToRemove = [];
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
         try
         {

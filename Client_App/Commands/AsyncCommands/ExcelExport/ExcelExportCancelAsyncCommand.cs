@@ -12,7 +12,6 @@ public class ExcelExportCancelAsyncCommand(ExcelExportProgressBar window) : Base
         {
             var cts = (CancellationTokenSource)parameter;
             cts.CancelAsync();
-
         }
         window.Close();
         return Task.CompletedTask;
