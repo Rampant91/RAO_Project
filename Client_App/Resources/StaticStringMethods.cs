@@ -35,7 +35,8 @@ internal static partial class StaticStringMethods
             .Replace('у', 'y')
             .Replace('х', 'x');
 
-        namePas = RestrictedSymbolsRegex().Replace(namePas, string.Empty).Replace(nameDb, string.Empty)
+        namePas = RestrictedSymbolsRegex()
+            .Replace(namePas, string.Empty)
             .Replace('а', 'a')
             .Replace('б', 'b')
             .Replace('в', 'b')

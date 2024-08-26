@@ -25,7 +25,7 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
 
     public ExcelExportProgressBarVM(ExcelExportProgressBar excelExportProgressBar, CancellationTokenSource cts, IBackgroundLoader backgroundWorker)
     {
-        ExcelExportCancel = new ExcelExportCancelAsyncCommand();
+        ExcelExportCancel = new ExcelExportCancelAsyncCommand(excelExportProgressBar);
         _backgroundWorker = backgroundWorker;
         ExcelExportProgressBar = excelExportProgressBar;
         CancellationTokenSource = cts;

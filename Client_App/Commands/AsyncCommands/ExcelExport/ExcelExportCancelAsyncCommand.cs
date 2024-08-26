@@ -1,8 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Views.ProgressBar;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
-public class ExcelExportCancelAsyncCommand : BaseAsyncCommand
+
+public class ExcelExportCancelAsyncCommand(ExcelExportProgressBar window) : BaseAsyncCommand
 {
     public override Task AsyncExecute(object? parameter)
     {
@@ -10,7 +12,9 @@ public class ExcelExportCancelAsyncCommand : BaseAsyncCommand
         {
             var cts = (CancellationTokenSource)parameter;
             cts.CancelAsync();
+
         }
+        window.Close();
         return Task.CompletedTask;
     }
 }

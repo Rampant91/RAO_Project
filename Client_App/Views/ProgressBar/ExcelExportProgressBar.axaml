@@ -53,6 +53,7 @@
                 VerticalAlignment="Center"
                 Margin="20,5,5,20"
                 Padding="0,5"
+                IsCancel="True"
                 IsEnabled="True"
                 Content="Отмена"
                 Command="{Binding ExcelExportCancel, Mode=OneWay}"

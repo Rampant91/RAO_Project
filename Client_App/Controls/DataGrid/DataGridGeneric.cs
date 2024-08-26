@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -287,10 +288,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var props = item.GetType().GetProperties();
                 foreach (var prop in props)
                 {
-                    var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
-                    if (attr == null) continue;
                     try
                     {
+                        var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
+                        if (attr == null) continue;
+                    
                         var columnNum = Convert.ToInt32(attr.Number);
                         if (columnNum >= minColumn && columnNum <= maxColumn)
                         {
@@ -298,25 +300,46 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             var _value = midValue.GetType().GetProperty("Value").GetMethod.Invoke(midValue, null);
                             if (_value != null && _value != " ")
                             {
-                                try
+                                _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
+                                if (double.TryParse(_value.ToString(), out _s))
                                 {
-                                    _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
-                                    _s += Convert.ToDouble(_value);
-                                    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                    var stackPanel =
+                                        (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[
+                                            2]).Child).Children[0];
                                     stackPanel.Children[0].IsVisible = true;
                                     stackPanel.Children[1].IsVisible = true;
                                 }
-                                catch
+                                else
                                 {
-                                    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                    var stackPanel =
+                                        (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[
+                                            2]).Child).Children[0];
                                     stackPanel.Children[0].IsVisible = false;
                                     stackPanel.Children[1].IsVisible = false;
                                     return null;
                                 }
+                                //try
+                                //{
+                                //    _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
+                                //    _s += Convert.ToDouble(_value);
+                                //    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                //    stackPanel.Children[0].IsVisible = true;
+                                //    stackPanel.Children[1].IsVisible = true;
+                                //}
+                                //catch
+                                //{
+                                //    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                //    stackPanel.Children[0].IsVisible = false;
+                                //    stackPanel.Children[1].IsVisible = false;
+                                //    return null;
+                                //}
                             }
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        //ignore
+                    }
                 }
             }
         }
@@ -1517,14 +1540,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             case Key.Left:
             {
-                if (args.Source is TextBox textBox
+                if (args.Source is TextBox { Text: not null } textBox
                     && textBox.SelectionStart != 0)
                 {
                     break;
                 }
-                LastPressedItem[1] = LastPressedItem[1] == 1
-                    ? LastPressedItem[1]
-                    : LastPressedItem[1] - 1;
+                LastPressedItem[1] = sender is DataGridNote     //для списка примечаний можно перемещаться на первый ряд, а в основной таблице нельзя
+                    ? LastPressedItem[1] == 0
+                        ? LastPressedItem[1]
+                        : LastPressedItem[1] - 1
+                    : LastPressedItem[1] == 1 
+                        ? LastPressedItem[1] 
+                        : LastPressedItem[1] - 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
@@ -1548,7 +1575,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             case Key.Right:
             {
-                if (args.Source is TextBox textBox
+                if (args.Source is TextBox { Text: not null } textBox
                     && textBox.SelectionStart != textBox.Text.Length)
                 {
                     break;

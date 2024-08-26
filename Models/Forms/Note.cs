@@ -78,29 +78,27 @@ public class Note : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(RowNumber), out RamAccess? value))
+            if (Dictionary.TryGetValue(nameof(RowNumber), out var value))
             {
                 ((RamAccess<string?>)value).Value = RowNumber_DB;
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
-            rm.PropertyChanged += RowNumberValueChanged;
+            rm.PropertyChanged += RowNumber_ValueChanged;
             Dictionary.Add(nameof(RowNumber), rm);
             return (RamAccess<string?>)Dictionary[nameof(RowNumber)];
         }
         set
         {
             RowNumber_DB = value.Value;
-            OnPropertyChanged(nameof(RowNumber));
+            OnPropertyChanged();
         }
     }
 
-    private void RowNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void RowNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            RowNumber_DB = ((RamAccess<string?>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        RowNumber_DB = ((RamAccess<string?>)value).Value;
     }
 
     private static bool RowNumber_Validation(RamAccess<string?> value)
@@ -122,29 +120,27 @@ public class Note : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(GraphNumber), out RamAccess? value))
+            if (Dictionary.TryGetValue(nameof(GraphNumber), out var value))
             {
                 ((RamAccess<string?>)value).Value = GraphNumber_DB;
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
-            rm.PropertyChanged += GraphNumberValueChanged;
+            rm.PropertyChanged += GraphNumber_ValueChanged;
             Dictionary.Add(nameof(GraphNumber), rm);
             return (RamAccess<string?>)Dictionary[nameof(GraphNumber)];
         }
         set
         {
             GraphNumber_DB = value.Value;
-            OnPropertyChanged(nameof(GraphNumber));
+            OnPropertyChanged();
         }
     }
 
-    private void GraphNumberValueChanged(object value, PropertyChangedEventArgs args)
+    private void GraphNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            GraphNumber_DB = ((RamAccess<string?>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        GraphNumber_DB = ((RamAccess<string?>)value).Value;
     }
 
     private static bool GraphNumber_Validation(RamAccess<string?> value)
@@ -171,23 +167,21 @@ public class Note : IKey, IDataGridColumn
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Comment_Validation, Comment_DB);
-            rm.PropertyChanged += CommentValueChanged;
+            rm.PropertyChanged += Comment_ValueChanged;
             Dictionary.Add(nameof(Comment), rm);
             return (RamAccess<string>)Dictionary[nameof(Comment)];
         }
         set
         {
             Comment_DB = value.Value;
-            OnPropertyChanged(nameof(Comment));
+            OnPropertyChanged();
         }
     }
 
-    private void CommentValueChanged(object value, PropertyChangedEventArgs args)
+    private void Comment_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
-        {
-            Comment_DB = ((RamAccess<string>)value).Value;
-        }
+        if (args.PropertyName != "Value") return;
+        Comment_DB = ((RamAccess<string>)value).Value;
     }
 
     private static bool Comment_Validation(RamAccess<string> value)
