@@ -24,13 +24,13 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Выгрузка в Excel истории движения источника
 internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
 {
-    private class FormPas
+    private class PasUniqDataDTO(int id, string facNum, string pasNum)
     {
-        public int Id;
+        public readonly int Id = id;
 
-        public string FacNum;
+        public readonly string FacNum = facNum;
 
-        public string PasNum;
+        public readonly string PasNum = pasNum;
     }
 
     private ExcelExportProgressBar progressBar;
@@ -149,44 +149,24 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
-        var countReports = dbReadOnly.ReportsCollectionDbSet.AsNoTracking().Count();
-        var current = 0;
-        
-
         loadStatus = "Загрузка паспортов форм 1.1";
         progressBarVM.ValueBar = 5;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-        double doubleProgressBarValue = progressBarVM.ValueBar;
-        List<FormPas> form11PasList = [];
-        while (current < countReports)
-        {
-            const int step = 10;
-            var fetchedData = dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                .SelectMany(reps => reps.Report_Collection
-                    .Where(rep => rep.FormNum_DB == "1.1")
-                    .SelectMany(rep => rep.Rows11
-                        .Select(form11 => new FormPas
-                        {
-                            Id = form11.Id,
-                            FacNum = form11.FactoryNumber_DB,
-                            PasNum = form11.PassportNumber_DB
-                        })))
-                .ToListAsync(cancellationToken: cts.Token)
-                .Result;
-
-            form11PasList.AddRange(fetchedData);
-            current = fetchedData.Count;
-
-            doubleProgressBarValue += ((double)step / countReports) * 4;
-
-            progressBarVM.ValueBar = (int)doubleProgressBarValue;
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-        }
+        var form11PasList = dbReadOnly.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.1")
+                .SelectMany(rep => rep.Rows11
+                    .Select(form11 => 
+                        new PasUniqDataDTO(form11.Id, 
+                            form11.FactoryNumber_DB, 
+                            form11.PassportNumber_DB))))
+            .ToListAsync(cancellationToken: cts.Token)
+            .Result;
 
         loadStatus = "Загрузка отчётов 1.1";
         progressBarVM.ValueBar = 45;
@@ -399,37 +379,19 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         progressBarVM.ValueBar = 50;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-        current = 0;
-        doubleProgressBarValue = progressBarVM.ValueBar;
-        List<FormPas> form15PasList = [];
-        while (current < countReports)
-        {
-            const int step = 10;
-            var fetchedData = dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-                .SelectMany(reps => reps.Report_Collection
-                    .Where(rep => rep.FormNum_DB == "1.5")
-                    .SelectMany(rep => rep.Rows15
-                        .Select(form15 => new FormPas
-                        {
-                            Id = form15.Id,
-                            FacNum = form15.FactoryNumber_DB,
-                            PasNum = form15.PassportNumber_DB
-                        })))
-                .ToListAsync(cancellationToken: cts.Token)
-                .Result;
-
-            form15PasList.AddRange(fetchedData);
-            current = fetchedData.Count;
-
-            doubleProgressBarValue += ((double)step / countReports) * 4;
-
-            progressBarVM.ValueBar = (int)doubleProgressBarValue;
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-        }
+        var form15PasList = dbReadOnly.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.5")
+                .SelectMany(rep => rep.Rows15
+                    .Select(form15 => new PasUniqDataDTO(form15.Id,
+                        form15.FactoryNumber_DB,
+                        form15.PassportNumber_DB))))
+            .ToListAsync(cancellationToken: cts.Token)
+            .Result;
 
         loadStatus = "Загрузка отчётов 1.5";
         progressBarVM.ValueBar = 90;

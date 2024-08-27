@@ -12,7 +12,6 @@ public class Form15DTO
 
     #endregion
 
-
     #region ReportProperties
 
     public string FormNum { get; set; }
