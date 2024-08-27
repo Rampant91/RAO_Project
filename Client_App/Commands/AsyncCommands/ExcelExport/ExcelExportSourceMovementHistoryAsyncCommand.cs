@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.DTO;
+using Models.Forms.Form1;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -149,27 +150,84 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         var countReports = dbReadOnly.ReportsCollectionDbSet.AsNoTracking().Count();
         var current = 0;
         double doubleProgressBarValue = progressBarVM.ValueBar;
-        while (current < countReports)
-        {
-            const int step = 10;
 
-            var fetchedData = dbReadOnly.ReportsCollectionDbSet
+        List<(int repsId, int repId, int formId, string pasName, string facNum)> form11PasList = [];
+        await dbReadOnly.form_11
+            .AsNoTracking()
+            .AsQueryable()
+            .AsSplitQuery()
+            .Include(form11 => form11.Report).ThenInclude(report => report.Reports)
+            .Where(form11 => form11.Report != null && form11.Report.Reports != null)
+            .ForEachAsync(form11 => form11PasList.Add((
+                    form11.Report.Reports.Id, 
+                    form11.Report.Id, 
+                    form11.Id, 
+                    form11.PassportNumber_DB, 
+                    form11.FactoryNumber_DB)), 
+                cancellationToken: cts.Token);
+
+        List<(int repsId, string regNoRep, string ShortJurLico, string okpo, int repId, int formId, string pasName, string facNum)> form11TmpList = [];
+        form11PasList.ForEach(tuple => form11TmpList.Add((
+            tuple.repsId, 
+            dbReadOnly.ReportsCollectionDbSet
                 .AsNoTracking()
-                .AsSplitQuery()
                 .AsQueryable()
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                .Skip(current)
-                .Take(step)
-                .ToListAsync(cancellationToken: cts.Token).Result;
-            reportsWithForms11List.AddRange(fetchedData);
-            current = reportsWithForms11List.Count;
+                .AsSplitQuery()
+                .Include(x => x.Master).ThenInclude(x => x.Rows10)
+                .First(reps => reps.Id == tuple.repsId).Master.RegNoRep.Value,
+            dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsQueryable()
+                .AsSplitQuery()
+                .Include(x => x.Master).ThenInclude(x => x.Rows10)
+                .First(reps => reps.Id == tuple.repsId).Master.ShortJurLicoRep.Value,
+            dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsQueryable()
+                .AsSplitQuery()
+                .Include(x => x.Master).ThenInclude(x => x.Rows10)
+                .First(reps => reps.Id == tuple.repsId).Master.OkpoRep.Value,
+            tuple.repId,
+            tuple.formId,
+            tuple.pasName,
+            tuple.facNum
+            )));
 
-            doubleProgressBarValue += (double)step / countReports * 40;
 
-            progressBarVM.ValueBar = (int) doubleProgressBarValue;
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-        }
+        var form11Match = form11PasList
+            .Where(form11 =>
+                ComparePasParam(form11.pasName + form11.facNum, pasNum + factoryNum));
+
+        //dbReadOnly.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+        //    .Select(x => x.)
+
+
+        //while (current < countReports)
+        //{
+        //    const int step = 10;
+
+        //    var fetchedData = dbReadOnly.ReportsCollectionDbSet
+        //        .AsNoTracking()
+        //        .AsSplitQuery()
+        //        .AsQueryable()
+        //        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+        //        .Skip(current)
+        //        .Take(step)
+        //        .ToListAsync(cancellationToken: cts.Token).Result;
+        //    reportsWithForms11List.AddRange(fetchedData);
+        //    current = reportsWithForms11List.Count;
+
+        //    doubleProgressBarValue += (double)step / countReports * 40;
+
+        //    progressBarVM.ValueBar = (int) doubleProgressBarValue;
+        //    progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        //}
 
         loadStatus = "Сравнение форм 1.1";
         progressBarVM.ValueBar = 45;
@@ -676,4 +734,13 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
     private static partial Regex ForbiddenCharsRegex();
 
     #endregion
+
+    private class Form11ShortDTO
+    {
+        private int Id;
+
+        private string FactoryNumber;
+
+        private string PassportNumber;
+    }
 }
