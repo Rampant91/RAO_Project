@@ -2070,7 +2070,7 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(StartPeriod), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(StartPeriod), out var value))
             {
                 ((RamAccess<string>)value).Value = StartPeriod_DB;
                 return (RamAccess<string>)value;
@@ -2082,7 +2082,9 @@ public class Report : IKey, IDataGridColumn
         }
         set
         {
-            StartPeriod_DB = value.Value;
+            StartPeriod_DB = DateOnly.TryParse(value.Value, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+                ? date.ToShortDateString()
+                : value.Value;
             OnPropertyChanged();
         }
     }

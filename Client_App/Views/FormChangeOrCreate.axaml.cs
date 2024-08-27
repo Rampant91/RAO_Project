@@ -23,6 +23,7 @@ using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using System.Globalization;
 
 namespace Client_App.Views;
 
@@ -715,6 +716,18 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 await db.SaveChangesAsync();
             }
         }
+    }
+
+    private static async Task PeriodReplace(ChangeOrCreateVM vm)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        vm.Storage.StartPeriod_DB = DateOnly.TryParse(vm.Storage.StartPeriod_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+            ? date.ToShortDateString()
+            : vm.Storage.StartPeriod_DB;
+        vm.Storage.EndPeriod_DB = DateOnly.TryParse(vm.Storage.EndPeriod_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out date)
+            ? date.ToShortDateString()
+            : vm.Storage.EndPeriod_DB;
+        await db.SaveChangesAsync();
     }
 
     #endregion
@@ -4699,6 +4712,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     {
         if (DataContext is not ChangeOrCreateVM vm) return;
         await RemoveEmptyForms(vm);
+        await PeriodReplace(vm);
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
