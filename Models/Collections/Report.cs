@@ -9,6 +9,7 @@ using Models.Attributes;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Forms;
@@ -16,6 +17,7 @@ using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
+using System.Globalization;
 
 namespace Models.Collections;
 
@@ -2088,13 +2090,15 @@ public class Report : IKey, IDataGridColumn
     private void StartPeriod_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value;
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        StartPeriod_DB = DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date) 
+            ? date.ToShortDateString() 
+            : tmp;
         //Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
         //if (b.IsMatch(tmp))
         //{
         //    tmp = tmp.Insert(6, "20");
         //}
-        StartPeriod_DB = tmp;
     }
 
     private static bool StartPeriod_Validation(RamAccess<string> value)

@@ -151,52 +151,19 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         var current = 0;
         double doubleProgressBarValue = progressBarVM.ValueBar;
 
-        List<(int repsId, int repId, int formId, string pasName, string facNum)> form11PasList = [];
-        await dbReadOnly.form_11
-            .AsNoTracking()
-            .AsQueryable()
-            .AsSplitQuery()
-            .Include(form11 => form11.Report).ThenInclude(report => report.Reports)
-            .Where(form11 => form11.Report != null && form11.Report.Reports != null)
-            .ForEachAsync(form11 => form11PasList.Add((
-                    form11.Report.Reports.Id, 
-                    form11.Report.Id, 
-                    form11.Id, 
-                    form11.PassportNumber_DB, 
-                    form11.FactoryNumber_DB)), 
-                cancellationToken: cts.Token);
-
-        List<(int repsId, string regNoRep, string ShortJurLico, string okpo, int repId, int formId, string pasName, string facNum)> form11TmpList = [];
-        form11PasList.ForEach(tuple => form11TmpList.Add((
-            tuple.repsId, 
-            dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsQueryable()
-                .AsSplitQuery()
-                .Include(x => x.Master).ThenInclude(x => x.Rows10)
-                .First(reps => reps.Id == tuple.repsId).Master.RegNoRep.Value,
-            dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsQueryable()
-                .AsSplitQuery()
-                .Include(x => x.Master).ThenInclude(x => x.Rows10)
-                .First(reps => reps.Id == tuple.repsId).Master.ShortJurLicoRep.Value,
-            dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsQueryable()
-                .AsSplitQuery()
-                .Include(x => x.Master).ThenInclude(x => x.Rows10)
-                .First(reps => reps.Id == tuple.repsId).Master.OkpoRep.Value,
-            tuple.repId,
-            tuple.formId,
-            tuple.pasName,
-            tuple.facNum
-            )));
-
-
-        var form11Match = form11PasList
-            .Where(form11 =>
-                ComparePasParam(form11.pasName + form11.facNum, pasNum + factoryNum));
+        List<(int id, string facNum, string pasName)> dto1111List = [];
+        //var dto111List = dbReadOnly.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+        //    .SelectMany(reps => reps.Report_Collection
+        //        .Where(rep => rep.FormNum_DB == "1.1")
+        //        .SelectMany(rep => rep.Rows11
+        //            .Select(form11 => form11)
+        //            .ForEach(x => dto1111List.Add((x.Id, x.FactoryNumber_DB, x.PassportNumber_DB)))
+        //                ));
 
         //dbReadOnly.ReportsCollectionDbSet
         //    .AsNoTracking()
