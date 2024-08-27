@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +22,13 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Список форм 1
 public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
         ExportType = "Список форм 1";
         var findRep = 0;
 
@@ -125,7 +130,10 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
-
+        progressBarVM.ExportName = "Выгрузка Списка форм 1";
+        progressBarVM.ValueBar = 2;
+        progressBarVM.LoadStatus = "Создание временной БД";
+        
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -183,118 +191,172 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple11
 
-        var tuple11 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.1";
+        progressBarVM.ValueBar = 10;
+
+        var tuple11 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.1")
             .Include(x => x.Rows11)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows11.Count, rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows11.Count, 
+                rep.Rows11.Count(form11 => form11.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple12
 
-        var tuple12 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.2";
+        progressBarVM.ValueBar = 20;
+
+        var tuple12 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.2")
             .Include(x => x.Rows12)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows12.Count, rep.Rows12.Count(form12 => form12.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows12.Count, 
+                rep.Rows12.Count(form12 => form12.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple13
 
-        var tuple13 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.3";
+        progressBarVM.ValueBar = 30;
+
+        var tuple13 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.3")
             .Include(x => x.Rows13)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows13.Count, rep.Rows13.Count(form13 => form13.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows13.Count, 
+                rep.Rows13.Count(form13 => form13.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple14
 
-        var tuple14 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.4";
+        progressBarVM.ValueBar = 40;
+
+        var tuple14 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.4")
             .Include(x => x.Rows14)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows14.Count, rep.Rows14.Count(form14 => form14.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows14.Count, 
+                rep.Rows14.Count(form14 => form14.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple15
 
-        var tuple15 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.5";
+        progressBarVM.ValueBar = 50;
+
+        var tuple15 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.5")
             .Include(x => x.Rows15)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows15.Count, rep.Rows15.Count(form15 => form15.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows15.Count, 
+                rep.Rows15.Count(form15 => form15.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple16
 
-        var tuple16 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.6";
+        progressBarVM.ValueBar = 60;
+
+        var tuple16 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.6")
             .Include(x => x.Rows16)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows16.Count, rep.Rows16.Count(form16 => form16.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows16.Count, 
+                rep.Rows16.Count(form16 => form16.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple17
 
-        var tuple17 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.7";
+        progressBarVM.ValueBar = 70;
+
+        var tuple17 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.7")
             .Include(x => x.Rows17)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows17.Count, rep.Rows17.Count(form17 => form17.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows17.Count, 
+                rep.Rows17.Count(form17 => form17.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple18
 
-        var tuple18 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.8";
+        progressBarVM.ValueBar = 80;
+
+        var tuple18 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.8")
             .Include(x => x.Rows18)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows18.Count, rep.Rows18.Count(form18 => form18.OperationCode_DB == "10")))
-            .ToList();
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows18.Count, 
+                rep.Rows18.Count(form18 => form18.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token);
 
         #endregion
 
         #region Tuple19
 
-        var tuple19 = dbReadOnly.ReportCollectionDbSet
+        progressBarVM.LoadStatus = "Загрузка списка форм 1.9";
+        progressBarVM.ValueBar = 90;
+
+        var tuple19 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Where(x => x.FormNum_DB == "1.9")
             .Include(x => x.Rows19)
-            .Select(rep => new Tuple<int, int, int>(rep.Id, rep.Rows19.Count, rep.Rows19.Count(form19 => form19.OperationCode_DB == "10")))
-            .ToList(); 
+            .Select(rep => new Tuple<int, int, int>(
+                rep.Id, 
+                rep.Rows19.Count, 
+                rep.Rows19.Count(form19 => form19.OperationCode_DB == "10")))
+            .ToListAsync(cancellationToken: cts.Token); 
 
         #endregion
 
@@ -344,6 +406,13 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        progressBarVM.LoadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        progressBarVM.LoadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Models.Interfaces;
 using Client_App.ViewModels;
 using Models.Collections;
-using System.Collections;
 using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.Delete;

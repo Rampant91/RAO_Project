@@ -78,6 +78,6 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExcelPrintNotesExport(formNum, worksheetMain, exportForm);
         ExcelPrintRowsExport(formNum, worksheetMain, exportForm);
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 }

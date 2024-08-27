@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,7 @@ using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using Models.DTO;
 using OfficeOpenXml;
@@ -32,6 +34,7 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
         var progressBarVM = progressBar.ExcelExportProgressBarVM;
         ExportType = "История движения источника";
+        progressBarVM.ExportType = ExportType;
         StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
         if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
         {
@@ -72,8 +75,9 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
         progressBarVM.ExportName = $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}";
-        progressBarVM.LoadStatus = "Создание временного файла БД";
+        var loadStatus = "Создание временной БД";
         progressBarVM.ValueBar = 2;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -95,8 +99,9 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        progressBarVM.LoadStatus = "Загрузка форм 1.1";
+        loadStatus = "Загрузка форм 1.1";
         progressBarVM.ValueBar = 5;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #region FillForm_1.1
 
@@ -139,13 +144,38 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         #endregion
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        var dto11List = dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-            .ToArrayAsync(cancellationToken: cts.Token).Result
+
+        var reportsWithForms11List = new List<Reports>();
+        var countReports = dbReadOnly.ReportsCollectionDbSet.AsNoTracking().Count();
+        var current = 0;
+        double doubleProgressBarValue = progressBarVM.ValueBar;
+        while (current < countReports)
+        {
+            const int step = 10;
+
+            var fetchedData = dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                .Skip(current)
+                .Take(step)
+                .ToListAsync(cancellationToken: cts.Token).Result;
+            reportsWithForms11List.AddRange(fetchedData);
+            current = reportsWithForms11List.Count;
+
+            doubleProgressBarValue += (double)step / countReports * 40;
+
+            progressBarVM.ValueBar = (int) doubleProgressBarValue;
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        }
+
+        loadStatus = "Сравнение форм 1.1";
+        progressBarVM.ValueBar = 45;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        var dto11List = reportsWithForms11List
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.1")
                 .SelectMany(rep => rep.Rows11
@@ -185,10 +215,60 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
                         PackType = form11.PackType_DB,
                         PackNumber = form11.PackNumber_DB
                     })));
-            //.ToList();
+
+
+
+        //var dto11List = dbReadOnly.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+        //    .ToArrayAsync(cancellationToken: cts.Token).Result
+        //    .SelectMany(reps => reps.Report_Collection
+        //        .Where(rep => rep.FormNum_DB == "1.1")
+        //        .SelectMany(rep => rep.Rows11
+        //            .Where(form11 =>
+        //                ComparePasParam(form11.PassportNumber_DB + form11.FactoryNumber_DB, pasNum + factoryNum))
+        //            .Select(form11 => new Form11DTO
+        //            {
+        //                RegNoRep = reps.Master.RegNoRep.Value,
+        //                ShortJurLico = reps.Master.ShortJurLicoRep.Value,
+        //                OkpoRep = reps.Master.OkpoRep.Value,
+        //                FormNum = rep.FormNum_DB,
+        //                StartPeriod = rep.StartPeriod_DB,
+        //                EndPeriod = rep.EndPeriod_DB,
+        //                CorrectionNumber = rep.CorrectionNumber_DB,
+        //                RowCount = rep.Rows11.Count,
+        //                NumberInOrder = form11.NumberInOrder_DB,
+        //                OperationCode = form11.OperationCode_DB,
+        //                OperationDate = form11.OperationDate_DB,
+        //                PassportNumber = form11.PassportNumber_DB,
+        //                Type = form11.Type_DB,
+        //                Radionuclids = form11.Radionuclids_DB,
+        //                FactoryNumber = form11.FactoryNumber_DB,
+        //                Activity = form11.Activity_DB,
+        //                Quantity = form11.Quantity_DB,
+        //                CreatorOKPO = form11.CreatorOKPO_DB,
+        //                CreationDate = form11.CreationDate_DB,
+        //                Category = form11.Category_DB,
+        //                SignedServicePeriod = form11.SignedServicePeriod_DB,
+        //                PropertyCode = form11.PropertyCode_DB,
+        //                Owner = form11.Owner_DB,
+        //                DocumentVid = form11.DocumentVid_DB,
+        //                DocumentNumber = form11.DocumentNumber_DB,
+        //                DocumentDate = form11.DocumentDate_DB,
+        //                ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
+        //                TransporterOKPO = form11.TransporterOKPO_DB,
+        //                PackName = form11.PackName_DB,
+        //                PackType = form11.PackType_DB,
+        //                PackNumber = form11.PackNumber_DB
+        //            })));
+        //.ToList();
 
         progressBarVM.LoadStatus = "Заполнение форм 1.1";
-        progressBarVM.ValueBar = 40;
+        progressBarVM.ValueBar = 47;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var lastRow = 1;
         foreach (var dto in dto11List)
@@ -297,6 +377,7 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
 
         progressBarVM.LoadStatus = "Загрузка форм 1.5";
         progressBarVM.ValueBar = 50;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #region FillForm_1.5
 
@@ -339,14 +420,36 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
 
         #endregion
 
-        var dto15List = dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-            .ToArrayAsync(cancellationToken: cts.Token).Result
+        var reportsWithForms15List = new List<Reports>();
+        current = 0;
+        doubleProgressBarValue = progressBarVM.ValueBar;
+        while (current < countReports)
+        {
+            const int step = 10;
+
+            var fetchedData = dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                .Skip(current)
+                .Take(step)
+                .ToListAsync(cancellationToken: cts.Token).Result;
+            reportsWithForms15List.AddRange(fetchedData);
+            current = reportsWithForms15List.Count;
+
+            doubleProgressBarValue += (double)step / countReports * 40;
+
+            progressBarVM.ValueBar = (int)doubleProgressBarValue;
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        }
+
+        progressBarVM.LoadStatus = "Сравнение форм 1.5";
+        progressBarVM.ValueBar = 90;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        var dto15List = reportsWithForms15List
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.5")
                 .SelectMany(rep => rep.Rows15
@@ -387,10 +490,60 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
                         Subsidy = form15.Subsidy_DB,
                         FcpNumber = form15.FcpNumber_DB
                     })));
+
+        //var dto15List = dbReadOnly.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+        //    .ToArrayAsync(cancellationToken: cts.Token).Result
+        //    .SelectMany(reps => reps.Report_Collection
+        //        .Where(rep => rep.FormNum_DB == "1.5")
+        //        .SelectMany(rep => rep.Rows15
+        //            .Where(form15 =>
+        //                ComparePasParam(form15.PassportNumber_DB + form15.FactoryNumber_DB, pasNum + factoryNum))
+        //            .Select(form15 => new Form15DTO
+        //            {
+        //                RegNoRep = reps.Master.RegNoRep.Value,
+        //                ShortJurLico = reps.Master.ShortJurLicoRep.Value,
+        //                OkpoRep = reps.Master.OkpoRep.Value,
+        //                FormNum = rep.FormNum_DB,
+        //                StartPeriod = rep.StartPeriod_DB,
+        //                EndPeriod = rep.EndPeriod_DB,
+        //                CorrectionNumber = rep.CorrectionNumber_DB,
+        //                RowCount = rep.Rows11.Count,
+        //                NumberInOrder = form15.NumberInOrder_DB,
+        //                OperationCode = form15.OperationCode_DB,
+        //                OperationDate = form15.OperationDate_DB,
+        //                PassportNumber = form15.PassportNumber_DB,
+        //                Type = form15.Type_DB,
+        //                Radionuclids = form15.Radionuclids_DB,
+        //                FactoryNumber = form15.FactoryNumber_DB,
+        //                Activity = form15.Activity_DB,
+        //                Quantity = form15.Quantity_DB,
+        //                CreationDate = form15.CreationDate_DB,
+        //                StatusRAO = form15.StatusRAO_DB,
+        //                DocumentVid = form15.DocumentVid_DB,
+        //                DocumentNumber = form15.DocumentNumber_DB,
+        //                DocumentDate = form15.DocumentDate_DB,
+        //                ProviderOrRecieverOKPO = form15.ProviderOrRecieverOKPO_DB,
+        //                TransporterOKPO = form15.TransporterOKPO_DB,
+        //                PackName = form15.PackName_DB,
+        //                PackType = form15.PackType_DB,
+        //                PackNumber = form15.PackNumber_DB,
+        //                StoragePlaceName = form15.StoragePlaceName_DB,
+        //                StoragePlaceCode = form15.StoragePlaceCode_DB,
+        //                RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
+        //                Subsidy = form15.Subsidy_DB,
+        //                FcpNumber = form15.FcpNumber_DB
+        //            })));
             //.ToList();
 
         progressBarVM.LoadStatus = "Заполнение форм 1.5";
-        progressBarVM.ValueBar = 90;
+        progressBarVM.ValueBar = 93;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         lastRow = 1;
         foreach (var dto in dto15List)
@@ -500,11 +653,13 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
 
         progressBarVM.LoadStatus = "Сохранение";
         progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
 
         progressBarVM.LoadStatus = "Завершение выгрузки";
         progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 

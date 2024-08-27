@@ -209,6 +209,6 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         Worksheet.View.FreezePanes(2, 1);
         
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 }

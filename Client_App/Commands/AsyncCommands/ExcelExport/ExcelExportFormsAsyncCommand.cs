@@ -483,7 +483,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
             FillExportForms(param);
         }
         Worksheet.View.FreezePanes(2, 1);
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 
     [GeneratedRegex(@"[^\d.]")]

@@ -40,7 +40,6 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
     #region LoadStatus
 
     private string _loadStatus;
-
     public string LoadStatus
     {
         get => _loadStatus;
@@ -57,7 +56,6 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
     #region ExportName
 
     private string _exportName;
-
     public string ExportName
     {
         get => _exportName;
@@ -65,6 +63,22 @@ public class ExcelExportProgressBarVM : BaseVM, INotifyPropertyChanged
         {
             if (value == _exportName) return;
             _exportName = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    #region ExportType
+
+    private string _exportType;
+    public string ExportType
+    {
+        get => _exportType;
+        set
+        {
+            if (value == _exportType) return;
+            _exportType = value;
             OnPropertyChanged();
         }
     }

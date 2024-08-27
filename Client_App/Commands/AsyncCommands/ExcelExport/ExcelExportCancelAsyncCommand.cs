@@ -6,14 +6,14 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 public class ExcelExportCancelAsyncCommand(ExcelExportProgressBar window) : BaseAsyncCommand
 {
-    public override Task AsyncExecute(object? parameter)
+    public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not null)
         {
             var cts = (CancellationTokenSource)parameter;
-            cts.CancelAsync();
+            await cts.CancelAsync();
+            cts.Dispose();
         }
         window.Close();
-        return Task.CompletedTask;
     }
 }

@@ -186,6 +186,6 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.View.FreezePanes(2, 1);
         WorksheetPrim.View.FreezePanes(2, 1);
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 }

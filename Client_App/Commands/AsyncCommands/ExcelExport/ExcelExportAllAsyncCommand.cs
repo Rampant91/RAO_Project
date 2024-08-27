@@ -168,6 +168,6 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
             }
         }
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 }

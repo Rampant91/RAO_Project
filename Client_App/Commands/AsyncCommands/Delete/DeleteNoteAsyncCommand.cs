@@ -13,7 +13,7 @@ using Models.Interfaces;
 namespace Client_App.Commands.AsyncCommands.Delete;
 
 //  Удалить выбранный комментарий
-internal class DeleteNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+public class DeleteNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
 

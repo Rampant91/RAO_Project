@@ -107,7 +107,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 
     #region FillExecutorsHeaders

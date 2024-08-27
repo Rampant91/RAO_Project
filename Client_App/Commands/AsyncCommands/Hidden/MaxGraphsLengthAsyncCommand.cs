@@ -64,7 +64,7 @@ public class MaxGraphsLengthAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Worksheets.MoveToEnd(WorksheetPrim.Name);
         await CountNotesLength();
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 
     #region CountFormsGraphMaxLength

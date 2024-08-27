@@ -66,6 +66,6 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTmp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTmp, cts);
     }
 }

@@ -953,7 +953,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (MultilineMode == MultilineMode.Multi) SetSelectedControls_CellMulti();
             if (MultilineMode == MultilineMode.Single) SetSelectedControls_CellSingle();
         }
-
         if (ChooseMode == ChooseMode.Line)
         {
             if (MultilineMode == MultilineMode.Multi) SetSelectedControls_LineMulti();
@@ -1127,7 +1126,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 {
                     if (!tmpSelectedItems.ContainsKey(dataContext.Order))
                     {
-                        tmpSelectedItems.Add(dataContext.Order, new ObservableCollectionWithItemPropertyChanged<IKey>());
+                        tmpSelectedItems.Add(dataContext.Order, []);
                     }
                 }
                 else
@@ -1358,7 +1357,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
         if (paramKey != PointerUpdateKind.LeftButtonReleased) return;
         var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
-        if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
+        //if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
         {
             LastPressedItem = paramRowColumn;
             ScrollLeftRight = 0;

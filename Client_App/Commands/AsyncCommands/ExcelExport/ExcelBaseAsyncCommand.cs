@@ -743,11 +743,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelSaveAndOpen
 
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp)
+    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, CancellationTokenSource cts)
     {
         try
         {
-            excelPackage.Save();
+            await excelPackage.SaveAsync(cancellationToken: cts.Token);
         }
         catch (Exception)
         {
