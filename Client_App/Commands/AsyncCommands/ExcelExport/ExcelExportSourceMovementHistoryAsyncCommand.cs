@@ -11,11 +11,9 @@ using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using Microsoft.EntityFrameworkCore;
-using Models.Collections;
 using Models.DBRealization;
 using Models.DTO;
 using OfficeOpenXml;
@@ -109,10 +107,6 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        loadStatus = "Загрузка форм 1.1";
-        progressBarVM.ValueBar = 5;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
         #region FillForm_1.1
 
         Worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.1");
@@ -157,24 +151,46 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
 
         var countReports = dbReadOnly.ReportsCollectionDbSet.AsNoTracking().Count();
         var current = 0;
-        double doubleProgressBarValue = progressBarVM.ValueBar;
+        
 
-        var form11PasList = dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1")
-                .SelectMany(rep => rep.Rows11
-                    .Select(form11 => new FormPas
-                    {
-                        Id = form11.Id,
-                        FacNum = form11.FactoryNumber_DB,
-                        PasNum = form11.PassportNumber_DB
-                    })))
-            .ToListAsync(cancellationToken: cts.Token)
-            .Result;
+        loadStatus = "Загрузка паспортов форм 1.1";
+        progressBarVM.ValueBar = 5;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        double doubleProgressBarValue = progressBarVM.ValueBar;
+        List<FormPas> form11PasList = [];
+        while (current < countReports)
+        {
+            const int step = 10;
+            var fetchedData = dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == "1.1")
+                    .SelectMany(rep => rep.Rows11
+                        .Select(form11 => new FormPas
+                        {
+                            Id = form11.Id,
+                            FacNum = form11.FactoryNumber_DB,
+                            PasNum = form11.PassportNumber_DB
+                        })))
+                .ToListAsync(cancellationToken: cts.Token)
+                .Result;
+
+            form11PasList.AddRange(fetchedData);
+            current = fetchedData.Count;
+
+            doubleProgressBarValue += ((double)step / countReports) * 4;
+
+            progressBarVM.ValueBar = (int)doubleProgressBarValue;
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        }
+
+        loadStatus = "Загрузка отчётов 1.1";
+        progressBarVM.ValueBar = 45;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var filteredForm11 = form11PasList
             .Where(form11 => ComparePasParam(form11.PasNum + form11.FacNum, pasNum + factoryNum))
@@ -227,178 +243,14 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
             });
         }
 
-        
-        //foreach (var form in filteredForm11)
-        //{
-        //    listForm11DTO.Add(dbReadOnly.ReportsCollectionDbSet
-        //        .AsNoTracking()
-        //        .AsSplitQuery()
-        //        .AsQueryable()
-        //        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-        //        .SelectMany(reps => reps.Report_Collection
-        //            .Where(rep => rep.FormNum_DB == "1.1")
-        //            .SelectMany(rep => rep.Rows11
-        //                .Where(form11 => form11.Id == form.Id)
-        //                .Select(form11 => new Form11DTO
-        //                {
-        //                    RegNoRep = reps.Master.RegNoRep.Value,
-        //                    ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-        //                    OkpoRep = reps.Master.OkpoRep.Value,
-        //                    FormNum = rep.FormNum_DB,
-        //                    StartPeriod = rep.StartPeriod_DB,
-        //                    EndPeriod = rep.EndPeriod_DB,
-        //                    CorrectionNumber = rep.CorrectionNumber_DB,
-        //                    RowCount = rep.Rows11.Count,
-        //                    NumberInOrder = form11.NumberInOrder_DB,
-        //                    OperationCode = form11.OperationCode_DB,
-        //                    OperationDate = form11.OperationDate_DB,
-        //                    PassportNumber = form11.PassportNumber_DB,
-        //                    Type = form11.Type_DB,
-        //                    Radionuclids = form11.Radionuclids_DB,
-        //                    FactoryNumber = form11.FactoryNumber_DB,
-        //                    Activity = form11.Activity_DB,
-        //                    Quantity = form11.Quantity_DB,
-        //                    CreatorOKPO = form11.CreatorOKPO_DB,
-        //                    CreationDate = form11.CreationDate_DB,
-        //                    Category = form11.Category_DB,
-        //                    SignedServicePeriod = form11.SignedServicePeriod_DB,
-        //                    PropertyCode = form11.PropertyCode_DB,
-        //                    Owner = form11.Owner_DB,
-        //                    DocumentVid = form11.DocumentVid_DB,
-        //                    DocumentNumber = form11.DocumentNumber_DB,
-        //                    DocumentDate = form11.DocumentDate_DB,
-        //                    ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
-        //                    TransporterOKPO = form11.TransporterOKPO_DB,
-        //                    PackName = form11.PackName_DB,
-        //                    PackType = form11.PackType_DB,
-        //                    PackNumber = form11.PackNumber_DB
-        //                }))));
-        //}
-
-        //while (current < countReports)
-        //{
-        //    const int step = 10;
-        //    var fetchedData = dbReadOnly.ReportsCollectionDbSet
-        //        .AsNoTracking()
-        //        .AsSplitQuery()
-        //        .AsQueryable()
-        //        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-        //        .Skip(current)
-        //        .Take(step)
-        //        .ToListAsync(cancellationToken: cts.Token).Result;
-
-        //    reportsWithForms11List.AddRange(fetchedData);
-        //    current = reportsWithForms11List.Count;
-
-        //    doubleProgressBarValue += (double)step / countReports * 40;
-
-        //    progressBarVM.ValueBar = (int) doubleProgressBarValue;
-        //    progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-        //}
-
-        //loadStatus = "Сравнение форм 1.1";
-        //progressBarVM.ValueBar = 45;
-        //progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        //var dto11List = reportsWithForms11List
-        //    .SelectMany(reps => reps.Report_Collection
-        //        .Where(rep => rep.FormNum_DB == "1.1")
-        //        .SelectMany(rep => rep.Rows11
-        //            .Where(form11 =>
-        //                ComparePasParam(form11.PassportNumber_DB + form11.FactoryNumber_DB, pasNum + factoryNum))
-        //            .Select(form11 => new Form11DTO
-        //            {
-        //                RegNoRep = reps.Master.RegNoRep.Value,
-        //                ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-        //                OkpoRep = reps.Master.OkpoRep.Value,
-        //                FormNum = rep.FormNum_DB,
-        //                StartPeriod = rep.StartPeriod_DB,
-        //                EndPeriod = rep.EndPeriod_DB,
-        //                CorrectionNumber = rep.CorrectionNumber_DB,
-        //                RowCount = rep.Rows11.Count,
-        //                NumberInOrder = form11.NumberInOrder_DB,
-        //                OperationCode = form11.OperationCode_DB,
-        //                OperationDate = form11.OperationDate_DB,
-        //                PassportNumber = form11.PassportNumber_DB,
-        //                Type = form11.Type_DB,
-        //                Radionuclids = form11.Radionuclids_DB,
-        //                FactoryNumber = form11.FactoryNumber_DB,
-        //                Activity = form11.Activity_DB,
-        //                Quantity = form11.Quantity_DB,
-        //                CreatorOKPO = form11.CreatorOKPO_DB,
-        //                CreationDate = form11.CreationDate_DB,
-        //                Category = form11.Category_DB,
-        //                SignedServicePeriod = form11.SignedServicePeriod_DB,
-        //                PropertyCode = form11.PropertyCode_DB,
-        //                Owner = form11.Owner_DB,
-        //                DocumentVid = form11.DocumentVid_DB,
-        //                DocumentNumber = form11.DocumentNumber_DB,
-        //                DocumentDate = form11.DocumentDate_DB,
-        //                ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
-        //                TransporterOKPO = form11.TransporterOKPO_DB,
-        //                PackName = form11.PackName_DB,
-        //                PackType = form11.PackType_DB,
-        //                PackNumber = form11.PackNumber_DB
-        //            })));
-
-
-
-        //var dto11List = dbReadOnly.ReportsCollectionDbSet
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-        //    .ToArrayAsync(cancellationToken: cts.Token).Result
-        //    .SelectMany(reps => reps.Report_Collection
-        //        .Where(rep => rep.FormNum_DB == "1.1")
-        //        .SelectMany(rep => rep.Rows11
-        //            .Where(form11 =>
-        //                ComparePasParam(form11.PassportNumber_DB + form11.FactoryNumber_DB, pasNum + factoryNum))
-        //            .Select(form11 => new Form11DTO
-        //            {
-        //                RegNoRep = reps.Master.RegNoRep.Value,
-        //                ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-        //                OkpoRep = reps.Master.OkpoRep.Value,
-        //                FormNum = rep.FormNum_DB,
-        //                StartPeriod = rep.StartPeriod_DB,
-        //                EndPeriod = rep.EndPeriod_DB,
-        //                CorrectionNumber = rep.CorrectionNumber_DB,
-        //                RowCount = rep.Rows11.Count,
-        //                NumberInOrder = form11.NumberInOrder_DB,
-        //                OperationCode = form11.OperationCode_DB,
-        //                OperationDate = form11.OperationDate_DB,
-        //                PassportNumber = form11.PassportNumber_DB,
-        //                Type = form11.Type_DB,
-        //                Radionuclids = form11.Radionuclids_DB,
-        //                FactoryNumber = form11.FactoryNumber_DB,
-        //                Activity = form11.Activity_DB,
-        //                Quantity = form11.Quantity_DB,
-        //                CreatorOKPO = form11.CreatorOKPO_DB,
-        //                CreationDate = form11.CreationDate_DB,
-        //                Category = form11.Category_DB,
-        //                SignedServicePeriod = form11.SignedServicePeriod_DB,
-        //                PropertyCode = form11.PropertyCode_DB,
-        //                Owner = form11.Owner_DB,
-        //                DocumentVid = form11.DocumentVid_DB,
-        //                DocumentNumber = form11.DocumentNumber_DB,
-        //                DocumentDate = form11.DocumentDate_DB,
-        //                ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
-        //                TransporterOKPO = form11.TransporterOKPO_DB,
-        //                PackName = form11.PackName_DB,
-        //                PackType = form11.PackType_DB,
-        //                PackNumber = form11.PackNumber_DB
-        //            })));
-        //.ToList();
-
         progressBarVM.LoadStatus = "Заполнение форм 1.1";
         progressBarVM.ValueBar = 47;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var lastRow = 1;
-        foreach (var dto in dto11List)
+        foreach (var dto in dto11List
+                     .OrderBy(x => StringDateReverse(x.OperationDate))
+                     .ThenBy(x => x.RegNoRep))
         {
             if (lastRow == 1)
             {
@@ -502,10 +354,6 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
 
         #endregion
 
-        progressBarVM.LoadStatus = "Загрузка форм 1.5";
-        progressBarVM.ValueBar = 50;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
         #region FillForm_1.5
 
         Worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.5");
@@ -547,26 +395,45 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
 
         #endregion
 
-        var reportsWithForms15List = new List<Reports>();
+        progressBarVM.LoadStatus = "Загрузка паспортов форм 1.5";
+        progressBarVM.ValueBar = 50;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         current = 0;
         doubleProgressBarValue = progressBarVM.ValueBar;
+        List<FormPas> form15PasList = [];
+        while (current < countReports)
+        {
+            const int step = 10;
+            var fetchedData = dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == "1.5")
+                    .SelectMany(rep => rep.Rows15
+                        .Select(form15 => new FormPas
+                        {
+                            Id = form15.Id,
+                            FacNum = form15.FactoryNumber_DB,
+                            PasNum = form15.PassportNumber_DB
+                        })))
+                .ToListAsync(cancellationToken: cts.Token)
+                .Result;
 
-        var form15PasList = dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.5")
-                .SelectMany(rep => rep.Rows15
-                    .Select(form15 => new FormPas
-                    {
-                        Id = form15.Id,
-                        FacNum = form15.FactoryNumber_DB,
-                        PasNum = form15.PassportNumber_DB
-                    })))
-            .ToListAsync(cancellationToken: cts.Token)
-            .Result;
+            form15PasList.AddRange(fetchedData);
+            current = fetchedData.Count;
+
+            doubleProgressBarValue += ((double)step / countReports) * 4;
+
+            progressBarVM.ValueBar = (int)doubleProgressBarValue;
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        }
+
+        loadStatus = "Загрузка отчётов 1.5";
+        progressBarVM.ValueBar = 90;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var filteredForm15 = form15PasList
             .Where(form15 => ComparePasParam(form15.PasNum + form15.FacNum, pasNum + factoryNum))
@@ -620,130 +487,14 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
             });
         }
 
-        //while (current < countReports)
-        //{
-        //    const int step = 10;
-
-        //    var fetchedData = dbReadOnly.ReportsCollectionDbSet
-        //        .AsNoTracking()
-        //        .AsSplitQuery()
-        //        .AsQueryable()
-        //        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-        //        .Skip(current)
-        //        .Take(step)
-        //        .ToListAsync(cancellationToken: cts.Token).Result;
-        //    reportsWithForms15List.AddRange(fetchedData);
-        //    current = reportsWithForms15List.Count;
-
-        //    doubleProgressBarValue += (double)step / countReports * 40;
-
-        //    progressBarVM.ValueBar = (int)doubleProgressBarValue;
-        //    progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-        //}
-
-        //progressBarVM.LoadStatus = "Сравнение форм 1.5";
-        //progressBarVM.ValueBar = 90;
-        //progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        //var dto15List = reportsWithForms15List
-        //    .SelectMany(reps => reps.Report_Collection
-        //        .Where(rep => rep.FormNum_DB == "1.5")
-        //        .SelectMany(rep => rep.Rows15
-        //            .Where(form15 =>
-        //                ComparePasParam(form15.PassportNumber_DB + form15.FactoryNumber_DB, pasNum + factoryNum))
-        //            .Select(form15 => new Form15DTO
-        //            {
-        //                RegNoRep = reps.Master.RegNoRep.Value,
-        //                ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-        //                OkpoRep = reps.Master.OkpoRep.Value,
-        //                FormNum = rep.FormNum_DB,
-        //                StartPeriod = rep.StartPeriod_DB,
-        //                EndPeriod = rep.EndPeriod_DB,
-        //                CorrectionNumber = rep.CorrectionNumber_DB,
-        //                RowCount = rep.Rows11.Count,
-        //                NumberInOrder = form15.NumberInOrder_DB,
-        //                OperationCode = form15.OperationCode_DB,
-        //                OperationDate = form15.OperationDate_DB,
-        //                PassportNumber = form15.PassportNumber_DB,
-        //                Type = form15.Type_DB,
-        //                Radionuclids = form15.Radionuclids_DB,
-        //                FactoryNumber = form15.FactoryNumber_DB,
-        //                Activity = form15.Activity_DB,
-        //                Quantity = form15.Quantity_DB,
-        //                CreationDate = form15.CreationDate_DB,
-        //                StatusRAO = form15.StatusRAO_DB,
-        //                DocumentVid = form15.DocumentVid_DB,
-        //                DocumentNumber = form15.DocumentNumber_DB,
-        //                DocumentDate = form15.DocumentDate_DB,
-        //                ProviderOrRecieverOKPO = form15.ProviderOrRecieverOKPO_DB,
-        //                TransporterOKPO = form15.TransporterOKPO_DB,
-        //                PackName = form15.PackName_DB,
-        //                PackType = form15.PackType_DB,
-        //                PackNumber = form15.PackNumber_DB,
-        //                StoragePlaceName = form15.StoragePlaceName_DB,
-        //                StoragePlaceCode = form15.StoragePlaceCode_DB,
-        //                RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
-        //                Subsidy = form15.Subsidy_DB,
-        //                FcpNumber = form15.FcpNumber_DB
-        //            })));
-
-        //var dto15List = dbReadOnly.ReportsCollectionDbSet
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-        //    .ToArrayAsync(cancellationToken: cts.Token).Result
-        //    .SelectMany(reps => reps.Report_Collection
-        //        .Where(rep => rep.FormNum_DB == "1.5")
-        //        .SelectMany(rep => rep.Rows15
-        //            .Where(form15 =>
-        //                ComparePasParam(form15.PassportNumber_DB + form15.FactoryNumber_DB, pasNum + factoryNum))
-        //            .Select(form15 => new Form15DTO
-        //            {
-        //                RegNoRep = reps.Master.RegNoRep.Value,
-        //                ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-        //                OkpoRep = reps.Master.OkpoRep.Value,
-        //                FormNum = rep.FormNum_DB,
-        //                StartPeriod = rep.StartPeriod_DB,
-        //                EndPeriod = rep.EndPeriod_DB,
-        //                CorrectionNumber = rep.CorrectionNumber_DB,
-        //                RowCount = rep.Rows11.Count,
-        //                NumberInOrder = form15.NumberInOrder_DB,
-        //                OperationCode = form15.OperationCode_DB,
-        //                OperationDate = form15.OperationDate_DB,
-        //                PassportNumber = form15.PassportNumber_DB,
-        //                Type = form15.Type_DB,
-        //                Radionuclids = form15.Radionuclids_DB,
-        //                FactoryNumber = form15.FactoryNumber_DB,
-        //                Activity = form15.Activity_DB,
-        //                Quantity = form15.Quantity_DB,
-        //                CreationDate = form15.CreationDate_DB,
-        //                StatusRAO = form15.StatusRAO_DB,
-        //                DocumentVid = form15.DocumentVid_DB,
-        //                DocumentNumber = form15.DocumentNumber_DB,
-        //                DocumentDate = form15.DocumentDate_DB,
-        //                ProviderOrRecieverOKPO = form15.ProviderOrRecieverOKPO_DB,
-        //                TransporterOKPO = form15.TransporterOKPO_DB,
-        //                PackName = form15.PackName_DB,
-        //                PackType = form15.PackType_DB,
-        //                PackNumber = form15.PackNumber_DB,
-        //                StoragePlaceName = form15.StoragePlaceName_DB,
-        //                StoragePlaceCode = form15.StoragePlaceCode_DB,
-        //                RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
-        //                Subsidy = form15.Subsidy_DB,
-        //                FcpNumber = form15.FcpNumber_DB
-        //            })));
-        //.ToList();
-
         progressBarVM.LoadStatus = "Заполнение форм 1.5";
         progressBarVM.ValueBar = 93;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         lastRow = 1;
-        foreach (var dto in dto15List)
+        foreach (var dto in dto15List
+                     .OrderBy(x => StringDateReverse(x.OperationDate))
+                     .ThenBy(x => x.RegNoRep))
         {
             if (lastRow == 1)
             {
