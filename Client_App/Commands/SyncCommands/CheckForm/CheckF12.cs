@@ -1024,14 +1024,29 @@ public abstract class CheckF12 : CheckBase
     private static List<CheckError> Check_034(List<Form12> forms, int line)
     {
         List<CheckError> result = new();
-        var signedServicePeriod = (forms[line].SignedServicePeriod_DB ?? string.Empty).Trim();
+        var signedServicePeriod = (forms[line].SignedServicePeriod_DB ?? string.Empty)
+            .Trim()
+            .Replace('.', ',');
         var creationDate = (forms[line].CreationDate_DB ?? string.Empty).Trim();
         var operationDate = (forms[line].OperationDate_DB ?? string.Empty).Trim();
         var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        if (!double.TryParse(signedServicePeriod, out var signedServicePeriodDoubleValue)
+            || signedServicePeriodDoubleValue <= 0)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_12",
+                Row = (line + 1).ToString(),
+                Column = "SignedServicePeriod_DB",
+                Value = signedServicePeriod,
+                Message = "Недопустимое значение НСС."
+            });
+            return result;
+        }
         if (opCode is "41"
             || !DateOnly.TryParse(creationDate, out var creationDateReal)
             || !DateOnly.TryParse(operationDate, out var operationDateReal)
-            || !double.TryParse(signedServicePeriod.Replace('.', ','), out var signedServicePeriodReal))
+            || !double.TryParse(signedServicePeriod, out var signedServicePeriodReal))
         {
             return result;
         }

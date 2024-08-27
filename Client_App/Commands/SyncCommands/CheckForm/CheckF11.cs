@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Models.CheckForm;
 using Models.Collections;
@@ -1613,6 +1614,18 @@ public abstract class CheckF11 : CheckBase
         var signedServicePeriod = forms[line].SignedServicePeriod_DB ?? 0;
         var creationDate = (forms[line].CreationDate_DB ?? string.Empty).Trim();
         var operationDate = (forms[line].OperationDate_DB ?? string.Empty).Trim();
+        if (signedServicePeriod <= 0)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "SignedServicePeriod_DB",
+                Value = signedServicePeriod.ToString(CultureInfo.InvariantCulture),
+                Message = "Недопустимое значение НСС."
+            });
+            return result;
+        }
         if (opCode is "41"
             || !DateOnly.TryParse(creationDate, out var creationDateReal)
             || !DateOnly.TryParse(operationDate, out var operationDateReal))
