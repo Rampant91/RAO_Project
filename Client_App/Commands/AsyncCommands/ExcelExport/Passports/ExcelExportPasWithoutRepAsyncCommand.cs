@@ -27,10 +27,10 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     {
         var cts = new CancellationTokenSource();
         ExportType = "Паспорта без отчетов";
-        List<string> pasNames = new();
-        List<string[]> pasUniqParam = new();
+        List<string> pasNames = [];
+        List<string[]> pasUniqParam = [];
         DirectoryInfo directory = new(BaseVM.PasFolderPath);
-        List<FileInfo> files = new();
+        List<FileInfo> files = [];
         try
         {
             files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
@@ -43,13 +43,13 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
-                    ContentMessage =
-                        "Не удалось открыть сетевое хранилище паспортов:" +
-                        $"{Environment.NewLine}{directory.FullName}",
+                    ContentMessage = $"Не удалось открыть сетевое хранилище паспортов:" +
+                                     $"{Environment.NewLine}{directory.FullName}",
                     MinWidth = 400,
-                    MinHeight = 150,
+                    MinHeight = 170,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(Desktop.MainWindow));
@@ -79,12 +79,12 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        List<short?> categories = new() { 1, 2, 3, 4, 5 };
+        List<short?> categories = [1, 2, 3, 4, 5];
         if (res.Button is null or "Отмена") return;
         try
         {
             categories = Regex
-                .Replace(res.Message, "[^\\d,]", "")
+                .Replace(res.Message, "[^\\d,]", string.Empty)
                 .Split(',')
                 .Select(short.Parse)
                 .Cast<short?>()
@@ -120,7 +120,6 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         
@@ -139,7 +138,6 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 
@@ -185,7 +183,6 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 }))
             .ToListAsync(cancellationToken: cts.Token);
 
-        var i = 0;
         ConcurrentBag<FileInfo> filesToRemove = [];
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
         try
@@ -203,13 +200,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                         file.Name.Remove(file.Name.Length - 4) ==
                         $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
                 }
-                i++;
                 return default;
             });
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         

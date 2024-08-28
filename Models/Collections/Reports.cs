@@ -169,6 +169,7 @@ public class Reports : IKey, IDataGridColumn
     #endregion
 
     #region IExcel
+
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         throw new NotImplementedException();
@@ -177,21 +178,35 @@ public class Reports : IKey, IDataGridColumn
     {
         throw new NotImplementedException();
     }
+
     #endregion
 
     #region IDataGridColumn
+
     public DataGridColumns GetColumnStructure(string param = "")
     {
-        var regNoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.RegNo)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var regNoR = ((Attributes.FormPropertyAttribute)typeof(Form10)
+                .GetProperty(nameof(Form10.RegNo))
+                .GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD();
         regNoR.SizeCol = 50;
         regNoR.Binding = $"{nameof(Master)}.{nameof(Report.RegNoRep)}";
 
-        var shortJurLicoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var shortJurLicoR = ((Attributes.FormPropertyAttribute)typeof(Form10)
+                .GetProperty(nameof(Form10.ShortJurLico))
+                .GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD();
         shortJurLicoR.SizeCol = 603;
         shortJurLicoR.Binding = $"{nameof(Master)}.{nameof(Report.ShortJurLicoRep)}";
         regNoR += shortJurLicoR;
 
-        var okpoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var okpoR = ((Attributes.FormPropertyAttribute)typeof(Form10)
+                .GetProperty(nameof(Form10.Okpo))
+                .GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD();
         okpoR.SizeCol = 102;
         okpoR.Binding = $"{nameof(Master)}.{nameof(Report.OkpoRep)}";
         regNoR += okpoR;
@@ -203,5 +218,6 @@ public class Reports : IKey, IDataGridColumn
     {
         throw new NotImplementedException();
     }
+
     #endregion
 }

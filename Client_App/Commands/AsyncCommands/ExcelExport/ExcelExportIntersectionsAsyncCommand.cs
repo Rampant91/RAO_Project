@@ -71,7 +71,6 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
@@ -106,13 +105,13 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         var listSortRep = ReportsStorage.LocalReports.Reports_Collection
             .SelectMany(reps => reps.Report_Collection
-                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
-                              && DateTime.TryParse(rep.EndPeriod_DB, out _))
+                .Where(rep => DateOnly.TryParse(rep.StartPeriod_DB, out _)
+                              && DateOnly.TryParse(rep.EndPeriod_DB, out _))
                 .Select(rep =>
                 {
                     if (true);
-                    var start = DateTime.Parse(rep.StartPeriod_DB);
-                    var end = DateTime.Parse(rep.EndPeriod_DB);
+                    var start = DateOnly.Parse(rep.StartPeriod_DB);
+                    var end = DateOnly.Parse(rep.EndPeriod_DB);
                     return new ReportForSort
                         {
                             RegNoRep = reps.Master_DB.RegNoRep.Value ?? "",
@@ -133,10 +132,10 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         for (var i = 0; i < listSortRep.Count; i++)
         {
             var rep = listSortRep[i];
-            var order13Date = new DateTime(2022, 1, 1);
+            var order13Date = new DateOnly(2022, 1, 1);
             var repStart = rep.StartPeriod;
             var repEnd = rep.EndPeriod;
-            var repStartOriginal = new DateTime();
+            var repStartOriginal = new DateOnly();
             if (repStart < order13Date && repEnd < order13Date)
             {
                 repStartOriginal = repStart;
@@ -144,14 +143,16 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             }
             var listToCompare = listSortRep
                 .Skip(i + 1)
-                .Where(x => x.RegNoRep == rep.RegNoRep && x.OkpoRep == rep.OkpoRep && x.FormNum == rep.FormNum)
+                .Where(x => x.RegNoRep == rep.RegNoRep 
+                            && x.OkpoRep == rep.OkpoRep 
+                            && x.FormNum == rep.FormNum)
                 .ToList();
             var isNext = true;
             foreach (var repToCompare in listToCompare)
             {
                 var repToCompareStart = repToCompare.StartPeriod;
                 var repToCompareEnd = repToCompare.EndPeriod;
-                var repToCompareStartOriginal = new DateTime();
+                var repToCompareStartOriginal = new DateOnly();
                 if (repToCompareStart < order13Date && repToCompareEnd < order13Date)
                 {
                     repToCompareStartOriginal = repToCompareStart;
@@ -165,10 +166,10 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                      || isNext && repEnd < repToCompareStart)
                     && !(repToCompareStart == order13Date && repEnd.AddDays(1) == repToCompareStart))
                 {
-                    var repStartToExcel = repStartOriginal == new DateTime() || repStartOriginal == repStart
+                    var repStartToExcel = repStartOriginal == new DateOnly() || repStartOriginal == repStart
                         ? repStart
                         : repStartOriginal;
-                    var repToCompareStartToExcel = repToCompareStartOriginal == new DateTime() || repToCompareStartOriginal == repToCompareStart
+                    var repToCompareStartToExcel = repToCompareStartOriginal == new DateOnly() || repToCompareStartOriginal == repToCompareStart
                         ? repToCompareStart
                         : repToCompareStartOriginal;
                     Worksheet.Cells[row, 1].Value = rep.RegNoRep;

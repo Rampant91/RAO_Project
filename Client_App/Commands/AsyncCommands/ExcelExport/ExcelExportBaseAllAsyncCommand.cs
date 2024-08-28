@@ -9,8 +9,11 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 {
     private protected Reports CurrentReports;
+
     private protected int CurrentRow;
+
     private protected int CurrentPrimRow;
+
     private protected bool IsSelectedOrg;
 
     #region FillExportForms
@@ -446,6 +449,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
                 Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelString(repForm.ContractNumber_DB);
                                             
                 #endregion
 
@@ -529,6 +533,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelString(repForm.PackNumber_DB);
                 Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.ContractNumber_DB);
                                             
                 #endregion
 
@@ -617,6 +622,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 37].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
                 Worksheet.Cells[CurrentRow, 38].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 39].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 40].Value = ConvertToExcelString(repForm.ContractNumber_DB);
                                                       
                 #endregion
 
@@ -701,6 +707,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
                 Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 36].Value = ConvertToExcelString(repForm.ContractNumber_DB);
                                             
                 #endregion
 
@@ -1780,6 +1787,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 29].Value = "Код переработки / сортировки РАО";
                 Worksheet.Cells[1, 30].Value = "Субсидия, %";
                 Worksheet.Cells[1, 31].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 32].Value = "Номер договора";
                 NotesHeaders1();   
         
                 #endregion
@@ -1824,6 +1832,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 32].Value = "номер упаковки";
                 Worksheet.Cells[1, 33].Value = "Субсидия, %";
                 Worksheet.Cells[1, 34].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 35].Value = "Номер договора";
                 NotesHeaders1();   
                 
                 #endregion
@@ -1873,6 +1882,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 37].Value = "Код переработки/сортировки РАО";
                 Worksheet.Cells[1, 38].Value = "Субсидия, %";
                 Worksheet.Cells[1, 39].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 40].Value = "Номер договора";
                 NotesHeaders1();   
                 
                 #endregion
@@ -1918,6 +1928,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 33].Value = "Код переработки/сортировки РАО";
                 Worksheet.Cells[1, 34].Value = "Субсидия, %";
                 Worksheet.Cells[1, 35].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 36].Value = "Номер договора";
                 NotesHeaders1();   
                 
                 #endregion

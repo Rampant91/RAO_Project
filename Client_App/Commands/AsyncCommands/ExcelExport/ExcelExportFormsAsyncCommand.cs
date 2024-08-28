@@ -28,7 +28,6 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
     {
         var mainWindow = Desktop.MainWindow as MainWindow;
         var cts = new CancellationTokenSource();
-        var findRep = 0;
         string fileName;
         var forSelectedOrg = parameter.ToString()!.Contains("Org");
         var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
@@ -103,7 +102,6 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
@@ -121,7 +119,6 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 

@@ -12,7 +12,7 @@ using Avalonia;
 namespace Client_App.Commands.AsyncCommands;
 
 //  Скопировать в буфер обмена выделенную строку/ячейки
-internal class CopyRowsAsyncCommand : BaseAsyncCommand
+public class CopyRowsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {

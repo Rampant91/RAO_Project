@@ -27,9 +27,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
-        var progressBarVM = progressBar.ExcelExportProgressBarVM;
-        ExportType = "Список форм 1";
+        
         var findRep = 0;
 
         #region ReportsCountCheck
@@ -79,14 +77,14 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxInputWindow(new MessageBoxInputParams
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Ок", IsDefault = true },
                     new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                },
+                ],
                 ContentTitle = "Задать период",
                 ContentMessage = "Введите период дат через дефис (прим: 01.01.2022-07.03.2023)." +
-                                 $"{Environment.NewLine}Если даты незаполнены или введены некорректно," +
+                                 $"{Environment.NewLine}Если даты незаполненны или введены некорректно," +
                                  $"{Environment.NewLine}то выгрузка будет осуществляться без фильтра по датам.",
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -96,19 +94,19 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         if (res.Button is null or "Отмена") return;
-        var startDateTime = DateTime.MinValue;
-        var endDateTime = DateTime.MaxValue;
+        var startDateTime = DateOnly.MinValue;
+        var endDateTime = DateOnly.MaxValue;
         if (res.Message != null)
         {
             if (res.Message.Contains('-') && res.Message.Length > 6)
             {
                 var firstPeriodHalf = res.Message.Split('-')[0].Trim();
                 var secondPeriodHalf = res.Message.Split('-')[1].Trim();
-                if (DateTime.TryParse(firstPeriodHalf, out var parseStartDateTime) )
+                if (DateOnly.TryParse(firstPeriodHalf, out var parseStartDateTime) )
                 {
                     startDateTime = parseStartDateTime;
                 }
-                if (DateTime.TryParse(secondPeriodHalf, out var parseEndDateTime) )
+                if (DateOnly.TryParse(secondPeriodHalf, out var parseEndDateTime) )
                 {
                     endDateTime = parseEndDateTime;
                 }
@@ -123,17 +121,22 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
-        progressBarVM.ExportName = "Выгрузка Списка форм 1";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        ExportType = "Список форм 1";
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка списка форм 1";
         progressBarVM.ValueBar = 2;
-        progressBarVM.LoadStatus = "Создание временной БД";
-        
+        var loadStatus = "Создание временной БД";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -145,7 +148,6 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 
@@ -191,8 +193,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple11
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.1";
+        loadStatus = "Загрузка списка форм 1.1";
         progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple11 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -210,8 +213,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple12
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.2";
+        loadStatus = "Загрузка списка форм 1.2";
         progressBarVM.ValueBar = 20;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple12 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -229,8 +233,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple13
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.3";
+        loadStatus = "Загрузка списка форм 1.3";
         progressBarVM.ValueBar = 30;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple13 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -248,8 +253,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple14
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.4";
+        loadStatus = "Загрузка списка форм 1.4";
         progressBarVM.ValueBar = 40;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple14 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -267,8 +273,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple15
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.5";
+        loadStatus = "Загрузка списка форм 1.5";
         progressBarVM.ValueBar = 50;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple15 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -286,8 +293,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple16
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.6";
+        loadStatus = "Загрузка списка форм 1.6";
         progressBarVM.ValueBar = 60;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple16 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -305,8 +313,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple17
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.7";
+        loadStatus = "Загрузка списка форм 1.7";
         progressBarVM.ValueBar = 70;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple17 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -324,8 +333,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple18
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.8";
+        loadStatus = "Загрузка списка форм 1.8";
         progressBarVM.ValueBar = 80;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple18 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -343,8 +353,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple19
 
-        progressBarVM.LoadStatus = "Загрузка списка форм 1.9";
+        loadStatus = "Загрузка списка форм 1.9";
         progressBarVM.ValueBar = 90;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple19 = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -367,8 +378,8 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             var repList = reps.Report_Collection
                 .Where(x =>
                 {
-                    if (startDateTime == DateTime.MinValue && endDateTime == DateTime.MaxValue) return true;
-                    if (!DateTime.TryParse(x.EndPeriod_DB, out var repEndDateTime)) return false;
+                    if (startDateTime == DateOnly.MinValue && endDateTime == DateOnly.MaxValue) return true;
+                    if (!DateOnly.TryParse(x.EndPeriod_DB, out var repEndDateTime)) return false;
                     return repEndDateTime >= startDateTime && repEndDateTime <= endDateTime;
                 })
                 .OrderBy(x => x.FormNum_DB)
@@ -406,13 +417,16 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
-        progressBarVM.LoadStatus = "Сохранение";
+        loadStatus = "Сохранение";
         progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
 
-        progressBarVM.LoadStatus = "Завершение выгрузки";
+        loadStatus = "Завершение выгрузки";
         progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

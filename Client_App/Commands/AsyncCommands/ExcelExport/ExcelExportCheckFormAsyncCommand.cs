@@ -21,7 +21,6 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;

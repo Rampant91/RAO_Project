@@ -23,10 +23,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region AddNewFormToExistingReport
 
-    private protected async Task AddNewFormToExistingReport(Report rep, Form1 form, DBModel db)
+    private protected async Task<bool> AddNewFormToExistingReport(Report rep, Form1 form, DBModel db)
     {
+        var formIsAdded = false;
         switch (form.FormNum_DB)
-        {
+        { 
             #region 1.1
 
             case "1.1":
@@ -73,7 +74,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm11ToForm15Comparer();
                 var isDuplicate = rep.Rows15
                     .Any(currentForm => comparator.Compare(newForm15, currentForm) == 0);
-                if (!isDuplicate) db.form_15.Add(newForm15);
+                if (!isDuplicate)
+                {
+                    db.form_15.Add(newForm15);
+                    formIsAdded = true;
+                }
                 break;
             }
 
@@ -149,7 +154,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm12And13ToForm16Comparer();
                 var isDuplicate = rep.Rows16
                     .Any(currentForm => comparator.Compare(newForm16, currentForm) == 0);
-                if (!isDuplicate) db.form_16.Add(newForm16);
+                if (!isDuplicate)
+                {
+                    db.form_16.Add(newForm16);
+                    formIsAdded = true;
+                }
                 break;
             }
 
@@ -216,7 +225,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm12And13ToForm16Comparer();
                 var isDuplicate = rep.Rows16
                     .Any(currentForm => comparator.Compare(newForm16, currentForm) == 0);
-                if (!isDuplicate) db.form_16.Add(newForm16);
+                if (!isDuplicate)
+                {
+                    db.form_16.Add(newForm16);
+                    formIsAdded = true;
+                }
                 break;
             }
 
@@ -298,12 +311,17 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm14ToForm16Comparer();
                 var isDuplicate = rep.Rows16
                     .Any(currentForm => comparator.Compare(newForm16, currentForm) == 0);
-                if (!isDuplicate) db.form_16.Add(newForm16);
+                if (!isDuplicate)
+                {
+                    db.form_16.Add(newForm16);
+                    formIsAdded = true;
+                }
                 break;
             } 
             
             #endregion
         }
+        return formIsAdded;
     }
 
     #endregion

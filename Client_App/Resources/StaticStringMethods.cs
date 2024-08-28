@@ -6,7 +6,7 @@ using OfficeOpenXml;
 
 namespace Client_App.Resources;
 
-internal static partial class StaticStringMethods
+public static partial class StaticStringMethods
 {
     #region ComparePasParam
     

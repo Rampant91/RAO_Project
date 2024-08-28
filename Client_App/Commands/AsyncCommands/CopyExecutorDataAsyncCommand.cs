@@ -10,17 +10,11 @@ using Models.Collections;
 namespace Client_App.Commands.AsyncCommands;
 
 //  Скопировать данные исполнителя из предыдущей формы
-internal class CopyExecutorDataAsyncCommand : BaseAsyncCommand
+public class CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Reports Storages => _ChangeOrCreateViewModel.Storages;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-    private string FormType => _ChangeOrCreateViewModel.FormType;
-
-    public CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Reports Storages => changeOrCreateViewModel.Storages;
+    private Report Storage => changeOrCreateViewModel.Storage;
+    private string FormType => changeOrCreateViewModel.FormType;
 
     public override async Task AsyncExecute(object? parameter)
     {

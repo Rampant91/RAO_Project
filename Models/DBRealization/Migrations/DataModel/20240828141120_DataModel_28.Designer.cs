@@ -12,7 +12,7 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20240828072912_DataModel_28")]
+    [Migration("20240828141120_DataModel_28")]
     partial class DataModel_28
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -681,6 +681,10 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("CreationDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -774,10 +778,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("Type_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<string>("СontractNumber_DB")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ReportId");
@@ -803,6 +803,10 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -897,10 +901,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("Volume_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<string>("СontractNumber_DB")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ReportId");
@@ -923,6 +923,10 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1074,10 +1078,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<bool>("Volume_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
-                    b.Property<string>("СontractNumber_DB")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ReportId");
@@ -1100,6 +1100,10 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1229,10 +1233,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<bool>("Volume6_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
-
-                    b.Property<string>("СontractNumber_DB")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 

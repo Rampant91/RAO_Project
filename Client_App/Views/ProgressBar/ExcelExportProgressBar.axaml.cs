@@ -27,7 +27,7 @@ public partial class ExcelExportProgressBar : BaseWindow<ExcelExportProgressBarV
         ExcelExportProgressBarVM = (DataContext as ExcelExportProgressBarVM)!;
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            ShowDialog(desktop.MainWindow);
+            Show(desktop.MainWindow);
         }
     }
 

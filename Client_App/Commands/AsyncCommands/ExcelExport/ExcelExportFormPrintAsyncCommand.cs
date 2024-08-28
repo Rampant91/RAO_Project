@@ -52,7 +52,6 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
@@ -60,7 +59,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         if (string.IsNullOrEmpty(fullPath)) return; 
 
         #if DEBUG
-        var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data", "Excel", $"{formNum}.xlsx");
+        var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel", $"{formNum}.xlsx");
         #else
         var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"{formNum}.xlsx");
         #endif

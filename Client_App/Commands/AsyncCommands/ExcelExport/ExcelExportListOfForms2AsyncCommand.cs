@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,11 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Список форм 2
 public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Список форм 2";
 
         #region ReportsCountCheck
 
@@ -124,13 +126,21 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        ExportType = "Список форм 2";
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка списка форм 2";
+        progressBarVM.ValueBar = 2;
+        var loadStatus = "Создание временной БД";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
@@ -143,7 +153,6 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 
@@ -188,6 +197,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple21
 
+        loadStatus = "Загрузка списка форм 2.1";
+        progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var tuple21 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -200,6 +213,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region Tuple22
+
+        loadStatus = "Загрузка списка форм 2.2";
+        progressBarVM.ValueBar = 17;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple22 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -214,6 +231,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple23
 
+        loadStatus = "Загрузка списка форм 2.3";
+        progressBarVM.ValueBar = 24;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var tuple23 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -226,6 +247,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region Tuple24
+
+        loadStatus = "Загрузка списка форм 2.4";
+        progressBarVM.ValueBar = 31;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple24 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -240,6 +265,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple25
 
+        loadStatus = "Загрузка списка форм 2.5";
+        progressBarVM.ValueBar = 38;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var tuple25 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -252,6 +281,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region Tuple26
+
+        loadStatus = "Загрузка списка форм 2.6";
+        progressBarVM.ValueBar = 45;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple26 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -266,6 +299,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple27
 
+        loadStatus = "Загрузка списка форм 2.7";
+        progressBarVM.ValueBar = 52;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var tuple27 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -278,6 +315,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region Tuple28
+
+        loadStatus = "Загрузка списка форм 2.8";
+        progressBarVM.ValueBar = 59;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple28 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -292,6 +333,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple29
 
+        loadStatus = "Загрузка списка форм 2.9";
+        progressBarVM.ValueBar = 66;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var tuple29 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -304,6 +349,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region Tuple210
+
+        loadStatus = "Загрузка списка форм 2.10";
+        progressBarVM.ValueBar = 73;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple210 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -318,6 +367,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 
         #region Tuple211
 
+        loadStatus = "Загрузка списка форм 2.11";
+        progressBarVM.ValueBar = 80;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var tuple211 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -330,6 +383,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region Tuple212
+
+        loadStatus = "Загрузка списка форм 2.12";
+        progressBarVM.ValueBar = 87;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var tuple212 = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -388,7 +445,17 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Cells.AutoFitColumns();  // Под Astra Linux эта команда крашит программу без GDI дров
         }
         Worksheet.View.FreezePanes(2, 1);
-        
+
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

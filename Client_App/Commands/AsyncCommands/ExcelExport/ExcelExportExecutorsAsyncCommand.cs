@@ -59,7 +59,6 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;

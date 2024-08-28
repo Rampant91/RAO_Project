@@ -22,7 +22,7 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 //  Выгрузка в Excel истории движения источника
-internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
+public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
 {
     private class PasUniqDataDTO(int id, string facNum, string pasNum)
     {
@@ -39,10 +39,6 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
     {
         if (parameter is null) return;
         var cts = new CancellationTokenSource();
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
-        var progressBarVM = progressBar.ExcelExportProgressBarVM;
-        ExportType = "История движения источника";
-        progressBarVM.ExportType = ExportType;
         StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
         if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
         {
@@ -76,16 +72,21 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        ExportType = "История движения источника";
+        progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}";
         var loadStatus = "Создание временной БД";
         progressBarVM.ValueBar = 2;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -97,7 +98,6 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 
@@ -372,6 +372,7 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
         Worksheet.Cells[1, 30].Value = "Код переработки / сортировки РАО";
         Worksheet.Cells[1, 31].Value = "Субсидия, %";
         Worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
+        Worksheet.Cells[1, 33].Value = "Номер договора";
 
         #endregion
 
@@ -445,7 +446,8 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
                 StoragePlaceCode = form15.StoragePlaceCode_DB,
                 RefineOrSortRAOCode = form15.RefineOrSortRAOCode_DB,
                 Subsidy = form15.Subsidy_DB,
-                FcpNumber = form15.FcpNumber_DB
+                FcpNumber = form15.FcpNumber_DB,
+                ContractNumber = form15.ContractNumber_DB
             });
         }
 
@@ -494,6 +496,7 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
                 Worksheet.Cells[2, 30].Value = ConvertToExcelString(dto.RefineOrSortRAOCode);
                 Worksheet.Cells[2, 31].Value = ConvertToExcelString(dto.Subsidy);
                 Worksheet.Cells[2, 32].Value = ConvertToExcelString(dto.FcpNumber);
+                Worksheet.Cells[2, 33].Value = ConvertToExcelString(dto.ContractNumber);
 
                 #endregion
 
@@ -542,6 +545,7 @@ internal partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseA
                 Worksheet.Cells[currentRow, 30].Value = ConvertToExcelString(dto.RefineOrSortRAOCode);
                 Worksheet.Cells[currentRow, 31].Value = ConvertToExcelString(dto.Subsidy);
                 Worksheet.Cells[currentRow, 32].Value = ConvertToExcelString(dto.FcpNumber);
+                Worksheet.Cells[currentRow, 33].Value = ConvertToExcelString(dto.ContractNumber);
 
                 #endregion
 

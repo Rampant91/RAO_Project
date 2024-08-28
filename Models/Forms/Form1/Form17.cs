@@ -1801,45 +1801,45 @@ public partial class Form17 : Form1
 
     #endregion 
 
-    #region СontractNumber (33)
+    #region ContractNumber (33)
 
     [MaxLength(100)]
     [Column(TypeName = "varchar(100)")]
-    public string СontractNumber_DB { get; set; } = "";
+    public string ContractNumber_DB { get; set; } = "";
 
     [NotMapped]
-    [FormProperty(true, "Договор", "номер", "33")]
-    public RamAccess<string> СontractNumber
+    [FormProperty(true, "null-33", "Договор", "номер", "33")]
+    public RamAccess<string> ContractNumber
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(СontractNumber), out var value))
+            if (Dictionary.TryGetValue(nameof(ContractNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = СontractNumber_DB;
+                ((RamAccess<string>)value).Value = ContractNumber_DB;
                 return (RamAccess<string>)value;
             }
-            var rm = new RamAccess<string>(СontractNumber_Validation, СontractNumber_DB);
-            rm.PropertyChanged += СontractNumber_ValueChanged;
-            Dictionary.Add(nameof(СontractNumber), rm);
-            return (RamAccess<string>)Dictionary[nameof(СontractNumber)];
+            var rm = new RamAccess<string>(ContractNumber_Validation, ContractNumber_DB);
+            rm.PropertyChanged += ContractNumber_ValueChanged;
+            Dictionary.Add(nameof(ContractNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(ContractNumber)];
         }
         set
         {
-            СontractNumber_DB = value.Value;
+            ContractNumber_DB = value.Value;
             OnPropertyChanged();
         }
     }
 
-    private void СontractNumber_ValueChanged(object value, PropertyChangedEventArgs args)
+    private void ContractNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        СontractNumber_DB = tmp.Length > 100
+        ContractNumber_DB = tmp.Length > 100
             ? tmp[..100]
             : tmp;
     }
 
-    private static bool СontractNumber_Validation(RamAccess<string> value)
+    private static bool ContractNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         return true;
@@ -1920,8 +1920,12 @@ public partial class Form17 : Form1
         worksheet.Cells[row + (!transpose ? 26 : 0), column + (transpose ? 26 : 0)].Value = ConvertToExcelString(RefineOrSortRAOCode_DB);
         worksheet.Cells[row + (!transpose ? 27 : 0), column + (transpose ? 27 : 0)].Value = ConvertToExcelString(Subsidy_DB);
         worksheet.Cells[row + (!transpose ? 28 : 0), column + (transpose ? 28 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
+        if (worksheet.Name is "Отчеты 1.7")
+        {
+            worksheet.Cells[row + (!transpose ? 29 : 0), column + (transpose ? 29 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
+        }
 
-        return 29;
+        return 30;
     }
 
     public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
@@ -1959,8 +1963,9 @@ public partial class Form17 : Form1
         worksheet.Cells[row + (!transpose ? 26 : 0), column + (transpose ? 26 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(RefineOrSortRAOCode))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
         worksheet.Cells[row + (!transpose ? 27 : 0), column + (transpose ? 27 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(Subsidy))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
         worksheet.Cells[row + (!transpose ? 28 : 0), column + (transpose ? 28 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(FcpNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
+        worksheet.Cells[row + (!transpose ? 29 : 0), column + (transpose ? 29 : 0)].Value = ((FormPropertyAttribute)Type.GetType("Models.Forms.Form1.Form17,Models")?.GetProperty(nameof(ContractNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[2];
         
-        return 29;
+        return 30;
     }
 
     #endregion
@@ -2411,15 +2416,15 @@ public partial class Form17 : Form1
 
         #endregion
 
-        #region СontractNumber (33)
+        #region ContractNumber (33)
 
         var contractNumberR = ((FormPropertyAttribute)typeof(Form17)
-                .GetProperty(nameof(СontractNumber))
+                .GetProperty(nameof(ContractNumber))
                 .GetCustomAttributes(typeof(FormPropertyAttribute), true)
                 .FirstOrDefault())
             .GetDataColumnStructureD(numberInOrderR);
         contractNumberR.SetSizeColToAllLevels(163);
-        contractNumberR.Binding = nameof(СontractNumber);
+        contractNumberR.Binding = nameof(ContractNumber);
         numberInOrderR += contractNumberR;
 
         #endregion

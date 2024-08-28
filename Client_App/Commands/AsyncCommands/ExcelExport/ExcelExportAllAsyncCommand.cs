@@ -96,7 +96,6 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
@@ -114,7 +113,6 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 

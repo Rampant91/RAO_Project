@@ -29,7 +29,6 @@ public class MaxGraphsLengthAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;

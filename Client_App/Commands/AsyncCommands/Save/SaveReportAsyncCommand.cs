@@ -1,7 +1,10 @@
-﻿using Client_App.ViewModels;
+﻿using System;
+using Client_App.ViewModels;
 using Models.Collections;
 using Models.DBRealization;
 using System.Threading.Tasks;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
@@ -56,9 +59,11 @@ public class SaveReportAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
             await dbm.SaveChangesAsync();
             changeOrCreateViewModel.IsCanSaveReportEnabled = false;
         }
-        catch
+        catch (Exception ex)
         {
-            // ignored
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
         }
     }
 }

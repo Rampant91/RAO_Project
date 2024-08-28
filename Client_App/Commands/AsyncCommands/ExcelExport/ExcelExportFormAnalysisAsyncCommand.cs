@@ -58,7 +58,6 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
 
