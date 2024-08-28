@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Models.Attributes;
@@ -1801,6 +1801,52 @@ public partial class Form17 : Form1
 
     #endregion 
 
+    #region СontractNumber (33)
+
+    [MaxLength(100)]
+    [Column(TypeName = "varchar(100)")]
+    public string СontractNumber_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Договор", "номер", "33")]
+    public RamAccess<string> СontractNumber
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(СontractNumber), out var value))
+            {
+                ((RamAccess<string>)value).Value = СontractNumber_DB;
+                return (RamAccess<string>)value;
+            }
+            var rm = new RamAccess<string>(СontractNumber_Validation, СontractNumber_DB);
+            rm.PropertyChanged += СontractNumber_ValueChanged;
+            Dictionary.Add(nameof(СontractNumber), rm);
+            return (RamAccess<string>)Dictionary[nameof(СontractNumber)];
+        }
+        set
+        {
+            СontractNumber_DB = value.Value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void СontractNumber_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        СontractNumber_DB = tmp.Length > 100
+            ? tmp[..100]
+            : tmp;
+    }
+
+    private static bool СontractNumber_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
+
+    #endregion
+
     #endregion
 
     #region IExcel
@@ -2362,6 +2408,19 @@ public partial class Form17 : Form1
         fcpNumberR.SetSizeColToAllLevels(163);
         fcpNumberR.Binding = nameof(FcpNumber);
         numberInOrderR += fcpNumberR;
+
+        #endregion
+
+        #region СontractNumber (33)
+
+        var contractNumberR = ((FormPropertyAttribute)typeof(Form17)
+                .GetProperty(nameof(СontractNumber))
+                .GetCustomAttributes(typeof(FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD(numberInOrderR);
+        contractNumberR.SetSizeColToAllLevels(163);
+        contractNumberR.Binding = nameof(СontractNumber);
+        numberInOrderR += contractNumberR;
 
         #endregion
 
