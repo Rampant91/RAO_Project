@@ -16,7 +16,6 @@ public class SetNumberOrderSyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
 
     public override void Execute(object? parameter)
     {
-        Storage.Sort();
         var count = 1;
         var rows = Storage.Rows
             .GetEnumerable()
