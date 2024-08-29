@@ -28,6 +28,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
+        ExportType = "Список_исполнителей";
         var mainWindow = Desktop.MainWindow as MainWindow;
 
         if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
@@ -52,8 +53,6 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
 
             return;
         }
-
-        ExportType = "Список исполнителей";
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
 
         (string fullPath, bool openTemp) result;

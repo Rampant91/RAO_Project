@@ -23,7 +23,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Разрывы и пересечения";
+        ExportType = "Разрывы_и_пересечения";
         var findRep = 0;
 
         #region ReportsCountCheck

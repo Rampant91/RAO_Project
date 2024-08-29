@@ -22,7 +22,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     {
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
         var cts = new CancellationTokenSource();
-        ExportType = "Для печати";
+        ExportType = "Для_печати";
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
         var progressBarVM = progressBar.ExcelExportProgressBarVM;

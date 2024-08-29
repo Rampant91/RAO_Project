@@ -26,7 +26,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Паспорта без отчетов";
+        ExportType = "Паспорта_без_отчетов";
         List<string> pasNames = [];
         List<string[]> pasUniqParam = [];
         DirectoryInfo directory = new(BaseVM.PasFolderPath);

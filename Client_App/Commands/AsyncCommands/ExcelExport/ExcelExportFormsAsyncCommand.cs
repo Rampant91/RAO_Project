@@ -85,7 +85,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
             }
             case true:
             {
-                ExportType = $"Выбранная организация_Формы {param}";
+                ExportType = $"Выбранная_организация_Формы_{param}";
                 var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
                 var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
@@ -93,7 +93,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
             }
             default:
             {
-                ExportType = $"Формы {param}";
+                ExportType = $"Формы_{param}";
                 fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             }

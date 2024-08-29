@@ -49,7 +49,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
             return;
         }
-        ExportType = "Отчеты без паспортов";
+        ExportType = "Отчеты_без_паспортов";
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try

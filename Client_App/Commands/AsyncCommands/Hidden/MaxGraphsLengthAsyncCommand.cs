@@ -1,5 +1,4 @@
-﻿using Client_App.Views;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -20,8 +19,8 @@ public class MaxGraphsLengthAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        var mainWindow = Desktop.MainWindow as MainWindow;
-        var fileName = $"Максимальное количество символов по графам_{Assembly.GetExecutingAssembly().GetName().Version}";
+        ExportType = "Максимальное_количество_символов_по_графам";
+        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
         {

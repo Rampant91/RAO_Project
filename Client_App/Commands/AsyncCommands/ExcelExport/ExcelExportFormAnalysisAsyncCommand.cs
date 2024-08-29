@@ -26,7 +26,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
     {
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
         var cts = new CancellationTokenSource();
-        ExportType = "Для анализа";
+        ExportType = "Для_анализа";
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
         var progressBarVM = progressBar.ExcelExportProgressBarVM;

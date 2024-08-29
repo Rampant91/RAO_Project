@@ -39,6 +39,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     {
         if (parameter is null) return;
         var cts = new CancellationTokenSource();
+        ExportType = "История_движения_источника";
         StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
         if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
         {
@@ -80,7 +81,6 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
         var progressBarVM = progressBar.ExcelExportProgressBarVM;
-        ExportType = "История движения источника";
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}";
         var loadStatus = "Создание временной БД";

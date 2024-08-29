@@ -81,14 +81,14 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
                 return;
             }
             CurrentReports = selectedReports;
-            ExportType = "Выбранная организация_Все формы";
+            ExportType = "Выбранная_организация_Все_формы";
             var regNum = RemoveForbiddenChars(CurrentReports.Master_DB.RegNoRep.Value);
             var okpo = RemoveForbiddenChars(CurrentReports.Master_DB.OkpoRep.Value);
             fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
         }
         else
         {
-            ExportType = "Все формы";
+            ExportType = "Все_формы";
             fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         }
 

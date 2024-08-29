@@ -17,6 +17,7 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
     {
         if (parameter is not CheckFormVM checkFormVM) return;
         var cts = new CancellationTokenSource();
+        ExportType = "Список_ошибок";
         var fileName = checkFormVM.TitleName;
         (string fullPath, bool openTemp) result;
         try

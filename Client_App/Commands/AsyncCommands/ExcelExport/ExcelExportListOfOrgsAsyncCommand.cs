@@ -24,7 +24,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     {
         if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         var cts = new CancellationTokenSource();
-        ExportType = "Список организаций";
+        ExportType = "Список_организаций";
 
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;

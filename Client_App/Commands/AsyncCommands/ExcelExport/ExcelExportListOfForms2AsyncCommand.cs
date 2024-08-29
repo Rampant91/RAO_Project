@@ -26,7 +26,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Список форм 2";
+        ExportType = "Список_форм_2";
 
         #region ReportsCountCheck
 
