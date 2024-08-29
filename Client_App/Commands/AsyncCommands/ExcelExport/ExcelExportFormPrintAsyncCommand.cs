@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
+using Client_App.Views.ProgressBar;
 using Models.Collections;
 using Models.Interfaces;
 using OfficeOpenXml;
@@ -14,11 +16,21 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Выбранная форма -> Выгрузка Excel -> Для печати
 public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
         var cts = new CancellationTokenSource();
         ExportType = "Для печати";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка отчёта на печать";
+        progressBarVM.ValueBar = 5;
+        var loadStatus = "Выгрузка отчёта";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var exportForm = (Report)forms.First();
         exportForm = await ReportsStorage.GetReportAsync(exportForm.Id);
@@ -58,11 +70,11 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return; 
 
-        #if DEBUG
+#if DEBUG
         var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel", $"{formNum}.xlsx");
-        #else
+#else
         var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"{formNum}.xlsx");
-        #endif
+#endif
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
@@ -77,6 +89,16 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExcelPrintNotesExport(formNum, worksheetMain, exportForm);
         ExcelPrintRowsExport(formNum, worksheetMain, exportForm);
 
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

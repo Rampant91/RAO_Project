@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
@@ -17,6 +18,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Разрывы и пересечения
 public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
@@ -49,7 +52,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         "Не удалось совершить выгрузку списка разрывов и пересечений дат," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 1",
+                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 1.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -76,6 +79,14 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка разрывов и пересечений";
+        progressBarVM.ValueBar = 5;
+        var loadStatus = "Сортировка списка отчётов";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
@@ -109,18 +120,17 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                               && DateOnly.TryParse(rep.EndPeriod_DB, out _))
                 .Select(rep =>
                 {
-                    if (true);
                     var start = DateOnly.Parse(rep.StartPeriod_DB);
                     var end = DateOnly.Parse(rep.EndPeriod_DB);
                     return new ReportForSort
-                        {
-                            RegNoRep = reps.Master_DB.RegNoRep.Value ?? "",
-                            OkpoRep = reps.Master_DB.OkpoRep.Value ?? "",
-                            FormNum = rep.FormNum_DB,
-                            StartPeriod = start,
-                            EndPeriod = end,
-                            ShortYr = reps.Master_DB.ShortJurLicoRep.Value
-                        };
+                    {
+                        RegNoRep = reps.Master_DB.RegNoRep.Value ?? "",
+                        OkpoRep = reps.Master_DB.OkpoRep.Value ?? "",
+                        FormNum = rep.FormNum_DB,
+                        StartPeriod = start,
+                        EndPeriod = end,
+                        ShortYr = reps.Master_DB.ShortJurLicoRep.Value
+                    };
                 }))
             .OrderBy(x => x.RegNoRep)
             .ThenBy(x => x.FormNum)
@@ -128,7 +138,12 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             .ThenBy(x => x.EndPeriod)
             .ToList();
 
+        loadStatus = "Поиск пересечений";
+        progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var row = 2;
+        double progressBarDoubleValue = progressBarVM.ValueBar;
         for (var i = 0; i < listSortRep.Count; i++)
         {
             var rep = listSortRep[i];
@@ -199,6 +214,11 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                 }
                 isNext = false;
             }
+
+            if (progressBarDoubleValue >= 95) continue;
+            progressBarDoubleValue += ((double)(i + 1) / listSortRep.Count) * 0.85 / 100;
+            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         }
 
         for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
@@ -209,7 +229,17 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         }
 
         Worksheet.View.FreezePanes(2, 1);
-        
+
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

@@ -11,6 +11,7 @@ using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -24,6 +25,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация-Формы 1.x, 2.x
 public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var mainWindow = Desktop.MainWindow as MainWindow;
@@ -108,6 +111,14 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = $"Выгрузка {ExportType.ToLower()}";
+        progressBarVM.ValueBar = 2;
+        var loadStatus = "Создание временной БД";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -168,319 +179,346 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                     .Any(rep => rep.FormNum_DB == param)));
         }
 
+        loadStatus = "Загрузка форм";
+        progressBarVM.ValueBar = 5;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+
         foreach (var reps in repsList)
         {
-            var repsWithRows = param switch
-            {
-                #region GetForms1FromDb
-
-                #region 1.1
-
-                "1.1" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.2
-
-                "1.2" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.3
-
-                "1.3" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.4
-
-                "1.4" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.5
-
-                "1.5" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.6
-
-                "1.6" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.7
-
-                "1.7" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.8
-
-                "1.8" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 1.9
-
-                "1.9" => dbReadOnly.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(x => x.Id == reps.Id)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                    .First(),
-
-                #endregion
-
-                #endregion
-
-                #region GetForms2FromDb
-
-                #region 2.1
-
-                "2.1" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.2
-
-                "2.2" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.3
-
-                "2.3" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.4
-
-                "2.4" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.5
-
-                "2.5" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.6
-
-                "2.6" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.7
-
-                "2.7" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.8
-
-                "2.8" => dbReadOnly.ReportsCollectionDbSet
-                            .AsNoTracking()
-                            .AsSplitQuery()
-                            .AsQueryable()
-                            .Where(x => x.Id == reps.Id)
-                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
-                            .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                            .First(),
-
-                #endregion
-
-                #region 2.9
-
-                "2.9" => dbReadOnly.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(x => x.Id == reps.Id)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                    .First(),
-
-                #endregion
-
-                #region 2.10
-
-                "2.10" => dbReadOnly.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(x => x.Id == reps.Id)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                    .First(),
-
-                #endregion
-
-                #region 2.11
-
-                "2.11" => dbReadOnly.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(x => x.Id == reps.Id)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                    .First(),
-
-                #endregion
-
-                #region 2.12
-
-                "2.12" => dbReadOnly.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Where(x => x.Id == reps.Id)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
-                    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                    .First()
-
-                #endregion
-
-                #endregion
-            };
+            loadStatus = $"Загрузка форм {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
+            var repsWithRows = await GetReportsForms(param, reps, dbReadOnly, cts);
             CurrentReports = repsWithRows;
             CurrentRow = Worksheet.Dimension.End.Row + 1;
             CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
             FillExportForms(param);
+
+            progressBarDoubleValue += (double)90 / repsList.Count;
+            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         }
         Worksheet.View.FreezePanes(2, 1);
+
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+    }
+
+    private static async Task<Reports> GetReportsForms(string formNum, Reports reps, DBModel dbReadOnly, CancellationTokenSource cts)
+    {
+        return formNum switch
+        {
+            #region GetForms1FromDb
+
+            #region 1.1
+
+            "1.1" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.2
+
+            "1.2" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.3
+
+            "1.3" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.4
+
+            "1.4" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.5
+
+            "1.5" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.6
+
+            "1.6" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.7
+
+            "1.7" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.8
+
+            "1.8" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 1.9
+
+            "1.9" => await dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Where(x => x.Id == reps.Id)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #endregion
+
+            #region GetForms2FromDb
+
+            #region 2.1
+
+            "2.1" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.2
+
+            "2.2" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.3
+
+            "2.3" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.4
+
+            "2.4" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.5
+
+            "2.5" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.6
+
+            "2.6" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.7
+
+            "2.7" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.8
+
+            "2.8" => await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Where(x => x.Id == reps.Id)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
+                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                        .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.9
+
+            "2.9" => await dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Where(x => x.Id == reps.Id)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.10
+
+            "2.10" => await dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Where(x => x.Id == reps.Id)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.11
+
+            "2.11" => await dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Where(x => x.Id == reps.Id)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                .FirstAsync(cancellationToken: cts.Token),
+
+            #endregion
+
+            #region 2.12
+
+            "2.12" => await dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Where(x => x.Id == reps.Id)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
+                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                .FirstAsync(cancellationToken: cts.Token)
+
+            #endregion
+
+            #endregion
+        };
     }
 
     [GeneratedRegex(@"[^\d.]")]

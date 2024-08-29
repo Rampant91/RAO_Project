@@ -10,6 +10,10 @@
         d:DesignHeight="90"
         Width="300"
         Height="150"
+        MinWidth="300"
+        MinHeight="150"
+        MaxWidth="600"
+        MaxHeight="300"
         SystemDecorations="Full"
         WindowStartupLocation="CenterScreen">
 

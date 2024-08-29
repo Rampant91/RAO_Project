@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using Models.DBRealization;
@@ -20,6 +21,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Все формы & Excel -> Выбранная организация -> Все формы
 public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
@@ -102,6 +105,14 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка всех форм";
+        progressBarVM.ValueBar = 2;
+        var loadStatus = "Создание временной БД";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -115,6 +126,10 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         {
             return;
         }
+
+        loadStatus = "Определение списка форм";
+        progressBarVM.ValueBar = 8;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
@@ -148,12 +163,20 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
             FillHeaders(formNum);
         }
 
+        loadStatus = "Загрузка форм";
+        progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+
+
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        double progressBarDoubleValue = progressBarVM.ValueBar;
         foreach (var reps in repsList)
         {
+            loadStatus = $"Загрузка форм {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
             var oldDBPath = new string(StaticConfiguration.DBPath);
             StaticConfiguration.DBPath = dbReadOnlyPath;
-            var repsWithRows = await ReportsStorage.ApiReports.GetAsync(reps.Id);
+            var repsWithRows = await Task.Run(() => GetReportsWithForms(reps.Id), cts.Token);
             StaticConfiguration.DBPath = oldDBPath;
             foreach (var formNum in formNums)
             {
@@ -164,8 +187,23 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
                 CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
                 FillExportForms(formNum);
             }
+            progressBarDoubleValue += (double)85 / repsList.Count;
+            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         }
 
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
+
+    private static async Task<Reports> GetReportsWithForms(int repId) => await ReportsStorage.ApiReports.GetAsync(repId);
 }

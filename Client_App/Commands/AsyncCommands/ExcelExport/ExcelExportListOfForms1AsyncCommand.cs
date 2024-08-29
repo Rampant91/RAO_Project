@@ -27,7 +27,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        
+        ExportType = "Список форм 1";
         var findRep = 0;
 
         #region ReportsCountCheck
@@ -130,10 +130,9 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
         var progressBarVM = progressBar.ExcelExportProgressBarVM;
-        ExportType = "Список форм 1";
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка списка форм 1";
-        progressBarVM.ValueBar = 2;
+        progressBarVM.ValueBar = 5;
         var loadStatus = "Создание временной БД";
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 

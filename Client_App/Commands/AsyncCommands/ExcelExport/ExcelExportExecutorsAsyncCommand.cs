@@ -13,6 +13,7 @@ using Models.Collections;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 using System.Reflection;
+using Client_App.Views.ProgressBar;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -21,6 +22,8 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
 {
     private Reports CurrentReports;
     private int _currentRow;
+
+    private ExcelExportProgressBar progressBar;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -35,6 +38,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
@@ -65,6 +69,14 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка списка исполнителей";
+        progressBarVM.ValueBar = 5;
+        var loadStatus = "Обработка форм 1";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -90,6 +102,11 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 _currentRow++;
             }
         }
+
+        loadStatus = "Обработка форм 2";
+        progressBarVM.ValueBar = 55;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         _currentRow = 2;
         Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 2");
         FillExecutorsHeaders('2');
@@ -106,7 +123,17 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
     #region FillExecutorsHeaders

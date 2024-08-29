@@ -24,6 +24,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     {
         if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         var cts = new CancellationTokenSource();
+        ExportType = "Список организаций";
 
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
@@ -41,7 +42,6 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
         var progressBarVM = progressBar.ExcelExportProgressBarVM;
-        ExportType = "Список организаций";
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка списка организаций";
         progressBarVM.ValueBar = 2;
