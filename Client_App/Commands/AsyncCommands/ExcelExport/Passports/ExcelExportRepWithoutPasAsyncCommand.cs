@@ -262,7 +262,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             });
         }
 
-        progressBarVM.LoadStatus = "Сравнение с паспортами";
+        loadStatus = "Сравнение с паспортами";
         progressBarVM.ValueBar = 70;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
@@ -374,13 +374,13 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
-        progressBarVM.LoadStatus = "Сохранение";
+        loadStatus = "Сохранение";
         progressBarVM.ValueBar = 95;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
 
-        progressBarVM.LoadStatus = "Завершение выгрузки";
+        loadStatus = "Завершение выгрузки";
         progressBarVM.ValueBar = 100;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
