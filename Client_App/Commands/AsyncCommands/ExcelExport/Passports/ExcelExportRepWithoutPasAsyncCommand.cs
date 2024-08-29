@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
@@ -21,6 +22,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 //  Excel -> Паспорта -> Отчеты без паспортов
 public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     private class Form11ShortDTO(int id, string opCode, short? category)
     {
         public readonly int Id = id;
@@ -33,6 +36,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
+        ExportType = "Отчеты_без_паспортов";
         DirectoryInfo directory = new(BaseVM.PasFolderPath);
         if (!directory.Exists)
         {
@@ -58,7 +62,6 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
             return;
         }
-        ExportType = "Отчеты_без_паспортов";
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
@@ -74,6 +77,14 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка списка отчётов";
+        progressBarVM.ValueBar = 2;
+        var loadStatus = "Создание временной БД";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
         {
@@ -87,6 +98,10 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         {
             return;
         }
+
+        loadStatus = "Определение списка файлов";
+        progressBarVM.ValueBar = 5;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
@@ -171,6 +186,10 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
+        loadStatus = "Загрузка форм 1.1";
+        progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
         var form11PasList = dbReadOnly.ReportsCollectionDbSet
@@ -187,6 +206,10 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                             form11.Category_DB))))
             .ToListAsync(cancellationToken: cts.Token)
             .Result;
+
+        loadStatus = "Загрузка отчётов 1.1";
+        progressBarVM.ValueBar = 50;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var filteredForm11 = form11PasList
             .Where(form11 => form11.OperationCode is "11" or "85" && form11.Category is 1 or 2 or 3)
@@ -239,6 +262,10 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             });
         }
 
+        progressBarVM.LoadStatus = "Сравнение с паспортами";
+        progressBarVM.ValueBar = 70;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         //Переделай запрос так, чтобы извлекать только нужное из форм 1.1, брать их id, фильтровать и загружать данные только у нужных форм
         //var dtoList = dbReadOnly.ReportsCollectionDbSet //TODO
         //    .AsNoTracking()
@@ -288,7 +315,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         //    .ToList();
 
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
-        ConcurrentBag<Form11DTO> dtoToExcelThreadSafe = new();
+        ConcurrentBag<Form11DTO> dtoToExcelThreadSafe = [];
         await Parallel.ForEachAsync(dtoList, parallelOptions, (dto, token) =>
         {
             var findPasFile = pasUniqParam.Any(pasParam =>
@@ -347,6 +374,15 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
+        progressBarVM.LoadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        progressBarVM.LoadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }
