@@ -183,6 +183,15 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 }))
             .ToListAsync(cancellationToken: cts.Token);
 
+        foreach (var form11Short in forms11)
+        {
+            form11Short.CreatorOKPO = ConvertPrimToDash(form11Short.CreatorOKPO);
+            form11Short.Type = ConvertPrimToDash(form11Short.Type);
+            form11Short.CreationDate = ConvertDateToYear(form11Short.CreationDate);
+            form11Short.PassportNumber = ConvertPrimToDash(form11Short.PassportNumber);
+            form11Short.FactoryNumber = ConvertPrimToDash(form11Short.FactoryNumber);
+        }
+
         ConcurrentBag<FileInfo> filesToRemove = [];
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
         try
@@ -190,11 +199,13 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
             {
                 if (forms11.Any(form11 =>
-                        ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-                        && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
-                        && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
-                        && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-                        && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
+                        ComparePasParam(form11.CreatorOKPO + form11.Type + form11.CreationDate + form11.PassportNumber + form11.FactoryNumber, pasParam.ToString()
+                    //ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                    //&& ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
+                    //&& ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
+                    //&& ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                    //&& ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4]))
+                    )))
                 {
                     filesToRemove.Add(files.First(file =>
                         file.Name.Remove(file.Name.Length - 4) ==
@@ -207,7 +218,32 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         {
             return;
         }
-        
+
+        //ConcurrentBag<FileInfo> filesToRemove = [];
+        //var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        //try
+        //{
+        //    await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
+        //    {
+        //        if (forms11.Any(form11 =>
+        //                ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+        //                && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
+        //                && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
+        //                && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+        //                && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
+        //        {
+        //            filesToRemove.Add(files.First(file =>
+        //                file.Name.Remove(file.Name.Length - 4) ==
+        //                $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+        //        }
+        //        return default;
+        //    });
+        //}
+        //catch
+        //{
+        //    return;
+        //}
+
         foreach (var fileToRemove in filesToRemove.ToArray())
         {
             files.Remove(fileToRemove);

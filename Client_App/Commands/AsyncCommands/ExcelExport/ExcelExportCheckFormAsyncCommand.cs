@@ -37,7 +37,7 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка списка ошибок";
         progressBarVM.ValueBar = 5;
-        var loadStatus = "выгрузка ошибок";
+        var loadStatus = "Выгрузка ошибок";
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
