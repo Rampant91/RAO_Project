@@ -1089,9 +1089,11 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var factoryNum = (forms[line].FactoryNumber_DB ?? string.Empty).Trim();
+        if (factoryNum is "-") return result;
         var quantity = forms[line].Quantity_DB;
         var valid = !string.IsNullOrWhiteSpace(factoryNum)
                     && !factoryNum.Contains(',');
+
         if (quantity > 1 && !factoryNum.Contains(';')
             || quantity == 1 && factoryNum.Contains(';'))
         {
