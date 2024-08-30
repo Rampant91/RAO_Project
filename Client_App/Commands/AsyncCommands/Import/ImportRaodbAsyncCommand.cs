@@ -9,18 +9,24 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using static Client_App.Resources.StaticStringMethods;
+using Client_App.Views.ProgressBar;
+using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
+    private ExcelExportProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
+        var cts = new CancellationTokenSource();
         RepsWhereTitleFormCheckIsCancel.Clear();
         IsFirstLogLine = true;
         CurrentLogLine = 1;
@@ -37,12 +43,31 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         var countReadFiles = answer.Length;
 
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
+        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        var exportType = "Импорт .RAODB";
+        progressBarVM.ExportType = exportType;
+        progressBarVM.ExportName = "Импорт";
+        progressBarVM.ValueBar = 0;
+        var loadStatus = "Начало операции импорта";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var countCurrentRep = 1;
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
             TmpImpFilePath = GetRaoFileName();
             SourceFile = new FileInfo(path);
+
+            loadStatus = "Создание временной копии импортируемой БД";
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
             SourceFile.CopyTo(TmpImpFilePath, true);
+
+            loadStatus = $"Загрузка данных организации";
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
             var reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
             if (reportsCollection.Count == 0)
             {
@@ -224,12 +249,21 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         break;
                 }
             }
+
+            progressBarDoubleValue = (double)countCurrentRep / answer.Length * 90;
+            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+            countCurrentRep++;
         }
+
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 90;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         try
         {
-            await StaticConfiguration.DBModel.SaveChangesAsync();
+            await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
         }
         catch (Exception ex)
         {
@@ -277,6 +311,12 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
             #endregion
         }
+
+        loadStatus = "Завершение импорта";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
     #region GetReportsFromDataBase
