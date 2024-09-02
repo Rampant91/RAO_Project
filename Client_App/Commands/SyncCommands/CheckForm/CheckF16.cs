@@ -582,10 +582,11 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var operationCode = forms[line].OperationCode_DB;
+        var refineOrSortRaoCode = (forms[line].RefineOrSortRAOCode_DB ?? string.Empty).Trim();
         var applicableOperationCodes = new [] { "49", "59" };
         var graph22ValidValues = new [] { "-", "52", "72", "74" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = graph22ValidValues.Contains(forms[line].RefineOrSortRAOCode_DB.Trim());
+        var valid = graph22ValidValues.Contains(refineOrSortRaoCode);
         if (!valid)
         {
             result.Add(new CheckError
@@ -706,7 +707,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var comparator = new CustomNullStringWithTrimComparer();
-        var codeRaoDB = forms[line].CodeRAO_DB.Trim();
+        var codeRaoDB = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
         var valid = !string.IsNullOrWhiteSpace(codeRaoDB) && codeRaoDB.Length == 11 && codeRaoDB.All(char.IsDigit);
         if (!valid)
         {
@@ -2041,8 +2042,8 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_009(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
-        var codeRao = forms[line].CodeRAO_DB.Trim();
-        var quantityOziii = forms[line].QuantityOZIII_DB.Trim();
+        var codeRao = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
+        var quantityOziii = (forms[line].QuantityOZIII_DB ?? string.Empty).Trim();
         var quantityOziiiExists = int.TryParse(quantityOziii, out _);
         var raoTypes1 = new [] { "81", "82", "85", "86", "87", "88", "89" };
         var raoTypes2 = new [] { "99" };
@@ -2118,7 +2119,7 @@ public abstract class CheckF16 : CheckBase
             });
             return result;
         }
-        var codeRao = forms[line].CodeRAO_DB.Trim();
+        var codeRao = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
         if (codeRao.Length < 3) return result;
         var radsSet = rads
             .ToLower()
@@ -2270,7 +2271,7 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "б")))
         {
-            if (TryParseFloatExtended(activity.Trim(), out var val))
+            if (TryParseFloatExtended(activity.Trim(), out _))
             {
                 result.Add(new CheckError
                 {
@@ -2354,7 +2355,7 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "а")))
         {
-            if (TryParseFloatExtended(activity, out var val))
+            if (TryParseFloatExtended(activity, out _))
             {
                 result.Add(new CheckError
                 {
@@ -2797,7 +2798,7 @@ public abstract class CheckF16 : CheckBase
             "51", "52", "56", "57", "59", "71", "72", "73", "74", "75", "76", "97", "98", "99"
         };
         if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var transporterOKPO = forms[line].TransporterOKPO_DB.Trim();
+        var transporterOKPO = (forms[line].TransporterOKPO_DB ?? string.Empty).Trim();
         var valid = transporterOKPO is "-";
         if (!valid)
         {
@@ -3003,8 +3004,8 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_023_44(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new string[] { "44" };
-        var applicableValues = new string[] {
+        var applicableOperationCodes = new[] { "44" };
+        var applicableValues = new[] {
             "11","12","13","14","15","16","17","19",
             "21","22","23","24",               "29",
             "31","32",                         "39",
@@ -3014,8 +3015,8 @@ public abstract class CheckF16 : CheckBase
             "71","72","73","74",               "79",
                                                "99"
         };
-        var operationCode = forms[line].OperationCode_DB.Trim();
-        var refineOrSortRaoCodeDB = forms[line].RefineOrSortRAOCode_DB.Trim();
+        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var refineOrSortRaoCodeDB = (forms[line].RefineOrSortRAOCode_DB ?? string.Empty).Trim();
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = applicableValues.Contains(refineOrSortRaoCodeDB);
         if (!valid)
@@ -3042,8 +3043,8 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "45", "57" };
         var applicableValues = new [] { "-", "74" };
-        var operationCode = forms[line].OperationCode_DB.Trim();
-        var refineOrSortRaoCodeDB = forms[line].RefineOrSortRAOCode_DB.Trim();
+        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var refineOrSortRaoCodeDB = (forms[line].RefineOrSortRAOCode_DB ?? string.Empty).Trim();
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = applicableValues.Contains(refineOrSortRaoCodeDB);
         if (!valid)
@@ -3070,8 +3071,8 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "49", "59" };
         var applicableRefineCodes = new [] { "52", "72", "74", "-" };
-        var operationCode = forms[line].OperationCode_DB.Trim();
-        var refineOrSortRaoCodeDB = forms[line].RefineOrSortRAOCode_DB.Trim();
+        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var refineOrSortRaoCodeDB = (forms[line].RefineOrSortRAOCode_DB ?? string.Empty).Trim();
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = applicableRefineCodes.Contains(refineOrSortRaoCodeDB);
         if (!valid)
@@ -3100,8 +3101,9 @@ public abstract class CheckF16 : CheckBase
             "36","37","38","39","42","43","48","51","52","63","64","68","71","72","73","74","75",
             "76","97","98","99" };
         var operationCode = forms[line].OperationCode_DB;
+        var refineOrSortRaoCode = (forms[line].RefineOrSortRAOCode_DB ?? string.Empty).Trim();
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = forms[line].RefineOrSortRAOCode_DB.Trim() == "-";
+        var valid = refineOrSortRaoCode == "-";
         if (!valid)
         {
             result.Add(new CheckError
@@ -3227,8 +3229,8 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_026(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
-        var packNum = forms[line].PackNumber_DB;
-        var packName = forms[line].PackName_DB;
+        var packNum = forms[line].PackNumber_DB ?? string.Empty;
+        var packName = forms[line].PackName_DB ?? string.Empty;
         var valid = !string.IsNullOrWhiteSpace(packNum);
         if (!valid)
         {
