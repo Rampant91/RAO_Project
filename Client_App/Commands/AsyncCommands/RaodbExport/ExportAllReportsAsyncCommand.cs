@@ -149,7 +149,7 @@ internal partial class ExportAllReportsAsyncCommand : BaseAsyncCommand
 
                 #region ExportDoneMessage
 
-                answer = await MessageBox.Avalonia.MessageBoxManager
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
@@ -165,7 +165,7 @@ internal partial class ExportAllReportsAsyncCommand : BaseAsyncCommand
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
                     })
-                    .ShowDialog(Desktop.MainWindow);
+                    .ShowDialog(Desktop.MainWindow));
 
                 #endregion
 

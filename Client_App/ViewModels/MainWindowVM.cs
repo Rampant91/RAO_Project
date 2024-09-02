@@ -15,6 +15,8 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.Hidden;
+using Client_App.Commands.SyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.CheckForm;
 
 namespace Client_App.ViewModels;
 
@@ -79,6 +81,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
+    public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
+    public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
     public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию
     public ICommand ExcelExportAll { get; set; }                    //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
@@ -115,8 +119,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
+        CheckFormFromMain = new CheckFormFromMainAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
+        ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ExcelExportExecutors = new ExcelExportExecutorsAsyncCommand();
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
         ExcelExportFormPrint = new ExcelExportFormPrintAsyncCommand(); 

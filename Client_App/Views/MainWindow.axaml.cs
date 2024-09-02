@@ -122,7 +122,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = paramVal,
-            ContextMenuText = new[] { "Добавить форму        Ctrl+T" },
+            ContextMenuText = ["Добавить форму        Ctrl+T"],
             Command = dataContext.AddReports
         });
 
@@ -131,7 +131,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = true,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Редактировать форму" },
+            ContextMenuText = ["Редактировать форму"],
             Command = dataContext.ChangeReports
         });
 
@@ -140,7 +140,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузить организацию" },
+            ContextMenuText = ["Выгрузить организацию"],
             Command = dataContext.ExportReports
         });
 
@@ -149,7 +149,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузить организацию с указанием диапазона дат" },
+            ContextMenuText = ["Выгрузить организацию с указанием диапазона дат"],
             Command = dataContext.ExportReportsWithDateRange
         });
 
@@ -167,8 +167,17 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузить все организации в отдельные файлы" },
+            ContextMenuText = ["Выгрузить все организации в отдельные файлы"],
             Command = dataContext.ExportAllReports
+        });
+
+        grd1.CommandsList.Add(new KeyCommand
+        {
+            IsDoubleTappedCommand = false,
+            IsContextMenuCommand = true,
+            ParamName = "SelectedItems",
+            ContextMenuText = ["Проверить все формы организации"],
+            Command = dataContext.ExcelExportCheckAllForms
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -178,19 +187,20 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Удалить форму           Ctrl+D" },
+            ContextMenuText = ["Удалить форму           Ctrl+D"],
             Command = dataContext.DeleteReports
         });
 
         #endregion
 
         #region Grd2_Список форм_Контекстное меню
+
         grd2.CommandsList.Add(new KeyCommand
         {
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузка Excel", "Для печати" },
+            ContextMenuText = ["Выгрузка Excel", "Для печати"],
             Command = dataContext.ExcelExportFormPrint
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -198,7 +208,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузка Excel", "Для анализа" },
+            ContextMenuText = ["Выгрузка Excel", "Для анализа"],
             Command = dataContext.ExcelExportFormAnalysis
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -206,7 +216,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузка" },
+            ContextMenuText = ["Выгрузка"],
             Command = dataContext.ExportForm
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -214,8 +224,16 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = true,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Изменить форму" },
+            ContextMenuText = ["Изменить форму"],
             Command = dataContext.ChangeForm
+        });
+        grd2.CommandsList.Add(new KeyCommand
+        {
+            IsContextMenuCommand = true,
+            IsDoubleTappedCommand = false,
+            ParamName = "SelectedItems",
+            ContextMenuText = ["Проверить форму"],
+            Command = dataContext.CheckFormFromMain
         });
         grd2.CommandsList.Add(new KeyCommand
         {
@@ -225,7 +243,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             IsUpdateCells = true,
-            ContextMenuText = new[] { "Удалить форму           Ctrl+D" },
+            ContextMenuText = ["Удалить форму           Ctrl+D"],
             Command = dataContext.DeleteForm
         });
         grd2.CommandsList.Add(new KeyCommand
@@ -236,9 +254,10 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             IsUpdateCells = true,
-            ContextMenuText = new[] { "Сохранить комментарий           Ctrl+J" },
+            ContextMenuText = ["Сохранить комментарий           Ctrl+J"],
             Command = dataContext.SaveReports
         });
+
         #endregion
     }
 
