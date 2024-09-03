@@ -27,6 +27,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
+
+        SkipNewOrg = false;
+        SkipInter = false;
+        SkipLess = false;
+        SkipNew = false;
+        SkipReplace = false;
+        HasMultipleReport = false;
+        AtLeastOneImportDone = false;
+
         foreach (var res in answer) // Для каждого импортируемого файла
         {
             ExcelImportNewReps = false;
@@ -138,7 +147,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             ImpRepStartPeriod = impRep.StartPeriod_DB;
             ImpRepYear = impRep.Year_DB ?? "";
 
-            SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
+            //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
             HasMultipleReport = answer.Length > 1;
 
             var impRepList = new List<Report> { impRep };
