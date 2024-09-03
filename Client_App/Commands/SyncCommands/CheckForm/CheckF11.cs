@@ -191,12 +191,16 @@ public abstract class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         HashSet<int> duplicatesLinesSet = new();
+        List<HashSet<int>> duplicatesGroupsSet = new();
         var comparator = new CustomNullStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
+            if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
             var currentForm = forms[i];
+            var hasDuplicate = false;
             for (var j = i + 1; j < forms.Count; j++)
             {
+                if (duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
                 var formToCompare = forms[j];
                 var isDuplicate = comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
                                   && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
@@ -217,22 +221,31 @@ public abstract class CheckF11 : CheckBase
                                   && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
                                   && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
                 if (!isDuplicate) continue;
-                duplicatesLinesSet.Add(i + 1);
+                hasDuplicate = true;
                 duplicatesLinesSet.Add(j + 1);
             }
-        }
-        var dupStrByGroups = ConvertSequenceSetToRangeStringList(duplicatesLinesSet);
-        foreach (var group in dupStrByGroups)
-        {
-            result.Add(new CheckError
+            if (hasDuplicate) duplicatesLinesSet.Add(i + 1);
+            if (duplicatesLinesSet.Count > 0)
             {
-                FormNum = "form_11",
-                Row = group,
-                Column = "2 - 19",
-                Value = string.Empty,
-                Message = $"Данные граф 2-19 в строках {group} продублированы. " +
-                          $"Следует проверить правильность предоставления данных."
-            });
+                duplicatesGroupsSet.Add(duplicatesLinesSet.Order().ToHashSet());
+            }
+            duplicatesLinesSet.Clear();
+        }
+        if (duplicatesGroupsSet.Count > 0)
+        {
+            foreach (var group in duplicatesGroupsSet)
+            {
+                var dupStrByGroups = ConvertSequenceSetToRangeString(group);
+                result.Add(new CheckError
+                {
+                    FormNum = "form_11",
+                    Row = dupStrByGroups,
+                    Column = "2 - 19",
+                    Value = string.Empty,
+                    Message = $"Данные граф 2-19 в строках {dupStrByGroups} продублированы. " +
+                              $"Следует проверить правильность предоставления данных."
+                });
+            }
         }
         return result;
     }

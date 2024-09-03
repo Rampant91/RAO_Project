@@ -143,11 +143,11 @@ public class PasteRowsAsyncCommand : BaseAsyncCommand
         }
     }
 
-    private static string[] ParseInnerTextRows(string text)
+    private static string[] ParseInnerTextRows(string? text)
     {
         List<string> lst = [];
         var comaFlag = false;
-        text = text.Replace("\r\n", "\n");
+        text = (text ?? string.Empty).Replace("\r\n", "\n");
         var txt = "";
         foreach (var item in text)
         {

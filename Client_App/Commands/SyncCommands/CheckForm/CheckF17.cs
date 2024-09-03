@@ -1,4 +1,5 @@
-﻿using Models.CheckForm;
+﻿using DynamicData;
+using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -71,6 +72,7 @@ public abstract class CheckF17 : CheckBase
         var formsList = rep.Rows17.ToList<Form17>();
         var notes = rep.Notes.ToList<Note>();
         var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
+        errorList.AddRange(Check_002(formsList));
         while (currentFormLine < formsList.Count)
         {
             List<int> packLines = new();
@@ -88,15 +90,14 @@ public abstract class CheckF17 : CheckBase
                 if (line == 0)
                 {
                     //checks required only for the head line, also checks that are supposed to only run once per block.
-                    errorList.AddRange(Check_002(formsList, packLines[line]));
-                    errorList.AddRange(Check_002_99(formsList, packLines[line]));
-                    errorList.AddRange(Check_002_12(formsList, packLines[line]));
-                    errorList.AddRange(Check_002_29(formsList, notes, packLines[line]));
-                    errorList.AddRange(Check_002_11(formsList, packLines[line]));
-                    errorList.AddRange(Check_003_01(formsList, packLines[line]));
-                    errorList.AddRange(Check_003_10(formsList, rep, packLines[line]));
-                    errorList.AddRange(Check_003_non10(formsList, rep, packLines[line]));
-                    errorList.AddRange(Check_004(formsList, packLines[line]));
+                    errorList.AddRange(Check_003(formsList, packLines[line]));
+                    errorList.AddRange(Check_003_99(formsList, packLines[line]));
+                    errorList.AddRange(Check_003_12(formsList, packLines[line]));
+                    errorList.AddRange(Check_003_29(formsList, notes, packLines[line]));
+                    errorList.AddRange(Check_003_11(formsList, packLines[line]));
+                    errorList.AddRange(Check_004_01(formsList, packLines[line]));
+                    errorList.AddRange(Check_004_10(formsList, rep, packLines[line]));
+                    errorList.AddRange(Check_004_non10(formsList, rep, packLines[line]));
                     errorList.AddRange(Check_005(formsList, packLines[line]));
                     errorList.AddRange(Check_006(formsList, packLines[line]));
                     errorList.AddRange(Check_007(formsList, packLines[line]));
@@ -104,44 +105,44 @@ public abstract class CheckF17 : CheckBase
                     errorList.AddRange(Check_009(formsList, packLines[line]));
                     errorList.AddRange(Check_010(formsList, packLines[line]));
                     errorList.AddRange(Check_011(formsList, packLines[line]));
-                    errorList.AddRange(Check_012(formsList, packLines));
+                    errorList.AddRange(Check_012(formsList, packLines[line]));
                     errorList.AddRange(Check_013(formsList, packLines));
-                    errorList.AddRange(Check_014(formsList, notes, packLines[line]));
-                    errorList.AddRange(Check_015(formsList, packLines[line]));
-                    errorList.AddRange(Check_016(formsList, rep, packLines[line]));
-                    errorList.AddRange(Check_017_10(formsList, forms10, packLines[line]));
-                    errorList.AddRange(Check_017_21(formsList, forms10, packLines[line]));
-                    errorList.AddRange(Check_017_22(formsList, forms10, packLines[line]));
-                    errorList.AddRange(Check_018_01(formsList, packLines[line]));
-                    errorList.AddRange(Check_018_21(formsList, packLines[line]));
+                    errorList.AddRange(Check_014(formsList, packLines));
+                    errorList.AddRange(Check_015(formsList, notes, packLines[line]));
+                    errorList.AddRange(Check_016(formsList, packLines[line]));
+                    errorList.AddRange(Check_017(formsList, rep, packLines[line]));
+                    errorList.AddRange(Check_018_10(formsList, forms10, packLines[line]));
+                    errorList.AddRange(Check_018_21(formsList, forms10, packLines[line]));
                     errorList.AddRange(Check_018_22(formsList, forms10, packLines[line]));
-                    errorList.AddRange(Check_019(formsList, packLines[line]));
+                    errorList.AddRange(Check_019_01(formsList, packLines[line]));
+                    errorList.AddRange(Check_019_21(formsList, packLines[line]));
+                    errorList.AddRange(Check_019_22(formsList, forms10, packLines[line]));
                     errorList.AddRange(Check_020(formsList, packLines[line]));
-                    errorList.AddRange(Check_021(formsList, packLines));
-                    errorList.AddRange(Check021_RAOCODE(formsList, notes, packLines));
-                    errorList.AddRange(Check_022_11(formsList, forms10, packLines));
-                    errorList.AddRange(Check_022_26(formsList, forms10, packLines));
-                    errorList.AddRange(Check_022_38(formsList, forms10, packLines));
-                    errorList.AddRange(Check_022_42(formsList, forms10, packLines));
-                    errorList.AddRange(Check_022_22(formsList, packLines));
-                    errorList.AddRange(Check_022_16(formsList, packLines));
-                    errorList.AddRange(Check_022_10(formsList, packLines));
-                    errorList.AddRange(Check_023(formsList, packLines[line]));
+                    errorList.AddRange(Check_021(formsList, packLines[line]));
+                    errorList.AddRange(Check_022(formsList, packLines));
+                    errorList.AddRange(Check022_RAOCODE(formsList, notes, packLines));
+                    errorList.AddRange(Check_023_11(formsList, forms10, packLines));
+                    errorList.AddRange(Check_023_26(formsList, forms10, packLines));
+                    errorList.AddRange(Check_023_38(formsList, forms10, packLines));
+                    errorList.AddRange(Check_023_42(formsList, forms10, packLines));
+                    errorList.AddRange(Check_023_22(formsList, packLines));
+                    errorList.AddRange(Check_023_16(formsList, packLines));
+                    errorList.AddRange(Check_023_10(formsList, packLines));
                     errorList.AddRange(Check_024(formsList, packLines[line]));
-                    errorList.AddRange(Check_025(formsList, packLines));
-                    errorList.AddRange(Check_026_029(formsList, packLines));
-                    errorList.AddRange(Check_030_55(formsList, packLines[line]));
-                    errorList.AddRange(Check_030_10(formsList, packLines[line]));
-                    errorList.AddRange(Check_031(formsList, packLines[line]));
-                    errorList.AddRange(Check_032(formsList, packLines[line]));
+                    errorList.AddRange(Check_025(formsList, packLines[line]));
+                    errorList.AddRange(Check_026(formsList, packLines));
+                    errorList.AddRange(Check_027_029(formsList, packLines));
+                    errorList.AddRange(Check_028_55(formsList, packLines[line]));
+                    errorList.AddRange(Check_028_10(formsList, packLines[line]));
+                    errorList.AddRange(Check_029(formsList, packLines[line]));
+                    errorList.AddRange(Check_030(formsList, packLines[line]));
                     errorList.AddRange(Check_Criteria(formsList, packLines));
                 }
                 //all other checks
                 errorList.AddRange(Check_001(formsList, packLines[line]));
             }
         }
-        errorList.AddRange(Check_033(formsList));
-        errorList.AddRange(Check_034(formsList, rep));
+        errorList.AddRange(Check_031(formsList, rep));
         var index = 0;
         foreach (var error in errorList)
         {
@@ -187,12 +188,94 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check002
+    #region Check02
 
-    private static List<CheckError> Check_002(List<Form17> forms, int line)
+    //Наличие строк дубликатов
+    private static List<CheckError> Check_002(List<Form17> forms)
     {
         List<CheckError> result = new();
-        var operationCode = forms[line].OperationCode_DB ?? string.Empty;
+        HashSet<int> duplicatesLinesSet = new();
+        List<HashSet<int>> duplicatesGroupsSet = new();
+        var comparator = new CustomNullStringWithTrimComparer();
+        for (var i = 0; i < forms.Count; i++)
+        {
+            if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
+            var currentForm = forms[i];
+            var hasDuplicate = false;
+            for (var j = i + 1; j < forms.Count; j++)
+            {
+                if (duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
+                var formToCompare = forms[j];
+                var isDuplicate = !string.IsNullOrWhiteSpace(currentForm.OperationCode_DB) 
+                                  && comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
+                                  && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
+                                  && comparator.Compare(formToCompare.PackName_DB, currentForm.PackName_DB) == 0
+                                  && comparator.Compare(formToCompare.PackType_DB, currentForm.PackType_DB) == 0
+                                  && comparator.Compare(formToCompare.PackFactoryNumber_DB, currentForm.PackFactoryNumber_DB) == 0
+                                  && comparator.Compare(formToCompare.PackNumber_DB, currentForm.PackNumber_DB) == 0
+                                  && comparator.Compare(formToCompare.FormingDate_DB, currentForm.FormingDate_DB) == 0
+                                  && comparator.Compare(formToCompare.PassportNumber_DB, currentForm.PassportNumber_DB) == 0
+                                  && comparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
+                                  && comparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
+                                  && comparator.Compare(formToCompare.Radionuclids_DB, currentForm.Radionuclids_DB) == 0
+                                  && comparator.Compare(formToCompare.SpecificActivity_DB, currentForm.SpecificActivity_DB) == 0
+                                  && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
+                                  && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
+                                  && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
+                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0
+                                  && comparator.Compare(formToCompare.TransporterOKPO_DB, currentForm.TransporterOKPO_DB) == 0
+                                  && comparator.Compare(formToCompare.StoragePlaceName_DB, currentForm.StoragePlaceName_DB) == 0
+                                  && comparator.Compare(formToCompare.StoragePlaceCode_DB, currentForm.StoragePlaceCode_DB) == 0
+                                  && comparator.Compare(formToCompare.CodeRAO_DB, currentForm.CodeRAO_DB) == 0
+                                  && comparator.Compare(formToCompare.StatusRAO_DB, currentForm.StatusRAO_DB) == 0
+                                  && comparator.Compare(formToCompare.VolumeOutOfPack_DB, currentForm.VolumeOutOfPack_DB) == 0
+                                  && comparator.Compare(formToCompare.MassOutOfPack_DB, currentForm.MassOutOfPack_DB) == 0
+                                  && comparator.Compare(formToCompare.Quantity_DB, currentForm.Quantity_DB) == 0
+                                  && comparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
+                                  && comparator.Compare(formToCompare.RefineOrSortRAOCode_DB, currentForm.RefineOrSortRAOCode_DB) == 0
+                                  && comparator.Compare(formToCompare.Subsidy_DB, currentForm.Subsidy_DB) == 0
+                                  && comparator.Compare(formToCompare.FcpNumber_DB, currentForm.FcpNumber_DB) == 0;
+                if (!isDuplicate) continue;
+                hasDuplicate = true;
+                duplicatesLinesSet.Add(j + 1);
+            }
+            if (hasDuplicate) duplicatesLinesSet.Add(i + 1);
+            if (duplicatesLinesSet.Count > 0)
+            {
+                duplicatesGroupsSet.Add(duplicatesLinesSet.Order().ToHashSet());
+            }
+            duplicatesLinesSet.Clear();
+        }
+        if (duplicatesGroupsSet.Count > 0)
+        {
+            foreach (var group in duplicatesGroupsSet)
+            {
+                var dupStrByGroups = ConvertSequenceSetToRangeString(group);
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = dupStrByGroups,
+                    Column = "2 - 18",
+                    Value = "",
+                    Message = $"Данные граф 2-18 в строках {dupStrByGroups} продублированы. " +
+                              $"Следует проверить правильность предоставления данных."
+                });
+            }
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check003
+
+    private static List<CheckError> Check_003(List<Form17> forms, int line)
+    {
+        List<CheckError> result = new();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var valid = OperationCode_DB_Valids.Contains(operationCode);
         if (!valid)
         {
@@ -211,12 +294,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check002_99
+    #region Check003_99
 
-    private static List<CheckError> Check_002_99(List<Form17> forms, int line)
+    private static List<CheckError> Check_003_99(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var codeRao = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
+        var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
         if (forms[line].CodeRAO_DB.Length < 10) return result;
         var valid = codeRao.Substring(8, 2) != "99";
         if (!valid)
@@ -237,15 +320,15 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check002_12
+    #region Check003_12
 
-    private static List<CheckError> Check_002_12(List<Form17> forms, int line)
+    private static List<CheckError> Check_003_12(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
-        var applicableOperationCodes = new [] { "12,42" };
-        var requiredNuclids = new []
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
+        var applicableOperationCodes = new[] { "12", "42" };
+        var requiredNuclids = new[]
         {
             "плутоний", "уран-233", "уран-235", "уран-238", "нептуний-237", "америций-241", 
             "америций-243", "калифорний-252", "торий", "литий-6", "тритий"
@@ -278,12 +361,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check002_29
+    #region Check003_29
 
-    private static List<CheckError> Check_002_29(List<Form17> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_003_29(List<Form17> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var applicableOperationCodes = new [] { "29", "39", "97", "98" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         const byte graphNumber = 2;
@@ -305,15 +388,15 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check002_11
+    #region Check003_11
 
-    private static List<CheckError> Check_002_11(List<Form17> forms, int line)
+    private static List<CheckError> Check_003_11(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var codeRao = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
-        var applicableOperationCodes = new [] { "11", "12", "13", "14", "16" };
-        var applicableRao8 = new [] { "4", "6" };
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
+        var applicableOperationCodes = new[] { "11", "12", "13", "14", "16" };
+        var applicableRao8 = new[] { "4", "6" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         if (codeRao.Length < 8) return result;
         var codeRao8 = codeRao.Substring(7, 1);
@@ -335,14 +418,14 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check003_01
+    #region Check004_01
 
-    private static List<CheckError> Check_003_01(List<Form17> forms, int line)
+    private static List<CheckError> Check_004_01(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "01" };
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var operationDate = (forms[line].OperationDate_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = DateOnly.TryParse(operationDate, out var operationDateReal) 
                     && operationDateReal is { Year: 2021, Month: 12, Day: 31 };
@@ -363,14 +446,14 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check003_non10
+    #region Check004_non10
 
-    private static List<CheckError> Check_003_non10(List<Form17> forms, Report rep, int line)
+    private static List<CheckError> Check_004_non10(List<Form17> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] nonApplicableOperationCodes = { "10", "01" };
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var operationDate = (forms[line].OperationDate_DB ?? string.Empty).Trim(); 
+        string[] nonApplicableOperationCodes = { "01", "10"  };
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB); 
         if (nonApplicableOperationCodes.Contains(operationCode)) return result;
         var valid = rep is { StartPeriod_DB: not null, EndPeriod_DB: not null } 
                      && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
@@ -394,23 +477,20 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check003_10
+    #region Check004_10
 
-    private static List<CheckError> Check_003_10(List<Form17> forms, Report rep, int line)
+    private static List<CheckError> Check_004_10(List<Form17> forms, Report rep, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "10" };
-        var operationCode = forms[line].OperationCode_DB;
-        var documentDate = forms[line].DocumentDate_DB;
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var documentDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = documentDate != null;
-        if (valid && rep is { StartPeriod_DB: not null, EndPeriod_DB: not null })
-        {
-            valid = DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
+        var valid = rep is { StartPeriod_DB: not null, EndPeriod_DB: not null }
+                    && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
                     && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
                     && DateOnly.TryParse(documentDate, out var pMid)
                     && pMid >= pStart && pMid <= pEnd;
-        }
         if (!valid)
         {
             result.Add(new CheckError
@@ -429,16 +509,16 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check004
+    #region Check005
 
-    private static List<CheckError> Check_004(List<Form17> forms, int line)
+    private static List<CheckError> Check_005(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var packName = forms[line].PackName_DB ?? string.Empty;
-        var graph5 = forms[line].PackType_DB ?? string.Empty;
-        var graph6 = forms[line].PackFactoryNumber_DB ?? string.Empty;
-        var graph10 = forms[line].Volume_DB ?? string.Empty;
-        var graph11 = forms[line].Mass_DB ?? string.Empty;
+        var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
+        var packType = ReplaceNullAndTrim(forms[line].PackType_DB);
+        var pacFacNum = ReplaceNullAndTrim(forms[line].PackFactoryNumber_DB);
+        var volume = ConvertStringToExponential(forms[line].Volume_DB);
+        var mass = ConvertStringToExponential(forms[line].Mass_DB);
         if (string.IsNullOrWhiteSpace(packName))
         {
             result.Add(new CheckError
@@ -451,52 +531,52 @@ public abstract class CheckF17 : CheckBase
                           "Заполните сведения об упаковке РАО. Если РАО размещены без упаковки, то в графе 4 указывается «без упаковки»."
             });
         }
-        else if (packName.ToLower().Trim() == "без упаковки")
+        else if (packName.ToLower() == "без упаковки")
         {
-            if (graph5.Trim() != "-")
+            if (packType != "-")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "PackType_DB",
-                    Value = graph5,
+                    Value = packType,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "При указании в графе 4 «Без упаковки» в графе 5 должен быть символ «-»."
                 });
             }
-            if (graph6.Trim() != "-")
+            if (pacFacNum != "-")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "PackFactoryNumber_DB",
-                    Value = graph6,
+                    Value = pacFacNum,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "При указании в графе 4 «без упаковки» в графе 6 должен быть символ «-»."
                 });
             }
-            if (graph10.Trim() != "-")
+            if (volume != "-")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Volume_DB",
-                    Value = graph10,
+                    Value = volume,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "При указании в графе 4 «без упаковки» в графе 10 должен быть символ «-»."
                 });
             }
-            if (graph11.Trim() != "-")
+            if (mass != "-")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Mass_DB",
-                    Value = graph11,
+                    Value = mass,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "При указании в графе 4 «без упаковки» в графе 11 должен быть символ «-»."
                 });
@@ -505,16 +585,17 @@ public abstract class CheckF17 : CheckBase
         else
         {
             var comparator = new CustomNullStringWithTrimComparer();
-            if (Packs.All(phEntry => comparator.Compare(StringRemoveSpecials(phEntry["name"]), StringRemoveSpecials(graph5)) != 0))
+            if (Packs.All(phEntry => comparator.Compare(StringRemoveSpecials(phEntry["name"]), StringRemoveSpecials(packType)) != 0))
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "PackType_DB",
-                    Value = graph5,
+                    Value = packType,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
-                              "Указанный тип контейнера (емкости) не найден в справочнике контейнеров, соответствующих частным критериям приемлемости для захоронения РАО существующих ППЗРО"
+                              "Указанный тип контейнера (емкости) не найден в справочнике контейнеров, " +
+                              "соответствующих частным критериям приемлемости для захоронения РАО существующих ППЗРО."
                 });
             }
         }
@@ -523,14 +604,14 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check005
+    #region Check006
 
-    private static List<CheckError> Check_005(List<Form17> forms, int line)
+    private static List<CheckError> Check_006(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var packName = forms[line].PackName_DB ?? string.Empty; ;
-        var graph5 = forms[line].PackType_DB ?? string.Empty; ;
-        if (graph5.Trim() == "-")
+        var packName = ReplaceNullAndTrim(forms[line].PackName_DB); ;
+        var packType = ReplaceNullAndTrim(forms[line].PackType_DB); ;
+        if (packType == "-")
         {
             if (packName.ToLower().Trim() == "без упаковки")
             {
@@ -547,7 +628,7 @@ public abstract class CheckF17 : CheckBase
         }
         else
         {
-            var valid = !string.IsNullOrWhiteSpace(graph5);
+            var valid = !string.IsNullOrWhiteSpace(packType);
             if (!valid)
             {
                 result.Add(new CheckError
@@ -555,50 +636,11 @@ public abstract class CheckF17 : CheckBase
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "PackType_DB",
-                    Value = forms[line].PackType_DB,
+                    Value = packType,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Проверьте тип упаковки. Введённое значение не соответствует критериям приемлемости."
                 });
             }
-        }
-        return result;
-    }
-
-    #endregion
-
-    #region Check006
-
-    private static List<CheckError> Check_006(List<Form17> forms, int line)
-    {
-        List<CheckError> result = new();
-        var packName = forms[line].PackName_DB ?? string.Empty;
-        var graph6 = forms[line].PackFactoryNumber_DB ?? string.Empty;
-        if (graph6.Trim() == "-")
-        {
-            if (packName.ToLower().Trim() == "без упаковки")
-            {
-                result.Add(new CheckError
-                {
-                    FormNum = "form_17",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "PackFactoryNumber_DB",
-                    Value = forms[line].PackFactoryNumber_DB,
-                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                              "В графе 6 символ «-» допускается только при указании в графе 4 «Без упаковки»."
-                });
-            }
-        }
-        else if(string.IsNullOrWhiteSpace(graph6))
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_17",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "PackFactoryNumber_DB",
-                Value = forms[line].PackFactoryNumber_DB,
-                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                          "Заполните сведения о заводском номере упаковки. Если РАО размещены без упаковки, то в графе 4 указывается «Без упаковки»."
-            });
         }
         return result;
     }
@@ -610,17 +652,34 @@ public abstract class CheckF17 : CheckBase
     private static List<CheckError> Check_007(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var graph7 = forms[line].PackNumber_DB;
-        if (string.IsNullOrWhiteSpace(graph7))
+        var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
+        var packFacNum = ReplaceNullAndTrim(forms[line].PackFactoryNumber_DB);
+        if (packFacNum == "-")
+        {
+            if (packName.ToLower() == "без упаковки")
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "PackFactoryNumber_DB",
+                    Value = packFacNum,
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "В графе 6 символ «-» допускается только при указании в графе 4 «Без упаковки»."
+                });
+            }
+        }
+        else if(string.IsNullOrWhiteSpace(packFacNum))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "PackNumber_DB",
-                Value = forms[line].PackNumber_DB,
+                Column = "PackFactoryNumber_DB",
+                Value = packFacNum,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                          "Заполните сведения о номере (идентификационном коде) упаковки."
+                          "Заполните сведения о заводском номере упаковки. " +
+                          "Если РАО размещены без упаковки, то в графе 4 указывается «Без упаковки»."
             });
         }
         return result;
@@ -633,8 +692,31 @@ public abstract class CheckF17 : CheckBase
     private static List<CheckError> Check_008(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var operationDate = forms[line].OperationDate_DB;
-        var formingDate = forms[line].FormingDate_DB;
+        var packNum = ReplaceNullAndTrim(forms[line].PackNumber_DB);
+        if (string.IsNullOrWhiteSpace(packNum))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_17",
+                Row = forms[line].NumberInOrder_DB.ToString(),
+                Column = "PackNumber_DB",
+                Value = packNum,
+                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                          "Заполните сведения о номере (идентификационном коде) упаковки."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check009
+
+    private static List<CheckError> Check_009(List<Form17> forms, int line)
+    {
+        List<CheckError> result = new();
+        var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        var formingDate = ReplaceNullAndTrim(forms[line].FormingDate_DB);
         if (string.IsNullOrEmpty(formingDate))
         {
             result.Add(new CheckError
@@ -649,8 +731,8 @@ public abstract class CheckF17 : CheckBase
         }
         else
         {
-            if (DateTime.TryParse(operationDate, out var operationDateReal) 
-                && DateTime.TryParse(formingDate, out var formingDateReal) 
+            if (DateOnly.TryParse(operationDate, out var operationDateReal) 
+                && DateOnly.TryParse(formingDate, out var formingDateReal) 
                 && !(formingDateReal <= operationDateReal))
             {
                 result.Add(new CheckError
@@ -669,20 +751,20 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check009
+    #region Check010
 
-    private static List<CheckError> Check_009(List<Form17> forms, int line)
+    private static List<CheckError> Check_010(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var graph9 = forms[line].PassportNumber_DB;
-        if (string.IsNullOrWhiteSpace(graph9))
+        var PasNum = ReplaceNullAndTrim(forms[line].PassportNumber_DB);
+        if (string.IsNullOrWhiteSpace(PasNum))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "PassportNumber_DB",
-                Value = forms[line].PassportNumber_DB,
+                Value = PasNum,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Укажите номер паспорта."
             });
@@ -692,15 +774,15 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check010
+    #region Check011
 
-    private static List<CheckError> Check_010(List<Form17> forms, int line)
+    private static List<CheckError> Check_011(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
         var comparator = new CustomNullStringWithTrimComparer();
-        var packName = forms[line].PackType_DB ?? string.Empty;
-        var graph10 = forms[line].Volume_DB ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(graph10))
+        var packName = ReplaceNullAndTrim(forms[line].PackType_DB);
+        var volume = ConvertStringToExponential(forms[line].Volume_DB);
+        if (string.IsNullOrWhiteSpace(volume))
         {
             result.Add(new CheckError
             {
@@ -713,7 +795,7 @@ public abstract class CheckF17 : CheckBase
             });
             return result;
         }
-        if (graph10.Trim() == "-")
+        if (volume == "-")
         {
             if (packName.ToLower().Trim() == "без упаковки")
             {
@@ -732,16 +814,16 @@ public abstract class CheckF17 : CheckBase
 
         if (Packs.All(phEntry => comparator.Compare(phEntry["name"], packName) != 0)) return result;
         var packVolume = Packs.First(phEntry => comparator.Compare(phEntry["name"], packName) == 0)["volume"];
-        if (!TryParseFloatExtended(graph10, out var graph10Real) ||
+        if (!TryParseFloatExtended(volume, out var volumeReal) ||
             !TryParseFloatExtended(packVolume, out var packVolumeReal)) return result;
-        if (graph10Real > packVolumeReal * 1.1f || graph10Real < packVolumeReal * 0.9f)
+        if (volumeReal > packVolumeReal * 1.1f || volumeReal < packVolumeReal * 0.9f)
         {
             result.Add(new CheckError
             {
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "Volume_DB",
-                Value = forms[line].Volume_DB,
+                Value = volume,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Сведения об объеме не соответствуют представленному типу упаковок. Проверьте правильность предоставленных сведений."
             });
@@ -751,15 +833,15 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check011
+    #region Check012
 
-    private static List<CheckError> Check_011(List<Form17> forms, int line)
+    private static List<CheckError> Check_012(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var packName = forms[line].PackName_DB;
-        var graph11 = forms[line].Mass_DB;
-        var graph24 = forms[line].MassOutOfPack_DB;
-        if (string.IsNullOrWhiteSpace(graph11))
+        var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
+        var mass = ConvertStringToExponential(forms[line].Mass_DB);
+        var massOutOfPack = ConvertStringToExponential(forms[line].MassOutOfPack_DB);
+        if (string.IsNullOrWhiteSpace(mass))
         {
             result.Add(new CheckError
             {
@@ -772,16 +854,16 @@ public abstract class CheckF17 : CheckBase
             });
             return result;
         }
-        if (graph11.Trim() == "-")
+        if (mass == "-")
         {
-            if (packName.ToLower().Trim() == "без упаковки")
+            if (packName.ToLower() == "без упаковки")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Mass_DB",
-                    Value = forms[line].Mass_DB,
+                    Value = mass,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "В графе 11 символ «-» допускается только при указании в графе 4 «Без упаковки»."
                 });
@@ -790,41 +872,41 @@ public abstract class CheckF17 : CheckBase
         }
         if (true) //pack name is within the pack table
         {
-            if (!TryParseFloatExtended(graph24, out var graph24Real))
+            if (!TryParseFloatExtended(massOutOfPack, out var massOutOfPackReal))
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "MassOutOfPack_DB",
-                    Value = forms[line].MassOutOfPack_DB,
+                    Value = massOutOfPack,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Проверьте правильность предоставления сведений о массе."
                 });
             }
-            else if (!TryParseFloatExtended(graph11, out var graph11Real))
+            else if (!TryParseFloatExtended(mass, out var massReal))
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Mass_DB",
-                    Value = forms[line].Mass_DB,
+                    Value = mass,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Проверьте правильность предоставления сведений о массе."
                 });
             }
             else
             {
-                var totalMassExpected = (graph11Real - graph24Real) + graph24Real;    //replace the value in parentheses with data from the pack table
-                if (graph11Real > totalMassExpected * 1.2f || graph11Real < totalMassExpected / 1.2f)
+                var totalMassExpected = (massReal - massOutOfPackReal) + massOutOfPackReal;    //replace the value in parentheses with data from the pack table
+                if (massReal > totalMassExpected * 1.2f || massReal < totalMassExpected * 0.8f)
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "Mass_DB",
-                        Value = forms[line].Mass_DB,
+                        Value = mass,
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                                   "Проверьте правильность предоставления сведений о массе."
                     });
@@ -836,15 +918,14 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check012
+    #region Check013
 
-    private static List<CheckError> Check_012(List<Form17> forms, List<int> lines)
+    private static List<CheckError> Check_013(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
-        foreach (int line in lines)
+        foreach (var line in lines)
         {
-            var radionuclids = forms[line].Radionuclids_DB ?? string.Empty;
-            var rad = radionuclids.ToLower().Trim();
+            var rad = ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower();
             if (string.IsNullOrWhiteSpace(rad) || rad == "-") continue;
             if (rad.Replace(" ", "").Replace(',', ';').Split(';').Length != 1)
             {
@@ -854,7 +935,7 @@ public abstract class CheckF17 : CheckBase
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Radionuclids_DB",
-                    Value = forms[line].Radionuclids_DB,
+                    Value = rad,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "В форме 1.7 в каждой строчке указывается до одного радионуклида."
                 });
@@ -866,7 +947,7 @@ public abstract class CheckF17 : CheckBase
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Radionuclids_DB",
-                    Value = forms[line].Radionuclids_DB,
+                    Value = rad,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Наименование радионуклида указывается названием химического элемента на русском языке, " +
                               "с указанием через дефис массового числа изотопа."
@@ -878,9 +959,9 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check013
+    #region Check014
 
-    private static List<CheckError> Check_013(List<Form17> forms, List<int> lines)
+    private static List<CheckError> Check_014(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
         var massSum = 0.0f;
@@ -916,12 +997,13 @@ public abstract class CheckF17 : CheckBase
         }
         foreach (var line in lines)
         {
-            var rads = forms[line].Radionuclids_DB ?? string.Empty;
-            if (R.Any(phEntry => phEntry["name"] == rads.ToLower().Trim()) 
-                && TryParseFloatExtended(forms[line].SpecificActivity_DB, out var partialActivityReal))
+            var specificActivity = ConvertStringToExponential(forms[line].SpecificActivity_DB);
+            var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
+            if (R.Any(phEntry => phEntry["name"] == rads.ToLower()) 
+                && TryParseFloatExtended(specificActivity, out var partialActivityReal))
             {
                 var nuclid = R
-                    .First(phEntry => phEntry["name"] == rads.ToLower().Trim());
+                    .First(phEntry => phEntry["name"] == rads.ToLower());
                 switch (nuclid["code"])
                 {
                     case "а":
@@ -994,7 +1076,7 @@ public abstract class CheckF17 : CheckBase
                     Column = "TritiumActivity_DB",
                     Value = forms[lines[0]].TritiumActivity_DB,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                              $"Сведения об удельной активности радионуклидов, представленные в графе 13, " +
+                              "Сведения об удельной активности радионуклидов, представленные в графе 13, " +
                               $"не соответствуют сведениям о суммарной активности в графе 26 (ожидается {partialActivitySumT:0.00e+0})."
                 });
             }
@@ -1009,7 +1091,7 @@ public abstract class CheckF17 : CheckBase
                     Column = "TransuraniumActivity_DB",
                     Value = forms[lines[0]].TransuraniumActivity_DB,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                              $"Сведения об удельной активности радионуклидов, представленные в графе 13, " +
+                              "Сведения об удельной активности радионуклидов, представленные в графе 13, " +
                               $"не соответствуют сведениям о суммарной активности в графе 29 (ожидается {partialActivitySumU:0.00e+0})."
                 });
             }
@@ -1019,13 +1101,16 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check014
+    #region Check015
 
-    private static List<CheckError> Check_014(List<Form17> forms, List<Note> notes, int line)
+    private static List<CheckError> Check_015(List<Form17> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
-        List<string> applicableDocumentVids = new() { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "19" };
-        var documentVid = forms[line].DocumentVid_DB?.ToString().Trim()??"";
+        List<string> applicableDocumentVids = new()
+        {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "19"
+        };
+        var documentVid = (forms[line].DocumentVid_DB ?? 0).ToString();
         const byte graphNumber = 14;
         var noteExists = CheckNotePresence(notes, line, graphNumber);
         if (string.IsNullOrWhiteSpace(documentVid))
@@ -1035,7 +1120,7 @@ public abstract class CheckF17 : CheckBase
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentVid_DB",
-                Value = forms[line].DocumentVid_DB.ToString(),
+                Value = documentVid,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Графа не может быть пустой."
             });
@@ -1047,7 +1132,7 @@ public abstract class CheckF17 : CheckBase
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentVid_DB",
-                Value = forms[line].DocumentVid_DB.ToString(),
+                Value = documentVid,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Недопустимый код вида документа."
             });
@@ -1059,7 +1144,7 @@ public abstract class CheckF17 : CheckBase
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentVid_DB",
-                Value = forms[line].DocumentVid_DB.ToString(),
+                Value = documentVid,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Необходимо примечание с указанием наименования документа."
             });
@@ -1069,12 +1154,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check015
+    #region Check016
 
-    private static List<CheckError> Check_015(List<Form17> forms, int line)
+    private static List<CheckError> Check_016(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var documentNumber = forms[line].DocumentNumber_DB;
+        var documentNumber = ReplaceNullAndTrim(forms[line].DocumentNumber_DB);
         var valid = !string.IsNullOrWhiteSpace(documentNumber);
         if (!valid)
         {
@@ -1083,7 +1168,7 @@ public abstract class CheckF17 : CheckBase
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentNumber_DB",
-                Value = forms[line].DocumentNumber_DB,
+                Value = documentNumber,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Графа не может быть пустой."
             });
@@ -1093,14 +1178,14 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check016
+    #region Check017
 
-    private static List<CheckError> Check_016(List<Form17> forms, Report rep, int line)
+    private static List<CheckError> Check_017(List<Form17> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        var operationCode = forms[line].OperationCode_DB;
-        var operationDate = forms[line].OperationDate_DB;
-        var documentDate = forms[line].DocumentDate_DB;
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        var documentDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         DateOnly pMid;
         bool valid;
         if (operationCode == "10")
@@ -1145,21 +1230,23 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check017_10
+    #region Check018_10
 
     //Код ОКПО поставщика/получателя равен коду ОКПО отчитывающейся организации
-    private static List<CheckError> Check_017_10(List<Form17> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_018_10(List<Form17> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "01", "10", "11", "12", "13", "14", "16", "18", "43", "44", "45", "51", "52", "55", "68", "71", "97", "98" };
-        var operationCode = forms[line].OperationCode_DB;
-        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        string[] applicableOperationCodes =
+        {
+            "01", "10", "11", "12", "13", "14", "16", "18", "43", "44", "45", "51", "52", "55", "68", "71", "97", "98"
+        };
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOKPO = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
 
-        //var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         var valid = providerOrRecieverOKPO == repOKPO;
         if (!valid)
         {
@@ -1178,15 +1265,15 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check017_21
+    #region Check018_21
 
     //Код ОКПО поставщика/получателя не равен коду ОКПО отчитывающейся организации + 8/14 цифр
-    private static List<CheckError> Check_017_21(List<Form17> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_018_21(List<Form17> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "21", "25", "26", "27", "28", "29", "31", "35", "36", "37", "38", "39", "63", "64" };
-        var operationCode = forms[line].OperationCode_DB;
-        var providerOrRecieverOKPO = forms[line].ProviderOrRecieverOKPO_DB;
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOKPO = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
@@ -1224,15 +1311,15 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check017_22
+    #region Check018_22
 
     //Код ОКПО поставщика/получателя состоит из 8/14 чисел или "минобороны"
-    private static List<CheckError> Check_017_22(List<Form17> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_018_22(List<Form17> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "22", "32" };
-        var operationCode = forms[line].OperationCode_DB;
-        var providerOrRecieverOKPO = (forms[line].ProviderOrRecieverOKPO_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOKPO = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
@@ -1257,19 +1344,20 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check018_01
+    #region Check019_01
 
     //При определенных кодах операции, код ОКПО перевозчика равен "-"
-    private static List<CheckError> Check_018_01(List<Form17> forms, int line)
+    private static List<CheckError> Check_019_01(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         string[] applicableOperationCodes =
         {
             "01", "10", "11", "12", "13", "14", "16", "18", "43", "44", "45", "51", "52", "55", "68", "71", "97", "98"
         };
-        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var transporterOKPO = (forms[line].TransporterOKPO_DB ?? string.Empty).Trim();
-        var valid = transporterOKPO is "-";
+        if (!applicableOperationCodes.Contains(opCode)) return result;
+        var valid = transporterOkpo is "-";
         if (!valid)
         {
             result.Add(new CheckError
@@ -1277,7 +1365,7 @@ public abstract class CheckF17 : CheckBase
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TransporterOKPO_DB",
-                Value = Convert.ToString(transporterOKPO),
+                Value = Convert.ToString(transporterOkpo),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "При выбранном коде операции транспортирование не производится, необходим символ «-» без кавычек."
             });
@@ -1287,18 +1375,18 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check018_21
+    #region Check019_21
 
     //При определенных кодах операции, код ОКПО перевозчика равен 8/14 цифр
-    private static List<CheckError> Check_018_21(List<Form17> forms, int line)
+    private static List<CheckError> Check_019_21(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes =
         {
             "21","25","26","27","28","29","31","35","36","37","38","39"
         };
-        var operationCode = forms[line].OperationCode_DB;
-        var transporterOKPO = forms[line].TransporterOKPO_DB;
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var transporterOKPO = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         var valid = okpoRegex.IsMatch(transporterOKPO);
@@ -1319,18 +1407,18 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check018_22
+    #region Check019_22
 
     //Код ОКПО перевозчика состоит из 8/14 чисел или "минобороны", не ОКПО отчитывающейся
-    private static List<CheckError> Check_018_22(List<Form17> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_019_22(List<Form17> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "22", "32" };
         var repOKPO = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
             ? forms10[1].Okpo_DB
             : forms10[0].Okpo_DB;
-        var operationCode = forms[line].OperationCode_DB;
-        var transporterOKPO = (forms[line].TransporterOKPO_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var transporterOKPO = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = transporterOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase)
@@ -1352,12 +1440,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check019
+    #region Check020
 
-    private static List<CheckError> Check_019(List<Form17> forms, int line)
+    private static List<CheckError> Check_020(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var storagePlaceNameDB = forms[line].StoragePlaceName_DB;
+        var storagePlaceNameDB = ReplaceNullAndTrim(forms[line].StoragePlaceName_DB);
         var valid = !string.IsNullOrWhiteSpace(storagePlaceNameDB);
         if (!valid)
         {
@@ -1376,12 +1464,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check020
+    #region Check021
 
-    private static List<CheckError> Check_020(List<Form17> forms, int line)
+    private static List<CheckError> Check_021(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var storagePlaceCodeDB = forms[line].StoragePlaceCode_DB;
+        var storagePlaceCodeDB = ReplaceNullAndTrim(forms[line].StoragePlaceCode_DB);
         var valid = !string.IsNullOrWhiteSpace(storagePlaceCodeDB);
         if (!valid)
         {
@@ -1400,12 +1488,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check021
+    #region Check022
 
-    private static List<CheckError> Check_021(List<Form17> forms, List<int> lines)
+    private static List<CheckError> Check_022(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
-        var kodRAORegex = new Regex(@"^\d{11}?$");
+        var codeRaoRegex = new Regex(@"^\d{11}?$");
         var nuclidsRight =
             ((TryParseFloatExtended(forms[lines[0]].TransuraniumActivity_DB, out _) ? 1 : 0) << 0) +
             ((TryParseFloatExtended(forms[lines[0]].AlphaActivity_DB, out _) ? 1 : 0) << 1) +
@@ -1414,9 +1502,9 @@ public abstract class CheckF17 : CheckBase
         var nuclidsLeft = 0;
         foreach (var nuclid in lines
                      .Where(line => R
-                         .Any(phEntry => phEntry["name"] == (forms[line].Radionuclids_DB ?? string.Empty).ToLower().Trim()))
+                         .Any(phEntry => phEntry["name"] == ReplaceNullAndTrim(forms[line].Radionuclids_DB.ToLower())))
                      .Select(line =>
-                         R.First(phEntry => phEntry["name"] == (forms[line].Radionuclids_DB ?? string.Empty).ToLower().Trim())))
+                         R.First(phEntry => phEntry["name"] == ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower())))
         {
             switch (nuclid["code"])
             {
@@ -1436,19 +1524,19 @@ public abstract class CheckF17 : CheckBase
         }
         foreach (var line in lines)
         {
-            var kodRao = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
-            if (!kodRAORegex.IsMatch(kodRao)) continue;
+            var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
+            if (!codeRaoRegex.IsMatch(codeRao)) continue;
 
             #region 1-й символ кода РАО
 
-            if (kodRao[..1] != "2")
+            if (codeRao[..1] != "2")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = forms[line].CodeRAO_DB,
+                    Value = codeRao,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "В форме 1.7 приводятся сведения только о твёрдых кондиционированных РАО (1-й символ кода РАО должен быть равен 2)."
                 });
@@ -1458,14 +1546,14 @@ public abstract class CheckF17 : CheckBase
 
             #region 2-й символ кода РАО
 
-            if (kodRao.Substring(1, 1) == "9")
+            if (codeRao.Substring(1, 1) == "9")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = forms[line].CodeRAO_DB,
+                    Value = codeRao,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Для кондиционированных РАО должна быть определена категория (2-й символ кода РАО не может быть равен 9)."
                 });
@@ -1497,15 +1585,15 @@ public abstract class CheckF17 : CheckBase
             var expectedSymbolLeft = nuclidsLeft == 0 ? 0 : expectedSymbols[nuclidsLeft];
             if (expectedSymbolRight == expectedSymbolLeft)
             {
-                if (kodRao.Substring(2, 1) == "0" 
-                    || kodRao.Substring(2, 1) != expectedSymbolRight.ToString())
+                if (codeRao.Substring(2, 1) == "0" 
+                    || codeRao.Substring(2, 1) != expectedSymbolRight.ToString())
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = forms[line].CodeRAO_DB,
+                        Value = codeRao,
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                                   $"Укажите 3-й символ кода РАО в соответствии с радионуклидным составом (ожидается {expectedSymbolRight})."
                     });
@@ -1516,14 +1604,14 @@ public abstract class CheckF17 : CheckBase
 
             #region 6-й символ кода РАО
 
-            if (kodRao.Substring(5, 1) == "0")
+            if (codeRao.Substring(5, 1) == "0")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
-                    Value = forms[line].CodeRAO_DB,
+                    Value = codeRao,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Для РАО, приведенных к критериям приемлемости, должен быть определен период потенциальной опасности " +
                               "(6-й символ кода РАО не может быть равен 0)."
@@ -1535,17 +1623,17 @@ public abstract class CheckF17 : CheckBase
             #region 8-й символ кода РАО
 
             List<string> applicableRao3 = new() { "1", "2", "3", "4", "6" };
-            if (!applicableRao3.Contains(kodRao.Substring(7, 1)))
+            if (!applicableRao3.Contains(codeRao.Substring(7, 1)))
             {
 
-                if (kodRao.Substring(7, 1) == "5")
+                if (codeRao.Substring(7, 1) == "5")
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = forms[line].CodeRAO_DB,
+                        Value = codeRao,
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                                   "В форме 1.7 приводятся сведения только о твердых РАО, приведенных к критериям приемлемости " +
                                   "(8-й символ кода РАО не может быть равен 5)."
@@ -1558,7 +1646,7 @@ public abstract class CheckF17 : CheckBase
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = forms[line].CodeRAO_DB,
+                        Value = codeRao,
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                                   "Сведения о некондиционированных отходах необходимо представлять в формах 1.5 и 1.6 " +
                                   "(8-й символ кода РАО в форме 1.7 ожидается равным 1, 2, 3, 4, 6)."
@@ -1567,15 +1655,15 @@ public abstract class CheckF17 : CheckBase
             }
             else
             {
-                if (kodRao.Substring(7, 1) == "6" 
-                    && kodRao.Substring(1, 1) != "0")
+                if (codeRao.Substring(7, 1) == "6" 
+                    && codeRao.Substring(1, 1) != "0")
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
-                        Value = forms[line].CodeRAO_DB,
+                        Value = codeRao,
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                                   "Твердые РАО, содержащие природные радионуклиды, относятся к ОНАО " +
                                   "(при 8-ом символе кода РАО, равном 6, ожидается 2-й символ кода РАО, равный 0)."
@@ -1597,9 +1685,9 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check021_RAOCODE
+    #region Check022_RAOCODE
 
-    private static List<CheckError> Check021_RAOCODE(List<Form17> forms, List<Note> notes, List<int> lines)
+    private static List<CheckError> Check022_RAOCODE(List<Form17> forms, List<Note> notes, List<int> lines)
     {
         List<CheckError> result = new();
         var comparator = new CustomNullStringWithTrimComparer();
@@ -1651,12 +1739,12 @@ public abstract class CheckF17 : CheckBase
 
         foreach (var line in lines)
         {
-            var nuclidActivityT = forms[line].TritiumActivity_DB;
-            var nuclidActivityA = forms[line].AlphaActivity_DB;
-            var nuclidActivityB = forms[line].BetaGammaActivity_DB;
-            var nuclidActivityU = forms[line].TransuraniumActivity_DB;
-            var nuclidMassOutOfPack = forms[line].MassOutOfPack_DB;
-            var refineOrSortRaoCode = forms[line].RefineOrSortRAOCode_DB;
+            var nuclidActivityT = ConvertStringToExponential(forms[line].TritiumActivity_DB);
+            var nuclidActivityA = ConvertStringToExponential(forms[line].AlphaActivity_DB);
+            var nuclidActivityB = ConvertStringToExponential(forms[line].BetaGammaActivity_DB);
+            var nuclidActivityU = ConvertStringToExponential(forms[line].TransuraniumActivity_DB);
+            var nuclidMassOutOfPack = ConvertStringToExponential(forms[line].MassOutOfPack_DB);
+            var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
             var nuclidsExistT = TryParseFloatExtended(nuclidActivityT, out var nuclidActivityTReal);
             var nuclidsExistA = TryParseFloatExtended(nuclidActivityA, out var nuclidActivityAReal);
             var nuclidsExistB = TryParseFloatExtended(nuclidActivityB, out var nuclidActivityBReal);
@@ -1664,7 +1752,7 @@ public abstract class CheckF17 : CheckBase
             var nuclidMassExists = TryParseFloatExtended(nuclidMassOutOfPack, out var nuclidMassOutOfPackReal);
             const byte graphNumber = 21;
             var noteExists = CheckNotePresence(notes, line, graphNumber);
-            var codeRaoDB = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
+            var codeRaoDB = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
             if (codeRaoDB is "" or "-") continue;
             var valid = codeRaoDB.Length == 11 && codeRaoDB.All(char.IsDigit);
             if (!valid)
@@ -2181,7 +2269,7 @@ public abstract class CheckF17 : CheckBase
             {
                 var monoNuclid = radArray.Count == 1;
                 var expectedPeriod = float.MaxValue;
-                string expectedPeriodOutput = "";
+                var expectedPeriodOutput = "";
                 int expectedValue;
                 if (monoNuclid)
                 {
@@ -2634,13 +2722,13 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check022_11
+    #region Check023_11
 
-    private static List<CheckError> Check_022_11(List<Form17> forms, List<Form10> forms10, List<int> lines)
+    private static List<CheckError> Check_023_11(List<Form17> forms, List<Form10> forms10, List<int> lines)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "11", "12", "13", "14", "16" };
-        var operationCode = forms[lines[0]].OperationCode_DB;
+        var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var repOKPOList = forms10
             .Select(x => x.Okpo_DB)
@@ -2648,7 +2736,7 @@ public abstract class CheckF17 : CheckBase
             .ToList();
         foreach (var line in lines)
         {
-            var statusRaoDB = (forms[line].StatusRAO_DB ?? string.Empty).Trim();
+            var statusRaoDB = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (statusRaoDB is "" or "-") continue;
             var valid = repOKPOList.Contains(statusRaoDB);
             if (!valid)
@@ -2670,19 +2758,22 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check022_26
-    private static List<CheckError> Check_022_26(List<Form17> forms, List<Form10> forms10, List<int> lines)
+    #region Check023_26
+    private static List<CheckError> Check_023_26(List<Form17> forms, List<Form10> forms10, List<int> lines)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new string[] { "26", "28", "63" };
-        var operationCode = forms[lines[0]].OperationCode_DB;
+        var applicableOperationCodes = new[] { "26", "28", "63" };
+        var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var repOKPO_List = forms10.Select(x => x.Okpo_DB).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        var repOkpoList = forms10
+            .Select(x => x.Okpo_DB)
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .ToList();
         foreach (var line in lines)
         {
-            var statusRaoDB = (forms[line].StatusRAO_DB ?? string.Empty).Trim();
+            var statusRaoDB = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (statusRaoDB is "" or "-") continue;
-            var valid = repOKPO_List.Contains(statusRaoDB);
+            var valid = repOkpoList.Contains(statusRaoDB);
             if (!valid)
             {
                 result.Add(new CheckError
@@ -2701,13 +2792,13 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check022_38
+    #region Check023_38
 
-    private static List<CheckError> Check_022_38(List<Form17> forms, List<Form10> forms10, List<int> lines)
+    private static List<CheckError> Check_023_38(List<Form17> forms, List<Form10> forms10, List<int> lines)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "38", "64" };
-        var operationCode = forms[lines[0]].OperationCode_DB;
+        var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var repOKPOList = forms10
             .Select(x => x.Okpo_DB)
@@ -2715,7 +2806,7 @@ public abstract class CheckF17 : CheckBase
             .ToList();
         foreach (var line in lines)
         {
-            var statusRao = (forms[line].StatusRAO_DB ?? string.Empty).Trim();
+            var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (statusRao is "" or "-") continue;
             var valid = repOKPOList.Contains(statusRao);
             if (!valid)
@@ -2737,13 +2828,13 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check022_42
+    #region Check023_42
 
-    private static List<CheckError> Check_022_42(List<Form17> forms, List<Form10> forms10, List<int> lines)
+    private static List<CheckError> Check_023_42(List<Form17> forms, List<Form10> forms10, List<int> lines)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new [] { "42", "43", "73", "97", "98" };
-        var operationCode = forms[lines[0]].OperationCode_DB;
+        var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var repOKPOList = forms10
             .Select(x => x.Okpo_DB)
@@ -2751,7 +2842,7 @@ public abstract class CheckF17 : CheckBase
             .ToList();
         foreach (var line in lines)
         {
-            var statusRao = (forms[line].StatusRAO_DB ?? string.Empty).Trim();
+            var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (statusRao is "" or "-") continue;
             var valid = repOKPOList.Contains(statusRao);
             if (!valid)
@@ -2772,19 +2863,19 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check022_22
+    #region Check023_22
 
-    private static List<CheckError> Check_022_22(List<Form17> forms, List<int> lines)
+    private static List<CheckError> Check_023_22(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new [] { "22", "32" };
-        var applicableRaoStatuses = new [] { "1" };
+        var applicableOperationCodes = new[] { "22", "32" };
+        var applicableRaoStatuses = new[] { "1" };
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var operationCode = forms[lines[0]].OperationCode_DB;
+        var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         foreach (var line in lines)
         {
-            var statusRaoDB = forms[line].StatusRAO_DB;
+            var statusRaoDB = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (string.IsNullOrWhiteSpace(statusRaoDB) || statusRaoDB.Trim() == "-") continue;
             var valid = okpoRegex.IsMatch(statusRaoDB) || applicableRaoStatuses.Contains(statusRaoDB);
             if (!valid)
@@ -2805,20 +2896,20 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check022_16
-    private static List<CheckError> Check_022_16(List<Form17> forms, List<int> lines)
+    #region Check023_16
+    private static List<CheckError> Check_023_16(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new [] { "16" };
-        var applicableRaoStatuses = new [] { "2" };
+        var applicableOperationCodes = new[] { "16" };
+        var applicableRaoStatuses = new[] { "2" };
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var operationCode = forms[lines[0]].OperationCode_DB;
+        var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         foreach (var line in lines)
         {
-            var StatusRAO_DB = forms[line].StatusRAO_DB;
-            if (string.IsNullOrWhiteSpace(StatusRAO_DB) || StatusRAO_DB.Trim() == "-") continue;
-            var valid = okpoRegex.IsMatch(StatusRAO_DB) || applicableRaoStatuses.Contains(StatusRAO_DB);
+            var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
+            if (string.IsNullOrWhiteSpace(statusRao) || statusRao.Trim() == "-") continue;
+            var valid = okpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
             if (!valid)
             {
                 result.Add(new CheckError
@@ -2826,7 +2917,7 @@ public abstract class CheckF17 : CheckBase
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "StatusRAO_DB",
-                    Value = StatusRAO_DB,
+                    Value = statusRao,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Проверьте правильность статуса РАО."
                 });
@@ -2837,21 +2928,21 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check022_10
-    private static List<CheckError> Check_022_10(List<Form17> forms, List<int> lines)
+    #region Check023_10
+    private static List<CheckError> Check_023_10(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new []
+        var applicableOperationCodes = new[]
         {
             "10", "18", "21", "25", "27", "29", "31", "35", "36", "37", "39", "43", "44", "45", "51", "52", "55", "68", "71"
         };
-        var applicableRaoStatuses = new [] { "1", "2", "3", "4", "6", "9" };
+        var applicableRaoStatuses = new[] { "1", "2", "3", "4", "6", "9" };
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var operationCode = forms[lines[0]].OperationCode_DB;
+        var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         foreach (var line in lines)
         {
-            var statusRaoDB = forms[line].StatusRAO_DB;
+            var statusRaoDB = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (string.IsNullOrWhiteSpace(statusRaoDB) || statusRaoDB.Trim() == "-") continue;
             var valid = okpoRegex.IsMatch(statusRaoDB) || applicableRaoStatuses.Contains(statusRaoDB);
             if (!valid)
@@ -2872,13 +2963,13 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check023
+    #region Check024
 
-    private static List<CheckError> Check_023(List<Form17> forms, int line)
+    private static List<CheckError> Check_024(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var volumeOutOfPackDB = forms[line].VolumeOutOfPack_DB;
-        var valid = TryParseFloatExtended(volumeOutOfPackDB, out var volumeOutOfPackDBReal) && volumeOutOfPackDBReal > 0;
+        var volumeOutOfPack = ConvertStringToExponential(forms[line].VolumeOutOfPack_DB);
+        var valid = TryParseFloatExtended(volumeOutOfPack, out var volumeOutOfPackReal) && volumeOutOfPackReal > 0;
         if (!valid)
         {
             result.Add(new CheckError
@@ -2886,7 +2977,7 @@ public abstract class CheckF17 : CheckBase
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "VolumeOutOfPack_DB",
-                Value = forms[line].VolumeOutOfPack_DB,
+                Value = volumeOutOfPack,
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "Необходимо заполнить сведения об объеме РАО."
             });
@@ -2896,50 +2987,50 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check024
+    #region Check025
 
-    private static List<CheckError> Check_024(List<Form17> forms, int line)
+    private static List<CheckError> Check_025(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var volumeOutOfPackDB = forms[line].VolumeOutOfPack_DB;
-        var massOutOfPackDB = forms[line].MassOutOfPack_DB;
-        var volumeOutOfPackDBExists = TryParseFloatExtended(volumeOutOfPackDB, out var volumeOutOfPackDBReal);
-        var massOutOfPackDBExists = TryParseFloatExtended(massOutOfPackDB, out var massOutOfPackDBReal);
-        var valid = volumeOutOfPackDBExists && massOutOfPackDBExists;
-        if (!valid || massOutOfPackDBReal == 0)
+        var volumeOutOfPack = ConvertStringToExponential(forms[line].VolumeOutOfPack_DB);
+        var massOutOfPack = ConvertStringToExponential(forms[line].MassOutOfPack_DB);
+        var volumeOutOfPackExists = TryParseFloatExtended(volumeOutOfPack, out var volumeOutOfPackReal);
+        var massOutOfPackExists = TryParseFloatExtended(massOutOfPack, out var massOutOfPackReal);
+        var valid = volumeOutOfPackExists && massOutOfPackExists;
+        if (!valid || massOutOfPackReal == 0)
         {
             result.Add(new CheckError
             {
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "VolumeOutOfPack_DB",
-                Value = forms[line].VolumeOutOfPack_DB,
+                Value = volumeOutOfPack,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Необходимо заполнить сведения об объеме РАО."
             });
         }
         else
         {
-            if (massOutOfPackDBReal < 0.005f * volumeOutOfPackDBReal)
+            if (massOutOfPackReal < 0.005f * volumeOutOfPackReal)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "VolumeOutOfPack_DB",
-                    Value = forms[line].VolumeOutOfPack_DB,
+                    Value = volumeOutOfPack,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Проверьте значение массы и объема. Расчетное значение плотности слишком маленькое."
                 });
             }
-            else if (massOutOfPackDBReal > 21f * volumeOutOfPackDBReal)
+            else if (massOutOfPackReal > 21f * volumeOutOfPackReal)
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "VolumeOutOfPack_DB",
-                    Value = forms[line].VolumeOutOfPack_DB,
+                    Value = volumeOutOfPack,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Проверьте значение массы и объема. Расчетное значение плотности слишком большое."
                 });
@@ -2950,40 +3041,41 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check025
+    #region Check026
 
-    private static List<CheckError> Check_025(List<Form17> forms, List<int> lines)
+    private static List<CheckError> Check_026(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
         var kodRaoRegex = new Regex(@"^\d{11}?$");
         List<string> applicableRao910 = new() { "81", "82", "84", "85", "86", "87", "88", "89" };
         foreach (var line in lines)
         {
-            var kodRao = forms[line].CodeRAO_DB.Trim();
-            if (!kodRaoRegex.IsMatch(kodRao)) continue;
-            if (applicableRao910.Contains(kodRao.Substring(8, 2)))
+            var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
+            var quantity = ReplaceNullAndTrim(forms[line].Quantity_DB);
+            if (!kodRaoRegex.IsMatch(codeRao)) continue;
+            if (applicableRao910.Contains(codeRao.Substring(8, 2)))
             {
-                if (!TryParseFloatExtended(forms[line].Quantity_DB, out _))
+                if (!TryParseFloatExtended(quantity, out _))
                 {
                     result.Add(new CheckError
                     {
                         FormNum = "form_17",
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "Quantity_DB",
-                        Value = forms[line].Quantity_DB,
+                        Value = quantity,
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                                   "Необходимо заполнить сведения о количестве ОЗИИИ."
                     });
                 }
             }
-            else if (forms[line].Quantity_DB.Trim() != "-")
+            else if (quantity != "-")
             {
                 result.Add(new CheckError
                 {
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "Quantity_DB",
-                    Value = forms[line].Quantity_DB,
+                    Value = quantity,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Графа заполняется только для ОЗИИИ, в остальных случаях используется символ «-» без кавычек."
                 });
@@ -2994,18 +3086,18 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check026_029
+    #region Check027_029
 
-    private static List<CheckError> Check_026_029(List<Form17> forms, List<int> lines)
+    private static List<CheckError> Check_027_029(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
         List<string> errorColumns = new();
         List<string> nuclids = new();
         foreach (var nuclid in lines
                      .Where(line => R
-                         .Any(phEntry => phEntry["name"] == forms[line].Radionuclids_DB.ToLower().Trim()))
+                         .Any(phEntry => phEntry["name"] == ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower()))
                      .Select(line => R
-                         .First(phEntry => phEntry["name"] == forms[line].Radionuclids_DB.ToLower().Trim())))
+                         .First(phEntry => phEntry["name"] == ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower())))
         {
             if (!nuclids.Contains(nuclid["name"])) nuclids.Add(nuclid["name"]);
             switch (nuclid["code"])
@@ -3054,12 +3146,14 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check030_55
+    #region Check028_55
 
-    private static List<CheckError> Check_030_55(List<Form17> forms, int line)
+    private static List<CheckError> Check_028_55(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        if (forms[line].OperationCode_DB != "55") return result;
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
+        if (opCode != "55") return result;
         List<string> applicableRefineOrSortRaoCode = new() {
             "11","12","13","14","15","16","17",     "19",
             "21","22","23","24",                    "29",
@@ -3070,14 +3164,14 @@ public abstract class CheckF17 : CheckBase
             "71","72","73","74",                    "79",
             "99","-"
         };
-        if (!applicableRefineOrSortRaoCode.Contains(forms[line].RefineOrSortRAOCode_DB.Trim()))
+        if (!applicableRefineOrSortRaoCode.Contains(refineOrSortRaoCode))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
-                Value = forms[line].RefineOrSortRAOCode_DB,
+                Value = refineOrSortRaoCode,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Заполните сведения о коде переработки/сортировки. В случае, если при кондиционировании ничего не использовалось, " +
                           "укажите символ «-» без кавычек."
@@ -3088,11 +3182,13 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check030_10
+    #region Check028_10
 
-    private static List<CheckError> Check_030_10(List<Form17> forms, int line)
+    private static List<CheckError> Check_028_10(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         List<string> applicableOperationCodes = new() 
         {
             "10","11","12","13","14","16","18",
@@ -3100,15 +3196,15 @@ public abstract class CheckF17 : CheckBase
             "31","32","35","36","37","38","39",
             "43","51","52","63","64","68","97","98"
         };
-        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        if (forms[line].RefineOrSortRAOCode_DB.Trim() != "-")
+        if (!applicableOperationCodes.Contains(opCode)) return result;
+        if (refineOrSortRaoCode != "-")
         {
             result.Add(new CheckError
             {
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
-                Value = forms[line].RefineOrSortRAOCode_DB,
+                Value = refineOrSortRaoCode,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                           "Для выбранного кода операции в графе 30 следует использовать символ «-» без кавычек."
             });
@@ -3118,12 +3214,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check031
+    #region Check029
 
-    private static List<CheckError> Check_031(List<Form17> forms, int line)
+    private static List<CheckError> Check_029(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var subsidy = (forms[line].Subsidy_DB ?? string.Empty).Trim();
+        var subsidy = ReplaceNullAndTrim(forms[line].Subsidy_DB);
         if (subsidy is "" or "-") return result;
         var valid = float.TryParse(subsidy, out var valueReal)
                     && valueReal is >= 0 and <= 100;
@@ -3144,12 +3240,12 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check032
+    #region Check030
 
-    private static List<CheckError> Check_032(List<Form17> forms, int line)
+    private static List<CheckError> Check_030(List<Form17> forms, int line)
     {
         List<CheckError> result = new();
-        var fcpNum = (forms[line].FcpNumber_DB ?? string.Empty).Trim();
+        var fcpNum = ReplaceNullAndTrim(forms[line].FcpNumber_DB);
         var valid = fcpNum is "" or "-" || TryParseFloatExtended(fcpNum, out _);
         if (!valid)
         {
@@ -3168,102 +3264,24 @@ public abstract class CheckF17 : CheckBase
 
     #endregion
 
-    #region Check033
-
-    //Наличие строк дубликатов
-    private static List<CheckError> Check_033(List<Form17> forms)
-    {
-        List<CheckError> result = new();
-        HashSet<HashSet<int>> duplicatesLinesSubset = new();
-        var comparator = new CustomNullStringWithTrimComparer();
-        for (var i = 0; i < forms.Count; i++)
-        {
-            var currentForm = forms[i];
-            for (var j = i + 1; j < forms.Count; j++)
-            {
-                var formToCompare = forms[j];
-                var isDuplicate = formToCompare.NumberInOrder_DB == currentForm.NumberInOrder_DB
-                                && comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
-                                && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
-                                && comparator.Compare(formToCompare.PackName_DB, currentForm.PackName_DB) == 0
-                                && comparator.Compare(formToCompare.PackType_DB, currentForm.PackType_DB) == 0
-                                && comparator.Compare(formToCompare.PackFactoryNumber_DB, currentForm.PackFactoryNumber_DB) == 0
-                                && comparator.Compare(formToCompare.PackNumber_DB, currentForm.PackNumber_DB) == 0
-                                && comparator.Compare(formToCompare.FormingDate_DB, currentForm.FormingDate_DB) == 0
-                                && comparator.Compare(formToCompare.PassportNumber_DB, currentForm.PassportNumber_DB) == 0
-                                && comparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
-                                && comparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
-                                && comparator.Compare(formToCompare.Radionuclids_DB, currentForm.Radionuclids_DB) == 0
-                                && comparator.Compare(formToCompare.SpecificActivity_DB, currentForm.SpecificActivity_DB) == 0
-                                && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
-                                && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
-                                && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
-                                && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0
-                                && comparator.Compare(formToCompare.TransporterOKPO_DB, currentForm.TransporterOKPO_DB) == 0
-                                && comparator.Compare(formToCompare.StoragePlaceName_DB, currentForm.StoragePlaceName_DB) == 0
-                                && comparator.Compare(formToCompare.StoragePlaceCode_DB, currentForm.StoragePlaceCode_DB) == 0
-                                && comparator.Compare(formToCompare.CodeRAO_DB, currentForm.CodeRAO_DB) == 0
-                                && comparator.Compare(formToCompare.StatusRAO_DB, currentForm.StatusRAO_DB) == 0
-                                && comparator.Compare(formToCompare.VolumeOutOfPack_DB, currentForm.VolumeOutOfPack_DB) == 0
-                                && comparator.Compare(formToCompare.MassOutOfPack_DB, currentForm.MassOutOfPack_DB) == 0
-                                && comparator.Compare(formToCompare.Quantity_DB, currentForm.Quantity_DB) == 0
-                                && comparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
-                                && comparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
-                                && comparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
-                                && comparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
-                                && comparator.Compare(formToCompare.RefineOrSortRAOCode_DB, currentForm.RefineOrSortRAOCode_DB) == 0
-                                && comparator.Compare(formToCompare.Subsidy_DB, currentForm.Subsidy_DB) == 0
-                                && comparator.Compare(formToCompare.FcpNumber_DB, currentForm.FcpNumber_DB) == 0;
-                if (!isDuplicate) continue;
-                var newLine = true;
-                foreach (var subset in duplicatesLinesSubset
-                             .Where(subset => subset.Contains(i + 1)))
-                {
-                    subset.Add(j + 1);
-                    newLine = false;
-                    break;
-                }
-                if (newLine)
-                {
-                    HashSet<int> newSubset = [i + 1, j + 1];
-                    duplicatesLinesSubset.Add(newSubset);
-                }
-            }
-        }
-        foreach (var subset in duplicatesLinesSubset)
-        {
-            var duplicateLines = string.Join(", ", subset.Order());
-            result.Add(new CheckError
-            {
-                FormNum = "form_17",
-                Row = duplicateLines,
-                Column = "2 - 18",
-                Value = "",
-                Message = $"Данные граф 2-18 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
-            });
-        }
-        return result;
-    }
-
-    #endregion
-
-    #region Check034
+    #region Check031
 
     //overdue calculations
-    private static List<CheckError> Check_034(List<Form17> forms, Report rep)
+    private static List<CheckError> Check_031(List<Form17> forms, Report rep)
     {
         List<CheckError> result = new();
         List<string> overdueSetLines = new();
-        var endPeriodDB = rep.EndPeriod_DB;
+        var endPeriodDB = ReplaceNullAndTrim(rep.EndPeriod_DB);
         if (DateOnly.TryParse(endPeriodDB, out var dateEnd))
         {
             for (var i = 0; i < forms.Count; i++)
             {
-                var operationCode = forms[i].OperationCode_DB;
-                var operationDate = forms[i].OperationDate_DB;
-                var documentDate = forms[i].DocumentDate_DB;
-                if (operationCode != null 
-                    && (operationCode == "10" ? documentDate : operationDate) != null 
+                var operationCode = ReplaceNullAndTrim(forms[i].OperationCode_DB);
+                var operationDate = ReplaceNullAndTrim(forms[i].OperationDate_DB);
+                var documentDate = ReplaceNullAndTrim(forms[i].DocumentDate_DB);
+                if ((operationCode == "10" 
+                        ? documentDate 
+                        : operationDate) != null 
                     && OverduePeriods_RAO.TryGetValue(operationCode, out var days) 
                     && DateOnly.TryParse(operationCode == "10" 
                         ? documentDate 
