@@ -57,7 +57,27 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                 //case "1.9":
                 //    result.AddRange(CheckF19.Check_Total(reps, rep));
                 //    break;
-                default: return;
+                default:
+                {
+                    #region MessageCheckFailed
+
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                            ContentHeader = "Уведомление",
+                            ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+
+                    return;
+                }
             }
         }
         catch (Exception ex)

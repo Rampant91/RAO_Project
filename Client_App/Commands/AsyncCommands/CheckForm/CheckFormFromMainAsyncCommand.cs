@@ -74,8 +74,29 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                 "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                 //"1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                _ => throw new Exception()
+                _ => throw new NotImplementedException()
             });
+        }
+        catch (NotImplementedException ex)
+        {
+            #region MessageCheckFailed
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
         }
         catch (Exception ex)
         {
