@@ -295,13 +295,28 @@ public abstract class CheckBase
 
     #region CustomComparator
 
+    //  Performance realisation for Compare with Trim()
     private protected class CustomNullStringWithTrimComparer : IComparer<string>
     {
         public int Compare(string? x, string? y)
         {
-            var strA = (x ?? string.Empty).ToLower().Trim();
-            var strB = (y ?? string.Empty).ToLower().Trim();
-            return string.CompareOrdinal(strA, strB);
+            if (ReferenceEquals(x, y))
+                return 0;
+            if (x is null)
+                return -1;
+            if (y is null)
+                return 1;
+
+            // Memory allocation free trimming
+            var span1 = x.AsSpan().Trim();
+            var span2 = y.AsSpan().Trim();
+
+            return span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase);
+
+            // Old realization
+            //var strA = ReplaceNullAndTrim(x).ToLower();
+            //var strB = ReplaceNullAndTrim(y).ToLower();
+            //return string.CompareOrdinal(strA, strB);
         }
     }
 

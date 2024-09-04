@@ -17,8 +17,7 @@ public static partial class StaticStringMethods
             return nameDb == null && namePas == null;
         }
 
-        nameDb = RestrictedSymbolsRegex()
-            .Replace(nameDb, string.Empty)
+        nameDb = RestrictedSymbolsRegex().Replace(nameDb, string.Empty)
             .Replace('а', 'a')
             .Replace('б', 'b')
             .Replace('в', 'b')
@@ -35,8 +34,7 @@ public static partial class StaticStringMethods
             .Replace('у', 'y')
             .Replace('х', 'x');
 
-        namePas = RestrictedSymbolsRegex()
-            .Replace(namePas, string.Empty)
+        namePas = RestrictedSymbolsRegex().Replace(namePas, string.Empty)
             .Replace('а', 'a')
             .Replace('б', 'b')
             .Replace('в', 'b')
@@ -62,7 +60,7 @@ public static partial class StaticStringMethods
 
     internal static string ConvertDateToYear(string? date)
     {
-        return DateTime.TryParse(date, out var dateTime)
+        return DateOnly.TryParse(date, out var dateTime)
             ? dateTime.Year.ToString()
             : "0000";
     }
