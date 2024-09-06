@@ -33,7 +33,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         public readonly string PasNum = pasNum;
     }
 
-    private ExcelExportProgressBar progressBar;
+    private AnyTaskProgressBar progressBar;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -79,8 +79,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
-        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}";
         var loadStatus = "Создание временной БД";

@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Client_App.ViewModels.ProgressBar"
         mc:Ignorable="d"
-        x:Class="Client_App.Views.ProgressBar.ExcelExportProgressBar"
+        x:Class="Client_App.Views.ProgressBar.AnyTaskProgressBar"
         Title="{Binding ExportType, Mode=OneWay}"
         d:DesignWidth="300" 
         d:DesignHeight="90"
@@ -18,7 +18,7 @@
         WindowStartupLocation="CenterScreen">
 
     <Design.DataContext>
-        <vm:ExcelExportProgressBarVM/>
+        <vm:AnyTaskProgressBarVM/>
     </Design.DataContext>
     
     <Grid 

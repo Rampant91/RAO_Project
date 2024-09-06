@@ -21,7 +21,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Список форм 2
 public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 {
-    private ExcelExportProgressBar progressBar;
+    private AnyTaskProgressBar progressBar;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -134,8 +134,8 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
-        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка списка форм 2";
         progressBarVM.ValueBar = 2;

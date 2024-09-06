@@ -24,7 +24,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 //  Excel -> Паспорта -> Паспорта без отчетов
 public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 {
-    private ExcelExportProgressBar progressBar;
+    private AnyTaskProgressBar progressBar;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -126,8 +126,8 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             return;
         }
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
-        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка списка паспортов";
         progressBarVM.ValueBar = 2;

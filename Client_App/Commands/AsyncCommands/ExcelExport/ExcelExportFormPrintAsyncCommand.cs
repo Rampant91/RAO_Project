@@ -16,7 +16,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Выбранная форма -> Выгрузка Excel -> Для печати
 public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 {
-    private ExcelExportProgressBar progressBar;
+    private AnyTaskProgressBar progressBar;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -24,8 +24,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var cts = new CancellationTokenSource();
         ExportType = "Для_печати";
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new ExcelExportProgressBar(cts));
-        var progressBarVM = progressBar.ExcelExportProgressBarVM;
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка отчёта на печать";
         progressBarVM.ValueBar = 5;
