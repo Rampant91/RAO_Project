@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
+using DynamicData;
 using FirebirdSql.Data.FirebirdClient;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -74,7 +75,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
         progressBarVM.ExportName = $"Выгрузка организации {exportOrg.Master_DB.RegNoRep.Value}_{exportOrg.Master_DB.OkpoRep.Value}";
-        loadStatus = "Загрузка отчётов";
+        loadStatus = "Загрузка данных организации";
         progressBarVM.ValueBar = 10;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
@@ -84,19 +85,38 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             .AsQueryable()
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(reports => reports.Report_Collection)
             .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token);
 
-        var repsReportIds = dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report_Collection)
-            .Where(x => x.Id == repsId)
-            .SelectMany(x => x.Report_Collection
-                .Select(x => x.Id));
+        var repsReportIds = parameter switch
+        {
+            Reports => exportOrg.Report_Collection
+                .Select(x => x.Id)
+                .ToArray(),
+            _ => await dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Report_Collection)
+                .Where(x => x.Id == repsId)
+                .SelectMany(x => x.Report_Collection
+                    .OrderBy(x => x.FormNum_DB)
+                    .ThenBy(x => x.StartPeriod_DB)
+                    .Select(x => x.Id))
+                .ToArrayAsync(cancellationToken: cts.Token)
+        };
+        
 
+        loadStatus = "Загрузка отчётов";
+        progressBarVM.ValueBar = 15;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        double progressBarDoubleValue = progressBarVM.ValueBar;
         foreach (var repId in repsReportIds)
         {
+            var oldRep = repsFull.Report_Collection.First(x => x.Id == repId);
+            loadStatus = $"Загрузка отчёта {oldRep.FormNum_DB}_{oldRep.StartPeriod_DB}_{oldRep.EndPeriod_DB}";
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
             var rep = await dbReadOnly.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -125,7 +145,11 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 .Include(x => x.Notes.OrderBy(x => x.Order))
                 .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
-            repsFull.Report_Collection.Add(rep);
+            repsFull.Report_Collection.Replace(oldRep, rep);
+
+            progressBarDoubleValue += (double)35 / repsReportIds.Length;
+            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         }
 
         //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ через ней выполняется синхронно)
@@ -207,20 +231,20 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         await using var tempDb = new DBModel(fullPathTmp);
 
-        #region Progress = 40
+        #region Progress = 50
 
         loadStatus = "Создание базы данных";
-        progressBarVM.ValueBar = 40;
+        progressBarVM.ValueBar = 50;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
 
         await tempDb.Database.MigrateAsync(cancellationToken: cts.Token);
 
-        #region Progress = 50
+        #region Progress = 60
 
         loadStatus = "Добавление коллекций организации";
-        progressBarVM.ValueBar = 50;
+        progressBarVM.ValueBar = 60;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
@@ -232,10 +256,10 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             tempDb.DBObservableDbSet.Local.First().Reports_Collection.AddRange(tempDb.ReportsCollectionDbSet.Local);
         }
 
-        #region Progress = 60
+        #region Progress = 70
 
         loadStatus = "Сохранение данных";
-        progressBarVM.ValueBar = 60;
+        progressBarVM.ValueBar = 70;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
