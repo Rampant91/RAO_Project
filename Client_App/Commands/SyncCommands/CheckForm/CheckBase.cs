@@ -14,13 +14,15 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public abstract class CheckBase
 {
-    protected static bool checkNumPrint = false;
+    protected static bool checkNumPrint = true;
 
     private protected static List<Dictionary<string, string>> OKSM = new();
 
     private protected static List<Dictionary<string, string>> R = new();
 
     private protected static List<Dictionary<string, string>> Packs = new();
+
+    private protected static List<string> Orgs18 = new();
 
     private protected static readonly bool DB_Ignore = true;
 
@@ -368,6 +370,14 @@ public abstract class CheckBase
             Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
 #endif
         }
+        if (Orgs18.Count == 0)
+        {
+#if DEBUG
+            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Orgs_1.8.xlsx"));
+#else
+            Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
+#endif
+        }
         if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG
@@ -504,6 +514,25 @@ public abstract class CheckBase
                 {"class", worksheet.Cells[i, 6].Text},
                 {"mass_total", worksheet.Cells[i, 7].Text}
             });
+            i++;
+        }
+    }
+
+    #endregion
+
+    #region Orgs18FromFile
+    private protected static void Orgs18_Populate_From_File(string filePath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(filePath)) return;
+        FileInfo excelImportFile = new(filePath);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet = xls.Workbook.Worksheets["Лист1"];
+        var i = 1;
+        Orgs18.Clear();
+        while (worksheet.Cells[i, 1].Text != string.Empty)
+        {
+            Orgs18.Add(worksheet.Cells[i, 1].Text);
             i++;
         }
     }
