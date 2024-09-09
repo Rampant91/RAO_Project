@@ -6,6 +6,8 @@ using Avalonia.ReactiveUI;
 using Client_App.ViewModels;
 using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Avalonia.Win32;
+using Client_App.Interfaces.Logger;
 
 namespace Client_App.Views;
 
@@ -37,6 +39,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
             //var screen = Screens.ScreenFromPoint(windowBase?.Position ?? Position);
             if(screen == null) return;
             Position = screen.WorkingArea.CenterRect(rect).Position;
+            ServiceExtension.LoggerManager.Warning($"{Position.X}_{Position.Y}");
         }
         else 
         {
