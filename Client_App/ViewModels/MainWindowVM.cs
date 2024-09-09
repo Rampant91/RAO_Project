@@ -15,7 +15,6 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.Hidden;
-using Client_App.Commands.SyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.CheckForm;
 
 namespace Client_App.ViewModels;

@@ -10,7 +10,6 @@ using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using DynamicData;
 using FirebirdSql.Data.FirebirdClient;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -90,11 +89,8 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         var repsReportIds = parameter switch
         {
-            Reports => exportOrg.Report_Collection
-                .Select(x => x.Id)
-                .ToArray(),
-            _ => await dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
+            Reports => exportOrg.Report_Collection.Select(x => x.Id).ToArray(),
+            _ => await dbReadOnly.ReportsCollectionDbSet.AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
                 .Include(x => x.Report_Collection)
@@ -105,17 +101,59 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     .Select(x => x.Id))
                 .ToArrayAsync(cancellationToken: cts.Token)
         };
-        
 
+        //repsFull = await dbReadOnly.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+        //    .Include(reports => reports.Report_Collection)
+        //    .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token);
+
+        //var repsReportIds = parameter switch
+        //{
+        //    Reports => exportOrg.Report_Collection
+        //        .Select(x => x.Id)
+        //        .ToArray(),
+        //    _ => await dbReadOnly.ReportsCollectionDbSet
+        //        .AsNoTracking()
+        //        .AsSplitQuery()
+        //        .AsQueryable()
+        //        .Include(x => x.Report_Collection)
+        //        .Where(x => x.Id == repsId)
+        //        .SelectMany(x => x.Report_Collection
+        //            .OrderBy(x => x.FormNum_DB)
+        //            .ThenBy(x => x.StartPeriod_DB)
+        //            .Select(x => x.Id))
+        //        .ToArrayAsync(cancellationToken: cts.Token)
+        //};
+
+
+        #region Progress = 15
+        
         loadStatus = "Загрузка отчётов";
         progressBarVM.ValueBar = 15;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})"; 
+        
+        #endregion
+
         double progressBarDoubleValue = progressBarVM.ValueBar;
+        repsFull.Report_Collection.Clear();
         foreach (var repId in repsReportIds)
         {
-            var oldRep = repsFull.Report_Collection.First(x => x.Id == repId);
-            loadStatus = $"Загрузка отчёта {oldRep.FormNum_DB}_{oldRep.StartPeriod_DB}_{oldRep.EndPeriod_DB}";
+            var tmpRep = await dbReadOnly.ReportCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
+
+            loadStatus = $"Загрузка отчёта {tmpRep.FormNum_DB}_{tmpRep.StartPeriod_DB}_{tmpRep.EndPeriod_DB}";
             progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+            //TODO
+            //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ в ней выполняется синхронно)
+            #region GetReportFromDb
 
             var rep = await dbReadOnly.ReportCollectionDbSet
                 .AsNoTracking()
@@ -145,47 +183,14 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 .Include(x => x.Notes.OrderBy(x => x.Order))
                 .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
-            repsFull.Report_Collection.Replace(oldRep, rep);
+            #endregion
+
+            repsFull.Report_Collection.Add(rep);
 
             progressBarDoubleValue += (double)35 / repsReportIds.Length;
             progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
             progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         }
-
-        //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ через ней выполняется синхронно)
-        //#region GetReportsFromDb
-
-        //repsFull = await dbReadOnly.ReportsCollectionDbSet
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
-        //    .Include(x => x.Report_Collection).ThenInclude(x => x.Notes.OrderBy(x => x.Order))
-        //    .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token);
-
-        //#endregion
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +

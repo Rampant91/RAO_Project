@@ -104,7 +104,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
         //{
         //    repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
         //}
-        Reports exportOrg = new() { Master = org.Master };
+        Reports exportOrg = new() { Master = org.Master, Id = org.Id };
         exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
         if (MainWindowVM.ExportReports.CanExecute(null))

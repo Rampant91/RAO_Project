@@ -22,6 +22,10 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
         {
             await Task.Run(() => AsyncExecute(parameter), Cts.Token);
         }
+        catch (OperationCanceledException)
+        {
+            //ignore
+        }
         catch (Exception ex)
         {
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +

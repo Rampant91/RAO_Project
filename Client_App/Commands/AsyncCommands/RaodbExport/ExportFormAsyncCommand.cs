@@ -85,7 +85,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ через ней выполняется синхронно)
+        //TODO
+        //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ в ней выполняется синхронно)
         #region GetReportFromDb
         
         var exportReport = await dbReadOnly.ReportCollectionDbSet
