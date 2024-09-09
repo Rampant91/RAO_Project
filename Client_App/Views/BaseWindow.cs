@@ -13,7 +13,7 @@ namespace Client_App.Views;
 
 public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
 {
-    private bool IsFirstLoad = true;
+    private byte countLoad = 0;
 
     public override async void Show()
     {
@@ -26,9 +26,9 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
     private void SetWindowStartupLocationWorkaroundForLinux()
     {
         //if(OperatingSystem.IsWindows()) return;
-        if (Name == "MainWindow" && IsFirstLoad && (Position.X != 0 || Position.Y != 0))
+        if (Name == "MainWindow" && countLoad < 2 && (Position.X != 0 || Position.Y != 0))
         {
-            IsFirstLoad = false;
+            countLoad++;
             return;
         }
         var scale = PlatformImpl?.DesktopScaling ?? 1.0;
