@@ -17,7 +17,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
         SetWindowStartupLocationWorkaroundForLinux();
     }
 
-    protected void SetWindowStartupLocationWorkaroundForLinux()
+    private void SetWindowStartupLocationWorkaroundForLinux()
     {
         if(OperatingSystem.IsWindows()) return;
 
@@ -32,7 +32,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
         {
             var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
             var screens = mainWindow.Screens;
-            var screen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+            var screen = screens.ScreenFromWindow(PlatformImpl ?? mainWindow.PlatformImpl);
             //var screen = Screens.ScreenFromPoint(windowBase?.Position ?? Position);
             if(screen == null) return;
             Position = screen.WorkingArea.CenterRect(rect).Position;
