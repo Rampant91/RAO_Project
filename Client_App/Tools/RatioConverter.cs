@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
@@ -91,9 +92,9 @@ internal static partial class DisplayTools
     {
         var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
         var screens = mainWindow.Screens;
-        var a = screens.ScreenFromWindow(mainWindow.PlatformImpl);
-        return new Size(a.WorkingArea.Width, a.WorkingArea.Height);
-        ServiceExtension.LoggerManager.Warning($"{a.WorkingArea.Width}_{a.WorkingArea.Height}");
+        var mainScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+        return new Size(mainScreen.WorkingArea.Width, mainScreen.WorkingArea.Height);
+        ServiceExtension.LoggerManager.Warning($"{mainScreen.WorkingArea.Width}_{mainScreen.WorkingArea.Height}");
         if (!OperatingSystem.IsWindows()) return new Size(600, 800);
         using var g = Graphics.FromHwnd(IntPtr.Zero);
         var desktop = g.GetHdc();

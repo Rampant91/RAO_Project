@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using Client_App.ViewModels;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace Client_App.Views;
 
@@ -29,7 +30,10 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
         var rect = new PixelRect(PixelPoint.Origin, PixelSize.FromSize(ClientSize, scale));
         if(WindowStartupLocation == WindowStartupLocation.CenterScreen) 
         {
-            var screen = Screens.ScreenFromPoint(windowBase?.Position ?? Position);
+            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
+            var screens = mainWindow.Screens;
+            var screen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+            //var screen = Screens.ScreenFromPoint(windowBase?.Position ?? Position);
             if(screen == null) return;
             Position = screen.WorkingArea.CenterRect(rect).Position;
         }
