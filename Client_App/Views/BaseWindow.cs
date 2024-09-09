@@ -33,14 +33,14 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
         var rect = new PixelRect(PixelPoint.Origin, PixelSize.FromSize(ClientSize, scale));
         if (WindowStartupLocation == WindowStartupLocation.CenterScreen)// && Name != "MainWindow") 
         {
-            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
-            var screens = mainWindow.Screens;
-            var screen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
-            //var screen = Screens.ScreenFromPoint(windowBase?.Position ?? Position);
+            //var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
+            //var screens = mainWindow.Screens;
+            //var screen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+            var screen = Name == "MainWindow" ? Screens.Primary : Screens.ScreenFromPoint(windowBase?.Position ?? Position);
             if(screen == null) return;
             Position = screen.WorkingArea.CenterRect(rect).Position;
-            ServiceExtension.LoggerManager.Warning($"Rect: x: {rect.X}, y: {rect.Y}, w: {rect.Width}, h: {rect.Height}" +
-                                                   $"Screen: x: {screen.WorkingArea.X}, y: {screen.WorkingArea.Y}, w: {screen.WorkingArea.Width}, h: {screen.WorkingArea.Height}" +
+            ServiceExtension.LoggerManager.Warning($"{Environment.NewLine}Rect: x: {rect.X}, y: {rect.Y}, w: {rect.Width}, h: {rect.Height}" +
+                                                   $"{Environment.NewLine}Screen: x: {screen.WorkingArea.X}, y: {screen.WorkingArea.Y}, w: {screen.WorkingArea.Width}, h: {screen.WorkingArea.Height}" +
                                                    $"{Environment.NewLine}Position: {Position.X}_{Position.Y}");
         }
         else 
