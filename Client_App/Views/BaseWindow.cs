@@ -22,7 +22,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
 
     private void SetWindowStartupLocationWorkaroundForLinux()
     {
-        if(OperatingSystem.IsWindows()) return;
+        //if(OperatingSystem.IsWindows()) return;
 
         var scale = PlatformImpl?.DesktopScaling ?? 1.0;
         var windowBase = Owner?.PlatformImpl;
@@ -39,7 +39,9 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
             //var screen = Screens.ScreenFromPoint(windowBase?.Position ?? Position);
             if(screen == null) return;
             Position = screen.WorkingArea.CenterRect(rect).Position;
-            ServiceExtension.LoggerManager.Warning($"{Position.X}_{Position.Y}");
+            ServiceExtension.LoggerManager.Warning($"Rect: x: {rect.X}, y: {rect.Y}, w: {rect.Width}, h: {rect.Height}" +
+                                                   $"Screen: x: {screen.WorkingArea.X}, y: {screen.WorkingArea.Y}, w: {screen.WorkingArea.Width}, h: {screen.WorkingArea.Height}" +
+                                                   $"{Environment.NewLine}Position: {Position.X}_{Position.Y}");
         }
         else 
         {
