@@ -73,6 +73,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     private static async Task CheckPeriod(ChangeOrCreateVM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+        if (vm.Storage.FormNum_DB is "1.0" or "2.0") return;
         var reps = vm.Storages;
         var reportCollection = reps.Report_Collection;
         var rep = vm.Storage;
@@ -4755,8 +4756,17 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not ChangeOrCreateVM vm) return;
-        await RemoveEmptyForms(vm);
-        await CheckPeriod(vm);
+        try
+        {
+            await RemoveEmptyForms(vm);
+            await CheckPeriod(vm);
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {

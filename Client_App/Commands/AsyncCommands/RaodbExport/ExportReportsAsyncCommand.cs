@@ -101,35 +101,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     .Select(x => x.Id))
                 .ToArrayAsync(cancellationToken: cts.Token)
         };
-
-        //repsFull = await dbReadOnly.ReportsCollectionDbSet
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-        //    .Include(reports => reports.Report_Collection)
-        //    .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token);
-
-        //var repsReportIds = parameter switch
-        //{
-        //    Reports => exportOrg.Report_Collection
-        //        .Select(x => x.Id)
-        //        .ToArray(),
-        //    _ => await dbReadOnly.ReportsCollectionDbSet
-        //        .AsNoTracking()
-        //        .AsSplitQuery()
-        //        .AsQueryable()
-        //        .Include(x => x.Report_Collection)
-        //        .Where(x => x.Id == repsId)
-        //        .SelectMany(x => x.Report_Collection
-        //            .OrderBy(x => x.FormNum_DB)
-        //            .ThenBy(x => x.StartPeriod_DB)
-        //            .Select(x => x.Id))
-        //        .ToArrayAsync(cancellationToken: cts.Token)
-        //};
-
-
+        
         #region Progress = 15
         
         loadStatus = "Загрузка отчётов";

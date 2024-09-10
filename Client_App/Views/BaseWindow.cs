@@ -16,7 +16,17 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
     {
         base.Show();
         await Task.Delay(1);
-        SetWindowStartupLocationWorkaroundForLinux();
+        try
+        {
+            SetWindowStartupLocationWorkaroundForLinux();
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+        
     }
 
     private void SetWindowStartupLocationWorkaroundForLinux()

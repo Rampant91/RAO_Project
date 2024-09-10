@@ -64,36 +64,47 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
-        var rep = dbReadOnly.ReportCollectionDbSet
+        #region Progress = 10
+
+        loadStatus = "Загрузка данных организации";
+        progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        #endregion
+
+        #region GetReportWithoutForms
+
+        var reportWithoutRows = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .First(x => x.Id == repId);
+            .First(x => x.Id == repId); 
+        
+        #endregion
 
-        #region Progress = 10
+        #region Progress = 15
 
-        progressBarVM.ExportName = $"Выгрузка отчёта {rep.Reports.Master_DB.RegNoRep.Value}_" +
-                                   $"{rep.Reports.Master_DB.OkpoRep.Value}_" +
-                                   $"{rep.FormNum_DB}_" +
-                                   $"{rep.StartPeriod_DB}_" +
-                                   $"{rep.EndPeriod_DB}";
+        progressBarVM.ExportName = $"Выгрузка отчёта {reportWithoutRows.Reports.Master_DB.RegNoRep.Value}_" +
+                                   $"{reportWithoutRows.Reports.Master_DB.OkpoRep.Value}_" +
+                                   $"{reportWithoutRows.FormNum_DB}_" +
+                                   $"{reportWithoutRows.StartPeriod_DB}_" +
+                                   $"{reportWithoutRows.EndPeriod_DB}";
         loadStatus = "Загрузка отчёта";
-        progressBarVM.ValueBar = 10;
+        progressBarVM.ValueBar = 15;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
 
         //TODO
         //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ в ней выполняется синхронно)
-        #region GetReportFromDb
+        #region GetReportWithForm
         
         var exportReport = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.Rows10.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -103,7 +114,6 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
@@ -137,20 +147,15 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
 
-        var reps = ReportsStorage.LocalReports.Reports_Collection
-            .FirstOrDefault(t => t.Report_Collection
-                .Any(x => x.Id == exportReport.Id));
-        if (reps is null) return;
-
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
 
         Reports orgWithExpForm = new()
         {
-            Master = reps.Master,
+            Master = reportWithoutRows.Reports.Master,
             Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>([exportReport])
         };
 
-        var filename = reps.Master_DB.FormNum_DB switch
+        var filename = reportWithoutRows.Reports.Master_DB.FormNum_DB switch
         {
             "1.0" =>
                 StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +

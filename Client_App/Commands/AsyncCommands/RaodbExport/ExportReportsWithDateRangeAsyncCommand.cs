@@ -99,11 +99,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                           && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
                           && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
             .ToArray();
-        //List<Report> repInRangeWithForms = [];
-        //foreach (var rep in repInRange)
-        //{
-        //    repInRangeWithForms.Add(await ReportsStorage.Api.GetAsync(rep.Id));
-        //}
+
         Reports exportOrg = new() { Master = org.Master, Id = org.Id };
         exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
