@@ -7,6 +7,9 @@ using Client_App.Interfaces.Logger;
 
 namespace Client_App.Commands.AsyncCommands;
 
+/// <summary>
+/// Базовый класс async команды
+/// </summary>
 public abstract class BaseAsyncCommand : BaseCommand
 {
     private protected static readonly IClassicDesktopStyleApplicationLifetime Desktop =

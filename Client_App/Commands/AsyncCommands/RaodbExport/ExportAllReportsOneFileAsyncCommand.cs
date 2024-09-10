@@ -14,7 +14,9 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
-//  Экспорт всех организаций организации в один файл .raodb
+/// <summary>
+/// Экспорт всех организаций организации в один файл .RAODB (отключён)
+/// </summary>
 public partial class ExportAllReportsOneFileAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)

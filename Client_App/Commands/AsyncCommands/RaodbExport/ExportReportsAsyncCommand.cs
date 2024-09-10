@@ -20,11 +20,11 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
-//  Экспорт организации в файл .raodb
+/// <summary>
+/// Экспорт организации в файл .RAODB
+/// </summary>
 public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 {
-    //public required AnyTaskProgressBar ProgressBar;
-
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
@@ -73,10 +73,16 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
+        #region Progress = 10
+
         progressBarVM.ExportName = $"Выгрузка организации {exportOrg.Master_DB.RegNoRep.Value}_{exportOrg.Master_DB.OkpoRep.Value}";
         loadStatus = "Загрузка данных организации";
         progressBarVM.ValueBar = 10;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        #endregion
+
+        #region GetReportsWithoutRows
 
         var repsFull = await dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
@@ -85,12 +91,15 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(reports => reports.Report_Collection)
-            .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token);
+            .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token); 
+        
+        #endregion
 
         var repsReportIds = parameter switch
         {
             Reports => exportOrg.Report_Collection.Select(x => x.Id).ToArray(),
-            _ => await dbReadOnly.ReportsCollectionDbSet.AsNoTracking()
+            _ => await dbReadOnly.ReportsCollectionDbSet
+                .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
                 .Include(x => x.Report_Collection)
@@ -125,7 +134,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
             //TODO
             //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ в ней выполняется синхронно)
-            #region GetReportFromDb
+            #region GetReportWithRows
 
             var rep = await dbReadOnly.ReportCollectionDbSet
                 .AsNoTracking()
@@ -295,28 +304,27 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region ExportDoneMessage
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => 
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        ButtonDefinitions =
-                        [
-                            new ButtonDefinition { Name = "Ок", IsDefault = true },
-                            new ButtonDefinition { Name = "Открыть расположение файла" }
-                        ],
-                        ContentTitle = "Выгрузка",
-                        ContentHeader = "Уведомление",
-                        ContentMessage =
-                            $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB[0]}.x) сохранен по пути:" +
-                            $"{Environment.NewLine}{fullPath}" +
-                            $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Регистрационный номер - {exportOrg.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {exportOrg.Master.OkpoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.ShortJurLicoRep.Value}",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок", IsDefault = true },
+                        new ButtonDefinition { Name = "Открыть расположение файла" }
+                    ],
+                    ContentTitle = "Выгрузка",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Экспорт завершен. Файл экспорта организации ({exportOrg.Master.FormNum_DB[0]}.x) сохранен по пути:" +
+                        $"{Environment.NewLine}{fullPath}" +
+                        $"{Environment.NewLine}" +
+                        $"{Environment.NewLine}Регистрационный номер - {exportOrg.Master.RegNoRep.Value}" +
+                        $"{Environment.NewLine}ОКПО - {exportOrg.Master.OkpoRep.Value}" +
+                        $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.ShortJurLicoRep.Value}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                }).ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -325,7 +333,6 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 Process.Start("explorer", folderPath);
             }
         }
-
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

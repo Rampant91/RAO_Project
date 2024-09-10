@@ -9,6 +9,9 @@ using Models.DBRealization;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
+/// <summary>
+/// Базовый класс экспорта в файл .RAODB
+/// </summary>
 public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
 {
     private protected AnyTaskProgressBar ProgressBar;
@@ -35,6 +38,10 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
         IsExecute = false;
     }
 
+    /// <summary>
+    /// Создание временной копии БД в папке temp
+    /// </summary>
+    /// <returns>Путь к временной БД</returns>
     private protected static string CreateTempDataBase()
     {
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");

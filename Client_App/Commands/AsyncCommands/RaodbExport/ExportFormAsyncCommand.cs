@@ -21,11 +21,11 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
-//  Экспорт формы в файл .raodb
+/// <summary>
+/// Экспорт отчёта в .RAODB
+/// </summary>
 public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 {
-    //public required AnyTaskProgressBar ProgressBar;
-
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
@@ -301,34 +301,33 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region ExportCompliteMessage
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        ButtonDefinitions =
-                        [
-                            new ButtonDefinition { Name = "Ок", IsDefault = true },
-                            new ButtonDefinition { Name = "Открыть расположение файла" }
-                        ],
-                        ContentTitle = "Выгрузка в .raodb",
-                        ContentHeader = "Уведомление",
-                        ContentMessage =
-                            "Файл экспорта формы сохранен по пути:" +
-                            $"{Environment.NewLine}{fullPath}" +
-                            $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Регистрационный номер - {orgWithExpForm.Master.RegNoRep.Value}" +
-                            $"{Environment.NewLine}ОКПО - {orgWithExpForm.Master.OkpoRep.Value}" +
-                            $"{Environment.NewLine}Сокращенное наименование - {orgWithExpForm.Master.ShortJurLicoRep.Value}" +
-                            $"{Environment.NewLine}" +
-                            $"{Environment.NewLine}Номер формы - {exportReport.FormNum_DB}" +
-                            $"{Environment.NewLine}Начало отчетного периода - {exportReport.StartPeriod_DB}" +
-                            $"{Environment.NewLine}Конец отчетного периода - {exportReport.EndPeriod_DB}" +
-                            $"{Environment.NewLine}Дата выгрузки - {exportReport.ExportDate_DB}" +
-                            $"{Environment.NewLine}Номер корректировки - {exportReport.CorrectionNumber_DB}" +
-                            $"{Environment.NewLine}Количество строк - {exportReport.Rows.Count}{InventoryCheck(exportReport)}",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок", IsDefault = true },
+                        new ButtonDefinition { Name = "Открыть расположение файла" }
+                    ],
+                    ContentTitle = "Выгрузка в .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Файл экспорта формы сохранен по пути:" +
+                        $"{Environment.NewLine}{fullPath}" +
+                        $"{Environment.NewLine}" +
+                        $"{Environment.NewLine}Регистрационный номер - {orgWithExpForm.Master.RegNoRep.Value}" +
+                        $"{Environment.NewLine}ОКПО - {orgWithExpForm.Master.OkpoRep.Value}" +
+                        $"{Environment.NewLine}Сокращенное наименование - {orgWithExpForm.Master.ShortJurLicoRep.Value}" +
+                        $"{Environment.NewLine}" +
+                        $"{Environment.NewLine}Номер формы - {exportReport.FormNum_DB}" +
+                        $"{Environment.NewLine}Начало отчетного периода - {exportReport.StartPeriod_DB}" +
+                        $"{Environment.NewLine}Конец отчетного периода - {exportReport.EndPeriod_DB}" +
+                        $"{Environment.NewLine}Дата выгрузки - {exportReport.ExportDate_DB}" +
+                        $"{Environment.NewLine}Номер корректировки - {exportReport.CorrectionNumber_DB}" +
+                        $"{Environment.NewLine}Количество строк - {exportReport.Rows.Count}{InventoryCheck(exportReport)}",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                }).ShowDialog(Desktop.MainWindow));
 
             #endregion
 

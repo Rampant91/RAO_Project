@@ -11,7 +11,9 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
-// Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
+/// <summary>
+/// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
+/// </summary>
 public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -20,24 +22,23 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
 
         #region MessageAskStartDate
 
-        var startDate = await Dispatcher.UIThread.InvokeAsync(() => 
-            MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxInputWindow(new MessageBoxInputParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Ок", IsDefault = true },
-                        new ButtonDefinition { Name = "Отменить экспорт", IsCancel = true }
-                    ],
-                    ContentTitle = "Выгрузка",
-                    ShowInCenter = true,
-                    ContentMessage =
-                        "Введите дату начала периода. Если оставить поле пустым," +
-                        $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате начала периода.",
-                    MinWidth = 600,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+        var startDate = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отменить экспорт", IsCancel = true }
+                ],
+                ContentTitle = "Выгрузка",
+                ShowInCenter = true,
+                ContentMessage =
+                    "Введите дату начала периода. Если оставить поле пустым," +
+                    $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате начала периода.",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow));
         
         #endregion
 
@@ -45,23 +46,22 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
 
         #region MessageAskEndDate
 
-        var endDate = await Dispatcher.UIThread.InvokeAsync(() => 
-            MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxInputWindow(new MessageBoxInputParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Ок", IsDefault = true },
-                        new ButtonDefinition { Name = "Отменить экспорт", IsCancel = true }
-                    ],
-                    ContentTitle = "Выгрузка",
-                    ContentMessage =
-                        "Введите дату конца периода. Если оставить поле пустым," +
-                        $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате конца периода.",
-                    MinWidth = 600,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+        var endDate = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отменить экспорт", IsCancel = true }
+                ],
+                ContentTitle = "Выгрузка",
+                ContentMessage =
+                    "Введите дату конца периода. Если оставить поле пустым," +
+                    $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате конца периода.",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow));
         
         #endregion
 
@@ -104,6 +104,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
         exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
         if (MainWindowVM.ExportReports.CanExecute(null))
+        {
             MainWindowVM.ExportReports.Execute(exportOrg);
+        }
     }
 }
