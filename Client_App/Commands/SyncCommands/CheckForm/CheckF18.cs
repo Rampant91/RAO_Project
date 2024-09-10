@@ -184,16 +184,19 @@ public abstract class CheckF18 : CheckBase
     private static List<CheckError> Check_003(List<Form18> forms)
     {
         List<CheckError> result = new();
-        HashSet<HashSet<int>> duplicatesLinesSubset = new();
+        HashSet<int> duplicatesLinesSet = new();
+        List<HashSet<int>> duplicatesGroupsSet = new();
         var comparator = new CustomNullStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
+            if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
             var currentForm = forms[i];
+            var hasDuplicate = false;
             for (var j = i + 1; j < forms.Count; j++)
             {
+                if (duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
                 var formToCompare = forms[j];
-                var isDuplicate = formToCompare.NumberInOrder_DB == currentForm.NumberInOrder_DB
-                                && comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
+                var isDuplicate = comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
                                 && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
                                 && comparator.Compare(formToCompare.IndividualNumberZHRO_DB, currentForm.IndividualNumberZHRO_DB) == 0
                                 && comparator.Compare(formToCompare.PassportNumber_DB, currentForm.PassportNumber_DB) == 0
@@ -221,32 +224,31 @@ public abstract class CheckF18 : CheckBase
                                 && comparator.Compare(formToCompare.Subsidy_DB, currentForm.Subsidy_DB) == 0
                                 && comparator.Compare(formToCompare.FcpNumber_DB, currentForm.FcpNumber_DB) == 0;
                 if (!isDuplicate) continue;
-                var newLine = true;
-                foreach (var subset in duplicatesLinesSubset
-                             .Where(subset => subset.Contains(i + 1)))
-                {
-                    subset.Add(j + 1);
-                    newLine = false;
-                    break;
-                }
-                if (newLine)
-                {
-                    HashSet<int> newSubset = [i + 1, j + 1];
-                    duplicatesLinesSubset.Add(newSubset);
-                }
+                hasDuplicate = true;
+                duplicatesLinesSet.Add(j + 1);
             }
-        }
-        foreach (var subset in duplicatesLinesSubset)
-        {
-            var duplicateLines = string.Join(", ", subset.Order());
-            result.Add(new CheckError
+            if (hasDuplicate) duplicatesLinesSet.Add(i + 1);
+            if (duplicatesLinesSet.Count > 0)
             {
-                FormNum = "form_18",
-                Row = duplicateLines,
-                Column = "2 - 28",
-                Value = "",
-                Message = $"Данные граф 2-28 в строках {duplicateLines} продублированы. Следует проверить правильность предоставления данных."
-            });
+                duplicatesGroupsSet.Add(duplicatesLinesSet.Order().ToHashSet());
+            }
+            duplicatesLinesSet.Clear();
+        }
+        if (duplicatesGroupsSet.Count > 0)
+        {
+            foreach (var group in duplicatesGroupsSet)
+            {
+                var dupStrByGroups = ConvertSequenceSetToRangeString(group);
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = dupStrByGroups,
+                    Column = "2 - 18",
+                    Value = "",
+                    Message = $"Данные граф 2-18 в строках {dupStrByGroups} продублированы. " +
+                              $"Следует проверить правильность предоставления данных."
+                });
+            }
         }
         return result;
     }
