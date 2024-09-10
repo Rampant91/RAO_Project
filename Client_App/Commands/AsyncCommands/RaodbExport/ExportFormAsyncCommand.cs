@@ -343,6 +343,11 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
     #region InventoryCheck
 
+    /// <summary>
+    /// Проверяет, является ли отчёт инвентаризационным (наличие в отчёте кода операции 10 у форм 1.1)
+    /// </summary>
+    /// <param name="rep">Отчёт</param>
+    /// <returns>Заглавные буквы - все формы с кодом 10, обычные - хотя бы одна, пустая строчка - код 10 отсутствует</returns>
     private static string InventoryCheck(Report? rep)
     {
         if (rep is null)
