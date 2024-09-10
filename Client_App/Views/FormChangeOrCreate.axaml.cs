@@ -21,6 +21,7 @@ using MessageBox.Avalonia.Models;
 using Models.Forms;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 
@@ -62,8 +63,64 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
     #endregion
 
+    #region CheckPeriod
+
+    /// <summary>
+    /// Проверяет наличие отчёта с пересекающимся периодом.
+    /// </summary>
+    /// <param name="vm">Модель открытого отчёта.</param>
+    /// <returns>Сообщение о наличии пересечения.</returns>
+    private static async Task CheckPeriod(ChangeOrCreateVM vm)
+    {
+        var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+        var reps = vm.Storages;
+        var reportCollection = reps.Report_Collection;
+        var rep = vm.Storage;
+        if (DateOnly.TryParse(rep.StartPeriod_DB, out var startPeriod)
+            && DateOnly.TryParse(rep.EndPeriod_DB, out var endPeriod))
+        {
+            foreach (var currentReport in reportCollection.Where(x => x.FormNum_DB == rep.FormNum_DB && x.Id != rep.Id))
+            {
+                if (DateOnly.TryParse(currentReport.StartPeriod_DB, out var currentRepStartPeriod)
+                    && DateOnly.TryParse(currentReport.EndPeriod_DB, out var currentRepEndPeriod)
+                    && startPeriod < currentRepEndPeriod && endPeriod > currentRepStartPeriod)
+                {
+                    #region MessageFindIntersection
+
+                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                        {
+                            ButtonDefinitions = ButtonEnum.Ok,
+                            ContentTitle = "Пересечение",
+                            ContentHeader = "Уведомление",
+                            ContentMessage = $"У организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
+                                             $"{Environment.NewLine}присутствует отчёт по форме " +
+                                             $"{currentReport.FormNum_DB} {currentReport.StartPeriod_DB}-{currentReport.EndPeriod_DB}" +
+                                             $"{Environment.NewLine}пересекающийся с введённым периодом " +
+                                             $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
+                            MinWidth = 450,
+                            MinHeight = 170,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow));
+
+                    #endregion
+
+                    return;
+                }
+            }
+        }
+    }
+
+    #endregion
+
     #region RemoveEmptyForms
-    
+
+    /// <summary>
+    /// Проверяет на пустые строчки и предлагает их удалить.
+    /// </summary>
+    /// <param name="vm">Модель открытого отчёта.</param>
+    /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
     private static async Task RemoveEmptyForms(ChangeOrCreateVM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -4699,6 +4756,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     {
         if (DataContext is not ChangeOrCreateVM vm) return;
         await RemoveEmptyForms(vm);
+        await CheckPeriod(vm);
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {

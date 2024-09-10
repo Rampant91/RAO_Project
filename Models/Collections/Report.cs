@@ -2097,7 +2097,7 @@ public class Report : IKey, IDataGridColumn
         StartPeriod_DB = tmp;
     }
 
-    private static bool StartPeriod_Validation(RamAccess<string> value)
+    private bool StartPeriod_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -2117,10 +2117,21 @@ public class Report : IKey, IDataGridColumn
         //    value.AddError("Недопустимое значение");
         //    return false;
         //}
-        if (!DateOnly.TryParse(tmp, out _))
+        if (!DateOnly.TryParse(tmp, out var startPeriod))
         {
             value.AddError("Недопустимое значение");
             return false;
+        }
+        foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
+        {
+            if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
+                && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
+                && DateOnly.TryParse(EndPeriod_DB, out var endPeriod)
+                && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+            {
+                value.AddError("Пересечение с имеющимся отчётом");
+                return false;
+            }
         }
         return true;
     }
@@ -2186,20 +2197,30 @@ public class Report : IKey, IDataGridColumn
         //    value.AddError("Недопустимое значение");
         //    return false;
         //}
-        if (!DateOnly.TryParse(StartPeriod_DB, out var startDate))
+        if (!DateOnly.TryParse(StartPeriod_DB, out var startPeriod))
         {
             value.AddError("Недопустимое значение начала периода");
             return false;
         }
-        if (!DateOnly.TryParse(value.Value, out var endDate))
+        if (!DateOnly.TryParse(value.Value, out var endPeriod))
         {
             value.AddError("Недопустимое значение конца периода");
             return false;
         }
-        if (startDate > endDate)
+        if (startPeriod > endPeriod)
         {
             value.AddError("Начало периода должно быть раньше его конца");
             return false;
+        }
+        foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
+        {
+            if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
+                && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
+                && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+            {
+                value.AddError("Пересечение с имеющимся отчётом");
+                return false;
+            }
         }
         return true;
     }

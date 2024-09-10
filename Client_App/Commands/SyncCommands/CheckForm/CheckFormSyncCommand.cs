@@ -12,7 +12,11 @@ using Client_App.Interfaces.Logger;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
-//  Проверяет открытую форму, открывает окно с отчетом об ошибках, активируется при нажатии кнопки "Проверить"
+/// <summary>
+/// Проверяет открытую форму, активируется при нажатии кнопки "Проверить".
+/// </summary>
+/// <param name="changeOrCreateViewModel">Модель открытого отчёта.</param>
+/// <returns>Открывает окно с отчетом об ошибках.</returns>
 public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     public override bool CanExecute(object? parameter)
@@ -51,9 +55,9 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                 case "1.7":
                     result.AddRange(CheckF17.Check_Total(reps, rep));
                     break;
-                //case "1.8":
-                //    result.AddRange(CheckF18.Check_Total(reps, rep));
-                //    break;
+                case "1.8":
+                    result.AddRange(CheckF18.Check_Total(reps, rep));
+                    break;
                 //case "1.9":
                 //    result.AddRange(CheckF19.Check_Total(reps, rep));
                 //    break;

@@ -24,6 +24,8 @@ public abstract class CheckBase
 
     private protected static List<Dictionary<string, string>> Packs = new();
 
+    private protected static List<string> Orgs18 = new();
+
     private protected static readonly bool DB_Ignore = true;
 
     private protected static readonly bool ZRI_Ignore = true;
@@ -350,6 +352,11 @@ public abstract class CheckBase
             Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
 #endif
         }
+#if DEBUG
+            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Orgs_1.8.xlsx"));
+#else
+            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx.xlsx"));
+#endif
         if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG
@@ -363,7 +370,7 @@ public abstract class CheckBase
     #region  HolidaysFromFile
 
     //функция импорта праздничных и рабочих дат из справочника
-    private protected static void Holidays_Populate_From_File(string fileAddress)
+    private static void Holidays_Populate_From_File(string fileAddress)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(fileAddress)) return;
@@ -399,7 +406,7 @@ public abstract class CheckBase
 
     #region OKSMFromFile
 
-    private protected static void OKSM_Populate_From_File(string fileAddress)
+    private static void OKSM_Populate_From_File(string fileAddress)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(fileAddress)) return;
@@ -426,7 +433,7 @@ public abstract class CheckBase
 
     #region RFromFile
 
-    private protected static void R_Populate_From_File(string filePath)
+    private static void R_Populate_From_File(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(filePath)) return;
@@ -465,7 +472,7 @@ public abstract class CheckBase
 
     #region PacksFromFile
 
-    private protected static void Packs_Populate_From_File(string filePath)
+    private static void Packs_Populate_From_File(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(filePath)) return;
@@ -486,6 +493,26 @@ public abstract class CheckBase
                 {"class", worksheet.Cells[i, 6].Text},
                 {"mass_total", worksheet.Cells[i, 7].Text}
             });
+            i++;
+        }
+    }
+
+    #endregion
+
+    #region Orgs18FromFile
+
+    private static void Orgs18_Populate_From_File(string filePath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(filePath)) return;
+        FileInfo excelImportFile = new(filePath);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet = xls.Workbook.Worksheets["Лист1"];
+        var i = 1;
+        Orgs18.Clear();
+        while (worksheet.Cells[i, 1].Text != string.Empty)
+        {
+            Orgs18.Add(worksheet.Cells[i, 1].Text);
             i++;
         }
     }

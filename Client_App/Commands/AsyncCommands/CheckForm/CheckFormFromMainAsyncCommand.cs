@@ -17,7 +17,10 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
-//  Проверяет форму из главного окна, не открывая её
+/// <summary>
+/// Проверяет отчёт из главного окна, не открывая его.
+/// </summary>
+/// <returns>Окно с отчётом об ошибках.</returns>
 public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -41,7 +44,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
-            //.Include(x => x.Rows18).OrderBy(x => x.NumberInOrder_DB)
+            .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
             //.Include(x => x.Rows19)
             //.Include(x => x.Rows21)
             //.Include(x => x.Rows22)
@@ -73,11 +76,11 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.5" => CheckF15.Check_Total(rep.Reports, rep),
                 "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                 "1.7" => CheckF17.Check_Total(rep.Reports, rep),
-                //"1.8" => CheckF18.Check_Total(rep.Reports, rep),
+                "1.8" => CheckF18.Check_Total(rep.Reports, rep),
                 _ => throw new NotImplementedException()
             });
         }
-        catch (NotImplementedException ex)
+        catch (NotImplementedException)
         {
             #region MessageCheckFailed
 
