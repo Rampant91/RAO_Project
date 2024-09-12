@@ -67,6 +67,26 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
         List<CheckError> errorList = [];
         try
         {
+            if (rep.FormNum_DB is "1.8")
+            {
+                #region MessageCheckFailed
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Функция проверки форм {rep.FormNum_DB} находится в режиме тестирования и может содержать ошибки.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+            }
             errorList.Add(rep.FormNum_DB switch
             {
                 "1.1" => CheckF11.Check_Total(rep.Reports, rep),

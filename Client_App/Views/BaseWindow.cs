@@ -25,7 +25,6 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
-        
     }
 
     private void SetWindowStartupLocationWorkaroundForLinux()
